@@ -24,7 +24,7 @@ Also you can look through [5 Mins Guide](http://quickblox.com/developers/5_Mins_
 
 ### 3. Copy app credentials
 
-* Go to edit app page, e.g. http://admin.quickblox.com/apps/{app_id}/edit
+* Go to edit app page, `e.g. http://admin.quickblox.com/apps/{app_id}/edit`
 * Copy app credentials 
 
 ![App credentials](https://img.skitch.com/20121012-ksn2u9xwhatrm2rb5ttwccx16h.png 300)
@@ -48,7 +48,7 @@ The common way to interact with QuickBlox is presented with following sequence o
 1. [Initialize framework with application credentials](#71-initialize-framework-with-application-credentials)
 2. [Authorize application](#72-authorize-application)
 3. [Login with existing user or register new one](#73-registerlogin)
-4. [Perform actions with any QuickBlox data entities (users, locations, files, custom objects, pushes etc.)](#74-conquer-the-world-perform-actions)
+4. [Perform actions with any QuickBlox data entities (users, locations, files, custom objects, pushes etc.)](#74-perform-actions)
 
 #### 7.1 Initialize framework with application credentials
 
@@ -109,7 +109,7 @@ QBUsers.signUp("indianajones", "indianapassword", new QBCallback() {
 });
 ```
 
-#### 7.4. <strike>Conquer the World</strike> Perform actions
+#### 7.4. Perform actions
 
 Create new location for Indiana Jones
 
@@ -172,8 +172,12 @@ If you want you can replace hardcoded QuickBlox app credentials with your own in
 
 <img src="https://img.skitch.com/20121012-di531b1cq2r5fjwtqdhxy56d65.png" height=400/>
 
-* At the same time look at DDMS to see detailed logs
+* At the same time look at DDMS to see detailed logs ([example](https://gist.github.com/3876684))
 
 ![ddms](https://img.skitch.com/20121012-p8tix2r1fqckr4a44agp7hrrq4.png)
 
 * Go to [com.quickblox.android.framework.snippets.modules](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/src/com/quickblox/android/framework/snippets/modules) package and investigate simple code samples for each module.
+
+## See also
+
+* [QuickBlox REST API](http://quickblox.com/developers/Overview)
