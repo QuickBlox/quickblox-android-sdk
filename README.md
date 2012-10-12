@@ -1,6 +1,6 @@
 # QuickBlox Android SDK
 
-This project is suite of code snippets which shows main use cases of using QuickBlox Android SDK.
+This project contains QuickBlox Android Framework and suite of code snippets which shows main use cases of using this one.
 
 ## How to start
 
