@@ -99,7 +99,7 @@ then
 
 ```java
 // Login
-QBUsers.signUp("indianajones", "indianapassword", new QBCallback() {
+QBUsers.signIn("indianajones", "indianapassword", new QBCallback() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
