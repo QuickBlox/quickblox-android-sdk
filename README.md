@@ -14,7 +14,7 @@ Android SDK is really simple to use. Just in few minutes you can power your mobi
 
 ### 1. Get app credentials
 
-* [http://quickblox.com/developers/Getting_application_credentials](How to get app credentials)
+* [How to get app credentials](http://quickblox.com/developers/Getting_application_credentials)
 
 ### 2. Create new Android project
 ### 3. Add [jar library](https://github.com/QuickBlox/quickblox-android-sdk/downloads) to project
