@@ -12,27 +12,14 @@ Latest jar-packed framework file you can download from [downloads page](https://
 
 Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome functions to store, pass and represent your data. 
 
-### 1. Get QuickBlox account
+### 1. Get app credentials
 
-* [http://admin.quickblox.com/register](http://admin.quickblox.com/register)
+* [http://quickblox.com/developers/Getting_application_credentials](How to get app credentials)
 
-### 2. Create application in QB Admin Panel
+### 2. Create new Android project
+### 3. Add [jar library](https://github.com/QuickBlox/quickblox-android-sdk/downloads) to project
 
-* [http://admin.quickblox.com/apps/new](http://admin.quickblox.com/apps/new)
-
-Also you can look through [5 Mins Guide](http://quickblox.com/developers/5_Mins_Guide).
-
-### 3. Copy app credentials
-
-* Go to edit app page, `e.g. http://admin.quickblox.com/apps/{app_id}/edit`
-* Copy app credentials 
-
-![App credentials](https://img.skitch.com/20121012-ksn2u9xwhatrm2rb5ttwccx16h.png 300)
-
-### 4. Create new Android project
-### 5. Add [jar library](https://github.com/QuickBlox/quickblox-android-sdk/downloads) to project
-
-### 6. Declare internet permission for Android application
+### 4. Declare internet permission for Android application
 
 * Go to AndroidManifest.xml and add 
 
@@ -41,7 +28,7 @@ Also you can look through [5 Mins Guide](http://quickblox.com/developers/5_Mins_
 ```
 inside `<manifest>` tag.
 
-### 7. Make QuickBlox API calls
+### 5. Make QuickBlox API calls
 
 The common way to interact with QuickBlox is presented with following sequence of actions:
 
@@ -50,7 +37,7 @@ The common way to interact with QuickBlox is presented with following sequence o
 3. [Login with existing user or register new one](#73-registerlogin)
 4. [Perform actions with any QuickBlox data entities (users, locations, files, custom objects, pushes etc.)](#74-perform-actions)
 
-#### 7.1 Initialize framework with application credentials
+#### 5.1 Initialize framework with application credentials
 
 ```java
 QBSettings.getInstance().fastConfigInit("961", "PBZxXW3WgGZtFZv", "vvHjRbVFF6mmeyJ");
@@ -65,7 +52,7 @@ QBSettings.getInstance().setAuthorizationKey("PBZxXW3WgGZtFZv");
 QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
 ```
 
-#### 7.2. Authorize application
+#### 5.2. Authorize application
 
 
 ```java
@@ -79,7 +66,7 @@ QBAuth.authorizeApp(new QBCallback() {
 });
 ```
 
-#### 7.3. Register/login
+#### 5.3. Register/login
 
 First
 
@@ -109,7 +96,7 @@ QBUsers.signIn("indianajones", "indianapassword", new QBCallback() {
 });
 ```
 
-#### 7.4. Perform actions
+#### 5.4. Perform actions
 
 Create new location for Indiana Jones
 
