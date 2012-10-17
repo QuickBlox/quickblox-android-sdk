@@ -8,6 +8,10 @@ To start work you should just put library jar into your project and call desired
 
 Latest jar-packed framework file you can download from [downloads page](https://github.com/QuickBlox/quickblox-android-sdk/downloads).
 
+## Documentation
+
+* JavaDoc right here -- http://sdk.quickblox.com/android/
+
 ## Oh, please, please show me the code
 
 Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome functions to store, pass and represent your data. 
