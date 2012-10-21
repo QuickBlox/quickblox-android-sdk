@@ -64,7 +64,7 @@ QBAuth.authorizeApp(new QBCallback() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            // you comes here if authorizations is success
+            // result comes here if authorizations is success
         }
     }
 });
@@ -72,7 +72,7 @@ QBAuth.authorizeApp(new QBCallback() {
 
 #### 5.3. Register/login
 
-First
+First create (register) new user
 
 ```java
 // Register new user
@@ -80,13 +80,13 @@ QBUsers.signUp("indianajones", "indianapassword", new QBCallback() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            // you comes here if authorizations is success
+            // result comes here if authorizations is success
         }
     }
 });
 ```
 
-then
+then authorize user
 
 ```java
 // Login
@@ -94,7 +94,7 @@ QBUsers.signIn("indianajones", "indianapassword", new QBCallback() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            // you comes here if authorizations is success
+            // result comes here if authorizations is success
         }
     }
 });
@@ -113,7 +113,7 @@ QBLocations.createLocation(location, new QBCallback() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            // you comes here if authorizations is success
+            // result comes here if authorizations is success
         }
     }
 });

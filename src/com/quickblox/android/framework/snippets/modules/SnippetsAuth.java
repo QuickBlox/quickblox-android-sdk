@@ -1,14 +1,14 @@
 package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.auth.models.QBSession;
-import com.quickblox.android.framework.modules.auth.net.results.QBSessionResult;
-import com.quickblox.android.framework.modules.auth.net.server.QBAuth;
-import com.quickblox.android.framework.modules.messages.models.QBDevice;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.module.auth.QBAuth;
+import com.quickblox.module.auth.model.QBSession;
+import com.quickblox.module.auth.result.QBSessionResult;
+import com.quickblox.module.messages.model.QBDevice;
 
 /**
  * User: Oleg Soroka

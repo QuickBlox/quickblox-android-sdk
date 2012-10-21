@@ -2,7 +2,7 @@ package com.quickblox.android.framework.snippets;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.quickblox.android.framework.base.net.results.Result;
+import com.quickblox.core.result.Result;
 
 import java.util.ArrayList;
 

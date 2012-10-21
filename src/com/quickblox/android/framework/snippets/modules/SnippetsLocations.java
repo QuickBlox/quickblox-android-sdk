@@ -1,15 +1,15 @@
 package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.location.models.QBLocation;
-import com.quickblox.android.framework.modules.location.models.QBPlace;
-import com.quickblox.android.framework.modules.location.net.result.QBLocationResult;
-import com.quickblox.android.framework.modules.location.net.result.QBPlaceResult;
-import com.quickblox.android.framework.modules.location.net.server.QBLocations;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.module.locations.QBLocations;
+import com.quickblox.module.locations.model.QBLocation;
+import com.quickblox.module.locations.model.QBPlace;
+import com.quickblox.module.locations.result.QBLocationResult;
+import com.quickblox.module.locations.result.QBPlaceResult;
 
 /**
  * User: Oleg Soroka

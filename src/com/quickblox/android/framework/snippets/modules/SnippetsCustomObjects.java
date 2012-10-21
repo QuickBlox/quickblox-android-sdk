@@ -1,13 +1,13 @@
 package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.custom.models.QBCustomObject;
-import com.quickblox.android.framework.modules.custom.net.results.QBCustomObjectResult;
-import com.quickblox.android.framework.modules.custom.net.server.QBCustomObjects;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.module.custom.QBCustomObjects;
+import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.custom.result.QBCustomObjectResult;
 
 /**
  * User: Oleg Soroka

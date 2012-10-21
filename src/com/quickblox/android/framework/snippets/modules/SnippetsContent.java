@@ -1,16 +1,16 @@
 package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.helpers.FileHelper;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.content.models.QBFile;
-import com.quickblox.android.framework.modules.content.net.results.QBFileDownloadResult;
-import com.quickblox.android.framework.modules.content.net.results.QBFileUploadTaskResult;
-import com.quickblox.android.framework.modules.content.net.server.QBContent;
 import com.quickblox.android.framework.snippets.R;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.internal.helper.FileHelper;
+import com.quickblox.module.content.QBContent;
+import com.quickblox.module.content.model.QBFile;
+import com.quickblox.module.content.result.QBFileDownloadResult;
+import com.quickblox.module.content.result.QBFileUploadTaskResult;
 
 import java.io.File;
 import java.io.InputStream;

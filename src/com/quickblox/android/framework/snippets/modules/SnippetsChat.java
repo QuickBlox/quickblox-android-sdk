@@ -2,9 +2,9 @@ package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.quickblox.android.framework.modules.chat.server.QBChat;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.module.chat.QBChat;
 
 /**
  * User: Oleg Soroka

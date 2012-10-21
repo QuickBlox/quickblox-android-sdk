@@ -2,13 +2,13 @@ package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.messages.models.*;
-import com.quickblox.android.framework.modules.messages.net.results.QBEventResult;
-import com.quickblox.android.framework.modules.messages.net.server.QBMessages;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.module.messages.QBMessages;
+import com.quickblox.module.messages.model.*;
+import com.quickblox.module.messages.result.QBEventResult;
 
 /**
  * User: Oleg Soroka

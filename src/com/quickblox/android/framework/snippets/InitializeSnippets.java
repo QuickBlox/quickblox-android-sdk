@@ -1,7 +1,7 @@
 package com.quickblox.android.framework.snippets;
 
-import com.quickblox.android.framework.base.models.QBSettings;
-import com.quickblox.android.framework.modules.auth.net.server.QBAuth;
+import com.quickblox.core.QBSettings;
+import com.quickblox.module.auth.QBAuth;
 
 /**
  * User: Oleg Soroka

@@ -1,14 +1,14 @@
 package com.quickblox.android.framework.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.android.framework.base.definitions.QBCallback;
-import com.quickblox.android.framework.base.net.results.Result;
-import com.quickblox.android.framework.modules.ratings.models.QBGameMode;
-import com.quickblox.android.framework.modules.ratings.models.QBScore;
-import com.quickblox.android.framework.modules.ratings.net.results.QBGameModeResult;
-import com.quickblox.android.framework.modules.ratings.net.server.QBRatings;
 import com.quickblox.android.framework.snippets.Snippet;
 import com.quickblox.android.framework.snippets.Snippets;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
+import com.quickblox.module.ratings.QBRatings;
+import com.quickblox.module.ratings.model.QBGameMode;
+import com.quickblox.module.ratings.model.QBScore;
+import com.quickblox.module.ratings.result.QBGameModeResult;
 
 /**
  * User: Oleg Soroka
