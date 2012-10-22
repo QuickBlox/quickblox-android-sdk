@@ -10,7 +10,8 @@ Latest jar-packed framework file you can download from [downloads page](https://
 
 ## Documentation
 
-* JavaDoc right here -- http://sdk.quickblox.com/android/
+* **[Start to learn SDK from Android Guide](http://quickblox.com/developers/Android_Guide)**
+* [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
 
 ## Oh, please, please show me the code
 
@@ -145,7 +146,7 @@ Java Framework provides following services to interact with QuickBlox functions 
 * QBMessages
 * QBChat
 
-## Documentation
+## Snippets DDMS log
 
 Javadoc is currently under development, but you can deep into code snippets.
 
