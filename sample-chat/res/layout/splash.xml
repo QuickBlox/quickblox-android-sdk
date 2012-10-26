@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/splash_bg"
+            android:layout_gravity="center"
+            android:src="@drawable/qb_splash_bg"
+            android:scaleType="fitXY"
+            android:visibility="visible"
+            android:longClickable="true"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/splash_hero"
+            android:src="@drawable/qb_splash_hero"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:focusableInTouchMode="false"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:visibility="visible"
+            android:layout_below="@+id/splash_app_title"/>
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar" android:layout_gravity="center" android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/splash_qb_link" android:src="@drawable/qb_splash_link"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:scaleType="fitEnd"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:id="@+id/splash_app_title"
+            android:textColor="#ffffff"
+            android:textSize="80sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+</RelativeLayout>
