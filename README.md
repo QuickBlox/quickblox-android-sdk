@@ -61,7 +61,7 @@ QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
 
 
 ```java
-QBAuth.authorizeApp(new QBCallback() {
+QBAuth.authorizeApp(new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
@@ -77,7 +77,7 @@ First create (register) new user
 
 ```java
 // Register new user
-QBUsers.signUp("indianajones", "indianapassword", new QBCallback() {
+QBUsers.signUp("indianajones", "indianapassword", new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
@@ -91,7 +91,7 @@ then authorize user
 
 ```java
 // Login
-QBUsers.signIn("indianajones", "indianapassword", new QBCallback() {
+QBUsers.signIn("indianajones", "indianapassword", new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
@@ -110,7 +110,7 @@ double lat = 25.224820; // Somewhere in Africa
 double lng = 9.272461;
 String statusText = "trying to find adventures";
 QBLocation location = new QBLocation(lat, lng, statusText);
-QBLocations.createLocation(location, new QBCallback() {
+QBLocations.createLocation(location, new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
@@ -125,7 +125,7 @@ or put Holy Grail into storage
 ```java
 File file = new File("holy_grail.txt");
 Boolean fileIsPublic = true;
-QBContent.uploadFileTask(file, fileIsPublic, new QBCallback() {
+QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
@@ -168,7 +168,7 @@ If you want you can replace hardcoded QuickBlox app credentials with your own in
 
 ![ddms](https://img.skitch.com/20121012-p8tix2r1fqckr4a44agp7hrrq4.png)
 
-* Go to [com.quickblox.android.framework.snippets.modules](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/src/com/quickblox/android/framework/snippets/modules) package and investigate simple code samples for each module.
+* Go to [com.quickblox.snippets.modules](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/src/com/quickblox/snippets/modules) package and investigate simple code samples for each module.
 
 ## See also
 
