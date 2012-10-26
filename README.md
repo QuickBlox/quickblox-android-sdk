@@ -1,6 +1,6 @@
 # QuickBlox Android SDK
 
-This project contains QuickBlox Android Framework, that includes
+This project contains QuickBlox Android SDK, that includes
 
 * [framework library jar](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/jar)
 * [snippets](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets) (shows main use cases of using this one)
@@ -15,6 +15,7 @@ Latest jar-packed framework file you can download from [downloads page](https://
 
 ## Documentation
 
+* [Project page on QuickBlox developers section](http://quickblox.com/developers/Android)
 * **[Start to learn SDK from Android Guide](http://quickblox.com/developers/Android_Guide)**
 * [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
 
