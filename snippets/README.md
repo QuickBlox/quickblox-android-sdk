@@ -1,6 +1,6 @@
 ## Snippets
 
-Deep into code snippets to investigate main principles of QuickBlox.
+Dive into code snippets to investigate main principles of QuickBlox.
 
 ### How to run Snippets project
 
