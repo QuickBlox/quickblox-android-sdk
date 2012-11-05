@@ -26,7 +26,7 @@ import java.util.Map;
  */
 
 /**
- * List of users QuickBlox applications available to chatting.
+ * List of users QuickBlox applications available to chat.
  *
  * @author <a href="mailto:oleg@quickblox.com">Oleg Soroka</a>
  */

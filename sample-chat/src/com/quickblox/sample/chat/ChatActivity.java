@@ -17,7 +17,7 @@ import org.jivesoftware.smack.packet.Message;
  */
 
 /**
- * List of users QuickBlox applications available to chatting.
+ * List of users QuickBlox applications available to chat.
  *
  * @author <a href="mailto:oleg@quickblox.com">Oleg Soroka</a>
  */
@@ -58,7 +58,7 @@ public class ChatActivity extends Activity {
 
         // ================= QuickBlox ===== Step 5 =================
         // Get chat login based on QuickBlox user account.
-        // Note, that to start chatting you should use only short login,
+        // Note, that to start chat you should use only short login,
         // that looks like '17744-1028' (<qb_user_id>-<qb_app_id>).
         String chatLogin = QBChat.getChatLoginShort(me);
 
