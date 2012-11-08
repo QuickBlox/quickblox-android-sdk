@@ -85,14 +85,13 @@ public class UsersListActivity extends Activity implements QBCallback {
                     // Prepare QBUser objects to pass it into next activities using bundle.
                     QBUser friendUser = users.get(i);
 
-                    Bundle friendBundle = new Bundle();
-                    friendBundle.putSerializable("friend", friendUser);
-
-                    Bundle meBundle = getIntent().getBundleExtra("meBundle");
-
                     Intent intent = new Intent(UsersListActivity.this, ChatActivity.class);
-                    intent.putExtra("friendBundle", friendBundle);
-                    intent.putExtra("meBundle", meBundle);
+                    Bundle extras = getIntent().getExtras();
+                    intent.putExtra("friendId", friendUser.getId());
+                    intent.putExtra("friendLogin", friendUser.getLogin());
+                    intent.putExtra("friendPassword", friendUser.getPassword());
+                    // Add extras from previous activity.
+                    intent.putExtras(extras);
 
                     startActivity(intent);
                 }

@@ -37,11 +37,17 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.chat);
 
         // Load QBUser objects from bundle (passed from previous activity).
-        Bundle meBundle = getIntent().getBundleExtra("meBundle");
-        Bundle friendBundle = getIntent().getBundleExtra("friendBundle");
+        Bundle extras = getIntent().getExtras();
 
-        QBUser me = (QBUser) meBundle.getSerializable("me");
-        QBUser friend = (QBUser) friendBundle.getSerializable("friend");
+        QBUser me = new QBUser();
+        me.setId(extras.getInt("myId"));
+        me.setLogin(extras.getString("myLogin"));
+        me.setPassword(extras.getString("myPassword"));
+
+        QBUser friend = new QBUser();
+        friend.setId(extras.getInt("friendId"));
+        friend.setLogin(extras.getString("friendLogin"));
+        friend.setPassword(extras.getString("friendPassword"));
 
         // UI stuff
         messagesContainer = (ViewGroup) findViewById(R.id.messagesContainer);

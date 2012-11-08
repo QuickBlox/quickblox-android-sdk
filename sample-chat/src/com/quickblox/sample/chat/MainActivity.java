@@ -90,11 +90,10 @@ public class MainActivity extends Activity implements QBCallback, View.OnClickLi
         }
 
         if (result.isSuccess()) {
-            // Prepare QBUser object to pass it into next activities using bundle.
-            Bundle meBundle = new Bundle();
-            meBundle.putSerializable("me", user);
             Intent intent = new Intent(this, UsersListActivity.class);
-            intent.putExtra("meBundle", meBundle);
+            intent.putExtra("myId", user.getId());
+            intent.putExtra("myLogin", user.getLogin());
+            intent.putExtra("myPassword", user.getPassword());
 
             startActivity(intent);
             Toast.makeText(this, "You've been successfully logged in application",
