@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent" >
+    
+        <com.google.android.maps.MapView
+        	android:id="@+id/mapview"
+        	android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"
+        	android:apiKey="0k6UGhTMJCIdgKMs_VJH87JntYyoq3HOmHmr-hw"
+        	android:clickable="true" />
+
+        <Button
+                android:id="@+id/checkIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignTop="@+id/checkIn"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:text="Check In"
+                android:onClick="onClickButtons"/>
+
+    </RelativeLayout>
+</FrameLayout>
