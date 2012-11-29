@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white" >
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/quickblox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_centerHorizontal="true"
+        android:text="@string/url_quickblox"
+        android:textColor="@color/black"
+        android:textStyle="bold" android:autoLink="web"/>
+
+    <TextView
+        android:id="@+id/textTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/quickblox"
+        android:layout_centerHorizontal="true"
+        android:text="@string/title1"
+        android:textColor="@color/dark_gray"
+        android:textSize="14pt"
+        android:textStyle="bold" />
+    <TextView
+            android:id="@+id/textTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textTitle1"
+            android:layout_centerHorizontal="true"
+            android:text="@string/title2"
+            android:textColor="@color/blue"
+            android:textSize="13pt"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/url_samples"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTitle2"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/url_samples"
+        android:textColor="@color/black"
+        android:textStyle="bold" android:autoLink="web"/>
+
+    <ProgressBar
+        android:id="@+id/auth_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/url_samples"
+        android:layout_marginTop="40dp" />
+        
+    <TextView
+        android:id="@+id/textSlogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/slogan"
+        android:textSize="8pt"
+        android:textColor="@color/dark_gray"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+</RelativeLayout>

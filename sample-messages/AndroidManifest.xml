@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.quickblox.simplesample.messages"
+      android:versionCode="1"
+      android:minSdkVersion="8"
+      android:versionName="1.0">
+    <application android:label="@string/app_name" android:icon="@drawable/icon">
+        <activity android:name=".main.activities.StartActivity"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name=".main.activities.MessagesActivity"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                android:screenOrientation="portrait" >
+        </activity>
+
+
+        <!-- C2DM -->
+        <!-- In order to use the c2dm library, an
+            application must declare a class with the name C2DMReceiver, in
+            own package, extending com.google.android.c2dm.C2DMBaseReceiver
+        -->
+        <service android:name=".C2DMReceiver" android:enabled="true" />
+
+        <!-- Only Google services can send messages to the app.
+             If this permission were not present
+             any other app would be able to send messages to us. -->
+        <receiver android:name="com.quickblox.simplesample.messages.c2dm.C2DMBroadcastReceiver"
+                  android:permission="com.google.android.c2dm.permission.SEND">
+            <!-- Receive actual messages -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.quickblox.simplesample.messages" />
+            </intent-filter>
+            <!-- Receive registration ids -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+                <category android:name="com.quickblox.simplesample.messages" />
+            </intent-filter>
+        </receiver>
+
+
+    </application>
+
+    <!-- App receives GCM messages. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- GCM connects to Google Services. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />
+
+
+</manifest> 
