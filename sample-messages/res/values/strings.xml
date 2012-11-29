@@ -2,21 +2,7 @@
 <resources>
 
     <!-- Start Activity -->
-    <string name="app_name">SimpleSamples-messages_users</string>
-    <string name="title1">SimpleSamples</string>
-    <string name="title2">Messages</string>
-    <string name="url_quickblox">http://quickblox.com/</string>
-    <string name="url_samples">http://quickblox.com/developers/QuickBlox_Developers</string>
-    <string name="slogan">QuickBlox: brings superpowers to your apps!</string>
-
-    <!-- Login/Registration Activities -->
-    <string name="full_name">Full name</string>
-    <string name="login">Login</string>
-    <string name="registration">Registration</string>
-    <string name="password">Password</string>
-    <string name="retype_pass">Retype pass</string>
-    <string name="back">Back</string>
-    <string name="next">Next</string>
+    <string name="app_name">QuickBlox Messages Sample</string>
 
     <!-- Messages Activity -->
     <string name="enter_your_message">Enter Your message here:</string>
@@ -24,22 +10,5 @@
     <string name="select_user">Select user</string>
     <string name="send">Send</string>
     <string name="received_messages">Received messages:</string>
-
-    <!-- Alert dialogs -->
-    <string name="alert_login_blank">Login can\'t be blank</string>
-    <string name="alert_password_blank">Password can\'t be blank</string>
-    <string name="alert_fullname_blank">Fullname can\'t be blank</string>
-    <string name="alert_login_short">Login is too short (minimum is 3 characters)</string>
-    <string name="alert_pass_short">Password is too short (minimum is 3 characters)</string>
-    <string name="alert_fullname_short">Fullname is too short (minimum is 3 characters)</string>
-    <string name="alert_password_repeat">Both passwords must be the same</string>
-    <string name="alert_need_user_auth">You must first be authorized.</string>
-    <string name="check_in_alert_title">Please enter your message.</string>
-
-    <!-- Buttons-->
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="signin">Sign In</string>
-    <string name="signup">Sign Up</string>
 
 </resources>
