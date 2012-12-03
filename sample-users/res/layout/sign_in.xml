@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <EditText
+            android:id="@+id/login"
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/password"
+            android:layout_marginBottom="5dp"
+            android:singleLine="true"
+            android:capitalize="none"
+            android:text="@string/test_user_login"
+            android:hint="@string/login"
+            />
+    <EditText
+            android:id="@+id/password"
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:singleLine="true"
+            android:imeOptions="actionSend"
+            android:hint="@string/password"
+            android:capitalize="none"
+            android:layout_centerVertical="true"
+            android:password="true"
+            android:text="@string/test_user_password"
+            android:layout_centerHorizontal="true"
+            />
+    <Button
+            android:id="@+id/sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/password"
+            android:layout_centerHorizontal="true"
+            android:text="@string/sign_in"
+            android:onClick="onClick"
+            />
+</RelativeLayout>
