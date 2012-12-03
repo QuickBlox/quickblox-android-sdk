@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Sample Ratings</string>
+    <string name="rate">Rate</string>
+    <string name="cancel">Cancel</string>
+    <string name="rate_this_film">Rate this film</string>
+    <string name="please_wait">Please wait...</string>
+</resources>
