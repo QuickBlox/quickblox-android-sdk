@@ -28,7 +28,6 @@ public class MessagesActivity extends Activity {
 
     private static MessagesActivity instance;
 
-
     ArrayList<QBUser> qbUsersList;
     private QBUser selectedUser;
 
@@ -58,16 +57,32 @@ public class MessagesActivity extends Activity {
         if (message != null) {
             retrieveMessage(message);
         }
-
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // register c2dm
+
+        // ================= QuickBlox ===== Step 3 =================
+        // Request device push token
         C2DMessaging.register(this, Consts.GSM_SENDER);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // unregister for gcm
+        C2DMessaging.unregister(this);
+    }
+
+
+    // retrieve message
+    public void retrieveMessage(final String message) {
+        String text = message + "\n" + retrievedMessages.getText().toString();
+        retrievedMessages.setText(text);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
 
     // select user
     public void selectUserButtonClick(View view) {
@@ -78,7 +93,8 @@ public class MessagesActivity extends Activity {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        // make query
+
+        // Retrieve all users
         QBUsers.getUsers(new QBCallback() {
             @Override
             public void onComplete(Result result) {
@@ -91,64 +107,6 @@ public class MessagesActivity extends Activity {
             public void onComplete(Result result, Object o) {
             }
         });
-
-    }
-
-    // send message
-    public void sendMessageButtonClick(View view) {
-
-        QBEvent qbEvent = new QBEvent();
-        qbEvent.setNotificationType(QBNotificationType.PUSH);
-        qbEvent.setPushType(QBPushType.GCM);
-        qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
-        qbEvent.setMessage(messageBody.getText().toString());
-        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(selectedUser.getId());
-        qbEvent.setUserIds(userIds);
-        QBMessages.createEvent(qbEvent, new QBCallback() {
-            @Override
-            public void onComplete(Result result) {
-
-            }
-
-            @Override
-            public void onComplete(Result result, Object o) {
-            }
-        });
-        progressBar.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // unregister for c2dm
-        C2DMessaging.unregister(this);
-    }
-
-    // create Push Token
-    public void createPushToken(String registrationID) {
-        //Create push token with  Registration Id for Android
-        QBPushToken qbPushToken = new QBPushToken();
-        qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
-        qbPushToken.setCis(registrationID);
-        QBMessages.createPushToken(qbPushToken, new QBCallback() {
-            @Override
-            public void onComplete(Result result) {
-                createSubscription();
-            }
-
-            @Override
-            public void onComplete(Result result, Object o) {
-            }
-        });
-    }
-
-    // retrieve message
-    public void retrieveMessage(final String message) {
-        String text = message + "\n" + retrievedMessages.getText().toString();
-        retrievedMessages.setText(text);
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void showAllUsersPicker() {
@@ -172,9 +130,56 @@ public class MessagesActivity extends Activity {
         alert.show();
     }
 
+    // send message
+    public void sendMessageButtonClick(View view) {
+
+        // Send Push: create QuickBlox Push Notification Event
+        QBEvent qbEvent = new QBEvent();
+        qbEvent.setNotificationType(QBNotificationType.PUSH);
+        qbEvent.setPushType(QBPushType.GCM);
+        qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
+        qbEvent.setMessage(messageBody.getText().toString());
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
+        userIds.add(selectedUser.getId());
+        qbEvent.setUserIds(userIds);
+        QBMessages.createEvent(qbEvent, new QBCallback() {
+            @Override
+            public void onComplete(Result result) {
+
+            }
+
+            @Override
+            public void onComplete(Result result, Object o) {
+            }
+        });
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    //
+    //
+    // create Push Token
+    public void createPushToken(String registrationID) {
+        //Create push token with  Registration Id for Android
+        //
+        QBPushToken qbPushToken = new QBPushToken();
+        qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
+        qbPushToken.setCis(registrationID);
+        QBMessages.createPushToken(qbPushToken, new QBCallback() {
+            @Override
+            public void onComplete(Result result) {
+
+                // ================= QuickBlox ===== Step 5 =================
+                // Create subscription
+                createSubscription();
+            }
+
+            @Override
+            public void onComplete(Result result, Object o) {
+            }
+        });
+    }
 
     private void createSubscription() {
-
         // subscribed for android pushes ---> GSM
         QBMessages.createSubscription(QBNotificationChannel.GCM, new QBCallback() {
             @Override

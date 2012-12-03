@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/messagesbg">
+                android:background="#e9e2d4">
     <TextView
             android:id="@+id/enterYourText"
             android:layout_width="fill_parent"

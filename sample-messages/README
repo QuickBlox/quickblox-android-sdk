@@ -1,9 +1,0 @@
-This sample demonstrates how to work with Messages (and Users) QuickBlox services.
- 
-It allows to send and receive push messages. 
-
-It shows how to:
-- Register User as subscriber for receive messages (from other Users and from Admin panel)
-- Send push notification to select User
-
-Sample description - http://quickblox.com/developers/SimpleSample-messages_users-android

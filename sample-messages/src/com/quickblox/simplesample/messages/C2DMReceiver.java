@@ -71,7 +71,8 @@ public class C2DMReceiver extends C2DMBaseReceiver {
     public void onRegistered(Context context, final String registrationId) throws IOException {
         Log.d(LOG_TAG, "onRegistered() registrationId="+registrationId);
 
-        // create push token
+        // ================= QuickBlox ===== Step 4 =================
+        // Create push token
         MessagesActivity.getInstance().createPushToken(registrationId);
     }
 
