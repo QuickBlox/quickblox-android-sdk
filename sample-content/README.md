@@ -1,4 +1,4 @@
-## QuickBlox Android Content Sample
+## Quick Blox Android Content Sample
 
 This is a code sample for [QuickBlox](http://quickblox.com/) platform. It is a great way for developers using QuickBlox platform to learn how to save file on Quick Blox by yours apps.
 
@@ -15,4 +15,4 @@ Go to project page on QuickBlox Developers Section -- <http://quickblox.com/deve
 
 Or clone project here and start to work with the code.
 
-<img src="http://files.quickblox.com/SimpleSample-content-android1.png" width=200 />&nbsp;<img src="http://files.quickblox.com/SimpleSample-content-android2.png" width=200 />&nbsp;
+<img src="http://files.quickblox.com/SimpleSample-content-android1.png" width=200 />&nbsp;<img src="http://files.quickblox.com/SimpleSample-content-android2.png" width=200 />&nbsp;<img src="http://files.quickblox.com/SimpleSample-content-android3.png" width=200 />&nbsp;
