@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QBSample-content-android</string>
+    <string name="content">Content</string>
+    <string name="add_new_image">add new image</string>
+    <string name="back_to_gallery">Back to gallery</string>
+    <string name="please_waite">Please wait..</string>
+</resources>
