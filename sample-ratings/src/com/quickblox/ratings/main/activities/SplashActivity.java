@@ -32,10 +32,10 @@ import java.util.List;
  */
 public class SplashActivity extends Activity implements QBCallback {
 
-    private final int APP_ID = 774;
-    private final String AUTH_KEY = "aY7WwSRmu2-GbfA";
-    private final String AUTH_SECRET = "ah2NKY-YEqkqUkp";
-    private final String USER_LOGIN = "qwerty123";
+    private final int APP_ID = 99;
+    private final String AUTH_KEY = "63ebrp5VZt7qTOv";
+    private final String AUTH_SECRET = "YavMAxm5T59-BRw";
+    private final String USER_LOGIN = "Gerrit";
     private final String USER_PASSWORD = "qwerty123";
     private final int NONE_SCORE_CHANGE = -1;
     private ProgressBar progressBar;
@@ -73,13 +73,13 @@ public class SplashActivity extends Activity implements QBCallback {
 
     private void applyMovies() {
         List<Movie> movieList = new ArrayList<Movie>();
-        movieList.add(new Movie(270, getResources().getDrawable(R.drawable.ted), "Ted", "As the result of a childhood wish, John Bennett's teddy bear, Ted, came to life and has been by John's side ever since - a friendship that's tested when Lori, John's girlfriend of four years, wants more from their relationship"));
-        movieList.add(new Movie(271, getResources().getDrawable(R.drawable.hachiko), "Hachiko: A Dog's Tale", "A drama based on the true story of a college professor's bond with the abandoned dog he takes into his home."));
-        movieList.add(new Movie(272, getResources().getDrawable(R.drawable.godfather), "The Godfather", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son."));
-        movieList.add(new Movie(273, getResources().getDrawable(R.drawable.shawshank_redemption), "The Shawshank Redemption", "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."));
-        movieList.add(new Movie(274, getResources().getDrawable(R.drawable.the_lord_of_the_rings), "The Lord of the Rings: The Fellowship of the Ring", "An innocent hobbit of The Shire journeys with eight companions to the fires of Mount Doom to destroy the One Ring and the dark lord Sauron forever."));
-        movieList.add(new Movie(275, getResources().getDrawable(R.drawable.fight_club), "Fight Club", "An insomniac office worker and a devil-may-care soap maker form an underground fight club that transforms into a violent revolution."));
-        movieList.add(new Movie(276, getResources().getDrawable(R.drawable.harry_potter), "Harry Potter and the Deathly Hallows", "Harry, Ron and Hermione search for Voldemort's remaining Horcruxes in their effort to destroy the Dark Lord."));
+        movieList.add(new Movie(278, getResources().getDrawable(R.drawable.ted), "Ted", "As the result of a childhood wish, John Bennett's teddy bear, Ted, came to life and has been by John's side ever since - a friendship that's tested when Lori, John's girlfriend of four years, wants more from their relationship"));
+        movieList.add(new Movie(279, getResources().getDrawable(R.drawable.hachiko), "Hachiko: A Dog's Tale", "A drama based on the true story of a college professor's bond with the abandoned dog he takes into his home."));
+        movieList.add(new Movie(280, getResources().getDrawable(R.drawable.godfather), "The Godfather", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son."));
+        movieList.add(new Movie(281, getResources().getDrawable(R.drawable.shawshank_redemption), "The Shawshank Redemption", "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."));
+        movieList.add(new Movie(282, getResources().getDrawable(R.drawable.the_lord_of_the_rings), "The Lord of the Rings: The Fellowship of the Ring", "An innocent hobbit of The Shire journeys with eight companions to the fires of Mount Doom to destroy the One Ring and the dark lord Sauron forever."));
+        movieList.add(new Movie(283, getResources().getDrawable(R.drawable.fight_club), "Fight Club", "An insomniac office worker and a devil-may-care soap maker form an underground fight club that transforms into a violent revolution."));
+        movieList.add(new Movie(284, getResources().getDrawable(R.drawable.harry_potter), "Harry Potter and the Deathly Hallows", "Harry, Ron and Hermione search for Voldemort's remaining Horcruxes in their effort to destroy the Dark Lord."));
         DataHolder.getDataHolder().setMovieList(movieList);
         DataHolder.getDataHolder().setChosenMoviePosition(NONE_SCORE_CHANGE);
     }

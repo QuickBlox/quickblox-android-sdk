@@ -55,7 +55,6 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
     }
 
     private void createNewNote() {
-
         // create new score in note class
         progressDialog.show();
         HashMap<String, Object> fields = new HashMap<String, Object>();

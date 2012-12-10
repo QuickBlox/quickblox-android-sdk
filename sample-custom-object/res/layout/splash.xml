@@ -46,7 +46,7 @@
             android:text="Custom Object"
             android:id="@+id/splash_app_title"
             android:textColor="#ffffff"
-            android:textSize="50sp"
+            android:textSize="30sp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="55dp"
             android:layout_marginBottom="10dp"/>

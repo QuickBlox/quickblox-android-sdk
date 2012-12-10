@@ -20,7 +20,7 @@ import com.quickblox.ratings.main.definitions.QBQueries;
 
 public class MoviesListActivity extends Activity implements AdapterView.OnItemClickListener, QBCallback {
 
-    private final int APP_ID = 774;
+    private final int APP_ID = 99;
     ListView moviesLV;
     MoviesListAdapter moviesListAdapter;
     private final String POSITION = "position";

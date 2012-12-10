@@ -18,10 +18,10 @@ import com.quickblox.module.users.model.QBUser;
 
 public class SplashActivity extends Activity {
 
-    private final int APP_ID = 774;
-    private final String AUTH_KEY = "aY7WwSRmu2-GbfA";
-    private final String AUTH_SECRET = "ah2NKY-YEqkqUkp";
-    private final String USER_LOGIN = "test2";
+    private final int APP_ID = 99;
+    private final String AUTH_KEY = "63ebrp5VZt7qTOv";
+    private final String AUTH_SECRET = "YavMAxm5T59-BRw";
+    private final String USER_LOGIN = "Gerrit";
     private final String USER_PASSWORD = "qwerty123";
     private ProgressBar progressBar;
 
