@@ -44,6 +44,7 @@ public class SnippetsMessages extends Snippets {
         public void execute() {
             QBEvent event = new QBEvent();
             event.setMessage("my push message");
+
             event.setEnvironment(QBEnvironment.DEVELOPMENT);
             event.setPushType(QBPushType.GCM);
             event.setNotificationType(QBNotificationType.PUSH);
