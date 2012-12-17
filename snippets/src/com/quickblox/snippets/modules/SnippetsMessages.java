@@ -70,4 +70,6 @@ public class SnippetsMessages extends Snippets {
             Toast.makeText(context, "detailed Messages sample coming soon...", Toast.LENGTH_SHORT).show();
         }
     };
+
+
 }

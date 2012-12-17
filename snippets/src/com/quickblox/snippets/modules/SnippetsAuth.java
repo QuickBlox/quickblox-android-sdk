@@ -1,12 +1,13 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
+import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.auth.model.QBSession;
 import com.quickblox.module.auth.result.QBSessionResult;
-import com.quickblox.module.messages.model.QBDevice;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
@@ -18,6 +19,7 @@ import com.quickblox.snippets.Snippets;
 public class SnippetsAuth extends Snippets {
 
     public static int currentUserId = 0;
+    public static String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
     public SnippetsAuth(Context context) {
         super(context);
@@ -25,13 +27,13 @@ public class SnippetsAuth extends Snippets {
         snippets.add(createSession);
         snippets.add(createSessionWithUser);
         snippets.add(createSessionWithUserEmail);
-        snippets.add(createSessionWithDevice);
+        snippets.add(createSessionWithSocialProvider);
     }
 
     Snippet createSession = new Snippet("create session") {
         @Override
         public void execute() {
-            QBAuth.authorizeApp(authCallback);
+            QBAuth.createSession(authCallback);
         }
     };
 
@@ -41,7 +43,7 @@ public class SnippetsAuth extends Snippets {
             String login = SnippetsUsers.LOGIN;
             String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.authorizeApp(login, password, authCallback);
+            QBAuth.createSession(login, password, authCallback);
         }
     };
 
@@ -51,18 +53,28 @@ public class SnippetsAuth extends Snippets {
             String email = SnippetsUsers.EMAIL;
             String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.authorizeAppByEmail(email, password, authCallback);
+            QBAuth.createSessionByEmail(email, password, authCallback);
         }
     };
 
-    Snippet createSessionWithDevice = new Snippet("create session", "with device") {
+    Snippet createSessionWithSocialProvider = new Snippet("create session with social provider") {
         @Override
         public void execute() {
-            String login = SnippetsUsers.LOGIN;
-            String password = SnippetsUsers.PASSWORD;
-            QBDevice device = new QBDevice(context);
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                    QBSessionResult sessionResult = (QBSessionResult) result;
+                    QBSession session = sessionResult.getSession();
+                    if (session.getUserId() != null) {
+                        currentUserId = session.getUserId();
+                    }
+                }
 
-            QBAuth.authorizeApp(login, password, device, authCallback);
+                @Override
+                public void onComplete(Result result, Object context) {
+                }
+            });
         }
     };
 
@@ -83,4 +95,6 @@ public class SnippetsAuth extends Snippets {
             }
         }
     };
+
+
 }

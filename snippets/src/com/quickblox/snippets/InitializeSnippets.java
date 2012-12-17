@@ -16,6 +16,6 @@ public class InitializeSnippets {
         // http://image.quickblox.com/5217b9d67bb30191f07f9ff385ed.injoit.png
         QBSettings.getInstance().fastConfigInit("961", "PBZxXW3WgGZtFZv", "vvHjRbVFF6mmeyJ");
 
-        QBAuth.authorizeApp(null);
+        QBAuth.createSession(null);
     }
 }

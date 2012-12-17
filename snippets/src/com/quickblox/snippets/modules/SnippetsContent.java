@@ -1,6 +1,7 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.FileHelper;
@@ -27,6 +28,7 @@ public class SnippetsContent extends Snippets {
 
         snippets.add(uploadFile);
         snippets.add(downloadFile);
+        snippets.add(getFilesWithPagination);
     }
 
     String uid = null; // file id
@@ -83,6 +85,22 @@ public class SnippetsContent extends Snippets {
                     }
                 });
             }
+        }
+    };
+
+    Snippet getFilesWithPagination = new Snippet("get files with pagination") {
+        @Override
+        public void execute() {
+            QBContent.getFiles(1, 20, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+                }
+            });
         }
     };
 }
