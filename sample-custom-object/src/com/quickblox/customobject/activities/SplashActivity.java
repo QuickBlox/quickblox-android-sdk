@@ -49,6 +49,7 @@ public class SplashActivity extends Activity implements QBCallback{
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
@@ -60,7 +61,8 @@ public class SplashActivity extends Activity implements QBCallback{
     }
 
     private void getNoteList() {
-        // get all scores from class --> note
+        // ================= QuickBlox ===== Step 2 =================
+        // Get all notes
         QBCustomObjects.getObjects(CLASS_NAME, this, QBQueries.GET_NOTE_LIST);
     }
 

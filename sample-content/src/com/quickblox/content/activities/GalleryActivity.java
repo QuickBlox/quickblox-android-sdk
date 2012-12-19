@@ -86,6 +86,8 @@ public class GalleryActivity extends Activity implements AdapterView.OnItemClick
 
     private void downImg(String imgPath) {
 
+        // ================= QuickBlox ===== Step 3 =================
+        // Upload new file
         // QBContent.uploadFileTask consist of tree query : Create a file, Upload file, Declaring file uploaded
         final File img = new File(imgPath);
         QBContent.uploadFileTask(img, PUBLIC_ACCESS_TRUE, new QBCallback() {

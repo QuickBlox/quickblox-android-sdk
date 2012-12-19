@@ -39,6 +39,7 @@ public class ShowImgActivity extends Activity {
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
                 .displayer(new RoundedBitmapDisplayer(20))
                 .build();
+
         // Load and display image
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .defaultDisplayImageOptions(options)

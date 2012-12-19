@@ -123,8 +123,8 @@ public class MovieActivity extends Activity implements QBCallback {
 
     private void createScore() {
         progressDialog.show();
-        // set values for QBScore
-        // necessarily indicate -- > userId, gameModeId and value
+        // ================= QuickBlox ===== Step 3 =================
+        // Rate it!
         QBScore qbScore = new QBScore();
         qbScore.setGameModeId(DataHolder.getDataHolder().getMovieGameModeId(position));
         qbScore.setValue((int)movieRating);
@@ -152,5 +152,4 @@ public class MovieActivity extends Activity implements QBCallback {
         }
         progressDialog.hide();
     }
-
 }

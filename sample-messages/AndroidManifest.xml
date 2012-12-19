@@ -61,6 +61,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Read phone state -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />

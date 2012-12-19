@@ -33,12 +33,12 @@ public class SplashActivity extends Activity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
         QBSettings.getInstance().fastConfigInit(String.valueOf(APP_ID), AUTH_KEY, AUTH_SECRET);
         authorizeApp();
-
     }
 
     private void authorizeApp() {
@@ -51,11 +51,12 @@ public class SplashActivity extends Activity {
                     // return result from QBAuth.authorizeApp() query
                     QBSessionResult qbSessionResult = (QBSessionResult) result;
                     DataHolder.getDataHolder().setSignInUserId(qbSessionResult.getSession().getUserId());
+
+                    // retrieve user's files
                     getFileList();
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);
                 }
-
             }
 
             @Override
@@ -66,12 +67,15 @@ public class SplashActivity extends Activity {
 
     private void getFileList() {
 
-        // get all files
+        // ================= QuickBlox ===== Step 2 =================
+        // Gey all user's files
         QBContent.getFiles(new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
                 DataHolder.getDataHolder().setQbFileList(qbFilePagedResult.getFiles());
+
+                // show gallery
                 startGalleryActivity();
             }
 
@@ -81,11 +85,9 @@ public class SplashActivity extends Activity {
         });
     }
 
-
     private void startGalleryActivity() {
         Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
         finish();
     }
-
 }

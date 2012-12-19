@@ -53,7 +53,7 @@ public class SplashActivity extends Activity implements QBCallback {
         // ================= QuickBlox ===== Step 2 =================
         // Authorize application with user.
         // You can create user on admin.quickblox.com, Users module or through QBUsers.signUp method
-        QBAuth.authorizeApp("testUser", "testUser", this);
+        QBAuth.authorizeApp("androiduser", "androiduser", this);
     }
 
     @Override

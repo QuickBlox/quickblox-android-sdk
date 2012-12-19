@@ -64,7 +64,9 @@ public class UpdateUserActivity extends Activity implements QBCallback {
         webSite.setText(DataHolder.getDataHolder().getSignInUserWebSite());
 
         String str = DataHolder.getDataHolder().getSignInUserTags();
-        tags.setText(str.substring(1, str.length() - 1));
+        if(str != null && str.length() > 0){
+            tags.setText(str.substring(1, str.length() - 1));
+        }
     }
 
     public void onClick(View view) {

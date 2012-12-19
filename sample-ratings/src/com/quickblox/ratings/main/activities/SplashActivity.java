@@ -53,7 +53,6 @@ public class SplashActivity extends Activity implements QBCallback {
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
-        //Initialize framework with application credentials
         QBSettings.getInstance().fastConfigInit(String.valueOf(APP_ID), AUTH_KEY, AUTH_SECRET);
 
         // Sign in by default user
@@ -64,6 +63,9 @@ public class SplashActivity extends Activity implements QBCallback {
 
     // Get avarage by all score for game mode
     private void getAvarageRatingForMovie(int index, QBQueries queryName) {
+
+        // ================= QuickBlox ===== Step 2 =================
+        // Get averages
         QBGameMode qbGameMode = new QBGameMode();
         qbGameMode.setAppId(APP_ID);
         qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
