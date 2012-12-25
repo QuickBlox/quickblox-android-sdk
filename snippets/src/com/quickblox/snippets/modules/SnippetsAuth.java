@@ -28,6 +28,7 @@ public class SnippetsAuth extends Snippets {
         snippets.add(createSessionWithUser);
         snippets.add(createSessionWithUserEmail);
         snippets.add(createSessionWithSocialProvider);
+        snippets.add(destroySession);
     }
 
     Snippet createSession = new Snippet("create session") {
@@ -77,6 +78,24 @@ public class SnippetsAuth extends Snippets {
             });
         }
     };
+
+    Snippet destroySession = new Snippet("destroy session") {
+        @Override
+        public void execute() {
+            QBAuth.deleteSession(new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+
+                }
+            });
+        }
+    };
+
 
     QBCallbackImpl authCallback = new QBCallbackImpl() {
         @Override

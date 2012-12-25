@@ -6,9 +6,6 @@ import com.quickblox.snippets.R;
 import com.quickblox.snippets.SnippetsList;
 import com.quickblox.snippets.modules.SnippetsUsers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * User: Oleg Soroka
  * Date: 02.10.12
@@ -20,9 +17,7 @@ public class UsersActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snippets_list);
-        Collection<String> userIds = new ArrayList<String>();
-        userIds.add("123");
-        SnippetsUsers snippets = new SnippetsUsers(this, userIds);
+        SnippetsUsers snippets = new SnippetsUsers(this);
         SnippetsList list = (SnippetsList) findViewById(R.id.list);
 
         list.initialize(snippets);

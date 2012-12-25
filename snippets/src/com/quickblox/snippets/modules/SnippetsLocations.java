@@ -1,15 +1,17 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.locations.QBLocations;
 import com.quickblox.module.locations.model.QBLocation;
 import com.quickblox.module.locations.model.QBPlace;
+import com.quickblox.module.locations.request.QBLocationRequestBuilder;
 import com.quickblox.module.locations.result.QBLocationResult;
 import com.quickblox.module.locations.result.QBPlaceResult;
+import com.quickblox.snippets.Snippet;
+import com.quickblox.snippets.Snippets;
 
 /**
  * User: Oleg Soroka
@@ -21,16 +23,23 @@ public class SnippetsLocations extends Snippets {
     public SnippetsLocations(Context context) {
         super(context);
 
+
         snippets.add(createLocation);
-        snippets.add(getLocation);
-        snippets.add(deleteLocation);
+        snippets.add(getLocationWithId);
+        snippets.add(deleteLocationWithId);
         snippets.add(createPlace);
-        snippets.add(getPlace);
+        snippets.add(getPlaceWithId);
         snippets.add(deletePlace);
+        snippets.add(getPlaces);
+        snippets.add(updatePlace);
+        snippets.add(getLocations);
+        snippets.add(updateLocation);
+        snippets.add(deleteLocations);
     }
 
     int locationId = 0;
     int placeId = 0;
+    int period = 10;
 
     Snippet createLocation = new Snippet("create location") {
         @Override
@@ -58,7 +67,7 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet getLocation = new Snippet("get location") {
+    Snippet getLocationWithId = new Snippet("get location with id") {
         @Override
         public void execute() {
             if (locationId != 0) {
@@ -82,7 +91,7 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet deleteLocation = new Snippet("delete location") {
+    Snippet deleteLocationWithId = new Snippet("delete location with id") {
         @Override
         public void execute() {
             if (locationId != 0) {
@@ -102,6 +111,57 @@ public class SnippetsLocations extends Snippets {
             } else {
                 System.out.println(">>> Create Location before deleting.");
             }
+        }
+    };
+
+    Snippet getLocations = new Snippet("get locations") {
+        @Override
+        public void execute() {
+            QBLocationRequestBuilder qbLocationRequestBuilder = new QBLocationRequestBuilder();
+            QBLocations.getLocations(qbLocationRequestBuilder, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+                }
+            });
+        }
+    };
+
+    Snippet updateLocation = new Snippet("update location") {
+        @Override
+        public void execute() {
+            QBLocation qbLocation = new QBLocation();
+            QBLocations.updateLocation(qbLocation, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+
+                }
+            });
+        }
+    };
+
+    Snippet deleteLocations = new Snippet("delete locations") {
+        @Override
+        public void execute() {
+            QBLocations.deleteObsoleteLocations(period, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+                }
+            });
         }
     };
 
@@ -129,7 +189,7 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet getPlace = new Snippet("get place") {
+    Snippet getPlaceWithId = new Snippet("get place") {
         @Override
         public void execute() {
             if (placeId != 0) {
@@ -164,4 +224,42 @@ public class SnippetsLocations extends Snippets {
             }
         }
     };
+
+    Snippet getPlaces = new Snippet("get places") {
+        @Override
+        public void execute() {
+            QBLocations.getPlaces(new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+
+                }
+            });
+        }
+    };
+
+    Snippet updatePlace = new Snippet("update place") {
+        @Override
+        public void execute() {
+            QBLocation qbLocation = new QBLocation();
+
+            QBLocations.updateLocation(qbLocation, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+
+                }
+            });
+        }
+    };
+
+
 }

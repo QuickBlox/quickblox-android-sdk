@@ -1,6 +1,8 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import com.quickblox.core.QBCallback;
+import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 import com.quickblox.core.QBCallbackImpl;
@@ -8,6 +10,8 @@ import com.quickblox.core.result.Result;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
+
+import java.util.ArrayList;
 
 /**
  * User: Oleg Soroka
@@ -30,18 +34,36 @@ public class SnippetsCustomObjects extends Snippets {
         super(context);
 
         snippets.add(createCustomObject);
-        snippets.add(getCustomObject);
+        snippets.add(getCustomObjectById);
         snippets.add(deleteCustomObject);
+        snippets.add(getCustomObjects);
+        snippets.add(updateCustomObject);
     }
 
-    Snippet createCustomObject = new Snippet("create CO") {
+    Snippet getCustomObjects = new Snippet("get objects") {
+        @Override
+        public void execute() {
+            QBCustomObjects.getObjects(className, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                    ArrayList<QBCustomObject> co = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+
+                }
+            });
+        }
+    };
+
+    Snippet createCustomObject = new Snippet("create object") {
         @Override
         public void execute() {
             QBCustomObject customObject = new QBCustomObject(className);
             customObject.put(fieldHealth, 99);
             customObject.put(fieldPower, 123.45);
-            customObject.put(fieldGodMode, true);
-            customObject.put(fieldName, "Zombie Boy");
 
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -61,7 +83,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCustomObject = new Snippet("get CO") {
+    Snippet getCustomObjectById = new Snippet("get object") {
         @Override
         public void execute() {
             if (customObjectId != null) {
@@ -86,7 +108,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet deleteCustomObject = new Snippet("delete CO") {
+    Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
             if (customObjectId != null) {
@@ -101,6 +123,26 @@ public class SnippetsCustomObjects extends Snippets {
             } else {
                 System.out.println(">>> Create Custom Object before deleting.");
             }
+        }
+    };
+
+    Snippet updateCustomObject = new Snippet("update object") {
+        @Override
+        public void execute() {
+            QBCustomObject co = new QBCustomObject();
+            co.setClassName(className);
+            co.setCustomObjectId(customObjectId);
+
+            QBCustomObjects.updateObject(co, new QBCallback() {
+                @Override
+                public void onComplete(Result result) {
+                    printResultToConsole(result);
+                }
+
+                @Override
+                public void onComplete(Result result, Object context) {
+                }
+            });
         }
     };
 }

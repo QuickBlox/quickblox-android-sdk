@@ -29,6 +29,7 @@ public class Snippets {
         System.out.println(message);
     }
 
+
     public Snippets(Context context) {
         this.context = context;
     }
