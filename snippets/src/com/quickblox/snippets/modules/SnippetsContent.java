@@ -30,7 +30,6 @@ public class SnippetsContent extends Snippets {
 
     public SnippetsContent(Context context) {
         super(context);
-//        - get file download link TASK (??? уточнить со мной о дореализации)
 
         snippets.add(uploadFileTask);
         snippets.add(downloadFileTask);
@@ -38,8 +37,8 @@ public class SnippetsContent extends Snippets {
         snippets.add(getTaggedList);
         snippets.add(getFileWithId);
         snippets.add(createFile);
-        snippets.add(declareFileUpload);
         snippets.add(uploadFile);
+        snippets.add(declareFileUpload);
         snippets.add(updateFile);
         snippets.add(getFileObjectAccess);
         snippets.add(downloadFileWithUID);
@@ -47,10 +46,12 @@ public class SnippetsContent extends Snippets {
         snippets.add(incrementRefCount);
         snippets.add(getFileDownloadLink);
 
+
     }
 
-    String uid = null; // file id
-    int fileID = 709;
+
+    String uid = null;
+    int fileID;
     File file = null;
     String params;
     QBFile qbfile;
@@ -218,7 +219,7 @@ public class SnippetsContent extends Snippets {
                             String downloadUrl = uploadResult.getAmazonPostResponse().getLocation();
                             qbfile.setDownloadUrl(downloadUrl);
 
-                            int fileId = qbfile.getId();
+                            fileID = qbfile.getId();
                             fileSize = (int) file.length();
                         }
                     }

@@ -9,6 +9,7 @@ import com.quickblox.module.ratings.QBRatings;
 import com.quickblox.module.ratings.model.QBGameMode;
 import com.quickblox.module.ratings.model.QBScore;
 import com.quickblox.module.ratings.result.QBGameModeResult;
+import com.quickblox.module.ratings.result.QBScoreResult;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -42,7 +43,8 @@ public class SnippetsRatings extends Snippets {
     int scoreId = 0;
     int appId = 961;
     int scoreCount = 10;
-    int userId;
+    int userId = 53779;
+
 
     Snippet getAverageForApp = new Snippet("get average for application") {
         @Override
@@ -103,6 +105,7 @@ public class SnippetsRatings extends Snippets {
                 QBGameMode qbGameMode = new QBGameMode();
                 qbGameMode.setAppId(appId);
                 qbGameMode.setId(gameModeId);
+                qbGameMode.setTitle("new title for game mode");
                 QBRatings.updateGameMode(qbGameMode, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
@@ -189,6 +192,9 @@ public class SnippetsRatings extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            scoreId = ((QBScoreResult) result).getScore().getId();
+                        }
                     }
                 });
             } else {
@@ -244,7 +250,7 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.updateScore(qbScore, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-
+                        printResultToConsole(result);
                     }
 
                     @Override

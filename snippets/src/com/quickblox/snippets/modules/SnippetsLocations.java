@@ -1,6 +1,7 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -71,6 +72,8 @@ public class SnippetsLocations extends Snippets {
         @Override
         public void execute() {
             if (locationId != 0) {
+                Log.d("locationID", String.valueOf(locationId));
+
                 QBLocation location = new QBLocation(locationId);
 
                 QBLocations.getLocation(location, new QBCallbackImpl() {

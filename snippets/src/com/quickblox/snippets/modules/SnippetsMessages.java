@@ -2,10 +2,10 @@ package com.quickblox.snippets.modules;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.*;
 import com.quickblox.module.messages.result.QBEventResult;
@@ -27,13 +27,13 @@ public class SnippetsMessages extends Snippets {
     int pushTokenId;
     int subscriptionId;
     int eventId;
+    int userId = 53779;
 
     public SnippetsMessages(Context context) {
         super(context);
 
         snippets.add(createSubscription);
         snippets.add(createEvent);
-        snippets.add(comingSoon);
         snippets.add(createPushToken);
         snippets.add(deletePushToken);
         snippets.add(getSubscriptions);
@@ -57,7 +57,9 @@ public class SnippetsMessages extends Snippets {
                 public void onComplete(Result result) {
                     printResultToConsole(result);
                     if (result.isSuccess()) {
-                        subscriptionId = ((QBSubscriptionArrayResult) result).getSubscriptions().get(0).getId();
+                        if (((QBSubscriptionArrayResult) result).getSubscriptions().size() != 0) {
+                            subscriptionId = ((QBSubscriptionArrayResult) result).getSubscriptions().get(0).getId();
+                        }
                     }
                 }
             });
@@ -105,9 +107,13 @@ public class SnippetsMessages extends Snippets {
     Snippet createEvent = new Snippet("create event (send push)") {
         @Override
         public void execute() {
-            QBEvent event = new QBEvent();
-            event.setMessage("my push message");
 
+            QBEvent event = new QBEvent();
+            StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
+            userIds.add(userId);
+
+            event.setUserIds(userIds);
+            event.setMessage("my push message");
             event.setEnvironment(QBEnvironment.DEVELOPMENT);
             event.setPushType(QBPushType.GCM);
             event.setNotificationType(QBNotificationType.PUSH);
@@ -272,13 +278,5 @@ public class SnippetsMessages extends Snippets {
             }
         }
     };
-
-    Snippet comingSoon = new Snippet("coming soon...", "detailed Messages sample coming soon...") {
-        @Override
-        public void execute() {
-            Toast.makeText(context, "detailed Messages sample coming soon...", Toast.LENGTH_SHORT).show();
-        }
-    };
-
 
 }
