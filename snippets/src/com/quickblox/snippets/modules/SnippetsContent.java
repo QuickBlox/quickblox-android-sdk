@@ -8,6 +8,7 @@ import com.quickblox.core.result.QBStringResult;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.ContentType;
 import com.quickblox.internal.core.helper.FileHelper;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.model.QBFile;
 import com.quickblox.module.content.result.QBFileDownloadResult;
@@ -45,6 +46,7 @@ public class SnippetsContent extends Snippets {
         snippets.add(deleteFile);
         snippets.add(incrementRefCount);
         snippets.add(getFileDownloadLink);
+        snippets.add(downloadFile);
 
 
     }
@@ -303,7 +305,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet downloadFileTask = new Snippet("download file") {
+    Snippet downloadFile = new Snippet("download file") {
         @Override
         public void execute() {
             if (uid == null) {
@@ -327,7 +329,8 @@ public class SnippetsContent extends Snippets {
     Snippet getFiles = new Snippet("get files with pagination") {
         @Override
         public void execute() {
-            QBContent.getFiles(1, 20, new QBCallback() {
+            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
+            QBContent.getFiles(requestBuilder, new QBCallback() {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
@@ -343,7 +346,8 @@ public class SnippetsContent extends Snippets {
     Snippet getTaggedList = new Snippet("get tagged list") {
         @Override
         public void execute() {
-            QBContent.getTaggedList(1, 20, new QBCallback() {
+            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
+            QBContent.getTaggedList(requestBuilder, new QBCallback() {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
@@ -353,6 +357,26 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result, Object context) {
                 }
             });
+        }
+    };
+
+
+    Snippet downloadFileTask = new Snippet("download file Task") {
+        @Override
+        public void execute() {
+            if (fileID != 0) {
+                QBContent.downloadFileTask(fileID, new QBCallback() {
+                    @Override
+                    public void onComplete(Result result) {
+                        printResultToConsole(result);
+                        // result QBFileDownloadResult
+                    }
+
+                    @Override
+                    public void onComplete(Result result, Object context) {
+                    }
+                });
+            }
         }
     };
 }
