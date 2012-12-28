@@ -35,6 +35,9 @@ public class SnippetsMessages extends Snippets {
         snippets.add(deleteEvent);
     }
 
+    //
+    ///////////////////////////////////////////// Push token /////////////////////////////////////////////
+    //
     Snippet createPushToken = new Snippet("create push token") {
         @Override
         public void execute() {
@@ -76,6 +79,10 @@ public class SnippetsMessages extends Snippets {
         }
     };
 
+
+    //
+    ///////////////////////////////////////////// Subscription /////////////////////////////////////////////
+    //
     Snippet createSubscription = new Snippet("subscription fot events", "(push listener)") {
         @Override
         public void execute() {
@@ -128,6 +135,10 @@ public class SnippetsMessages extends Snippets {
         }
     };
 
+
+    //
+    ///////////////////////////////////////////// Event /////////////////////////////////////////////
+    //
     Snippet createEvent = new Snippet("create event (send push)") {
         @Override
         public void execute() {

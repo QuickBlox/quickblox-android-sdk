@@ -37,6 +37,10 @@ public class SnippetsLocations extends Snippets {
         snippets.add(deleteLocations);
     }
 
+
+    //
+    ///////////////////////////////////////////// Location /////////////////////////////////////////////
+    //
     Snippet createLocation = new Snippet("create location") {
         @Override
         public void execute() {
@@ -153,8 +157,10 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    /* Places */
 
+    //
+    ///////////////////////////////////////////// Places /////////////////////////////////////////////
+    //
     Snippet createPlace = new Snippet("create place") {
         @Override
         public void execute() {
