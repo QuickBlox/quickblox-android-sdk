@@ -253,7 +253,6 @@ public class SnippetsLocations extends Snippets {
                         handleErrors(result);
                     }
                 }
-
             });
         }
     };
