@@ -1,12 +1,10 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
-import com.quickblox.module.auth.model.QBSession;
 import com.quickblox.module.auth.result.QBSessionResult;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -34,7 +32,17 @@ public class SnippetsAuth extends Snippets {
     Snippet createSession = new Snippet("create session") {
         @Override
         public void execute() {
-            QBAuth.createSession(authCallback);
+            QBAuth.createSession(new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if(result.isSuccess()){
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+                    }else{
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
@@ -44,7 +52,20 @@ public class SnippetsAuth extends Snippets {
             String login = SnippetsUsers.LOGIN;
             String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.createSession(login, password, authCallback);
+            QBAuth.createSession(login, password, new QBCallbackImpl(){
+                @Override
+                public void onComplete(Result result) {
+                    if(result.isSuccess()){
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+
+                        // save current user ID
+                        currentUserId = sessionResult.getSession().getUserId();
+                    }else{
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
@@ -54,26 +75,38 @@ public class SnippetsAuth extends Snippets {
             String email = SnippetsUsers.EMAIL;
             String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.createSessionByEmail(email, password, authCallback);
+            QBAuth.createSessionByEmail(email, password, new QBCallbackImpl(){
+                @Override
+                public void onComplete(Result result) {
+                    if(result.isSuccess()){
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+
+                        // save current user ID
+                        currentUserId = sessionResult.getSession().getUserId();
+                    }else{
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
     Snippet createSessionWithSocialProvider = new Snippet("create session with social provider") {
         @Override
         public void execute() {
-            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallback() {
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl(){
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
-                    QBSessionResult sessionResult = (QBSessionResult) result;
-                    QBSession session = sessionResult.getSession();
-                    if (session.getUserId() != null) {
-                        currentUserId = session.getUserId();
-                    }
-                }
+                    if(result.isSuccess()){
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
 
-                @Override
-                public void onComplete(Result result, Object context) {
+                        // save current user ID
+                        currentUserId = sessionResult.getSession().getUserId();
+                    }else{
+                        handleErrors(result);
+                    }
                 }
             });
         }
@@ -82,38 +115,16 @@ public class SnippetsAuth extends Snippets {
     Snippet destroySession = new Snippet("destroy session") {
         @Override
         public void execute() {
-            QBAuth.deleteSession(new QBCallback() {
+            QBAuth.deleteSession(new QBCallbackImpl(){
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
-                }
-
-                @Override
-                public void onComplete(Result result, Object context) {
-
+                    if(result.isSuccess()){
+                        System.out.println(">>> Session Destroy OK");
+                    }else{
+                        handleErrors(result);
+                    }
                 }
             });
         }
     };
-
-
-    QBCallbackImpl authCallback = new QBCallbackImpl() {
-        @Override
-        public void onComplete(Result result) {
-            printResultToConsole(result);
-
-            if (result.isSuccess()) {
-                QBSessionResult sessionResult = (QBSessionResult) result;
-                QBSession session = sessionResult.getSession();
-
-                System.out.println(">>> session token = " + session.getToken());
-
-                if (session.getUserId() != null) {
-                    currentUserId = session.getUserId();
-                }
-            }
-        }
-    };
-
-
 }
