@@ -42,8 +42,6 @@ public class SnippetsContent extends Snippets {
         snippets.add(incrementRefCount);
         snippets.add(getFileDownloadLink);
         snippets.add(downloadFile);
-
-
     }
 
 
