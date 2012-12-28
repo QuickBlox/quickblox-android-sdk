@@ -25,8 +25,6 @@ public class SnippetsCustomObjects extends Snippets {
     String fieldHealth = "health";
     String fieldPower = "power";
 
-    String customObjectId = null;
-
     public SnippetsCustomObjects(Context context) {
         super(context);
 
@@ -44,13 +42,14 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        ArrayList<QBCustomObject> co = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+                        QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult)result;
+
+                        ArrayList<QBCustomObject> co = coresult.getCustomObjects();
                         System.out.println(">>> custom object list: " + co.toString());
                     } else {
                         handleErrors(result);
                     }
                 }
-
             });
         }
     };
@@ -66,14 +65,11 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
 
-
                     if (result.isSuccess()) {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
 
                         System.out.println(">>> custom object: " + newCustomObject);
-
-                        customObjectId = newCustomObject.getCustomObjectId();
                     } else {
                         handleErrors(result);
                     }
@@ -85,78 +81,60 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjectById = new Snippet("get object") {
         @Override
         public void execute() {
-            if (customObjectId != null) {
-                QBCustomObject customObject = new QBCustomObject(className, customObjectId);
+            QBCustomObject customObject = new QBCustomObject(className, "af3514342afbbb3555");
 
-                QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
-                    @Override
-                    public void onComplete(Result result) {
+            QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
+                        QBCustomObject newCustomObject = customObjectResult.getCustomObject();
 
-
-                        if (result.isSuccess()) {
-                            QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
-                            QBCustomObject newCustomObject = customObjectResult.getCustomObject();
-
-                            System.out.println(">>> custom object: " + newCustomObject);
-                        } else {
-                            handleErrors(result);
-                        }
+                        System.out.println(">>> custom object: " + newCustomObject);
+                    } else {
+                        handleErrors(result);
                     }
-                });
-            } else {
-                System.out.println(">>> Create Custom Object before retrieving.");
-            }
+                }
+            });
         }
     };
 
     Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
-            if (customObjectId != null) {
-                QBCustomObject customObject = new QBCustomObject(className, customObjectId);
+            QBCustomObject customObject = new QBCustomObject(className, "af3514342afbbb3555");
 
-                QBCustomObjects.deleteObject(customObject, new QBCallbackImpl() {
-                    @Override
-                    public void onComplete(Result result) {
-                        if (result.isSuccess()) {
-
-                            System.out.println(">>> custom object deleted: ");
-                        } else {
-                            handleErrors(result);
-                        }
+            QBCustomObjects.deleteObject(customObject, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        System.out.println(">>> custom object deleted OK");
+                    } else {
+                        handleErrors(result);
                     }
-
-                });
-            } else {
-                System.out.println(">>> Create Custom Object before deleting.");
-            }
+                }
+            });
         }
     };
 
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            if (customObjectId != null) {
-                QBCustomObject co = new QBCustomObject();
-                co.setClassName(className);
-                co.setCustomObjectId(customObjectId);
+            QBCustomObject co = new QBCustomObject();
+            co.setClassName(className);
+            co.setCustomObjectId("af3514342afbbb3555");
 
-                QBCustomObjects.updateObject(co, new QBCallbackImpl() {
-                    @Override
-                    public void onComplete(Result result) {
-
+            QBCustomObjects.updateObject(co, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
-                        if (result.isSuccess()) {
-                            System.out.println(">>> co : " + updateResult.getCustomObject().toString());
-                        } else {
-                            handleErrors(result);
-                        }
+                        System.out.println(">>> co : " + updateResult.getCustomObject().toString());
+                    } else {
+                        handleErrors(result);
                     }
-
-                });
-            } else {
-                System.out.println(">>> Create Custom Object before updating.");
-            }
+                }
+            });
         }
     };
 }
