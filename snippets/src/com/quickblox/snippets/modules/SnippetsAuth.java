@@ -16,9 +16,6 @@ import com.quickblox.snippets.Snippets;
  */
 public class SnippetsAuth extends Snippets {
 
-    public static int currentUserId = 0;
-    public static String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
-
     public SnippetsAuth(Context context) {
         super(context);
 
@@ -49,18 +46,14 @@ public class SnippetsAuth extends Snippets {
     Snippet createSessionWithUser = new Snippet("create session", "with user login") {
         @Override
         public void execute() {
-            String login = SnippetsUsers.LOGIN;
-            String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.createSession(login, password, new QBCallbackImpl(){
+            QBAuth.createSession("testuser", "testpassword", new QBCallbackImpl(){
                 @Override
                 public void onComplete(Result result) {
                     if(result.isSuccess()){
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                        // save current user ID
-                        currentUserId = sessionResult.getSession().getUserId();
                     }else{
                         handleErrors(result);
                     }
@@ -72,18 +65,14 @@ public class SnippetsAuth extends Snippets {
     Snippet createSessionWithUserEmail = new Snippet("create session", "with user email") {
         @Override
         public void execute() {
-            String email = SnippetsUsers.EMAIL;
-            String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.createSessionByEmail(email, password, new QBCallbackImpl(){
+            QBAuth.createSessionByEmail("test123@test.com", "testpassword", new QBCallbackImpl(){
                 @Override
                 public void onComplete(Result result) {
                     if(result.isSuccess()){
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                        // save current user ID
-                        currentUserId = sessionResult.getSession().getUserId();
                     }else{
                         handleErrors(result);
                     }
@@ -95,6 +84,9 @@ public class SnippetsAuth extends Snippets {
     Snippet createSessionWithSocialProvider = new Snippet("create session with social provider") {
         @Override
         public void execute() {
+
+            String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
+
             QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl(){
                 @Override
                 public void onComplete(Result result) {
@@ -102,8 +94,6 @@ public class SnippetsAuth extends Snippets {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                        // save current user ID
-                        currentUserId = sessionResult.getSession().getUserId();
                     }else{
                         handleErrors(result);
                     }

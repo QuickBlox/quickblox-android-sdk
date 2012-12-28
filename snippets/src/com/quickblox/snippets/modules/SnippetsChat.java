@@ -23,7 +23,7 @@ public class SnippetsChat extends Snippets {
     Snippet getChatLogin = new Snippet("get chat login") {
         @Override
         public void execute() {
-            int userId = SnippetsAuth.currentUserId;
+            int userId = 567;
             String userChatLogin = QBChat.getChatLoginFull(userId);
             String message = String.format("Login for QuickBlox chat for user %s is '%s'",
                     userId, userChatLogin);
