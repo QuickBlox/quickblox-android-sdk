@@ -9,7 +9,9 @@ import com.quickblox.module.locations.QBLocations;
 import com.quickblox.module.locations.model.QBLocation;
 import com.quickblox.module.locations.model.QBPlace;
 import com.quickblox.module.locations.request.QBLocationRequestBuilder;
+import com.quickblox.module.locations.result.QBLocationPagedResult;
 import com.quickblox.module.locations.result.QBLocationResult;
+import com.quickblox.module.locations.result.QBPlacePagedResult;
 import com.quickblox.module.locations.result.QBPlaceResult;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -124,7 +126,14 @@ public class SnippetsLocations extends Snippets {
             QBLocations.getLocations(qbLocationRequestBuilder, new QBCallback() {
                 @Override
                 public void onComplete(Result result) {
+                    printResultToConsole(result);
 
+                    if (result.isSuccess()) {
+                        QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
+                        System.out.println(">>> locations count =" + qbLocationPagedResult.getLocations().size());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -235,6 +244,13 @@ public class SnippetsLocations extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+
+                    if (result.isSuccess()) {
+                        QBPlacePagedResult qbPlacePagedResult = (QBPlacePagedResult) result;
+                        System.out.println(">>> Places count:" + qbPlacePagedResult.getLocations().size());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -248,19 +264,32 @@ public class SnippetsLocations extends Snippets {
     Snippet updatePlace = new Snippet("update place") {
         @Override
         public void execute() {
-            QBLocation qbLocation = new QBLocation();
 
-            QBLocations.updateLocation(qbLocation, new QBCallback() {
-                @Override
-                public void onComplete(Result result) {
-                    printResultToConsole(result);
-                }
+            if (locationId != 0) {
+                QBLocation qbLocation = new QBLocation();
+                qbLocation.setId(locationId);
+                qbLocation.setLongitude(0.23);
 
-                @Override
-                public void onComplete(Result result, Object context) {
+                QBLocations.updateLocation(qbLocation, new QBCallback() {
+                    @Override
+                    public void onComplete(Result result) {
+                        printResultToConsole(result);
+                        QBLocationResult locationResult = (QBLocationResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> updated longitude:" + locationResult.getLocation().getLongitude());
+                        } else {
+                            handleErrors(result);
+                        }
+                    }
 
-                }
-            });
+                    @Override
+                    public void onComplete(Result result, Object context) {
+
+                    }
+                });
+            } else {
+                System.out.println(">>> Create Location before deleting.");
+            }
         }
     };
 

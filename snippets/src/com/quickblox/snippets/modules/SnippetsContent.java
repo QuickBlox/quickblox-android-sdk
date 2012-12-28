@@ -1,7 +1,6 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import android.util.Log;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.QBStringResult;
@@ -11,10 +10,7 @@ import com.quickblox.internal.core.helper.FileHelper;
 import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.model.QBFile;
-import com.quickblox.module.content.result.QBFileDownloadResult;
-import com.quickblox.module.content.result.QBFileResult;
-import com.quickblox.module.content.result.QBFileUploadResult;
-import com.quickblox.module.content.result.QBFileUploadTaskResult;
+import com.quickblox.module.content.result.*;
 import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -67,8 +63,11 @@ public class SnippetsContent extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        String downloadLink = ((QBStringResult) result).getString();
                         if (result.isSuccess()) {
-                            Log.d("QBStringResult", ((QBStringResult) result).getString());
+                            System.out.println(">>> download link" + downloadLink);
+                        } else {
+                            handleErrors(result);
                         }
                     }
 
@@ -88,7 +87,11 @@ public class SnippetsContent extends Snippets {
                 QBContent.incrementRefCount(fileID, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            System.out.println(">>> count of ref increment successfully");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -109,6 +112,9 @@ public class SnippetsContent extends Snippets {
                         printResultToConsole(result);
                         if (result.isSuccess()) {
                             fileID = 0;
+                            System.out.println(">>> file deleted successfully");
+                        } else {
+                            handleErrors(result);
                         }
                     }
 
@@ -127,7 +133,12 @@ public class SnippetsContent extends Snippets {
                 QBContent.downloadFile(uid, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        QBFileDownloadResult downloadResult = (QBFileDownloadResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> file downloaded successfully");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -146,6 +157,12 @@ public class SnippetsContent extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        QBFileObjectAccessResult objectAccessResult = (QBFileObjectAccessResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> file id" + objectAccessResult.getFileObjectAccess().getId().toString());
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -166,7 +183,12 @@ public class SnippetsContent extends Snippets {
                 QBContent.updateFile(qbfile, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        QBFileResult fileResult = (QBFileResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> file download url" + fileResult.getFile().getDownloadUrl());
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -193,10 +215,13 @@ public class SnippetsContent extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+                    QBFileResult fileResult = (QBFileResult) result;
                     if (result.isSuccess()) {
+                        System.out.println(">>> file created successfully");
                         params = ((QBFileResult) result).getFile().getFileObjectAccess().getParams();
                     } else {
                         file = null;
+                        handleErrors(result);
                     }
                 }
 
@@ -220,7 +245,6 @@ public class SnippetsContent extends Snippets {
                             QBFileUploadResult uploadResult = (QBFileUploadResult) result;
                             String downloadUrl = uploadResult.getAmazonPostResponse().getLocation();
                             qbfile.setDownloadUrl(downloadUrl);
-
                             fileID = qbfile.getId();
                             fileSize = (int) file.length();
                         }
@@ -243,6 +267,12 @@ public class SnippetsContent extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        Result declareFileUploadedResult = result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> declare file uploaded was successful");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -261,6 +291,12 @@ public class SnippetsContent extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        QBFileResult fileResult = (QBFileResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> file size -" + fileResult.getFile().getSize());
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
@@ -334,6 +370,12 @@ public class SnippetsContent extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+                    QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
+                    if (result.isSuccess()) {
+                        System.out.println(">>> download url for first file -" + qbFilePagedResult.getFiles().get(0).getDownloadUrl());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -351,6 +393,12 @@ public class SnippetsContent extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+                    QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
+                    if (result.isSuccess()) {
+                        System.out.println(">>> download url for first file -" + qbFilePagedResult.getFiles().get(0).getDownloadUrl());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -369,7 +417,12 @@ public class SnippetsContent extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
-                        // result QBFileDownloadResult
+                        QBFileDownloadResult qbFileDownloadResult = (QBFileDownloadResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> file downloaded successful");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override

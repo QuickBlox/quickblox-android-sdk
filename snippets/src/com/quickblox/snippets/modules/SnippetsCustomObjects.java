@@ -25,8 +25,6 @@ public class SnippetsCustomObjects extends Snippets {
     String className = "hero";
     String fieldHealth = "health";
     String fieldPower = "power";
-    String fieldGodMode = "god_mode";
-    String fieldName = "name";
 
     String customObjectId = null;
 
@@ -129,20 +127,30 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            QBCustomObject co = new QBCustomObject();
-            co.setClassName(className);
-            co.setCustomObjectId(customObjectId);
+            if (customObjectId != null) {
+                QBCustomObject co = new QBCustomObject();
+                co.setClassName(className);
+                co.setCustomObjectId(customObjectId);
 
-            QBCustomObjects.updateObject(co, new QBCallback() {
-                @Override
-                public void onComplete(Result result) {
-                    printResultToConsole(result);
-                }
+                QBCustomObjects.updateObject(co, new QBCallback() {
+                    @Override
+                    public void onComplete(Result result) {
+                        printResultToConsole(result);
+                        QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
+                        if (result.isSuccess()) {
+                            System.out.println(">>> co with id " + updateResult.getCustomObject().getCustomObjectId() + "successfully updated");
+                        } else {
+                            handleErrors(result);
+                        }
+                    }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-                }
-            });
+                    @Override
+                    public void onComplete(Result result, Object context) {
+                    }
+                });
+            } else {
+                System.out.println(">>> Create Custom Object before updating.");
+            }
         }
     };
 }

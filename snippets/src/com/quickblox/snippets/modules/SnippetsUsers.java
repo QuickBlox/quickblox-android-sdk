@@ -179,7 +179,7 @@ public class SnippetsUsers extends Snippets {
             userIds.add("123");
             userIds.add("8819");
 
-            QBUsers.getUserByIDs(userIds, new QBCallbackImpl() {
+            QBUsers.getUsersByIDs(userIds, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {

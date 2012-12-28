@@ -6,11 +6,10 @@ import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.*;
-import com.quickblox.module.messages.result.QBEventResult;
-import com.quickblox.module.messages.result.QBPushTokenResult;
-import com.quickblox.module.messages.result.QBSubscriptionArrayResult;
+import com.quickblox.module.messages.result.*;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
@@ -44,14 +43,13 @@ public class SnippetsMessages extends Snippets {
         snippets.add(updateEvent);
         snippets.add(deleteEvent);
         deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-        registrationId = "12345678"; // you must put your registration id
+        registrationId = "12345678";
     }
 
     Snippet createSubscription = new Snippet("subscription fot events", "(push listener)") {
         @Override
         public void execute() {
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
-
             QBMessages.createSubscription(subscription, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -60,6 +58,9 @@ public class SnippetsMessages extends Snippets {
                         if (((QBSubscriptionArrayResult) result).getSubscriptions().size() != 0) {
                             subscriptionId = ((QBSubscriptionArrayResult) result).getSubscriptions().get(0).getId();
                         }
+                        System.out.println(">>> subscription created");
+                    } else {
+                        handleErrors(result);
                     }
                 }
             });
@@ -73,6 +74,12 @@ public class SnippetsMessages extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+                    if (result.isSuccess()) {
+                        QBSubscriptionArrayResult subscriptionArrayResult = (QBSubscriptionArrayResult) result;
+                        System.out.println(">>> subscriptions count - " + subscriptionArrayResult.getSubscriptions().size());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -92,14 +99,18 @@ public class SnippetsMessages extends Snippets {
                         printResultToConsole(result);
                         if (result.isSuccess()) {
                             subscriptionId = 0;
+                            System.out.println(">>> subscription deleted - ");
+                        } else {
+                            handleErrors(result);
                         }
-
                     }
 
                     @Override
                     public void onComplete(Result result, Object context) {
                     }
                 });
+            } else {
+                System.out.println(">>> Create subscription before deleting.");
             }
         }
     };
@@ -144,7 +155,8 @@ public class SnippetsMessages extends Snippets {
                     public void onComplete(Result result) {
                         printResultToConsole(result);
                         if (result.isSuccess()) {
-                            eventId = 0;
+                            QBEventResult eventResult = (QBEventResult) result;
+                            System.out.println(">>> Message: " + eventResult.getEvent().getMessage());
                         }
                     }
 
@@ -153,6 +165,8 @@ public class SnippetsMessages extends Snippets {
 
                     }
                 });
+            } else {
+                System.out.println(">>> Create event");
             }
         }
     };
@@ -172,6 +186,9 @@ public class SnippetsMessages extends Snippets {
                     printResultToConsole(result);
                     if (result.isSuccess()) {
                         pushTokenId = ((QBPushTokenResult) result).getPushToken().getId();
+                        System.out.println(">>> PushTokeId: " + pushTokenId);
+                    } else {
+                        handleErrors(result);
                     }
                 }
 
@@ -185,10 +202,18 @@ public class SnippetsMessages extends Snippets {
     Snippet getEvents = new Snippet("get Events") {
         @Override
         public void execute() {
-            QBMessages.getEvents(new QBCallback() {
+            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
+            QBMessages.getEvents(requestBuilder, new QBCallback() {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+
+                    if (result.isSuccess()) {
+                        QBEventPagedResult eventPagedResult = (QBEventPagedResult) result;
+                        System.out.println(">>> Events count: " + eventPagedResult.getEvents().size());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -198,13 +223,20 @@ public class SnippetsMessages extends Snippets {
         }
     };
 
-    Snippet getPullEvent = new Snippet("get pull event") {
+    Snippet getPullEvent = new Snippet("get pull events") {
         @Override
         public void execute() {
+
             QBMessages.getPullEvents(new QBCallback() {
                 @Override
                 public void onComplete(Result result) {
                     printResultToConsole(result);
+                    if (result.isSuccess()) {
+                        QBEventArrayResult eventArrayResult = (QBEventArrayResult) result;
+                        System.out.println(">>> Pull events count: " + eventArrayResult.getEvents().size());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
                 @Override
@@ -229,12 +261,20 @@ public class SnippetsMessages extends Snippets {
                     @Override
                     public void onComplete(Result result) {
                         printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            QBEventResult eventResult = (QBEventResult) result;
+                            System.out.println(">>> New event message: " + eventResult.getEvent().getMessage());
+                        } else {
+                            handleErrors(result);
+                        }
                     }
 
                     @Override
                     public void onComplete(Result result, Object context) {
                     }
                 });
+            } else {
+                System.out.println(">>> create new event before update");
             }
         }
     };
@@ -242,21 +282,29 @@ public class SnippetsMessages extends Snippets {
     Snippet deleteEvent = new Snippet("delete event") {
         @Override
         public void execute() {
-            QBMessages.deleteEvent(eventId, new QBCallback() {
-                @Override
-                public void onComplete(Result result) {
-                    printResultToConsole(result);
-                    if (result.isSuccess()) {
-                        eventId = 0;
+            if (eventId != 0) {
+                QBMessages.deleteEvent(eventId, new QBCallback() {
+                    @Override
+                    public void onComplete(Result result) {
+                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            eventId = 0;
+                            System.out.println(">>> event successfully deleted");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
-                }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-                }
-            });
+                    @Override
+                    public void onComplete(Result result, Object context) {
+                    }
+                });
+            } else {
+                System.out.println(">>> create new event before deleting");
+            }
         }
     };
+
 
     Snippet deletePushToken = new Snippet("delete push token") {
         @Override
@@ -268,6 +316,9 @@ public class SnippetsMessages extends Snippets {
                         printResultToConsole(result);
                         if (result.isSuccess()) {
                             pushTokenId = 0;
+                            System.out.println(">>> push token successfully deleted");
+                        } else {
+                            handleErrors(result);
                         }
                     }
 
@@ -275,6 +326,8 @@ public class SnippetsMessages extends Snippets {
                     public void onComplete(Result result, Object context) {
                     }
                 });
+            } else {
+                System.out.println(">>> create push token before deleting");
             }
         }
     };
