@@ -1,7 +1,6 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.QBStringResult;
 import com.quickblox.core.result.Result;
@@ -59,21 +58,18 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.getFileDownloadLink(fileID, new QBCallback() {
+                QBContent.getFileDownloadLink(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
-                        String downloadLink = ((QBStringResult) result).getString();
+
+                        QBStringResult qbStringResult = ((QBStringResult) result);
                         if (result.isSuccess()) {
-                            System.out.println(">>> download link" + downloadLink);
+                            System.out.println(">>> download link" + qbStringResult.toString());
                         } else {
                             handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             }
         }
@@ -84,18 +80,14 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.incrementRefCount(fileID, new QBCallback() {
+                QBContent.incrementRefCount(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
                         if (result.isSuccess()) {
-                            System.out.println(">>> count of ref increment successfully");
+                            System.out.println(">>> count of ref increment successfully" + result.toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             }
@@ -106,10 +98,10 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.deleteFile(fileID, new QBCallback() {
+                QBContent.deleteFile(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             fileID = 0;
                             System.out.println(">>> file deleted successfully");
@@ -118,9 +110,6 @@ public class SnippetsContent extends Snippets {
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             }
         }
@@ -130,20 +119,17 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (uid != null) {
-                QBContent.downloadFile(uid, new QBCallback() {
+                QBContent.downloadFile(uid, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
                         QBFileDownloadResult downloadResult = (QBFileDownloadResult) result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> file downloaded successfully");
+                            System.out.println(">>> file downloaded successfully" + downloadResult.getContent().toString());
                         } else {
                             handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             }
         }
@@ -153,20 +139,16 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.getFileObjectAccess(fileID, new QBCallback() {
+                QBContent.getFileObjectAccess(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         QBFileObjectAccessResult objectAccessResult = (QBFileObjectAccessResult) result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> file id" + objectAccessResult.getFileObjectAccess().getId().toString());
+                            System.out.println(">>> FileObjectAccess" + objectAccessResult.getFileObjectAccess().toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             }
@@ -180,19 +162,15 @@ public class SnippetsContent extends Snippets {
                 QBFile qbfile = new QBFile();
                 qbfile.setId(fileID);
                 qbfile.setName("newName");
-                QBContent.updateFile(qbfile, new QBCallback() {
+                QBContent.updateFile(qbfile, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
                         QBFileResult fileResult = (QBFileResult) result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> file download url" + fileResult.getFile().getDownloadUrl());
+                            System.out.println(">>> File:" + fileResult.getFile().toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             }
@@ -211,22 +189,19 @@ public class SnippetsContent extends Snippets {
             qbfile.setName(file.getName());
             qbfile.setPublic(publicAccess);
             qbfile.setContentType(contentType);
-            QBContent.createFile(qbfile, new QBCallback() {
+            QBContent.createFile(qbfile, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     QBFileResult fileResult = (QBFileResult) result;
                     if (result.isSuccess()) {
                         System.out.println(">>> file created successfully");
                         params = ((QBFileResult) result).getFile().getFileObjectAccess().getParams();
+                        System.out.println(">>> File" + fileResult.getFile().toString());
                     } else {
                         file = null;
                         handleErrors(result);
                     }
-                }
-
-                @Override
-                public void onComplete(Result result, Object context) {
                 }
             });
 
@@ -237,23 +212,22 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (file != null) {
-                QBContent.uploadFile(file, params, new QBCallback() {
+                QBContent.uploadFile(file, params, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBFileUploadResult uploadResult = (QBFileUploadResult) result;
                             String downloadUrl = uploadResult.getAmazonPostResponse().getLocation();
                             qbfile.setDownloadUrl(downloadUrl);
                             fileID = qbfile.getId();
                             fileSize = (int) file.length();
+                            System.out.println(">>> AmazonPostResponse" + uploadResult.getAmazonPostResponse());
+                        } else {
+                            handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-
-                    }
                 });
             }
         }
@@ -263,20 +237,16 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.declareFileUploaded(fileID, fileSize, new QBCallback() {
+                QBContent.declareFileUploaded(fileID, fileSize, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         Result declareFileUploadedResult = result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> declare file uploaded was successful");
+                            System.out.println(">>> declare file uploaded was successful" + result.toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             }
@@ -287,10 +257,10 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.getFile(fileID, new QBCallback() {
+                QBContent.getFile(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         QBFileResult fileResult = (QBFileResult) result;
                         if (result.isSuccess()) {
                             System.out.println(">>> file size -" + fileResult.getFile().getSize());
@@ -299,9 +269,6 @@ public class SnippetsContent extends Snippets {
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             }
         }
@@ -324,7 +291,7 @@ public class SnippetsContent extends Snippets {
             QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     if (result.isSuccess()) {
                         QBFileUploadTaskResult fileUploadTaskResultResult = (QBFileUploadTaskResult) result;
                         QBFile qbFile = fileUploadTaskResultResult.getFile();
@@ -335,6 +302,9 @@ public class SnippetsContent extends Snippets {
                         System.out.println(">>> " + downloadUrl);
                         fileID = qbFile.getId();
                         uid = qbFile.getUid();
+                        System.out.println(">>> QBFile:" + fileUploadTaskResultResult.getFile().toString());
+                    } else {
+                        handleErrors(result);
                     }
                 }
             });
@@ -350,13 +320,17 @@ public class SnippetsContent extends Snippets {
                 QBContent.downloadFile(uid, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBFileDownloadResult fileDownloadResult = (QBFileDownloadResult) result;
                             byte[] content = fileDownloadResult.getContent();       // that's downloaded file content
                             InputStream is = fileDownloadResult.getContentStream(); // that's downloaded file content
+                            System.out.println(">>> File content:" + fileDownloadResult.getContent().toString());
+                        } else {
+                            handleErrors(result);
                         }
                     }
+
                 });
             }
         }
@@ -366,21 +340,18 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
-            QBContent.getFiles(requestBuilder, new QBCallback() {
+            QBContent.getFiles(requestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> download url for first file -" + qbFilePagedResult.getFiles().get(0).getDownloadUrl());
+                        System.out.println(">>> File list:" + qbFilePagedResult.getFiles().toString());
                     } else {
                         handleErrors(result);
                     }
                 }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-                }
             });
         }
     };
@@ -389,21 +360,18 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
-            QBContent.getTaggedList(requestBuilder, new QBCallback() {
+            QBContent.getTaggedList(requestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> download url for first file -" + qbFilePagedResult.getFiles().get(0).getDownloadUrl());
+                        System.out.println(">>> File list:" + qbFilePagedResult.getFiles().toString());
                     } else {
                         handleErrors(result);
                     }
                 }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-                }
             });
         }
     };
@@ -413,21 +381,18 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             if (fileID != 0) {
-                QBContent.downloadFileTask(fileID, new QBCallback() {
+                QBContent.downloadFileTask(fileID, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         QBFileDownloadResult qbFileDownloadResult = (QBFileDownloadResult) result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> file downloaded successful");
+                            System.out.println(">>> file downloaded successful" + qbFileDownloadResult.getContent().toString());
                         } else {
                             handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             }
         }

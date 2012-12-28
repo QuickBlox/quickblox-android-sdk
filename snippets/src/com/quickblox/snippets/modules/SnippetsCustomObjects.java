@@ -1,15 +1,14 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.core.QBCallback;
-import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
+import com.quickblox.snippets.Snippet;
+import com.quickblox.snippets.Snippets;
 
 import java.util.ArrayList;
 
@@ -41,17 +40,17 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjects = new Snippet("get objects") {
         @Override
         public void execute() {
-            QBCustomObjects.getObjects(className, new QBCallback() {
+            QBCustomObjects.getObjects(className, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
-                    ArrayList<QBCustomObject> co = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+                    if (result.isSuccess()) {
+                        ArrayList<QBCustomObject> co = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+                        System.out.println(">>> custom object list: " + co.toString());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-
-                }
             });
         }
     };
@@ -66,7 +65,7 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
 
                     if (result.isSuccess()) {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
@@ -75,6 +74,8 @@ public class SnippetsCustomObjects extends Snippets {
                         System.out.println(">>> custom object: " + newCustomObject);
 
                         customObjectId = newCustomObject.getCustomObjectId();
+                    } else {
+                        handleErrors(result);
                     }
                 }
             });
@@ -90,13 +91,15 @@ public class SnippetsCustomObjects extends Snippets {
                 QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
 
                         if (result.isSuccess()) {
                             QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                             QBCustomObject newCustomObject = customObjectResult.getCustomObject();
 
                             System.out.println(">>> custom object: " + newCustomObject);
+                        } else {
+                            handleErrors(result);
                         }
                     }
                 });
@@ -115,8 +118,14 @@ public class SnippetsCustomObjects extends Snippets {
                 QBCustomObjects.deleteObject(customObject, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+
+                            System.out.println(">>> custom object deleted: ");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
+
                 });
             } else {
                 System.out.println(">>> Create Custom Object before deleting.");
@@ -132,21 +141,18 @@ public class SnippetsCustomObjects extends Snippets {
                 co.setClassName(className);
                 co.setCustomObjectId(customObjectId);
 
-                QBCustomObjects.updateObject(co, new QBCallback() {
+                QBCustomObjects.updateObject(co, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
                         if (result.isSuccess()) {
-                            System.out.println(">>> co with id " + updateResult.getCustomObject().getCustomObjectId() + "successfully updated");
+                            System.out.println(">>> co : " + updateResult.getCustomObject().toString());
                         } else {
                             handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             } else {
                 System.out.println(">>> Create Custom Object before updating.");

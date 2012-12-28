@@ -1,17 +1,19 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
-import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.ratings.QBRatings;
+import com.quickblox.module.ratings.model.QBAverage;
 import com.quickblox.module.ratings.model.QBGameMode;
 import com.quickblox.module.ratings.model.QBScore;
 import com.quickblox.module.ratings.result.*;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+
+import java.util.List;
 
 /**
  * User: Oleg Soroka
@@ -49,20 +51,17 @@ public class SnippetsRatings extends Snippets {
     Snippet getAverageForApp = new Snippet("get average for application") {
         @Override
         public void execute() {
-            QBRatings.getAveragesByApp(new QBCallback() {
+            QBRatings.getAveragesByApp(new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     if (result.isSuccess()) {
                         QBAverageArrayResult averageArrayResult = (QBAverageArrayResult) result;
-                        System.out.println("Average for first gameMode - " + averageArrayResult.getAverages().get(0).getValue());
+                        List<QBAverage> averageList = averageArrayResult.getAverages();
+                        System.out.println("AverageList- " + averageList.toString());
                     } else {
                         handleErrors(result);
                     }
-                }
-
-                @Override
-                public void onComplete(Result result, Object context) {
                 }
             });
         }
@@ -74,20 +73,16 @@ public class SnippetsRatings extends Snippets {
             if (gameModeId != 0) {
                 QBGameMode qbGameMode = new QBGameMode();
                 qbGameMode.setId(gameModeId);
-                QBRatings.getAverageByGameMode(qbGameMode, new QBCallback() {
+                QBRatings.getAverageByGameMode(qbGameMode, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBAverageResult averageResult = (QBAverageResult) result;
-                            System.out.println("Average for gameMode - " + averageResult.getAverage().getValue());
+                            System.out.println("Average - " + averageResult.getAverage().toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             } else {
@@ -99,20 +94,16 @@ public class SnippetsRatings extends Snippets {
     Snippet getGameModes = new Snippet("get game modes") {
         @Override
         public void execute() {
-            QBRatings.getGameModes(new QBCallback() {
+            QBRatings.getGameModes(new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     if (result.isSuccess()) {
                         QBGameModeArrayResult gameModeArrayResult = (QBGameModeArrayResult) result;
-                        System.out.println("GameMode count - " + gameModeArrayResult.getGameModes().size());
+                        System.out.println("GameMode list - " + gameModeArrayResult.getGameModes().toString());
                     } else {
                         handleErrors(result);
                     }
-                }
-
-                @Override
-                public void onComplete(Result result, Object context) {
                 }
             });
         }
@@ -126,20 +117,16 @@ public class SnippetsRatings extends Snippets {
                 qbGameMode.setAppId(appId);
                 qbGameMode.setId(gameModeId);
                 qbGameMode.setTitle("new title for game mode");
-                QBRatings.updateGameMode(qbGameMode, new QBCallback() {
+                QBRatings.updateGameMode(qbGameMode, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBGameModeResult gameModeResult = (QBGameModeResult) result;
-                            System.out.println("Update gameMode title - " + gameModeResult.getGameMode().getTitle());
+                            System.out.println("GameMode - " + gameModeResult.getGameMode().toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             } else {
@@ -155,15 +142,16 @@ public class SnippetsRatings extends Snippets {
             QBRatings.createGameMode(gameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
 
                     if (result.isSuccess()) {
                         QBGameModeResult gameModeResult = (QBGameModeResult) result;
                         QBGameMode newGameMode = gameModeResult.getGameMode();
 
-                        System.out.println(">>> new game mode is:" + newGameMode);
+                        System.out.println(">>> new game mode is:" + newGameMode.toString());
 
                         gameModeId = newGameMode.getId();
+                    } else {
+                        handleErrors(result);
                     }
                 }
             });
@@ -179,7 +167,12 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.getGameMode(gameMode, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            QBGameModeResult gameModeResult = (QBGameModeResult) result;
+                            System.out.println(">>>game mode:" + gameModeResult.getGameMode().toString());
+                        } else {
+                            handleErrors(result);
+                        }
                     }
                 });
 
@@ -198,7 +191,12 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.deleteGameMode(gameMode, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+
+                            System.out.println(">>>game mode successfully deleted:");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
                 });
 
@@ -219,9 +217,13 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.createScore(score, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
+                            QBScoreResult qbScoreResult = ((QBScoreResult) result);
                             scoreId = ((QBScoreResult) result).getScore().getId();
+                            System.out.println(">>>game mode successfully deleted:" + qbScoreResult.getScore().toString());
+                        } else {
+                            handleErrors(result);
                         }
                     }
                 });
@@ -240,10 +242,10 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.getScore(score, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBScoreResult scoreResult = (QBScoreResult) result;
-                            System.out.println("Score value - " + scoreResult.getScore().getValue());
+                            System.out.println("Score- " + scoreResult.getScore().toString());
                         } else {
                             handleErrors(result);
                         }
@@ -264,7 +266,11 @@ public class SnippetsRatings extends Snippets {
                 QBRatings.deleteScore(score, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+                        if (result.isSuccess()) {
+                            System.out.println("Score deleted");
+                        } else {
+                            handleErrors(result);
+                        }
                     }
                 });
             } else {
@@ -281,20 +287,16 @@ public class SnippetsRatings extends Snippets {
                 qbScore.setGameModeId(gameModeId);
                 qbScore.setId(scoreId);
                 qbScore.setValue(123);
-                QBRatings.updateScore(qbScore, new QBCallback() {
+                QBRatings.updateScore(qbScore, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBScoreResult scoreResult = (QBScoreResult) result;
-                            System.out.println("Score value - " + scoreResult.getScore().getValue());
+                            System.out.println("Score - " + scoreResult.getScore().toString());
                         } else {
                             handleErrors(result);
                         }
-                    }
-
-                    @Override
-                    public void onComplete(Result result, Object context) {
                     }
                 });
             } else {
@@ -313,21 +315,18 @@ public class SnippetsRatings extends Snippets {
                 QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
                 requestBuilder.setCurrentPage(1);
                 requestBuilder.setPerPage(20);
-                QBRatings.getTopScores(qbGameMode, scoreCount, requestBuilder, new QBCallback() {
+                QBRatings.getTopScores(qbGameMode, scoreCount, requestBuilder, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        printResultToConsole(result);
+
                         if (result.isSuccess()) {
                             QBScorePagedResult scorePagedResult = (QBScorePagedResult) result;
-                            System.out.println("Value for first score - " + scorePagedResult.getScores().get(0).getValue());
+                            System.out.println("Score list " + scorePagedResult.getScores().toString());
                         } else {
                             handleErrors(result);
                         }
                     }
 
-                    @Override
-                    public void onComplete(Result result, Object context) {
-                    }
                 });
             } else {
                 System.out.println("Create gameMode and several scores before get top n scores.");
@@ -343,21 +342,18 @@ public class SnippetsRatings extends Snippets {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
             requestBuilder.setCurrentPage(1);
             requestBuilder.setPerPage(20);
-            QBRatings.getScoresByUser(qbUser, requestBuilder, new QBCallback() {
+            QBRatings.getScoresByUser(qbUser, requestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    printResultToConsole(result);
+
                     if (result.isSuccess()) {
                         QBScorePagedResult qbScorePagedResult = (QBScorePagedResult) result;
-                        System.out.println("Value for first score - " + qbScorePagedResult.getScores().get(0).getValue());
+                        System.out.println("Score list - " + qbScorePagedResult.getScores().toString());
                     } else {
                         handleErrors(result);
                     }
                 }
 
-                @Override
-                public void onComplete(Result result, Object context) {
-                }
             });
         }
     };

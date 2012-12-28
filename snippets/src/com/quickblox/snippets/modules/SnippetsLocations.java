@@ -50,7 +50,7 @@ public class SnippetsLocations extends Snippets {
                         QBLocationResult locationResult = (QBLocationResult) result;
 
                         System.out.println(">>> Location is: " + locationResult.getLocation());
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -69,10 +69,11 @@ public class SnippetsLocations extends Snippets {
                         QBLocationResult locationResult = (QBLocationResult) result;
 
                         System.out.println(">>> Location is: " + locationResult.getLocation());
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
+
             });
         }
     };
@@ -87,10 +88,11 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> Delete location OK ");
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
+
             });
         }
     };
@@ -108,6 +110,7 @@ public class SnippetsLocations extends Snippets {
                     } else {
                         handleErrors(result);
                     }
+
                 }
             });
         }
@@ -142,7 +145,7 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> Delete locations OK ");
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -167,7 +170,7 @@ public class SnippetsLocations extends Snippets {
                         QBPlaceResult placeResult = (QBPlaceResult) result;
 
                         System.out.println(">> Place: " + placeResult.getPlace());
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -187,10 +190,11 @@ public class SnippetsLocations extends Snippets {
                         QBPlaceResult placeResult = (QBPlaceResult) result;
 
                         System.out.println(">> Place: " + placeResult.getPlace());
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
+
             });
         }
     };
@@ -205,7 +209,7 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">> Place was deleted");
-                    } else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -221,11 +225,12 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBPlacePagedResult qbPlacePagedResult = (QBPlacePagedResult) result;
-                        System.out.println(">>> Places:" + qbPlacePagedResult.getLocations());
+                        System.out.println(">>> Places:" + qbPlacePagedResult.getPlaces());
                     } else {
                         handleErrors(result);
                     }
                 }
+
             });
         }
     };
@@ -233,20 +238,22 @@ public class SnippetsLocations extends Snippets {
     Snippet updatePlace = new Snippet("update place") {
         @Override
         public void execute() {
-            QBLocation qbLocation = new QBLocation();
-            qbLocation.setId(435);
-            qbLocation.setLongitude(0.23);
 
-            QBLocations.updateLocation(qbLocation, new QBCallbackImpl() {
+            QBPlace place = new QBPlace();
+            place.setId(1758);
+            place.setTitle("new title");
+
+            QBLocations.updatePlace(place, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    QBLocationResult locationResult = (QBLocationResult) result;
+                    QBPlaceResult qbPlaceResult = (QBPlaceResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> Location" + locationResult.getLocation());
+                        System.out.println(">>> Place" + qbPlaceResult.getPlace());
                     } else {
                         handleErrors(result);
                     }
                 }
+
             });
         }
     };

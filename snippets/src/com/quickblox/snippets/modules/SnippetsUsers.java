@@ -183,10 +183,10 @@ public class SnippetsUsers extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult)result;
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
