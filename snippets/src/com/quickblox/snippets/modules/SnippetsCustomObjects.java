@@ -11,6 +11,7 @@ import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * User: Oleg Soroka
@@ -42,7 +43,7 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult)result;
+                        QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult) result;
 
                         ArrayList<QBCustomObject> co = coresult.getCustomObjects();
                         System.out.println(">>> custom object list: " + co.toString());
@@ -60,6 +61,8 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObject customObject = new QBCustomObject(className);
             customObject.put(fieldHealth, 99);
             customObject.put(fieldPower, 123.45);
+            customObject.setParentId("50d9bf2d535c12344701c43a");
+
 
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -81,7 +84,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjectById = new Snippet("get object") {
         @Override
         public void execute() {
-            QBCustomObject customObject = new QBCustomObject(className, "af3514342afbbb3555");
+            QBCustomObject customObject = new QBCustomObject(className, "50e3f8c7535c126073000d52");
 
             QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -122,7 +125,11 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject co = new QBCustomObject();
             co.setClassName(className);
-            co.setCustomObjectId("af3514342afbbb3555");
+            HashMap<String, Object> fields = new HashMap<String, Object>();
+            fields.put(fieldPower, 1);
+            fields.put(fieldHealth, 10);
+            co.setFields(fields);
+            co.setCustomObjectId("50e3f85f535c123376000d31");
 
             QBCustomObjects.updateObject(co, new QBCallbackImpl() {
                 @Override

@@ -45,6 +45,10 @@ public class SnippetsLocations extends Snippets {
         @Override
         public void execute() {
             final QBLocation location = new QBLocation(35, 35, "hello");
+               /*or initialize like this:*/
+//            location.setLongitude((double) 35);
+//            location.setLatitude((double) 35);
+//            location.setStatus("hello");
 
             QBLocations.createLocation(location, new QBCallbackImpl() {
                 @Override

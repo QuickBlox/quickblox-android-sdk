@@ -1,6 +1,7 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.QBStringResult;
 import com.quickblox.core.result.Result;
@@ -47,7 +48,7 @@ public class SnippetsContent extends Snippets {
         // get file
         int fileId = R.raw.sample_file;
         InputStream is = context.getResources().openRawResource(fileId);
-        file = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets");
+        file = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
     }
 
     Snippet createFile = new Snippet("create file") {
@@ -81,6 +82,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
+                        Log.d("PUBLICURL", qbFilePagedResult.getFiles().get(0).getPublicUrl());
                         System.out.println(">>> File list:" + qbFilePagedResult.getFiles().toString());
                     } else {
                         handleErrors(result);
@@ -94,6 +96,7 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
+
             QBContent.getTaggedList(requestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -116,6 +119,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFileResult fileResult = (QBFileResult) result;
+
                         System.out.println(">>> file " + fileResult.getFile());
                     } else {
                         handleErrors(result);
@@ -129,8 +133,8 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             QBFile qbfile = new QBFile();
-            qbfile.setId(244);
-            qbfile.setName("my Car");
+            qbfile.setId(19979);
+            qbfile.setName("my Car1");
             QBContent.updateFile(qbfile, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -250,7 +254,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-        Snippet getFileDownloadLink = new Snippet("get file download link TASK") {
+    Snippet getFileDownloadLink = new Snippet("get file download link TASK") {
         @Override
         public void execute() {
             QBContent.getFileDownloadLink(12, new QBCallbackImpl() {
@@ -283,7 +287,7 @@ public class SnippetsContent extends Snippets {
                     if (result.isSuccess()) {
                         QBFileUploadTaskResult fileUploadTaskResultResult = (QBFileUploadTaskResult) result;
                         QBFile qbFile = fileUploadTaskResultResult.getFile();
-                        String downloadUrl = qbFile.getDownloadUrl();
+                        String downloadUrl = qbFile.getPublicUrl();
 
                         System.out.println(">>> QBFile:" + qbFile.toString());
                     } else {

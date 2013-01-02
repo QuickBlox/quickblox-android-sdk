@@ -23,6 +23,7 @@ public class SnippetsMessages extends Snippets {
         super(context);
 
         snippets.add(createSubscription);
+        snippets.add(subscribeToPushNotificationsTask);
         snippets.add(createEvent);
         snippets.add(createPushToken);
         snippets.add(deletePushToken);
@@ -33,6 +34,7 @@ public class SnippetsMessages extends Snippets {
         snippets.add(getPullEvent);
         snippets.add(updateEvent);
         snippets.add(deleteEvent);
+
     }
 
     //
@@ -46,8 +48,8 @@ public class SnippetsMessages extends Snippets {
             QBPushToken qbPushToken = new QBPushToken();
             qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
             qbPushToken.setDeviceUdid(deviceId);
-            qbPushToken.setDevicePlatform("android");
             qbPushToken.setCis("2342hiyf2352959fg9af03fgfg0fahoo018273af");
+
 
             QBMessages.createPushToken(qbPushToken, new QBCallbackImpl() {
                 @Override
@@ -91,13 +93,34 @@ public class SnippetsMessages extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBSubscriptionArrayResult subscriptionResult = (QBSubscriptionArrayResult)result;
+                        QBSubscriptionArrayResult subscriptionResult = (QBSubscriptionArrayResult) result;
                         System.out.println(">>> subscription created" + subscriptionResult.getSubscriptions().toString());
                     } else {
                         handleErrors(result);
                     }
                 }
             });
+        }
+    };
+
+    Snippet subscribeToPushNotificationsTask = new Snippet("subscribe to push notifications task") {
+        @Override
+        public void execute() {
+            String registrationID = "2342hiyf2352959fg9af03fgfg0fahoo018273af";
+            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+
+            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSubscribeToPushNotificationsResult subscribeToPushNotificationsResult = (QBSubscribeToPushNotificationsResult) result;
+                        System.out.println(">>> subscription created" + subscribeToPushNotificationsResult.getSubscriptions().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+
         }
     };
 
@@ -185,7 +208,6 @@ public class SnippetsMessages extends Snippets {
             });
         }
     };
-
 
 
     Snippet getEvents = new Snippet("get Events") {

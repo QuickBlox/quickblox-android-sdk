@@ -13,6 +13,7 @@ import com.quickblox.module.users.model.QBUser;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +48,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBGameMode gameMode = new QBGameMode("my game mode");
+
             QBRatings.createGameMode(gameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -85,6 +87,7 @@ public class SnippetsRatings extends Snippets {
             QBGameMode qbGameMode = new QBGameMode();
             qbGameMode.setId(12);
             qbGameMode.setTitle("new title for game mode");
+
             QBRatings.updateGameMode(qbGameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -163,6 +166,8 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBScore score = new QBScore(123);
+            Date date = new Date(System.currentTimeMillis());
+            score.setCreatedAt(date);
 
             QBRatings.getScore(score, new QBCallbackImpl() {
                 @Override
@@ -202,6 +207,7 @@ public class SnippetsRatings extends Snippets {
             QBScore qbScore = new QBScore();
             qbScore.setId(54);
             qbScore.setValue(123);
+
             QBRatings.updateScore(qbScore, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {

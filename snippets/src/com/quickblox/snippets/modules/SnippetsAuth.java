@@ -32,10 +32,10 @@ public class SnippetsAuth extends Snippets {
             QBAuth.createSession(new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -47,14 +47,14 @@ public class SnippetsAuth extends Snippets {
         @Override
         public void execute() {
 
-            QBAuth.createSession("testuser", "testpassword", new QBCallbackImpl(){
+            QBAuth.createSession("testuser", "testpassword", new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -66,14 +66,14 @@ public class SnippetsAuth extends Snippets {
         @Override
         public void execute() {
 
-            QBAuth.createSessionByEmail("test123@test.com", "testpassword", new QBCallbackImpl(){
+            QBAuth.createSessionByEmail("test123@test.com", "testpassword", new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -87,14 +87,14 @@ public class SnippetsAuth extends Snippets {
 
             String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl(){
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
 
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -105,12 +105,12 @@ public class SnippetsAuth extends Snippets {
     Snippet destroySession = new Snippet("destroy session") {
         @Override
         public void execute() {
-            QBAuth.deleteSession(new QBCallbackImpl(){
+            QBAuth.deleteSession(new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         System.out.println(">>> Session Destroy OK");
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }

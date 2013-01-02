@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.users.QBUsers;
@@ -47,6 +48,8 @@ public class SnippetsUsers extends Snippets {
         snippets.add(deleteUserByExternalId);
 
         snippets.add(resetPassword);
+
+
     }
 
     Snippet signInUserWithLogin = new Snippet("sign in user (login)") {
@@ -61,7 +64,7 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User was successfully signed in, " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -83,7 +86,7 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User was successfully signed in, " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -102,7 +105,7 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User was successfully signed in, " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -118,7 +121,7 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> User was successfully signed out");
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -129,7 +132,21 @@ public class SnippetsUsers extends Snippets {
     Snippet signUpUser = new Snippet("sign up user (register)") {
         @Override
         public void execute() {
-            final QBUser user = new QBUser("testuser", "testpassword", "test123@test.com");
+
+            final QBUser user = new QBUser("testuser123", "testpassword", "test123@test.com");
+            user.setEmail("test1234567890@test.com");
+            user.setExternalId("12312313");
+            user.setFacebookId("123");
+            user.setTwitterId("12334");
+            user.setFullName("fullName");
+            user.setPhone("+18904567812");
+            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            tags.add("firstTag");
+            tags.add("secondTag");
+            tags.add("thirdTag");
+            tags.add("fourthTag");
+            user.setTags(tags);
+            user.setWebsite("website.com");
 
             QBUsers.signUp(user, new QBCallbackImpl() {
                 @Override
@@ -137,7 +154,7 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User was successfully signed up, " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -151,22 +168,23 @@ public class SnippetsUsers extends Snippets {
 
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
             pagedRequestBuilder.setCurrentPage(1);
-            pagedRequestBuilder.setPerPage(10);
+            pagedRequestBuilder.setPerPage(68);
 
             QBUsers.getUsers(pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult)result;
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
             });
         }
     };
+
 
     Snippet getUsersByIds = new Snippet("get users by ids") {
         @Override
@@ -176,8 +194,9 @@ public class SnippetsUsers extends Snippets {
             pagedRequestBuilder.setPerPage(10);
 
             ArrayList<String> userIds = new ArrayList<String>();
-            userIds.add("123");
-            userIds.add("8819");
+            userIds.add("378");
+            userIds.add("379");
+            userIds.add("380");
 
             QBUsers.getUsersByIDs(userIds, pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
@@ -199,11 +218,11 @@ public class SnippetsUsers extends Snippets {
         public void execute() {
             QBUsers.getUser(546, new QBCallbackImpl() {
                 @Override
-                 public void onComplete(Result result) {
+                public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -214,13 +233,14 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserWithLogin = new Snippet("get user with login") {
         @Override
         public void execute() {
-            QBUsers.getUserByLogin("testuser", new QBCallbackImpl() {
+            String login = "testuser";
+            QBUsers.getUserByLogin(login, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -232,14 +252,15 @@ public class SnippetsUsers extends Snippets {
     Snippet getUsersWithFullName = new Snippet("get user with full name") {
         @Override
         public void execute() {
-            QBUsers.getUsersByFullName("fullName", new QBCallbackImpl() {
+            String fullName = "fullName";
+            QBUsers.getUsersByFullName(fullName, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult)result;
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -250,13 +271,14 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserWithTwitterId = new Snippet("get user with twitter id") {
         @Override
         public void execute() {
-            QBUsers.getUserByTwitterId("5680203734", new QBCallbackImpl() {
+            String twitterId = "56802037340";
+            QBUsers.getUserByTwitterId(twitterId, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -267,13 +289,14 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserWithFacebookId = new Snippet("get user with facebook id") {
         @Override
         public void execute() {
-            QBUsers.getUserByFacebookId("10000312314143", new QBCallbackImpl() {
+            String facebookId = "100003123141430";
+            QBUsers.getUserByFacebookId(facebookId, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -284,13 +307,14 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserWithEmail = new Snippet("get user with email") {
         @Override
         public void execute() {
-            QBUsers.getUserByEmail("test123@test.com", new QBCallbackImpl() {
+            String email = "test123@test.com";
+            QBUsers.getUserByEmail(email, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -309,10 +333,10 @@ public class SnippetsUsers extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult)result;
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -323,13 +347,14 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserWithExternalId = new Snippet("get user with external id") {
         @Override
         public void execute() {
-            QBUsers.getUserByExternalId("123145235", new QBCallbackImpl() {
+            String externalId = "123145235";
+            QBUsers.getUserByExternalId(externalId, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -343,13 +368,28 @@ public class SnippetsUsers extends Snippets {
             final QBUser user = new QBUser();
             user.setId(567);
             user.setFullName("Merelyn");
+            user.setEmail("testnew1234567890@test.com");
+            user.setExternalId("1234");
+            user.setFacebookId("1234");
+            user.setTwitterId("123345");
+            user.setFullName("newFullName");
+            user.setPhone("+18904567812");
+            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            tags.add("firstTag");
+            tags.add("secondTag");
+            tags.add("thirdTag");
+            tags.add("fourthTag");
+            user.setTags(tags);
+            user.setWebsite("website.com");
+
+
             QBUsers.updateUser(user, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -360,18 +400,21 @@ public class SnippetsUsers extends Snippets {
     Snippet deleteUserById = new Snippet("delete user by id") {
         @Override
         public void execute() {
-            QBUsers.deleteUser(562, new QBCallbackImpl() {
+
+            int userId = 562;
+            QBUsers.deleteUser(userId, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> User was successfully deleted");
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
             });
         }
     };
+
 
     Snippet deleteUserByExternalId = new Snippet("delete user by external id") {
         @Override
@@ -381,7 +424,7 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> User was successfully deleted");
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
@@ -397,7 +440,7 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         System.out.println(">>> Email was sent");
-                    }else{
+                    } else {
                         handleErrors(result);
                     }
                 }
