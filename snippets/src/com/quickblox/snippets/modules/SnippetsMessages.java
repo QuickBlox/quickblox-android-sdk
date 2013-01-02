@@ -22,19 +22,21 @@ public class SnippetsMessages extends Snippets {
     public SnippetsMessages(Context context) {
         super(context);
 
-        snippets.add(createSubscription);
-        snippets.add(subscribeToPushNotificationsTask);
-        snippets.add(createEvent);
         snippets.add(createPushToken);
         snippets.add(deletePushToken);
+
+        snippets.add(createSubscription);
         snippets.add(getSubscriptions);
         snippets.add(deleteSubscription);
+
+        snippets.add(createEvent);
         snippets.add(getEventWithId);
         snippets.add(getEvents);
         snippets.add(getPullEvent);
         snippets.add(updateEvent);
         snippets.add(deleteEvent);
 
+        snippets.add(subscribeToPushNotificationsTask);
     }
 
     //
@@ -68,7 +70,7 @@ public class SnippetsMessages extends Snippets {
     Snippet deletePushToken = new Snippet("delete push token") {
         @Override
         public void execute() {
-            QBMessages.deletePushToken(5124, new QBCallbackImpl() {
+            QBMessages.deletePushToken(13998, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -103,27 +105,6 @@ public class SnippetsMessages extends Snippets {
         }
     };
 
-    Snippet subscribeToPushNotificationsTask = new Snippet("subscribe to push notifications task") {
-        @Override
-        public void execute() {
-            String registrationID = "2342hiyf2352959fg9af03fgfg0fahoo018273af";
-            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-
-            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBSubscribeToPushNotificationsResult subscribeToPushNotificationsResult = (QBSubscribeToPushNotificationsResult) result;
-                        System.out.println(">>> subscription created" + subscribeToPushNotificationsResult.getSubscriptions().toString());
-                    } else {
-                        handleErrors(result);
-                    }
-                }
-            });
-
-        }
-    };
-
     Snippet getSubscriptions = new Snippet("get subscriptions") {
         @Override
         public void execute() {
@@ -145,7 +126,7 @@ public class SnippetsMessages extends Snippets {
     Snippet deleteSubscription = new Snippet("delete subscription") {
         @Override
         public void execute() {
-            QBMessages.deleteSubscription(24, new QBCallbackImpl() {
+            QBMessages.deleteSubscription(14824, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -168,12 +149,14 @@ public class SnippetsMessages extends Snippets {
 
             // recipient
             StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(32);
-            userIds.add(11);
+            userIds.add(53779);
+            userIds.add(960);
+
 
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);
             event.setMessage("Gonna send Push Notification!");
+            event.setName("Magic Push");
             event.setEnvironment(QBEnvironment.DEVELOPMENT);
             event.setPushType(QBPushType.GCM);
             event.setNotificationType(QBNotificationType.PUSH);
@@ -195,7 +178,7 @@ public class SnippetsMessages extends Snippets {
     Snippet getEventWithId = new Snippet("get event with id") {
         @Override
         public void execute() {
-            QBMessages.getEvent(124, new QBCallbackImpl() {
+            QBMessages.getEvent(25245, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -250,7 +233,7 @@ public class SnippetsMessages extends Snippets {
         @Override
         public void execute() {
             QBEvent event = new QBEvent();
-            event.setId(51);
+            event.setId(25245);
             event.setMessage("Gonna send Push Notification again!");
             event.setEnvironment(QBEnvironment.DEVELOPMENT);
             event.setPushType(QBPushType.GCM);
@@ -273,7 +256,7 @@ public class SnippetsMessages extends Snippets {
     Snippet deleteEvent = new Snippet("delete event") {
         @Override
         public void execute() {
-            QBMessages.deleteEvent(12, new QBCallbackImpl() {
+            QBMessages.deleteEvent(25245, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -283,6 +266,31 @@ public class SnippetsMessages extends Snippets {
                     }
                 }
             });
+        }
+    };
+
+
+    //
+    ///////////////////////////////////////////// Tasks /////////////////////////////////////////////
+    //
+    Snippet subscribeToPushNotificationsTask = new Snippet("TASK: Subscribe to push notifications") {
+        @Override
+        public void execute() {
+            String registrationID = "2342hiyf2352959fg9af03fgfg0fahoo018273af";
+            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+
+            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSubscribeToPushNotificationsResult subscribeToPushNotificationsResult = (QBSubscribeToPushNotificationsResult) result;
+                        System.out.println(">>> subscription created" + subscribeToPushNotificationsResult.getSubscriptions().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+
         }
     };
 }

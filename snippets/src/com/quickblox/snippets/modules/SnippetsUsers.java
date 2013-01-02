@@ -77,7 +77,7 @@ public class SnippetsUsers extends Snippets {
         public void execute() {
 
             final QBUser user = new QBUser();
-            user.setEmail("test123@test.com");
+            user.setEmail("test987@test.com");
             user.setPassword("testpassword");
 
             QBUsers.signIn(user, new QBCallbackImpl() {
@@ -99,7 +99,7 @@ public class SnippetsUsers extends Snippets {
         public void execute() {
             String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-            QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl() {
+            QBUsers.signInUsingSocialProvider(QBProvider.TWITTER, facebookAccessToken, null, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -133,12 +133,12 @@ public class SnippetsUsers extends Snippets {
         @Override
         public void execute() {
 
-            final QBUser user = new QBUser("testuser123", "testpassword", "test123@test.com");
-            user.setEmail("test1234567890@test.com");
-            user.setExternalId("12312313");
-            user.setFacebookId("123");
-            user.setTwitterId("12334");
-            user.setFullName("fullName");
+            final QBUser user = new QBUser("testuser12344443", "testpassword");
+            user.setEmail("test123456789w0@test.com");
+            user.setExternalId("02345777");
+            user.setFacebookId("1233453457767");
+            user.setTwitterId("12334635457");
+            user.setFullName("fullName5");
             user.setPhone("+18904567812");
             StringifyArrayList<String> tags = new StringifyArrayList<String>();
             tags.add("firstTag");
@@ -167,8 +167,8 @@ public class SnippetsUsers extends Snippets {
         public void execute() {
 
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-            pagedRequestBuilder.setCurrentPage(1);
-            pagedRequestBuilder.setPerPage(68);
+            pagedRequestBuilder.setCurrentPage(2);
+            pagedRequestBuilder.setPerPage(10);
 
             QBUsers.getUsers(pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
@@ -177,6 +177,10 @@ public class SnippetsUsers extends Snippets {
                         QBUserPagedResult usersResult = (QBUserPagedResult) result;
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
+
+                        System.out.println("currentPage: " + usersResult.getCurrentPage());
+                        System.out.println("totalEntries: " + usersResult.getTotalEntries());
+                        System.out.println("perPage: " + usersResult.getPerPage());
                     } else {
                         handleErrors(result);
                     }
@@ -216,7 +220,7 @@ public class SnippetsUsers extends Snippets {
     Snippet getUsersById = new Snippet("get user by id") {
         @Override
         public void execute() {
-            QBUsers.getUser(546, new QBCallbackImpl() {
+            QBUsers.getUser(378, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -366,21 +370,17 @@ public class SnippetsUsers extends Snippets {
         @Override
         public void execute() {
             final QBUser user = new QBUser();
-            user.setId(567);
-            user.setFullName("Merelyn");
-            user.setEmail("testnew1234567890@test.com");
-            user.setExternalId("1234");
-            user.setFacebookId("1234");
-            user.setTwitterId("123345");
-            user.setFullName("newFullName");
-            user.setPhone("+18904567812");
+            user.setId(53779);
+            user.setFullName("Monro");
+            user.setEmail("test987@test.com");
+            user.setExternalId("987");
+            user.setFacebookId("987");
+            user.setTwitterId("987");
+            user.setFullName("galog");
+            user.setPhone("+123123123");
             StringifyArrayList<String> tags = new StringifyArrayList<String>();
-            tags.add("firstTag");
-            tags.add("secondTag");
-            tags.add("thirdTag");
-            tags.add("fourthTag");
             user.setTags(tags);
-            user.setWebsite("website.com");
+            user.setWebsite("google.com");
 
 
             QBUsers.updateUser(user, new QBCallbackImpl() {
@@ -435,7 +435,7 @@ public class SnippetsUsers extends Snippets {
     Snippet resetPassword = new Snippet("reset password") {
         @Override
         public void execute() {
-            QBUsers.resetPassword("test123@test.com", new QBCallbackImpl() {
+            QBUsers.resetPassword("test987@test.com", new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {

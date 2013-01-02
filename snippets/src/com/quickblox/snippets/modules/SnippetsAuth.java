@@ -53,7 +53,6 @@ public class SnippetsAuth extends Snippets {
                     if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
                         System.out.println(">>> Session = " + sessionResult.getSession());
-
                     } else {
                         handleErrors(result);
                     }
