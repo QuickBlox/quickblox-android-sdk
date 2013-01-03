@@ -12,6 +12,8 @@ import com.quickblox.module.messages.result.*;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
+import java.util.ArrayList;
+
 /**
  * User: Oleg Soroka
  * Date: 11.10.12
@@ -202,7 +204,8 @@ public class SnippetsMessages extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBEventPagedResult eventPagedResult = (QBEventPagedResult) result;
-                        System.out.println(">>> Events: " + eventPagedResult.getEvents().toString());
+                        ArrayList<QBEvent> events = eventPagedResult.getEvents();
+                        System.out.println(">>> Events: " + events.toString());
                     } else {
                         handleErrors(result);
                     }

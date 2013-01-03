@@ -136,6 +136,10 @@ public class SnippetsCustomObjects extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
+
+                        System.out.println(">>> updatedAt: " + updateResult.getCustomObject().getUpdatedAt());
+                        System.out.println(">>> createdAt: " + updateResult.getCustomObject().getCreatedAt());
+
                         System.out.println(">>> co : " + updateResult.getCustomObject().toString());
                     } else {
                         handleErrors(result);

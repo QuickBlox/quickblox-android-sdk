@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.FileHelper;
 import com.quickblox.module.locations.QBLocations;
 import com.quickblox.module.locations.model.QBLocation;
 import com.quickblox.module.locations.model.QBPlace;
@@ -11,8 +12,12 @@ import com.quickblox.module.locations.result.QBLocationPagedResult;
 import com.quickblox.module.locations.result.QBLocationResult;
 import com.quickblox.module.locations.result.QBPlacePagedResult;
 import com.quickblox.module.locations.result.QBPlaceResult;
+import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+
+import java.io.File;
+import java.io.InputStream;
 
 /**
  * User: Oleg Soroka
@@ -28,6 +33,7 @@ public class SnippetsLocations extends Snippets {
         snippets.add(getLocationWithId);
         snippets.add(deleteLocationWithId);
         snippets.add(createPlace);
+        snippets.add(createPlaceTask);
         snippets.add(getPlaceWithId);
         snippets.add(deletePlace);
         snippets.add(getPlaces);
@@ -45,7 +51,7 @@ public class SnippetsLocations extends Snippets {
         @Override
         public void execute() {
             final QBLocation location = new QBLocation(35, 35, "hello");
-               /*or initialize like this:*/
+            /*or initialize like this:*/
 //            location.setLongitude((double) 35);
 //            location.setLatitude((double) 35);
 //            location.setStatus("hello");
@@ -169,9 +175,11 @@ public class SnippetsLocations extends Snippets {
         @Override
         public void execute() {
             QBPlace place = new QBPlace();
-            place.setLocationId(412);
+            place.setDescription("asdasd");
+            place.setAddress("asdad");
+            place.setLocationId(88973);
             place.setTitle("the best place on the planet");
-            place.setPhotoId(542);
+            place.setPhotoId(20012);
 
             QBLocations.createPlace(place, new QBCallbackImpl() {
                 @Override
@@ -183,6 +191,35 @@ public class SnippetsLocations extends Snippets {
                     } else {
                         handleErrors(result);
                     }
+                }
+            });
+        }
+    };
+
+    Snippet createPlaceTask = new Snippet("create place task") {
+        @Override
+        public void execute() {
+            String placeTitle = "the best place on the planet";
+            String placeDescription = "place description";
+            String placeAddress = "Ukraine, Kharkov";
+            double placeLongitude = 1.23;
+            double placeLatitude = 1.23;
+
+            int fileId = R.raw.kharkov;
+            InputStream is = context.getResources().openRawResource(fileId);
+            File placePhoto = FileHelper.getFileInputStream(is, "kharkov.jpg", "qb_snippets12");
+
+            QBLocations.createPlaceTask(placeTitle, placeDescription, placeAddress, placeLongitude, placeLatitude, placePhoto, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBPlaceResult placeResult = (QBPlaceResult) result;
+
+                        System.out.println(">> Place: " + placeResult.getPlace());
+                    } else {
+                        handleErrors(result);
+                    }
+
                 }
             });
         }

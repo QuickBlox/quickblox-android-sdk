@@ -3,7 +3,6 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import android.util.Log;
 import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.QBStringResult;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.ContentType;
 import com.quickblox.internal.core.helper.FileHelper;
@@ -43,7 +42,6 @@ public class SnippetsContent extends Snippets {
         snippets.add(downloadFileWithUID);
         snippets.add(deleteFile);
         snippets.add(incrementRefCount);
-        snippets.add(getFileDownloadLink);
 
         // get file
         int fileId = R.raw.sample_file;
@@ -76,7 +74,7 @@ public class SnippetsContent extends Snippets {
     Snippet getFiles = new Snippet("get files with pagination") {
         @Override
         public void execute() {
-            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
+            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(5, 2);
             QBContent.getFiles(requestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -246,23 +244,6 @@ public class SnippetsContent extends Snippets {
                     QBFileObjectAccessResult objectAccessResult = (QBFileObjectAccessResult) result;
                     if (result.isSuccess()) {
                         System.out.println(">>> FileObjectAccess" + objectAccessResult.getFileObjectAccess().toString());
-                    } else {
-                        handleErrors(result);
-                    }
-                }
-            });
-        }
-    };
-
-    Snippet getFileDownloadLink = new Snippet("get file download link TASK") {
-        @Override
-        public void execute() {
-            QBContent.getFileDownloadLink(12, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    QBStringResult qbStringResult = ((QBStringResult) result);
-                    if (result.isSuccess()) {
-                        System.out.println(">>> download link" + qbStringResult.toString());
                     } else {
                         handleErrors(result);
                     }

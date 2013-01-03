@@ -54,6 +54,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBGameModeResult gameModeResult = (QBGameModeResult) result;
+
                         System.out.println(">>> new game mode is:" + gameModeResult.getGameMode().toString());
                     } else {
                         handleErrors(result);
@@ -85,7 +86,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBGameMode qbGameMode = new QBGameMode();
-            qbGameMode.setId(12);
+            qbGameMode.setId(308);
             qbGameMode.setTitle("new title for game mode");
 
             QBRatings.updateGameMode(qbGameMode, new QBCallbackImpl() {
@@ -205,7 +206,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBScore qbScore = new QBScore();
-            qbScore.setId(54);
+            qbScore.setId(1879);
             qbScore.setValue(123);
 
             QBRatings.updateScore(qbScore, new QBCallbackImpl() {
@@ -213,6 +214,8 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBScoreResult scoreResult = (QBScoreResult) result;
+
+
                         System.out.println("Score - " + scoreResult.getScore().toString());
                     } else {
                         handleErrors(result);
@@ -229,7 +232,7 @@ public class SnippetsRatings extends Snippets {
             qbGameMode.setId(42);
 
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
-            requestBuilder.setCurrentPage(1);
+            requestBuilder.setPage(1);
             requestBuilder.setPerPage(20);
 
             QBRatings.getTopScores(qbGameMode, 10, requestBuilder, new QBCallbackImpl() {
@@ -254,7 +257,7 @@ public class SnippetsRatings extends Snippets {
             qbUser.setId(134);
 
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
-            requestBuilder.setCurrentPage(1);
+            requestBuilder.setPage(1);
             requestBuilder.setPerPage(20);
 
             QBRatings.getScoresByUser(qbUser, requestBuilder, new QBCallbackImpl() {

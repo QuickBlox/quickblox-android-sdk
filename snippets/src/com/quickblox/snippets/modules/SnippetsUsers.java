@@ -63,6 +63,9 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
+
+                        System.out.println(">>> lastRequestedAt, " + qbUserResult.getUser().getLastRequestAt());
+
                         System.out.println(">>> User was successfully signed in, " + qbUserResult.getUser().toString());
                     } else {
                         handleErrors(result);
@@ -153,6 +156,7 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
+
                         System.out.println(">>> User was successfully signed up, " + qbUserResult.getUser().toString());
                     } else {
                         handleErrors(result);
@@ -167,8 +171,8 @@ public class SnippetsUsers extends Snippets {
         public void execute() {
 
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-            pagedRequestBuilder.setCurrentPage(2);
-            pagedRequestBuilder.setPerPage(10);
+            pagedRequestBuilder.setPage(2);
+            pagedRequestBuilder.setPerPage(5);
 
             QBUsers.getUsers(pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
@@ -178,9 +182,11 @@ public class SnippetsUsers extends Snippets {
                         ArrayList<QBUser> users = usersResult.getUsers();
                         System.out.println(">>> Users: " + users.toString());
 
+
                         System.out.println("currentPage: " + usersResult.getCurrentPage());
                         System.out.println("totalEntries: " + usersResult.getTotalEntries());
                         System.out.println("perPage: " + usersResult.getPerPage());
+                        System.out.println("totalPages: " + usersResult.getTotalPages());
                     } else {
                         handleErrors(result);
                     }
@@ -194,7 +200,7 @@ public class SnippetsUsers extends Snippets {
         @Override
         public void execute() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-            pagedRequestBuilder.setCurrentPage(1);
+            pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
             ArrayList<String> userIds = new ArrayList<String>();
@@ -220,7 +226,7 @@ public class SnippetsUsers extends Snippets {
     Snippet getUsersById = new Snippet("get user by id") {
         @Override
         public void execute() {
-            QBUsers.getUser(378, new QBCallbackImpl() {
+            QBUsers.getUser(37823232, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -380,6 +386,7 @@ public class SnippetsUsers extends Snippets {
             user.setPhone("+123123123");
             StringifyArrayList<String> tags = new StringifyArrayList<String>();
             user.setTags(tags);
+
             user.setWebsite("google.com");
 
 
@@ -388,6 +395,10 @@ public class SnippetsUsers extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
+
+                        System.out.println(">>> updatedAt: " + qbUserResult.getUser().getUpdatedAt());
+                        System.out.println(">>> createdAt: " + qbUserResult.getUser().getCreatedAt());
+
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
                     } else {
                         handleErrors(result);
