@@ -28,15 +28,17 @@ public class SnippetsRatings extends Snippets {
 
         snippets.add(createGameMode);
         snippets.add(getGameModeWithId);
+        snippets.add(updateGameMode);
+        snippets.add(getGameModes);
         snippets.add(deleteGameModeWithId);
+
         snippets.add(createScore);
         snippets.add(getScoreWithId);
-        snippets.add(deleteScoreWithId);
-        snippets.add(getGameModes);
-        snippets.add(updateGameMode);
         snippets.add(updateScore);
+        snippets.add(deleteScoreWithId);
         snippets.add(getTopNScores);
         snippets.add(getScoresWithUserId);
+
         snippets.add(getAverageByGameModeId);
         snippets.add(getAverageForApp);
     }
@@ -67,7 +69,7 @@ public class SnippetsRatings extends Snippets {
     Snippet getGameModeWithId = new Snippet("get game mode") {
         @Override
         public void execute() {
-            QBGameMode gameMode = new QBGameMode(412);
+            QBGameMode gameMode = new QBGameMode(310);
             QBRatings.getGameMode(gameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -86,8 +88,8 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBGameMode qbGameMode = new QBGameMode();
-            qbGameMode.setId(308);
-            qbGameMode.setTitle("new title for game mode");
+            qbGameMode.setId(310);
+            qbGameMode.setTitle("new title for game mode yeahhh");
 
             QBRatings.updateGameMode(qbGameMode, new QBCallbackImpl() {
                 @Override
@@ -106,7 +108,7 @@ public class SnippetsRatings extends Snippets {
     Snippet deleteGameModeWithId = new Snippet("delete game mode") {
         @Override
         public void execute() {
-            QBGameMode gameMode = new QBGameMode(213);
+            QBGameMode gameMode = new QBGameMode(310);
 
             QBRatings.deleteGameMode(gameMode, new QBCallbackImpl() {
                 @Override
@@ -146,8 +148,8 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBScore score = new QBScore();
-            score.setGameModeId(543);
-            score.setValue(100500);
+            score.setGameModeId(311);
+            score.setValue(4);
 
             QBRatings.createScore(score, new QBCallbackImpl() {
                 @Override
@@ -166,7 +168,7 @@ public class SnippetsRatings extends Snippets {
     Snippet getScoreWithId = new Snippet("get score") {
         @Override
         public void execute() {
-            QBScore score = new QBScore(123);
+            QBScore score = new QBScore(1945);
             Date date = new Date(System.currentTimeMillis());
             score.setCreatedAt(date);
 
@@ -187,7 +189,7 @@ public class SnippetsRatings extends Snippets {
     Snippet deleteScoreWithId = new Snippet("delete score") {
         @Override
         public void execute() {
-            QBScore score = new QBScore(23);
+            QBScore score = new QBScore(1945);
 
             QBRatings.deleteScore(score, new QBCallbackImpl() {
                 @Override
@@ -206,8 +208,8 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBScore qbScore = new QBScore();
-            qbScore.setId(1879);
-            qbScore.setValue(123);
+            qbScore.setId(1945);
+            qbScore.setValue(1945);
 
             QBRatings.updateScore(qbScore, new QBCallbackImpl() {
                 @Override
@@ -229,7 +231,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBGameMode qbGameMode = new QBGameMode();
-            qbGameMode.setId(42);
+            qbGameMode.setId(311);
 
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
             requestBuilder.setPage(1);
@@ -254,7 +256,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBUser qbUser = new QBUser();
-            qbUser.setId(134);
+            qbUser.setId(53779);
 
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
             requestBuilder.setPage(1);
@@ -301,7 +303,7 @@ public class SnippetsRatings extends Snippets {
         @Override
         public void execute() {
             QBGameMode qbGameMode = new QBGameMode();
-            qbGameMode.setId(34);
+            qbGameMode.setId(311);
             QBRatings.getAverageByGameMode(qbGameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {

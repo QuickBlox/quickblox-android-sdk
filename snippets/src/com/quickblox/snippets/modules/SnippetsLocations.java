@@ -31,16 +31,19 @@ public class SnippetsLocations extends Snippets {
 
         snippets.add(createLocation);
         snippets.add(getLocationWithId);
+        snippets.add(updateLocation);
         snippets.add(deleteLocationWithId);
+
+        snippets.add(getLocations);
+        snippets.add(deleteLocations);
+
         snippets.add(createPlace);
-        snippets.add(createPlaceTask);
         snippets.add(getPlaceWithId);
+        snippets.add(updatePlace);
         snippets.add(deletePlace);
         snippets.add(getPlaces);
-        snippets.add(updatePlace);
-        snippets.add(getLocations);
-        snippets.add(updateLocation);
-        snippets.add(deleteLocations);
+
+        snippets.add(createPlaceTask);
     }
 
 
@@ -51,10 +54,6 @@ public class SnippetsLocations extends Snippets {
         @Override
         public void execute() {
             final QBLocation location = new QBLocation(35, 35, "hello");
-            /*or initialize like this:*/
-//            location.setLongitude((double) 35);
-//            location.setLatitude((double) 35);
-//            location.setStatus("hello");
 
             QBLocations.createLocation(location, new QBCallbackImpl() {
                 @Override
@@ -75,7 +74,7 @@ public class SnippetsLocations extends Snippets {
     Snippet getLocationWithId = new Snippet("get location with id") {
         @Override
         public void execute() {
-            QBLocation location = new QBLocation(4223);
+            QBLocation location = new QBLocation(89895);
             QBLocations.getLocation(location, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -92,49 +91,11 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet deleteLocationWithId = new Snippet("delete location with id") {
-        @Override
-        public void execute() {
-            QBLocation location = new QBLocation(4233);
-
-            QBLocations.deleteLocation(location, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        System.out.println(">>> Delete location OK ");
-                    } else {
-                        handleErrors(result);
-                    }
-                }
-
-            });
-        }
-    };
-
-    Snippet getLocations = new Snippet("get locations") {
-        @Override
-        public void execute() {
-            QBLocationRequestBuilder qbLocationRequestBuilder = new QBLocationRequestBuilder();
-            QBLocations.getLocations(qbLocationRequestBuilder, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
-                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().toString());
-                    } else {
-                        handleErrors(result);
-                    }
-
-                }
-            });
-        }
-    };
-
     Snippet updateLocation = new Snippet("update location") {
         @Override
         public void execute() {
             QBLocation qbLocation = new QBLocation();
-            qbLocation.setId(432);
+            qbLocation.setId(89895);
             qbLocation.setStatus("I'am at Pizza");
             QBLocations.updateLocation(qbLocation, new QBCallbackImpl() {
                 @Override
@@ -150,6 +111,47 @@ public class SnippetsLocations extends Snippets {
             });
         }
     };
+
+    Snippet deleteLocationWithId = new Snippet("delete location with id") {
+        @Override
+        public void execute() {
+            QBLocation location = new QBLocation(89895);
+
+            QBLocations.deleteLocation(location, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        System.out.println(">>> Delete location OK ");
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet getLocations = new Snippet("get locations") {
+        @Override
+        public void execute() {
+            QBLocationRequestBuilder qbLocationRequestBuilder = new QBLocationRequestBuilder();
+            qbLocationRequestBuilder.setPerPage(10);
+            qbLocationRequestBuilder.setPage(1);
+
+            QBLocations.getLocations(qbLocationRequestBuilder, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
+                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+
 
     Snippet deleteLocations = new Snippet("delete locations") {
         @Override
@@ -196,39 +198,10 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet createPlaceTask = new Snippet("create place task") {
-        @Override
-        public void execute() {
-            String placeTitle = "the best place on the planet";
-            String placeDescription = "place description";
-            String placeAddress = "Ukraine, Kharkov";
-            double placeLongitude = 1.23;
-            double placeLatitude = 1.23;
-
-            int fileId = R.raw.kharkov;
-            InputStream is = context.getResources().openRawResource(fileId);
-            File placePhoto = FileHelper.getFileInputStream(is, "kharkov.jpg", "qb_snippets12");
-
-            QBLocations.createPlaceTask(placeTitle, placeDescription, placeAddress, placeLongitude, placeLatitude, placePhoto, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBPlaceResult placeResult = (QBPlaceResult) result;
-
-                        System.out.println(">> Place: " + placeResult.getPlace());
-                    } else {
-                        handleErrors(result);
-                    }
-
-                }
-            });
-        }
-    };
-
     Snippet getPlaceWithId = new Snippet("get place") {
         @Override
         public void execute() {
-            QBPlace place = new QBPlace(432);
+            QBPlace place = new QBPlace(1832);
 
             QBLocations.getPlace(place, new QBCallbackImpl() {
                 @Override
@@ -246,10 +219,32 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
+    Snippet updatePlace = new Snippet("update place") {
+        @Override
+        public void execute() {
+
+            QBPlace place = new QBPlace();
+            place.setId(1832);
+            place.setTitle("Great title");
+
+            QBLocations.updatePlace(place, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    QBPlaceResult qbPlaceResult = (QBPlaceResult) result;
+                    if (result.isSuccess()) {
+                        System.out.println(">>> Place" + qbPlaceResult.getPlace());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
     Snippet deletePlace = new Snippet("delete place") {
         @Override
         public void execute() {
-            QBPlace place = new QBPlace(433);
+            QBPlace place = new QBPlace(1832);
 
             QBLocations.deletePlace(place, new QBCallbackImpl() {
                 @Override
@@ -282,20 +277,30 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-    Snippet updatePlace = new Snippet("update place") {
+
+    //
+    ///////////////////////////////////////////// Tasks /////////////////////////////////////////////
+    //
+    Snippet createPlaceTask = new Snippet("create place task") {
         @Override
         public void execute() {
+            String placeTitle = "Kharkov city - all the best!";
+            String placeDescription = "place description";
+            String placeAddress = "Ukraine, Kharkov";
+            double placeLongitude = -1.23;
+            double placeLatitude = 1.23;
 
-            QBPlace place = new QBPlace();
-            place.setId(1758);
-            place.setTitle("new title");
+            int fileId = R.raw.kharkov;
+            InputStream is = context.getResources().openRawResource(fileId);
+            File placePhoto = FileHelper.getFileInputStream(is, "kharkov.jpg", "qb_snippets12");
 
-            QBLocations.updatePlace(place, new QBCallbackImpl() {
+            QBLocations.createPlaceTask(placeTitle, placeDescription, placeAddress, placeLongitude, placeLatitude, placePhoto, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-                    QBPlaceResult qbPlaceResult = (QBPlaceResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> Place" + qbPlaceResult.getPlace());
+                        QBPlaceResult placeResult = (QBPlaceResult) result;
+
+                        System.out.println(">> Place: " + placeResult.getPlace());
                     } else {
                         handleErrors(result);
                     }
