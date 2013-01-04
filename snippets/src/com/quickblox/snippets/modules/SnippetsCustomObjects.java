@@ -35,7 +35,7 @@ public class SnippetsCustomObjects extends Snippets {
         snippets.add(deleteCustomObject);
         snippets.add(getCustomObjects);
         snippets.add(updateCustomObject);
-        snippets.add(getCoByIds);
+        snippets.add(getGetCustomObjectsByIds);
     }
 
     Snippet getCustomObjects = new Snippet("get objects") {
@@ -65,7 +65,6 @@ public class SnippetsCustomObjects extends Snippets {
             customObject.put(fieldPower, 123.45);
             customObject.setParentId("50d9bf2d535c12344701c43a");
 
-
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
@@ -77,6 +76,29 @@ public class SnippetsCustomObjects extends Snippets {
                         System.out.println(">>> custom object: " + newCustomObject);
                     } else {
                         handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet getGetCustomObjectsByIds = new Snippet("get custom objects by ids") {
+        @Override
+        public void execute() {
+
+            ArrayList<String> coIDs = new ArrayList<String>();
+            coIDs.add("50e67e6e535c121c66004c74");
+            coIDs.add("50e67e6d535c127f66004f47");
+            coIDs.add("50e67e6b535c121c66004c72");
+            coIDs.add("50e59f81535c121c660015fd");
+
+            QBCustomObjects.getObjectsByIdsTask(className, coIDs, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBCustomObjectTaskResult taskResult = (QBCustomObjectTaskResult) result;
+
+                        System.out.format(">>> custom objects: " + taskResult.getCustomObjects().toString());
                     }
                 }
             });
@@ -99,29 +121,6 @@ public class SnippetsCustomObjects extends Snippets {
                     } else {
                         handleErrors(result);
                     }
-                }
-            });
-        }
-    };
-
-    Snippet getCoByIds = new Snippet(" get custom objects by ids") {
-        @Override
-        public void execute() {
-            ArrayList<String> coIDs = new ArrayList<String>();
-            coIDs.add("50e3f85f535c123376000d31");
-            coIDs.add("50e3f86a535c123533015886");
-            coIDs.add("50e3f8c7535c126073000d52");
-            coIDs.add("50e42a72535c122406000134");
-
-            QBCustomObjects.getObjectsByIdsTask(className, coIDs, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBCustomObjectTaskResult taskResult = (QBCustomObjectTaskResult) result;
-                        ArrayList<QBCustomObject> coList = taskResult.getCoList();
-                        System.out.println(">>> custom object list: " + coList.toString());
-                    }
-
                 }
             });
         }
