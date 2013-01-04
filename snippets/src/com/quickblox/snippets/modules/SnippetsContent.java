@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import android.util.Log;
 import com.quickblox.core.QBCallbackImpl;
+import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.ContentType;
 import com.quickblox.internal.core.helper.FileHelper;
@@ -261,7 +262,7 @@ public class SnippetsContent extends Snippets {
         public void execute() {
 
             Boolean fileIsPublic = true;
-            QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
+            QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
 
@@ -276,6 +277,7 @@ public class SnippetsContent extends Snippets {
                     }
                 }
             });
+            requestCanceler.cancel();
         }
     };
 

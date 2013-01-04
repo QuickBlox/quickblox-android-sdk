@@ -7,6 +7,7 @@ import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
+import com.quickblox.module.custom.result.QBCustomObjectTaskResult;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
@@ -34,6 +35,7 @@ public class SnippetsCustomObjects extends Snippets {
         snippets.add(deleteCustomObject);
         snippets.add(getCustomObjects);
         snippets.add(updateCustomObject);
+        snippets.add(getCoByIds);
     }
 
     Snippet getCustomObjects = new Snippet("get objects") {
@@ -97,6 +99,29 @@ public class SnippetsCustomObjects extends Snippets {
                     } else {
                         handleErrors(result);
                     }
+                }
+            });
+        }
+    };
+
+    Snippet getCoByIds = new Snippet(" get custom objects by ids") {
+        @Override
+        public void execute() {
+            ArrayList<String> coIDs = new ArrayList<String>();
+            coIDs.add("50e3f85f535c123376000d31");
+            coIDs.add("50e3f86a535c123533015886");
+            coIDs.add("50e3f8c7535c126073000d52");
+            coIDs.add("50e42a72535c122406000134");
+
+            QBCustomObjects.getObjectsByIdsTask(className, coIDs, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBCustomObjectTaskResult taskResult = (QBCustomObjectTaskResult) result;
+                        ArrayList<QBCustomObject> coList = taskResult.getCoList();
+                        System.out.println(">>> custom object list: " + coList.toString());
+                    }
+
                 }
             });
         }

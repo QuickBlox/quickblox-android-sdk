@@ -2,6 +2,7 @@ package com.quickblox.snippets.modules;
 
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
+import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.core.request.QBPagedRequestBuilder;
@@ -58,7 +59,7 @@ public class SnippetsUsers extends Snippets {
 
             final QBUser user = new QBUser("testuser", "testpassword");
 
-            QBUsers.signIn(user, new QBCallbackImpl() {
+            QBRequestCanceler canceler = QBUsers.signIn(user, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -72,6 +73,7 @@ public class SnippetsUsers extends Snippets {
                     }
                 }
             });
+            canceler.cancel();
         }
     };
 
