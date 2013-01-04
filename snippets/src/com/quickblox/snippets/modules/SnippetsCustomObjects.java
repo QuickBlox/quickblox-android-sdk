@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
@@ -36,6 +37,8 @@ public class SnippetsCustomObjects extends Snippets {
         snippets.add(getCustomObjects);
         snippets.add(updateCustomObject);
         snippets.add(getGetCustomObjectsByIds);
+
+        snippets.add(getCustomsObjectWithFilters);
     }
 
     Snippet getCustomObjects = new Snippet("get objects") {
@@ -100,6 +103,60 @@ public class SnippetsCustomObjects extends Snippets {
 
                         System.out.format(">>> custom objects: " + taskResult.getCustomObjects().toString());
                     }
+                }
+            });
+        }
+    };
+
+    Snippet getCustomsObjectWithFilters = new Snippet("get object with filters") {
+        @Override
+        public void execute() {
+            String fieldName = "health";
+            String fieldForSort = "integer_field";
+            QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
+//            requestBuilder.sortAsc(fieldName);
+//            requestBuilder.sortDesc(fieldName);
+
+            // search records which contains exactly specified value
+//            String fieldValue = "1";
+//            requestBuilder.eq(fieldName, fieldValue);
+
+            // Limit search results to N records. Useful for pagination. Maximum value - 100 (by default). If limit is equal to -1 only last record will be returned
+//            requestBuilder.setPagesLimit(2);
+
+            //Skip N records in search results. Useful for pagination. Default (if not specified): 0
+            requestBuilder.setPagesSkip(4);
+
+            // Search record with field which contains value according to specified value and operator
+//            requestBuilder.lt("integer_field", 60);
+//            requestBuilder.lte(fieldForSort, 1);
+//            requestBuilder.gt(fieldForSort, 60);
+//            requestBuilder.gte(fieldForSort, 99);
+//            requestBuilder.ne(fieldForSort, 99);
+
+            // for arrays
+//            ArrayList<String> healthList = new ArrayList<String>();
+//            healthList.add("man");
+//            healthList.add("girl");
+//            requestBuilder.in("tags", "man", "girl");
+//            requestBuilder.nin("tags", healthList);
+//            requestBuilder.count();
+
+            QBCustomObjects.getObjects(className, requestBuilder, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult) result;
+                        ArrayList<QBCustomObject> co = coresult.getCustomObjects();
+                        System.out.println(">>> custom object list: " + co.toString());
+
+                    } else {
+                        handleErrors(result);
+                    }
+
+                    // if we use requestBuilder.count()
+//                    QBCustomObjectCountResult countResult = (QBCustomObjectCountResult) result;
+//                    Log.d("Count", String.valueOf(countResult.getCount()));
                 }
             });
         }

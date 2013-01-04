@@ -26,6 +26,28 @@ import java.io.InputStream;
  */
 public class SnippetsLocations extends Snippets {
 
+
+    // Coordinates for follow points
+    // First point is SW, second is NE
+
+    // SW point to build rect
+    double borderPointLat1 = 49.990106;
+    double borderPointLng1 = 36.185703;
+
+    // NE point to build rect
+    double borderPointLat2 = 50.043934;
+    double borderPointLng2 = 36.28767;
+
+
+    // Center point for radius area
+    public static double lat1 = 50.010431;
+    public static double lng1 = 36.224327;
+
+    public static double lat2 = 50.004694;
+    public static double lng2 = 36.240807;
+
+    int distanceInMeters = 1338;
+
     public SnippetsLocations(Context context) {
         super(context);
 
@@ -35,6 +57,7 @@ public class SnippetsLocations extends Snippets {
         snippets.add(deleteLocationWithId);
 
         snippets.add(getLocations);
+        snippets.add(getLocationWithFilters);
         snippets.add(deleteLocations);
 
         snippets.add(createPlace);
@@ -151,6 +174,44 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
+    Snippet getLocationWithFilters = new Snippet("get locations with filters") {
+        @Override
+        public void execute() {
+            QBLocationRequestBuilder locationRequestBuilder = new QBLocationRequestBuilder();
+//            locationRequestBuilder.setCreatedAt(1326471371);
+//            locationRequestBuilder.setUserId(8330);
+//            locationRequestBuilder.setUserIds(8330, 53779, 55022);
+//            locationRequestBuilder.setUserName("testUser");
+//            locationRequestBuilder.setUserExternalIds("987", "123456");
+//            locationRequestBuilder.setMinCreatedAt(1326471371);
+//            locationRequestBuilder.setMaxCreatedAt(1326471371);
+//            locationRequestBuilder.setGeoRect(borderPointLat1, borderPointLng1, borderPointLat2, borderPointLng2);
+//            locationRequestBuilder.setRadius(lat1, lng1, distanceInMeters);
+//
+//            locationRequestBuilder.setSort(SortField.CREATED_AT, SortOrder.ASCENDING);
+//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.ASCENDING);
+//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.DESCENDING);
+
+//            locationRequestBuilder.setLastOnly();
+//            locationRequestBuilder.setHasStatus();
+//            locationRequestBuilder.setCurrentPosition(lat1, lng1);
+            locationRequestBuilder.setPage(1);
+            locationRequestBuilder.setPerPage(10);
+
+
+            QBLocations.getLocations(locationRequestBuilder, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
+                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
 
     Snippet deleteLocations = new Snippet("delete locations") {
         @Override
