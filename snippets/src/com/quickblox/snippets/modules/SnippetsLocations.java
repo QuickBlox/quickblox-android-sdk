@@ -229,7 +229,6 @@ public class SnippetsLocations extends Snippets {
         }
     };
 
-
     //
     ///////////////////////////////////////////// Places /////////////////////////////////////////////
     //
@@ -257,6 +256,7 @@ public class SnippetsLocations extends Snippets {
             });
         }
     };
+
 
     Snippet getPlaceWithId = new Snippet("get place") {
         @Override
@@ -336,7 +336,6 @@ public class SnippetsLocations extends Snippets {
             });
         }
     };
-
 
     //
     ///////////////////////////////////////////// Tasks /////////////////////////////////////////////
