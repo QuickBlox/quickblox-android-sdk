@@ -284,7 +284,7 @@ public class SnippetsContent extends Snippets {
                     }
                 }
             });
-            requestCanceler.cancel();
+//            requestCanceler.cancel();
         }
     };
 

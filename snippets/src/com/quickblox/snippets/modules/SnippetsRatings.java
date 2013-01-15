@@ -49,7 +49,7 @@ public class SnippetsRatings extends Snippets {
     Snippet createGameMode = new Snippet("create game mode") {
         @Override
         public void execute() {
-            QBGameMode gameMode = new QBGameMode("my game mode");
+            QBGameMode gameMode = new QBGameMode("Guitar hero mode");
 
             QBRatings.createGameMode(gameMode, new QBCallbackImpl() {
                 @Override
@@ -69,7 +69,7 @@ public class SnippetsRatings extends Snippets {
     Snippet getGameModeWithId = new Snippet("get game mode") {
         @Override
         public void execute() {
-            QBGameMode gameMode = new QBGameMode(310);
+            QBGameMode gameMode = new QBGameMode(311);
             QBRatings.getGameMode(gameMode, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {

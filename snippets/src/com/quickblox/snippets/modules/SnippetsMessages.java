@@ -48,6 +48,9 @@ public class SnippetsMessages extends Snippets {
         @Override
         public void execute() {
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+            if(deviceId == null){
+                deviceId = "UniversalDevice";
+            }
 
             QBPushToken qbPushToken = new QBPushToken();
             qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
@@ -281,6 +284,9 @@ public class SnippetsMessages extends Snippets {
         public void execute() {
             String registrationID = "2342hiyf2352959fg9af03fgfg0fahoo018273af";
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+            if(deviceId == null){
+                deviceId = "UniversalDevice";
+            }
 
             QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
                 @Override

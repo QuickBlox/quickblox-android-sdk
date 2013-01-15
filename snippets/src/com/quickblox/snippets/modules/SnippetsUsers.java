@@ -59,7 +59,7 @@ public class SnippetsUsers extends Snippets {
 
             final QBUser user = new QBUser("testuser", "testpassword");
 
-            QBRequestCanceler canceler = QBUsers.signIn(user, new QBCallbackImpl() {
+            final QBRequestCanceler canceler = QBUsers.signIn(user, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -73,7 +73,6 @@ public class SnippetsUsers extends Snippets {
                     }
                 }
             });
-            canceler.cancel();
         }
     };
 
