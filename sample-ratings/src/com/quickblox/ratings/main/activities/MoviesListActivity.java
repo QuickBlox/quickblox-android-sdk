@@ -57,7 +57,6 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
     // Get avarage by all score for game mode
     private void getAvarageRatingForMovie(int index, QBQueries queryName) {
         QBGameMode qbGameMode = new QBGameMode();
-        qbGameMode.setAppId(APP_ID);
         qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
         QBRatings.getAverageByGameMode(qbGameMode, this, queryName);
     }

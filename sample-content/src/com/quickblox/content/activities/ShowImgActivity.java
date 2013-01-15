@@ -44,6 +44,6 @@ public class ShowImgActivity extends Activity {
                 .defaultDisplayImageOptions(options)
                 .build();
         ImageLoader.getInstance().init(config);
-        ImageLoader.getInstance().displayImage("http://qbprod.s3.amazonaws.com/" + DataHolder.getDataHolder().getQBFileUid(position), img);
+        ImageLoader.getInstance().displayImage("https://s3.amazonaws.com:443/qbprod/" +DataHolder.getDataHolder().getPublicUrl(position), img);
     }
 }

@@ -58,14 +58,14 @@ public class SplashActivity extends Activity implements QBCallback {
 
         // Sign in by default user
         QBUser qbUser = new QBUser(USER_LOGIN, USER_PASSWORD);
-        QBAuth.authorizeApp(qbUser, this, QBQueries.SIGN_IN);
+        QBAuth.createSession(qbUser, this, QBQueries.SIGN_IN);
     }
 
 
     // Get avarage by all score for game mode
     private void getAvarageRatingForMovie(int index, QBQueries queryName) {
         QBGameMode qbGameMode = new QBGameMode();
-        qbGameMode.setAppId(APP_ID);
+//        qbGameMode.setAppId(APP_ID);
         qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
         QBRatings.getAverageByGameMode(qbGameMode, this, queryName);
     }

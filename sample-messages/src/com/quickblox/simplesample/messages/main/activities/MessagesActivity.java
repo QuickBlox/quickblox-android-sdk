@@ -2,17 +2,21 @@ package com.quickblox.simplesample.messages.main.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.quickblox.core.QBCallback;
+import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.*;
+import com.quickblox.module.messages.result.QBSubscribeToPushNotificationsResult;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
@@ -161,36 +165,19 @@ public class MessagesActivity extends Activity {
     public void createPushToken(String registrationID) {
         //Create push token with  Registration Id for Android
         //
-        QBPushToken qbPushToken = new QBPushToken();
-        qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
-        qbPushToken.setCis(registrationID);
-        QBMessages.createPushToken(qbPushToken, new QBCallback() {
+
+
+        String deviceId = ((TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+        QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
-
-                // ================= QuickBlox ===== Step 5 =================
-                // Create subscription
-                createSubscription();
+                if (result.isSuccess()) {
+                    QBSubscribeToPushNotificationsResult subscribeToPushNotificationsResult = (QBSubscribeToPushNotificationsResult) result;
+                    System.out.println(">>> subscription created" + subscribeToPushNotificationsResult.getSubscriptions().toString());
+                }
             }
 
-            @Override
-            public void onComplete(Result result, Object o) {
-            }
         });
     }
 
-    private void createSubscription() {
-        // subscribed for android pushes ---> GSM
-        QBMessages.createSubscription(QBNotificationChannel.GCM, new QBCallback() {
-            @Override
-            public void onComplete(Result result) {
-
-            }
-
-            @Override
-            public void onComplete(Result result, Object o) {
-
-            }
-        });
-    }
 }
