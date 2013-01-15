@@ -386,6 +386,7 @@ public class SnippetsUsers extends Snippets {
             user.setFullName("galog");
             user.setPhone("+123123123");
             StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            tags.add("man");
             user.setTags(tags);
 
             user.setWebsite("google.com");
