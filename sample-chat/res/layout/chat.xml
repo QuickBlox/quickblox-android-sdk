@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="20dp">
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/messageEdit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:autoText="true"
+            android:hint="message text"
+            android:layout_alignParentRight="false"
+            android:layout_toLeftOf="@+id/sendButton"
+            android:layout_marginRight="10dp"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            android:id="@+id/sendButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
+    <ScrollView
+            android:id="@+id/scrollContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="20dp" android:layout_above="@+id/messageEdit"
+            android:layout_below="@+id/meLabel" android:layout_marginTop="10dp">
+        <LinearLayout
+                android:id="@+id/messagesContainer"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Me"
+            android:id="@+id/meLabel" android:layout_gravity="left|center_vertical" android:singleLine="false"
+            android:textSize="20dp"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friend"
+            android:id="@+id/friendLabel" android:layout_alignParentRight="true" android:textSize="20dp"/>
+</RelativeLayout>
