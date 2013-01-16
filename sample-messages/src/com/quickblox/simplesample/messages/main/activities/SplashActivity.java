@@ -2,11 +2,9 @@ package com.quickblox.simplesample.messages.main.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -14,8 +12,6 @@ import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
-import com.quickblox.module.messages.model.QBDevice;
-import com.quickblox.module.messages.model.QBPlatform;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.simplesample.messages.R;
 
@@ -59,15 +55,12 @@ public class SplashActivity extends Activity implements QBCallback {
         // Authorize application with device & user.
         // You can create user on admin.quickblox.com, Users module or through QBUsers.signUp method
         QBUser qbUser = new QBUser();
-        qbUser.setLogin("bob");
-        qbUser.setPassword("bobbobbob");
-        //
-        QBDevice qbDevice = new QBDevice();
-        qbDevice.setId(((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
-        qbDevice.setPlatform(QBPlatform.ANDROID);
+        qbUser.setLogin("tom");
+        qbUser.setPassword("tom1234567");
+
         //
         // Create session with additional parameters
-        QBAuth.authorizeApp(qbUser, qbDevice, this);
+        QBAuth.createSession(qbUser, this);
     }
 
     @Override
@@ -90,5 +83,6 @@ public class SplashActivity extends Activity implements QBCallback {
     }
 
     @Override
-    public void onComplete(Result result, Object context) { }
+    public void onComplete(Result result, Object context) {
+    }
 }

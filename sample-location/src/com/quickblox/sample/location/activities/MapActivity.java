@@ -115,7 +115,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
                         final MapOverlayItem overlayItem = new MapOverlayItem(new GeoPoint(lat, lng), "", "");
                         overlayItem.setUserStatus(location.getStatus());
-                        overlayItem.setUserName("" + location.getUserId());
+                        overlayItem.setUserName("" + location.getUser().getLogin());
                         locationsList.add(overlayItem);
                     }
 
@@ -263,7 +263,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
             MapOverlayItem item = (MapOverlayItem) getItem(i);
 
-            String message = "User ID: " + item.getUserName() +
+            String message = "User login: " + item.getUserName() +
                     ", Status: " + (item.getUserStatus() != null ? item.getUserStatus() : "<empty>");
             Toast.makeText(MapActivity.this, message,
                     Toast.LENGTH_LONG).show();

@@ -44,7 +44,7 @@ public class SplashActivity extends Activity {
     private void authorizeApp() {
         QBUser qbUser = new QBUser(USER_LOGIN, USER_PASSWORD);
         // authorize app with default user
-        QBAuth.authorizeApp(qbUser, new QBCallback() {
+        QBAuth.createSession(qbUser, new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {

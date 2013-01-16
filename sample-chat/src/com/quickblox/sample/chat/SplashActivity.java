@@ -51,7 +51,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
         // ================= QuickBlox ===== Step 2 =================
         // Authorize application.
-        QBAuth.authorizeApp(this);
+        QBAuth.createSession(this);
     }
 
     @Override
@@ -70,5 +70,6 @@ public class SplashActivity extends Activity implements QBCallback {
     }
 
     @Override
-    public void onComplete(Result result, Object context) { }
+    public void onComplete(Result result, Object context) {
+    }
 }

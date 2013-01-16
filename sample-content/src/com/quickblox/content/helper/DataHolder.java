@@ -40,8 +40,9 @@ public class DataHolder {
         return qbFileList.size();
     }
 
-    public String getQBFileUid(int position) {
+    public String getPublicUrl(int position) {
         return qbFileList.get(position).getUid();
+
     }
 
     public void addQbFile(QBFile qbFile) {

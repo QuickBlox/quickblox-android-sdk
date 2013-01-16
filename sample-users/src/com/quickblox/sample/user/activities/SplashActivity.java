@@ -42,7 +42,7 @@ public class SplashActivity extends Activity implements QBCallback {
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
         QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
         // Authorize application
-        QBAuth.authorizeApp(this, QBQueries.QB_QUERY_AUTHORIZE_APP);
+        QBAuth.createSession(this, QBQueries.QB_QUERY_AUTHORIZE_APP);
     }
 
 

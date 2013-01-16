@@ -56,7 +56,7 @@ public class SplashActivity extends Activity implements QBCallback{
         QBSettings.getInstance().fastConfigInit(String.valueOf(APP_ID), AUTH_KEY, AUTH_SECRET);
         QBUser qbUser = new QBUser(USER_LOGIN, USER_PASSWORD);
         // authorize app with default user
-        QBAuth.authorizeApp(qbUser, this, QBQueries.SIGN_IN);
+        QBAuth.createSession(qbUser, this, QBQueries.SIGN_IN);
 
     }
 

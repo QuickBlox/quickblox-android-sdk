@@ -57,7 +57,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
         // Sign in by default user
         QBUser qbUser = new QBUser(USER_LOGIN, USER_PASSWORD);
-        QBAuth.authorizeApp(qbUser, this, QBQueries.SIGN_IN);
+        QBAuth.createSession(qbUser, this, QBQueries.SIGN_IN);
     }
 
 
@@ -67,7 +67,7 @@ public class SplashActivity extends Activity implements QBCallback {
         // ================= QuickBlox ===== Step 2 =================
         // Get averages
         QBGameMode qbGameMode = new QBGameMode();
-        qbGameMode.setAppId(APP_ID);
+//        qbGameMode.setAppId(APP_ID);
         qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
         QBRatings.getAverageByGameMode(qbGameMode, this, queryName);
     }

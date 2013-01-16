@@ -72,7 +72,7 @@ public class GalleryAdapter extends BaseAdapter {
                 .defaultDisplayImageOptions(options)
                 .build();
         ImageLoader.getInstance().init(config);
-        ImageLoader.getInstance().displayImage("http://qbprod.s3.amazonaws.com/" + DataHolder.getDataHolder().getQBFileUid(position), coverIv);
+        ImageLoader.getInstance().displayImage("http://qbprod.s3.amazonaws.com/" + DataHolder.getDataHolder().getPublicUrl(position), coverIv);
     }
 
     static class ViewHolder {

@@ -4,9 +4,8 @@ import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
-import com.quickblox.module.auth.model.QBSession;
+import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.auth.result.QBSessionResult;
-import com.quickblox.module.messages.model.QBDevice;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
@@ -17,70 +16,104 @@ import com.quickblox.snippets.Snippets;
  */
 public class SnippetsAuth extends Snippets {
 
-    public static int currentUserId = 0;
-
     public SnippetsAuth(Context context) {
         super(context);
 
         snippets.add(createSession);
         snippets.add(createSessionWithUser);
         snippets.add(createSessionWithUserEmail);
-        snippets.add(createSessionWithDevice);
+        snippets.add(createSessionWithSocialProvider);
+        snippets.add(destroySession);
     }
 
     Snippet createSession = new Snippet("create session") {
         @Override
         public void execute() {
-            QBAuth.authorizeApp(authCallback);
+            QBAuth.createSession(new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
     Snippet createSessionWithUser = new Snippet("create session", "with user login") {
         @Override
         public void execute() {
-            String login = SnippetsUsers.LOGIN;
-            String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.authorizeApp(login, password, authCallback);
+            QBAuth.createSession("testuser", "testpassword", new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
     Snippet createSessionWithUserEmail = new Snippet("create session", "with user email") {
         @Override
         public void execute() {
-            String email = SnippetsUsers.EMAIL;
-            String password = SnippetsUsers.PASSWORD;
 
-            QBAuth.authorizeAppByEmail(email, password, authCallback);
+            QBAuth.createSessionByEmail("test123@test.com", "testpassword", new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
-    Snippet createSessionWithDevice = new Snippet("create session", "with device") {
+    Snippet createSessionWithSocialProvider = new Snippet("create session with social provider") {
         @Override
         public void execute() {
-            String login = SnippetsUsers.LOGIN;
-            String password = SnippetsUsers.PASSWORD;
-            QBDevice device = new QBDevice(context);
 
-            QBAuth.authorizeApp(login, password, device, authCallback);
+            String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
+
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBSessionResult sessionResult = (QBSessionResult) result;
+                        System.out.println(">>> Session = " + sessionResult.getSession());
+
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
         }
     };
 
-    QBCallbackImpl authCallback = new QBCallbackImpl() {
+    Snippet destroySession = new Snippet("destroy session") {
         @Override
-        public void onComplete(Result result) {
-            printResultToConsole(result);
-
-            if (result.isSuccess()) {
-                QBSessionResult sessionResult = (QBSessionResult) result;
-                QBSession session = sessionResult.getSession();
-
-                System.out.println(">>> session token = " + session.getToken());
-
-                if (session.getUserId() != null) {
-                    currentUserId = session.getUserId();
+        public void execute() {
+            QBAuth.deleteSession(new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        System.out.println(">>> Session Destroy OK");
+                    } else {
+                        handleErrors(result);
+                    }
                 }
-            }
+            });
         }
     };
 }

@@ -14,14 +14,14 @@ import android.widget.ListView;
 public class SnippetsList extends ListView {
 
     public void initialize(Snippets snippets) {
-        SnippetsAdapter snippetsAdapter = new SnippetsAdapter(getContext(), snippets);
+        final SnippetsAdapter snippetsAdapter = new SnippetsAdapter(getContext(), snippets);
 
         setAdapter(snippetsAdapter);
 
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Snippet snippet = (Snippet) view.getTag();
+                Snippet snippet = snippetsAdapter.getSnippet(i);
                 snippet.performExecution();
             }
         });

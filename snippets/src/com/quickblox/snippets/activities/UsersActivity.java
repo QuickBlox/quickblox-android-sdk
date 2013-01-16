@@ -17,9 +17,9 @@ public class UsersActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snippets_list);
-
         SnippetsUsers snippets = new SnippetsUsers(this);
         SnippetsList list = (SnippetsList) findViewById(R.id.list);
+
         list.initialize(snippets);
     }
 }
