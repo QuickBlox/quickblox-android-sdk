@@ -55,8 +55,8 @@ public class SplashActivity extends Activity implements QBCallback {
         // Authorize application with device & user.
         // You can create user on admin.quickblox.com, Users module or through QBUsers.signUp method
         QBUser qbUser = new QBUser();
-        qbUser.setLogin("tom");
-        qbUser.setPassword("tom1234567");
+        qbUser.setLogin("bob");
+        qbUser.setPassword("bobbobbob");
 
         //
         // Create session with additional parameters

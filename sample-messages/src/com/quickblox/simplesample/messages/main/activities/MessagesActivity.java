@@ -19,7 +19,6 @@ import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.QBEnvironment;
 import com.quickblox.module.messages.model.QBEvent;
 import com.quickblox.module.messages.model.QBNotificationType;
-import com.quickblox.module.messages.model.QBPushType;
 import com.quickblox.module.messages.result.QBSubscribeToPushNotificationsResult;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -144,16 +143,26 @@ public class MessagesActivity extends Activity {
         // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();
         qbEvent.setNotificationType(QBNotificationType.PUSH);
-        qbEvent.setPushType(QBPushType.GCM);
         qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
+
+        // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
         qbEvent.setMessage(messageBody.getText().toString());
+
+        // Android based push
+//        qbEvent.setPushType(QBPushType.GCM);
+//        HashMap<String, String> data = new HashMap<String, String>();
+//        data.put("data.message", messageBody.getText().toString());
+//        data.put("data.type", "welcome message");
+//        qbEvent.setMessage(data);
+
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
         userIds.add(selectedUser.getId());
         qbEvent.setUserIds(userIds);
+
         QBMessages.createEvent(qbEvent, new QBCallback() {
             @Override
             public void onComplete(Result result) {
-
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override

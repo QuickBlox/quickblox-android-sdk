@@ -107,6 +107,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
                     QBLocationPagedResult locationsResult = (QBLocationPagedResult)result;
 
+
                     // Process result
                     // show all locations on map
                     for(QBLocation location : locationsResult.getLocations()){

@@ -10,6 +10,7 @@ import com.quickblox.content.helper.DataHolder;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.result.QBSessionResult;
 import com.quickblox.module.content.QBContent;
@@ -69,7 +70,11 @@ public class SplashActivity extends Activity {
 
         // ================= QuickBlox ===== Step 2 =================
         // Gey all user's files
-        QBContent.getFiles(new QBCallback() {
+
+        QBPagedRequestBuilder builder = new  QBPagedRequestBuilder();
+        builder.setPerPage(100);
+        builder.setPage(1);
+        QBContent.getFiles(builder, new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;

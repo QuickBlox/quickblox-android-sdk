@@ -204,7 +204,11 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
-                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().toString());
+
+
+                        ;
+
+                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().get(0).getUser());
                     } else {
                         handleErrors(result);
                     }

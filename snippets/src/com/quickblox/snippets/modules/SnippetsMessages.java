@@ -159,14 +159,21 @@ public class SnippetsMessages extends Snippets {
             userIds.add(53779);
             userIds.add(960);
 
-
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);
-            event.setMessage("Gonna send Push Notification!");
             event.setName("Magic Push");
             event.setEnvironment(QBEnvironment.DEVELOPMENT);
-            event.setPushType(QBPushType.GCM);
             event.setNotificationType(QBNotificationType.PUSH);
+
+            // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
+            event.setMessage("Gonna send Push Notification!");
+
+            // Android based push
+//            event.setPushType(QBPushType.GCM);
+//            HashMap<String, String> data = new HashMap<String, String>();
+//            data.put("data.message", "Hello");
+//            data.put("data.type", "welcome message");
+//            event.setMessage(data);
 
             QBMessages.createEvent(event, new QBCallbackImpl() {
                 @Override

@@ -34,13 +34,16 @@ public class SnippetsUsers extends Snippets {
 
         snippets.add(getAllUsers);
         snippets.add(getUsersByIds);
-        snippets.add(getUsersById);
-        snippets.add(getUserWithLogin);
+        snippets.add(getUsersByLogins);
+        snippets.add(getUsersByEmails);
         snippets.add(getUsersWithFullName);
+        snippets.add(getUsersWithTags);
+
+        snippets.add(getUserById);
+        snippets.add(getUserWithLogin);
         snippets.add(getUserWithTwitterId);
         snippets.add(getUserWithFacebookId);
         snippets.add(getUserWithEmail);
-        snippets.add(getUsersWithTags);
         snippets.add(getUserWithExternalId);
 
         snippets.add(updateUser);
@@ -49,8 +52,6 @@ public class SnippetsUsers extends Snippets {
         snippets.add(deleteUserByExternalId);
 
         snippets.add(resetPassword);
-
-
     }
 
     Snippet signInUserWithLogin = new Snippet("sign in user (login)") {
@@ -204,12 +205,12 @@ public class SnippetsUsers extends Snippets {
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> userIds = new ArrayList<String>();
-            userIds.add("378");
-            userIds.add("379");
-            userIds.add("380");
+            ArrayList<String> usersIds = new ArrayList<String>();
+            usersIds.add("378");
+            usersIds.add("379");
+            usersIds.add("380");
 
-            QBUsers.getUsersByIDs(userIds, pagedRequestBuilder, new QBCallbackImpl() {
+            QBUsers.getUsersByIDs(usersIds, pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -224,10 +225,104 @@ public class SnippetsUsers extends Snippets {
         }
     };
 
-    Snippet getUsersById = new Snippet("get user by id") {
+    Snippet getUsersByLogins = new Snippet("get users by logins") {
         @Override
         public void execute() {
-            QBUsers.getUser(37823232, new QBCallbackImpl() {
+            QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+            pagedRequestBuilder.setPage(1);
+            pagedRequestBuilder.setPerPage(10);
+
+            ArrayList<String> usersLogins = new ArrayList<String>();
+            usersLogins.add("bob");
+            usersLogins.add("john");
+
+            QBUsers.getUsersByLogins(usersLogins, pagedRequestBuilder, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
+                        ArrayList<QBUser> users = usersResult.getUsers();
+                        System.out.println(">>> Users: " + users.toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet getUsersByEmails = new Snippet("get users by emails") {
+        @Override
+        public void execute() {
+            QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+            pagedRequestBuilder.setPage(1);
+            pagedRequestBuilder.setPerPage(10);
+
+            ArrayList<String> usersEmails = new ArrayList<String>();
+            usersEmails.add("asd@ffg.fgg");
+            usersEmails.add("ghh@ggh.vbb");
+
+            QBUsers.getUsersByEmails(usersEmails, pagedRequestBuilder, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
+                        ArrayList<QBUser> users = usersResult.getUsers();
+                        System.out.println(">>> Users: " + users.toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet getUsersWithFullName = new Snippet("get user with full name") {
+        @Override
+        public void execute() {
+            String fullName = "fullName";
+            QBUsers.getUsersByFullName(fullName, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
+                        ArrayList<QBUser> users = usersResult.getUsers();
+                        System.out.println(">>> Users: " + users.toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet getUsersWithTags = new Snippet("get users with tags") {
+        @Override
+        public void execute() {
+            ArrayList<String> userTags = new ArrayList<String>();
+            userTags.add("man");
+            userTags.add("car");
+
+            QBUsers.getUsersByTags(userTags, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
+                        ArrayList<QBUser> users = usersResult.getUsers();
+                        System.out.println(">>> Users: " + users.toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+
+    Snippet getUserById = new Snippet("get user by id") {
+        @Override
+        public void execute() {
+            QBRequestCanceler canceler =  QBUsers.getUser(37823232, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -238,6 +333,9 @@ public class SnippetsUsers extends Snippets {
                     }
                 }
             });
+
+
+            canceler.cancel();
         }
     };
 
@@ -251,26 +349,6 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    } else {
-                        handleErrors(result);
-                    }
-                }
-            });
-        }
-    };
-
-
-    Snippet getUsersWithFullName = new Snippet("get user with full name") {
-        @Override
-        public void execute() {
-            String fullName = "fullName";
-            QBUsers.getUsersByFullName(fullName, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
-                        ArrayList<QBUser> users = usersResult.getUsers();
-                        System.out.println(">>> Users: " + users.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -325,28 +403,6 @@ public class SnippetsUsers extends Snippets {
                     if (result.isSuccess()) {
                         QBUserResult qbUserResult = (QBUserResult) result;
                         System.out.println(">>> User: " + qbUserResult.getUser().toString());
-                    } else {
-                        handleErrors(result);
-                    }
-                }
-            });
-        }
-    };
-
-    Snippet getUsersWithTags = new Snippet("get users with tags") {
-        @Override
-        public void execute() {
-            ArrayList<String> userTags = new ArrayList<String>();
-            userTags.add("man");
-            userTags.add("car");
-
-            QBUsers.getUsersByTags(userTags, new QBCallbackImpl() {
-                @Override
-                public void onComplete(Result result) {
-                    if (result.isSuccess()) {
-                        QBUserPagedResult usersResult = (QBUserPagedResult) result;
-                        ArrayList<QBUser> users = usersResult.getUsers();
-                        System.out.println(">>> Users: " + users.toString());
                     } else {
                         handleErrors(result);
                     }
