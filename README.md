@@ -67,7 +67,7 @@ QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
 
 
 ```java
-QBAuth.authorizeApp(new QBCallbackImpl() {
+QBAuth.createSession(new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
