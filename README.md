@@ -44,7 +44,7 @@ inside `<manifest>` tag.
 The common way to interact with QuickBlox can be presented with following sequence of actions:
 
 1. [Initialize framework with application credentials](#71-initialize-framework-with-application-credentials)
-2. [Authorize application](#72-authorize-application)
+2. [Create session](#72-create-session)
 3. [Login with existing user or register new one](#73-registerlogin)
 4. [Perform actions with any QuickBlox data entities (users, locations, files, custom objects, pushes etc.)](#74-perform-actions)
 
@@ -63,7 +63,7 @@ QBSettings.getInstance().setAuthorizationKey("PBZxXW3WgGZtFZv");
 QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
 ```
 
-#### 5.2. Authorize application
+#### 5.2. Create session
 
 
 ```java
