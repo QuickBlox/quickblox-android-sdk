@@ -29,8 +29,14 @@
     
     <string name="title_activity_main_tab">MainTabActivity</string>
     
-    <string name="fragment_profile_facebook_button">Facebook Profile</string>
+    
     <string name="fragment_profile_exit_button">Exit</string>
+    
+    <string name="fragment_contacts_contact_button">Contacts</string>
+    <string name="fragment_contacts_request_button">Request</string>
+    <string name="fragment_contacts_inside_approve_button">Approve</string>
+    <string name="fragment_contacts_inside_reject_button">Reject</string>
+        
     
     
 
