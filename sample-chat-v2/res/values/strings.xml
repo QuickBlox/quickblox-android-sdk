@@ -23,5 +23,9 @@
     <string name="maintab_tab_4">Profile</string>
     <string name="title_activity_main_tab">MainTabActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="dialogs">Dialogs</string>
+    <string name="rooms">Rooms</string>
+    <string name="contacts">Contacts</string>
+    <string name="profile">Profile</string>
 
 </resources>
