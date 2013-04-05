@@ -26,13 +26,13 @@ public class MainTabActivity extends FragmentActivity {
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec("dialogs").setIndicator(getString(R.string.dialogs)),
+        mTabHost.addTab(mTabHost.newTabSpec("dialogs").setIndicator(getString(R.string.maintab_tab_1)),
                 DialogsFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("rooms").setIndicator(getString(R.string.rooms)),
+        mTabHost.addTab(mTabHost.newTabSpec("rooms").setIndicator(getString(R.string.maintab_tab_2)),
                 RoomsFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator(getString(R.string.contacts)),
+        mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator(getString(R.string.maintab_tab_3)),
                 ContactsFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("profile").setIndicator(getString(R.string.profile)),
+        mTabHost.addTab(mTabHost.newTabSpec("profile").setIndicator(getString(R.string.maintab_tab_4)),
                 ProfileFragment.class, null);
     }
 	

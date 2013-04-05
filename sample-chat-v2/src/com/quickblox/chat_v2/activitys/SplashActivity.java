@@ -20,6 +20,7 @@ import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
+import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.result.QBUserResult;
 
@@ -120,7 +121,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		return;
 		}
 			app.setAuthUser(result.getUser());
-			System.out.println(result);
+			
+			QBChat.loginWithUser(app.getAuthUser());
+			QBChat.sendPresence();
 			
 			Intent intent = new Intent(this, MainTabActivity.class);
 			startActivity(intent);

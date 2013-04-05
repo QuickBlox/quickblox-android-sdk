@@ -4,28 +4,34 @@
     <string name="app_name">com.quickblox.sample-chat-v2</string>
     <string name="action_settings">Settings</string>
     <string name="applicationId">464189473609303</string>
+    
     <string name="twitter_consumer_key">XRJq4eMtoQuXRngVz9Vj8Q</string>
     <string name="twitter_consumer_secret">63qz85uB6BrKLiTFs0C4CcKyjirqmHf1zwIghgHlhdg</string>
+    
     <string name="quickblox_app_id">771</string>
     <string name="quickblox_auth_key">hOYSNJ8zwYhUspn</string>
     <string name="quickblox_auth_secret">KcfDYJFY7x3r5HR</string>
+    
     <string name="splash_main_name">QuickBlox chat</string>
     <string name="splash_registration_button">Registration</string>
     <string name="splash_sign_in">Sign in</string>
+    
     <string name="splash_dialog_name">Register in QuickBlox</string>
     <string name="splash_dialog_username">Username</string>
     <string name="splash_dialog_password">Password</string>
     <string name="splash_dialog_button_ok">OK</string>
     <string name="splash_dialog_button_cancel">Cancel</string>
+    
     <string name="maintab_tab_1">Dialogs</string>
     <string name="maintab_tab_2">Rooms</string>
     <string name="maintab_tab_3">Contacts</string>
     <string name="maintab_tab_4">Profile</string>
+    
     <string name="title_activity_main_tab">MainTabActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="dialogs">Dialogs</string>
-    <string name="rooms">Rooms</string>
-    <string name="contacts">Contacts</string>
-    <string name="profile">Profile</string>
+    
+    <string name="fragment_profile_facebook_button">Facebook Profile</string>
+    <string name="fragment_profile_exit_button">Exit</string>
+    
+    
 
 </resources>
