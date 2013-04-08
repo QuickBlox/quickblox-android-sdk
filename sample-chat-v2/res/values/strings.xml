@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">com.quickblox.sample-chat-v2</string>
+    <string name="app_name">SampleChat-v2</string>
     <string name="action_settings">Settings</string>
     <string name="applicationId">464189473609303</string>
     
@@ -16,7 +16,13 @@
     <string name="splash_registration_button">Registration</string>
     <string name="splash_sign_in">Sign in</string>
     
-    <string name="splash_dialog_name">Register in QuickBlox</string>
+    <string name="splash_progressdialog">Setup Connection</string>
+	<string name="splash_login_reject">Login is not successfull</string>
+    <string name="splash_internet_error">Internet connection not found</string>
+	
+    
+    <string name="splash_dialog_name_1">Register in QuickBlox</string>
+    <string name="splash_dialog_name_2">Sign in QuickBlox</string>
     <string name="splash_dialog_username">Username</string>
     <string name="splash_dialog_password">Password</string>
     <string name="splash_dialog_button_ok">OK</string>
