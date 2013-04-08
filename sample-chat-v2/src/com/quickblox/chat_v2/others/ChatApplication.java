@@ -1,13 +1,12 @@
 package com.quickblox.chat_v2.others;
 
-import com.quickblox.module.users.model.QBUser;
-
 import android.app.Application;
 
+import com.quickblox.module.users.model.QBUser;
+
 public class ChatApplication extends Application {
-		
-	private QBUser authUser;
 	
+	private QBUser authUser;
 	
 	// INIT
 	static ChatApplication instance;
@@ -20,13 +19,12 @@ public class ChatApplication extends Application {
 		instance = this;
 	}
 	
-
 	// DATA
-
+	
 	public QBUser getAuthUser() {
 		return authUser;
 	}
-
+	
 	public void setAuthUser(QBUser authUser) {
 		this.authUser = authUser;
 	}

@@ -1,5 +1,6 @@
 package com.quickblox.chat_v2.activitys;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +15,7 @@ import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.fragment.SplashDialog;
 import com.quickblox.chat_v2.others.ChatApplication;
+import com.quickblox.chat_v2.others.SampleChatApp;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBSettings;
@@ -21,6 +23,7 @@ import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.result.QBUserResult;
 
@@ -28,7 +31,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	
 	private DialogFragment quickBloxDialog;
 	private ChatApplication app;
-
+	private Context context;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,20 +74,21 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		registrationButton.setOnClickListener(clickButtonListener);
 		siginButton.setOnClickListener(clickButtonListener);
 		
-		QBSettings.getInstance().fastConfigInit(getResources().getString(R.string.quickblox_app_id), 
-				getResources().getString(R.string.quickblox_auth_key),
+		QBSettings.getInstance().fastConfigInit(getResources().getString(R.string.quickblox_app_id), getResources().getString(R.string.quickblox_auth_key),
 				getResources().getString(R.string.quickblox_auth_secret));
 		
-		
 		app = ChatApplication.getInstance();
+		SampleChatApp sa = new SampleChatApp(); 
 		
 		
-		QBAuth.createSession(new QBCallbackImpl(){
+		QBAuth.createSession(new QBCallbackImpl() {
 			@Override
 			public void onComplete(Result arg0) {
 				
 			}
 		});
+		
+		context = this;
 	}
 	
 	@Override
@@ -95,6 +100,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	// FACEBOOK LOGIN
 	private void onFbClickLogin() {
 		
+		System.out.println("Вход");
 		Session session = Session.getActiveSession();
 		
 		if (session == null) {
@@ -111,25 +117,39 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		}
 		
 	}
-
+	
+	// QB CALLBACK
+	
 	@Override
 	public void onComplete(Result arg0) {
 		
 		QBUserResult result = (QBUserResult) arg0;
 		
-		if (result == null || result.getUser() == null){
-		return;
+		if (result == null || result.getUser() == null) {
+			return;
 		}
-			app.setAuthUser(result.getUser());
+		app.setAuthUser(result.getUser());
+		
+		QBChat.loginWithUser(app.getAuthUser(), new LoginListener() {
 			
-			QBChat.loginWithUser(app.getAuthUser());
-			QBChat.sendPresence();
+			@Override
+			public void onLoginError() {
+				System.out.println("False");
+			}
 			
-			Intent intent = new Intent(this, MainTabActivity.class);
-			startActivity(intent);
-			finish();
+			@Override
+			public void onLoginSuccess() {
+				
+				System.out.println("true");
+				Intent intent = new Intent(context, MainTabActivity.class);
+				startActivity(intent);
+				finish();
+			}
+			
+		});
+		
 	}
-
+	
 	@Override
 	public void onComplete(Result arg0, Object arg1) {
 		// TODO Auto-generated method stub
@@ -139,7 +159,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	// FACEBOOK CALLBACK
 	@Override
 	public void call(Session session, SessionState state, Exception exception) {
-		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this);		
+		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this);
 	}
 	
 }

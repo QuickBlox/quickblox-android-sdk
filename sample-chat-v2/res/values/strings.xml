@@ -8,9 +8,9 @@
     <string name="twitter_consumer_key">XRJq4eMtoQuXRngVz9Vj8Q</string>
     <string name="twitter_consumer_secret">63qz85uB6BrKLiTFs0C4CcKyjirqmHf1zwIghgHlhdg</string>
     
-    <string name="quickblox_app_id">771</string>
-    <string name="quickblox_auth_key">hOYSNJ8zwYhUspn</string>
-    <string name="quickblox_auth_secret">KcfDYJFY7x3r5HR</string>
+    <string name="quickblox_app_id">1028</string>
+    <string name="quickblox_auth_key">jCr7OwnvgV5wFmm</string>
+    <string name="quickblox_auth_secret">4JmKPAnwN7ps5Xt</string>
     
     <string name="splash_main_name">QuickBlox chat</string>
     <string name="splash_registration_button">Registration</string>
