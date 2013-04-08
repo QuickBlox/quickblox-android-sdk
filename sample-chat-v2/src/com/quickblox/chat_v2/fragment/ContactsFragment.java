@@ -25,7 +25,7 @@ public class ContactsFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_contacts, null);
 		app = ChatApplication.getInstance();
 		
-		contactsButton = (Button) v.findViewById(R.id.contacts_contact_button);
+		contactsButton = (Button) v.findViewById(R.id.dialogs_new_button);
 		requestButton = (Button) v.findViewById(R.id.contacts_request_button);
 		
 		
@@ -34,7 +34,7 @@ public class ContactsFragment extends Fragment {
 		
 			public void onClick(View v) {
 				switch (v.getId()) {
-					case R.id.contacts_contact_button :
+					case R.id.dialogs_new_button :
 						contactsButton.setActivated(false);
 						requestButton.setActivated(true);
 						//to-do

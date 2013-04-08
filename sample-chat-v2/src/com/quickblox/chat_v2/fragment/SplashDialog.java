@@ -28,7 +28,7 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 				
 		getDialog().setTitle(R.string.splash_dialog_name);
-		View v = inflater.inflate(R.layout.activity_splash_dialog, null);
+		View v = inflater.inflate(R.layout.dialog_splash_login, null);
 		
 		inputNameField = (EditText) v.findViewById(R.id.username_input);
 		inputPasswordField = (EditText) v.findViewById(R.id.password_input);

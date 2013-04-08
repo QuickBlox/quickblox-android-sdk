@@ -13,7 +13,7 @@
         android:weightSum="2" >
 
         <Button
-            android:id="@+id/contacts_contact_button"
+            android:id="@+id/dialogs_new_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

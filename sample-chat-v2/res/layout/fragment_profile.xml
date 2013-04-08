@@ -21,7 +21,7 @@
         android:id="@+id/profile_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/contacts_contact_button"
+        android:layout_above="@+id/dialogs_new_button"
         android:layout_alignParentLeft="true"
         android:layout_margin="5dp"
         android:layout_weight="0.3"
@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/contacts_contact_button"
+        android:id="@+id/profile_exit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
