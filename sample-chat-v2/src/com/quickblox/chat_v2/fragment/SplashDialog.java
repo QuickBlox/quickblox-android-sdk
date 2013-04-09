@@ -26,9 +26,8 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-				
+		
 		getDialog().setTitle(mode ? R.string.splash_dialog_name_1 : R.string.splash_dialog_name_2);
-				
 		
 		View v = inflater.inflate(R.layout.dialog_splash_login, null);
 		
@@ -49,16 +48,11 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 				break;
 			
 			case R.id.ok_button :
-				if (mode) {
-					
-					QBUser newUser = new QBUser();
-					newUser.setLogin(inputNameField.getText().toString());
-					newUser.setPassword(inputPasswordField.getText().toString());
-					
-					QBUsers.signUpSignInTask(newUser, (QBCallback) getActivity(), "plain");
+				if (mode) {					
+					QBUsers.signUp(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity());
 					
 				} else {
-					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity(), "plain");
+					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity());
 				}
 				
 				dismiss();

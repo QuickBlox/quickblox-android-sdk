@@ -9,4 +9,6 @@ package com.quickblox.chat_v2.utils;
 public class GlobalConsts {
 
     public static final String ACCESS_TOKEN = "access_token";
+	public static final String LOGIN = "login";
+	public static final String PASSWORD = "password";
 }
