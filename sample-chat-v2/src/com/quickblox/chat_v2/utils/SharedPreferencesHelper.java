@@ -10,16 +10,7 @@ import com.quickblox.chat_v2.activitys.MainActivity;
  */
 public class SharedPreferencesHelper {
 	
-	public static String getAccessToken() {
-		return getSharedPreferences().getString(GlobalConsts.ACCESS_TOKEN, "");
-	}
-	
-	public static void setAccessToken(String accessToken, Context context) {
-		SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-		editor.putString(GlobalConsts.ACCESS_TOKEN, accessToken);
-		editor.commit();
-	}
-	
+
 	public static String getLogin() {
 		return getSharedPreferences().getString(GlobalConsts.LOGIN, "");
 	}
