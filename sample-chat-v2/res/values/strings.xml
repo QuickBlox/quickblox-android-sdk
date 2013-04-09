@@ -52,5 +52,10 @@
 	
 	<string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user exit )</string>
     <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to join room )</string>
+    <string name="TAB_DIALOGS_TITLE">dialogs</string>
+    <string name="TAB_ROOMS_TITLE">rooms</string>
+    <string name="TAB_CONTACTS_TITLE">contacts</string>
+    <string name="TAB_PROFILE_TITLE">profile</string>
+    <string name="NEW">new</string>
     
 </resources>

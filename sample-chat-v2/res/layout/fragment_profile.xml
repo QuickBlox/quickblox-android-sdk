@@ -1,10 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/RelativeLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1" >
+                android:id="@+id/RelativeLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+    <com.quickblox.chat_v2.widget.TopBar
+        android:id="@+id/top_bar"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
 
     <ImageView
         android:id="@+id/profile_user_pic"
@@ -12,10 +16,9 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/profile_username"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_margin="5dp"
         android:layout_weight="0.6"
-        android:src="@drawable/com_facebook_profile_default_icon" />
+        />
 
     <TextView
         android:id="@+id/profile_username"
@@ -23,19 +26,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/dialogs_new_button"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/top_bar"
         android:layout_margin="5dp"
         android:layout_weight="0.3"
         android:gravity="center"
         android:text="Username"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-    <Button
-        android:id="@+id/profile_exit_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
-        android:layout_weight="0.1"
-        android:text="@string/fragment_profile_exit_button" />
 
 </RelativeLayout>

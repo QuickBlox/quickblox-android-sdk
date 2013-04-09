@@ -1,18 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contactslinearlayout"
-    android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:orientation="horizontal"
-    android:visibility="visible"
-    android:weightSum="5" >
+              android:id="@+id/contactslinearlayout"
+              android:layout_width="match_parent"
+              android:layout_height="80dp"
+              android:orientation="horizontal"
+              android:visibility="visible"
+              android:weightSum="5">
 
     <ImageView
         android:id="@+id/contacts_inside_userpic"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/com_facebook_profile_default_icon" />
+        android:layout_margin="2dp"/>
 
     <TextView
         android:id="@+id/contacts_inside_username"
@@ -22,14 +20,14 @@
         android:layout_weight="4"
         android:gravity="center|left"
         android:text="TextView"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="visible">
 
         <Button
             android:id="@+id/contact_iside_accept"
@@ -37,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:text="@string/fragment_contacts_inside_approve_button" />
+            android:text="@string/fragment_contacts_inside_approve_button"/>
 
         <Button
             android:id="@+id/contact_inside_reject"
@@ -45,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:text="@string/fragment_contacts_inside_reject_button" />
+            android:text="@string/fragment_contacts_inside_reject_button"/>
 
     </LinearLayout>
 
