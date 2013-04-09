@@ -18,6 +18,7 @@ import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.fragment.SplashDialog;
 import com.quickblox.chat_v2.others.ChatApplication;
+import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBSettings;
@@ -26,8 +27,6 @@ import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.server.BaseService;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
-import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
@@ -136,45 +135,29 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	}
 	
 	@Override
-	public void onComplete(Result arg0, Object arg1) {
+	public void onComplete(Result result, Object context) {
 		
-		QBUserResult result = (QBUserResult) arg0;
-		
-		if (result == null || result.getUser() == null) {
-			return;
+		if (result.isSuccess()) {
+			
+			QBUser qbUser = ((QBUserResult) result).getUser();
+			SharedPreferencesHelper.setLogin(qbUser.getLogin());
+			
+			if(context.toString().equals("social")){
+				try {
+					qbUser.setPassword(BaseService.getBaseService().getToken());
+				} catch (BaseServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else{
+				SharedPreferencesHelper.setPassword(qbUser.getPassword());
+			}
+			
+			
+			loadMainScreen();
 		}
-		
-		QBUser currentUser = result.getUser();
-		
-		if (arg1.equals("social")) {
-			// Set Chat password
-			try {
-				currentUser.setPassword(BaseService.getBaseService().getToken());
-			} catch (BaseServiceException e) {
-				e.printStackTrace();
-			}
-		} else {
-			app.setAuthUser(currentUser);
-		}
-		
-		// LOGIN IN XMMP
-		QBChat.loginWithUser(currentUser, new LoginListener() {
-			
-			@Override
-			public void onLoginError() {
-				progress.dismiss();
-				Toast.makeText(SplashActivity.this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
-			}
-			
-			@Override
-			public void onLoginSuccess() {
-				
-				Intent intent = new Intent(SplashActivity.this, MainTabActivity.class);
-				startActivity(intent);
-				finish();
-			}
-			
-		});
+
 		
 	}
 	
@@ -183,9 +166,18 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	public void call(Session session, SessionState state, Exception exception) {
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
 		
+		System.out.println("token = "+session.getAccessToken());
+		
 		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
 		
 	}
+	
+	private void loadMainScreen() {
+		Intent intent = new Intent(getBaseContext(), MainActivity.class);
+		startActivity(intent);
+		finish();
+	}
+
 	
 	// INTERNET REVIEW
 	public boolean isOnline() {
