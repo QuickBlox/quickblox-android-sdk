@@ -8,39 +8,39 @@ import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 
-
-
-public class RosterManager implements QBRosterListener{
+public class RosterManager implements QBRosterListener {
 	
-
-		
-		QBChatRoster roster = QBChat.registerRoster(this); 
-		
+	private QBChatRoster roster;
 	
-
+	public RosterManager() {
+		roster = QBChat.registerRoster(this);
+		
+	}
+	
 	@Override
 	public void entriesAdded(Collection<Integer> arg0) {
-		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void entriesDeleted(Collection<Integer> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void entriesUpdated(Collection<Integer> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void presenceChanged(Presence arg0) {
-		// TODO Auto-generated method stub
+		System.out.println("entress added = " + arg0.toString());
 		
 	}
 	
-
+	@Override
+	public void entriesDeleted(Collection<Integer> arg0) {
+		
+		System.out.println("entress deleted = " + arg0.toString());
+		
+	}
+	
+	@Override
+	public void entriesUpdated(Collection<Integer> arg0) {
+		System.out.println("entress updated = " + arg0.toString());
+		
+	}
+	
+	@Override
+	public void presenceChanged(Presence arg0) {
+		System.out.println("presence = " + arg0.toString());
+		
+	}
+	
 }

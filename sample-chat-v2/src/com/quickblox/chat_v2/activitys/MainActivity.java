@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.fragment.ContactsFragment;
 import com.quickblox.chat_v2.fragment.DialogsFragment;
 import com.quickblox.chat_v2.fragment.ProfileFragment;
@@ -40,6 +40,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 		setContentView(R.layout.main_activity);
 		context = getBaseContext();
 		fragmentManager = getSupportFragmentManager();
+		
+		RosterManager rm = new RosterManager();
 		
 		if (TextUtils.isEmpty(SharedPreferencesHelper.getAccessToken()) && TextUtils.isEmpty(SharedPreferencesHelper.getLogin())) {
 			System.out.println("tokien"+SharedPreferencesHelper.getAccessToken());

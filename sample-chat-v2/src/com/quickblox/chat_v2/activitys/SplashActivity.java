@@ -17,7 +17,6 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.fragment.SplashDialog;
-import com.quickblox.chat_v2.others.ChatApplication;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
@@ -34,7 +33,6 @@ import com.quickblox.module.users.result.QBUserResult;
 public class SplashActivity extends FragmentActivity implements QBCallback, Session.StatusCallback {
 	
 	private DialogFragment quickBloxDialog;
-	private ChatApplication app;
 	private ProgressDialog progress;
 	
 	@Override
@@ -88,8 +86,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			QBSettings.getInstance().fastConfigInit(getResources().getString(R.string.quickblox_app_id), getResources().getString(R.string.quickblox_auth_key),
 					getResources().getString(R.string.quickblox_auth_secret));
 			
-			app = ChatApplication.getInstance();
-			
+		
 			QBAuth.createSession(new QBCallbackImpl() {
 				@Override
 				public void onComplete(Result arg0) {
@@ -145,6 +142,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			if(context.toString().equals("social")){
 				try {
 					qbUser.setPassword(BaseService.getBaseService().getToken());
+					SharedPreferencesHelper.setPassword(qbUser.getPassword());
 				} catch (BaseServiceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -164,10 +162,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	// FACEBOOK CALLBACK
 	@Override
 	public void call(Session session, SessionState state, Exception exception) {
-		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
-		
-		System.out.println("token = "+session.getAccessToken());
-		
+		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");		
 		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
 		
 	}
