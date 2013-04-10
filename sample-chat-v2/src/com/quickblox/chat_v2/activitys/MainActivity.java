@@ -1,8 +1,7 @@
 package com.quickblox.chat_v2.activitys;
 
-import java.util.Collection;
-
-import org.jivesoftware.smack.packet.Presence;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,8 @@ import android.text.TextUtils;
 import android.widget.TabHost;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.apis.QuickBloxManager;
+import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.fragment.ContactsFragment;
 import com.quickblox.chat_v2.fragment.DialogsFragment;
 import com.quickblox.chat_v2.fragment.ProfileFragment;
@@ -25,7 +26,6 @@ import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster;
-import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -41,6 +41,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 	private TabHost mTabHost;
 	
 	private QBChatRoster qbRoster;
+	private RosterManager rosterManager;
+	private QuickBloxManager qbm;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 			authWithUser();
 			setupTabs();
 		}
+		
+		qbm = new QuickBloxManager();
 	}
 	
 	public static Context getContext() {
@@ -173,33 +177,18 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 	}
 	
 	private void registerRoster() {
-		System.out.println("Старт ростера");
 		
-		qbRoster = QBChat.registerRoster(null);// {
+		rosterManager = new RosterManager();
+		qbRoster = QBChat.registerRoster(rosterManager);
+		List<String> userIds = new ArrayList<String>();
+		
+		if (userIds.size() > 0) {
+			for (Integer id : qbRoster.getUsersId()) {
+				userIds.add(String.valueOf(id));
+			}
 			
-//			@Override
-//			public void presenceChanged(Presence arg0) {
-//				System.out.println("changed =" + arg0);
-//			}
-//			
-//			@Override
-//			public void entriesUpdated(Collection<Integer> arg0) {
-//				System.out.println("updated =" + arg0);
-//			}
-//			
-//			@Override
-//			public void entriesDeleted(Collection<Integer> arg0) {
-//				System.out.println("deleted =" + arg0);
-//			}
-//			
-//			@Override
-//			public void entriesAdded(Collection<Integer> arg0) {
-//				System.out.println("added =" + arg0);
-//			}
-//		});
-		
-		System.out.println("roster = "+qbRoster.getUsersId());
-		System.out.println("roster = "+qbRoster);
+			qbm.getQbUserUnfo(userIds);
+		}
 	}
 	
 	@Override

@@ -10,6 +10,36 @@ import com.quickblox.chat_v2.activitys.MainActivity;
  */
 public class SharedPreferencesHelper {
 	
+	
+	public static String getUserPicURL() {
+		return getSharedPreferences().getString(GlobalConsts.USERPICURL, "");
+	}
+	
+	public static void setUserPicURL(String userPicURL) {
+		SharedPreferences.Editor editor = getSharedPreferences().edit();
+		editor.putString(GlobalConsts.USERPICURL, userPicURL);
+		editor.commit();
+	}
+	
+	public static int getUserPicID() {
+		return getSharedPreferences().getInt(GlobalConsts.USERPICID, 0);
+	}
+	
+	public static void setUserPicID(int userPicID) {
+		SharedPreferences.Editor editor = getSharedPreferences().edit();
+		editor.putInt(GlobalConsts.USERPICID, userPicID);
+		editor.commit();
+	}
+	
+	public static String getFBUsername() {
+		return getSharedPreferences().getString(GlobalConsts.FBUSERNAME, "");
+	}
+	
+	public static void setFbUsername(String fbUsername) {
+		SharedPreferences.Editor editor = getSharedPreferences().edit();
+		editor.putString(GlobalConsts.FBUSERNAME, fbUsername);
+		editor.commit();
+	}
 
 	public static String getLogin() {
 		return getSharedPreferences().getString(GlobalConsts.LOGIN, "");

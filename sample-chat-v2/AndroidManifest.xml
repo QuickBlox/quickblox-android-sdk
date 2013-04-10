@@ -20,20 +20,20 @@
         <activity
             android:name="com.quickblox.chat_v2.activitys.SplashActivity"
             android:label="@string/app_name">
-
-        </activity>
+</activity>
 
         <activity
             android:name="com.quickblox.chat_v2.activitys.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            
+              <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
@@ -49,6 +49,8 @@
         <activity
             android:name="com.quickblox.chat_v2.activitys.MainTabActivity"
             android:label="@string/title_activity_main_tab">
+             
+          
         </activity>
     </application>
 
