@@ -1,5 +1,9 @@
 package com.quickblox.chat_v2.activitys;
 
+import java.util.Collection;
+
+import org.jivesoftware.smack.packet.Presence;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +24,8 @@ import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.model.QBChatRoster;
+import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -33,6 +39,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 	private static Context context;
 	private static FragmentManager fragmentManager;
 	private TabHost mTabHost;
+	
+	private QBChatRoster qbRoster;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -151,20 +159,47 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 	private void signInChat(QBUser qbUser) {
 		
 		qbUser.setPassword(SharedPreferencesHelper.getPassword());
-		
 		QBChat.loginWithUser(qbUser, new LoginListener() {
 			
 			@Override
 			public void onLoginError() {
-				System.out.println("miss");
 			}
 			
 			@Override
 			public void onLoginSuccess() {
-				
+				registerRoster();
 			}
-			
 		});
+	}
+	
+	private void registerRoster() {
+		System.out.println("Старт ростера");
+		
+		qbRoster = QBChat.registerRoster(null);// {
+			
+//			@Override
+//			public void presenceChanged(Presence arg0) {
+//				System.out.println("changed =" + arg0);
+//			}
+//			
+//			@Override
+//			public void entriesUpdated(Collection<Integer> arg0) {
+//				System.out.println("updated =" + arg0);
+//			}
+//			
+//			@Override
+//			public void entriesDeleted(Collection<Integer> arg0) {
+//				System.out.println("deleted =" + arg0);
+//			}
+//			
+//			@Override
+//			public void entriesAdded(Collection<Integer> arg0) {
+//				System.out.println("added =" + arg0);
+//			}
+//		});
+		
+		System.out.println("roster = "+qbRoster.getUsersId());
+		System.out.println("roster = "+qbRoster);
 	}
 	
 	@Override
