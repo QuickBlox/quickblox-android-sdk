@@ -46,9 +46,9 @@
     <string name="fragment_contacts_inside_approve_button">Approve</string>
     <string name="fragment_contacts_inside_reject_button">Reject</string>
     
-    <string name="fragment_rooms_namefield">Name</string>
+    <string name="room_name_title">Name</string>
     <string name="fragment_rooms_checkbox_persistent">Persistent</string>
-    <string name="fragment_rooms_checkbox_members">Only members</string>
+    <string name="members_checkbox">Only members</string>
 	
 	<string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user exit )</string>
     <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to join room )</string>
@@ -57,5 +57,7 @@
     <string name="TAB_CONTACTS_TITLE">contacts</string>
     <string name="TAB_PROFILE_TITLE">profile</string>
     <string name="NEW">new</string>
-    
+    <string name="back">Back</string>
+    <string name="users_text">users</string>
+
 </resources>

@@ -21,6 +21,10 @@ import com.quickblox.chat_v2.activitys.MainActivity;
  */
 public class TopBar extends RelativeLayout {
 
+    public static final String FRAGMENT_NEW_ROOM = "New Room";
+    public static final String FRAGMENT_DIALOGS = "Dialogs";
+    public static final String FRAGMENT_ROOMS = "Rooms";
+
 
     @InjectView(R.id.right_button)
     private Button rightButton;
@@ -29,9 +33,7 @@ public class TopBar extends RelativeLayout {
     @InjectView(R.id.screen_title)
     private TextView screenTitle;
 
-    private final String FRAGMENT_DIALOGS = "Dialogs";
     private String fragmentName;
-
 
     public TopBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,14 +55,32 @@ public class TopBar extends RelativeLayout {
         if (fragmentName.equals(FRAGMENT_DIALOGS)) {
             leftButton.setVisibility(View.GONE);
             rightButton.setText(MainActivity.getContext().getString(R.string.NEW));
+        } else if (fragmentName.equals(FRAGMENT_ROOMS)) {
+            leftButton.setVisibility(View.GONE);
+            rightButton.setText(MainActivity.getContext().getString(R.string.NEW));
+        } else if (fragmentName.equals(FRAGMENT_NEW_ROOM)) {
+            leftButton.setText(MainActivity.getContext().getString(R.string.back));
+            rightButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @InjectOnClickListener(R.id.left_button)
+    public void onLeftButtonClick(View view) {
+        if (fragmentName.equals(FRAGMENT_NEW_ROOM)) {
+            MainActivity.loadRoomListScreen();
+            MainActivity.showTabs();
         }
     }
 
     @InjectOnClickListener(R.id.right_button)
-    public void onLeftButtonClick(View view) {
-    }
-
-    @InjectOnClickListener(R.id.right_button)
     public void onRightButtonClick(View view) {
+        if (fragmentName.equals(FRAGMENT_DIALOGS)) {
+
+
+        } else if (fragmentName.equals(FRAGMENT_ROOMS)) {
+            MainActivity.loadNewRoomScreen();
+            MainActivity.hideTabs();
+        }
+
     }
 }
