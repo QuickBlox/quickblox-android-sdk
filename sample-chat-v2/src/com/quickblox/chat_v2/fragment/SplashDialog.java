@@ -12,6 +12,7 @@ import android.widget.EditText;
 import com.quickblox.chat_v2.R;
 import com.quickblox.core.QBCallback;
 import com.quickblox.module.users.QBUsers;
+import com.quickblox.module.users.model.QBUser;
 
 public class SplashDialog extends DialogFragment implements OnClickListener {
 	
@@ -48,10 +49,14 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 			
 			case R.id.ok_button :
 				if (mode) {					
-					QBUsers.signUp(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity());
+					QBUser tempUser = new QBUser();
+					tempUser.setLogin(inputNameField.getText().toString());
+					tempUser.setPassword(inputPasswordField.getText().toString());
+					
+					QBUsers.signUpSignInTask(tempUser, (QBCallback) getActivity(), "plain");
 					
 				} else {
-					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity());
+					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity(), inputPasswordField.getText().toString());
 				}
 				
 				dismiss();
