@@ -1,4 +1,4 @@
-package com.quickblox.chat_v2.activitys;
+package com.quickblox.chat_v2.ui.activities;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,7 +23,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.FaceBookManager;
-import com.quickblox.chat_v2.fragment.SplashDialog;
+import com.quickblox.chat_v2.ui.fragment.SplashDialog;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;

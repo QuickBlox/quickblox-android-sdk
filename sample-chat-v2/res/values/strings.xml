@@ -4,54 +4,58 @@
     <string name="app_name">SampleChat-v2</string>
     <string name="action_settings">Settings</string>
     <string name="applicationId">464189473609303</string>
-    
+
     <string name="twitter_consumer_key">XRJq4eMtoQuXRngVz9Vj8Q</string>
     <string name="twitter_consumer_secret">63qz85uB6BrKLiTFs0C4CcKyjirqmHf1zwIghgHlhdg</string>
-    
-    <string name="quickblox_app_id">1028</string>
-    <string name="quickblox_auth_key">jCr7OwnvgV5wFmm</string>
-    <string name="quickblox_auth_secret">4JmKPAnwN7ps5Xt</string>
-    
+
+    <string name="quickblox_app_id">99</string>
+    <string name="quickblox_auth_key">63ebrp5VZt7qTOv</string>
+    <string name="quickblox_auth_secret">YavMAxm5T59-BRw</string>
+
     <string name="splash_main_name">QuickBlox chat</string>
     <string name="splash_registration_button">Registration</string>
     <string name="splash_sign_in">Sign in</string>
-    
+
     <string name="splash_progressdialog">Setup Connection</string>
-	<string name="splash_login_reject">Login is not successfull</string>
+    <string name="splash_login_reject">Login is not successfull</string>
     <string name="splash_internet_error">Internet connection not found</string>
-	
-    
+
+
     <string name="splash_dialog_name_1">Register in QuickBlox</string>
     <string name="splash_dialog_name_2">Sign in QuickBlox</string>
     <string name="splash_dialog_username">Username</string>
     <string name="splash_dialog_password">Password</string>
     <string name="splash_dialog_button_ok">OK</string>
     <string name="splash_dialog_button_cancel">Cancel</string>
-    
+
     <string name="maintab_tab_1">Dialogs</string>
     <string name="maintab_tab_2">Rooms</string>
     <string name="maintab_tab_3">Contacts</string>
     <string name="maintab_tab_4">Profile</string>
-    
+
     <string name="title_activity_main_tab">MainTabActivity</string>
-    
-    
+
+
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>
-    
+
     <string name="fragment_profile_exit_button">Exit</string>
-    
+
     <string name="fragment_contacts_contact_button">Contacts</string>
     <string name="fragment_contacts_request_button">Request</string>
     <string name="fragment_contacts_inside_approve_button">Approve</string>
     <string name="fragment_contacts_inside_reject_button">Reject</string>
-    
+
     <string name="room_name_title">Name</string>
     <string name="fragment_rooms_checkbox_persistent">Persistent</string>
     <string name="members_checkbox">Only members</string>
-	
-	<string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user exit )</string>
-    <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to join room )</string>
+
+    <string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user
+        exit )
+    </string>
+    <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to
+        join room )
+    </string>
     <string name="TAB_DIALOGS_TITLE">dialogs</string>
     <string name="TAB_ROOMS_TITLE">rooms</string>
     <string name="TAB_CONTACTS_TITLE">contacts</string>
@@ -59,5 +63,6 @@
     <string name="NEW">new</string>
     <string name="back">Back</string>
     <string name="users_text">users</string>
+    <string name="ok">ok</string>
 
 </resources>

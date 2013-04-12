@@ -3,7 +3,7 @@ package com.quickblox.chat_v2.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import com.quickblox.chat_v2.activitys.MainActivity;
+import com.quickblox.chat_v2.ui.activities.MainActivity;
 
 /**
  * @author: Andrew Dmitrenko Date: 08.04.13

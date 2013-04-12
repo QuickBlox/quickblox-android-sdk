@@ -1,4 +1,4 @@
-package com.quickblox.chat_v2.fragment;
+package com.quickblox.chat_v2.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -16,7 +16,7 @@ public class QuickBloxManager {
 		app = ChatApplication.getInstance();
 	}
 	
-	public void getQbUserUnfo(List<String> usersIds) {
+	public void getQbUserInfo(List<String> usersIds) {
 		
 		QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
 			
