@@ -3,5 +3,4 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.NoActionBar"></style>
 
     <style name="AppTheme" parent="AppBaseTheme"></style>
-
 </resources>

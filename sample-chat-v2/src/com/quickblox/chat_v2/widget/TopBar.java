@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.danikula.aibolit.Aibolit;
 import com.danikula.aibolit.annotation.InjectView;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.ui.activities.MainActivity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +19,7 @@ import com.quickblox.chat_v2.R;
  * Time: 3:38 PM
  */
 public class TopBar extends RelativeLayout {
+
 
     public static final String FRAGMENT_NEW_ROOM = "New Room";
     public static final String NEW_DIALOG_ACTIVITY = "New Dialog";
@@ -31,7 +33,9 @@ public class TopBar extends RelativeLayout {
     @InjectView(R.id.screen_title)
     private TextView screenTitle;
 
+    private final String FRAGMENT_DIALOGS = "Dialogs";
     private String fragmentName;
+
 
     public TopBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -49,36 +53,13 @@ public class TopBar extends RelativeLayout {
 //        applyButtons();
     }
 
-//    private void applyButtons() {
-//        if (fragmentName.equals(FRAGMENT_DIALOGS)) {
-//            leftButton.setVisibility(View.GONE);
-//            rightButton.setText(MainActivity.getContext().getString(R.string.NEW));
-//        } else if (fragmentName.equals(FRAGMENT_ROOMS)) {
-//            leftButton.setVisibility(View.GONE);
-//            rightButton.setText(MainActivity.getContext().getString(R.string.NEW));
-//        } else if (fragmentName.equals(FRAGMENT_NEW_ROOM)) {
-//            leftButton.setText(MainActivity.getContext().getString(R.string.back));
-//            rightButton.setVisibility(View.INVISIBLE);
-//        }
-//    }
 
-//    @InjectOnClickListener(R.id.left_button)
-//    public void onLeftButtonClick(View view) {
-//        if (fragmentName.equals(FRAGMENT_NEW_ROOM)) {
-//            MainActivity.loadRoomListScreen();
-//            MainActivity.showTabs();
-//        }
-//    }
-//
-//    @InjectOnClickListener(R.id.right_button)
-//    public void onRightButtonClick(View view) {
-//        if (fragmentName.equals(FRAGMENT_DIALOGS)) {
-//
-//
-//        } else if (fragmentName.equals(FRAGMENT_ROOMS)) {
-//            MainActivity.loadNewRoomScreen();
-//            MainActivity.hideTabs();
-//        }
-//
-//    }
+    private void applyButtons() {
+        if (fragmentName.equals(FRAGMENT_DIALOGS)) {
+            leftButton.setVisibility(View.GONE);
+            rightButton.setText(MainActivity.getContext().getString(R.string.NEW));
+        }
+    }
+
+
 }

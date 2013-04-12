@@ -4,15 +4,12 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.widget.TabHost;
-import com.danikula.aibolit.annotation.InjectView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.DataHolder;
-import com.quickblox.chat_v2.ui.fragment.ContactsFragment;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBSettings;
@@ -37,11 +34,6 @@ public class MainActivity extends TabActivity {
 
 
     private static Context context;
-    private static FragmentManager fragmentManager;
-
-    @InjectView(android.R.id.tabhost)
-    private static TabHost tabHost;
-
     private QBChatRoster qbRoster;
     private RosterManager rosterManager;
     private QuickBloxManager qbm;
@@ -50,11 +42,8 @@ public class MainActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-//        Aibolit.doInjections(this);
-
 
         context = getBaseContext();
-//        fragmentManager = getSupportFragmentManager();
 
         if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin())) {
             loadSplashScreen();
@@ -70,50 +59,6 @@ public class MainActivity extends TabActivity {
     public static Context getContext() {
         return context;
     }
-
-    public static FragmentManager getSupportFragmentActivityManager() {
-        return fragmentManager;
-    }
-
-//    public static void loadDialogScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        DialogsActivity dialogsFragment = new DialogsActivity();
-//        fragmentTransaction.replace(R.id.main, dialogsFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
-//
-//    public static void loadRoomListScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        RoomsActivity roomsFragment = new RoomsActivity();
-//        fragmentTransaction.replace(R.id.main, roomsFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
-//
-//    public static void loadContactsScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        ContactsFragment contactsFragment = new ContactsFragment();
-//        fragmentTransaction.replace(R.id.main, contactsFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
-//
-//    public static void loadProfileScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        ProfileActivity profileFragment = new ProfileActivity();
-//        fragmentTransaction.replace(R.id.main, profileFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
-//
-//    public static void loadNewRoomScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        CreateNewRoomFragment createNewRoomFragment = new CreateNewRoomFragment();
-//        fragmentTransaction.replace(R.id.main, createNewRoomFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
 
     private void loadSplashScreen() {
         Intent intent = new Intent(getContext(), SplashActivity.class);
@@ -136,7 +81,7 @@ public class MainActivity extends TabActivity {
                 .setContent(new Intent(this, RoomsActivity.class));
 
         contacts.setIndicator("     " + getString(R.string.TAB_CONTACTS_TITLE) + "     ")
-                .setContent(new Intent(this, ContactsFragment.class));
+                .setContent(new Intent(this, ContactsActivity.class));
 
         profile.setIndicator("     " + getString(R.string.TAB_PROFILE_TITLE) + "     ")
                 .setContent(new Intent(this, ProfileActivity.class));

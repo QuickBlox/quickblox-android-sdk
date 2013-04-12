@@ -1,10 +1,5 @@
 package com.quickblox.chat_v2.ui.activities;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import org.json.JSONException;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -18,12 +13,11 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.FaceBookManager;
-import com.quickblox.chat_v2.ui.fragment.SplashDialog;
+import com.quickblox.chat_v2.ui.dialogs.SplashDialog;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
@@ -36,6 +30,10 @@ import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class SplashActivity extends FragmentActivity implements QBCallback, Session.StatusCallback {
 	
@@ -163,10 +161,10 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					e.printStackTrace();
 				}
 			} else {
-				SharedPreferencesHelper.setPassword(qbUser.getPassword());
-				SharedPreferencesHelper.setUserPicID(qbUser.getFileId());
+				SharedPreferencesHelper.setPassword(context.toString());
+				SharedPreferencesHelper.setUserPicID(qbUser.getFileId()== null ? 1 : qbUser.getFileId());
 			}
-			
+			System.out.println("test point");
 			loadMainScreen();
 		}
 		

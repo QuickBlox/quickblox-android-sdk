@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dialogs"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:id="@+id/right_button"
