@@ -35,11 +35,13 @@
 
     <string name="title_activity_main_tab">MainTabActivity</string>
 
+    <string name="activity_profile_exit_button">Exit</string>
 
+    
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>
 
-    <string name="fragment_profile_exit_button">Exit</string>
+   
 
     <string name="fragment_contacts_contact_button">Contacts</string>
     <string name="fragment_contacts_request_button">Request</string>

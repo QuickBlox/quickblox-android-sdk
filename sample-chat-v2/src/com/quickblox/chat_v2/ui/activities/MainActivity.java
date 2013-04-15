@@ -1,5 +1,8 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -7,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.TabHost;
 import android.widget.Toast;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
@@ -23,9 +27,6 @@ import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,16 +51,10 @@ public class MainActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-//        SmackAndroid.init(this);
-//        SharedPreferencesHelper.setLogin(getBaseContext(), "bob");
-//        SharedPreferencesHelper.setPassword(getBaseContext(), "qwerty123");
+
         if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin(getBaseContext()))) {
             loadSplashScreen();
         } else {
-
-//            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
-//            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
-
             authWithUser();
         }
         initViews();       
@@ -104,6 +99,7 @@ public class MainActivity extends TabActivity {
         tabHost.addTab(rooms);
         tabHost.addTab(contacts);
         tabHost.addTab(profile);
+        
     }
 
     private void authWithUser() {

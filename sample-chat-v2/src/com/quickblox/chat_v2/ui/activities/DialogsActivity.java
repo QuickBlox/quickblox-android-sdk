@@ -19,56 +19,51 @@ import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Andrew Dmitrenko
- * Date: 11.04.13
- * Time: 9:58
+ * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 11.04.13 Time: 9:58
  */
 public class DialogsActivity extends Activity {
-
-    private static final String DIALOGS = "dialogs";
-    private static final String USER_ID_FIELD = "user_id";
-
-    private ListView dialogsListView;
-    private DialogsAdapter dialogsAdapter;
-    private Button newDialogButton;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_list_layout);
-        initialize();
-    }
-
-    private void initialize() {
-        applyDialogList();
-        dialogsListView = (ListView) findViewById(R.id.dialogs_listView);
-        newDialogButton = (Button) findViewById(R.id.new_dialog_button);
-        newDialogButton.setOnClickListener(newDialogButtonClickListener);
-    }
-
-    View.OnClickListener newDialogButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getBaseContext(), NewDialogActivity.class);
-            startActivity(intent);
-        }
-    };
-
-
-    private void applyDialogList() {
-        QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-        requestBuilder.eq(USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
-        QBCustomObjects.getObjects(DIALOGS, requestBuilder, new QBCallbackImpl() {
-            @Override
-            public void onComplete(Result result) {
-                if (result.isSuccess()) {
-                    List<QBCustomObject> dialogList = ((QBCustomObjectLimitedResult) result).getCustomObjects();
-                    dialogsAdapter = new DialogsAdapter(getBaseContext(), dialogList);
-                    dialogsListView.setAdapter(dialogsAdapter);
-                }
-            }
-        });
-    }
-
+	
+	private static final String DIALOGS = "dialogs";
+	private static final String USER_ID_FIELD = "user_id";
+	
+	private ListView dialogsListView;
+	private DialogsAdapter dialogsAdapter;
+	private Button newDialogButton;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.dialog_list_layout);
+		initialize();
+	}
+	
+	private void initialize() {
+		applyDialogList();
+		dialogsListView = (ListView) findViewById(R.id.dialogs_listView);
+		newDialogButton = (Button) findViewById(R.id.new_dialog_button);
+		newDialogButton.setOnClickListener(newDialogButtonClickListener);
+	}
+	
+	View.OnClickListener newDialogButtonClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent(getBaseContext(), NewDialogActivity.class);
+			startActivity(intent);
+		}
+	};
+	
+	private void applyDialogList() {
+		QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
+		requestBuilder.eq(USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
+		QBCustomObjects.getObjects(DIALOGS, requestBuilder, new QBCallbackImpl() {
+			@Override
+			public void onComplete(Result result) {
+				if (result.isSuccess()) {
+					List<QBCustomObject> dialogList = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+					dialogsAdapter = new DialogsAdapter(getBaseContext(), dialogList);
+					dialogsListView.setAdapter(dialogsAdapter);
+				}
+			}
+		});
+	}
 }
