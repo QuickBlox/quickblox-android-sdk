@@ -75,5 +75,7 @@
     <string name="back">Back</string>
     <string name="users_text">users</string>
     <string name="ok">ok</string>
+    <string name="loading">Please wait, Loading!</string>
+    <string name="check_connection_error">check internet connection</string>
 
 </resources>

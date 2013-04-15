@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.DialogsAdapter;
-import com.quickblox.chat_v2.core.DataHolder;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
@@ -58,13 +57,13 @@ public class DialogsActivity extends Activity {
 
     private void applyDialogList() {
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-        requestBuilder.eq(USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
+//        requestBuilder.eq(USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
         QBCustomObjects.getObjects(DIALOGS, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     List<QBCustomObject> dialogList = ((QBCustomObjectLimitedResult) result).getCustomObjects();
-                    dialogsAdapter = new DialogsAdapter(MainActivity.getContext(), dialogList);
+                    dialogsAdapter = new DialogsAdapter(getBaseContext(), dialogList);
                     dialogsListView.setAdapter(dialogsAdapter);
                 }
             }

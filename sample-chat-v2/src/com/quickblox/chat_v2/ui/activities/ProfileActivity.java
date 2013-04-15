@@ -18,7 +18,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.DataHolder;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
-import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.result.Result;
@@ -39,29 +38,22 @@ public class ProfileActivity extends Activity {
     private ImageView userpic;
     private static final int SELECT_PHOTO = 1;
 
-    private static final String FRAGMENT_NAME = "Profile";
-
-    TopBar topBar;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_profile);
 
-        topBar = (TopBar) findViewById(R.id.top_bar);
-        topBar.setFragmentName(FRAGMENT_NAME);
 
         userpic = (ImageView) findViewById(R.id.profile_userpic);
         TextView username = (TextView) findViewById(R.id.profile_username);
 
-        switch (SharedPreferencesHelper.getUserPicID()) {
+        switch (SharedPreferencesHelper.getUserPicID(getBaseContext())) {
             case 0:
                 System.out.println("Секция 0");
                 // В случае с FB всегда будет дефолтное из глобальных
                 // переменных
                 downloadPicFromFB();
-                username.setText(SharedPreferencesHelper.getFBUsername());
+                username.setText(SharedPreferencesHelper.getFBUsername(getBaseContext()));
 
                 break;
 
@@ -80,7 +72,7 @@ public class ProfileActivity extends Activity {
                 // отображается.
                 System.out.println("Секция 00");
                 if (DataHolder.getInstance().getMyPic() == null) {
-                    QBContent.downloadFileTask(SharedPreferencesHelper.getUserPicID(), new QBCallbackImpl() {
+                    QBContent.downloadFileTask(SharedPreferencesHelper.getUserPicID(getBaseContext()), new QBCallbackImpl() {
 
                         @Override
                         public void onComplete(Result result) {
@@ -104,7 +96,7 @@ public class ProfileActivity extends Activity {
                 break;
         }
 
-        username.setText(SharedPreferencesHelper.getLogin());
+        username.setText(SharedPreferencesHelper.getLogin(getBaseContext()));
 
     }
 
@@ -120,7 +112,7 @@ public class ProfileActivity extends Activity {
         ImageLoader.getInstance().init(configuration);
         imageLoader = ImageLoader.getInstance();
 
-        imageLoader.displayImage(SharedPreferencesHelper.getUserPicURL(), userpic);
+        imageLoader.displayImage(SharedPreferencesHelper.getUserPicURL(getBaseContext()), userpic);
     }
 
     @Override
@@ -218,8 +210,8 @@ public class ProfileActivity extends Activity {
 
                     QBFileUploadTaskResult fileUploadTaskResultResult = (QBFileUploadTaskResult) result;
                     System.out.println("test = " + fileUploadTaskResultResult.getFile().getId());
-                    SharedPreferencesHelper.setUserPicID(fileUploadTaskResultResult.getFile().getId());
-                    updateQBUser(SharedPreferencesHelper.getUserPicID());
+                    SharedPreferencesHelper.setUserPicID(getBaseContext(), fileUploadTaskResultResult.getFile().getId());
+                    updateQBUser(SharedPreferencesHelper.getUserPicID(getBaseContext()));
                 }
             }
         });

@@ -78,7 +78,7 @@ public class NewDialogAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.userName.setText(userList.get(position).getFullName());
-        viewHolder.userName.setTag(String.valueOf(position));
+        viewHolder.userName.setTag(position);
 
         viewHolder.userName.setOnClickListener(userNameClickListener);
 
@@ -92,7 +92,7 @@ public class NewDialogAdapter extends BaseAdapter {
     View.OnClickListener userNameClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (Integer.parseInt((String) v.getTag()));
+            int position = (Integer) v.getTag();
             createDialog(position);
         }
     };

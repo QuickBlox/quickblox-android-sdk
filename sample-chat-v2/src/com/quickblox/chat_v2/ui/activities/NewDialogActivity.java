@@ -38,11 +38,11 @@ public class NewDialogActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_dialog_layout);
-        initialize();
+        initializeViews();
     }
 
 
-    private void initialize() {
+    private void initializeViews() {
         topBar = (TopBar) findViewById(R.id.top_bar);
         topBar.setFragmentName(TopBar.NEW_DIALOG_ACTIVITY);
         contactList = (ListView) findViewById(R.id.contacts_listView);
@@ -74,7 +74,7 @@ public class NewDialogActivity extends Activity {
 
     private void refreshContactList(ArrayList<QBUser> qbUsers) {
         if (qbUsers != null) {
-            newDialogAdapter = new NewDialogAdapter(MainActivity.getContext(), qbUsers);
+            newDialogAdapter = new NewDialogAdapter(getBaseContext(), qbUsers);
             contactList.setAdapter(newDialogAdapter);
         }
     }

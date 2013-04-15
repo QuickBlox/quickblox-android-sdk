@@ -1,11 +1,12 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import android.app.ProgressDialog;
 import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.TabHost;
+import android.widget.Toast;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
@@ -32,36 +33,41 @@ import java.util.List;
  */
 public class MainActivity extends TabActivity {
 
+    private static final String DIALOGS_TAB = "tab1";
+    private static final String ROOMS_TAB = "tab2";
+    private static final String CONTACTS_TAB = "tab3";
+    private static final String PROFILE_TAB = "tab4";
 
-    private static Context context;
     private QBChatRoster qbRoster;
     private RosterManager rosterManager;
     private QuickBloxManager qbm;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        context = getBaseContext();
-
-        if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin())) {
+        if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin(getBaseContext()))) {
             loadSplashScreen();
         } else {
-            SharedPreferencesHelper.setLogin("supersample-android");
-            SharedPreferencesHelper.setPassword("supersample-android");
+            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
+            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
             authWithUser();
         }
+        initViews();
+    }
 
+    private void initViews() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.show();
         qbm = new QuickBloxManager();
     }
 
-    public static Context getContext() {
-        return context;
-    }
-
     private void loadSplashScreen() {
-        Intent intent = new Intent(getContext(), SplashActivity.class);
+        Intent intent = new Intent(getBaseContext(), SplashActivity.class);
         startActivity(intent);
         finish();
     }
@@ -69,22 +75,23 @@ public class MainActivity extends TabActivity {
     private void setupTabs() {
         TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 
-        TabHost.TabSpec dialogs = tabHost.newTabSpec("tab1");
-        TabHost.TabSpec rooms = tabHost.newTabSpec("tab2");
-        TabHost.TabSpec contacts = tabHost.newTabSpec("tab3");
-        TabHost.TabSpec profile = tabHost.newTabSpec("tab4");
+        TabHost.TabSpec dialogs = tabHost.newTabSpec(DIALOGS_TAB);
+        TabHost.TabSpec rooms = tabHost.newTabSpec(ROOMS_TAB);
+        TabHost.TabSpec contacts = tabHost.newTabSpec(CONTACTS_TAB);
+        TabHost.TabSpec profile = tabHost.newTabSpec(PROFILE_TAB);
 
-        dialogs.setIndicator("     " + getString(R.string.TAB_DIALOGS_TITLE) + "     ")
+        dialogs.setIndicator(getString(R.string.TAB_DIALOGS_TITLE))
                 .setContent(new Intent(this, DialogsActivity.class));
 
-        rooms.setIndicator("     " + getString(R.string.TAB_ROOMS_TITLE) + "     ")
+        rooms.setIndicator(getString(R.string.TAB_ROOMS_TITLE))
                 .setContent(new Intent(this, RoomsActivity.class));
 
-        contacts.setIndicator("     " + getString(R.string.TAB_CONTACTS_TITLE) + "     ")
+        contacts.setIndicator(getString(R.string.TAB_CONTACTS_TITLE))
                 .setContent(new Intent(this, ContactsActivity.class));
 
-        profile.setIndicator("     " + getString(R.string.TAB_PROFILE_TITLE) + "     ")
+        profile.setIndicator(getString(R.string.TAB_PROFILE_TITLE))
                 .setContent(new Intent(this, ProfileActivity.class));
+
 
         tabHost.addTab(dialogs);
         tabHost.addTab(rooms);
@@ -102,32 +109,42 @@ public class MainActivity extends TabActivity {
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     signIn();
+                } else {
+                    reportError(result.getErrors().get(0));
                 }
             }
         });
     }
 
     private void signIn() {
-        QBUsers.signIn(SharedPreferencesHelper.getLogin(), SharedPreferencesHelper.getPassword(), new QBCallbackImpl() {
+        QBUsers.signIn(SharedPreferencesHelper.getLogin(getBaseContext()), SharedPreferencesHelper.getPassword(getBaseContext()), new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     QBUser qbUser = ((QBUserResult) result).getUser();
                     DataHolder.getInstance().setQbUser(qbUser);
                     signInChat(qbUser);
+                } else {
+                    reportError(result.getErrors().get(0));
                 }
             }
         });
 
     }
 
+    private void reportError(String errorMsg) {
+        progressDialog.hide();
+        Toast.makeText(getBaseContext(), errorMsg, Toast.LENGTH_SHORT).show();
+    }
+
     private void signInChat(QBUser qbUser) {
 
-        qbUser.setPassword(SharedPreferencesHelper.getPassword());
+        qbUser.setPassword(SharedPreferencesHelper.getPassword(getBaseContext()));
         QBChat.loginWithUser(qbUser, new LoginListener() {
 
             @Override
             public void onLoginError() {
+                reportError(getString(R.string.check_connection_error));
             }
 
             @Override
@@ -136,6 +153,7 @@ public class MainActivity extends TabActivity {
                     @Override
                     public void run() {
                         setupTabs();
+                        progressDialog.hide();
                     }
                 });
             }
@@ -143,7 +161,6 @@ public class MainActivity extends TabActivity {
     }
 
     private void registerRoster() {
-
         rosterManager = new RosterManager();
         qbRoster = QBChat.registerRoster(rosterManager);
         List<String> userIds = new ArrayList<String>();
@@ -156,22 +173,4 @@ public class MainActivity extends TabActivity {
             qbm.getQbUserInfo(userIds);
         }
     }
-
-
-//    public static void showTabs() {
-//        tabHost.setVisibility(View.VISIBLE);
-//    }
-//
-//    public static void hideTabs() {
-//        tabHost.setVisibility(View.INVISIBLE);
-//    }
-
-
-//    public static void loadNewDialogScreen() {
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        NewDialogActivity newDialogFragment = new NewDialogActivity();
-//        fragmentTransaction.replace(R.id.main, newDialogFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
 }

@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.ui.activities.ChatActivity;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.List;
@@ -70,6 +72,9 @@ public class DialogsAdapter extends BaseAdapter {
         }
 
         viewHolder.dialogName.setText(dialogList.get(position).getFields().get(ROOM_NAME).toString());
+        viewHolder.dialogName.setTag(position);
+        viewHolder.dialogName.setOnClickListener(dialogNameClickListener);
+
         Object lastMsg = dialogList.get(position).getFields().get(LAST_MSG);
         if (lastMsg != null) {
             viewHolder.dialogLastMsg.setText(lastMsg.toString());
@@ -80,6 +85,23 @@ public class DialogsAdapter extends BaseAdapter {
         }
         return convertView;
     }
+
+
+    View.OnClickListener dialogNameClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+            loadChatActivity();
+        }
+    };
+
+
+    private void loadChatActivity() {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
 
     private void applyAvatar(ImageView userAvatar, String userAvatarUrl) {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
