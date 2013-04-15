@@ -164,7 +164,6 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
                 SharedPreferencesHelper.setPassword(getBaseContext(), context.toString());
                 SharedPreferencesHelper.setUserPicID(getBaseContext(), qbUser.getFileId() == null ? 1 : qbUser.getFileId());
             }
-            System.out.println("test point");
             loadMainScreen();
         }
 

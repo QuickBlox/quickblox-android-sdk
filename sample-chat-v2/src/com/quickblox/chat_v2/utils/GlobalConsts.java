@@ -17,5 +17,7 @@ public class GlobalConsts {
 	
 	//FOR QB login
 	public static final String USERPICID = "file_id" ;
+	public static final String QBUSERNAME = "name" ;
+	
 
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -96,7 +97,11 @@ public class ProfileActivity extends Activity {
                 break;
         }
 
-        username.setText(SharedPreferencesHelper.getLogin(getBaseContext()));
+       //username.setText(SharedPreferencesHelper.getLogin(getBaseContext()));
+     // если фб не равно дефолту, то ставим его, если дефолт - проверяем кб, если там не равно дефолту - лепим его, если и там дефолт - ставим логин.
+     		username.setText(!TextUtils.isEmpty(SharedPreferencesHelper.getFBUsername(this)) ? SharedPreferencesHelper.getFBUsername(this) : 
+     			!TextUtils.isEmpty(SharedPreferencesHelper.getQBUsername(this)) ? SharedPreferencesHelper.getQBUsername(this) :
+     				SharedPreferencesHelper.getLogin(this));
 
     }
 

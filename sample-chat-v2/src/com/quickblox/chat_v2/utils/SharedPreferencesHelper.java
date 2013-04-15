@@ -39,6 +39,16 @@ public class SharedPreferencesHelper {
         editor.putString(GlobalConsts.FBUSERNAME, fbUsername);
         editor.commit();
     }
+    
+    public static String getQBUsername(Context context) {
+		return getSharedPreferences(context).getString(GlobalConsts.QBUSERNAME, "");
+	}
+	
+	public static void setQbUsername(Context context,String qbUsername) {
+		SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+		editor.putString(GlobalConsts.QBUSERNAME, qbUsername);
+		editor.commit();
+	}
 
     public static String getLogin(Context context) {
         return getSharedPreferences(context).getString(GlobalConsts.LOGIN, "");
