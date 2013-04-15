@@ -1,0 +1,554 @@
+diff --git a/sample-chat-v2/AndroidManifest.xml b/sample-chat-v2/AndroidManifest.xml
+index a342d46..e7f7b88 100644
+--- a/sample-chat-v2/AndroidManifest.xml
++++ b/sample-chat-v2/AndroidManifest.xml
+@@ -14,7 +14,6 @@
+ 
+     <application
+         android:name="com.quickblox.chat_v2.core.DataHolder"
+-        android:icon="@drawable/ic_launcher"
+         android:label="@string/app_name">
+ 
+         <activity
+diff --git a/sample-chat-v2/chatv2.dia b/sample-chat-v2/chatv2.dia
+deleted file mode 100644
+index 952589d..0000000
+Binary files a/sample-chat-v2/chatv2.dia and /dev/null differ
+diff --git a/sample-chat-v2/chatv2.png b/sample-chat-v2/chatv2.png
+deleted file mode 100644
+index 64a0633..0000000
+Binary files a/sample-chat-v2/chatv2.png and /dev/null differ
+diff --git a/sample-chat-v2/libs/aibolit-0.1.jar b/sample-chat-v2/libs/aibolit-0.1.jar
+deleted file mode 100644
+index 1c6bb3b..0000000
+Binary files a/sample-chat-v2/libs/aibolit-0.1.jar and /dev/null differ
+diff --git a/sample-chat-v2/lint.xml b/sample-chat-v2/lint.xml
+deleted file mode 100644
+index ee0eead..0000000
+--- a/sample-chat-v2/lint.xml
++++ /dev/null
+@@ -1,3 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<lint>
+-</lint>
+\ No newline at end of file
+diff --git a/sample-chat-v2/proguard-project.txt b/sample-chat-v2/proguard-project.txt
+deleted file mode 100644
+index f2fe155..0000000
+--- a/sample-chat-v2/proguard-project.txt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-# To enable ProGuard in your project, edit project.properties
+-# to define the proguard.config property as described in that file.
+-#
+-# Add project specific ProGuard rules here.
+-# By default, the flags in this file are appended to flags specified
+-# in ${sdk.dir}/tools/proguard/proguard-android.txt
+-# You can edit the include path and order by changing the ProGuard
+-# include property in project.properties.
+-#
+-# For more details, see
+-#   http://developer.android.com/guide/developing/tools/proguard.html
+-
+-# Add any project specific keep options here:
+-
+-# If your project uses WebView with JS, uncomment the following
+-# and specify the fully qualified class name to the JavaScript interface
+-# class:
+-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+-#   public *;
+-#}
+diff --git a/sample-chat-v2/project.properties b/sample-chat-v2/project.properties
+index d8fc0a2..e666d94 100644
+--- a/sample-chat-v2/project.properties
++++ b/sample-chat-v2/project.properties
+@@ -14,4 +14,4 @@
+ target=android-17
+ 
+ 
+-android.library.reference.1=../../facebook-android-sdk-3.0/facebook
++android.library.reference.1=../facebook-android-sdk-3.0/facebook
+diff --git a/sample-chat-v2/res/drawable-hdpi/ic_launcher.png b/sample-chat-v2/res/drawable-hdpi/ic_launcher.png
+deleted file mode 100644
+index 96a442e..0000000
+Binary files a/sample-chat-v2/res/drawable-hdpi/ic_launcher.png and /dev/null differ
+diff --git a/sample-chat-v2/res/layout/activity_dialogs.xml b/sample-chat-v2/res/layout/activity_dialogs.xml
+new file mode 100644
+index 0000000..907a13d
+--- /dev/null
++++ b/sample-chat-v2/res/layout/activity_dialogs.xml
+@@ -0,0 +1,26 @@
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/LinearLayout1"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:layout_margin="5dp"
++    android:orientation="vertical" >
++
++    <EditText
++        android:id="@+id/dialogs_list_search"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:ems="10" >
++
++        <requestFocus />
++    </EditText>
++
++    <ListView
++        android:id="@android:id/list"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_margin="2dp" >
++
++    </ListView>
++
++</LinearLayout>
+\ No newline at end of file
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/adapters/ChatInRoomsAdapter.java b/sample-chat-v2/src/com/quickblox/chat_v2/adapters/ChatInRoomsAdapter.java
+deleted file mode 100644
+index 914f39c..0000000
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/adapters/ChatInRoomsAdapter.java
++++ /dev/null
+@@ -1,108 +0,0 @@
+-package com.quickblox.chat_v2.adapters;
+-
+-import java.text.ParseException;
+-import java.text.SimpleDateFormat;
+-import java.util.ArrayList;
+-import java.util.Date;
+-import java.util.List;
+-
+-import android.content.Context;
+-import android.text.format.DateFormat;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.BaseAdapter;
+-import android.widget.Button;
+-import android.widget.ImageView;
+-import android.widget.LinearLayout;
+-import android.widget.TableLayout;
+-import android.widget.TextView;
+-
+-import com.quickblox.chat_v2.R;
+-import com.quickblox.module.users.model.QBUser;
+-
+-public class ChatInRoomsAdapter extends BaseAdapter {
+-	
+-	private Context context;
+-	private LayoutInflater inflater;
+-	
+-	private List<QBUser> incomeUserList; 
+-	private boolean isContacts;
+-	
+-	private ChatHolder chatHolder;
+-	
+-	public ChatInRoomsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isContacts) {
+-		this.context = context;
+-		incomeUserList = qbuserArray;
+-		this.isContacts = isContacts;
+-	}
+-	
+-	static class ChatHolder {
+-	
+-		public ImageView userPic;
+-		public TextView userName;
+-		
+-		public Button accept;
+-		public Button reject;
+-	}
+-	
+-	@Override
+-	public int getCount() {
+-		// TODO Auto-generated method stub
+-		return incomeUserList.size();
+-	}
+-	
+-	@Override
+-	public Object getItem(int num) {
+-		return incomeUserList.get(num);
+-	}
+-	
+-	@Override
+-	public long getItemId(int arg0) {
+-		return arg0;
+-	}
+-	
+-	public View getView(int position, View convertView, ViewGroup parent) {
+-		
+-		View chatView = convertView;
+-		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+-		
+-		QBUser currentUser = incomeUserList.get(position);
+-		
+-		if (chatView == null) {
+-			
+-			chatHolder = new ChatHolder();
+-			
+-			chatView = inflater.inflate(R.layout.fragment_contacts_inside, null, true);
+-			chatHolder.userPic = (ImageView) chatView.findViewById(R.id.contacts_inside_userpic);
+-			chatHolder.userName = (TextView) chatView.findViewById(R.id.contacts_inside_username);
+-			
+-			chatHolder.accept = (Button) chatView.findViewById(R.id.contact_iside_accept);
+-			chatHolder.reject = (Button) chatView.findViewById(R.id.contact_inside_reject);
+-			
+-				
+-			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
+-
+-			chatView.setTag(chatHolder);
+-			
+-			
+-		} else {
+-			
+-			chatHolder = (ChatHolder) chatView.getTag();			
+-			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
+-
+-		}
+-		
+-		
+-		if (isContacts) {
+-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contactslinearlayout);
+-			insideLayout.setVisibility(View.GONE);
+-		} else{
+-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contactslinearlayout);
+-			insideLayout.setVisibility(View.VISIBLE);
+-		}		
+-		
+-		
+-		return chatView;
+-	}
+-}
+\ No newline at end of file
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/apis/MessageManager.java b/sample-chat-v2/src/com/quickblox/chat_v2/apis/MessageManager.java
+new file mode 100644
+index 0000000..dba451b
+--- /dev/null
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/apis/MessageManager.java
+@@ -0,0 +1,66 @@
++package com.quickblox.chat_v2.apis;
++
++import org.jivesoftware.smack.Chat;
++import org.jivesoftware.smack.MessageListener;
++import org.jivesoftware.smack.packet.Message;
++
++import com.quickblox.chat_v2.interfaces.onReciveNewMessageToCurrentChat;
++import com.quickblox.module.chat.QBChat;
++import com.quickblox.module.chat.model.QBChatRoster;
++
++public class MessageManager implements MessageListener {
++	
++	private int currentChatUserId;
++	private onReciveNewMessageToCurrentChat newMessageListener;
++	
++	// Глобальный слушатель
++	@Override
++	public void processMessage(Chat chat, Message message) {
++		if (message.getBody() == null) {
++			return;
++		}
++		
++		System.out.println("message = "+message);
++		
++		if (currentChatUserId != 0 && message.getFrom().equals(currentChatUserId)) {
++			newMessageListener.reciveNewMessage(message);
++		}
++		
++	}
++	
++	/**
++	 * Метод отправки сообщения на QB по xmpp
++	 * 
++	 * @param userId
++	 * @param messageBody
++	 */
++	public void sendMessage(Integer userId, String messageBody) {
++		QBChat.sendMessage(userId, messageBody);
++		
++		// Add new message to local restore
++	}
++	/**
++	 * Метод получения всех сообщений Пока банан
++	 * 
++	 * @param roster
++	 */
++	public void getAllMessages(QBChatRoster roster) {
++		
++	}
++	
++	// Будет ясно в понедельник
++	public void getAllmessagesFromRoom() {
++		
++	}
++	
++	// Setters
++	public void setCurrentChatUserId(int currentChatUserId) {
++		this.currentChatUserId = currentChatUserId;
++	}
++	
++	// Listeners
++	public void setNewMessageListener(onReciveNewMessageToCurrentChat newMessageListener) {
++		this.newMessageListener = newMessageListener;
++	}
++	
++}
+\ No newline at end of file
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/apis/RosterManager.java b/sample-chat-v2/src/com/quickblox/chat_v2/apis/RosterManager.java
+index 2499429..776a77f 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/apis/RosterManager.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/apis/RosterManager.java
+@@ -1,18 +1,33 @@
+ package com.quickblox.chat_v2.apis;
+ 
++import java.util.ArrayList;
+ import java.util.Collection;
++import java.util.Timer;
++import java.util.TimerTask;
+ 
+ import org.jivesoftware.smack.packet.Presence;
+ 
++import com.quickblox.chat_v2.core.DataHolder;
++import com.quickblox.module.chat.QBChat;
+ import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
+ 
+ public class RosterManager implements QBRosterListener {
+ 	
++	private Timer presenceTimer;
++	private ArrayList<Integer> requestAutoriseNewUser;
++	
++	
++	public RosterManager() {
++		startOnlineTimer();
++	}
+ 	
+ 	@Override
+ 	public void entriesAdded(Collection<Integer> arg0) {
+-		System.out.println("ADD");
+-		System.out.println("entress added = " + arg0.toString());
++		System.out.println("entress added = " + arg0);
++		requestAutoriseNewUser = new ArrayList<Integer>();
++		requestAutoriseNewUser.addAll(arg0);
++		
++		
+ 		
+ 	}
+ 	
+@@ -35,5 +50,17 @@ public class RosterManager implements QBRosterListener {
+ 		System.out.println("presence = " + arg0.toString());
+ 		
+ 	}
+-	
++
++	// timers
++		private void startOnlineTimer() {
++			
++			presenceTimer = new Timer();
++			presenceTimer.schedule(new TimerTask() {
++				public void run() {
++					QBChat.sendPresence();
++					DataHolder app = DataHolder.getInstance();
++					
++				}
++			}, 10000L, 30000L);
++		}
+ }
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/interfaces/onReciveNewMessageToCurrentChat.java b/sample-chat-v2/src/com/quickblox/chat_v2/interfaces/onReciveNewMessageToCurrentChat.java
+new file mode 100644
+index 0000000..436431a
+--- /dev/null
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/interfaces/onReciveNewMessageToCurrentChat.java
+@@ -0,0 +1,9 @@
++package com.quickblox.chat_v2.interfaces;
++
++import org.jivesoftware.smack.packet.Message;
++
++public interface onReciveNewMessageToCurrentChat {
++
++	
++	public void reciveNewMessage(Message incomeMessage);
++}
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/MainActivity.java b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/MainActivity.java
+index e584c8c..078ec6e 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/MainActivity.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/MainActivity.java
+@@ -8,6 +8,7 @@ import android.text.TextUtils;
+ import android.widget.TabHost;
+ import android.widget.Toast;
+ import com.quickblox.chat_v2.R;
++import com.quickblox.chat_v2.apis.MessageManager;
+ import com.quickblox.chat_v2.apis.QuickBloxManager;
+ import com.quickblox.chat_v2.apis.RosterManager;
+ import com.quickblox.chat_v2.core.DataHolder;
+@@ -26,6 +27,10 @@ import com.quickblox.module.users.result.QBUserResult;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import org.jivesoftware.smack.Chat;
++import org.jivesoftware.smack.MessageListener;
++import org.jivesoftware.smack.packet.Message;
++
+ /**
+  * Created with IntelliJ IDEA.
+  * User: Andrew Dmitrenko
+@@ -33,14 +38,22 @@ import java.util.List;
+  */
+ public class MainActivity extends TabActivity {
+ 
+-    private static final String DIALOGS_TAB = "tab1";
++    @Override
++	protected void onStop() {
++		super.onStop();
++		System.out.println("STOP");
++	}
++
++	private static final String DIALOGS_TAB = "tab1";
+     private static final String ROOMS_TAB = "tab2";
+     private static final String CONTACTS_TAB = "tab3";
+     private static final String PROFILE_TAB = "tab4";
+ 
+     private QBChatRoster qbRoster;
++    
+     private RosterManager rosterManager;
+     private QuickBloxManager qbm;
++    private MessageManager msgManager;
+     private ProgressDialog progressDialog;
+ 
+     @Override
+@@ -51,12 +64,11 @@ public class MainActivity extends TabActivity {
+         if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin(getBaseContext()))) {
+             loadSplashScreen();
+         } else {
+-            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
+-            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
++           
+             authWithUser();
+         }
+-        initViews();
+-    }
++        initViews();       
++}
+ 
+     private void initViews() {
+         progressDialog = new ProgressDialog(this);
+@@ -88,7 +100,7 @@ public class MainActivity extends TabActivity {
+ 
+         contacts.setIndicator(getString(R.string.TAB_CONTACTS_TITLE))
+                 .setContent(new Intent(this, ContactsActivity.class));
+-
++        
+         profile.setIndicator(getString(R.string.TAB_PROFILE_TITLE))
+                 .setContent(new Intent(this, ProfileActivity.class));
+ 
+@@ -124,6 +136,7 @@ public class MainActivity extends TabActivity {
+                     QBUser qbUser = ((QBUserResult) result).getUser();
+                     DataHolder.getInstance().setQbUser(qbUser);
+                     signInChat(qbUser);
++                    
+                 } else {
+                     reportError(result.getErrors().get(0));
+                 }
+@@ -154,6 +167,10 @@ public class MainActivity extends TabActivity {
+                     public void run() {
+                         setupTabs();
+                         progressDialog.hide();
++       
++                        msgManager = new MessageManager();
++                        registerRoster();
++                       
+                     }
+                 });
+             }
+@@ -162,6 +179,7 @@ public class MainActivity extends TabActivity {
+ 
+     private void registerRoster() {
+         rosterManager = new RosterManager();
++        
+         qbRoster = QBChat.registerRoster(rosterManager);
+         List<String> userIds = new ArrayList<String>();
+ 
+@@ -169,8 +187,13 @@ public class MainActivity extends TabActivity {
+             for (Integer id : qbRoster.getUsersId()) {
+                 userIds.add(String.valueOf(id));
+             }
+-
+             qbm.getQbUserInfo(userIds);
+         }
++       registerMessageListener();
+     }
++    
++	private void registerMessageListener() {
++		QBChat.openXmmpChat(msgManager);
++		msgManager.sendMessage(135347, "return-test");
++	}
+ }
+\ No newline at end of file
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/ProfileActivity.java b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/ProfileActivity.java
+index 80409c4..f528916 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/ProfileActivity.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/ProfileActivity.java
+@@ -7,6 +7,7 @@ import android.graphics.Bitmap.CompressFormat;
+ import android.graphics.BitmapFactory;
+ import android.net.Uri;
+ import android.os.Bundle;
++import android.text.TextUtils;
+ import android.view.View;
+ import android.view.View.OnClickListener;
+ import android.widget.ImageView;
+@@ -96,7 +97,11 @@ public class ProfileActivity extends Activity {
+                 break;
+         }
+ 
+-        username.setText(SharedPreferencesHelper.getLogin(getBaseContext()));
++       //username.setText(SharedPreferencesHelper.getLogin(getBaseContext()));
++     // если фб не равно дефолту, то ставим его, если дефолт - проверяем кб, если там не равно дефолту - лепим его, если и там дефолт - ставим логин.
++     		username.setText(!TextUtils.isEmpty(SharedPreferencesHelper.getFBUsername(this)) ? SharedPreferencesHelper.getFBUsername(this) : 
++     			!TextUtils.isEmpty(SharedPreferencesHelper.getQBUsername(this)) ? SharedPreferencesHelper.getQBUsername(this) :
++     				SharedPreferencesHelper.getLogin(this));
+ 
+     }
+ 
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/SplashActivity.java b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/SplashActivity.java
+index 48d8f85..2b44a99 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/SplashActivity.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/ui/activities/SplashActivity.java
+@@ -164,7 +164,6 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
+                 SharedPreferencesHelper.setPassword(getBaseContext(), context.toString());
+                 SharedPreferencesHelper.setUserPicID(getBaseContext(), qbUser.getFileId() == null ? 1 : qbUser.getFileId());
+             }
+-            System.out.println("test point");
+             loadMainScreen();
+         }
+ 
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/utils/GlobalConsts.java b/sample-chat-v2/src/com/quickblox/chat_v2/utils/GlobalConsts.java
+index a8c6665..9fc69e0 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/utils/GlobalConsts.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/utils/GlobalConsts.java
+@@ -17,5 +17,7 @@ public class GlobalConsts {
+ 	
+ 	//FOR QB login
+ 	public static final String USERPICID = "file_id" ;
++	public static final String QBUSERNAME = "name" ;
++	
+ 
+ }
+diff --git a/sample-chat-v2/src/com/quickblox/chat_v2/utils/SharedPreferencesHelper.java b/sample-chat-v2/src/com/quickblox/chat_v2/utils/SharedPreferencesHelper.java
+index 5b44c1d..544cfe4 100644
+--- a/sample-chat-v2/src/com/quickblox/chat_v2/utils/SharedPreferencesHelper.java
++++ b/sample-chat-v2/src/com/quickblox/chat_v2/utils/SharedPreferencesHelper.java
+@@ -39,6 +39,16 @@ public class SharedPreferencesHelper {
+         editor.putString(GlobalConsts.FBUSERNAME, fbUsername);
+         editor.commit();
+     }
++    
++    public static String getQBUsername(Context context) {
++		return getSharedPreferences(context).getString(GlobalConsts.QBUSERNAME, "");
++	}
++	
++	public static void setQbUsername(Context context,String qbUsername) {
++		SharedPreferences.Editor editor = getSharedPreferences(context).edit();
++		editor.putString(GlobalConsts.QBUSERNAME, qbUsername);
++		editor.commit();
++	}
+ 
+     public static String getLogin(Context context) {
+         return getSharedPreferences(context).getString(GlobalConsts.LOGIN, "");

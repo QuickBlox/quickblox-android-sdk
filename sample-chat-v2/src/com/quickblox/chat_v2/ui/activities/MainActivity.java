@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.widget.TabHost;
 import android.widget.Toast;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.DataHolder;
@@ -33,14 +34,16 @@ import java.util.List;
  */
 public class MainActivity extends TabActivity {
 
-    private static final String DIALOGS_TAB = "tab1";
+	private static final String DIALOGS_TAB = "tab1";
     private static final String ROOMS_TAB = "tab2";
     private static final String CONTACTS_TAB = "tab3";
     private static final String PROFILE_TAB = "tab4";
 
     private QBChatRoster qbRoster;
+    
     private RosterManager rosterManager;
     private QuickBloxManager qbm;
+    private MessageManager msgManager;
     private ProgressDialog progressDialog;
 
     @Override
@@ -53,12 +56,14 @@ public class MainActivity extends TabActivity {
         if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin(getBaseContext()))) {
             loadSplashScreen();
         } else {
+
 //            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
 //            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
+
             authWithUser();
         }
-        initViews();
-    }
+        initViews();       
+}
 
     private void initViews() {
         progressDialog = new ProgressDialog(this);
@@ -90,7 +95,7 @@ public class MainActivity extends TabActivity {
 
         contacts.setIndicator(getString(R.string.TAB_CONTACTS_TITLE))
                 .setContent(new Intent(this, ContactsActivity.class));
-
+        
         profile.setIndicator(getString(R.string.TAB_PROFILE_TITLE))
                 .setContent(new Intent(this, ProfileActivity.class));
 
@@ -126,6 +131,7 @@ public class MainActivity extends TabActivity {
                     QBUser qbUser = ((QBUserResult) result).getUser();
                     DataHolder.getInstance().setQbUser(qbUser);
                     signInChat(qbUser);
+                    
                 } else {
                     reportError(result.getErrors().get(0));
 
@@ -156,6 +162,10 @@ public class MainActivity extends TabActivity {
                     public void run() {
                         setupTabs();
                         progressDialog.hide();
+       
+                        msgManager = new MessageManager();
+                        registerRoster();
+                       
                     }
                 });
             }
@@ -164,6 +174,7 @@ public class MainActivity extends TabActivity {
 
     private void registerRoster() {
         rosterManager = new RosterManager();
+        
         qbRoster = QBChat.registerRoster(rosterManager);
         List<String> userIds = new ArrayList<String>();
 
@@ -171,8 +182,12 @@ public class MainActivity extends TabActivity {
             for (Integer id : qbRoster.getUsersId()) {
                 userIds.add(String.valueOf(id));
             }
-
             qbm.getQbUserInfo(userIds);
         }
+       registerMessageListener();
     }
+    
+	private void registerMessageListener() {
+		QBChat.openXmmpChat(msgManager);
+	}
 }

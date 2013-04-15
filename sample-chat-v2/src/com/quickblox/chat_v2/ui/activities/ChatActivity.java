@@ -18,7 +18,6 @@ import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
@@ -49,7 +48,8 @@ public class ChatActivity extends Activity implements MessageListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SmackAndroid.init(this);
+
+        QBChat.openXmmpChat(this);
         setContentView(R.layout.chat_layout);
         initViews();
         getDialogMessages();
@@ -74,8 +74,9 @@ public class ChatActivity extends Activity implements MessageListener {
 
     public void onSendBtnClick(View view) {
         lastMsg = msgTxt.getText().toString();
+        msgTxt.setText("");
         showMessage(lastMsg, true);
-        QBChat.sendMessage(DataHolder.getInstance().getQbUser().getId(), lastMsg);
+        QBChat.sendMessage(userId, lastMsg);
         createMessage(lastMsg, DataHolder.getInstance().getQbUser().getId());
         updateDialogLastMessage();
     }
