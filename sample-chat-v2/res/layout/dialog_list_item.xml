@@ -1,34 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:background="@android:color/white">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:padding="1dp">
 
-    <ImageView
-        android:id="@+id/user_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/container"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white">
 
-        <TextView
-            android:id="@+id/dialog_name"
+        <View
+            android:layout_width="1dp"
+            android:layout_height="75dp"
+            android:background="@android:color/black"/>
+
+        <ImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/com_facebook_profile_default_icon"
+            android:padding="1dp"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Garry Johns"/>
+            android:layout_toRightOf="@+id/user_avatar"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/dialog_last_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hey mate"/>
+            <TextView
+                android:id="@+id/dialog_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:text="Garry Johns"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/dialog_last_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Hey mate"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="75dp"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/black"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
 
 </LinearLayout>

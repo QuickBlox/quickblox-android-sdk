@@ -47,12 +47,14 @@ public class MainActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
+//        SmackAndroid.init(this);
+//        SharedPreferencesHelper.setLogin(getBaseContext(), "bob");
+//        SharedPreferencesHelper.setPassword(getBaseContext(), "qwerty123");
         if (TextUtils.isEmpty(SharedPreferencesHelper.getLogin(getBaseContext()))) {
             loadSplashScreen();
         } else {
-            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
-            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
+//            SharedPreferencesHelper.setLogin(getBaseContext(), "supersample-android");
+//            SharedPreferencesHelper.setPassword(getBaseContext(), "supersample-android");
             authWithUser();
         }
         initViews();
@@ -126,11 +128,12 @@ public class MainActivity extends TabActivity {
                     signInChat(qbUser);
                 } else {
                     reportError(result.getErrors().get(0));
+
                 }
             }
         });
-
     }
+
 
     private void reportError(String errorMsg) {
         progressDialog.hide();
@@ -141,7 +144,6 @@ public class MainActivity extends TabActivity {
 
         qbUser.setPassword(SharedPreferencesHelper.getPassword(getBaseContext()));
         QBChat.loginWithUser(qbUser, new LoginListener() {
-
             @Override
             public void onLoginError() {
                 reportError(getString(R.string.check_connection_error));

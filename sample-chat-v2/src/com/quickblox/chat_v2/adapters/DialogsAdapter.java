@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -15,6 +16,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.ui.activities.ChatActivity;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.List;
@@ -27,13 +29,10 @@ import java.util.List;
  */
 public class DialogsAdapter extends BaseAdapter {
 
-    private static final String ROOM_NAME = "name";
-    private static final String LAST_MSG = "last_msg";
-    private static final String RECEPIENT_AVATAR = "recepient_avatar";
 
-    LayoutInflater layoutInflater;
-    List<QBCustomObject> dialogList;
-    Context context;
+    private LayoutInflater layoutInflater;
+    private List<QBCustomObject> dialogList;
+    private Context context;
 
 
     public DialogsAdapter(Context context, List<QBCustomObject> dialogList) {
@@ -66,20 +65,22 @@ public class DialogsAdapter extends BaseAdapter {
             viewHolder.userAvatar = (ImageView) convertView.findViewById(R.id.user_avatar);
             viewHolder.dialogName = (TextView) convertView.findViewById(R.id.dialog_name);
             viewHolder.dialogLastMsg = (TextView) convertView.findViewById(R.id.dialog_last_msg);
+            viewHolder.container = (RelativeLayout) convertView.findViewById(R.id.container);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.dialogName.setText(dialogList.get(position).getFields().get(ROOM_NAME).toString());
-        viewHolder.dialogName.setTag(position);
-        viewHolder.dialogName.setOnClickListener(dialogNameClickListener);
+        viewHolder.dialogName.setText(dialogList.get(position).getFields().get(GlobalConsts.ROOM_NAME).toString());
 
-        Object lastMsg = dialogList.get(position).getFields().get(LAST_MSG);
+        viewHolder.container.setTag(position);
+        viewHolder.container.setOnClickListener(dialogClickListener);
+
+        Object lastMsg = dialogList.get(position).getFields().get(GlobalConsts.LAST_MSG);
         if (lastMsg != null) {
             viewHolder.dialogLastMsg.setText(lastMsg.toString());
         }
-        Object userAvatarUrl = dialogList.get(position).getFields().get(RECEPIENT_AVATAR);
+        Object userAvatarUrl = dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_AVATAR);
         if (userAvatarUrl != null) {
             applyAvatar(viewHolder.userAvatar, userAvatarUrl.toString());
         }
@@ -87,18 +88,21 @@ public class DialogsAdapter extends BaseAdapter {
     }
 
 
-    View.OnClickListener dialogNameClickListener = new View.OnClickListener() {
+    View.OnClickListener dialogClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
-            loadChatActivity();
+            int userId = Integer.parseInt(dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_ID).toString());
+            loadChatActivity(userId, dialogList.get(position).getCustomObjectId());
         }
     };
 
 
-    private void loadChatActivity() {
+    private void loadChatActivity(int userId, String dialogId) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(GlobalConsts.USER_ID, userId);
+        intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         context.startActivity(intent);
     }
 
@@ -122,5 +126,6 @@ public class DialogsAdapter extends BaseAdapter {
         ImageView userAvatar;
         TextView dialogName;
         TextView dialogLastMsg;
+        RelativeLayout container;
     }
 }

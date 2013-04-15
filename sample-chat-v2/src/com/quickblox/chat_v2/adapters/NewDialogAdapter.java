@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -16,12 +13,14 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.ui.activities.ChatActivity;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.result.QBFileResult;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.custom.result.QBCustomObjectResult;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -72,15 +71,15 @@ public class NewDialogAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.userAvatar = (ImageView) convertView.findViewById(R.id.user_avatar);
             viewHolder.userName = (TextView) convertView.findViewById(R.id.user_name);
-            viewHolder.container = (LinearLayout) convertView.findViewById(R.id.container);
+            viewHolder.container = (RelativeLayout) convertView.findViewById(R.id.container);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.userName.setText(userList.get(position).getFullName());
-        viewHolder.userName.setTag(position);
 
-        viewHolder.userName.setOnClickListener(userNameClickListener);
+        viewHolder.container.setTag(position);
+        viewHolder.container.setOnClickListener(userClickListener);
 
         if (userList.get(position).getFileId() != null) {
             applyImage(userList.get(position).getFileId(), viewHolder.userAvatar);
@@ -89,7 +88,7 @@ public class NewDialogAdapter extends BaseAdapter {
     }
 
 
-    View.OnClickListener userNameClickListener = new View.OnClickListener() {
+    View.OnClickListener userClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
@@ -97,7 +96,7 @@ public class NewDialogAdapter extends BaseAdapter {
         }
     };
 
-    private void createDialog(int position) {
+    private void createDialog(final int position) {
         QBCustomObject co = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(RECEPIENT_ID_FIELD, userList.get(position).getId());
@@ -108,12 +107,18 @@ public class NewDialogAdapter extends BaseAdapter {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    loadChatActivity(userList.get(position).getId(), ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
                 }
             }
         });
+    }
+
+    private void loadChatActivity(int userId, String dialogId) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(GlobalConsts.USER_ID, userId);
+        intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void applyImage(int fileId, final ImageView userAvatar) {
@@ -146,6 +151,6 @@ public class NewDialogAdapter extends BaseAdapter {
     private static class ViewHolder {
         ImageView userAvatar;
         TextView userName;
-        LinearLayout container;
+        RelativeLayout container;
     }
 }

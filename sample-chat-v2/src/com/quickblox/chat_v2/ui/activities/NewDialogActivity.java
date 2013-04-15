@@ -38,11 +38,11 @@ public class NewDialogActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_dialog_layout);
-        initializeViews();
+        initViews();
     }
 
 
-    private void initializeViews() {
+    private void initViews() {
         topBar = (TopBar) findViewById(R.id.top_bar);
         topBar.setFragmentName(TopBar.NEW_DIALOG_ACTIVITY);
         contactList = (ListView) findViewById(R.id.contacts_listView);
