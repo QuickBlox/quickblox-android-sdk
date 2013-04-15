@@ -141,8 +141,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
     // QB CALLBACK
 
     @Override
-    public void onComplete(Result arg0) {
-    }
+    public void onComplete(Result rusult) {}
 
     @Override
     public void onComplete(Result result, Object context) {

@@ -1,5 +1,8 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -7,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.TabHost;
 import android.widget.Toast;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
@@ -24,25 +28,12 @@ import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.packet.Message;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Andrew Dmitrenko
  * Date: 4/8/13 Time: 1:34 PM
  */
 public class MainActivity extends TabActivity {
-
-    @Override
-	protected void onStop() {
-		super.onStop();
-		System.out.println("STOP");
-	}
 
 	private static final String DIALOGS_TAB = "tab1";
     private static final String ROOMS_TAB = "tab2";
@@ -194,6 +185,5 @@ public class MainActivity extends TabActivity {
     
 	private void registerMessageListener() {
 		QBChat.openXmmpChat(msgManager);
-		msgManager.sendMessage(135347, "return-test");
 	}
 }

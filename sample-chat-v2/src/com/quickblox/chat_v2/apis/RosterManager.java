@@ -7,7 +7,6 @@ import java.util.TimerTask;
 
 import org.jivesoftware.smack.packet.Presence;
 
-import com.quickblox.chat_v2.core.DataHolder;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 
@@ -22,32 +21,32 @@ public class RosterManager implements QBRosterListener {
 	}
 	
 	@Override
-	public void entriesAdded(Collection<Integer> arg0) {
-		System.out.println("entress added = " + arg0);
+	public void entriesAdded(Collection<Integer> addedEntriesIds) {
+		System.out.println("entress added = " + addedEntriesIds);
 		requestAutoriseNewUser = new ArrayList<Integer>();
-		requestAutoriseNewUser.addAll(arg0);
+		requestAutoriseNewUser.addAll(addedEntriesIds);
 		
 		
 		
 	}
 	
 	@Override
-	public void entriesDeleted(Collection<Integer> arg0) {
+	public void entriesDeleted(Collection<Integer> deletedEntriesIds) {
 		System.out.println("DEL");
-		System.out.println("entress deleted = " + arg0.toString());
+		System.out.println("entress deleted = " + deletedEntriesIds.toString());
 		
 	}
 	
 	@Override
-	public void entriesUpdated(Collection<Integer> arg0) {
+	public void entriesUpdated(Collection<Integer> updatedEntriesIds) {
 		System.out.println("UPD");
-		System.out.println("entress updated = " + arg0.toString());
+		System.out.println("entress updated = " + updatedEntriesIds.toString());
 		
 	}
 	
 	@Override
-	public void presenceChanged(Presence arg0) {
-		System.out.println("presence = " + arg0.toString());
+	public void presenceChanged(Presence presence) {
+		System.out.println("presence = " + presence.toString());
 		
 	}
 
@@ -57,9 +56,7 @@ public class RosterManager implements QBRosterListener {
 			presenceTimer = new Timer();
 			presenceTimer.schedule(new TimerTask() {
 				public void run() {
-					QBChat.sendPresence();
-					DataHolder app = DataHolder.getInstance();
-					
+					QBChat.sendPresence();					
 				}
 			}, 10000L, 30000L);
 		}
