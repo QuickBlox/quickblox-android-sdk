@@ -118,6 +118,7 @@ public class NewDialogAdapter extends BaseAdapter {
         intent.putExtra(GlobalConsts.USER_ID, userId);
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
         context.startActivity(intent);
     }
 

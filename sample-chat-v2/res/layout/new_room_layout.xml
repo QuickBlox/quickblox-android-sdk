@@ -1,64 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="5dp"
+              android:orientation="vertical">
 
     <TextView
-        android:id="@+id/rooms_name_name"
+        android:id="@+id/rooms_name_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/fragment_rooms_namefield" />
+        android:text="@string/fragment_rooms_namefield"/>
 
     <EditText
-        android:id="@+id/rooms_namefield"
+        android:id="@+id/room_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:ems="10">
 
-        <requestFocus />
+        <requestFocus/>
     </EditText>
 
     <CheckBox
-        android:id="@+id/checkbox_persistent"
+        android:id="@+id/persistent_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/fragment_rooms_checkbox_persistent"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/persistent_annotation"
+        android:id="@+id/persistent_text_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/fragment_rooms_persistent_annotation"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <CheckBox
-        android:id="@+id/checkbox_members"
+        android:id="@+id/only_members_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/fragment_rooms_checkbox_members"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/members_annotation"
+        android:id="@+id/only_members_text_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/fragment_rooms_members_annotation"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <Button
-        android:id="@+id/rooms_join_button"
+        android:id="@+id/room_join_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:minWidth="90dp"
-        android:text="@string/fragment_join_button" />
+        android:text="@string/fragment_join_button"/>
 
 </LinearLayout>
