@@ -62,11 +62,8 @@
 
     
     <string name="fragment_rooms_namefield">Name</string>
-    <string name="fragment_rooms_checkbox_persistent">Persistent</string>
     <string name="fragment_rooms_checkbox_members">Only members</string>
-	
-	<string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user exit )</string>
-    <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to join room )</string>
+
 
     <string name="TAB_DIALOGS_TITLE">dialogs</string>
     <string name="TAB_ROOMS_TITLE">rooms</string>
@@ -79,5 +76,6 @@
     <string name="ok">ok</string>
     <string name="loading">Please wait, Loading!</string>
     <string name="check_connection_error">check internet connection</string>
+    <string name="room_name_emty_msg">Room name can`t be empty</string>
 
 </resources>

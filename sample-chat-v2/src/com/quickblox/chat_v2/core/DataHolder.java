@@ -4,9 +4,11 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.util.Log;
 import com.quickblox.module.chat.smack.SmackAndroid;
+import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +20,10 @@ public class DataHolder extends Application {
 
 
     private static DataHolder dataHolder;
+    private List<QBCustomObject> dialogList;
+    private ArrayList<QBUser> chatUserList;
+    private Bitmap myPic;
+    private QBUser qbUser;
 
 
     public static synchronized DataHolder getInstance() {
@@ -27,19 +33,23 @@ public class DataHolder extends Application {
         return dataHolder;
     }
 
-
-    private ArrayList<QBUser> chatUserList;
-    private Bitmap myPic;
-    private QBUser qbUser;
-
-
-    //
     @Override
     public void onCreate() {
         Log.d("APPP", "OnCreate");
         super.onCreate();
         SmackAndroid.init(this);
     }
+
+
+    public void setDialogList(List<QBCustomObject> dialogList) {
+        this.dialogList = dialogList;
+    }
+
+    public List<QBCustomObject> getDialogList() {
+
+        return dialogList;
+    }
+
 
 
     // DATA
