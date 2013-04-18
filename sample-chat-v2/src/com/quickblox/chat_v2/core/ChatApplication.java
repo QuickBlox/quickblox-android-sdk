@@ -1,0 +1,95 @@
+package com.quickblox.chat_v2.core;
+
+import java.util.List;
+
+import android.app.Application;
+import android.graphics.Bitmap;
+
+import com.quickblox.chat_v2.apis.MessageManager;
+import com.quickblox.chat_v2.apis.QuickBloxManager;
+import com.quickblox.module.chat.smack.SmackAndroid;
+import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.users.model.QBUser;
+
+/**
+ * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/12/13 Time: 4:41
+ * PM
+ */
+public class ChatApplication extends Application {
+	
+	private static ChatApplication chatApplication;
+	
+	public static synchronized ChatApplication getInstance() {
+		if (chatApplication == null) {
+			chatApplication = new ChatApplication();
+		}
+		return chatApplication;
+	}
+	
+	private Bitmap myPic;
+	private QBUser qbUser;
+	private QBUser fbUser;
+	
+	private MessageManager msgManager;
+	private QuickBloxManager qbm;
+	
+	 private List<QBCustomObject> dialogList;
+	    
+	
+	//
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		SmackAndroid.init(this);
+	}
+	
+	// DATA
+	
+	public Bitmap getMyPic() {
+		return myPic;
+	}
+	
+	public void setMyPic(Bitmap myPic) {
+		this.myPic = myPic;
+	}
+	
+	public QBUser getQbUser() {
+		return qbUser;
+	}
+	
+	public void setQbUser(QBUser qbUser) {
+		this.qbUser = qbUser;
+	}
+	
+	public QuickBloxManager getQbm() {
+		return qbm;
+	}
+	
+	public void setQbm(QuickBloxManager qbm) {
+		this.qbm = qbm;
+	}
+
+	public QBUser getFbUser() {
+		return fbUser;
+	}
+
+	public void setFbUser(QBUser fbUser) {
+		this.fbUser = fbUser;
+	}
+
+	public MessageManager getMsgManager() {
+		return msgManager;
+	}
+
+	public void setMsgManager(MessageManager msgManager) {
+		this.msgManager = msgManager;
+	}
+
+	public List<QBCustomObject> getDialogList() {
+		return dialogList;
+	}
+
+	public void setDialogList(List<QBCustomObject> dialogList) {
+		this.dialogList = dialogList;
+	}
+}

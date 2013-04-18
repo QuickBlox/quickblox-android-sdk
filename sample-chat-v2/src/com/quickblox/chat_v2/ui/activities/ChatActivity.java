@@ -1,5 +1,17 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.muc.InvitationListener;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,8 +22,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.core.DataHolder;
+import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.core.QBCallbackImpl;
@@ -22,13 +35,6 @@ import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.muc.InvitationListener;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -80,7 +86,7 @@ public class ChatActivity extends Activity {
             boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
             boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
             String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-            chatRoom = QBChat.createRoom(chatRoomName, DataHolder.getInstance().getQbUser(), isOnlyMembers, isPersistent);
+            chatRoom = QBChat.createRoom(chatRoomName, ChatApplication.getInstance().getQbUser(), isOnlyMembers, isPersistent);
 
         } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
             userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
@@ -98,7 +104,7 @@ public class ChatActivity extends Activity {
 
         if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
             QBChat.sendMessage(userId, lastMsg);
-            createMessage(lastMsg, DataHolder.getInstance().getQbUser().getId());
+            createMessage(lastMsg, ChatApplication.getInstance().getQbUser().getId());
         } else {
             try {
                 chatRoom.sendMessage(msgTxt.getText().toString());
@@ -144,7 +150,7 @@ public class ChatActivity extends Activity {
 
     private void getDialogMessages() {
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-        requestBuilder.eq(GlobalConsts.USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
+        requestBuilder.eq(GlobalConsts.USER_ID_FIELD, ChatApplication.getInstance().getQbUser().getId());
         QBCustomObjects.getObjects(GlobalConsts.MESSAGES, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
@@ -188,7 +194,7 @@ public class ChatActivity extends Activity {
     private void applyDialogMessags(List<QBCustomObject> messageList) {
         for (QBCustomObject message : messageList) {
             int userId = Integer.parseInt(message.getFields().get(GlobalConsts.RECEPIENT_ID).toString());
-            if (userId == DataHolder.getInstance().getQbUser().getId()) {
+            if (userId == ChatApplication.getInstance().getQbUser().getId()) {
                 showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), true);
             } else {
                 showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), false);

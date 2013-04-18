@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.DialogsAdapter;
-import com.quickblox.chat_v2.core.DataHolder;
+import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -63,8 +64,8 @@ public class DialogsActivity extends Activity {
     };
 
     private void applyDialogList() {
-        if (DataHolder.getInstance().getDialogList() != null) {
-            dialogsAdapter = new DialogsAdapter(getBaseContext(), DataHolder.getInstance().getDialogList());
+        if (ChatApplication.getInstance().getDialogList() != null) {
+            dialogsAdapter = new DialogsAdapter(getBaseContext(), ChatApplication.getInstance().getDialogList());
             dialogsListView.setAdapter(dialogsAdapter);
         } else {
             downloadDialogList();
@@ -73,12 +74,12 @@ public class DialogsActivity extends Activity {
 
     private void downloadDialogList() {
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-        requestBuilder.eq(USER_ID_FIELD, DataHolder.getInstance().getQbUser().getId());
+        requestBuilder.eq(USER_ID_FIELD, ChatApplication.getInstance().getQbUser().getId());
         QBCustomObjects.getObjects(DIALOGS, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    DataHolder.getInstance().setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
+                    ChatApplication.getInstance().setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
                     applyDialogList();
                 }
             }
