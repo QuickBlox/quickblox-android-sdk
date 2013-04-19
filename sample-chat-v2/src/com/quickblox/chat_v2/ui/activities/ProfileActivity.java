@@ -93,8 +93,8 @@ public class ProfileActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				SharedPreferencesHelper.setLogin(ProfileActivity.this, "");
-				SharedPreferencesHelper.setPassword(ProfileActivity.this, "");
+				SharedPreferencesHelper.setLogin(ProfileActivity.this, null);
+				SharedPreferencesHelper.setPassword(ProfileActivity.this, null);
 				
 				Session session = new Session(ProfileActivity.this);
 				session.closeAndClearTokenInformation();

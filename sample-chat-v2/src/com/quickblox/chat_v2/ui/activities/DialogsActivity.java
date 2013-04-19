@@ -32,10 +32,13 @@ public class DialogsActivity extends Activity {
     private DialogsAdapter dialogsAdapter;
     private Button newDialogButton;
 
+    private ChatApplication app;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_list_layout);
+        app = ChatApplication.getInstance();
         initialize();
     }
 
@@ -74,7 +77,9 @@ public class DialogsActivity extends Activity {
 
     private void downloadDialogList() {
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-        requestBuilder.eq(USER_ID_FIELD, ChatApplication.getInstance().getQbUser().getId());
+        
+        
+        requestBuilder.eq(USER_ID_FIELD, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
         QBCustomObjects.getObjects(DIALOGS, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {

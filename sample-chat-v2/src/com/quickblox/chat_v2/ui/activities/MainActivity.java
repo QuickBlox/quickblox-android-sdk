@@ -55,10 +55,7 @@ public class MainActivity extends TabActivity {
 		progressDialog.setMessage(getString(R.string.loading));
 		progressDialog.show();
 		
-		msgManager = new MessageManager();
 		qbm = new QuickBloxManager();
-		
-		app.setMsgManager(msgManager);
 		app.setQbm(qbm);
 		
 		signIn();
@@ -96,7 +93,9 @@ public class MainActivity extends TabActivity {
 					
 					signInChat(((QBUserResult) result).getUser());
 				} else {
+					
 					System.out.println("false");
+					System.out.println("res " + result.toString());
 					progressDialog.dismiss();
 				}
 			}
@@ -134,26 +133,35 @@ public class MainActivity extends TabActivity {
 	}
 	
 	private void registerRoster() {
-		rosterManager = new RosterManager();
-		qbRoster = QBChat.registerRoster(rosterManager);
-		userIds = new ArrayList<String>();
 		
-		QBChat.registerSubscription(rosterManager);
-		
-		if (qbRoster.getUsersId() != null) {
-			for (Integer in : qbRoster.getUsersId()) {
-				userIds.add(String.valueOf(in));
-			}
-			
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					qbm.getQbUserInfo(userIds);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				
+				msgManager = new MessageManager(MainActivity.this);
+				app.setMsgManager(msgManager);
+				
+				rosterManager = new RosterManager();
+				
+				qbRoster = QBChat.registerRoster(rosterManager);
+				userIds = new ArrayList<String>();
+				
+				System.out.println("roster = " + qbRoster);
+				
+				QBChat.registerSubscription(rosterManager);
+				
+				if (qbRoster.getUsersId() != null) {
+					for (Integer in : qbRoster.getUsersId()) {
+						userIds.add(String.valueOf(in));
+					}
+					
 					QBChat.openXmmpChat(msgManager);
+					qbm.getQbUserInfo(userIds);
 					progressDialog.dismiss();
+					
 				}
-			});
-			
-		}
+			}
+		});
+		
 	}
 }

@@ -41,13 +41,14 @@
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>
 
-   
+   	<string name="chat_dialog_view_profile">View profile</string>
+    <string name="chat_dialog_add_contact">Add to contact list</string>
+	<string name="chat_dialog_name">User actions</string>
 
-    <string name="fragment_contacts_contact_button">Contacts</string>
-    <string name="fragment_contacts_request_button">Request</string>
-    <string name="fragment_contacts_inside_approve_button">Approve</string>
-    <string name="fragment_contacts_inside_reject_button">Reject</string>
-
+  <string name="contacts_contact_button">Contacts</string>
+    <string name="contacts_request_button">Request</string>
+    <string name="contacts_inside_approve_button">Approve</string>
+    <string name="contacts_inside_reject_button">Reject</string>
 
     <string name="room_name_title">Name</string>
     <string name="fragment_rooms_checkbox_persistent">Persistent</string>

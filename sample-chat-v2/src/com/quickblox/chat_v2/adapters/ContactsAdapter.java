@@ -30,6 +30,8 @@ public class ContactsAdapter extends BaseAdapter {
 		this.context = context;
 		incomeUserList = qbuserArray;
 		this.isContacts = isContacts;
+		
+		System.out.println("inside adapter = "+qbuserArray);
 	}
 	
 	static class ChatHolder {
@@ -53,8 +55,8 @@ public class ContactsAdapter extends BaseAdapter {
 	}
 	
 	@Override
-	public long getItemId(int arg0) {
-		return arg0;
+	public long getItemId(int id) {
+		return id;
 	}
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -67,8 +69,7 @@ public class ContactsAdapter extends BaseAdapter {
 		if (chatView == null) {
 			
 			chatHolder = new ChatHolder();
-			
-			chatView = inflater.inflate(R.layout.contacts_list_inside, null, true);
+			chatView = inflater.inflate(R.layout.contacts_list_inside, parent, false);
 			chatHolder.userPic = (ImageView) chatView.findViewById(R.id.contacts_inside_userpic);
 			chatHolder.userName = (TextView) chatView.findViewById(R.id.contacts_inside_username);
 			
@@ -80,20 +81,20 @@ public class ContactsAdapter extends BaseAdapter {
 
 			chatView.setTag(chatHolder);
 			
-			
 		} else {
 			
-			chatHolder = (ChatHolder) chatView.getTag();			
+			chatHolder = (ChatHolder) chatView.getTag();
+			
 			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 
 		}
 		
 		
 		if (isContacts) {
-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contactslinearlayout);
+			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.GONE);
 		} else{
-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contactslinearlayout);
+			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.VISIBLE);
 		}		
 		

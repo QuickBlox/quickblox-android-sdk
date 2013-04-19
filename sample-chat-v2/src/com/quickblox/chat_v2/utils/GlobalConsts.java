@@ -27,8 +27,9 @@ public class GlobalConsts {
     public static final String DIALOGS = "dialogs";
     public static final String LAST_MSG = "last_msg";
     public static final String DIALOG_ID = "dialog_id";
-    public static final String RECEPIENT_ID = "recepient_id";
-    public static final String MSG_TEXT = "text";
+    public static final String OPPONENT_ID = "opponent_id";
+    public static final String AUTHOR_ID = "author_id";
+    public static final String MSG_TEXT = "message";
     public static final String MESSAGES = "messages";
     public static final String USER_ID_FIELD = "user_id";
     public static final String ROOM_NAME = "name";

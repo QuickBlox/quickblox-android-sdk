@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.packet.Presence;
 
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -45,7 +46,8 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	@Override
 	public void onSubscribe(int userId) {
 		subscribes.add(String.valueOf(userId));
-		ChatApplication.getInstance().getQbm().getQbUserInfo(subscribes, 0);
+		//ChatApplication.getInstance().getQbm().getQbUserInfo(subscribes, 0);
+		QBChat.subscribed(userId);
 	}
 	
 	@Override

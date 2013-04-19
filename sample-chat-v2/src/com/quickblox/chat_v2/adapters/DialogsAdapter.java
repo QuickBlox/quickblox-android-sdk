@@ -92,7 +92,11 @@ public class DialogsAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
-            int userId = Integer.parseInt(dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_ID).toString());
+            System.out.println("DIALOG LIST 0 = "+dialogList.get(position));
+            System.out.println("DIALOG LIST 1 = "+dialogList.get(position).getFields());
+            System.out.println("DIALOG LIST 2 = "+dialogList.get(position).getFields());
+            
+            int userId = Integer.parseInt(dialogList.get(position).getFields().get("recepient_id").toString());
             loadChatActivity(userId, dialogList.get(position).getCustomObjectId());
         }
     };
