@@ -10,7 +10,8 @@
         android:id="@+id/contacts_inside_userpic"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_margin="2dp"/>
+        android:layout_margin="2dp"
+        android:src="@drawable/com_facebook_profile_default_icon" />
 
     <TextView
         android:id="@+id/contacts_inside_username"

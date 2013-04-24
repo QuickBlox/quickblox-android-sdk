@@ -17,14 +17,15 @@ import com.quickblox.module.users.model.QBUser;
  */
 public class ChatApplication extends Application {
 	
-	private static ChatApplication chatApplication;
+	private static ChatApplication instance;
 	
-	public static synchronized ChatApplication getInstance() {
-		if (chatApplication == null) {
-			chatApplication = new ChatApplication();
-		}
-		return chatApplication;
+	public ChatApplication(){
+		instance = this;
 	}
+	public static ChatApplication getInstance(){
+		return instance;
+	}
+	
 	
 	private Bitmap myPic;
 	private QBUser qbUser;

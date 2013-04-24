@@ -13,7 +13,7 @@
             android:id="@+id/profile_userpic"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/com_facebook_profile_default_icon"/>
+            android:src="@drawable/com_facebook_profile_default_icon" />
 
         <TextView
             android:id="@+id/chat_dialog_view_profile"

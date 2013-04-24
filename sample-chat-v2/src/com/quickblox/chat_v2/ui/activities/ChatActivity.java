@@ -1,6 +1,5 @@
 package com.quickblox.chat_v2.ui.activities;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smack.Chat;
@@ -25,22 +24,18 @@ import android.widget.TextView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.Result;
-import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
-import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
-import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity {
+public class ChatActivity extends Activity implements OnMessageListDownloaded {
 	
 	private TopBar topBar;
 	private ViewGroup messagesContainer;
@@ -64,13 +59,15 @@ public class ChatActivity extends Activity {
 		
 		app = ChatApplication.getInstance();
 		msgManager = app.getMsgManager();
+		msgManager.setListDownloadedListener(this);
 		initViews();
-		getDialogMessages();
+		
 	}
 	
 	@Override
 	public void onBackPressed() {
-		updateDialogLastMessage();
+		
+		msgManager.updateDialogLastMessage(lastMsg, dialogId);
 		super.onBackPressed();
 	}
 	
@@ -81,19 +78,26 @@ public class ChatActivity extends Activity {
 		scrollContainer = (ScrollView) findViewById(R.id.scrollContainer);
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
 		
-//		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
-//		if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
-//			QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
-//			boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
-//			boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
-//			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-//			chatRoom = QBChat.createRoom(chatRoomName, ChatApplication.getInstance().getQbUser(), isOnlyMembers, isPersistent);
-//			
-//		} else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
-			userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
-			dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
-			QBChat.openXmmpChat(pDialogMessageListener);
-		//}
+		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
+		// if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
+		// QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener,
+		// pParticipantListener);
+		// boolean isPersistent =
+		// getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
+		// boolean isOnlyMembers =
+		// getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
+		// String chatRoomName =
+		// getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
+		// chatRoom = QBChat.createRoom(chatRoomName,
+		// ChatApplication.getInstance().getQbUser(), isOnlyMembers,
+		// isPersistent);
+		//
+		// } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
+		userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
+		dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
+		msgManager.getDialogMessages(userId);
+		QBChat.openXmmpChat(pDialogMessageListener);
+		// }
 		
 	}
 	
@@ -102,10 +106,7 @@ public class ChatActivity extends Activity {
 		msgTxt.setText("");
 		showMessage(lastMsg, true);
 		
-			msgManager.sendSingleMessage(userId, lastMsg);
-		
-		
-		updateDialogLastMessage();
+		msgManager.sendSingleMessage(userId, lastMsg, dialogId);
 	}
 	
 	private void showMessage(String message, boolean leftSide) {
@@ -139,42 +140,13 @@ public class ChatActivity extends Activity {
 		});
 	}
 	
-	private void getDialogMessages() {
-		QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
-		requestBuilder.eq(GlobalConsts.OPPONENT_ID, userId);
-		requestBuilder.sortAsc("created_at");
-		
-		QBCustomObjects.getObjects(GlobalConsts.MESSAGES, requestBuilder, new QBCallbackImpl() {
-			@Override
-			public void onComplete(Result result) {
-				if (result.isSuccess()) {
-					applyDialogMessags(((QBCustomObjectLimitedResult) result).getCustomObjects());
-				}
-			}
-		});
-	}
-	
-	private void updateDialogLastMessage() {
-		QBCustomObject co = new QBCustomObject();
-		co.setClassName(GlobalConsts.DIALOGS);
-		HashMap<String, Object> fields = new HashMap<String, Object>();
-		fields.put(GlobalConsts.LAST_MSG, lastMsg);
-		co.setFields(fields);
-		co.setCustomObjectId(dialogId);
-		QBCustomObjects.updateObject(co, new QBCallbackImpl() {
-			@Override
-			public void onComplete(Result result) {
-				
-			}
-		});
-	}
-	
-	private void applyDialogMessags(List<QBCustomObject> messageList) {
+	public void applyDialogMessags(List<QBCustomObject> messageList) {
 		for (QBCustomObject message : messageList) {
-			System.out.println("messages = "+message);
-			System.out.println("field = "+message.getFields());
-			int userId = Integer.parseInt(message.getFields().get(GlobalConsts.OPPONENT_ID).toString());
+			
+			int userId = Integer.parseInt(message.getFields().get("author_id").toString());
+			System.out.println("ids = "+userId);
+			System.out.println("main =  "+app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+			
 			if (userId == (app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId())) {
 				showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), true);
 			} else {
@@ -213,4 +185,11 @@ public class ChatActivity extends Activity {
 			
 		}
 	};
+	
+	@Override
+	public void messageListDownloaded(List<QBCustomObject> downloadedList) {
+		
+		// System.out.println("List : "+downloadedList.toString());
+		applyDialogMessags(downloadedList);
+	}
 }

@@ -28,7 +28,7 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:padding="1dp"
-            android:src="@drawable/com_facebook_profile_default_icon"/>
+            android:src="@drawable/com_facebook_profile_default_icon" />
 
         <TextView
             android:id="@+id/user_name"

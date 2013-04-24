@@ -9,14 +9,16 @@ import org.jivesoftware.smack.packet.Message;
 import android.app.Activity;
 import android.content.Context;
 
-import com.google.common.base.Splitter;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 
 public class MessageManager implements MessageListener {
 	
@@ -26,6 +28,8 @@ public class MessageManager implements MessageListener {
 	private String message;
 	private int authorId;
 	private int opponentId;
+	
+	private OnMessageListDownloaded listDownloadedListener;
 	
 	public MessageManager(Context context) {
 		this.context = context;
@@ -38,28 +42,25 @@ public class MessageManager implements MessageListener {
 		if (message.getBody() == null) {
 			return;
 		}
-		System.out.println("Сообщение = " + message.getBody());
-		
 		String[] id = message.getFrom().split("-");
-		System.out.println("ID = "+ id[0]);
-		
 		sendToQB(Integer.parseInt(id[0]), message.getBody(), Integer.parseInt(id[0]));
 		
 	}
 	
 	// send messages into xmpp & customobject
-	public void sendSingleMessage(Integer userId, String messageBody) {
+	public void sendSingleMessage(Integer userId, String messageBody, String dialogId) {
 		QBChat.sendMessage(userId, messageBody);
-		sendToQB(userId, messageBody, app.getQbUser() !=null ? app.getQbUser().getId() : app.getFbUser().getId());
+		sendToQB(userId, messageBody, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+		
+		updateDialogLastMessage(messageBody, dialogId);
 	}
 	
-	
 	private void sendToQB(Integer opponentID, String messageBody, Integer authorID) {
-		message = messageBody; 
+		message = messageBody;
 		authorId = authorID;
 		opponentId = opponentID;
 		
-		((Activity) context).runOnUiThread(new Runnable() {	
+		((Activity) context).runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				QBCustomObject custobj = new QBCustomObject();
@@ -81,9 +82,44 @@ public class MessageManager implements MessageListener {
 					}
 				});
 			}
-				
 			
 		});
 		
+	}
+	
+	public void getDialogMessages(int userId) {
+		QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
+		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+		requestBuilder.eq(GlobalConsts.OPPONENT_ID, userId);
+		requestBuilder.sortAsc("created_at");
 		
-}}
+		QBCustomObjects.getObjects(GlobalConsts.MESSAGES, requestBuilder, new QBCallbackImpl() {
+			@Override
+			public void onComplete(Result result) {
+				if (result.isSuccess()) {
+					System.out.println("msgManager = true!");
+					listDownloadedListener.messageListDownloaded(((QBCustomObjectLimitedResult) result).getCustomObjects());
+				}
+			}
+		});
+	}
+	
+	public  void updateDialogLastMessage(String lastMsg, String dialogId) {
+		QBCustomObject co = new QBCustomObject();
+		co.setClassName(GlobalConsts.DIALOGS);
+		HashMap<String, Object> fields = new HashMap<String, Object>();
+		fields.put(GlobalConsts.LAST_MSG, lastMsg);
+		co.setFields(fields);
+		co.setCustomObjectId(dialogId);
+		QBCustomObjects.updateObject(co, new QBCallbackImpl() {
+			@Override
+			public void onComplete(Result result) {
+				
+			}
+		});
+	}
+	
+	public void setListDownloadedListener(OnMessageListDownloaded listDownloadedListener) {
+		this.listDownloadedListener = listDownloadedListener;
+	}
+}

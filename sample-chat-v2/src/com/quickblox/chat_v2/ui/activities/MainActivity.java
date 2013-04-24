@@ -95,7 +95,6 @@ public class MainActivity extends TabActivity {
 				} else {
 					
 					System.out.println("false");
-					System.out.println("res " + result.toString());
 					progressDialog.dismiss();
 				}
 			}
@@ -112,8 +111,6 @@ public class MainActivity extends TabActivity {
 			qbUser = app.getQbUser();
 			qbUser.setPassword(SharedPreferencesHelper.getPassword(this));
 		}
-		
-		System.out.println("user = " + qbUser);
 		
 		QBChat.loginWithUser(qbUser, new LoginListener() {
 			
@@ -145,8 +142,6 @@ public class MainActivity extends TabActivity {
 				
 				qbRoster = QBChat.registerRoster(rosterManager);
 				userIds = new ArrayList<String>();
-				
-				System.out.println("roster = " + qbRoster);
 				
 				QBChat.registerSubscription(rosterManager);
 				

@@ -18,9 +18,8 @@
         android:id="@+id/user_avatar_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/com_facebook_profile_default_icon"
         android:layout_alignParentRight="true"
-        android:padding="5dp"/>
-
+        android:padding="5dp"
+        android:src="@drawable/com_facebook_profile_default_icon" />
 
 </RelativeLayout>
