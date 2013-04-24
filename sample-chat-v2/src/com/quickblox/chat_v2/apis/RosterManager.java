@@ -46,16 +46,20 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	@Override
 	public void onSubscribe(int userId) {
 		subscribes.add(String.valueOf(userId));
-		//ChatApplication.getInstance().getQbm().getQbUserInfo(subscribes, 0);
-		QBChat.subscribed(userId);
+		// ChatApplication.getInstance().getQbm().getQbUserInfo(subscribes, 0);
 	}
 	
 	@Override
 	public void onUnSubscribe(int userId) {
-		//for (QBUser tmpUser : ChatApplication.getInstance().getContactUserList()) {
-		//	if (tmpUser.getId() == userId) {
-			//	ChatApplication.getInstance().getContactUserList().remove(tmpUser);
-			//}
-		//}
+		// for (QBUser tmpUser :
+		// ChatApplication.getInstance().getContactUserList()) {
+		// if (tmpUser.getId() == userId) {
+		// ChatApplication.getInstance().getContactUserList().remove(tmpUser);
+		// }
+		// }
+	}
+	
+	public void sendRequestToSubscribe(int userId){ 
+		QBChat.subscribed(userId);
 	}
 }

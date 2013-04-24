@@ -9,47 +9,6 @@ import android.preference.PreferenceManager;
  */
 public class SharedPreferencesHelper {
 
-
-    public static String getUserPicURL(Context context) {
-        return getSharedPreferences(context).getString(GlobalConsts.USERPICURL, "");
-    }
-
-    public static void setUserPicURL(Context context, String userPicURL) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(GlobalConsts.USERPICURL, userPicURL);
-        editor.commit();
-    }
-
-    public static int getUserPicID(Context context) {
-        return getSharedPreferences(context).getInt(GlobalConsts.USERPICID, 0);
-    }
-
-    public static void setUserPicID(Context context, int userPicID) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putInt(GlobalConsts.USERPICID, userPicID);
-        editor.commit();
-    }
-
-    public static String getFBUsername(Context context) {
-        return getSharedPreferences(context).getString(GlobalConsts.FBUSERNAME, "");
-    }
-
-    public static void setFbUsername(Context context, String fbUsername) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(GlobalConsts.FBUSERNAME, fbUsername);
-        editor.commit();
-    }
-    
-    public static String getQBUsername(Context context) {
-		return getSharedPreferences(context).getString(GlobalConsts.QBUSERNAME, "");
-	}
-	
-	public static void setQbUsername(Context context,String qbUsername) {
-		SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-		editor.putString(GlobalConsts.QBUSERNAME, qbUsername);
-		editor.commit();
-	}
-
     public static String getLogin(Context context) {
         return getSharedPreferences(context).getString(GlobalConsts.LOGIN, "");
     }

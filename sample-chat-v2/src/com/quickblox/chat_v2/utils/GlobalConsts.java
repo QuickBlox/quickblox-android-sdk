@@ -11,18 +11,10 @@ public class GlobalConsts {
 
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
-
-
-    //FOR QB login
-    public static final String USERPICID = "file_id";
-    public static final String QBUSERNAME = "name";
-
-
-    //For FB login
-    public static final String USERPICURL = "pic";
-    public static final String FBUSERNAME = "name";
-
-
+    
+    public static final String FRIEND_ID = "friend_id";
+    
+    
     public static final String USER_ID = "user_id";
     public static final String DIALOGS = "dialogs";
     public static final String LAST_MSG = "last_msg";

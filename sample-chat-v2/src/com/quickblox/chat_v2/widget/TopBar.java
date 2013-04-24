@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.widget;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.ui.activities.FriendProfileActivity;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/8/13 Time: 3:38 PM
@@ -25,6 +29,8 @@ public class TopBar extends RelativeLayout {
 	private Context context;
 	
 	private String fragmentName;
+	
+	private int friendId;
 	
 	public TopBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -61,12 +67,14 @@ public class TopBar extends RelativeLayout {
 						
 						switch (which) {
 							case 0 :
-								//Intent i = new Intent(context, FriendProfileActivity.class);
-								//context.startActivity(i);
+								Intent i = new Intent(context, FriendProfileActivity.class);
+								System.out.println("frId = "+friendId);
+								i.putExtra(GlobalConsts.FRIEND_ID, friendId);
+								context.startActivity(i);
 								break;
 							
 							case 1 : 
-								//QBChat.subscribed(pUserId)								
+								ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friendId);								
 								break;
 						}
 					}
@@ -83,6 +91,9 @@ public class TopBar extends RelativeLayout {
 		this.fragmentName = fragmentName;
 		screenTitle.setText(fragmentName);
 		initExtraViews();
+	}
+	public void setFriendParams(int friendId){
+		this.friendId = friendId;
 	}
 	
 	private void initExtraViews() {

@@ -10,6 +10,7 @@ import android.widget.TabHost;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
+import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -37,6 +38,7 @@ public class MainActivity extends TabActivity {
 	private ArrayList<String> userIds;
 	private RosterManager rosterManager;
 	private MessageManager msgManager;
+	private PictureManager picManager;
 	private QuickBloxManager qbm;
 	private ChatApplication app;
 	
@@ -56,6 +58,8 @@ public class MainActivity extends TabActivity {
 		progressDialog.show();
 		
 		qbm = new QuickBloxManager();
+		picManager = new PictureManager(this);
+		app.setPicManager(picManager);
 		app.setQbm(qbm);
 		
 		signIn();
@@ -139,6 +143,7 @@ public class MainActivity extends TabActivity {
 				app.setMsgManager(msgManager);
 				
 				rosterManager = new RosterManager();
+				app.setRstManager(rosterManager);
 				
 				qbRoster = QBChat.registerRoster(rosterManager);
 				userIds = new ArrayList<String>();

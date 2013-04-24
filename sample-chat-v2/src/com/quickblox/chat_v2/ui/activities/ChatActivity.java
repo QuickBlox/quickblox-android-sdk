@@ -95,6 +95,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 		// } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
 		userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
 		dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
+			
+		topBar.setFriendParams(userId);
 		msgManager.getDialogMessages(userId);
 		QBChat.openXmmpChat(pDialogMessageListener);
 		// }
@@ -144,8 +146,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 		for (QBCustomObject message : messageList) {
 			
 			int userId = Integer.parseInt(message.getFields().get("author_id").toString());
-			System.out.println("ids = "+userId);
-			System.out.println("main =  "+app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
 			
 			if (userId == (app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId())) {
 				showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), true);
@@ -188,8 +188,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 	
 	@Override
 	public void messageListDownloaded(List<QBCustomObject> downloadedList) {
-		
-		// System.out.println("List : "+downloadedList.toString());
 		applyDialogMessags(downloadedList);
 	}
 }

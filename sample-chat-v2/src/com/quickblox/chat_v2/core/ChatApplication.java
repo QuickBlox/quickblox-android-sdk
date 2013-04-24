@@ -6,7 +6,9 @@ import android.app.Application;
 import android.graphics.Bitmap;
 
 import com.quickblox.chat_v2.apis.MessageManager;
+import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
+import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
@@ -33,6 +35,8 @@ public class ChatApplication extends Application {
 	
 	private MessageManager msgManager;
 	private QuickBloxManager qbm;
+	private PictureManager picManager;
+	private RosterManager rstManager;
 	
 	 private List<QBCustomObject> dialogList;
 	    
@@ -92,5 +96,17 @@ public class ChatApplication extends Application {
 
 	public void setDialogList(List<QBCustomObject> dialogList) {
 		this.dialogList = dialogList;
+	}
+	public PictureManager getPicManager() {
+		return picManager;
+	}
+	public void setPicManager(PictureManager picManager) {
+		this.picManager = picManager;
+	}
+	public RosterManager getRstManager() {
+		return rstManager;
+	}
+	public void setRstManager(RosterManager rstManager) {
+		this.rstManager = rstManager;
 	}
 }
