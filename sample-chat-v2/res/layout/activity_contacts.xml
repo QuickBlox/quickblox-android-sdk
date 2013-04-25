@@ -1,39 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10" >
+    android:orientation="vertical" >
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_weight="1" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="0.1" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup1"
+    <TableRow
+        android:id="@+id/low_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:gravity="center"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/darker_gray"
+        android:gravity="center" >
 
-        <RadioButton
-            android:id="@+id/contacts_contact_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="@string/action_settings" />
+        <RadioGroup
+            android:id="@+id/radioGroup1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-        <RadioButton
-            android:id="@+id/contacts_request_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/contacts_request_button" />
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/contacts_contact_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/action_settings" />
 
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/contacts_request_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/contacts_request_button" />
+        </RadioGroup>
+    </TableRow>
+
+</RelativeLayout>

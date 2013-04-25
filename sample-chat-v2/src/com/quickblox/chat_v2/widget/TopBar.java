@@ -1,5 +1,7 @@
 package com.quickblox.chat_v2.widget;
 
+import org.apache.qpid.management.common.sasl.UserPasswordCallbackHandler;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -87,9 +89,14 @@ public class TopBar extends RelativeLayout {
 		
 	}
 	
-	public void setFragmentName(String fragmentName) {
+	public void setFragmentParams(String fragmentName, boolean isUserPicVisible) {
 		this.fragmentName = fragmentName;
 		screenTitle.setText(fragmentName);
+		
+		if (!isUserPicVisible){
+			userAvatar.setVisibility(View.GONE);
+		}
+		
 		initExtraViews();
 	}
 	public void setFriendParams(int friendId){

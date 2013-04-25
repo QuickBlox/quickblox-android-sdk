@@ -96,8 +96,13 @@ public class QuickBloxManager {
 		});
 	}
 	
-	public void getQbFileToBitmap(int userId) {
-		QBContent.downloadFileTask(app.getQbUser().getFileId(), new QBCallbackImpl() {
+	public void getQbFileToBitmap(QBUser currentUser) {
+		
+		if (currentUser.getFileId() == null){
+			return;
+		}
+		
+		QBContent.downloadFileTask(currentUser.getFileId(), new QBCallbackImpl() {
 			
 			@Override
 			public void onComplete(Result result) {

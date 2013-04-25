@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import org.json.JSONException;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -57,7 +58,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		Button registrationButton = (Button) findViewById(R.id.splash_registration_button);
 		Button siginButton = (Button) findViewById(R.id.splash_sign_in_button);
 		
-		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+		blockUi();
 		
 		fbm = new FaceBookManager();
 		
@@ -78,7 +79,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 						if (!isOnline()) {
 							break;
 						}
-						quickBloxDialog = new SplashDialog(true);
+						quickBloxDialog = new SplashDialog(true, SplashActivity.this);
 						quickBloxDialog.show(getSupportFragmentManager(), null);
 						break;
 					
@@ -86,7 +87,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 						if (!isOnline()) {
 							break;
 						}
-						quickBloxDialog = new SplashDialog(false);
+						quickBloxDialog = new SplashDialog(false, SplashActivity.this);
 						quickBloxDialog.show(getSupportFragmentManager(), null);
 						break;
 				
@@ -109,24 +110,20 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 				public void onComplete(Result result) {
 					
 					Session session = new Session(SplashActivity.this);
-					System.out.println("session = " + session);
 					
 					if (TextUtils.isEmpty(session.getAccessToken())) {
-						System.out.println("Пролёт");
 						if (!TextUtils.isEmpty(SharedPreferencesHelper.getLogin(SplashActivity.this))) {
 							
-							System.out.println("через КБ");
-							QBUser user = new QBUser(); 
+							QBUser user = new QBUser();
 							user.setLogin(SharedPreferencesHelper.getLogin(SplashActivity.this));
 							user.setPassword(SharedPreferencesHelper.getPassword(SplashActivity.this));
-
+							
 							ChatApplication.getInstance().setQbUser(user);
 							QBUsers.signIn(user, SplashActivity.this, user.getPassword());
-							return;
-						}
-						progress.dismiss();
+							
+						}else{
+						progress.dismiss();}
 					} else {
-						System.out.println("Через сессию");
 						QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, SplashActivity.this);
 						
 					}
@@ -135,6 +132,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			
 		} else {
 			progress.dismiss();
+		      Toast.makeText(this, getResources().getString(R.string.splash_internet_error), Toast.LENGTH_LONG).show();
+
 		}
 	}
 	
@@ -167,19 +166,23 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	
 	@Override
 	public void onComplete(Result result) {
-		System.out.println("Section 1");
 		
 		QBUser newUser = ((QBUserResult) result).getUser();
 		newUser.setPassword(SharedPreferencesHelper.getPassword(SplashActivity.this));
 		ChatApplication.getInstance().setFbUser(newUser);
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				progress.dismiss();				
+			}
+		});
 		
-		//progress.dismiss();
 		loadMainScreen();
 	}
 	
 	@Override
 	public void onComplete(Result result, Object context) {
-		System.out.println("Section 2");
 		if (result.isSuccess()) {
 			
 			QBUser qbUser = ((QBUserResult) result).getUser();
@@ -188,7 +191,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			if (context.toString().equals("social")) {
 				
 				try {
-				
+					
 					ChatApplication.getInstance().setFbUser(qbUser);
 					SharedPreferencesHelper.setPassword(this, BaseService.getBaseService().getToken());
 					
@@ -200,10 +203,11 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 				ChatApplication.getInstance().setQbUser(qbUser);
 				
 			}
-			
 			loadMainScreen();
 		} else {
-			System.out.println("Регистрация неудачна");
+			progress.dismiss();
+		      Toast.makeText(this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
+			
 		}
 		
 	}
@@ -226,8 +230,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		}
 		
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
-		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
-		
+		blockUi();
 	}
 	
 	private void loadMainScreen() {
@@ -236,9 +239,13 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		finish();
 	}
 	
+	public void blockUi() {
+		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+	}
+	
 	// INTERNET REVIEW
 	public boolean isOnline() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
 			return true;

@@ -44,7 +44,7 @@ public class NewDialogActivity extends Activity {
 
     private void initViews() {
         topBar = (TopBar) findViewById(R.id.top_bar);
-        topBar.setFragmentName(TopBar.NEW_DIALOG_ACTIVITY);
+        topBar.setFragmentParams(TopBar.NEW_DIALOG_ACTIVITY, false);
         contactList = (ListView) findViewById(R.id.contacts_listView);
         searchBtn = (Button) findViewById(R.id.search_button);
         searchBtn.setOnClickListener(searchBtnClickListener);

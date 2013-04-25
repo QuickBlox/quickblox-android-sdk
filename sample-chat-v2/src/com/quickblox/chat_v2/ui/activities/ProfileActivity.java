@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -47,7 +49,7 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 			
 			if (app.getQbUser() != null) {
 				app.getQbm().setPictureConvertListener(this);
-				app.getQbm().getQbFileToBitmap(app.getQbUser().getFileId());
+				app.getQbm().getQbFileToBitmap(app.getQbUser());
 				setOnProfilePictureClicListener();	
 			}
 		}

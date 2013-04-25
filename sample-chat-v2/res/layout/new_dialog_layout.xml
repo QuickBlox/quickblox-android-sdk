@@ -19,7 +19,8 @@
         <EditText
             android:id="@+id/contact_name"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:hint=" &quot;Enter name of user you would like to chat with&quot;" />
 
         <Button
             android:id="@+id/search_button"

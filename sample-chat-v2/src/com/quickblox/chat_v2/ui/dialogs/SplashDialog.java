@@ -1,5 +1,6 @@
 package com.quickblox.chat_v2.ui.dialogs;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.ui.activities.SplashActivity;
 import com.quickblox.core.QBCallback;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -20,9 +22,11 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 	private EditText inputPasswordField;
 	
 	private boolean mode;
+	private Context context;
 	
-	public SplashDialog(boolean isRegistration) {
+	public SplashDialog(boolean isRegistration, Context context) {
 		mode = isRegistration;
+		this.context = context;
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,11 +56,15 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 					QBUser tempUser = new QBUser();
 					tempUser.setLogin(inputNameField.getText().toString());
 					tempUser.setPassword(inputPasswordField.getText().toString());
+					tempUser.setFullName(tempUser.getLogin());
+					((SplashActivity)context).blockUi();
 					
-					QBUsers.signUpSignInTask(tempUser, (QBCallback) getActivity(), "plain");
+					QBUsers.signUpSignInTask(tempUser, (QBCallback) getActivity(), tempUser.getPassword());
+					
 					
 				} else {
 					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity(), inputPasswordField.getText().toString());
+					((SplashActivity)context).blockUi();
 				}
 				
 				dismiss();

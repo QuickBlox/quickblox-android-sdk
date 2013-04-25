@@ -73,7 +73,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 	
 	private void initViews() {
 		topBar = (TopBar) findViewById(R.id.top_bar);
-		topBar.setFragmentName(TopBar.CHAT_ACTIVITY);
+		topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, true);
 		messagesContainer = (ViewGroup) findViewById(R.id.messagesContainer);
 		scrollContainer = (ScrollView) findViewById(R.id.scrollContainer);
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
