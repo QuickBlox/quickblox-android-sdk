@@ -94,7 +94,8 @@ public class TopBar extends RelativeLayout {
 		screenTitle.setText(fragmentName);
 		
 		if (!isUserPicVisible){
-			userAvatar.setVisibility(View.GONE);
+			userAvatar.setVisibility(View.INVISIBLE);
+			userAvatar.setClickable(false);
 		}
 		
 		initExtraViews();

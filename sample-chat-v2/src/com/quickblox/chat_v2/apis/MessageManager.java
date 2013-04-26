@@ -1,16 +1,20 @@
 package com.quickblox.chat_v2.apis;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -19,8 +23,9 @@ import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
+import com.quickblox.module.users.model.QBUser;
 
-public class MessageManager implements MessageListener {
+public class MessageManager implements MessageListener, OnPictureConvertComplete {
 	
 	private Context context;
 	private ChatApplication app;
@@ -44,6 +49,13 @@ public class MessageManager implements MessageListener {
 		}
 		String[] id = message.getFrom().split("-");
 		sendToQB(Integer.parseInt(id[0]), message.getBody(), Integer.parseInt(id[0]));
+		
+		if (message.getBody().substring(0,7).equals(GlobalConsts.ATTACH_INDICATOR)){
+			String[] parts = message.getBody().split("#");
+			QBUser tmpUser = new QBUser();
+			tmpUser.setFileId(Integer.parseInt(parts[1]));
+			app.getQbm().downloadQBFile(tmpUser);
+		}
 		
 	}
 	
@@ -121,5 +133,10 @@ public class MessageManager implements MessageListener {
 	
 	public void setListDownloadedListener(OnMessageListDownloaded listDownloadedListener) {
 		this.listDownloadedListener = listDownloadedListener;
+	}
+
+	@Override
+	public void downloadComlete(Bitmap bitmap, File file) {
+		
 	}
 }

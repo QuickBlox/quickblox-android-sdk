@@ -36,7 +36,13 @@
     <string name="title_activity_main_tab">MainTabActivity</string>
 
     <string name="activity_profile_exit_button">Exit</string>
-
+	
+	<string name="chat_activity_send_button">Send</string>
+    <string name="chat_activity_attach_button">Attach</string>
+    <string name="chat_activity_attach_info">Start attach transfer</string>
+    
+    <string name="dialog_activity_reject">User not found!</string>
+    <string name="dialog_activity_search_dialog">Searching</string>
     
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>
@@ -45,7 +51,7 @@
     <string name="chat_dialog_add_contact">Add to contact list</string>
 	<string name="chat_dialog_name">User actions</string>
 
-  <string name="contacts_contact_button">Contacts</string>
+  	<string name="contacts_contact_button">Contacts</string>
     <string name="contacts_request_button">Request</string>
     <string name="contacts_inside_approve_button">Approve</string>
     <string name="contacts_inside_reject_button">Reject</string>

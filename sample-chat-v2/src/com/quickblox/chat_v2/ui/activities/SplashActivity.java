@@ -58,7 +58,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		Button registrationButton = (Button) findViewById(R.id.splash_registration_button);
 		Button siginButton = (Button) findViewById(R.id.splash_sign_in_button);
 		
-		blockUi();
+		blockUi(true);
 		
 		fbm = new FaceBookManager();
 		
@@ -121,8 +121,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 							ChatApplication.getInstance().setQbUser(user);
 							QBUsers.signIn(user, SplashActivity.this, user.getPassword());
 							
-						}else{
-						progress.dismiss();}
+						} else {
+							blockUi(false);
+						}
 					} else {
 						QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, SplashActivity.this);
 						
@@ -131,9 +132,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			});
 			
 		} else {
-			progress.dismiss();
-		      Toast.makeText(this, getResources().getString(R.string.splash_internet_error), Toast.LENGTH_LONG).show();
-
+			blockUi(false);
+			Toast.makeText(this, getResources().getString(R.string.splash_internet_error), Toast.LENGTH_LONG).show();
+			
 		}
 	}
 	
@@ -174,7 +175,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			
 			@Override
 			public void run() {
-				progress.dismiss();				
+				blockUi(false);
 			}
 		});
 		
@@ -205,8 +206,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			}
 			loadMainScreen();
 		} else {
-			progress.dismiss();
-		      Toast.makeText(this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
+			blockUi(false);
+			Toast.makeText(this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
 			
 		}
 		
@@ -230,7 +231,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		}
 		
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
-		blockUi();
+		blockUi(true);
 	}
 	
 	private void loadMainScreen() {
@@ -239,8 +240,12 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		finish();
 	}
 	
-	public void blockUi() {
-		progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+	public void blockUi(boolean enable) {
+		if (enable) {
+			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.dialog_activity_search_dialog), true);
+		} else {
+			progress.dismiss();
+		}
 	}
 	
 	// INTERNET REVIEW

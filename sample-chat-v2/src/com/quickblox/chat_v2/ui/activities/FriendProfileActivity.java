@@ -1,5 +1,7 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -68,7 +70,7 @@ public class FriendProfileActivity extends Activity implements OnFriendProfileDo
 				System.out.println("QBUSERlistener");
 				
 				if (friend != null) {
-					app.getQbm().getQbFileToBitmap(friend);
+					app.getQbm().downloadQBFile(friend);
 					
 				}
 				
@@ -80,8 +82,7 @@ public class FriendProfileActivity extends Activity implements OnFriendProfileDo
 	}
 	
 	@Override
-	public void downloadComlete(Bitmap bitmap) {
-		System.out.println("downloaded Listener");
+	public void downloadComlete(Bitmap bitmap, File file) {
 		userBitmap = bitmap;
 		runOnUiThread(new Runnable() {
 			

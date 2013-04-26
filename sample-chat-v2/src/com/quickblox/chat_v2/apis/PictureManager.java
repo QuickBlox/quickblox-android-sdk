@@ -5,22 +5,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.widget.ImageView;
+
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.CompressFormat;
-import android.net.Uri;
-import android.widget.ImageView;
-
 public class PictureManager {
 	
 	private Context context;
 	private ImageLoader imageLoader;
+	private String targetUrl;
+	private ImageView targetView;
 	
 	public PictureManager(Context context) {
 		this.context = context;
@@ -75,6 +78,8 @@ public class PictureManager {
 	}
 	
 	public void downloadPicFromFB(String url, ImageView targetImageView) {
+		targetUrl = url;
+		targetView = targetImageView;
 		
 		ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(context).threadPriority(Thread.NORM_PRIORITY - 2)
 				.memoryCacheSize(2 * 1024 * 1024).denyCacheImageMultipleSizesInMemory().discCacheFileNameGenerator(new Md5FileNameGenerator())
@@ -83,6 +88,11 @@ public class PictureManager {
 		ImageLoader.getInstance().init(configuration);
 		imageLoader = ImageLoader.getInstance();
 		
-		imageLoader.displayImage(url, targetImageView);
+		((Activity) context).runOnUiThread(new Runnable() {	
+			@Override
+			public void run() {
+				imageLoader.displayImage(targetUrl, targetView);	
+			}
+		});
 	}
 }

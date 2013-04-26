@@ -16,25 +16,23 @@
                     android:padding="20dp">
 
         <EditText
+            android:id="@+id/messageEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/messageEdit"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            android:autoText="true"
-            android:hint="message text"
-            android:layout_alignParentRight="false"
             android:layout_toLeftOf="@+id/sendButton"
-            android:layout_marginRight="10dp"/>
+            android:layout_toRightOf="@+id/attachbutton"
+            android:autoText="true"
+            android:hint="message text" />
 
         <Button
+            android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
-            android:id="@+id/sendButton"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:onClick="onSendBtnClick"/>
+            android:layout_alignParentRight="true"
+            android:onClick="onSendBtnClick"
+            android:text="@string/chat_activity_send_button" />
 
         <ScrollView
             android:id="@+id/scrollContainer"
@@ -71,5 +69,14 @@
             android:id="@+id/friendLabel"
             android:layout_alignParentRight="true"
             android:textSize="20dp"/>
+
+        <Button
+            android:id="@+id/attachbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/chat_activity_attach_button" />
+
     </RelativeLayout>
 </LinearLayout>

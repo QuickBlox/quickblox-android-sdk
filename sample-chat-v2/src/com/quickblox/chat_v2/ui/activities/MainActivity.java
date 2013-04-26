@@ -57,7 +57,7 @@ public class MainActivity extends TabActivity {
 		progressDialog.setMessage(getString(R.string.loading));
 		progressDialog.show();
 		
-		qbm = new QuickBloxManager();
+		qbm = new QuickBloxManager(this);
 		picManager = new PictureManager(this);
 		app.setPicManager(picManager);
 		app.setQbm(qbm);

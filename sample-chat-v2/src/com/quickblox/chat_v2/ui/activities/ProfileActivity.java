@@ -1,36 +1,39 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.facebook.Session;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
  */
-public class ProfileActivity extends Activity implements OnPictureConvertComplete {
+public class ProfileActivity extends Activity implements OnPictureConvertComplete, OnFileUploadComplete {
 	
 	private ImageView userpic;
 	private ChatApplication app;
 	
 	private Bitmap userBitmap;
 	
-	private static final int SELECT_PHOTO = 1;
+	private final int SELECT_PHOTO = 1;
+	private boolean blockUiMode;
+	private ProgressDialog progress;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 		
 		app = ChatApplication.getInstance();
 		
+		
 		if (app.getFbUser() != null) {
 			app.getPicManager().downloadPicFromFB(app.getFbUser().getWebsite(), userpic);
 			username.setText(app.getFbUser().getFullName());
@@ -49,8 +53,8 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 			
 			if (app.getQbUser() != null) {
 				app.getQbm().setPictureConvertListener(this);
-				app.getQbm().getQbFileToBitmap(app.getQbUser());
-				setOnProfilePictureClicListener();	
+				app.getQbm().downloadQBFile(app.getQbUser());
+				setOnProfilePictureClicListener();
 			}
 		}
 		
@@ -91,8 +95,9 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 						userpic.setImageBitmap(yourSelectedImage);
 						
 						ChatApplication.getInstance().setMyPic(yourSelectedImage);
-						app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(app.getMyPic()));
-						
+						app.getQbm().setUploadListener(ProfileActivity.this);
+						app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(app.getMyPic()), false);
+						blockUi(true);
 						
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
@@ -114,9 +119,9 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 			}
 		});
 	}
-
+	
 	@Override
-	public void downloadComlete(Bitmap bitmap) {
+	public void downloadComlete(Bitmap bitmap, File file) {
 		userBitmap = bitmap;
 		runOnUiThread(new Runnable() {
 			
@@ -124,11 +129,31 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 			public void run() {
 				userpic.setImageBitmap(userBitmap);
 				ChatApplication.getInstance().setMyPic(userBitmap);
-				
+				blockUi(false);
 			}
 		});
 		
+	}
+	public void blockUi(boolean enable) {
+		blockUiMode = enable;
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (blockUiMode) {
+					progress = ProgressDialog.show(ProfileActivity.this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+				} else {
+					if (progress != null){
+						progress.dismiss();
+					}
+				}
+			}
+		});
 		
 	}
-	
+
+	@Override
+	public void uploadComplete(int uploafFileId) {
+		blockUi(false);
+	}
 }

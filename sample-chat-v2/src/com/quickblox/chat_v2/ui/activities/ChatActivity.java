@@ -1,5 +1,7 @@
 package com.quickblox.chat_v2.ui.activities;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.jivesoftware.smack.Chat;
@@ -11,20 +13,27 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.InvitationListener;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.chat.QBChat;
@@ -35,12 +44,14 @@ import com.quickblox.module.custom.model.QBCustomObject;
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity implements OnMessageListDownloaded {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureConvertComplete, OnFileUploadComplete {
 	
+	private static final int SELECT_PHOTO = 9;
 	private TopBar topBar;
 	private ViewGroup messagesContainer;
 	private ScrollView scrollContainer;
 	private EditText msgTxt;
+	private Button attachButton;
 	
 	private int userId;
 	private String dialogId;
@@ -95,12 +106,23 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 		// } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
 		userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
 		dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
-			
+		
 		topBar.setFriendParams(userId);
 		msgManager.getDialogMessages(userId);
 		QBChat.openXmmpChat(pDialogMessageListener);
 		// }
 		
+		attachButton = (Button) findViewById(R.id.attachbutton);
+		attachButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+				photoPickerIntent.setType("image/*");
+				startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+			}
+		});
 	}
 	
 	public void onSendBtnClick(View view) {
@@ -190,4 +212,38 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded {
 	public void messageListDownloaded(List<QBCustomObject> downloadedList) {
 		applyDialogMessags(downloadedList);
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+		
+		switch (requestCode) {
+			case SELECT_PHOTO :
+				if (resultCode == RESULT_OK) {
+					
+					try {
+						
+						Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
+					      
+						Bitmap yourSelectedImage = app.getPicManager().decodeUri(imageReturnedIntent.getData());
+						app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(yourSelectedImage), true);
+						
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+		}
+	}
+
+	@Override
+	public void downloadComlete(Bitmap bitmap, File file) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void uploadComplete(int uploafFileId) {
+		msgManager.sendSingleMessage(userId, "<Attach file>#"+uploafFileId, dialogId);
+	}
+	
 }
