@@ -46,7 +46,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
  */
 public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureConvertComplete, OnFileUploadComplete {
 	
-	private static final int SELECT_PHOTO = 9;
+	private final int SELECT_PHOTO = 2;
 	private TopBar topBar;
 	private ViewGroup messagesContainer;
 	private ScrollView scrollContainer;
@@ -225,6 +225,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 						
 						Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
 					      
+						app.getQbm().setUploadListener(ChatActivity.this);
 						Bitmap yourSelectedImage = app.getPicManager().decodeUri(imageReturnedIntent.getData());
 						app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(yourSelectedImage), true);
 						
@@ -237,13 +238,14 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
 	@Override
 	public void downloadComlete(Bitmap bitmap, File file) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Картинка принята");
 	}
 
 	@Override
 	public void uploadComplete(int uploafFileId) {
-		msgManager.sendSingleMessage(userId, "<Attach file>#"+uploafFileId, dialogId);
+		String serviceMessage = "<Attach file>#"+uploafFileId;
+		msgManager.sendSingleMessage(userId, serviceMessage, dialogId);
+		showMessage(serviceMessage, true);
 	}
 	
 }

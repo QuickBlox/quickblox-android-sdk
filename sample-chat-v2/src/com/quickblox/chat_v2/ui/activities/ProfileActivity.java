@@ -141,7 +141,7 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 			@Override
 			public void run() {
 				if (blockUiMode) {
-					progress = ProgressDialog.show(ProfileActivity.this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+					progress = ProgressDialog.show(ProfileActivity.this, getResources().getString(R.string.app_name), getResources().getString(R.string.profile_activity_photo_refresh), true);
 				} else {
 					if (progress != null){
 						progress.dismiss();

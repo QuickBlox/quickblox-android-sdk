@@ -80,14 +80,14 @@ public class NewDialogActivity extends Activity {
 	
 	private void refreshContactList(ArrayList<QBUser> qbUsers) {
 		if (qbUsers != null) {
-			newDialogAdapter = new NewDialogAdapter(getBaseContext(), qbUsers);
+			newDialogAdapter = new NewDialogAdapter(this, qbUsers);
 			contactList.setAdapter(newDialogAdapter);
 		}
 	}
 	
 	public void blockUi(boolean enable) {
 		if (enable) {
-			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_progressdialog), true);
+			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.dialog_activity_search_dialog), true);
 		} else {
 			progress.dismiss();
 		}

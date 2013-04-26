@@ -35,7 +35,8 @@
 
     <string name="title_activity_main_tab">MainTabActivity</string>
 
-    <string name="activity_profile_exit_button">Exit</string>
+    <string name="profile_activity_exit_button">Exit</string>
+    <string name="profile_activity_photo_refresh">Uploading photo</string>
 	
 	<string name="chat_activity_send_button">Send</string>
     <string name="chat_activity_attach_button">Attach</string>

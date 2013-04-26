@@ -7,7 +7,6 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -52,6 +51,7 @@ public class MessageManager implements MessageListener, OnPictureConvertComplete
 		
 		if (message.getBody().substring(0,7).equals(GlobalConsts.ATTACH_INDICATOR)){
 			String[] parts = message.getBody().split("#");
+			
 			QBUser tmpUser = new QBUser();
 			tmpUser.setFileId(Integer.parseInt(parts[1]));
 			app.getQbm().downloadQBFile(tmpUser);
@@ -62,8 +62,8 @@ public class MessageManager implements MessageListener, OnPictureConvertComplete
 	// send messages into xmpp & customobject
 	public void sendSingleMessage(Integer userId, String messageBody, String dialogId) {
 		QBChat.sendMessage(userId, messageBody);
-		sendToQB(userId, messageBody, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
 		
+		sendToQB(userId, messageBody, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
 		updateDialogLastMessage(messageBody, dialogId);
 	}
 	
@@ -109,7 +109,6 @@ public class MessageManager implements MessageListener, OnPictureConvertComplete
 			@Override
 			public void onComplete(Result result) {
 				if (result.isSuccess()) {
-					System.out.println("msgManager = true!");
 					listDownloadedListener.messageListDownloaded(((QBCustomObjectLimitedResult) result).getCustomObjects());
 				}
 			}

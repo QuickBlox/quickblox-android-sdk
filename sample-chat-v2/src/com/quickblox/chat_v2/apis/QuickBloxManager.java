@@ -95,8 +95,11 @@ public class QuickBloxManager {
 							updateQBUser(app.getQbUser());
 						}
 					} else {
+						
 						uploadListener.uploadComplete(fileUploadTaskResultResult.getFile().getId());
 					}
+				}else{
+					System.out.println("Что-то не так");
 				}
 			}
 		});

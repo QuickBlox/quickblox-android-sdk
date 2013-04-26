@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.ui.activities.ChatActivity;
+import com.quickblox.chat_v2.ui.activities.NewDialogActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -120,6 +121,7 @@ public class NewDialogAdapter extends BaseAdapter {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
         context.startActivity(intent);
+        ((NewDialogActivity) context).finish();
     }
 
     private void applyImage(int fileId, final ImageView userAvatar) {

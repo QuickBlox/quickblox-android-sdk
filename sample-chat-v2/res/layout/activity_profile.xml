@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:text="@string/activity_profile_exit_button" />
+            android:text="@string/profile_activity_exit_button" />
 
     </TableRow>
 
