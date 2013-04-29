@@ -23,8 +23,7 @@ public class PictureManager {
 	private Context context;
 	private ImageLoader imageLoader;
 	private String targetUrl;
-	private ImageView targetView;
-	
+	private ImageView targetView;	
 	public PictureManager(Context context) {
 		this.context = context;
 	}
@@ -77,7 +76,7 @@ public class PictureManager {
 		return f;
 	}
 	
-	public void downloadPicFromFB(String url, ImageView targetImageView) {
+	public void downloadPicAndDisplay(String url, ImageView targetImageView) {
 		targetUrl = url;
 		targetView = targetImageView;
 		

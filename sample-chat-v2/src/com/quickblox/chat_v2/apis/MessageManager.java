@@ -13,7 +13,7 @@ import android.graphics.Bitmap;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
-import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -24,7 +24,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.users.model.QBUser;
 
-public class MessageManager implements MessageListener, OnPictureConvertComplete {
+public class MessageManager implements MessageListener, OnPictureDownloadComplete {
 	
 	private Context context;
 	private ChatApplication app;
@@ -49,7 +49,7 @@ public class MessageManager implements MessageListener, OnPictureConvertComplete
 		String[] id = message.getFrom().split("-");
 		sendToQB(Integer.parseInt(id[0]), message.getBody(), Integer.parseInt(id[0]));
 		
-		if (message.getBody().substring(0,7).equals(GlobalConsts.ATTACH_INDICATOR)){
+		if (message.getBody().substring(0,13).equals(GlobalConsts.ATTACH_INDICATOR)){
 			String[] parts = message.getBody().split("#");
 			
 			QBUser tmpUser = new QBUser();

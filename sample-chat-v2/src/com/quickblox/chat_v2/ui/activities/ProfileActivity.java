@@ -18,13 +18,13 @@ import com.facebook.Session;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
-import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
  */
-public class ProfileActivity extends Activity implements OnPictureConvertComplete, OnFileUploadComplete {
+public class ProfileActivity extends Activity implements OnPictureDownloadComplete, OnFileUploadComplete {
 	
 	private ImageView userpic;
 	private ChatApplication app;
@@ -47,12 +47,12 @@ public class ProfileActivity extends Activity implements OnPictureConvertComplet
 		
 		
 		if (app.getFbUser() != null) {
-			app.getPicManager().downloadPicFromFB(app.getFbUser().getWebsite(), userpic);
+			app.getPicManager().downloadPicAndDisplay(app.getFbUser().getWebsite(), userpic);
 			username.setText(app.getFbUser().getFullName());
 		} else {
 			
 			if (app.getQbUser() != null) {
-				app.getQbm().setPictureConvertListener(this);
+				app.getQbm().setPictureDownloadComplete(this);
 				app.getQbm().downloadQBFile(app.getQbUser());
 				setOnProfilePictureClicListener();
 			}

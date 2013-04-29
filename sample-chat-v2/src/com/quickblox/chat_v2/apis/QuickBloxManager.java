@@ -15,7 +15,7 @@ import android.graphics.BitmapFactory;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
-import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
@@ -33,7 +33,7 @@ public class QuickBloxManager {
 	private ChatApplication app;
 	
 	private OnFriendProfileDownloaded friendProfileListener;
-	private OnPictureConvertComplete pictureConvertListener;
+	private OnPictureDownloadComplete pictureDownloadComplete;
 	private OnFileUploadComplete uploadListener;
 	
 	private boolean pictureMode;
@@ -128,7 +128,8 @@ public class QuickBloxManager {
 		
 		if (targetFile.exists()){
 			Bitmap userPic = BitmapFactory.decodeFile(String.valueOf(currentUser.getFileId())+".jpg");
-			pictureConvertListener.downloadComlete(userPic, targetFile);
+			pictureDownloadComplete.downloadComlete(userPic, targetFile);
+			return;
 		}
 		
 		currentFileId = currentUser.getFileId();
@@ -155,7 +156,7 @@ public class QuickBloxManager {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					pictureConvertListener.downloadComlete(userPic, userPicFile);
+					pictureDownloadComplete.downloadComlete(userPic, userPicFile);
 				}
 			}
 		});
@@ -197,8 +198,8 @@ public class QuickBloxManager {
 		this.friendProfileListener = friendProvileListener;
 	}
 	
-	public void setPictureConvertListener(OnPictureConvertComplete pictureConvertListener) {
-		this.pictureConvertListener = pictureConvertListener;
+	public void setPictureDownloadComplete(OnPictureDownloadComplete pictureDownloadComplete) {
+		this.pictureDownloadComplete = pictureDownloadComplete;
 	}
 	
 	public void setUploadListener(OnFileUploadComplete uploadListener) {

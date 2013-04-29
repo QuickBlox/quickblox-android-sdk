@@ -47,12 +47,12 @@ public class ContactsActivity extends ListActivity{
 					case R.id.contacts_contact_button :
 						System.out.println("Cont");
 			//			contactsAdapter = new ContactsAdapter(ContactsActivity.this, ChatApplication.getInstance().getContactUserList(), true);
-						contactsAdapter.notifyDataSetChanged();
+						//contactsAdapter.notifyDataSetChanged();
 						break;
 					case R.id.contacts_request_button :
 						System.out.println("req");
 				//		contactsAdapter = new ContactsAdapter(ContactsActivity.this, ChatApplication.getInstance().getSubscribeUserList(), false);
-						contactsAdapter.notifyDataSetChanged();
+						//contactsAdapter.notifyDataSetChanged();
 						break;
 				}
 			}

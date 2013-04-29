@@ -13,7 +13,7 @@ public class GlobalConsts {
     public static final String PASSWORD = "password";
     
     public static final String FRIEND_ID = "friend_id";
-    public static final String ATTACH_INDICATOR = "<Attach>";
+    public static final String ATTACH_INDICATOR = "<Attach file>";
     
     public static final String USER_ID = "user_id";
     public static final String DIALOGS = "dialogs";

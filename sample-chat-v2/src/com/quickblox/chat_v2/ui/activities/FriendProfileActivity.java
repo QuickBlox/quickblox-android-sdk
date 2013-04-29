@@ -14,14 +14,14 @@ import android.widget.TextView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
-import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
  */
-public class FriendProfileActivity extends Activity implements OnFriendProfileDownloaded, OnPictureConvertComplete {
+public class FriendProfileActivity extends Activity implements OnFriendProfileDownloaded, OnPictureDownloadComplete {
 	
 	private ImageView userpic;
 	private TextView username;
@@ -42,7 +42,7 @@ public class FriendProfileActivity extends Activity implements OnFriendProfileDo
 		low.setVisibility(View.GONE);
 		
 		app = ChatApplication.getInstance();
-		app.getQbm().setPictureConvertListener(this);
+		app.getQbm().setPictureDownloadComplete(this);
 		
 		userpic = (ImageView) findViewById(R.id.profile_userpic);
 		username = (TextView) findViewById(R.id.chat_dialog_view_profile);

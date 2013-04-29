@@ -2,6 +2,7 @@ package com.quickblox.chat_v2.ui.activities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smack.Chat;
@@ -15,14 +16,16 @@ import org.jivesoftware.smackx.muc.InvitationListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -33,25 +36,36 @@ import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
-import com.quickblox.chat_v2.interfaces.OnPictureConvertComplete;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
+import com.quickblox.core.QBCallbackImpl;
+import com.quickblox.core.result.Result;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
+import com.quickblox.module.content.QBContent;
+import com.quickblox.module.content.result.QBFileResult;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureConvertComplete, OnFileUploadComplete {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete {
 	
 	private final int SELECT_PHOTO = 2;
+	private boolean isAttach;
+	private String[] parts;
+	
 	private TopBar topBar;
+	
 	private ViewGroup messagesContainer;
 	private ScrollView scrollContainer;
 	private EditText msgTxt;
 	private Button attachButton;
+	private TextView messageText;
+	//private ImageView userAttach;
 	
 	private int userId;
 	private String dialogId;
@@ -62,6 +76,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private MessageManager msgManager;
 	private ChatApplication app;
 	
+	private HashMap<String, ImageView> viewTable;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,6 +87,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		app = ChatApplication.getInstance();
 		msgManager = app.getMsgManager();
 		msgManager.setListDownloadedListener(this);
+		viewTable = new HashMap<String, ImageView>();
 		initViews();
 		
 	}
@@ -134,27 +151,68 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	}
 	
 	private void showMessage(String message, boolean leftSide) {
-		final TextView textView = new TextView(ChatActivity.this);
-		textView.setTextColor(Color.BLACK);
-		textView.setText(message);
 		
-		int bgRes = R.drawable.left_message_bg;
-		
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		
-		if (!leftSide) {
-			bgRes = R.drawable.right_message_bg;
-			params.gravity = Gravity.RIGHT;
+		if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+			System.out.println("Attach section");
+			parts = message.split("#");
+			
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			
+			int bgRes = R.drawable.left_message_bg;
+			
+			if (!leftSide) {
+				bgRes = R.drawable.right_message_bg;
+				params.gravity = Gravity.RIGHT;
+			}
+			
+			ImageView userAttach = new ImageView(ChatActivity.this);
+			userAttach.setMaxHeight(90);
+			userAttach.setMaxWidth(90);
+			userAttach.setLayoutParams(params);
+			userAttach.setBackgroundResource(bgRes);
+			userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
+			viewTable.put(parts[1], userAttach);
+			
+			QBContent.getFile(Integer.parseInt(parts[1]), new QBCallbackImpl() {
+				@Override
+				public void onComplete(Result result) {
+					if (result.isSuccess()) {
+						QBFileResult fileResult = (QBFileResult) result;
+						app.getPicManager().downloadPicAndDisplay(fileResult.getFile().getPublicUrl(), viewTable.get(String.valueOf(fileResult.getFile().getId())));
+					}
+				}
+			});
+			isAttach = true;
+		} else {
+			System.out.println("Message section");
+			messageText = new TextView(ChatActivity.this);
+			messageText.setTextColor(Color.BLACK);
+			messageText.setText(message);
+			
+			int bgRes = R.drawable.left_message_bg;
+			
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			
+			if (!leftSide) {
+				bgRes = R.drawable.right_message_bg;
+				params.gravity = Gravity.RIGHT;
+			}
+			
+			messageText.setLayoutParams(params);
+			messageText.setBackgroundResource(bgRes);
+			
+			isAttach = false;
 		}
-		
-		textView.setLayoutParams(params);
-		
-		textView.setBackgroundResource(bgRes);
 		
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				messagesContainer.addView(textView);
+				if (isAttach) {
+					System.out.println("parts = "+viewTable.get(parts[1]));
+					messagesContainer.addView(viewTable.get(parts[1]));
+				} else {
+					messagesContainer.addView(messageText);
+				}
 				// Scroll to bottom
 				if (scrollContainer.getChildAt(0) != null) {
 					scrollContainer.scrollTo(scrollContainer.getScrollX(), scrollContainer.getChildAt(0).getHeight());
@@ -224,7 +282,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 					try {
 						
 						Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
-					      
+						
 						app.getQbm().setUploadListener(ChatActivity.this);
 						Bitmap yourSelectedImage = app.getPicManager().decodeUri(imageReturnedIntent.getData());
 						app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(yourSelectedImage), true);
@@ -235,15 +293,16 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 				}
 		}
 	}
-
+	
 	@Override
 	public void downloadComlete(Bitmap bitmap, File file) {
 		System.out.println("Картинка принята");
+		
 	}
-
+	
 	@Override
 	public void uploadComplete(int uploafFileId) {
-		String serviceMessage = "<Attach file>#"+uploafFileId;
+		String serviceMessage = "<Attach file>#" + uploafFileId;
 		msgManager.sendSingleMessage(userId, serviceMessage, dialogId);
 		showMessage(serviceMessage, true);
 	}

@@ -24,17 +24,16 @@ public class ContactsAdapter extends BaseAdapter {
 	private List<QBUser> incomeUserList; 
 	private boolean isContacts;
 	
-	private ChatHolder chatHolder;
+	private ContactHolder chatHolder;
 	
 	public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isContacts) {
 		this.context = context;
 		incomeUserList = qbuserArray;
 		this.isContacts = isContacts;
 		
-		System.out.println("inside adapter = "+qbuserArray);
 	}
 	
-	static class ChatHolder {
+	static class ContactHolder {
 	
 		public ImageView userPic;
 		public TextView userName;
@@ -45,7 +44,6 @@ public class ContactsAdapter extends BaseAdapter {
 	
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return incomeUserList.size();
 	}
 	
@@ -61,29 +59,29 @@ public class ContactsAdapter extends BaseAdapter {
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		View chatView = convertView;
+		View contactView = convertView;
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		QBUser currentUser = incomeUserList.get(position);
 		
-		if (chatView == null) {
+		if (contactView == null) {
 			
-			chatHolder = new ChatHolder();
-			chatView = inflater.inflate(R.layout.contacts_list_inside, parent, false);
-			chatHolder.userPic = (ImageView) chatView.findViewById(R.id.contacts_inside_userpic);
-			chatHolder.userName = (TextView) chatView.findViewById(R.id.contacts_inside_username);
+			chatHolder = new ContactHolder();
+			contactView = inflater.inflate(R.layout.contacts_list_inside, parent, false);
+			chatHolder.userPic = (ImageView) contactView.findViewById(R.id.contacts_inside_userpic);
+			chatHolder.userName = (TextView) contactView.findViewById(R.id.contacts_inside_username);
 			
-			chatHolder.accept = (Button) chatView.findViewById(R.id.contact_iside_accept);
-			chatHolder.reject = (Button) chatView.findViewById(R.id.contact_inside_reject);
+			chatHolder.accept = (Button) contactView.findViewById(R.id.contact_iside_accept);
+			chatHolder.reject = (Button) contactView.findViewById(R.id.contact_inside_reject);
 			
 				
 			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 
-			chatView.setTag(chatHolder);
+			contactView.setTag(chatHolder);
 			
 		} else {
 			
-			chatHolder = (ChatHolder) chatView.getTag();
+			chatHolder = (ContactHolder) contactView.getTag();
 			
 			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 
@@ -91,14 +89,14 @@ public class ContactsAdapter extends BaseAdapter {
 		
 		
 		if (isContacts) {
-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contacts_linearlayout_two);
+			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.GONE);
 		} else{
-			LinearLayout insideLayout = (LinearLayout) chatView.findViewById(R.id.contacts_linearlayout_two);
+			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.VISIBLE);
 		}		
 		
 		
-		return chatView;
+		return contactView;
 	}
 }
