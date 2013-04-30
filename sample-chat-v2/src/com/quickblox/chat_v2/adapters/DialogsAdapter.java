@@ -2,6 +2,7 @@ package com.quickblox.chat_v2.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings.Global;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,10 +93,6 @@ public class DialogsAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
-            System.out.println("DIALOG LIST 0 = "+dialogList.get(position));
-            System.out.println("DIALOG LIST 1 = "+dialogList.get(position).getFields());
-            System.out.println("DIALOG LIST 2 = "+dialogList.get(position).getFields());
-            
             int userId = Integer.parseInt(dialogList.get(position).getFields().get("recepient_id").toString());
             loadChatActivity(userId, dialogList.get(position).getCustomObjectId());
         }
@@ -105,6 +102,7 @@ public class DialogsAdapter extends BaseAdapter {
     private void loadChatActivity(int userId, String dialogId) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
         intent.putExtra(GlobalConsts.USER_ID, userId);
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         context.startActivity(intent);

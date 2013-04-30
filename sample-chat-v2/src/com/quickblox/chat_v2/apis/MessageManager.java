@@ -19,6 +19,7 @@ import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
@@ -129,6 +130,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 			}
 		});
 	}
+		public void sendRoomMessage(String msg, int roomId){
+			
+		}
 	
 	public void setListDownloadedListener(OnMessageListDownloaded listDownloadedListener) {
 		this.listDownloadedListener = listDownloadedListener;

@@ -38,8 +38,8 @@ public class ChatApplication extends Application {
 	private PictureManager picManager;
 	private RosterManager rstManager;
 	
-	 private List<QBCustomObject> dialogList;
-	    
+	private List<QBCustomObject> dialogList;
+	private List<String> userPresentRoomList;    
 	
 	//
 	@Override
@@ -108,5 +108,11 @@ public class ChatApplication extends Application {
 	}
 	public void setRstManager(RosterManager rstManager) {
 		this.rstManager = rstManager;
+	}
+	public List<String> getUserPresentRoomList() {
+		return userPresentRoomList;
+	}
+	public void setUserPresentRoomList(List<String> userPresentRoomList) {
+		this.userPresentRoomList = userPresentRoomList;
 	}
 }
