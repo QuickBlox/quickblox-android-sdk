@@ -65,7 +65,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private EditText msgTxt;
 	private Button attachButton;
 	private TextView messageText;
-	// private ImageView userAttach;
+	//private ImageView userAttach;
 	
 	private int userId;
 	private String dialogId;
@@ -107,24 +107,27 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
 		
 		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
+		// if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
+		// QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener,
+		// pParticipantListener);
+		// boolean isPersistent =
+		// getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
+		// boolean isOnlyMembers =
+		// getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
+		// String chatRoomName =
+		// getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
+		// chatRoom = QBChat.createRoom(chatRoomName,
+		// ChatApplication.getInstance().getQbUser(), isOnlyMembers,
+		// isPersistent);
+		//
+		// } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
+		userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
+		dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 		
-		if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
-			System.out.println("Room activity");
-			QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
-			boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
-			boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
-			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-			chatRoom = QBChat.createRoom(chatRoomName, ChatApplication.getInstance().getQbUser(), isOnlyMembers, isPersistent);
-			
-		} else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
-			System.out.println("Dialog Activity");
-			userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
-			dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
-			
-			topBar.setFriendParams(userId);
-			msgManager.getDialogMessages(userId);
-			QBChat.openXmmpChat(pDialogMessageListener);
-		}
+		topBar.setFriendParams(userId);
+		msgManager.getDialogMessages(userId);
+		QBChat.openXmmpChat(pDialogMessageListener);
+		// }
 		
 		attachButton = (Button) findViewById(R.id.attachbutton);
 		attachButton.setOnClickListener(new OnClickListener() {
@@ -175,8 +178,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 				public void onComplete(Result result) {
 					if (result.isSuccess()) {
 						QBFileResult fileResult = (QBFileResult) result;
-						app.getPicManager().downloadPicAndDisplay(fileResult.getFile().getPublicUrl(),
-								viewTable.get(String.valueOf(fileResult.getFile().getId())));
+						app.getPicManager().downloadPicAndDisplay(fileResult.getFile().getPublicUrl(), viewTable.get(String.valueOf(fileResult.getFile().getId())));
 					}
 				}
 			});
@@ -206,6 +208,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			@Override
 			public void run() {
 				if (isAttach) {
+					System.out.println("parts = "+viewTable.get(parts[1]));
 					messagesContainer.addView(viewTable.get(parts[1]));
 				} else {
 					messagesContainer.addView(messageText);
