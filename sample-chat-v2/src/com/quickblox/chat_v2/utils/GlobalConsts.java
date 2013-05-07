@@ -15,15 +15,21 @@ public class GlobalConsts {
     public static final String FRIEND_ID = "friend_id";
     public static final String ATTACH_INDICATOR = "<Attach file>";
     
-    public static final String USER_ID = "user_id";
+    //dialog section
+    public static final String DIALOGS_CLASS = "dialogs";
+    public static final String NAME_FIELD = "name";
+    public static final String RECEPIENT_ID_FIELD = "recepient_id";
+    
     public static final String DIALOGS = "dialogs";
+    public static final String USER_ID_FIELD = "user_id";
+    
+    public static final String USER_ID = "user_id";
     public static final String LAST_MSG = "last_msg";
     public static final String DIALOG_ID = "dialog_id";
     public static final String OPPONENT_ID = "opponent_id";
     public static final String AUTHOR_ID = "author_id";
     public static final String MSG_TEXT = "message";
     public static final String MESSAGES = "messages";
-    public static final String USER_ID_FIELD = "user_id";
     public static final String ROOM_NAME = "name";
     public static final String RECEPIENT_AVATAR = "recepient_avatar";
     public static final String USERS_TEXT = " users";

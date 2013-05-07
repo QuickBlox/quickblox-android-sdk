@@ -56,7 +56,7 @@ public class NewRoomActivity extends Activity {
     };
 
     private void loadChatActivity() {
-        Intent intent = new Intent(getBaseContext(), ChatActivity.class);
+        Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
         intent.putExtra(GlobalConsts.IS_ROOM_PERSISTENT, isPersistentChecked);
         intent.putExtra(GlobalConsts.IS_ONLY_MEMBERS, isOnlyMembersChecked);
