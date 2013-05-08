@@ -1,7 +1,6 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
@@ -19,7 +18,6 @@ import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
@@ -44,7 +42,7 @@ public class MainActivity extends TabActivity {
 	private QuickBloxManager qbm;
 	private ChatApplication app;
 	
-	private ProgressDialog progress;
+	private ProgressDialog progressDialog;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,14 +52,16 @@ public class MainActivity extends TabActivity {
 		app = ChatApplication.getInstance();
 		setupTabs();
 		
-		blockUi(true);
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCancelable(false);
+		progressDialog.setMessage(getString(R.string.loading));
+		progressDialog.show();
 		
 		qbm = new QuickBloxManager(this);
 		picManager = new PictureManager(this);
-		msgManager = new MessageManager(this);
 		app.setPicManager(picManager);
-		app.setMsgManager(msgManager);
 		app.setQbm(qbm);
+		
 		signIn();
 	}
 	
@@ -99,7 +99,7 @@ public class MainActivity extends TabActivity {
 				} else {
 					
 					System.out.println("false");
-					blockUi(false);
+					progressDialog.dismiss();
 				}
 			}
 			
@@ -121,7 +121,7 @@ public class MainActivity extends TabActivity {
 			@Override
 			public void onLoginError() {
 				System.out.println("Чёт не так");
-				blockUi(false);
+				progressDialog.dismiss();
 			}
 			
 			@Override
@@ -139,6 +139,9 @@ public class MainActivity extends TabActivity {
 			@Override
 			public void run() {
 				
+				msgManager = new MessageManager(MainActivity.this);
+				app.setMsgManager(msgManager);
+				
 				rosterManager = new RosterManager();
 				app.setRstManager(rosterManager);
 				
@@ -154,34 +157,11 @@ public class MainActivity extends TabActivity {
 					
 					QBChat.openXmmpChat(msgManager);
 					qbm.getQbUserInfo(userIds);
-					downloadRoomList();
+					progressDialog.dismiss();
 					
 				}
 			}
 		});
 		
-	}
-	private void downloadRoomList() {
-		QBChat.requestJoinedRooms(app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId(), new RoomReceivingListener() {
-			
-			@Override
-			public void onReceiveRooms(List<String> roomId) {
-				app.setUserPresentRoomList(new ArrayList<String>());
-				
-				for (String roomsUid : roomId) {
-					String[] parts = roomsUid.split("_");
-					app.getUserPresentRoomList().add(parts[0]);
-				}
-				blockUi(false);
-			}
-		});
-	}
-	
-	public void blockUi(boolean enable) {
-		if (enable) {
-			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.loading), true);
-		} else {
-			progress.dismiss();
-		}
 	}
 }

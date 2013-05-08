@@ -153,7 +153,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 	}
 
 	@Override
-	public void uploadComplete(int uploafFileId, String picUrl) {
+	public void uploadComplete(int uploafFileId) {
 		blockUi(false);
 	}
 }
