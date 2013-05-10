@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
-import org.xbill.DNS.APLRecord;
 
 import android.app.Activity;
 import android.content.Context;
@@ -133,7 +132,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 		
 	}
 	
-	public void createDialog(QBUser qbuser, boolean isNeedExtraReview) {
+	public synchronized void createDialog(QBUser qbuser, boolean isNeedExtraReview) {
 		
 		opponentId = qbuser.getId();
 		isNeedreview = isNeedExtraReview;

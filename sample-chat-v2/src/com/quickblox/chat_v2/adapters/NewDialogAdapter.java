@@ -97,7 +97,6 @@ public class NewDialogAdapter extends BaseAdapter implements OnDialogCreateCompl
 			int position = (Integer) v.getTag();
 			app.getMsgManager().setDialogCreateListener(NewDialogAdapter.this);
 			app.getMsgManager().createDialog(userList.get(position), true);
-			System.out.println("new dialogAdapter = "+userList.get(position));
 			blockUi(true);
 		}
 	};

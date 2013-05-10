@@ -3,7 +3,6 @@ package com.quickblox.chat_v2.ui.activities;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -28,6 +27,7 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 	private ChatApplication app;
 	
 	private boolean isContactButtonEnable;
+	private boolean isContacts;
 	
 	private ListView contactsTable;
 	private ContactsAdapter contactsAdapter;
@@ -56,16 +56,16 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			public void onClick(View v) {
 				switch (v.getId()) {
 					case R.id.contacts_contact_button :
-						contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true);
-						setListAdapter(contactsAdapter);
-						contactsAdapter.notifyDataSetChanged();
-						isContactButtonEnable = true;
+						
+						isContacts = true;
+						installNewAdapter();
+						
 						break;
 					case R.id.contacts_request_button :
-						contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false);
-						setListAdapter(contactsAdapter);
-						contactsAdapter.notifyDataSetChanged();
-						isContactButtonEnable = false;
+						
+						isContacts = false;
+						installNewAdapter();
+						
 						break;
 				}
 			}
@@ -87,17 +87,14 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			if (isContactButtonEnable) {
 				i.putExtra(GlobalConsts.USER_ID, app.getContactsList().get(position).getId());
 				tmpId = app.getContactsList().get(position).getId();
-				System.out.println("test 1 =" + tmpId);
 			} else {
 				i.putExtra(GlobalConsts.USER_ID, app.getContactsCandidateList().get(position).getId());
 				tmpId = app.getContactsCandidateList().get(position).getId();
-				System.out.println("test 2 = " + tmpId);
 			}
 			
 			for (QBCustomObject dialogs : app.getDialogList()) {
 				if (Integer.parseInt(dialogs.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()) == tmpId) {
 					tmpDialogId = dialogs.getCustomObjectId();
-					System.out.println("dialogId = " + tmpDialogId);
 				}
 				
 			}
@@ -108,13 +105,37 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 		}
 	};
 	
+	private void installNewAdapter() {
+		ContactsActivity.this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				if (isContacts) {
+					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true);
+					
+					isContactButtonEnable = true;
+					
+				} else {
+					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false);
+					isContactButtonEnable = false;
+				}
+				setListAdapter(contactsAdapter);
+				contactsAdapter.notifyDataSetChanged();
+				
+			}
+		});
+		
+	}
+	
 	@Override
 	public void refreshCurrentList() {
 		this.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				contactsAdapter.notifyDataSetChanged();
+				contactsAdapter = new ContactsAdapter(ContactsActivity.this, isContactButtonEnable ? app.getContactsList() : app.getContactsCandidateList(),
+						isContactButtonEnable ? true : false);
 			}
 		});
 		
@@ -125,4 +146,5 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 		super.onResume();
 		app.getQbm().setContactActivityListener(this);
 	}
+	
 }

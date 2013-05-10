@@ -17,7 +17,6 @@ import com.quickblox.chat_v2.interfaces.ContactSectionListener;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
-import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
@@ -60,8 +59,13 @@ public class QuickBloxManager {
 				super.onComplete(result);
 				QBUserPagedResult usersResult = (QBUserPagedResult) result;
 				
-				System.out.println("Запрос контактов = "+contactActivityListener);
+				System.out.println("Запрос контактов = "+usersResult.getUsers());
+				
 				app.setContactsList(usersResult.getUsers());
+				
+				if (contactActivityListener != null) {
+					contactActivityListener.refreshCurrentList();
+				}	
 			}
 		});
 		

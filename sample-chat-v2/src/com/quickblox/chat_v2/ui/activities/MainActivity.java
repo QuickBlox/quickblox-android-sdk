@@ -63,7 +63,8 @@ public class MainActivity extends TabActivity {
 		app.setQbm(qbm);
 		app.setContactsList(new ArrayList<QBUser>());
 		app.setContactsCandidateList(new ArrayList<QBUser>());
-		signIn();
+		
+		registerRoster();
 	}
 	
 	private void setupTabs() {
@@ -87,51 +88,6 @@ public class MainActivity extends TabActivity {
 		tabHost.addTab(contacts);
 		tabHost.addTab(profile);
 		
-	}
-	
-	private void signIn() {
-		QBUsers.signIn(SharedPreferencesHelper.getLogin(MainActivity.this), SharedPreferencesHelper.getPassword(MainActivity.this), new QBCallbackImpl() {
-			@Override
-			public void onComplete(Result result) {
-				if (result.isSuccess()) {
-					System.out.println("GOOD");
-					
-					signInChat(((QBUserResult) result).getUser());
-				} else {
-					
-					System.out.println("false");
-					blockUi(false);
-				}
-			}
-			
-		});
-	}
-	private void signInChat(QBUser qbUser) {
-		
-		if (app.getFbUser() != null) {
-			qbUser = ChatApplication.getInstance().getFbUser();
-			qbUser.setPassword(SharedPreferencesHelper.getPassword(this));
-			
-		} else {
-			qbUser = app.getQbUser();
-			qbUser.setPassword(SharedPreferencesHelper.getPassword(this));
-		}
-		
-		QBChat.loginWithUser(qbUser, new LoginListener() {
-			
-			@Override
-			public void onLoginError() {
-				System.out.println("Чёт не так");
-				blockUi(false);
-			}
-			
-			@Override
-			public void onLoginSuccess() {
-				System.out.println("GOOD");
-				registerRoster();
-				
-			}
-		});
 	}
 	
 	private void registerRoster() {

@@ -69,7 +69,8 @@ public class NewDialogActivity extends Activity {
 			public void onComplete(Result result) {
 				if (result.isSuccess()) {
 					refreshContactList(((QBUserPagedResult) result).getUsers());
-				} else {					
+				} else {
+					refreshContactList(new ArrayList<QBUser>());
 				    Toast.makeText(NewDialogActivity.this, getResources().getString(R.string.dialog_activity_reject), Toast.LENGTH_LONG).show();
 				}
 				blockUi(false);

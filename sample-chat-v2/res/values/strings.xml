@@ -51,6 +51,7 @@
 
    	<string name="chat_dialog_view_profile">View profile</string>
     <string name="chat_dialog_add_contact">Add to contact list</string>
+    <string name="chat_dialog_remove_contact">Remove from contact list</string>
 	<string name="chat_dialog_name">User actions</string>
 
   	<string name="contacts_contact_button">Contacts</string>

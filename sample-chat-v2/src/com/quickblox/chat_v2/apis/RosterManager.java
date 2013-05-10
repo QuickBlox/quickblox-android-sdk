@@ -7,11 +7,13 @@ import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.SubscriptionListener;
+import com.quickblox.module.users.model.QBUser;
 
 public class RosterManager implements QBRosterListener, SubscriptionListener {
 	
@@ -54,7 +56,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	
 	@Override
 	public void onSubscribe(int userId) {
-		System.out.println("Приход запроса на авторизацию. " + userId);
 		
 		subscribes.add(String.valueOf(userId));
 		((Activity) context).runOnUiThread(new Runnable() {
@@ -70,33 +71,61 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	
 	@Override
 	public void onUnSubscribe(int userId) {
+		System.out.println("Отписался");
+		for (QBUser user : app.getContactsList()) {
+			if (user.getId() == userId) {
+				app.getContactsList().remove(user);
+				refreshContactList();
+			}
+		}
 	}
 	
-	public synchronized void sendRequestToSubscribe(int userId) {
-		System.out.println("Пытаюсь подтвердить. UID = "+userId);
-		userID = userId; 
-		((Activity)context).runOnUiThread(new Runnable() {
+	public void sendRequestToSubscribe(int userId) {
+		userID = userId;
+		((Activity) context).runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				QBChat.subscribed(userID);				
+				QBChat.subscribed(userID);
+				refreshContactList();
+			}
+		});
+	}
+	
+	public void sendRequestToUnSubscribe(int userId) {
+		
+		userID = userId;
+		((Activity) context).runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				QBChat.unsubscribed(userID);
+				refreshContactList();
 			}
 		});
 	}
 	
 	public void refreshContactList() {
 		userIds = new ArrayList<String>();
-		((Activity) context).runOnUiThread(new Runnable() {
-			
-			@Override
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
 			public void run() {
-				if (app.getQbRoster().getUsersId() != null) {
-					for (Integer in : app.getQbRoster().getUsersId()) {
-						userIds.add(String.valueOf(in));
+				
+				((Activity) context).runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (app.getQbRoster().getUsersId() != null) {
+							for (Integer in : app.getQbRoster().getUsersId()) {
+								userIds.add(String.valueOf(in));
+							}
+							System.out.println("Отправка контактов на проверку = " + userIds.size());
+							app.getQbm().getQbUsersInfoContact(userIds);
+						}
 					}
-					app.getQbm().getQbUsersInfoContact(userIds);
-				}
+				});
 			}
-		});
+		}, 5000);
+		
 	}
 }

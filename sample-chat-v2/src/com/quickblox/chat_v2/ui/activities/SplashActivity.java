@@ -35,6 +35,8 @@ import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.server.BaseService;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
+import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
@@ -111,6 +113,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					
 					Session session = new Session(SplashActivity.this);
 					
+					// Auto login
 					if (TextUtils.isEmpty(session.getAccessToken())) {
 						if (!TextUtils.isEmpty(SharedPreferencesHelper.getLogin(SplashActivity.this))) {
 							
@@ -125,7 +128,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 							blockUi(false);
 						}
 					} else {
-						QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, SplashActivity.this);
+						QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, SplashActivity.this, "social");
 						
 					}
 				}
@@ -166,20 +169,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	// QB CALLBACK
 	
 	@Override
-	public void onComplete(Result result) {
+	public void onComplete(Result arg0) {
+		// TODO Auto-generated method stub
 		
-		QBUser newUser = ((QBUserResult) result).getUser();
-		newUser.setPassword(SharedPreferencesHelper.getPassword(SplashActivity.this));
-		ChatApplication.getInstance().setFbUser(newUser);
-		runOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				blockUi(false);
-			}
-		});
-		
-		loadMainScreen();
 	}
 	
 	@Override
@@ -189,45 +181,66 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			QBUser qbUser = ((QBUserResult) result).getUser();
 			SharedPreferencesHelper.setLogin(getBaseContext(), qbUser.getLogin());
 			
-			if (context.toString().equals("social")) {
-				
+			//Logged in using Facebook
+			if (context.toString().equals("social")) {			
 				try {
+					// save QB user (logged in as Facebook)
 					
+					qbUser.setPassword(BaseService.getBaseService().getToken());
 					ChatApplication.getInstance().setFbUser(qbUser);
-					SharedPreferencesHelper.setPassword(this, BaseService.getBaseService().getToken());
+
+					Session session = new Session(SplashActivity.this);
+					try {
+						fbm.getMyInfo(SplashActivity.this, session.getAccessToken() );
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 					
 				} catch (BaseServiceException e) {
 					e.printStackTrace();
 				}
+				
+			// Logged in using login & password
 			} else {
-				SharedPreferencesHelper.setPassword(getBaseContext(), context.toString());
+				// save QB User
+				qbUser.setPassword((String) context);
 				ChatApplication.getInstance().setQbUser(qbUser);
 				
+				SharedPreferencesHelper.setPassword(getBaseContext(), context.toString());
 			}
-			loadMainScreen();
+			
+			// Login to Chat and open Main screen
+			QBChat.loginWithUser(qbUser, new LoginListener() {
+				
+				@Override
+				public void onLoginError() {
+					System.out.println("Чёт не так");
+					blockUi(false);
+				}
+				
+				@Override
+				public void onLoginSuccess() {
+					System.out.println("GOOD");
+					
+					loadMainScreen();
+				}
+			});
+			
 		} else {
 			blockUi(false);
 			Toast.makeText(this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
-			
 		}
-		
 	}
 	
 	// FACEBOOK CALLBACK
 	@Override
 	public void call(Session session, SessionState state, Exception exception) {
 		if (TextUtils.isEmpty(session.getAccessToken())) {
-			
 			return;
-		}
-		try {
-			fbm.getMyInfo(getBaseContext(), session.getAccessToken());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
 		
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
@@ -242,7 +255,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	
 	public void blockUi(boolean enable) {
 		if (enable) {
-			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.dialog_activity_search_dialog), true);
+			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.dialog_activity_search_dialog),
+					true);
 		} else {
 			progress.dismiss();
 		}

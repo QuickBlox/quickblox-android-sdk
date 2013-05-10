@@ -64,6 +64,7 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 					
 				} else {
 					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity(), inputPasswordField.getText().toString());
+					
 					((SplashActivity)context).blockUi(true);
 				}
 				
