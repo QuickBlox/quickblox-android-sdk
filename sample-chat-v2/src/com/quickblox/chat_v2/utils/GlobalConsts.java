@@ -39,7 +39,4 @@ public class GlobalConsts {
     public static final String IS_ROOM_PERSISTENT = "is_persistent";
     public static final String IS_ONLY_MEMBERS = "is_only_members";
     
-    public static final String REQUEST_CONTEXT_CONTACTS = "contacts";
-    public static final String REQUEST_CONTEXT_CONTACTS_CANDIDATE = "candidate";
-    
 }

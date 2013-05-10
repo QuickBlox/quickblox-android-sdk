@@ -10,6 +10,7 @@ import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
+import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
@@ -38,6 +39,8 @@ public class ChatApplication extends Application {
 	private QuickBloxManager qbm;
 	private PictureManager picManager;
 	private RosterManager rstManager;
+	
+	private QBChatRoster qbRoster;
 	
 	private List<QBCustomObject> dialogList;
 	private List<String> userPresentRoomList; 
@@ -144,5 +147,11 @@ public class ChatApplication extends Application {
 	}
 	public void setContactsCandidateList(ArrayList<QBUser> contactsCandidateList) {
 		this.contactsCandidateList = contactsCandidateList;
+	}
+	public QBChatRoster getQbRoster() {
+		return qbRoster;
+	}
+	public void setQbRoster(QBChatRoster qbRoster) {
+		this.qbRoster = qbRoster;
 	}
 }

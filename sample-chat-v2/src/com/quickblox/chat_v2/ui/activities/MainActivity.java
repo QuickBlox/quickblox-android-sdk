@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TabHost;
 
 import com.quickblox.chat_v2.R;
@@ -16,7 +15,6 @@ import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -39,7 +37,6 @@ public class MainActivity extends TabActivity {
 	private static final String PROFILE_TAB = "tab4";
 	
 	private QBChatRoster qbRoster;
-	private ArrayList<String> userIds;
 	private RosterManager rosterManager;
 	private MessageManager msgManager;
 	private PictureManager picManager;
@@ -139,34 +136,18 @@ public class MainActivity extends TabActivity {
 	
 	private void registerRoster() {
 		
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				
-				rosterManager = new RosterManager();
+				rosterManager = new RosterManager(MainActivity.this);
 				app.setRstManager(rosterManager);
 				
 				qbRoster = QBChat.registerRoster(rosterManager);
-				userIds = new ArrayList<String>();
-				
+				app.setQbRoster(qbRoster);
 				QBChat.registerSubscription(rosterManager);
+				rosterManager.refreshContactList();
 				
-				if (qbRoster.getUsersId() != null) {
-					for (Integer in : qbRoster.getUsersId()) {
-						userIds.add(String.valueOf(in));
-						System.out.println("User unit = "+in);
-					}
-					qbm.getQbUserInfo(userIds, GlobalConsts.REQUEST_CONTEXT_CONTACTS);
-					
-					System.out.println("Юзеры из ростера = "+userIds.size());
-				}
 				
 				QBChat.openXmmpChat(msgManager);
 				downloadRoomList();
 				
-			}
-		});
-		
 	}
 	private void downloadRoomList() {
 		QBChat.requestJoinedRooms(app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId(), new RoomReceivingListener() {

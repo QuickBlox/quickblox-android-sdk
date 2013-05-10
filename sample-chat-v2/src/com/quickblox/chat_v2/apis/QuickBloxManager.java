@@ -41,7 +41,6 @@ public class QuickBloxManager {
 	
 	private boolean pictureMode;
 	private int currentFileId;
-	private Object requestContext;
 	
 	private Context context;
 	private QBUser qbuser;
@@ -52,8 +51,8 @@ public class QuickBloxManager {
 		
 	}
 	
-	public void getQbUserInfo(List<String> usersIds, String requestContexts) {
-		requestContext = requestContexts;
+	public void getQbUsersInfoContact(List<String> usersIds) {
+		
 		QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
 			
 			@Override
@@ -61,26 +60,29 @@ public class QuickBloxManager {
 				super.onComplete(result);
 				QBUserPagedResult usersResult = (QBUserPagedResult) result;
 				
-				if (requestContext.equals(GlobalConsts.REQUEST_CONTEXT_CONTACTS_CANDIDATE)) {
-					
-					app.setContactsCandidateList(usersResult.getUsers());
-					System.out.println("Загрузчик информации и кандидат контакт лист = " + usersResult.getUsers().size());
-					
-					if (contactActivityListener != null) {
-						System.out.println("Оповещение активити контактов - 1");
-						contactActivityListener.refreshCurrentList();
-					}
-					
-				} else {
-					System.out.println("контакты = " + usersResult.getUsers().size());
-					app.setContactsList(usersResult.getUsers());
-					
-					if (contactActivityListener != null) {
-						System.out.println("Оповещение активити контактов - 2");
-						contactActivityListener.refreshCurrentList();
-					}
-					
-				}
+				System.out.println("Запрос контактов = "+contactActivityListener);
+				app.setContactsList(usersResult.getUsers());
+			}
+		});
+		
+	}
+	
+	public void getQbUsersInfoCandidate(List<String> usersIds) {
+		
+		QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
+			
+			@Override
+			public void onComplete(Result result) {
+				super.onComplete(result);
+				QBUserPagedResult usersResult = (QBUserPagedResult) result;
+				
+				
+				System.out.println("Запрос кандидатов "+contactActivityListener);
+				app.setContactsCandidateList(usersResult.getUsers());
+				
+				if (contactActivityListener != null) {
+					contactActivityListener.refreshCurrentList();
+				}	
 			}
 		});
 		

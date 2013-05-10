@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.core.CustomButtonClickListener;
+import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.users.model.QBUser;
 
 public class ContactsAdapter extends BaseAdapter {
@@ -97,15 +98,15 @@ public class ContactsAdapter extends BaseAdapter {
 					case R.id.contact_iside_accept :
 						System.out.println("Попытка подтверждения авторизации");
 						
-						app.getRstManager().onSubscribe(incomeUserList.get(this.getPosition()).getId());
-						app.getContactsList().add(incomeUserList.get(this.getPosition()));
+						app.getRstManager().sendRequestToSubscribe(incomeUserList.get(this.getPosition()).getId());
 						app.getContactsCandidateList().remove(incomeUserList.get(this.getPosition()));
+						ContactsAdapter.this.notifyDataSetChanged();
 						
 						break;
 						
 					case R.id.contacts_request_button :
 						System.out.println("Отклонение авторизации");
-						app.getRstManager().sendRequestToSubscribe(incomeUserList.get(this.getPosition()).getId());
+						//app.getRstManager().sendRequestToSubscribe(incomeUserList.get(this.getPosition()).getId());
 						break;
 				}
 			}

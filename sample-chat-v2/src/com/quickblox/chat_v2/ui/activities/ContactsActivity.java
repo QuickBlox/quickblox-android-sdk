@@ -47,7 +47,7 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 		contactsButton = (RadioButton) findViewById(R.id.contacts_contact_button);
 		requestButton = (RadioButton) findViewById(R.id.contacts_request_button);
 		
-		contactsAdapter = new ContactsAdapter(this, ChatApplication.getInstance().getContactsList(), quickReview(contactsButton));
+		contactsAdapter = new ContactsAdapter(this, ChatApplication.getInstance().getContactsList(), true);
 		isContactButtonEnable = true;
 		setListAdapter(contactsAdapter);
 		
@@ -56,14 +56,12 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			public void onClick(View v) {
 				switch (v.getId()) {
 					case R.id.contacts_contact_button :
-						Log.w("Contact Activity section contacts", "setting list = " + app.getContactsList());
 						contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true);
 						setListAdapter(contactsAdapter);
 						contactsAdapter.notifyDataSetChanged();
 						isContactButtonEnable = true;
 						break;
 					case R.id.contacts_request_button :
-						Log.w("Contact Activity section candidate", "setting list = " + app.getContactsCandidateList());
 						contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false);
 						setListAdapter(contactsAdapter);
 						contactsAdapter.notifyDataSetChanged();
@@ -126,13 +124,5 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 	protected void onResume() {
 		super.onResume();
 		app.getQbm().setContactActivityListener(this);
-	}
-	
-	private boolean quickReview(Button currentButton) {
-		if (currentButton.isPressed()) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 }
