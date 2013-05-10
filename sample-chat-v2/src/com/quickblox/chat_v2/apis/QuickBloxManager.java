@@ -13,9 +13,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.ContactSectionListener;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
@@ -35,45 +37,53 @@ public class QuickBloxManager {
 	private OnFriendProfileDownloaded friendProfileListener;
 	private OnPictureDownloadComplete pictureDownloadComplete;
 	private OnFileUploadComplete uploadListener;
+	private ContactSectionListener contactActivityListener;
 	
 	private boolean pictureMode;
-	
 	private int currentFileId;
+	private Object requestContext;
+	
 	private Context context;
 	private QBUser qbuser;
 	
 	public QuickBloxManager(Context context) {
 		app = ChatApplication.getInstance();
 		this.context = context;
+		
 	}
 	
-	public void getQbUserInfo(List<String> usersIds) {
-		
+	public void getQbUserInfo(List<String> usersIds, String requestContexts) {
+		requestContext = requestContexts;
 		QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
 			
 			@Override
 			public void onComplete(Result result) {
 				super.onComplete(result);
 				QBUserPagedResult usersResult = (QBUserPagedResult) result;
-				// ChatApplication.getInstance().setContactUserList(usersResult.getUsers());
+				
+				if (requestContext.equals(GlobalConsts.REQUEST_CONTEXT_CONTACTS_CANDIDATE)) {
+					
+					app.setContactsCandidateList(usersResult.getUsers());
+					System.out.println("Загрузчик информации и кандидат контакт лист = " + usersResult.getUsers().size());
+					
+					if (contactActivityListener != null) {
+						System.out.println("Оповещение активити контактов - 1");
+						contactActivityListener.refreshCurrentList();
+					}
+					
+				} else {
+					System.out.println("контакты = " + usersResult.getUsers().size());
+					app.setContactsList(usersResult.getUsers());
+					
+					if (contactActivityListener != null) {
+						System.out.println("Оповещение активити контактов - 2");
+						contactActivityListener.refreshCurrentList();
+					}
+					
+				}
 			}
 		});
 		
-	}
-	
-	public void getQbUserInfo(List<String> usersIds, int flag) {
-		
-		QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
-			
-			@Override
-			public void onComplete(Result result) {
-				super.onComplete(result);
-				
-				QBUserPagedResult usersResult = (QBUserPagedResult) result;
-				
-				// ChatApplication.getInstance().setSubscribeUserList(usersResult.getUsers());
-			}
-		});
 	}
 	
 	// WARNING ! upload section
@@ -96,9 +106,9 @@ public class QuickBloxManager {
 						}
 					} else {
 						
-						uploadListener.uploadComplete(fileUploadTaskResultResult.getFile().getId());
+						uploadListener.uploadComplete(fileUploadTaskResultResult.getFile().getId(), fileUploadTaskResultResult.getFile().getPublicUrl());
 					}
-				}else{
+				} else {
 					System.out.println("Что-то не так");
 				}
 			}
@@ -113,7 +123,7 @@ public class QuickBloxManager {
 			
 			@Override
 			public void onComplete(Result result) {
-				uploadListener.uploadComplete(qbuser.getFileId());
+				uploadListener.uploadComplete(qbuser.getFileId(), null);
 			}
 			
 		});
@@ -124,10 +134,10 @@ public class QuickBloxManager {
 			System.out.println("file id = null");
 			return;
 		}
-		File targetFile = new File(context.getCacheDir(), String.valueOf(currentUser.getFileId())+".jpg");
+		File targetFile = new File(context.getCacheDir(), String.valueOf(currentUser.getFileId()) + ".jpg");
 		
-		if (targetFile.exists()){
-			Bitmap userPic = BitmapFactory.decodeFile(String.valueOf(currentUser.getFileId())+".jpg");
+		if (targetFile.exists()) {
+			Bitmap userPic = BitmapFactory.decodeFile(String.valueOf(currentUser.getFileId()) + ".jpg");
 			pictureDownloadComplete.downloadComlete(userPic, targetFile);
 			return;
 		}
@@ -137,14 +147,14 @@ public class QuickBloxManager {
 			
 			@Override
 			public void onComplete(Result result) {
-
+				
 				QBFileDownloadResult qbFileDownloadResult = (QBFileDownloadResult) result;
 				if (result.isSuccess()) {
 					
 					InputStream is = qbFileDownloadResult.getContentStream();
 					Bitmap userPic = BitmapFactory.decodeStream(is);
 					
-					File userPicFile = new File(context.getCacheDir(), String.valueOf(currentFileId)+".jpg");
+					File userPicFile = new File(context.getCacheDir(), String.valueOf(currentFileId) + ".jpg");
 					FileOutputStream fos;
 					try {
 						fos = new FileOutputStream(userPicFile);
@@ -204,6 +214,10 @@ public class QuickBloxManager {
 	
 	public void setUploadListener(OnFileUploadComplete uploadListener) {
 		this.uploadListener = uploadListener;
+	}
+	
+	public void setContactActivityListener(ContactSectionListener contactActivityListener) {
+		this.contactActivityListener = contactActivityListener;
 	}
 	
 }

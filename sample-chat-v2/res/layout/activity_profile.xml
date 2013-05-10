@@ -43,6 +43,7 @@
             android:id="@+id/exit_profile_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:padding="2dp"
             android:text="@string/profile_activity_exit_button" />
 

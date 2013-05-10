@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="@string/action_settings" />
+                android:text="@string/contacts_contact_button" />
 
             <RadioButton
                 android:id="@+id/contacts_request_button"

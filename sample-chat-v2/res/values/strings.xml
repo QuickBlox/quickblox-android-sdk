@@ -20,7 +20,6 @@
     <string name="splash_login_reject">Login is not successfull</string>
     <string name="splash_internet_error">Internet connection not found</string>
 
-
     <string name="splash_dialog_name_1">Register in QuickBlox</string>
     <string name="splash_dialog_name_2">Sign in QuickBlox</string>
     <string name="splash_dialog_username">Username</string>
@@ -44,6 +43,8 @@
     
     <string name="dialog_activity_reject">User not found!</string>
     <string name="dialog_activity_search_dialog">Searching</string>
+    
+    <string name="new_dialog_activity_create_dialog">Create new dialog</string>
     
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>

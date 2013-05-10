@@ -1,7 +1,5 @@
 package com.quickblox.chat_v2.widget;
 
-import org.apache.qpid.management.common.sasl.UserPasswordCallbackHandler;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,7 +68,6 @@ public class TopBar extends RelativeLayout {
 						switch (which) {
 							case 0 :
 								Intent i = new Intent(context, FriendProfileActivity.class);
-								System.out.println("frId = "+friendId);
 								i.putExtra(GlobalConsts.FRIEND_ID, friendId);
 								context.startActivity(i);
 								break;

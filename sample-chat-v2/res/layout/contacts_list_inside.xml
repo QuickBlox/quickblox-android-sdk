@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="visible"
+        android:weightSum="2" >
 
         <Button
             android:id="@+id/contact_iside_accept"
@@ -37,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:layout_weight="1"
             android:text="@string/contacts_inside_approve_button" />
 
         <Button
@@ -45,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:layout_weight="1"
             android:text="@string/contacts_inside_reject_button" />
 
     </LinearLayout>

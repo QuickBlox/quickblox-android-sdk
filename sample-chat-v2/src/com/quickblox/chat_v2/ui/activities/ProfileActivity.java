@@ -70,6 +70,8 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 				SharedPreferencesHelper.setLogin(ProfileActivity.this, null);
 				SharedPreferencesHelper.setPassword(ProfileActivity.this, null);
 				
+				app.clearAllData();
+				
 				Session session = new Session(ProfileActivity.this);
 				session.closeAndClearTokenInformation();
 				
@@ -153,7 +155,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 	}
 
 	@Override
-	public void uploadComplete(int uploafFileId) {
+	public void uploadComplete(int uploafFileId, String picUrl) {
 		blockUi(false);
 	}
 }

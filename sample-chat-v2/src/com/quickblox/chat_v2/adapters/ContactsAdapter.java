@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.core.CustomButtonClickListener;
 import com.quickblox.module.users.model.QBUser;
 
 public class ContactsAdapter extends BaseAdapter {
@@ -25,12 +27,13 @@ public class ContactsAdapter extends BaseAdapter {
 	private boolean isContacts;
 	
 	private ContactHolder chatHolder;
+	private ChatApplication app;
 	
 	public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isContacts) {
 		this.context = context;
 		incomeUserList = qbuserArray;
 		this.isContacts = isContacts;
-		
+		app = ChatApplication.getInstance();
 	}
 	
 	static class ContactHolder {
@@ -76,7 +79,7 @@ public class ContactsAdapter extends BaseAdapter {
 			
 				
 			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
-
+			
 			contactView.setTag(chatHolder);
 			
 		} else {
@@ -87,6 +90,26 @@ public class ContactsAdapter extends BaseAdapter {
 
 		}
 		
+		CustomButtonClickListener oclBtn = new CustomButtonClickListener() {
+			
+			public void onClick(View v) {
+				switch (v.getId()) {
+					case R.id.contact_iside_accept :
+						System.out.println("Попытка подтверждения авторизации");
+						
+						app.getRstManager().onSubscribe(incomeUserList.get(this.getPosition()).getId());
+						app.getContactsList().add(incomeUserList.get(this.getPosition()));
+						app.getContactsCandidateList().remove(incomeUserList.get(this.getPosition()));
+						
+						break;
+						
+					case R.id.contacts_request_button :
+						System.out.println("Отклонение авторизации");
+						app.getRstManager().sendRequestToSubscribe(incomeUserList.get(this.getPosition()).getId());
+						break;
+				}
+			}
+		};
 		
 		if (isContacts) {
 			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
@@ -94,8 +117,12 @@ public class ContactsAdapter extends BaseAdapter {
 		} else{
 			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.VISIBLE);
-		}		
-		
+			
+			chatHolder.accept.setOnClickListener(oclBtn);
+			oclBtn.setPosition(position);
+			chatHolder.reject.setOnClickListener(oclBtn);
+			
+		}
 		
 		return contactView;
 	}

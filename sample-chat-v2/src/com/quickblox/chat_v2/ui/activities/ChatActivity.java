@@ -2,7 +2,6 @@ package com.quickblox.chat_v2.ui.activities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smack.Chat;
@@ -16,7 +15,6 @@ import org.jivesoftware.smackx.muc.InvitationListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -39,14 +37,9 @@ import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.Result;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
-import com.quickblox.module.content.QBContent;
-import com.quickblox.module.content.result.QBFileResult;
 import com.quickblox.module.custom.model.QBCustomObject;
-import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
@@ -65,7 +58,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private EditText msgTxt;
 	private Button attachButton;
 	private TextView messageText;
-	//private ImageView userAttach;
+	private ImageView userAttach;
 	
 	private int userId;
 	private String dialogId;
@@ -76,7 +69,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private MessageManager msgManager;
 	private ChatApplication app;
 	
-	private HashMap<String, ImageView> viewTable;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +79,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		app = ChatApplication.getInstance();
 		msgManager = app.getMsgManager();
 		msgManager.setListDownloadedListener(this);
-		viewTable = new HashMap<String, ImageView>();
 		initViews();
 		
 	}
@@ -107,27 +98,24 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
 		
 		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
-		// if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
-		// QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener,
-		// pParticipantListener);
-		// boolean isPersistent =
-		// getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
-		// boolean isOnlyMembers =
-		// getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
-		// String chatRoomName =
-		// getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-		// chatRoom = QBChat.createRoom(chatRoomName,
-		// ChatApplication.getInstance().getQbUser(), isOnlyMembers,
-		// isPersistent);
-		//
-		// } else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
-		userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
-		dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 		
-		topBar.setFriendParams(userId);
-		msgManager.getDialogMessages(userId);
-		QBChat.openXmmpChat(pDialogMessageListener);
-		// }
+		if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
+			System.out.println("Room activity");
+			QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
+			boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
+			boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
+			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
+			chatRoom = QBChat.createRoom(chatRoomName, ChatApplication.getInstance().getQbUser(), isOnlyMembers, isPersistent);
+			
+		} else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
+			System.out.println("Dialog Activity");
+			userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
+			dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
+			
+			topBar.setFriendParams(userId);
+			msgManager.getDialogMessages(userId);
+			QBChat.openXmmpChat(pDialogMessageListener);
+		}
 		
 		attachButton = (Button) findViewById(R.id.attachbutton);
 		attachButton.setOnClickListener(new OnClickListener() {
@@ -153,7 +141,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private void showMessage(String message, boolean leftSide) {
 		
 		if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-			System.out.println("Attach section");
+			//System.out.println("Attach section");
 			parts = message.split("#");
 			
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -165,26 +153,19 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 				params.gravity = Gravity.RIGHT;
 			}
 			
-			ImageView userAttach = new ImageView(ChatActivity.this);
+			userAttach = new ImageView(ChatActivity.this);
 			userAttach.setMaxHeight(90);
 			userAttach.setMaxWidth(90);
 			userAttach.setLayoutParams(params);
 			userAttach.setBackgroundResource(bgRes);
 			userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
-			viewTable.put(parts[1], userAttach);
 			
-			QBContent.getFile(Integer.parseInt(parts[1]), new QBCallbackImpl() {
-				@Override
-				public void onComplete(Result result) {
-					if (result.isSuccess()) {
-						QBFileResult fileResult = (QBFileResult) result;
-						app.getPicManager().downloadPicAndDisplay(fileResult.getFile().getPublicUrl(), viewTable.get(String.valueOf(fileResult.getFile().getId())));
-					}
-				}
-			});
+			
+			app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
+			
 			isAttach = true;
 		} else {
-			System.out.println("Message section");
+			//System.out.println("Message section");
 			messageText = new TextView(ChatActivity.this);
 			messageText.setTextColor(Color.BLACK);
 			messageText.setText(message);
@@ -208,8 +189,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			@Override
 			public void run() {
 				if (isAttach) {
-					System.out.println("parts = "+viewTable.get(parts[1]));
-					messagesContainer.addView(viewTable.get(parts[1]));
+					messagesContainer.addView(userAttach);
 				} else {
 					messagesContainer.addView(messageText);
 				}
@@ -236,8 +216,10 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	}
 	
 	private MessageListener pDialogMessageListener = new MessageListener() {
+		
 		@Override
 		public void processMessage(Chat chat, Message message) {
+			System.out.println("Чат активити приход нового сообщения = "+message.getBody());
 			lastMsg = message.getBody();
 			showMessage(lastMsg, false);
 			
@@ -301,8 +283,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	}
 	
 	@Override
-	public void uploadComplete(int uploafFileId) {
-		String serviceMessage = "<Attach file>#" + uploafFileId;
+	public void uploadComplete(int uploafFileId, String picUrl) {
+		String serviceMessage = "<Attach file>#" + picUrl;
 		msgManager.sendSingleMessage(userId, serviceMessage, dialogId);
 		showMessage(serviceMessage, true);
 	}

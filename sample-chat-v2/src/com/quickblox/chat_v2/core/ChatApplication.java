@@ -1,5 +1,6 @@
 package com.quickblox.chat_v2.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Application;
@@ -38,14 +39,31 @@ public class ChatApplication extends Application {
 	private PictureManager picManager;
 	private RosterManager rstManager;
 	
-	 private List<QBCustomObject> dialogList;
-	    
+	private List<QBCustomObject> dialogList;
+	private List<String> userPresentRoomList; 
+	
+	private ArrayList<QBUser> contactsList;
+	private ArrayList<QBUser> contactsCandidateList;
 	
 	//
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		SmackAndroid.init(this);
+	}
+	
+	public void clearAllData(){
+		myPic = null;
+		qbUser = null;
+		fbUser = null;
+		msgManager = null;
+		qbm = null;
+		picManager = null;
+		rstManager = null;
+		dialogList = null;
+		userPresentRoomList = null; 
+		contactsList = null;
+		contactsCandidateList = null;
 	}
 	
 	// DATA
@@ -108,5 +126,23 @@ public class ChatApplication extends Application {
 	}
 	public void setRstManager(RosterManager rstManager) {
 		this.rstManager = rstManager;
+	}
+	public List<String> getUserPresentRoomList() {
+		return userPresentRoomList;
+	}
+	public void setUserPresentRoomList(List<String> userPresentRoomList) {
+		this.userPresentRoomList = userPresentRoomList;
+	}
+	public ArrayList<QBUser> getContactsList() {
+		return contactsList;
+	}
+	public void setContactsList(ArrayList<QBUser> contactsList) {
+		this.contactsList = contactsList;
+	}
+	public ArrayList<QBUser> getContactsCandidateList() {
+		return contactsCandidateList;
+	}
+	public void setContactsCandidateList(ArrayList<QBUser> contactsCandidateList) {
+		this.contactsCandidateList = contactsCandidateList;
 	}
 }
