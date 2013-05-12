@@ -21,38 +21,35 @@
                 android:screenOrientation="portrait" >
         </activity>
 
-        <uses-sdk
-                android:minSdkVersion="8"
-                android:targetSdkVersion="15"
-                />
+        <!-- GCM (Push Notifications) setup: http://developer.android.com/google/gcm/gs.html#android-app -->
 
-        <!-- C2DM -->
-        <!-- In order to use the c2dm library, an
-            application must declare a class with the name C2DMReceiver, in
-            own package, extending com.google.android.c2dm.C2DMBaseReceiver
-        -->
-        <service android:name=".C2DMReceiver" android:enabled="true" />
-
-        <!-- Only Google services can send messages to the app.
-             If this permission were not present
-             any other app would be able to send messages to us. -->
-        <receiver android:name="com.quickblox.simplesample.messages.c2dm.C2DMBroadcastReceiver"
-                  android:permission="com.google.android.c2dm.permission.SEND">
-            <!-- Receive actual messages -->
+        <!-- 1. Add the following broadcast receiver.
+        Notice that android:name in the category tag must be replaced by your application's package name -->
+        <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.quickblox.simplesample.messages" />
-            </intent-filter>
-            <!-- Receive registration ids -->
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="com.quickblox.simplesample.messages" />
             </intent-filter>
         </receiver>
 
+        <!-- 2. Add the following intent service: -->
+        <service android:name=".GCMIntentService" />
 
     </application>
 
+
+    <!-- 3. GCM requires Android 2.2 or later -->
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
+
+    <!-- 4. Declare and use a custom permission so only this application can receive GCM messages.
+      This permission must be called my_app_package.permission.C2D_MESSAGE
+      (where my_app_package is the package name of your app as defined by the manifest tag),
+      otherwise it will not work. -->
+    <permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />
+
+    <!-- 5. Add the following permissions: -->
     <!-- App receives GCM messages. -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <!-- GCM connects to Google Services. -->
@@ -61,12 +58,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Read phone state -->
+    <!-- Access to  device info-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-
-    <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />
-
 
 </manifest> 

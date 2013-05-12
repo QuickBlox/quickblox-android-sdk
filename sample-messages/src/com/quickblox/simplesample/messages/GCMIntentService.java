@@ -7,26 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
-import com.quickblox.simplesample.messages.c2dm.C2DMBaseReceiver;
+import com.google.android.gcm.GCMBaseIntentService;
 import com.quickblox.simplesample.messages.main.activities.MessagesActivity;
 import com.quickblox.simplesample.messages.main.definitions.Consts;
 
-import java.io.IOException;
+public class GCMIntentService extends GCMBaseIntentService {
+    static final String LOG_TAG = "GCMIntentService";
 
-/**
- * Broadcast receiver that handles Android Cloud to Data Messaging (AC2DM) messages, initiated
- * by the JumpNote App Engine server and routed/delivered by Google AC2DM servers. The
- * only currently defined message is 'sync'.
- */
-public class C2DMReceiver extends C2DMBaseReceiver {
-    static final String LOG_TAG = "C2DMRECEIVER";
-
-    public C2DMReceiver() {
+    public GCMIntentService() {
         super(Consts.GSM_SENDER);
     }
 
     @Override
-    public void onError(Context context, String errorId) {
+    protected void onError(Context context, String errorId) {
         Log.e( LOG_TAG, "onError: "+errorId );
         Toast.makeText(context, "Messaging registration error: " + errorId,
                 Toast.LENGTH_LONG).show();
@@ -42,7 +35,6 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 
         Log.d(LOG_TAG, "onMessage: "+message );
 
-
         // post notification
         Intent intent2 = new Intent(this, MessagesActivity.class);
         intent2.putExtra("message", message);
@@ -55,7 +47,7 @@ public class C2DMReceiver extends C2DMBaseReceiver {
         notification.defaults |= Notification.DEFAULT_SOUND;
         mManager.notify(0, notification);
 
-        // show message  on text view
+        // show message on text view
         if(MessagesActivity.getInstance() != null){
             final String msg = message;
             MessagesActivity.getInstance().runOnUiThread(new Runnable() {
@@ -68,23 +60,29 @@ public class C2DMReceiver extends C2DMBaseReceiver {
     }
 
     @Override
-    public void onRegistered(Context context, final String registrationId) throws IOException {
+    protected void onRegistered(Context context, final String registrationId) {
         Log.d(LOG_TAG, "onRegistered() registrationId is "+registrationId);
 
         // ================= QuickBlox ===== Step 4 =================
-        // Create push token
+        // Subsribe to Push Notifications
         if(MessagesActivity.getInstance() != null){
             MessagesActivity.getInstance().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MessagesActivity.getInstance().createPushToken(registrationId);
+                    MessagesActivity.getInstance().subscribeToPushNotifications(registrationId);
                 }
             });
         }
     }
 
     @Override
-    public void onUnregistered(Context context) {
-        Log.d(LOG_TAG, "onUnregistered");
+    protected void onUnregistered(android.content.Context context, java.lang.String s){
+        Log.e( LOG_TAG, "onUnregistered: "+ s);
+    }
+
+    @Override
+    protected boolean onRecoverableError(Context context, String errorId) {
+        Log.e( LOG_TAG, "onRecoverableError "+ errorId);
+        return super.onRecoverableError(context, errorId);
     }
 }
