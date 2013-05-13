@@ -61,6 +61,7 @@ public class NewRoomActivity extends Activity {
         intent.putExtra(GlobalConsts.IS_ROOM_PERSISTENT, isPersistentChecked);
         intent.putExtra(GlobalConsts.IS_ONLY_MEMBERS, isOnlyMembersChecked);
         intent.putExtra(GlobalConsts.ROOM_NAME, roomNameEditText.getText().toString());
+        intent.putExtra(GlobalConsts.IS_NEW_ROOM, true);
         startActivity(intent);
     }
 

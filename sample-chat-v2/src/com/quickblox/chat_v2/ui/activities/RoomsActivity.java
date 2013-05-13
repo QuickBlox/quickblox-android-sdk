@@ -6,12 +6,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 11.04.13 Time: 9:58
@@ -35,6 +38,7 @@ public class RoomsActivity extends Activity {
 
 	private void initViews() {
 		roomListLv = (ListView) findViewById(R.id.room_list_lv);
+		roomListLv.setOnItemClickListener(itemClick);
 		newRoomBtn = (Button) findViewById(R.id.new_room_btn);
 		newRoomBtn.setOnClickListener(newRoomBtnClickListener);
 		applyRoomList(app.getUserPresentRoomList());
@@ -54,12 +58,26 @@ public class RoomsActivity extends Activity {
 		refreshData();
 	}
 	
+	private OnItemClickListener itemClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+			
+			Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
+			i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
+			i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position));
+			i.putExtra(GlobalConsts.IS_NEW_ROOM, false);
+			RoomsActivity.this.startActivity(i);
+		}
+		
+		
+	};
+	
 	private void refreshData() {
 		this.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				System.out.println("refresh");
 				roomListAdapter.notifyDataSetChanged();
 			}
 		});

@@ -33,10 +33,11 @@ public class GlobalConsts {
     public static final String ROOM_NAME = "name";
     public static final String RECEPIENT_AVATAR = "recepient_avatar";
     public static final String USERS_TEXT = " users";
+    
     public static final String PREVIOUS_ACTIVITY = "previous_activity";
     public static final byte ROOM_ACTIVITY = 0;
     public static final byte DIALOG_ACTIVITY = 1;
     public static final String IS_ROOM_PERSISTENT = "is_persistent";
     public static final String IS_ONLY_MEMBERS = "is_only_members";
-    
+    public static final String IS_NEW_ROOM = "is_new_room";
 }

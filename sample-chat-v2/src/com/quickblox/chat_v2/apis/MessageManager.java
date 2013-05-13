@@ -10,13 +10,13 @@ import org.jivesoftware.smack.packet.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
 import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
@@ -40,10 +40,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 	private int opponentId;
 	private QBUser tQbuser;
 	private boolean isNeedreview;
+	private int openChatOpponentId;
 	
 	private OnMessageListDownloaded listDownloadedListener;
 	private OnDialogCreateComplete dialogCreateListener;
-	
+	private OnNewMessageIncome newMessageListener;
 	private OnDialogListRefresh dialogRefreshListener;
 	
 	public MessageManager(Context context) {
@@ -58,8 +59,12 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 			return;
 		}
 		
-		String[] id = message.getFrom().split("-");		
+		String[] id = message.getFrom().split("-");
 		sendToQB(Integer.parseInt(id[0]), message.getBody(), Integer.parseInt(id[0]));
+		
+		if (newMessageListener != null && Integer.parseInt(id[0]) == openChatOpponentId) {
+			newMessageListener.incomeNewMessage(message.getBody());
+		}
 		
 		QBCustomObject localResult = dialogReview(Integer.parseInt(id[0]));
 		
@@ -67,7 +72,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 			updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
 		} else {
 			backgroundMessage = message.getBody();
-			((Activity)context).runOnUiThread(new Runnable() {
+			((Activity) context).runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
@@ -75,9 +80,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 					app.getQbm().getSingleUserInfo(opponentId);
 					
 				}
-			});	
+			});
 		}
-		
+		// separate attach
 		if (message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
 			String[] parts = message.getBody().split("#");
 			
@@ -98,6 +103,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 		
 		sendToQB(userId, messageBody, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
 		updateDialogLastMessage(messageBody, dialogId);
+		
 	}
 	
 	private void sendToQB(Integer opponentID, String messageBody, Integer authorID) {
@@ -166,13 +172,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 							if (isNeedreview) {
 								dialogCreateListener.dialogCreate(opponentId, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
 							} else {
-								updateDialogLastMessage(backgroundMessage ,((QBCustomObjectResult)result).getCustomObject().getCustomObjectId());
+								updateDialogLastMessage(backgroundMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
 								dialogRefreshListener.refreshList();
 							}
-						} else {
-							
-							Log.d("Error", "all bad");
-							
 						}
 					}
 				});
@@ -239,7 +241,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 	
 	@Override
 	public void downloadComlete(QBUser friend) {
-				createDialog(friend, false);
+		createDialog(friend, false);
 	}
 	
 	public void setListDownloadedListener(OnMessageListDownloaded listDownloadedListener) {
@@ -257,5 +259,10 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 	
 	public void setDialogRefreshListener(OnDialogListRefresh dialogRefreshListener) {
 		this.dialogRefreshListener = dialogRefreshListener;
+	}
+	
+	public void setNewMessageListener(OnNewMessageIncome newMessageListener, int openChatOpponentId) {
+		this.newMessageListener = newMessageListener;
+		this.openChatOpponentId = openChatOpponentId;
 	}
 }

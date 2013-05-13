@@ -15,16 +15,10 @@ import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.Result;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster;
-import com.quickblox.module.chat.xmpp.LoginListener;
-import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
-import com.quickblox.module.users.result.QBUserResult;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/8/13 Time: 1:34 PM
@@ -114,6 +108,7 @@ public class MainActivity extends TabActivity {
 				
 				for (String roomsUid : roomId) {
 					String[] parts = roomsUid.split("_");
+					System.out.println(parts[0]);
 					app.getUserPresentRoomList().add(parts[0]);
 				}
 				blockUi(false);

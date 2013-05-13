@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.InvitationListener;
@@ -20,6 +19,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +34,7 @@ import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
@@ -45,7 +46,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome {
 	
 	private final int SELECT_PHOTO = 2;
 	private boolean isAttach;
@@ -57,10 +58,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private ScrollView scrollContainer;
 	private EditText msgTxt;
 	private Button attachButton;
+	private Button sendButton;
 	private TextView messageText;
 	private ImageView userAttach;
 	
-	private int userId;
+	private int currentOpponentId;
 	private String dialogId;
 	private String lastMsg;
 	private QBChatRoom chatRoom;
@@ -68,7 +70,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	
 	private MessageManager msgManager;
 	private ChatApplication app;
-	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,25 +97,34 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		messagesContainer = (ViewGroup) findViewById(R.id.messagesContainer);
 		scrollContainer = (ScrollView) findViewById(R.id.scrollContainer);
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
+		sendButton = (Button) findViewById(R.id.chatSendButton);
 		
 		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
 		
 		if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
-			System.out.println("Room activity");
+			
 			QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
 			boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
 			boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
 			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-			chatRoom = QBChat.createRoom(chatRoomName, ChatApplication.getInstance().getQbUser(), isOnlyMembers, isPersistent);
+			
+			if (getIntent().getBooleanExtra(GlobalConsts.IS_NEW_ROOM, true)) {
+				chatRoom = QBChat.createRoom(chatRoomName, app.getQbUser() != null ? app.getQbUser() : app.getFbUser(), isOnlyMembers, isPersistent);
+			} else {
+				chatRoom = QBChat.joinRoom(getIntent().getStringExtra(GlobalConsts.ROOM_NAME), app.getQbUser() != null ? app.getQbUser() : app.getFbUser());
+			}
+			sendButton.setOnClickListener(onRoomSendBtnClick);
 			
 		} else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
-			System.out.println("Dialog Activity");
-			userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
+			
+			currentOpponentId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
 			dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 			
-			topBar.setFriendParams(userId);
-			msgManager.getDialogMessages(userId);
-			QBChat.openXmmpChat(pDialogMessageListener);
+			topBar.setFriendParams(currentOpponentId);
+			msgManager.getDialogMessages(currentOpponentId);
+			msgManager.setNewMessageListener(this, currentOpponentId);
+			
+			sendButton.setOnClickListener(onDialogSendBtnClick);
 		}
 		
 		attachButton = (Button) findViewById(R.id.attachbutton);
@@ -130,18 +140,40 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		});
 	}
 	
-	public void onSendBtnClick(View view) {
-		lastMsg = msgTxt.getText().toString();
-		msgTxt.setText("");
-		showMessage(lastMsg, true);
+	public OnClickListener onDialogSendBtnClick = new OnClickListener() {
 		
-		msgManager.sendSingleMessage(userId, lastMsg, dialogId);
-	}
+		@Override
+		public void onClick(View v) {
+			
+			lastMsg = msgTxt.getText().toString();
+			msgTxt.setText("");
+			showMessage(lastMsg, true);
+			
+			msgManager.sendSingleMessage(currentOpponentId, lastMsg, dialogId);
+			
+		}
+	};
+	
+	public OnClickListener onRoomSendBtnClick = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			lastMsg = msgTxt.getText().toString();
+			msgTxt.setText("");
+			showMessage(lastMsg, true);
+			
+			try {
+				chatRoom.sendMessage(lastMsg);
+			} catch (XMPPException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 	
 	private void showMessage(String message, boolean leftSide) {
 		
 		if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-			//System.out.println("Attach section");
+			// System.out.println("Attach section");
 			parts = message.split("#");
 			
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -160,12 +192,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			userAttach.setBackgroundResource(bgRes);
 			userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
 			
-			
 			app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
 			
 			isAttach = true;
 		} else {
-			//System.out.println("Message section");
+			// System.out.println("Message section");
 			messageText = new TextView(ChatActivity.this);
 			messageText.setTextColor(Color.BLACK);
 			messageText.setText(message);
@@ -194,10 +225,18 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 					messagesContainer.addView(messageText);
 				}
 				// Scroll to bottom
-				if (scrollContainer.getChildAt(0) != null) {
-					scrollContainer.scrollTo(scrollContainer.getScrollX(), scrollContainer.getChildAt(0).getHeight());
-				}
-				scrollContainer.fullScroll(View.FOCUS_DOWN);
+				// if (scrollContainer.getChildAt(0) != null) {
+				// scrollContainer.scrollTo(scrollContainer.getScrollX(),
+				// scrollContainer.getChildAt(0).getHeight());
+				// }
+				scrollContainer.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						scrollContainer.fullScroll(View.FOCUS_DOWN);
+					}
+				});
+				
 			}
 		});
 	}
@@ -214,17 +253,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			}
 		}
 	}
-	
-	private MessageListener pDialogMessageListener = new MessageListener() {
-		
-		@Override
-		public void processMessage(Chat chat, Message message) {
-			System.out.println("Чат активити приход нового сообщения = "+message.getBody());
-			lastMsg = message.getBody();
-			showMessage(lastMsg, false);
-			
-		}
-	};
 	
 	private PacketListener pChatMessageListener = new PacketListener() {
 		@Override
@@ -285,8 +313,15 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	@Override
 	public void uploadComplete(int uploafFileId, String picUrl) {
 		String serviceMessage = "<Attach file>#" + picUrl;
-		msgManager.sendSingleMessage(userId, serviceMessage, dialogId);
+		msgManager.sendSingleMessage(currentOpponentId, serviceMessage, dialogId);
 		showMessage(serviceMessage, true);
+	}
+	
+	@Override
+	public void incomeNewMessage(String messageBody) {
+		lastMsg = messageBody;
+		showMessage(lastMsg, false);
+		
 	}
 	
 }
