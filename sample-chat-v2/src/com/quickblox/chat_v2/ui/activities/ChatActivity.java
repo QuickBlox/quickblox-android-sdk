@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +60,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private Button sendButton;
 	private TextView messageText;
 	private ImageView userAttach;
+	private String incomeRoomMessage;
 	
 	private int currentOpponentId;
 	private String dialogId;
@@ -88,6 +88,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	public void onBackPressed() {
 		
 		msgManager.updateDialogLastMessage(lastMsg, dialogId);
+		finish();
 		super.onBackPressed();
 	}
 	
@@ -160,7 +161,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		public void onClick(View v) {
 			lastMsg = msgTxt.getText().toString();
 			msgTxt.setText("");
-			showMessage(lastMsg, true);
+			// lightShowMessage(lastMsg);
 			
 			try {
 				chatRoom.sendMessage(lastMsg);
@@ -224,18 +225,22 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 				} else {
 					messagesContainer.addView(messageText);
 				}
-				// Scroll to bottom
-				// if (scrollContainer.getChildAt(0) != null) {
-				// scrollContainer.scrollTo(scrollContainer.getScrollX(),
-				// scrollContainer.getChildAt(0).getHeight());
-				// }
-				scrollContainer.post(new Runnable() {
-					
-					@Override
-					public void run() {
-						scrollContainer.fullScroll(View.FOCUS_DOWN);
-					}
-				});
+				
+			}
+		});
+		scrollDown();
+	}
+	
+	private void lightShowMessage(String message) {
+		incomeRoomMessage = message;
+		ChatActivity.this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				messageText = new TextView(ChatActivity.this);
+				messageText.setTextColor(Color.BLACK);
+				messageText.setText(incomeRoomMessage);
+				messagesContainer.addView(messageText);
 				
 			}
 		});
@@ -254,25 +259,39 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		}
 	}
 	
+	private void scrollDown() {
+		scrollContainer.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				scrollContainer.fullScroll(View.FOCUS_DOWN);
+			}
+		});
+	}
+	
 	private PacketListener pChatMessageListener = new PacketListener() {
+		
 		@Override
 		public void processPacket(Packet packet) {
-			Message msg = (Message) packet;
-			showMessage(msg.getBody(), false);
+			
+			Message incomeRoomMessage = (Message) packet;
+			lightShowMessage(incomeRoomMessage.getBody());
+			scrollDown();
+			
 		}
 	};
 	
 	private InvitationListener pInvitationListener = new InvitationListener() {
 		@Override
 		public void invitationReceived(Connection connection, String s, String s2, String s3, String s4, Message message) {
-			
+			System.out.println("vtoroy listener = " + message);
 		}
 	};
 	
 	private PacketListener pParticipantListener = new PacketListener() {
 		@Override
 		public void processPacket(Packet packet) {
-			
+			System.out.println("packetListener = " + packet);
 		}
 	};
 	
