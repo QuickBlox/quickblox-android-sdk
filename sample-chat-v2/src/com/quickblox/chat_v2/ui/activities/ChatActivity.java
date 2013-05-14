@@ -2,6 +2,7 @@ package com.quickblox.chat_v2.ui.activities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.Connection;
@@ -16,6 +17,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -60,7 +63,10 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private Button sendButton;
 	private TextView messageText;
 	private ImageView userAttach;
-	private String incomeRoomMessage;
+	
+	private ArrayList<String> incomeRoomMessages;
+	private Message incomeHistoryRoomMessage;
+	private ArrayList<String> messageQuery;
 	
 	private int currentOpponentId;
 	private String dialogId;
@@ -80,6 +86,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		app = ChatApplication.getInstance();
 		msgManager = app.getMsgManager();
 		msgManager.setListDownloadedListener(this);
+		messageQuery = new ArrayList<String>();
 		initViews();
 		
 	}
@@ -95,10 +102,13 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 	private void initViews() {
 		topBar = (TopBar) findViewById(R.id.top_bar);
 		topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, true);
+		
 		messagesContainer = (ViewGroup) findViewById(R.id.messagesContainer);
+		
 		scrollContainer = (ScrollView) findViewById(R.id.scrollContainer);
 		msgTxt = (EditText) findViewById(R.id.messageEdit);
 		sendButton = (Button) findViewById(R.id.chatSendButton);
+		attachButton = (Button) findViewById(R.id.attachbutton);
 		
 		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
 		
@@ -110,11 +120,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 			
 			if (getIntent().getBooleanExtra(GlobalConsts.IS_NEW_ROOM, true)) {
-				chatRoom = QBChat.createRoom(chatRoomName, app.getQbUser() != null ? app.getQbUser() : app.getFbUser(), isOnlyMembers, isPersistent);
+				chatRoom = QBChat.createRoom(chatRoomName, app.getQbUser(), isOnlyMembers, isPersistent);
 			} else {
-				chatRoom = QBChat.joinRoom(getIntent().getStringExtra(GlobalConsts.ROOM_NAME), app.getQbUser() != null ? app.getQbUser() : app.getFbUser());
+				chatRoom = QBChat.joinRoom(getIntent().getStringExtra(GlobalConsts.ROOM_NAME), app.getQbUser());
 			}
 			sendButton.setOnClickListener(onRoomSendBtnClick);
+			attachButton.setVisibility(View.GONE);
 			
 		} else if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
 			
@@ -128,7 +139,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			sendButton.setOnClickListener(onDialogSendBtnClick);
 		}
 		
-		attachButton = (Button) findViewById(R.id.attachbutton);
+		
 		attachButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -161,7 +172,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		public void onClick(View v) {
 			lastMsg = msgTxt.getText().toString();
 			msgTxt.setText("");
-			// lightShowMessage(lastMsg);
+			
+			System.out.println("usertest ="+app.getQbUser());
 			
 			try {
 				chatRoom.sendMessage(lastMsg);
@@ -231,17 +243,22 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		scrollDown();
 	}
 	
-	private void lightShowMessage(String message) {
-		incomeRoomMessage = message;
+	private void roomShowMessage(ArrayList<String> messageQuery) {
+		incomeRoomMessages = messageQuery;
+		
 		ChatActivity.this.runOnUiThread(new Runnable() {
-			
 			@Override
 			public void run() {
-				messageText = new TextView(ChatActivity.this);
-				messageText.setTextColor(Color.BLACK);
-				messageText.setText(incomeRoomMessage);
-				messagesContainer.addView(messageText);
-				
+				for (String visibleMessage : incomeRoomMessages) {
+					
+					messageText = new TextView(ChatActivity.this);
+					messageText.setTextColor(Color.BLACK);
+					messageText.setText(visibleMessage);
+					messagesContainer.addView(messageText);
+				}
+				scrollDown();
+				incomeRoomMessages.clear();
+				incomeRoomMessages.trimToSize();
 			}
 		});
 	}
@@ -251,7 +268,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 			
 			int userId = Integer.parseInt(message.getFields().get("author_id").toString());
 			
-			if (userId == (app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId())) {
+			if (userId == app.getQbUser().getId()) {
 				showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), true);
 			} else {
 				showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), false);
@@ -274,9 +291,28 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		@Override
 		public void processPacket(Packet packet) {
 			
-			Message incomeRoomMessage = (Message) packet;
-			lightShowMessage(incomeRoomMessage.getBody());
-			scrollDown();
+			incomeHistoryRoomMessage = (Message) packet;
+			StringBuilder builder = new StringBuilder();
+			
+			String[] splits = incomeHistoryRoomMessage.getFrom().split("/");
+			String[] parts = splits[1].split("-");
+			
+			builder.setLength(0);
+			builder.append(parts[0]).append(" : ").append(incomeHistoryRoomMessage.getBody());
+			
+			messageQuery.add(builder.toString());
+			
+			Handler handler = new Handler(Looper.getMainLooper());
+			handler.postDelayed(new Runnable() {
+				public void run() {
+					if (messageQuery.size() > 0) {
+						
+						roomShowMessage(new ArrayList<String>(messageQuery));
+						messageQuery.clear();
+						messageQuery.trimToSize();
+					}
+				}
+			}, 2000);
 			
 		}
 	};

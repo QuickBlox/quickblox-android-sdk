@@ -100,7 +100,7 @@ public class MainActivity extends TabActivity {
 				
 	}
 	private void downloadRoomList() {
-		QBChat.requestJoinedRooms(app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId(), new RoomReceivingListener() {
+		QBChat.requestJoinedRooms(app.getQbUser().getId(), new RoomReceivingListener() {
 			
 			@Override
 			public void onReceiveRooms(List<String> roomId) {

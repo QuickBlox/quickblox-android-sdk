@@ -33,7 +33,6 @@ public class ChatApplication extends Application {
 	
 	private Bitmap myPic;
 	private QBUser qbUser;
-	private QBUser fbUser;
 	
 	private MessageManager msgManager;
 	private QuickBloxManager qbm;
@@ -58,7 +57,6 @@ public class ChatApplication extends Application {
 	public void clearAllData(){
 		myPic = null;
 		qbUser = null;
-		fbUser = null;
 		msgManager = null;
 		qbm = null;
 		picManager = null;
@@ -93,14 +91,6 @@ public class ChatApplication extends Application {
 	
 	public void setQbm(QuickBloxManager qbm) {
 		this.qbm = qbm;
-	}
-
-	public QBUser getFbUser() {
-		return fbUser;
-	}
-
-	public void setFbUser(QBUser fbUser) {
-		this.fbUser = fbUser;
 	}
 
 	public MessageManager getMsgManager() {

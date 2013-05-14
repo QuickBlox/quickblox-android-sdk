@@ -187,7 +187,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					// save QB user (logged in as Facebook)
 					
 					qbUser.setPassword(BaseService.getBaseService().getToken());
-					ChatApplication.getInstance().setFbUser(qbUser);
+					ChatApplication.getInstance().setQbUser(qbUser);
 
 					Session session = new Session(SplashActivity.this);
 					try {

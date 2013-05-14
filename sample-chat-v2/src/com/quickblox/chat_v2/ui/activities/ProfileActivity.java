@@ -46,9 +46,9 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 		app = ChatApplication.getInstance();
 		
 		
-		if (app.getFbUser() != null) {
-			app.getPicManager().downloadPicAndDisplay(app.getFbUser().getWebsite(), userpic);
-			username.setText(app.getFbUser().getFullName());
+		if (app.getQbUser().getFacebookId() != null) {
+			app.getPicManager().downloadPicAndDisplay(app.getQbUser().getWebsite(), userpic);
+			username.setText(app.getQbUser().getFullName());
 		} else {
 			
 			if (app.getQbUser() != null) {
@@ -58,7 +58,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 			}
 		}
 		
-		username.setText(app.getFbUser() != null ? app.getFbUser().getFullName() : app.getQbUser() != null ? app.getQbUser().getFullName() : app.getQbUser()
+		username.setText(app.getQbUser().getFullName() != null ? app.getQbUser().getFullName() : app.getQbUser()
 				.getLogin());
 		
 		Button exitButton = (Button) findViewById(R.id.exit_profile_button);

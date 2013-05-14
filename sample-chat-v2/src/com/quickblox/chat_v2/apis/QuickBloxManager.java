@@ -59,8 +59,6 @@ public class QuickBloxManager {
 				super.onComplete(result);
 				QBUserPagedResult usersResult = (QBUserPagedResult) result;
 				
-				System.out.println("Запрос контактов = "+usersResult.getUsers());
-				
 				app.setContactsList(usersResult.getUsers());
 				
 				if (contactActivityListener != null) {
@@ -80,8 +78,6 @@ public class QuickBloxManager {
 				super.onComplete(result);
 				QBUserPagedResult usersResult = (QBUserPagedResult) result;
 				
-				
-				System.out.println("Запрос кандидатов "+contactActivityListener);
 				app.setContactsCandidateList(usersResult.getUsers());
 				
 				if (contactActivityListener != null) {
@@ -103,13 +99,9 @@ public class QuickBloxManager {
 				if (result.isSuccess()) {
 					QBFileUploadTaskResult fileUploadTaskResultResult = (QBFileUploadTaskResult) result;
 					if (!pictureMode) {
-						if (app.getFbUser() != null) {
-							app.getFbUser().setFileId(fileUploadTaskResultResult.getFile().getId());
-							updateQBUser(app.getFbUser());
-						} else {
 							app.getQbUser().setFileId(fileUploadTaskResultResult.getFile().getId());
 							updateQBUser(app.getQbUser());
-						}
+						
 					} else {
 						
 						uploadListener.uploadComplete(fileUploadTaskResultResult.getFile().getId(), fileUploadTaskResultResult.getFile().getPublicUrl());

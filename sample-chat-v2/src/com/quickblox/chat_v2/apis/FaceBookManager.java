@@ -43,7 +43,7 @@ public class FaceBookManager {
 						// insert in this field url pricture
 						String pic = jObject.getString("pic");
 						if (pic != null) {
-							ChatApplication.getInstance().getFbUser().setWebsite(pic);
+							ChatApplication.getInstance().getQbUser().setWebsite(pic);
 						}
 						
 					}

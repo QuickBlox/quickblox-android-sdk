@@ -101,7 +101,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 		
 		QBChat.sendMessage(userId, messageBody);
 		
-		sendToQB(userId, messageBody, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+		sendToQB(userId, messageBody, app.getQbUser().getId());
 		updateDialogLastMessage(messageBody, dialogId);
 		
 	}
@@ -186,7 +186,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 	public void downloadDialogList() {
 		QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 		
-		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser().getId());
 		QBCustomObjects.getObjects(GlobalConsts.DIALOGS, requestBuilder, new QBCallbackImpl() {
 			@Override
 			public void onComplete(Result result) {
@@ -200,7 +200,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 	
 	public void getDialogMessages(int userId) {
 		QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
-		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser() != null ? app.getQbUser().getId() : app.getFbUser().getId());
+		requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser().getId());
 		requestBuilder.eq(GlobalConsts.OPPONENT_ID, userId);
 		requestBuilder.sortAsc("created_at");
 		

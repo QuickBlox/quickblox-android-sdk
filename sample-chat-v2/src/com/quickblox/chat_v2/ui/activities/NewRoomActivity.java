@@ -63,6 +63,7 @@ public class NewRoomActivity extends Activity {
         intent.putExtra(GlobalConsts.ROOM_NAME, roomNameEditText.getText().toString());
         intent.putExtra(GlobalConsts.IS_NEW_ROOM, true);
         startActivity(intent);
+        finish();
     }
 
     private CompoundButton.OnCheckedChangeListener persistentCheckBoxCheckListener = new CompoundButton.OnCheckedChangeListener() {

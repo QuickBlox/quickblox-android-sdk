@@ -17,10 +17,10 @@
 
         <EditText
             android:id="@+id/messageEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/sendButton"
+            android:layout_toLeftOf="@+id/chatSendButton"
             android:layout_toRightOf="@+id/attachbutton"
             android:autoText="true"
             android:hint="message text" />
