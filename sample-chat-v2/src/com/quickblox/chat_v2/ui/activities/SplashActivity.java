@@ -144,6 +144,11 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (data == null){
+			this.finish();
+		}
+		
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
@@ -152,10 +157,10 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		
 		Session session = Session.getActiveSession();
 		
-		if (session == null) {
+		if (session == null || session.getState().equals(SessionState.CLOSED_LOGIN_FAILED)) {
 			session = new Session(this);
-			
 			Session.setActiveSession(session);
+			
 			if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
 				session.openForRead(new Session.OpenRequest(this).setCallback(this));
 			}
@@ -181,17 +186,18 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			QBUser qbUser = ((QBUserResult) result).getUser();
 			SharedPreferencesHelper.setLogin(getBaseContext(), qbUser.getLogin());
 			
-			//Logged in using Facebook
-			if (context.toString().equals("social")) {			
+			// Logged in using Facebook
+			if (context.toString().equals("social")) {
 				try {
 					// save QB user (logged in as Facebook)
 					
 					qbUser.setPassword(BaseService.getBaseService().getToken());
 					ChatApplication.getInstance().setQbUser(qbUser);
-
+					qbUser.setLogin(qbUser.getFullName());
+					
 					Session session = new Session(SplashActivity.this);
 					try {
-						fbm.getMyInfo(SplashActivity.this, session.getAccessToken() );
+						fbm.getMyInfo(SplashActivity.this, session.getAccessToken());
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -204,7 +210,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					e.printStackTrace();
 				}
 				
-			// Logged in using login & password
+				// Logged in using login & password
 			} else {
 				// save QB User
 				qbUser.setPassword((String) context);

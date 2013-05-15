@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -113,14 +114,17 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
 		
 		if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
-			
+
 			QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
+			
 			boolean isPersistent = getIntent().getBooleanExtra(GlobalConsts.IS_ROOM_PERSISTENT, false);
 			boolean isOnlyMembers = getIntent().getBooleanExtra(GlobalConsts.IS_ONLY_MEMBERS, false);
 			String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 			
 			if (getIntent().getBooleanExtra(GlobalConsts.IS_NEW_ROOM, true)) {
-				chatRoom = QBChat.createRoom(chatRoomName, app.getQbUser(), isOnlyMembers, isPersistent);
+				 
+				Log.w("ChatActivity Room create", "WARNING!!!! HARD BOOLEAN CONSTANT");
+				chatRoom = QBChat.createRoom(chatRoomName, app.getQbUser(), false, false);
 			} else {
 				chatRoom = QBChat.joinRoom(getIntent().getStringExtra(GlobalConsts.ROOM_NAME), app.getQbUser());
 			}
@@ -290,6 +294,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 		
 		@Override
 		public void processPacket(Packet packet) {
+			System.out.println("new message listener !!");
 			
 			incomeHistoryRoomMessage = (Message) packet;
 			StringBuilder builder = new StringBuilder();
