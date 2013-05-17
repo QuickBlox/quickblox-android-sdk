@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.model.QBChatRoom;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +26,9 @@ public class NewRoomActivity extends Activity {
     private EditText roomNameEditText;
     private Button joinRoomButton;
 
+    private ChatApplication app;
+
+    // MUST BE NOT HARDCODE!!
     private boolean isPersistentChecked = false;
     private boolean isOnlyMembersChecked = false;
 
@@ -29,6 +36,7 @@ public class NewRoomActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_room_layout);
+        app = ChatApplication.getInstance();
         initViews();
     }
 
@@ -56,12 +64,15 @@ public class NewRoomActivity extends Activity {
     };
 
     private void loadChatActivity() {
+
+        Log.w("ChatActivity Room create", "WARNING!!!! HARD BOOLEAN CONSTANT");
+
+        QBChatRoom chatRoom = QBChat.createRoom(roomNameEditText.getText().toString(), app.getQbUser(), isPersistentChecked, isOnlyMembersChecked);
+
+
         Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        intent.putExtra(GlobalConsts.IS_ROOM_PERSISTENT, isPersistentChecked);
-        intent.putExtra(GlobalConsts.IS_ONLY_MEMBERS, isOnlyMembersChecked);
         intent.putExtra(GlobalConsts.ROOM_NAME, roomNameEditText.getText().toString());
-        intent.putExtra(GlobalConsts.IS_NEW_ROOM, true);
         startActivity(intent);
         finish();
     }

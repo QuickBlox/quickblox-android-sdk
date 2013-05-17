@@ -2,6 +2,7 @@ package com.quickblox.chat_v2.apis;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jivesoftware.smack.packet.Presence;
 
@@ -10,7 +11,9 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.SubscriptionListener;
 import com.quickblox.module.users.model.QBUser;
@@ -24,6 +27,8 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	private ChatApplication app;
 	
 	private int userID;
+	
+	private OnRoomListDownloaded roomDownloadedListener;
 	
 	public RosterManager(Context context) {
 		this.context = context;
@@ -127,5 +132,28 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 			}
 		}, 5000);
 		
+	}
+	
+	public void downloadRoomList() {
+		QBChat.requestJoinedRooms(app.getQbUser().getId(), new RoomReceivingListener() {
+			
+			@Override
+			public void onReceiveRooms(List<String> roomId) {
+				app.setUserPresentRoomList(new ArrayList<String>());
+				
+				for (String roomsUid : roomId) {
+					String[] parts = roomsUid.split("_");
+					System.out.println(parts[0]);
+					app.getUserPresentRoomList().add(parts[0]);
+				}
+				if (roomDownloadedListener != null) {
+					roomDownloadedListener.roomListDownloaded();
+				}
+			}
+		});
+	}
+	
+	public void setRoomDownloadedListener(OnRoomListDownloaded roomDownloadedListener) {
+		this.roomDownloadedListener = roomDownloadedListener;
 	}
 }

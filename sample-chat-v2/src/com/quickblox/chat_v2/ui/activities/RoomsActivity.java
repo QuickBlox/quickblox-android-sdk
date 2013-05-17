@@ -14,12 +14,13 @@ import android.widget.ListView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 11.04.13 Time: 9:58
  */
-public class RoomsActivity extends Activity {
+public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 	
 	private ListView roomListLv;
 	private Button newRoomBtn;
@@ -33,7 +34,14 @@ public class RoomsActivity extends Activity {
 		super.onCreate(savedInstanceBundle);
 		setContentView(R.layout.rooms_layout);
 		app = ChatApplication.getInstance();
+		
 		initViews();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		app.getRstManager().setRoomDownloadedListener(this);
 	}
 
 	private void initViews() {
@@ -81,5 +89,17 @@ public class RoomsActivity extends Activity {
 				roomListAdapter.notifyDataSetChanged();
 			}
 		});
+	}
+
+	@Override
+	public void roomListDownloaded() {
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				applyRoomList(app.getUserPresentRoomList());
+			}
+		});
+		
 	}
 }

@@ -15,6 +15,7 @@ import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster;
@@ -23,7 +24,7 @@ import com.quickblox.module.users.model.QBUser;
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/8/13 Time: 1:34 PM
  */
-public class MainActivity extends TabActivity {
+public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 	
 	private static final String DIALOGS_TAB = "tab1";
 	private static final String ROOMS_TAB = "tab2";
@@ -86,34 +87,17 @@ public class MainActivity extends TabActivity {
 	
 	private void registerRoster() {
 		
-				rosterManager = new RosterManager(MainActivity.this);
-				app.setRstManager(rosterManager);
-				
-				qbRoster = QBChat.registerRoster(rosterManager);
-				app.setQbRoster(qbRoster);
-				QBChat.registerSubscription(rosterManager);
-				rosterManager.refreshContactList();
-				
-				
-				QBChat.openXmmpChat(msgManager);
-				downloadRoomList();
-				
-	}
-	private void downloadRoomList() {
-		QBChat.requestJoinedRooms(app.getQbUser().getId(), new RoomReceivingListener() {
-			
-			@Override
-			public void onReceiveRooms(List<String> roomId) {
-				app.setUserPresentRoomList(new ArrayList<String>());
-				
-				for (String roomsUid : roomId) {
-					String[] parts = roomsUid.split("_");
-					System.out.println(parts[0]);
-					app.getUserPresentRoomList().add(parts[0]);
-				}
-				blockUi(false);
-			}
-		});
+		rosterManager = new RosterManager(MainActivity.this);
+		app.setRstManager(rosterManager);
+		
+		qbRoster = QBChat.registerRoster(rosterManager);
+		app.setQbRoster(qbRoster);
+		QBChat.registerSubscription(rosterManager);
+		rosterManager.refreshContactList();
+		
+		QBChat.openXmmpChat(msgManager);
+		app.getRstManager().setRoomDownloadedListener(this);
+		app.getRstManager().downloadRoomList();
 	}
 	
 	public void blockUi(boolean enable) {
@@ -122,5 +106,11 @@ public class MainActivity extends TabActivity {
 		} else {
 			progress.dismiss();
 		}
+	}
+
+	@Override
+	public void roomListDownloaded() {
+		app.getRstManager().setRoomDownloadedListener(null);
+		blockUi(false);
 	}
 }
