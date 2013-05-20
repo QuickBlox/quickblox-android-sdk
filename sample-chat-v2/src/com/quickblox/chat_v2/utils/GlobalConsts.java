@@ -22,7 +22,12 @@ public class GlobalConsts {
     
     public static final String DIALOGS = "dialogs";
     public static final String USER_ID_FIELD = "user_id";
-    
+    public static final String USER_FULL_NAME = "user_fullname";
+
+    public static final String ROOM_LIST_CLASS = "roomlist";
+    public static final String ROOM_LIST_NAME = "name";
+    public static final String ROOM_LIST_JID = "jid";
+
     public static final String USER_ID = "user_id";
     public static final String LAST_MSG = "last_msg";
     public static final String DIALOG_ID = "dialog_id";

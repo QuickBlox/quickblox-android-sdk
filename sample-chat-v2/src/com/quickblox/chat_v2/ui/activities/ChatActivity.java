@@ -16,16 +16,14 @@ import android.widget.*;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
-import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
-import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
-import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
+import com.quickblox.chat_v2.interfaces.*;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.custom.model.QBCustomObject;
 
+import com.quickblox.module.users.model.QBUser;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -42,7 +40,7 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete, OnFriendProfileDownloaded {
 
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
@@ -57,6 +55,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private Button sendButton;
     private TextView messageText;
     private ImageView userAttach;
+    private TextView meLabel;
+    private TextView friendLabel;
 
     private ArrayList<String> incomeRoomMessages;
     private Message incomeHistoryRoomMessage;
@@ -67,6 +67,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private String lastMsg;
     private QBChatRoom chatRoom;
     private byte previousActivity;
+    private String dialogFreezingStatus;
+    private QBUser extraOpponentInfo;
 
     private MessageManager msgManager;
     private ChatApplication app;
@@ -100,6 +102,9 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         topBar = (TopBar) findViewById(R.id.top_bar);
         topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, true);
 
+        meLabel = (TextView) findViewById(R.id.meLabel);
+        friendLabel = (TextView) findViewById(R.id.friendLabel);
+
         messagesContainer = (ViewGroup) findViewById(R.id.messagesContainer);
 
         scrollContainer = (ScrollView) findViewById(R.id.scrollContainer);
@@ -129,9 +134,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             msgManager.getDialogMessages(currentOpponentId);
             msgManager.setNewMessageListener(this, currentOpponentId);
 
+            friendLabel.setText(getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME));
+
             sendButton.setOnClickListener(onDialogSendBtnClick);
         }
 
+        meLabel.setText(app.getQbUser().getFullName());
         attachButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -153,6 +161,15 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             msgTxt.setText("");
             showMessage(lastMsg, true);
 
+            if(dialogId == null && dialogFreezingStatus == null){
+                QBUser qbu = new QBUser();
+                qbu.setFullName(getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME));
+                qbu.setId(currentOpponentId);
+                msgManager.setDialogCreateListener(ChatActivity.this);
+                msgManager.createDialog(qbu, false);
+                dialogFreezingStatus = "processed";
+            }
+
             msgManager.sendSingleMessage(currentOpponentId, lastMsg, dialogId);
 
         }
@@ -164,8 +181,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         public void onClick(View v) {
             lastMsg = msgTxt.getText().toString();
             msgTxt.setText("");
-
-            System.out.println("usertest =" + app.getQbUser());
 
             try {
                 chatRoom.sendMessage(lastMsg);
@@ -278,6 +293,17 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         });
     }
 
+    private void nameReview(){
+        if (getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME) == null){
+            app.getQbm().setFriendProvileListener(ChatActivity.this);
+            app.getQbm().getSingleUserInfo(Integer.parseInt(GlobalConsts.USER_ID));
+        } else {
+            QBUser qbu = new QBUser();
+            qbu.setFullName(getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME));
+            downloadComlete(qbu);
+        }
+    }
+
     private PacketListener pChatMessageListener = new PacketListener() {
 
         @Override
@@ -372,4 +398,21 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
     }
 
+    @Override
+    public void dialogCreate(int userId, String customObjectUid) {
+        dialogId = String.valueOf(userId);
+        dialogFreezingStatus = null;
+        msgManager.setDialogCreateListener(null);
+    }
+
+    @Override
+    public void downloadComlete(QBUser friend) {
+        extraOpponentInfo = friend;
+        ChatActivity.this.runOnUiThread( new Runnable() {
+            @Override
+            public void run() {
+                friendLabel.setText(extraOpponentInfo.getFullName() != null ? extraOpponentInfo.getFullName() : extraOpponentInfo.getLogin());
+            }
+        });
+    }
 }

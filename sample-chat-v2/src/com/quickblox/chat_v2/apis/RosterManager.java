@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.quickblox.module.custom.model.QBCustomObject;
 import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Activity;
@@ -132,25 +133,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 			}
 		}, 5000);
 		
-	}
-	
-	public void downloadRoomList() {
-		QBChat.requestJoinedRooms(app.getQbUser().getId(), new RoomReceivingListener() {
-			
-			@Override
-			public void onReceiveRooms(List<String> roomId) {
-				app.setUserPresentRoomList(new ArrayList<String>());
-				
-				for (String roomsUid : roomId) {
-					String[] parts = roomsUid.split("_");
-					System.out.println(parts[0]);
-					app.getUserPresentRoomList().add(parts[0]);
-				}
-				if (roomDownloadedListener != null) {
-					roomDownloadedListener.roomListDownloaded();
-				}
-			}
-		});
 	}
 	
 	public void setRoomDownloadedListener(OnRoomListDownloaded roomDownloadedListener) {

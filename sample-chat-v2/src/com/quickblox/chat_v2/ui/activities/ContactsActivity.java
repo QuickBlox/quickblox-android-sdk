@@ -83,13 +83,16 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			Intent i = new Intent(ContactsActivity.this, ChatActivity.class);
 			int tmpId = 0;
 			String tmpDialogId = null;
+            String tmpFullName = null;
 			
 			if (isContactButtonEnable) {
 				i.putExtra(GlobalConsts.USER_ID, app.getContactsList().get(position).getId());
+                i.putExtra(GlobalConsts.USER_FULL_NAME, app.getContactsList().get(position).getFullName());
 				tmpId = app.getContactsList().get(position).getId();
 			} else {
 				i.putExtra(GlobalConsts.USER_ID, app.getContactsCandidateList().get(position).getId());
-				tmpId = app.getContactsCandidateList().get(position).getId();
+                i.putExtra(GlobalConsts.USER_FULL_NAME, app.getContactsCandidateList().get(position).getFullName());
+                tmpId = app.getContactsCandidateList().get(position).getId();
 			}
 			
 			for (QBCustomObject dialogs : app.getDialogList()) {

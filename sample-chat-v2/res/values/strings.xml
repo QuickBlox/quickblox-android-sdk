@@ -51,13 +51,15 @@
 
    	<string name="chat_dialog_view_profile">View profile</string>
     <string name="chat_dialog_add_contact">Add to contact list</string>
-    <string name="chat_dialog_remove_contact">Remove from contact list</string>
 	<string name="chat_dialog_name">User actions</string>
 
   	<string name="contacts_contact_button">Contacts</string>
     <string name="contacts_request_button">Request</string>
     <string name="contacts_inside_approve_button">Approve</string>
     <string name="contacts_inside_reject_button">Reject</string>
+
+    <string name="rooms_activity_avaiable_room">Rooms</string>
+    <string name="rooms_activity_request_room">Invites</string>
 
     <string name="room_name_title">Name</string>
     <string name="fragment_rooms_checkbox_persistent">Persistent</string>

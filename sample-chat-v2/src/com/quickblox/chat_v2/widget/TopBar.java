@@ -56,8 +56,7 @@ public class TopBar extends RelativeLayout {
 				
 				String[] data = {
 						context.getResources().getString(R.string.chat_dialog_view_profile),
-						statusReview(friendId) ? context.getResources().getString(R.string.chat_dialog_add_contact) : context.getResources().getString(
-								R.string.chat_dialog_remove_contact)};
+						context.getResources().getString(R.string.chat_dialog_add_contact)};
 				
 				AlertDialog.Builder adb = new AlertDialog.Builder(context);
 				adb.setTitle(R.string.chat_dialog_name);
@@ -107,16 +106,5 @@ public class TopBar extends RelativeLayout {
 		if (fragmentName.equals(CHAT_ACTIVITY)) {
 			// TODO load image
 		}
-	}
-	
-	private boolean statusReview(int userId) {
-		for (QBUser tmpUser : ChatApplication.getInstance().getContactsList()) {
-			if (tmpUser.getId() == userId) {
-				isFriend = true;
-				return true;
-			}
-		}
-		isFriend = false;
-		return false;
 	}
 }

@@ -97,7 +97,9 @@ public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 		
 		QBChat.openXmmpChat(msgManager);
 		app.getRstManager().setRoomDownloadedListener(this);
-		app.getRstManager().downloadRoomList();
+        app.setUserPresentRoomList(new ArrayList<String>());
+		//app.getRstManager().downloadRoomList();
+        blockUi(false);
 	}
 	
 	public void blockUi(boolean enable) {

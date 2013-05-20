@@ -42,7 +42,7 @@ public class ChatApplication extends Application {
 	private QBChatRoster qbRoster;
 	
 	private List<QBCustomObject> dialogList;
-	private List<String> userPresentRoomList; 
+	private List<QBCustomObject> userPresentRoomList;
 	
 	private ArrayList<QBUser> contactsList;
 	private ArrayList<QBUser> contactsCandidateList;
@@ -120,10 +120,10 @@ public class ChatApplication extends Application {
 	public void setRstManager(RosterManager rstManager) {
 		this.rstManager = rstManager;
 	}
-	public List<String> getUserPresentRoomList() {
+	public List<QBCustomObject> getUserPresentRoomList() {
 		return userPresentRoomList;
 	}
-	public void setUserPresentRoomList(List<String> userPresentRoomList) {
+	public void setUserPresentRoomList(List<QBCustomObject> userPresentRoomList) {
 		this.userPresentRoomList = userPresentRoomList;
 	}
 	public ArrayList<QBUser> getContactsList() {

@@ -28,10 +28,6 @@ public class NewRoomActivity extends Activity {
 
     private ChatApplication app;
 
-    // MUST BE NOT HARDCODE!!
-    private boolean isPersistentChecked = false;
-    private boolean isOnlyMembersChecked = false;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +39,6 @@ public class NewRoomActivity extends Activity {
     private void initViews() {
         persistentCheckBox = (CheckBox) findViewById(R.id.persistent_cb);
         onlyMembersCheckBox = (CheckBox) findViewById(R.id.only_members_cb);
-        persistentCheckBox.setOnCheckedChangeListener(persistentCheckBoxCheckListener);
-        onlyMembersCheckBox.setOnCheckedChangeListener(onlyMembersCheckBoxCheckListener);
         roomNameEditText = (EditText) findViewById(R.id.room_name_et);
         joinRoomButton = (Button) findViewById(R.id.room_join_btn);
         joinRoomButton.setOnClickListener(joinButtonClickListener);
@@ -67,7 +61,7 @@ public class NewRoomActivity extends Activity {
 
         Log.w("ChatActivity Room create", "WARNING!!!! HARD BOOLEAN CONSTANT");
 
-        QBChatRoom chatRoom = QBChat.createRoom(roomNameEditText.getText().toString(), app.getQbUser(), isPersistentChecked, isOnlyMembersChecked);
+        QBChatRoom chatRoom = QBChat.createRoom(roomNameEditText.getText().toString(), app.getQbUser(), true, true);
 
 
         Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
@@ -76,18 +70,4 @@ public class NewRoomActivity extends Activity {
         startActivity(intent);
         finish();
     }
-
-    private CompoundButton.OnCheckedChangeListener persistentCheckBoxCheckListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            isPersistentChecked = isChecked;
-        }
-    };
-
-    private CompoundButton.OnCheckedChangeListener onlyMembersCheckBoxCheckListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            isOnlyMembersChecked = isChecked;
-        }
-    };
 }

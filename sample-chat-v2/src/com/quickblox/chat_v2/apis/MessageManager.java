@@ -243,6 +243,33 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         return null;
     }
 
+    //download custom object (private room) section
+    public void downloadPersistentRoom() {
+
+    }
+
+    public void createRoom(String roomName, String roomJid) {
+        QBCustomObject co = new QBCustomObject();
+        HashMap<String, Object> fields = new HashMap<String, Object>();
+        fields.put(GlobalConsts.ROOM_LIST_NAME, roomName);
+        fields.put(GlobalConsts.ROOM_LIST_JID, roomJid);
+        co.setFields(fields);
+        co.setClassName(GlobalConsts.ROOM_LIST_CLASS);
+
+        QBCustomObjects.createObject(co, new QBCallbackImpl() {
+            @Override
+            public void onComplete(Result result) {
+                if (result.isSuccess()) {
+
+                    QBCustomObject co = ((QBCustomObjectResult) result).getCustomObject();
+                    app.getUserPresentRoomList().add(co);
+
+
+                }
+            }
+        });
+    }
+
     @Override
     public void downloadComlete(QBUser friend) {
         createDialog(friend, false);
