@@ -11,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.module.custom.model.QBCustomObject;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/16/13 Time: 8:55
@@ -19,11 +21,11 @@ import com.quickblox.chat_v2.R;
 public class RoomListAdapter extends BaseAdapter {
 	
 	private LayoutInflater inflater;
-	private List<String> roomList;
+	private List<QBCustomObject> roomList;
 	
-	public RoomListAdapter(Context context, Collection<String> roomList) {
+	public RoomListAdapter(Context context, Collection<QBCustomObject> roomList) {
 		inflater = LayoutInflater.from(context);
-		this.roomList = (List<String>) roomList;
+		this.roomList = (List<QBCustomObject>) roomList;
 	}
 	
 	@Override
@@ -63,7 +65,7 @@ public class RoomListAdapter extends BaseAdapter {
 	}
 	
 	private void applyRoomName(TextView roomNameTv, int position) {
-		roomNameTv.setText(roomList.get(position));
+		roomNameTv.setText(roomList.get(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());
 	}
 	
 	private static class ViewHolder {

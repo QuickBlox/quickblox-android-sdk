@@ -16,6 +16,7 @@ import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.module.custom.model.QBCustomObject;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 11.04.13 Time: 9:58
@@ -42,6 +43,7 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 	protected void onResume() {
 		super.onResume();
 		app.getRstManager().setRoomDownloadedListener(this);
+        roomListAdapter.notifyDataSetChanged();
 	}
 
 	private void initViews() {
@@ -60,7 +62,7 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 		}
 	};
 	
-	private void applyRoomList(List<String> roomList) {
+	private void applyRoomList(List<QBCustomObject> roomList) {
 		roomListAdapter = new RoomListAdapter(this, roomList);
 		roomListLv.setAdapter(roomListAdapter);
 		refreshData();
@@ -73,7 +75,8 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 			
 			Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
 			i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-			i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position));
+			i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());
+            //i.putExtra(GlobalConsts.ROOM_LIST_JID, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_JID).toString());
 			i.putExtra(GlobalConsts.IS_NEW_ROOM, false);
 			RoomsActivity.this.startActivity(i);
 		}

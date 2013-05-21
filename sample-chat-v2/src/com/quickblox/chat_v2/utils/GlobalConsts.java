@@ -27,6 +27,7 @@ public class GlobalConsts {
     public static final String ROOM_LIST_CLASS = "roomlist";
     public static final String ROOM_LIST_NAME = "name";
     public static final String ROOM_LIST_JID = "jid";
+    public static final String ROOM_LIST_OWNER_ID = "owner_id";
 
     public static final String USER_ID = "user_id";
     public static final String LAST_MSG = "last_msg";

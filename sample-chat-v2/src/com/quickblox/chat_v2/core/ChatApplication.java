@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Application;
@@ -46,6 +47,7 @@ public class ChatApplication extends Application {
 	
 	private ArrayList<QBUser> contactsList;
 	private ArrayList<QBUser> contactsCandidateList;
+    private HashMap<Integer, Boolean> inviteTable;
 	
 	//
 	@Override
@@ -144,4 +146,12 @@ public class ChatApplication extends Application {
 	public void setQbRoster(QBChatRoster qbRoster) {
 		this.qbRoster = qbRoster;
 	}
+
+    public HashMap<Integer, Boolean> getInviteTable() {
+        return inviteTable;
+    }
+
+    public void setInviteTable(HashMap<Integer, Boolean> inviteTable) {
+        this.inviteTable = inviteTable;
+    }
 }

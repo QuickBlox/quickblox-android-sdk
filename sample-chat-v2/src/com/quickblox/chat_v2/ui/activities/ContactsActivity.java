@@ -47,7 +47,7 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 		contactsButton = (RadioButton) findViewById(R.id.contacts_contact_button);
 		requestButton = (RadioButton) findViewById(R.id.contacts_request_button);
 		
-		contactsAdapter = new ContactsAdapter(this, ChatApplication.getInstance().getContactsList(), true);
+		contactsAdapter = new ContactsAdapter(this, app.getContactsList(), true, false);
 		isContactButtonEnable = true;
 		setListAdapter(contactsAdapter);
 		
@@ -115,12 +115,12 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			public void run() {
 				
 				if (isContacts) {
-					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true);
+					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true, false);
 					
 					isContactButtonEnable = true;
 					
 				} else {
-					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false);
+					contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false, false);
 					isContactButtonEnable = false;
 				}
 				setListAdapter(contactsAdapter);
@@ -138,7 +138,7 @@ public class ContactsActivity extends ListActivity implements ContactSectionList
 			@Override
 			public void run() {
 				contactsAdapter = new ContactsAdapter(ContactsActivity.this, isContactButtonEnable ? app.getContactsList() : app.getContactsCandidateList(),
-						isContactButtonEnable ? true : false);
+						isContactButtonEnable ? true : false, false);
 			}
 		});
 		

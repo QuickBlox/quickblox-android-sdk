@@ -92,7 +92,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
             msgManager.updateDialogLastMessage(lastMsg, dialogId);
         } else {
-            app.getRstManager().downloadRoomList();
+            app.getMsgManager().downloadPersistentRoom();
         }
         finish();
         super.onBackPressed();
@@ -116,7 +116,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
         if (previousActivity == GlobalConsts.ROOM_ACTIVITY) {
 
-            Log.d("Chat Activity", "Room section");
             QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
             String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 
@@ -308,10 +307,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
         @Override
         public void processPacket(Packet packet) {
-            System.out.println("new message listener !!");
 
             incomeHistoryRoomMessage = (Message) packet;
             StringBuilder builder = new StringBuilder();
+
+            Log.w("Chat Activity ", "message ="+incomeHistoryRoomMessage.getBody());
 
             String[] splits = incomeHistoryRoomMessage.getFrom().split("/");
             String[] parts = splits[1].split("-");

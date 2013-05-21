@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.adapters.ContactsAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
@@ -19,29 +21,36 @@ import com.quickblox.module.chat.model.QBChatRoom;
  * Date: 4/12/13
  * Time: 4:38 PM
  */
-public class NewRoomActivity extends Activity {
+public class NewRoomActivity extends ListActivity {
 
-    private CheckBox persistentCheckBox;
-    private CheckBox onlyMembersCheckBox;
     private EditText roomNameEditText;
     private Button joinRoomButton;
+    private ContactsAdapter contactsAdapter;
+    private ListView selectionTable;
 
     private ChatApplication app;
+
+    private StringBuilder sb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_room_layout);
         app = ChatApplication.getInstance();
+        sb = new StringBuilder();
         initViews();
     }
 
     private void initViews() {
-        persistentCheckBox = (CheckBox) findViewById(R.id.persistent_cb);
-        onlyMembersCheckBox = (CheckBox) findViewById(R.id.only_members_cb);
+
         roomNameEditText = (EditText) findViewById(R.id.room_name_et);
         joinRoomButton = (Button) findViewById(R.id.room_join_btn);
         joinRoomButton.setOnClickListener(joinButtonClickListener);
+
+        selectionTable = (ListView) findViewById(android.R.id.list);
+        selectionTable.setClickable(true);
+        contactsAdapter = new ContactsAdapter(this, app.getContactsList(), true, true);
+        setListAdapter(contactsAdapter);
     }
 
     private View.OnClickListener joinButtonClickListener = new View.OnClickListener() {
@@ -58,15 +67,18 @@ public class NewRoomActivity extends Activity {
     };
 
     private void loadChatActivity() {
+        String roomName = roomNameEditText.getText().toString();
 
-        Log.w("ChatActivity Room create", "WARNING!!!! HARD BOOLEAN CONSTANT");
+        QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
 
-        QBChatRoom chatRoom = QBChat.createRoom(roomNameEditText.getText().toString(), app.getQbUser(), true, true);
 
+
+        app.getMsgManager().createRoom(roomName, sb.append(roomName).append("_").append(getResources().getString(R.string.quickblox_app_id)).append("@muc.quickblox.com").toString());
+        sb.setLength(0);
 
         Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        intent.putExtra(GlobalConsts.ROOM_NAME, roomNameEditText.getText().toString());
+        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
         startActivity(intent);
         finish();
     }

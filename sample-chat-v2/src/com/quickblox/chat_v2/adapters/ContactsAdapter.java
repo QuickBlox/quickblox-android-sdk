@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.core.CustomButtonClickListener;
+import com.quickblox.chat_v2.core.CustomCheckBoxListener;
 import com.quickblox.module.users.model.QBUser;
 
 public class ContactsAdapter extends BaseAdapter {
@@ -25,14 +23,16 @@ public class ContactsAdapter extends BaseAdapter {
 	
 	private List<QBUser> incomeUserList; 
 	private boolean isContacts;
+    private boolean isInviteList;
 	
-	private ContactHolder chatHolder;
+	private ContactHolder contactsHolder;
 	private ChatApplication app;
 	
-	public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isContacts) {
+	public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isContacts, boolean isInviteList) {
 		this.context = context;
 		incomeUserList = qbuserArray;
 		this.isContacts = isContacts;
+        this.isInviteList = isInviteList;
 		app = ChatApplication.getInstance();
 	}
 	
@@ -43,6 +43,8 @@ public class ContactsAdapter extends BaseAdapter {
 		
 		public Button accept;
 		public Button reject;
+        
+        public CheckBox selected;
 	}
 	
 	@Override
@@ -69,24 +71,25 @@ public class ContactsAdapter extends BaseAdapter {
 		
 		if (contactView == null) {
 			
-			chatHolder = new ContactHolder();
+			contactsHolder = new ContactHolder();
 			contactView = inflater.inflate(R.layout.contacts_list_inside, parent, false);
-			chatHolder.userPic = (ImageView) contactView.findViewById(R.id.contacts_inside_userpic);
-			chatHolder.userName = (TextView) contactView.findViewById(R.id.contacts_inside_username);
+			contactsHolder.userPic = (ImageView) contactView.findViewById(R.id.contacts_inside_userpic);
+			contactsHolder.userName = (TextView) contactView.findViewById(R.id.contacts_inside_username);
 			
-			chatHolder.accept = (Button) contactView.findViewById(R.id.contact_iside_accept);
-			chatHolder.reject = (Button) contactView.findViewById(R.id.contact_inside_reject);
+			contactsHolder.accept = (Button) contactView.findViewById(R.id.contact_iside_accept);
+			contactsHolder.reject = (Button) contactView.findViewById(R.id.contact_inside_reject);
 			
-				
-			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
+            contactsHolder.selected = (CheckBox) contactView.findViewById(R.id.is_selected_to_invite);
+            				
+			contactsHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 			
-			contactView.setTag(chatHolder);
+			contactView.setTag(contactsHolder);
 			
 		} else {
 			
-			chatHolder = (ContactHolder) contactView.getTag();
+			contactsHolder = (ContactHolder) contactView.getTag();
 			
-			chatHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
+			contactsHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 
 		}
 		
@@ -102,12 +105,20 @@ public class ContactsAdapter extends BaseAdapter {
 						break;
 						
 					case R.id.contact_inside_reject :
-						System.out.println("Отклонение авторизации");
 						app.getRstManager().sendRequestToUnSubscribe(incomeUserList.get(this.getPosition()).getId());
 						break;
 				}
 			}
 		};
+
+        CustomCheckBoxListener onCheck = new CustomCheckBoxListener(){
+
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                super.onCheckedChanged(compoundButton, b);
+                app.getInviteTable().put(this.getPosition(), b);
+            }
+        };
 		
 		if (isContacts) {
 			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
@@ -116,11 +127,19 @@ public class ContactsAdapter extends BaseAdapter {
 			LinearLayout insideLayout = (LinearLayout) contactView.findViewById(R.id.contacts_linearlayout_two);
 			insideLayout.setVisibility(View.VISIBLE);
 			
-			chatHolder.accept.setOnClickListener(oclBtn);
+			contactsHolder.accept.setOnClickListener(oclBtn);
 			oclBtn.setPosition(position);
-			chatHolder.reject.setOnClickListener(oclBtn);
-			
+			contactsHolder.reject.setOnClickListener(oclBtn);
 		}
+
+        if (!isInviteList){
+            contactsHolder.selected.setVisibility(View.GONE);
+        } else{
+            contactsHolder.selected.setVisibility(View.VISIBLE);
+            contactsHolder.selected.setOnCheckedChangeListener(onCheck);
+            onCheck.setPosition(position);
+
+        }
 		
 		return contactView;
 	}

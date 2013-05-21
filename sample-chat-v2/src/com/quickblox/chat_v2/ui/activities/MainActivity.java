@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.ProgressDialog;
@@ -58,6 +59,7 @@ public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 		app.setQbm(qbm);
 		app.setContactsList(new ArrayList<QBUser>());
 		app.setContactsCandidateList(new ArrayList<QBUser>());
+        app.setInviteTable(new HashMap<Integer, Boolean>());
 		
 		registerRoster();
 	}
@@ -97,9 +99,8 @@ public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 		
 		QBChat.openXmmpChat(msgManager);
 		app.getRstManager().setRoomDownloadedListener(this);
-        app.setUserPresentRoomList(new ArrayList<String>());
-		//app.getRstManager().downloadRoomList();
-        blockUi(false);
+        app.getMsgManager().setRoomListDownloadListener(this);
+		app.getMsgManager().downloadPersistentRoom();
 	}
 	
 	public void blockUi(boolean enable) {

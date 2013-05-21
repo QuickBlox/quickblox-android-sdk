@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/contacts_inside_username"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
         android:layout_weight="4"
@@ -23,13 +23,19 @@
         android:text="TextView"
         android:visibility="visible"/>
 
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/is_selected_to_invite"
+            android:visibility="gone"
+            />
     <LinearLayout
         android:id="@+id/contacts_linearlayout_two"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         android:weightSum="2" >
 
         <Button

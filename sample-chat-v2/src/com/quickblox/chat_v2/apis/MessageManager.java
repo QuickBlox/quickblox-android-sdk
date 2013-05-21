@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import java.io.File;
 import java.util.HashMap;
 
+import com.quickblox.chat_v2.interfaces.*;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -12,12 +13,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
-import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
-import com.quickblox.chat_v2.interfaces.OnFriendProfileDownloaded;
-import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
-import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
-import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -47,6 +42,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnDialogCreateComplete dialogCreateListener;
     private OnNewMessageIncome newMessageListener;
     private OnDialogListRefresh dialogRefreshListener;
+    private OnRoomListDownloaded roomListDownloadListener;
 
     public MessageManager(Context context) {
         this.context = context;
@@ -195,7 +191,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    ChatApplication.getInstance().setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
+                    app.setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
                     dialogRefreshListener.refreshList();
                 }
             }
@@ -245,7 +241,20 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     //download custom object (private room) section
     public void downloadPersistentRoom() {
+        QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 
+        requestBuilder.eq(GlobalConsts.ROOM_LIST_OWNER_ID, app.getQbUser().getId());
+        QBCustomObjects.getObjects(GlobalConsts.ROOM_LIST_CLASS, requestBuilder, new QBCallbackImpl() {
+            @Override
+            public void onComplete(Result result) {
+                if (result.isSuccess()) {
+                    app.setUserPresentRoomList(((QBCustomObjectLimitedResult) result).getCustomObjects());
+                    if (roomListDownloadListener != null) {
+                        roomListDownloadListener.roomListDownloaded();
+                    }
+                }
+            }
+        });
     }
 
     public void createRoom(String roomName, String roomJid) {
@@ -253,6 +262,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(GlobalConsts.ROOM_LIST_NAME, roomName);
         fields.put(GlobalConsts.ROOM_LIST_JID, roomJid);
+        fields.put(GlobalConsts.ROOM_LIST_OWNER_ID, app.getQbUser().getId());
         co.setFields(fields);
         co.setClassName(GlobalConsts.ROOM_LIST_CLASS);
 
@@ -263,8 +273,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
                     QBCustomObject co = ((QBCustomObjectResult) result).getCustomObject();
                     app.getUserPresentRoomList().add(co);
-
-
                 }
             }
         });
@@ -295,5 +303,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public void setNewMessageListener(OnNewMessageIncome newMessageListener, int openChatOpponentId) {
         this.newMessageListener = newMessageListener;
         this.openChatOpponentId = openChatOpponentId;
+    }
+
+    public void setRoomListDownloadListener(OnRoomListDownloaded roomListDownloadListener) {
+        this.roomListDownloadListener = roomListDownloadListener;
     }
 }
