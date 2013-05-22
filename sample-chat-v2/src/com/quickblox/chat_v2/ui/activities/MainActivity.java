@@ -1,8 +1,6 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
@@ -18,7 +16,6 @@ import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.users.model.QBUser;
 
@@ -59,7 +56,8 @@ public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 		app.setQbm(qbm);
 		app.setContactsList(new ArrayList<QBUser>());
 		app.setContactsCandidateList(new ArrayList<QBUser>());
-        app.setInviteTable(new HashMap<Integer, Boolean>());
+        app.setInviteUserList(new ArrayList<QBUser>());
+        app.setOutSideInvite(new ArrayList<String>());
 		
 		registerRoster();
 	}
@@ -95,9 +93,11 @@ public class MainActivity extends TabActivity implements OnRoomListDownloaded {
 		qbRoster = QBChat.registerRoster(rosterManager);
 		app.setQbRoster(qbRoster);
 		QBChat.registerSubscription(rosterManager);
+        QBChat.setInvitationListener(rosterManager);
 		rosterManager.refreshContactList();
 		
 		QBChat.openXmmpChat(msgManager);
+       // QBChat.
 		app.getRstManager().setRoomDownloadedListener(this);
         app.getMsgManager().setRoomListDownloadListener(this);
 		app.getMsgManager().downloadPersistentRoom();

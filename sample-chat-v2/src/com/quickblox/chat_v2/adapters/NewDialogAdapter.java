@@ -127,7 +127,7 @@ public class NewDialogAdapter extends BaseAdapter implements OnDialogCreateCompl
 				.displayer(new RoundedBitmapDisplayer(20)).build();
 		// Load and display image
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(options).build();
-		ImageLoader.getInstance().init(config);;
+		ImageLoader.getInstance().init(config);
 		ImageLoader.getInstance().displayImage(userAvatarUrl, userAvatar);
 	}
 	

@@ -61,6 +61,8 @@
     <string name="rooms_activity_avaiable_room">Rooms</string>
     <string name="rooms_activity_request_room">Invites</string>
 
+    <string name="new_room_activity_creating_room">Creating room</string>
+
     <string name="room_name_title">Name</string>
     <string name="fragment_rooms_checkbox_persistent">Persistent</string>
     <string name="members_checkbox">Only members</string>

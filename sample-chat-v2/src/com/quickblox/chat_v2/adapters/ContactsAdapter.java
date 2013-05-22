@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +115,11 @@ public class ContactsAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 super.onCheckedChanged(compoundButton, b);
-                app.getInviteTable().put(this.getPosition(), b);
+                if (b){
+                    app.getInviteUserList().add(app.getContactsList().get(this.getPosition()));
+                } else {
+                    app.getInviteUserList().remove(app.getContactsList().get(this.getPosition()));
+                }
             }
         };
 		

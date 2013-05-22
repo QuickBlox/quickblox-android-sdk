@@ -1,9 +1,10 @@
 package com.quickblox.chat_v2.ui.activities;
 
-import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,8 +30,11 @@ public class NewRoomActivity extends ListActivity {
     private ListView selectionTable;
 
     private ChatApplication app;
+    private ProgressDialog progress;
 
     private StringBuilder sb;
+    private QBChatRoom chatRoom;
+    private String roomName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,7 @@ public class NewRoomActivity extends ListActivity {
         public void onClick(View v) {
             String roomName = roomNameEditText.getText().toString();
             if (!TextUtils.isEmpty(roomName)) {
+
                 loadChatActivity();
 
             } else {
@@ -67,19 +72,40 @@ public class NewRoomActivity extends ListActivity {
     };
 
     private void loadChatActivity() {
-        String roomName = roomNameEditText.getText().toString();
+        roomName = roomNameEditText.getText().toString();
 
-        QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
+        chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
+        blockUi(true);
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (!app.getInviteUserList().isEmpty() && chatRoom != null) {
+                    Log.w("NEW ROOM ACTIVITY", "chat room = " + chatRoom);
+                    chatRoom.invite(app.getInviteUserList());
+                } else {
+                    Log.w("NEW ROOM ACTIVITY", "chat room = " + chatRoom);
+                }
 
+                    app.getMsgManager().createRoom(roomName, sb.append(roomName).append("_").append(getResources().getString(R.string.quickblox_app_id)).append("@muc.quickblox.com").toString());
+                    sb.setLength(0);
 
-        app.getMsgManager().createRoom(roomName, sb.append(roomName).append("_").append(getResources().getString(R.string.quickblox_app_id)).append("@muc.quickblox.com").toString());
-        sb.setLength(0);
+                    Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
+                    intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
+                    intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
+                    startActivity(intent);
+                    blockUi(false);
+                    finish();
 
-        Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
-        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
-        startActivity(intent);
-        finish();
+            }
+        }, 5000);
+    }
+
+    public void blockUi(boolean enable) {
+        if (enable) {
+            progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.new_room_activity_creating_room), true);
+        } else {
+            progress.dismiss();
+        }
     }
 }

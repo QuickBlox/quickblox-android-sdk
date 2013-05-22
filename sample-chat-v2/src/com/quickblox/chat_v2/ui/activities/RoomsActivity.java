@@ -76,7 +76,6 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 			Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
 			i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
 			i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());
-            //i.putExtra(GlobalConsts.ROOM_LIST_JID, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_JID).toString());
 			i.putExtra(GlobalConsts.IS_NEW_ROOM, false);
 			RoomsActivity.this.startActivity(i);
 		}

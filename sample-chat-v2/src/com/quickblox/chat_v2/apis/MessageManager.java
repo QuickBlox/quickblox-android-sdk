@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import java.io.File;
 import java.util.HashMap;
 
+import android.util.Log;
 import com.quickblox.chat_v2.interfaces.*;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
@@ -258,6 +259,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     public void createRoom(String roomName, String roomJid) {
+
+        Log.w("MSG MANAGER", "roomJid = " + roomJid);
+
         QBCustomObject co = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(GlobalConsts.ROOM_LIST_NAME, roomName);

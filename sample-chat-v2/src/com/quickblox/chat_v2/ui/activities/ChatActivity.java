@@ -160,7 +160,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             msgTxt.setText("");
             showMessage(lastMsg, true);
 
-            if(dialogId == null && dialogFreezingStatus == null){
+            if (dialogId == null && dialogFreezingStatus == null) {
                 QBUser qbu = new QBUser();
                 qbu.setFullName(getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME));
                 qbu.setId(currentOpponentId);
@@ -192,7 +192,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private void showMessage(String message, boolean leftSide) {
 
         if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-            // System.out.println("Attach section");
             parts = message.split("#");
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -215,7 +214,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             isAttach = true;
         } else {
-            // System.out.println("Message section");
             messageText = new TextView(ChatActivity.this);
             messageText.setTextColor(Color.BLACK);
             messageText.setText(message);
@@ -258,7 +256,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 for (String visibleMessage : incomeRoomMessages) {
 
                     messageText = new TextView(ChatActivity.this);
-                    messageText.setTextColor(Color.BLACK);
                     messageText.setText(visibleMessage);
                     messagesContainer.addView(messageText);
                 }
@@ -270,6 +267,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     }
 
     public void applyDialogMessags(List<QBCustomObject> messageList) {
+
+
         for (QBCustomObject message : messageList) {
 
             int userId = Integer.parseInt(message.getFields().get("author_id").toString());
@@ -280,6 +279,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), false);
             }
         }
+
     }
 
     private void scrollDown() {
@@ -292,8 +292,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         });
     }
 
-    private void nameReview(){
-        if (getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME) == null){
+    private void nameReview() {
+        if (getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME) == null) {
             app.getQbm().setFriendProvileListener(ChatActivity.this);
             app.getQbm().getSingleUserInfo(Integer.parseInt(GlobalConsts.USER_ID));
         } else {
@@ -311,7 +311,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             incomeHistoryRoomMessage = (Message) packet;
             StringBuilder builder = new StringBuilder();
 
-            Log.w("Chat Activity ", "message ="+incomeHistoryRoomMessage.getBody());
 
             String[] splits = incomeHistoryRoomMessage.getFrom().split("/");
             String[] parts = splits[1].split("-");
@@ -320,6 +319,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             builder.append(parts[0]).append(" : ").append(incomeHistoryRoomMessage.getBody());
 
             messageQuery.add(builder.toString());
+
 
             Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(new Runnable() {
@@ -331,7 +331,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                         messageQuery.trimToSize();
                     }
                 }
-            }, 2000);
+            }, 1000);
 
         }
     };
@@ -362,7 +362,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
-
                     try {
 
                         Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
@@ -380,7 +379,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
     @Override
     public void downloadComlete(Bitmap bitmap, File file) {
-        System.out.println("Картинка принята");
+
 
     }
 
@@ -408,7 +407,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     @Override
     public void downloadComlete(QBUser friend) {
         extraOpponentInfo = friend;
-        ChatActivity.this.runOnUiThread( new Runnable() {
+        ChatActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 friendLabel.setText(extraOpponentInfo.getFullName() != null ? extraOpponentInfo.getFullName() : extraOpponentInfo.getLogin());

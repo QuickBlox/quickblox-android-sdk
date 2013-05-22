@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import android.util.Log;
 import com.quickblox.module.custom.model.QBCustomObject;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Activity;
@@ -18,8 +21,9 @@ import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.SubscriptionListener;
 import com.quickblox.module.users.model.QBUser;
+import org.jivesoftware.smackx.muc.InvitationListener;
 
-public class RosterManager implements QBRosterListener, SubscriptionListener {
+public class RosterManager implements QBRosterListener, SubscriptionListener, InvitationListener {
 	
 	private ArrayList<String> subscribes;
 	private ArrayList<String> userIds;
@@ -77,7 +81,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	
 	@Override
 	public void onUnSubscribe(int userId) {
-		System.out.println("Отписался");
 		for (QBUser user : app.getContactsList()) {
 			if (user.getId() == userId) {
 				app.getContactsList().remove(user);
@@ -125,7 +128,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 							for (Integer in : app.getQbRoster().getUsersId()) {
 								userIds.add(String.valueOf(in));
 							}
-							System.out.println("Отправка контактов на проверку = " + userIds.size());
 							app.getQbm().getQbUsersInfoContact(userIds);
 						}
 					}
@@ -138,4 +140,11 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 	public void setRoomDownloadedListener(OnRoomListDownloaded roomDownloadedListener) {
 		this.roomDownloadedListener = roomDownloadedListener;
 	}
+
+    @Override
+    public void invitationReceived(Connection conn, String room, String inviter, String reason, String password, Message message) {
+        Log.w("ROSTER MANAGER", "room request = "+room);
+        String [] parts = room.split("_");
+        app.getMsgManager().createRoom(parts[0], room);
+    }
 }
