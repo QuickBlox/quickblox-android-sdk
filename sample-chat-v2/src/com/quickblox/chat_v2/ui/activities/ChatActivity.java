@@ -121,6 +121,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser());
 
+            friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
+
             sendButton.setOnClickListener(onRoomSendBtnClick);
             attachButton.setVisibility(View.GONE);
 
@@ -135,10 +137,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             friendLabel.setText(getIntent().getStringExtra(GlobalConsts.USER_FULL_NAME));
 
+
             sendButton.setOnClickListener(onDialogSendBtnClick);
         }
 
-        meLabel.setText(app.getQbUser().getFullName());
+
         attachButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -149,6 +152,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
             }
         });
+
+        meLabel.setText(app.getQbUser().getFullName());
+        if (!app.getInviteUserList().isEmpty()) {
+            chatRoom.invite(app.getInviteUserList());
+            app.getInviteUserList().clear();
+        }
     }
 
     public OnClickListener onDialogSendBtnClick = new OnClickListener() {
@@ -244,6 +253,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             }
         });
+
         scrollDown();
     }
 

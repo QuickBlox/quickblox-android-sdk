@@ -38,6 +38,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private QBUser tQbuser;
     private boolean isNeedreview;
     private int openChatOpponentId;
+    private QBCustomObject customDialog;
 
     private OnMessageListDownloaded listDownloadedListener;
     private OnDialogCreateComplete dialogCreateListener;
@@ -260,24 +261,30 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     public void createRoom(String roomName, String roomJid) {
 
-        Log.w("MSG MANAGER", "roomJid = " + roomJid);
-
-        QBCustomObject co = new QBCustomObject();
+        customDialog = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(GlobalConsts.ROOM_LIST_NAME, roomName);
         fields.put(GlobalConsts.ROOM_LIST_JID, roomJid);
         fields.put(GlobalConsts.ROOM_LIST_OWNER_ID, app.getQbUser().getId());
-        co.setFields(fields);
-        co.setClassName(GlobalConsts.ROOM_LIST_CLASS);
+        customDialog.setFields(fields);
+        customDialog.setClassName(GlobalConsts.ROOM_LIST_CLASS);
 
-        QBCustomObjects.createObject(co, new QBCallbackImpl() {
+        ((Activity) context).runOnUiThread(new Runnable() {
             @Override
-            public void onComplete(Result result) {
-                if (result.isSuccess()) {
+            public void run() {
 
-                    QBCustomObject co = ((QBCustomObjectResult) result).getCustomObject();
-                    app.getUserPresentRoomList().add(co);
-                }
+                QBCustomObjects.createObject(customDialog, new QBCallbackImpl() {
+                    @Override
+                    public void onComplete(Result result) {
+                        if (result.isSuccess()) {
+
+                            QBCustomObject co = ((QBCustomObjectResult) result).getCustomObject();
+
+                            app.getUserPresentRoomList().add(co);
+                        }
+                    }
+                });
+
             }
         });
     }

@@ -133,7 +133,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener, In
 					}
 				});
 			}
-		}, 5000);
+		}, 1000);
 		
 	}
 	
@@ -143,7 +143,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener, In
 
     @Override
     public void invitationReceived(Connection conn, String room, String inviter, String reason, String password, Message message) {
-        Log.w("ROSTER MANAGER", "room request = "+room);
         String [] parts = room.split("_");
         app.getMsgManager().createRoom(parts[0], room);
     }
