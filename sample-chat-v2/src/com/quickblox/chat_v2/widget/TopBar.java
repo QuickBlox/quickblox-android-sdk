@@ -13,9 +13,8 @@ import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.ui.activities.FriendProfileActivity;
+import com.quickblox.chat_v2.ui.activities.UserProfileActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
-import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/8/13 Time: 3:38 PM
@@ -68,7 +67,7 @@ public class TopBar extends RelativeLayout {
 						
 						switch (which) {
 							case 0 :
-								Intent i = new Intent(context, FriendProfileActivity.class);
+								Intent i = new Intent(context, UserProfileActivity.class);
 								i.putExtra(GlobalConsts.FRIEND_ID, friendId);
 								context.startActivity(i);
 								break;
@@ -107,4 +106,11 @@ public class TopBar extends RelativeLayout {
 			// TODO load image
 		}
 	}
+
+    public void setFriendProfileConfiguration(){
+        userAvatar.setVisibility(View.INVISIBLE);
+        userAvatar.setClickable(false);
+        screenTitle.setVisibility(View.INVISIBLE);
+
+    }
 }

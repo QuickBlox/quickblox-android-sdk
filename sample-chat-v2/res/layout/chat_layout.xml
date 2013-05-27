@@ -5,9 +5,9 @@
               android:layout_height="fill_parent">
 
     <com.quickblox.chat_v2.widget.TopBar
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:orientation="vertical"
@@ -16,66 +16,66 @@
                     android:padding="20dp">
 
         <EditText
-            android:id="@+id/messageEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/chatSendButton"
-            android:layout_toRightOf="@+id/attachbutton"
-            android:autoText="true"
-            android:hint="message text" />
+                android:id="@+id/messageEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/chatSendButton"
+                android:layout_toRightOf="@+id/attachbutton"
+                android:autoText="true"
+                android:hint="message text"/>
 
         <Button
-            android:id="@+id/chatSendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/chat_activity_send_button" />
+                android:id="@+id/chatSendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/chat_activity_send_button"/>
 
         <ScrollView
-            android:id="@+id/scrollContainer"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_marginBottom="20dp"
-            android:layout_above="@+id/messageEdit"
-            android:layout_below="@+id/meLabel"
-            android:layout_marginTop="10dp">
+                android:id="@+id/scrollContainer"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentTop="false"
+                android:layout_marginBottom="20dp"
+                android:layout_above="@+id/messageEdit"
+                android:layout_below="@+id/meLabel"
+                android:layout_marginTop="10dp">
 
             <LinearLayout
-                android:id="@+id/messagesContainer"
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/messagesContainer"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
             </LinearLayout>
         </ScrollView>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Me"
-            android:id="@+id/meLabel"
-            android:layout_gravity="left|center_vertical"
-            android:singleLine="false"
-            android:textSize="20dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Me"
+                android:id="@+id/meLabel"
+                android:layout_gravity="left|center_vertical"
+                android:singleLine="false"
+                android:textSize="20dp"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Friend"
-            android:id="@+id/friendLabel"
-            android:layout_alignParentRight="true"
-            android:textSize="20dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Friend"
+                android:id="@+id/friendLabel"
+                android:layout_alignParentRight="true"
+                android:textSize="20dp"/>
 
         <Button
-            android:id="@+id/attachbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:text="@string/chat_activity_attach_button" />
+                android:id="@+id/attachbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:text="@string/chat_activity_attach_button"/>
 
     </RelativeLayout>
 </LinearLayout>

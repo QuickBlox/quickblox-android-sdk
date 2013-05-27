@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,7 +39,7 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 12:53
  * PM
  */
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete, OnFriendProfileDownloaded {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete, OnUserProfileDownloaded {
 
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
@@ -154,7 +153,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         });
 
         meLabel.setText(app.getQbUser().getFullName());
-        if (!app.getInviteUserList().isEmpty()) {
+
+        if (app.getInviteUserList().size() > 1) {
             chatRoom.invite(app.getInviteUserList());
             app.getInviteUserList().clear();
         }
@@ -191,7 +191,13 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             msgTxt.setText("");
 
             try {
-                chatRoom.sendMessage(lastMsg);
+                if (chatRoom != null) {
+                    chatRoom.sendMessage(lastMsg);
+                } else {
+                    String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
+                    chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser());
+                    Toast.makeText(ChatActivity.this, getResources().getString(R.string.room_join_fall), Toast.LENGTH_LONG).show();
+                }
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -349,14 +355,14 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private InvitationListener pInvitationListener = new InvitationListener() {
         @Override
         public void invitationReceived(Connection connection, String s, String s2, String s3, String s4, Message message) {
-            System.out.println("vtoroy listener = " + message);
+
         }
     };
 
     private PacketListener pParticipantListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
-            System.out.println("packetListener = " + packet);
+
         }
     };
 

@@ -4,11 +4,12 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.ContactsAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -76,7 +77,8 @@ public class NewRoomActivity extends ListActivity {
 
         chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
 
-        app.getMsgManager().createRoom(roomName, sb.append(roomName).append("_").append(getResources().getString(R.string.quickblox_app_id)).append("@muc.quickblox.com").toString());
+        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id))
+                .append(roomName).append("_").append("@muc.quickblox.com").toString(), app.getInviteUserList());
         sb.setLength(0);
 
         Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);

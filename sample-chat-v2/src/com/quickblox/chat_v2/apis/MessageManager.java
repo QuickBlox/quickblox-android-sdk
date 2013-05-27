@@ -1,19 +1,10 @@
 package com.quickblox.chat_v2.apis;
 
-import java.io.File;
-import java.util.HashMap;
-
-import android.util.Log;
-import com.quickblox.chat_v2.interfaces.*;
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.packet.Message;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.*;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -24,8 +15,17 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
 import com.quickblox.module.users.model.QBUser;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.packet.Message;
 
-public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnFriendProfileDownloaded {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded {
 
     private Context context;
     private ChatApplication app;
@@ -39,6 +39,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private boolean isNeedreview;
     private int openChatOpponentId;
     private QBCustomObject customDialog;
+    private boolean isNeedDownloadUser;
 
     private OnMessageListDownloaded listDownloadedListener;
     private OnDialogCreateComplete dialogCreateListener;
@@ -46,9 +47,13 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnDialogListRefresh dialogRefreshListener;
     private OnRoomListDownloaded roomListDownloadListener;
 
+    private Pattern idFromJidPattern;
+    private Matcher matcher;
+
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
+        idFromJidPattern = Pattern.compile(GlobalConsts.REGEX_MESSAGE_AUTHOR_ID);
     }
 
     // Глобальный слушатель
@@ -58,20 +63,20 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
 
-        String[] id = message.getFrom().split("-");
-        sendToQB(Integer.parseInt(id[0]), message.getBody(), Integer.parseInt(id[0]));
+        matcher = idFromJidPattern.matcher(message.getFrom());
+        sendToQB(Integer.parseInt(matcher.group(0)), message.getBody(), Integer.parseInt(matcher.group(0)));
 
-        if (newMessageListener != null && Integer.parseInt(id[0]) == openChatOpponentId) {
+        if (newMessageListener != null && Integer.parseInt(matcher.group(0)) == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
         }
 
-        QBCustomObject localResult = dialogReview(Integer.parseInt(id[0]));
+        QBCustomObject localResult = dialogReview(Integer.parseInt(matcher.group(0)));
 
         if (localResult != null) {
             updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
         } else {
-            if (tmpIdforReview == null && !tmpIdforReview.equals(id[0])) {
-                tmpIdforReview = id[0];
+            if (tmpIdforReview == null && !tmpIdforReview.equals(matcher.group(0))) {
+                tmpIdforReview = matcher.group(0);
                 backgroundMessage = message.getBody();
                 ((Activity) context).runOnUiThread(new Runnable() {
 
@@ -185,7 +190,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void downloadDialogList() {
+    public void downloadDialogList(boolean isNeedDownloadUsers) {
+        isNeedDownloadUser = isNeedDownloadUsers;
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 
         requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser().getId());
@@ -194,7 +200,17 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     app.setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
+
                     dialogRefreshListener.refreshList();
+
+                    if (isNeedDownloadUser) {
+                        ArrayList<String> userIds = new ArrayList<String>();
+                        for (QBCustomObject co : app.getDialogList()) {
+                            userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+                        }
+
+                        app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG);
+                    }
                 }
             }
         });
@@ -245,7 +261,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public void downloadPersistentRoom() {
         QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 
-        requestBuilder.eq(GlobalConsts.ROOM_LIST_OWNER_ID, app.getQbUser().getId());
+        requestBuilder.in(GlobalConsts.ROOM_LIST_USERS_POOL, app.getQbUser().getId());
         QBCustomObjects.getObjects(GlobalConsts.ROOM_LIST_CLASS, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
@@ -259,13 +275,13 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void createRoom(String roomName, String roomJid) {
+    public void createRoom(String roomName, String roomJid, ArrayList<String> invaiteList) {
 
         customDialog = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(GlobalConsts.ROOM_LIST_NAME, roomName);
         fields.put(GlobalConsts.ROOM_LIST_JID, roomJid);
-        fields.put(GlobalConsts.ROOM_LIST_OWNER_ID, app.getQbUser().getId());
+        fields.put(GlobalConsts.ROOM_LIST_USERS_POOL, invaiteList);
         customDialog.setFields(fields);
         customDialog.setClassName(GlobalConsts.ROOM_LIST_CLASS);
 

@@ -2,12 +2,7 @@ package com.quickblox.chat_v2.apis;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import android.util.Log;
-import com.quickblox.module.custom.model.QBCustomObject;
-import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Activity;
@@ -15,135 +10,113 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.chat.xmpp.SubscriptionListener;
 import com.quickblox.module.users.model.QBUser;
-import org.jivesoftware.smackx.muc.InvitationListener;
 
-public class RosterManager implements QBRosterListener, SubscriptionListener, InvitationListener {
-	
-	private ArrayList<String> subscribes;
-	private ArrayList<String> userIds;
-	
-	private Context context;
-	private ChatApplication app;
-	
-	private int userID;
-	
-	private OnRoomListDownloaded roomDownloadedListener;
-	
-	public RosterManager(Context context) {
-		this.context = context;
-		QBChat.startAutoSendPresence(30);
-		subscribes = new ArrayList<String>();
-		app = ChatApplication.getInstance();
-	}
-	
-	@Override
-	public void entriesAdded(Collection<Integer> addedEntriesIds) {
-	}
-	
-	@Override
-	public void entriesDeleted(Collection<Integer> deletedEntriesIds) {
-		System.out.println("entress deleted = " + deletedEntriesIds.toString());
-		
-	}
-	
-	@Override
-	public void entriesUpdated(Collection<Integer> updatedEntriesIds) {
-		System.out.println("entress updated = " + updatedEntriesIds.toString());
-		
-	}
-	
-	@Override
-	public void presenceChanged(Presence presence) {
-		System.out.println("presence = " + presence.toString());
-		
-	}
-	
-	@Override
-	public void onSubscribe(int userId) {
-		
-		subscribes.add(String.valueOf(userId));
-		((Activity) context).runOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				ChatApplication.getInstance().getQbm().getQbUsersInfoCandidate(subscribes);
-				
-			}
-		});
-		
-	}
-	
-	@Override
-	public void onUnSubscribe(int userId) {
-		for (QBUser user : app.getContactsList()) {
-			if (user.getId() == userId) {
-				app.getContactsList().remove(user);
-				refreshContactList();
-			}
-		}
-	}
-	
-	public void sendRequestToSubscribe(int userId) {
-		userID = userId;
-		((Activity) context).runOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				QBChat.subscribed(userID);
-				refreshContactList();
-			}
-		});
-	}
-	
-	public void sendRequestToUnSubscribe(int userId) {
-		
-		userID = userId;
-		((Activity) context).runOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				QBChat.unsubscribed(userID);
-				refreshContactList();
-			}
-		});
-	}
-	
-	public void refreshContactList() {
-		userIds = new ArrayList<String>();
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			public void run() {
-				
-				((Activity) context).runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (app.getQbRoster().getUsersId() != null) {
-							for (Integer in : app.getQbRoster().getUsersId()) {
-								userIds.add(String.valueOf(in));
-							}
-							app.getQbm().getQbUsersInfoContact(userIds);
-						}
-					}
-				});
-			}
-		}, 1000);
-		
-	}
-	
-	public void setRoomDownloadedListener(OnRoomListDownloaded roomDownloadedListener) {
-		this.roomDownloadedListener = roomDownloadedListener;
-	}
+public class RosterManager implements QBRosterListener, SubscriptionListener {
+
+    private ArrayList<String> subscribes;
+    private ArrayList<String> userIds;
+
+    private Context context;
+    private ChatApplication app;
+
+    private int userID;
+
+    public RosterManager(Context context) {
+        this.context = context;
+        QBChat.startAutoSendPresence(30);
+        subscribes = new ArrayList<String>();
+        app = ChatApplication.getInstance();
+    }
 
     @Override
-    public void invitationReceived(Connection conn, String room, String inviter, String reason, String password, Message message) {
-        String [] parts = room.split("_");
-        app.getMsgManager().createRoom(parts[0], room);
+    public void entriesAdded(Collection<Integer> addedEntriesIds) {
+    }
+
+    @Override
+    public void entriesDeleted(Collection<Integer> deletedEntriesIds) {
+    }
+
+    @Override
+    public void entriesUpdated(Collection<Integer> updatedEntriesIds) {
+    }
+
+    @Override
+    public void presenceChanged(Presence presence) {
+    }
+
+    @Override
+    public void onSubscribe(int userId) {
+        subscribes.add(String.valueOf(userId));
+        ((Activity) context).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                app.getQbm().getQbUsersFromCollection(subscribes);
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onUnSubscribe(int userId) {
+
+        for (QBUser user : app.getContactsList()) {
+            if (user.getId() == userId) {
+                app.getContactsList().remove(user);
+                refreshContactList();
+            }
+        }
+    }
+
+    public void sendRequestToSubscribe(int userId) {
+        userID = userId;
+        ((Activity) context).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                QBChat.subscribe(userID);
+                refreshContactList();
+            }
+        });
+    }
+
+    public void sendRequestToUnSubscribe(int userId) {
+        userID = userId;
+        ((Activity) context).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                QBChat.unsubscribed(userID);
+                refreshContactList();
+            }
+        });
+    }
+
+    public void refreshContactList() {
+        userIds = new ArrayList<String>();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+
+                ((Activity) context).runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (app.getQbRoster().getUsersId() != null) {
+                            for (Integer in : app.getQbRoster().getUsersId()) {
+                                userIds.add(String.valueOf(in));
+                            }
+                            app.getQbm().getQbUsersInfoContact(userIds);
+                        }
+                    }
+                });
+            }
+        }, 1000);
+
     }
 }

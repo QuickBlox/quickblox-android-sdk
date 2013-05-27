@@ -20,6 +20,7 @@ import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
+import com.quickblox.chat_v2.widget.TopBar;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
@@ -42,6 +43,9 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 		
 		userpic = (ImageView) findViewById(R.id.profile_userpic);
 		TextView username = (TextView) findViewById(R.id.chat_dialog_view_profile);
+
+        TopBar tb = (TopBar) findViewById(R.id.top_bar);
+        tb.setVisibility(View.GONE);
 		
 		app = ChatApplication.getInstance();
 		

@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
     <ListView
@@ -9,16 +9,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="2dp"
-            android:layout_above="@+id/new_room_btn"
-            />
+            android:layout_above="@+id/bottom_bar"/>
 
-    <Button
-            android:id="@+id/new_room_btn"
+    <RelativeLayout
+            android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2dp"
-            android:text="@string/NEW"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/darker_gray">
+
+        <Button
+                android:id="@+id/new_room_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/NEW"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -224,14 +224,11 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 				
 				@Override
 				public void onLoginError() {
-					System.out.println("Чёт не так");
 					blockUi(false);
 				}
 				
 				@Override
-				public void onLoginSuccess() {
-					System.out.println("GOOD");
-					
+				public void onLoginSuccess(){
 					loadMainScreen();
 				}
 			});
@@ -261,7 +258,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	
 	public void blockUi(boolean enable) {
 		if (enable) {
-			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.dialog_activity_search_dialog),
+			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_ui_block),
 					true);
 		} else {
 			progress.dismiss();

@@ -19,6 +19,8 @@
     <string name="splash_progressdialog">Setup Connection</string>
     <string name="splash_login_reject">Login is not successfull</string>
     <string name="splash_internet_error">Internet connection not found</string>
+    <string name="splash_ui_block">Waiting request from server</string>
+
 
     <string name="splash_dialog_name_1">Register in QuickBlox</string>
     <string name="splash_dialog_name_2">Sign in QuickBlox</string>
@@ -58,14 +60,11 @@
     <string name="contacts_inside_approve_button">Approve</string>
     <string name="contacts_inside_reject_button">Reject</string>
 
-    <string name="rooms_activity_avaiable_room">Rooms</string>
-    <string name="rooms_activity_request_room">Invites</string>
-
     <string name="new_room_activity_creating_room">Creating room</string>
 
     <string name="room_name_title">Name</string>
-    <string name="fragment_rooms_checkbox_persistent">Persistent</string>
-    <string name="members_checkbox">Only members</string>
+    <string name="room_join_fall">Join unsuccessfull</string>
+
 
     <string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user
         exit )

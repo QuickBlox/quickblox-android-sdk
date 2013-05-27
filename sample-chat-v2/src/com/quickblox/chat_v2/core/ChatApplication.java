@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Application;
@@ -47,8 +48,10 @@ public class ChatApplication extends Application {
 
     private ArrayList<QBUser> contactsList;
     private ArrayList<QBUser> contactsCandidateList;
-    private ArrayList<QBUser> inviteUserList;
+    private ArrayList<String> inviteUserList;
     private ArrayList<String> outSideInvite;
+
+    private HashMap<String,QBUser> dialogsUsers;
 
     //
     @Override
@@ -69,6 +72,7 @@ public class ChatApplication extends Application {
         contactsList = null;
         contactsCandidateList = null;
         inviteUserList = null;
+        dialogsUsers = null;
     }
 
     // DATA
@@ -161,11 +165,11 @@ public class ChatApplication extends Application {
         this.qbRoster = qbRoster;
     }
 
-    public ArrayList<QBUser> getInviteUserList() {
+    public ArrayList<String> getInviteUserList() {
         return inviteUserList;
     }
 
-    public void setInviteUserList(ArrayList<QBUser> inviteUserList) {
+    public void setInviteUserList(ArrayList<String> inviteUserList) {
         this.inviteUserList = inviteUserList;
     }
 
@@ -175,5 +179,13 @@ public class ChatApplication extends Application {
 
     public void setOutSideInvite(ArrayList<String> outSideInvite) {
         this.outSideInvite = outSideInvite;
+    }
+
+    public HashMap<String, QBUser> getDialogsUsers() {
+        return dialogsUsers;
+    }
+
+    public void setDialogsUsers(HashMap<String, QBUser> dialogsUsers) {
+        this.dialogsUsers = dialogsUsers;
     }
 }

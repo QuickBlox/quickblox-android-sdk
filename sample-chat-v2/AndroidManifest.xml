@@ -89,7 +89,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/applicationId"/>
-        <activity android:name=".ui.activities.FriendProfileActivity"></activity>
+        <activity android:name=".ui.activities.UserProfileActivity"></activity>
 
 
     </application>
