@@ -58,7 +58,7 @@ public class UserProfileActivity extends Activity implements OnUserProfileDownlo
 
     private void getFullUserInfo() {
         int uid = i.getIntExtra(GlobalConsts.FRIEND_ID, 0);
-        app.getQbm().setFriendProvileListener(this);
+        app.getQbm().setUserProfileListener(this);
         if (uid != 0) {
             System.out.println("uid = " + uid);
             app.getQbm().getSingleUserInfo(uid);

@@ -106,7 +106,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     private void downloadStartUpInfo(){
 
-        app.getQbm().setFriendProvileListener(this);
+        app.getQbm().setUserProfileListener(this);
 
     }
 

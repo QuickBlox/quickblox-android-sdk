@@ -103,7 +103,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
             }
             i.putExtra(GlobalConsts.DIALOG_ID, tmpDialogId);
-            i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
+            i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.CONTACTS_ACTIVITY);
 
             startActivity(i);
         }
@@ -135,7 +135,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
     @Override
     protected void onResume() {
         super.onResume();
-        app.getQbm().setFriendProvileListener(this);
+        app.getQbm().setUserProfileListener(this);
     }
 
     @Override

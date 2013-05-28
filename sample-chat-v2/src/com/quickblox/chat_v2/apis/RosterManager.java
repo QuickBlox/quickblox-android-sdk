@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Activity;
@@ -55,7 +56,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
             @Override
             public void run() {
-                app.getQbm().getQbUsersFromCollection(subscribes);
+                app.getQbm().getQbUsersFromCollection(subscribes, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE);
 
             }
         });
@@ -111,7 +112,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
                             for (Integer in : app.getQbRoster().getUsersId()) {
                                 userIds.add(String.valueOf(in));
                             }
-                            app.getQbm().getQbUsersInfoContact(userIds);
+                            app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);
                         }
                     }
                 });

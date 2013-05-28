@@ -40,7 +40,7 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh {
 	public void onResume() {
 		super.onResume();
 		app.getMsgManager().setDialogRefreshListener(this);
-		app.getMsgManager().downloadDialogList();
+		app.getMsgManager().downloadDialogList(true);
 	}
 	
 	private void initialize() {
@@ -67,7 +67,7 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh {
 			dialogsListView.setAdapter(dialogsAdapter);
 
 		} else {
-			app.getMsgManager().downloadDialogList();
+			app.getMsgManager().downloadDialogList(true);
 		}
 	}
 	

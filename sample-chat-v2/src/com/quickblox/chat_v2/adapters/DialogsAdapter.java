@@ -18,9 +18,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.activities.ChatActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 2:27
@@ -88,14 +90,14 @@ public class DialogsAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			int position = (Integer) v.getTag();
-			int userId = Integer.parseInt(dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+
+            String userId = dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString();
 			loadChatActivity(userId, dialogList.get(position).getCustomObjectId());
 		}
 	};
 	
-	private void loadChatActivity(int userId, String dialogId) {
+	private void loadChatActivity(String userId, String dialogId) {
 		Intent intent = new Intent(context, ChatActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
 		intent.putExtra(GlobalConsts.USER_ID, userId);
 		intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);

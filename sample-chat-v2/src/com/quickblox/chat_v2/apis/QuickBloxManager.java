@@ -54,12 +54,17 @@ public class QuickBloxManager {
                 QBUserPagedResult usersResult = (QBUserPagedResult) result;
 
                 switch (currentContext) {
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG): {
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG):
+
                         for (QBUser qu : usersResult.getUsers()) {
                             app.getDialogsUsers().put(String.valueOf(qu.getId()), qu);
                         }
-                    }
-                    break;
+
+                        break;
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE):
+                        app.setContactsList(usersResult.getUsers());
+                        break;
+
                     case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS):
                         app.setContactsCandidateList(usersResult.getUsers());
                         break;
@@ -113,7 +118,6 @@ public class QuickBloxManager {
 
     public void downloadQBFile(QBUser currentUser) {
         if (currentUser.getFileId() == null) {
-            System.out.println("file id = null");
             return;
         }
         File targetFile = new File(context.getCacheDir(), String.valueOf(currentUser.getFileId()) + ".jpg");
@@ -187,7 +191,7 @@ public class QuickBloxManager {
 
     // LISTENERS
 
-    public void setFriendProvileListener(OnUserProfileDownloaded friendProvileListener) {
+    public void setUserProfileListener(OnUserProfileDownloaded friendProvileListener) {
         this.userProfileListener = friendProvileListener;
     }
 

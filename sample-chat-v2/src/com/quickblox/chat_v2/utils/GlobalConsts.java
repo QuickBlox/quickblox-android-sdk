@@ -17,8 +17,9 @@ public class GlobalConsts {
     public static final String ATTACH_INDICATOR = "<Attach file>";
     public static final String REGEX_MESSAGE_AUTHOR_ID = "^[^_]*_([^@]*)@.*$";
 
-    public static final int DOWNLOAD_LIST_FOR_DIALOG = 0;
-    public static final int DOWNLOAD_LIST_FOR_CONTACTS = 1;
+    public static final byte DOWNLOAD_LIST_FOR_DIALOG = 0;
+    public static final byte DOWNLOAD_LIST_FOR_CONTACTS = 1;
+    public static final byte DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE = 2;
 
     //dialog section
     public static final String DIALOGS_CLASS = "dialogs";
@@ -34,7 +35,6 @@ public class GlobalConsts {
     
     public static final String DIALOGS = "dialogs";
     public static final String USER_ID_FIELD = "user_id";
-    public static final String USER_FULL_NAME = "user_fullname";
 
     public static final String ROOM_LIST_CLASS = "roomlist";
     public static final String ROOM_LIST_NAME = "name";
@@ -54,5 +54,6 @@ public class GlobalConsts {
     public static final String PREVIOUS_ACTIVITY = "previous_activity";
     public static final byte ROOM_ACTIVITY = 0;
     public static final byte DIALOG_ACTIVITY = 1;
+    public static final byte CONTACTS_ACTIVITY = 2;
     public static final String IS_NEW_ROOM = "is_new_room";
 }

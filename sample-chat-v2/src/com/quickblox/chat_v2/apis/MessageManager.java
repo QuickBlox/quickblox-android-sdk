@@ -82,7 +82,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
                     @Override
                     public void run() {
-                        app.getQbm().setFriendProvileListener(MessageManager.this);
+                        app.getQbm().setUserProfileListener(MessageManager.this);
                         app.getQbm().getSingleUserInfo(opponentId);
 
                     }
@@ -206,9 +206,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                     if (isNeedDownloadUser) {
                         ArrayList<String> userIds = new ArrayList<String>();
                         for (QBCustomObject co : app.getDialogList()) {
-                            userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
-                        }
+                            if (!app.getDialogsUsers().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
 
+                                userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+                            }
+                        }
                         app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG);
                     }
                 }
