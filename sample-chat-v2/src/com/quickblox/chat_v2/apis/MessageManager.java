@@ -3,8 +3,15 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.*;
+import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
+import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
+import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
+import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -15,6 +22,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
 import com.quickblox.module.users.model.QBUser;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -40,6 +48,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private int openChatOpponentId;
     private QBCustomObject customDialog;
     private boolean isNeedDownloadUser;
+    private int authorMessageId;
 
     private OnMessageListDownloaded listDownloadedListener;
     private OnDialogCreateComplete dialogCreateListener;
@@ -47,13 +56,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnDialogListRefresh dialogRefreshListener;
     private OnRoomListDownloaded roomListDownloadListener;
 
-    private Pattern idFromJidPattern;
-    private Matcher matcher;
+
 
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
-        idFromJidPattern = Pattern.compile(GlobalConsts.REGEX_MESSAGE_AUTHOR_ID);
     }
 
     // Глобальный слушатель
@@ -63,20 +70,19 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
 
-        matcher = idFromJidPattern.matcher(message.getFrom());
-        sendToQB(Integer.parseInt(matcher.group(0)), message.getBody(), Integer.parseInt(matcher.group(0)));
-
-        if (newMessageListener != null && Integer.parseInt(matcher.group(0)) == openChatOpponentId) {
+        String[] partsId = message.getFrom().split("-");
+        authorMessageId = Integer.parseInt(partsId[0]);
+        if (newMessageListener != null && authorMessageId == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
+            sendToQB(authorMessageId, message.getBody(), authorMessageId);
         }
-
-        QBCustomObject localResult = dialogReview(Integer.parseInt(matcher.group(0)));
+        QBCustomObject localResult = dialogReview(authorMessageId);
 
         if (localResult != null) {
             updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
         } else {
-            if (tmpIdforReview == null && !tmpIdforReview.equals(matcher.group(0))) {
-                tmpIdforReview = matcher.group(0);
+            if (tmpIdforReview == null && !tmpIdforReview.equals(String.valueOf(authorMessageId))) {
+                tmpIdforReview = String.valueOf(authorMessageId);
                 backgroundMessage = message.getBody();
                 ((Activity) context).runOnUiThread(new Runnable() {
 
@@ -97,7 +103,12 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             tmpUser.setFileId(Integer.parseInt(parts[1]));
             app.getQbm().downloadQBFile(tmpUser);
         }
+
     }
+
+
+
+
 
     // send messages into xmpp & customobject
     public void sendSingleMessage(Integer userId, String messageBody, String dialogId) {
@@ -136,7 +147,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                 QBCustomObjects.createObject(custobj, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        System.out.println("Сообщение отправлено на QB");
                     }
                 });
             }
@@ -206,7 +216,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                     if (isNeedDownloadUser) {
                         ArrayList<String> userIds = new ArrayList<String>();
                         for (QBCustomObject co : app.getDialogList()) {
-                            if (!app.getDialogsUsers().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
+                            if (!app.getDialogsUsersMap().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
 
                                 userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
                             }
@@ -261,13 +271,14 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     //download custom object (private room) section
     public void downloadPersistentRoom() {
-        QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 
+        QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
         requestBuilder.in(GlobalConsts.ROOM_LIST_USERS_POOL, app.getQbUser().getId());
         QBCustomObjects.getObjects(GlobalConsts.ROOM_LIST_CLASS, requestBuilder, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
+
                     app.setUserPresentRoomList(((QBCustomObjectLimitedResult) result).getCustomObjects());
                     if (roomListDownloadListener != null) {
                         roomListDownloadListener.roomListDownloaded();

@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import android.util.Log;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import org.jivesoftware.smack.packet.Presence;
 
@@ -19,7 +20,6 @@ import com.quickblox.module.users.model.QBUser;
 public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     private ArrayList<String> subscribes;
-    private ArrayList<String> userIds;
 
     private Context context;
     private ChatApplication app;
@@ -99,7 +99,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
     }
 
     public void refreshContactList() {
-        userIds = new ArrayList<String>();
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -108,8 +108,11 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
                     @Override
                     public void run() {
+
+                        ArrayList<String> userIds = new ArrayList<String>();
                         if (app.getQbRoster().getUsersId() != null) {
                             for (Integer in : app.getQbRoster().getUsersId()) {
+                                Log.d("ROSTER", "user = "+in);
                                 userIds.add(String.valueOf(in));
                             }
                             app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);

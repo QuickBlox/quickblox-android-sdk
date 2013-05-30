@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:background="@android:color/darker_gray"
                 android:layout_height="wrap_content">
 
-
     <TextView
-        android:id="@+id/screen_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dialogs"
-        android:layout_centerInParent="true"/>
+            android:id="@+id/screen_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dialogs"
+            android:layout_centerInParent="true"
+            android:textColor="#FFF"/>
 
     <ImageView
-        android:id="@+id/user_avatar_iv"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:padding="5dp"
-        android:src="@drawable/com_facebook_profile_default_icon" />
+            android:id="@+id/user_avatar_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:src="@drawable/com_facebook_profile_default_icon"/>
 
-</RelativeLayout>
+</merge>

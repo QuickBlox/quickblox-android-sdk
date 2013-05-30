@@ -13,7 +13,6 @@ import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     private static final String CONTACTS_TAB = "tab3";
     private static final String PROFILE_TAB = "tab4";
 
-    private QBChatRoster qbRoster;
     private RosterManager rosterManager;
     private MessageManager msgManager;
     private PictureManager picManager;
@@ -56,12 +54,13 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         app.setQbm(qbm);
         app.setContactsList(new ArrayList<QBUser>());
         app.setContactsCandidateList(new ArrayList<QBUser>());
+        app.setContactsMap(new HashMap<String, QBUser>());
 
         app.setInviteUserList(new ArrayList<String>());
         app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
 
         app.setOutSideInvite(new ArrayList<String>());
-        app.setDialogsUsers(new HashMap<String, QBUser>());
+        app.setDialogsUsersMap(new HashMap<String, QBUser>());
 
         registerRoster();
     }
@@ -94,19 +93,21 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         rosterManager = new RosterManager(MainActivity.this);
         app.setRstManager(rosterManager);
 
-        qbRoster = QBChat.registerRoster(rosterManager);
-        app.setQbRoster(qbRoster);
+        app.setQbRoster(QBChat.registerRoster(rosterManager));
         QBChat.registerSubscription(rosterManager);
-        rosterManager.refreshContactList();
-
         QBChat.openXmmpChat(msgManager);
-        app.getMsgManager().downloadPersistentRoom();
         downloadStartUpInfo();
     }
 
     private void downloadStartUpInfo(){
-
-        app.getQbm().setUserProfileListener(this);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                app.getQbm().setUserProfileListener(MainActivity.this);
+                app.getMsgManager().downloadPersistentRoom();
+                rosterManager.refreshContactList();
+            }
+        });
 
     }
 

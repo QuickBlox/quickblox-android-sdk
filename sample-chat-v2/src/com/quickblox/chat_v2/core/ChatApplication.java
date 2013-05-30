@@ -7,6 +7,10 @@ import java.util.List;
 import android.app.Application;
 import android.graphics.Bitmap;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
@@ -43,15 +47,19 @@ public class ChatApplication extends Application {
 
     private QBChatRoster qbRoster;
 
-    private List<QBCustomObject> dialogList;
-    private List<QBCustomObject> userPresentRoomList;
+    private ArrayList<QBCustomObject> dialogList;
+    private ArrayList<QBCustomObject> userPresentRoomList;
 
     private ArrayList<QBUser> contactsList;
     private ArrayList<QBUser> contactsCandidateList;
     private ArrayList<String> inviteUserList;
     private ArrayList<String> outSideInvite;
 
-    private HashMap<String,QBUser> dialogsUsers;
+    private HashMap<String,QBUser> dialogsUsersMap;
+    private HashMap<String, QBUser> contactsMap;
+
+    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+            .displayer(new RoundedBitmapDisplayer(20)).build();
 
     //
     @Override
@@ -72,7 +80,8 @@ public class ChatApplication extends Application {
         contactsList = null;
         contactsCandidateList = null;
         inviteUserList = null;
-        dialogsUsers = null;
+        dialogsUsersMap = null;
+        contactsMap = null;
     }
 
     // DATA
@@ -109,11 +118,11 @@ public class ChatApplication extends Application {
         this.msgManager = msgManager;
     }
 
-    public List<QBCustomObject> getDialogList() {
+    public ArrayList<QBCustomObject> getDialogList() {
         return dialogList;
     }
 
-    public void setDialogList(List<QBCustomObject> dialogList) {
+    public void setDialogList(ArrayList<QBCustomObject> dialogList) {
         this.dialogList = dialogList;
     }
 
@@ -133,11 +142,11 @@ public class ChatApplication extends Application {
         this.rstManager = rstManager;
     }
 
-    public List<QBCustomObject> getUserPresentRoomList() {
+    public ArrayList<QBCustomObject> getUserPresentRoomList() {
         return userPresentRoomList;
     }
 
-    public void setUserPresentRoomList(List<QBCustomObject> userPresentRoomList) {
+    public void setUserPresentRoomList(ArrayList<QBCustomObject> userPresentRoomList) {
         this.userPresentRoomList = userPresentRoomList;
     }
 
@@ -181,11 +190,26 @@ public class ChatApplication extends Application {
         this.outSideInvite = outSideInvite;
     }
 
-    public HashMap<String, QBUser> getDialogsUsers() {
-        return dialogsUsers;
+    public HashMap<String, QBUser> getDialogsUsersMap() {
+        return dialogsUsersMap;
     }
 
-    public void setDialogsUsers(HashMap<String, QBUser> dialogsUsers) {
-        this.dialogsUsers = dialogsUsers;
+    public void setDialogsUsersMap(HashMap<String, QBUser> dialogsUsersMap) {
+        this.dialogsUsersMap = dialogsUsersMap;
+    }
+    public HashMap<String, QBUser> getContactsMap() {
+        return contactsMap;
+    }
+
+    public void setContactsMap(HashMap<String, QBUser> contactsMap) {
+        this.contactsMap = contactsMap;
+    }
+
+    public DisplayImageOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(DisplayImageOptions options) {
+        this.options = options;
     }
 }

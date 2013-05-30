@@ -21,6 +21,7 @@ import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.chat_v2.widget.TopBar;
+import com.quickblox.module.users.model.QBUser;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
@@ -46,6 +47,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
         TopBar tb = (TopBar) findViewById(R.id.top_bar);
         tb.setVisibility(View.GONE);
+        tb.setFriendParams(new QBUser(), false);
 		
 		app = ChatApplication.getInstance();
 		

@@ -4,7 +4,8 @@
                 android:layout_height="80dp"
                 android:orientation="horizontal"
                 android:visibility="visible"
-                android:weightSum="5">
+                android:weightSum="5"
+                android:background="#FFF">
 
     <ImageView
             android:id="@+id/contacts_inside_userpic"
@@ -28,7 +29,8 @@
             android:visibility="visible"
             android:layout_alignParentTop="true"
             android:layout_marginTop="2dp"
-            android:layout_toRightOf="@+id/contacts_inside_userpic"/>
+            android:layout_toRightOf="@+id/contacts_inside_userpic"
+            android:textColor="#000"/>
 
     <CheckBox
             android:layout_width="wrap_content"

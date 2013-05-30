@@ -12,17 +12,29 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.*;
+import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
+import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
+import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
+import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
+import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -34,6 +46,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete {
 
@@ -62,16 +76,17 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private QBChatRoom chatRoom;
 
     private String dialogFreezingStatus;
-    private QBUser extraOpponentInfo;
 
     private MessageManager msgManager;
     private ChatApplication app;
+
+    private Pattern idFromJidPattern;
+    private Matcher matcher;
 
     //new arch
 
     private QBUser opponentUser;
     private byte previousActivity;
-    private static final String GTAG = "ChatACTIVITY";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,25 +98,29 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         msgManager = app.getMsgManager();
         msgManager.setListDownloadedListener(this);
         messageQuery = new ArrayList<String>();
+
+        idFromJidPattern = Pattern.compile(GlobalConsts.REGEX_MESSAGE_AUTHOR_ID);
         initViews();
 
     }
 
     @Override
     public void onBackPressed() {
+
+
         if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
             msgManager.updateDialogLastMessage(lastMsg, dialogId);
         } else {
             app.getMsgManager().downloadPersistentRoom();
         }
-        finish();
-        super.onBackPressed();
+        if (chatRoom != null){
+            chatRoom.leave();
+        }
+        this.finish();
     }
 
     private void initViews() {
         topBar = (TopBar) findViewById(R.id.top_bar);
-        topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, true);
-
         meLabel = (TextView) findViewById(R.id.meLabel);
         friendLabel = (TextView) findViewById(R.id.friendLabel);
 
@@ -115,6 +134,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
 
         switch (previousActivity) {
+
+
             case GlobalConsts.ROOM_ACTIVITY:
 
                 QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
@@ -130,12 +151,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.DIALOG_ACTIVITY:
 
-                int userId = getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
-                opponentUser = app.getDialogsUsers().get(String.valueOf(userId));
+                String userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
+                opponentUser = app.getDialogsUsersMap().get(userId);
+
                 dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 
-//                // под большим вопросом
-                topBar.setFriendParams(opponentUser.getId());
+                topBar.setFriendParams(opponentUser, app.getContactsMap().containsValue(opponentUser));
 
                 msgManager.getDialogMessages(opponentUser.getId());
                 msgManager.setNewMessageListener(this, opponentUser.getId());
@@ -149,8 +170,13 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 int currentPosition = getIntent().getIntExtra(GlobalConsts.ARRAY_POSITION, 0);
                 opponentUser = arrayIndicator ? app.getContactsList().get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
 
+                topBar.setFriendParams(opponentUser, true);
 
+                msgManager.getDialogMessages(opponentUser.getId());
+                msgManager.setNewMessageListener(this, opponentUser.getId());
 
+                friendLabel.setText(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
+                sendButton.setOnClickListener(onDialogSendBtnClick);
                 break;
         }
 
@@ -168,19 +194,9 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
         );
 
-        meLabel.setText(app.getQbUser().
+        meLabel.setText(app.getQbUser().getFullName());
 
-                getFullName()
-
-        );
-
-        if (app.getInviteUserList().
-
-                size()
-
-                > 1)
-
-        {
+        if (app.getInviteUserList().size() > 1) {
             chatRoom.invite(app.getInviteUserList());
             app.getInviteUserList().clear();
         }
@@ -339,13 +355,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             incomeHistoryRoomMessage = (Message) packet;
             StringBuilder builder = new StringBuilder();
-
-
-            String[] splits = incomeHistoryRoomMessage.getFrom().split("/");
-            String[] parts = splits[1].split("-");
-
+            matcher = idFromJidPattern.matcher(incomeHistoryRoomMessage.getFrom());
             builder.setLength(0);
-            builder.append(parts[0]).append(" : ").append(incomeHistoryRoomMessage.getBody());
+            builder.append(matcher.group(0)).append(" : ").append(incomeHistoryRoomMessage.getBody());
+
+            Log.w("CHAT ACTIVITY", "export message = "+builder.toString());
 
             messageQuery.add(builder.toString());
 
@@ -432,4 +446,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         dialogFreezingStatus = null;
         msgManager.setDialogCreateListener(null);
     }
+
+
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.ContactsAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -34,7 +35,6 @@ public class NewRoomActivity extends ListActivity {
     private ProgressDialog progress;
 
     private StringBuilder sb;
-    private QBChatRoom chatRoom;
     private String roomName;
 
     @Override
@@ -64,7 +64,7 @@ public class NewRoomActivity extends ListActivity {
             String roomName = roomNameEditText.getText().toString();
             if (!TextUtils.isEmpty(roomName)) {
 
-                loadChatActivity();
+                finishArctivityRecivedResult();
 
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.room_name_emty_msg), Toast.LENGTH_SHORT).show();
@@ -72,21 +72,24 @@ public class NewRoomActivity extends ListActivity {
         }
     };
 
-    private void loadChatActivity() {
+    private void finishArctivityRecivedResult() {
+        createRoomInfoAndSendtoQb();
+
+        Intent intent = new Intent();
+        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
+        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private void createRoomInfoAndSendtoQb() {
         roomName = roomNameEditText.getText().toString();
 
-        chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
+        QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
 
         app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id))
                 .append(roomName).append("_").append("@muc.quickblox.com").toString(), app.getInviteUserList());
         sb.setLength(0);
-
-        Intent intent = new Intent(NewRoomActivity.this, ChatActivity.class);
-        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
-        startActivity(intent);
-        finish();
     }
-
 
 }

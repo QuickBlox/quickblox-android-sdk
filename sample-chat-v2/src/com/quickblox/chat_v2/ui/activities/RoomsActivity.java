@@ -3,12 +3,12 @@ package com.quickblox.chat_v2.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -16,6 +16,7 @@ import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
     private RoomListAdapter roomListAdapter;
 
     private ChatApplication app;
+    private static final int REQUEST_NEW_ROOM = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -59,12 +61,30 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(RoomsActivity.this, NewRoomActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_NEW_ROOM);
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_NEW_ROOM:
+                if (resultCode != Activity.RESULT_CANCELED) {
+                    Intent intent = new Intent(this, ChatActivity.class);
+                    intent.putExtras(data.getExtras());
+                    startActivity(intent);
+                }
+
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
     private void applyRoomList(List<QBCustomObject> roomList) {
-        roomListAdapter = new RoomListAdapter(this, roomList);
+
+        roomListAdapter = new RoomListAdapter(this, (ArrayList) roomList);
         roomListLv.setAdapter(roomListAdapter);
         refreshData();
     }
@@ -73,7 +93,7 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-              Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
+            Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
             i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
             i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());
             i.putExtra(GlobalConsts.IS_NEW_ROOM, false);

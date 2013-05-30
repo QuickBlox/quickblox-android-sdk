@@ -5,15 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.activities.UserProfileActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.module.users.model.QBUser;
 
 public class TopBar extends RelativeLayout {
 
@@ -22,96 +23,78 @@ public class TopBar extends RelativeLayout {
 
     private TextView screenTitle;
     private ImageView userAvatar;
-    private Context context;
-
-    private String fragmentName;
     private String[] data;
+    private QBUser friend;
 
-    private int friendId;
-
-    public TopBar(Context context, AttributeSet attrs, boolean isContacts) {
+    public TopBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        this.context = context;
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.top_bar, null);
-        this.addView(view);
-
-        if (isContacts) {
-            data = new String[]{context.getResources().getString(R.string.chat_dialog_view_profile), context.getResources().getString(R.string.chat_dialog_add_contact)};
-        } else {
-            data = new String[]{context.getResources().getString(R.string.chat_dialog_view_profile)};
-        }
-
-        initViews(view);
+        inflate(context, R.layout.top_bar, this);
+        setBackgroundResource(android.R.color.darker_gray);
+        initViews();
     }
 
-    private void initViews(View view) {
+    private void initViews() {
 
-        screenTitle = (TextView) view.findViewById(R.id.screen_title);
-        userAvatar = (ImageView) view.findViewById(R.id.user_avatar_iv);
+        screenTitle = (TextView) findViewById(R.id.screen_title);
+        userAvatar = (ImageView) findViewById(R.id.user_avatar_iv);
         userAvatar.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-
-                AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                adb.setTitle(R.string.chat_dialog_name);
-
-                adb.setItems(data, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        switch (which) {
-                            case 0:
-                                Intent i = new Intent(context, UserProfileActivity.class);
-                                i.putExtra(GlobalConsts.FRIEND_ID, friendId);
-                                context.startActivity(i);
-                                break;
-
-                            case 1:
-                                ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friendId);
-                                break;
-                        }
-                    }
-                });
-
-                adb.create().show();
+                showDialog(data);
             }
 
         });
 
     }
 
-    public void setFragmentParams(String fragmentName, boolean isUserPicVisible) {
-        this.fragmentName = fragmentName;
-        screenTitle.setText(fragmentName);
+    private void showDialog(String[] data) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+        adb.setTitle(R.string.chat_dialog_name);
 
-        if (!isUserPicVisible) {
-            userAvatar.setVisibility(View.INVISIBLE);
-            userAvatar.setClickable(false);
+        adb.setItems(data, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (which) {
+                    case 0:
+                        Intent i = new Intent(getContext(), UserProfileActivity.class);
+                        i.putExtra(GlobalConsts.FRIEND_ID, friend.getId());
+                        getContext().startActivity(i);
+                        break;
+
+                    case 1:
+                        ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friend.getId());
+                        break;
+                }
+            }
+        });
+
+        adb.create().show();
+    }
+
+    public void setFragmentParams(String fragmentName, int isUserPicVisible, int isTitleVisible) {
+        if (fragmentName != null) {
+            screenTitle.setText(fragmentName);
         }
-
-        initExtraViews();
-    }
-
-    public void setFriendParams(int friendId) {
-        this.friendId = friendId;
-    }
-
-    private void initExtraViews() {
-        if (fragmentName.equals(CHAT_ACTIVITY)) {
-            // TODO load image
-        }
-    }
-
-    public void setFriendProfileConfiguration() {
-        userAvatar.setVisibility(View.INVISIBLE);
+        userAvatar.setVisibility(isUserPicVisible);
         userAvatar.setClickable(false);
-        screenTitle.setVisibility(View.INVISIBLE);
+        screenTitle.setVisibility(isTitleVisible);
+
 
     }
+
+    public void setFriendParams(QBUser friend, boolean isContacts) {
+        this.friend = friend;
+
+        if (isContacts) {
+            data = new String[]{getContext().getResources().getString(R.string.chat_dialog_view_profile)};
+        } else {
+            data = new String[]{getContext().getResources().getString(R.string.chat_dialog_view_profile), getContext().getResources().getString(R.string.chat_dialog_add_contact)};
+        }
+    }
+
+
 }

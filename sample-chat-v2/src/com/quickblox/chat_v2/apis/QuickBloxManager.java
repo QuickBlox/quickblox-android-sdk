@@ -3,6 +3,8 @@ package com.quickblox.chat_v2.apis;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
@@ -20,7 +22,12 @@ import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
 import com.quickblox.module.users.result.QBUserResult;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public class QuickBloxManager {
@@ -33,7 +40,6 @@ public class QuickBloxManager {
 
     private boolean pictureMode;
     private int currentFileId;
-    private int currentContext;
 
     private Context context;
     private QBUser qbuser;
@@ -44,30 +50,36 @@ public class QuickBloxManager {
 
     }
 
-    public void getQbUsersFromCollection(List<String> usersIds, int contexts) {
-        currentContext = contexts;
+    public synchronized void getQbUsersFromCollection(List<String> usersIds, byte contexts) {
+
         QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
 
             @Override
-            public void onComplete(Result result) {
-                super.onComplete(result);
+            public void onComplete(Result result, Object context) {
+
                 QBUserPagedResult usersResult = (QBUserPagedResult) result;
 
-                switch (currentContext) {
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG):
+                switch ((Byte) context) {
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG): {
 
                         for (QBUser qu : usersResult.getUsers()) {
-                            app.getDialogsUsers().put(String.valueOf(qu.getId()), qu);
+                            app.getDialogsUsersMap().put(String.valueOf(qu.getId()), qu);
+                        }
+                    }
+                    break;
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE):
+                        app.setContactsCandidateList(usersResult.getUsers());
+                        break;
+
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS): {
+                        app.setContactsList(usersResult.getUsers());
+                        Log.d("QBM", "CLs ="+app.getContactsList().size());
+                        for (QBUser contact : usersResult.getUsers()) {
+                            app.getContactsMap().put(String.valueOf(contact), contact);
                         }
 
                         break;
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE):
-                        app.setContactsList(usersResult.getUsers());
-                        break;
-
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS):
-                        app.setContactsCandidateList(usersResult.getUsers());
-                        break;
+                    }
                 }
 
 
@@ -75,7 +87,7 @@ public class QuickBloxManager {
                     userProfileListener.downloadComlete(null);
                 }
             }
-        });
+        }, contexts);
 
     }
 
