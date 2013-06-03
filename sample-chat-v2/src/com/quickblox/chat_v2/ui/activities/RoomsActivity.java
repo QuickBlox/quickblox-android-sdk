@@ -14,6 +14,7 @@ import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 
     private ListView roomListLv;
     private Button newRoomBtn;
-
     private RoomListAdapter roomListAdapter;
 
     private ChatApplication app;
@@ -50,11 +50,13 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
     }
 
     private void initViews() {
+
         roomListLv = (ListView) findViewById(R.id.room_list_lv);
         roomListLv.setOnItemClickListener(itemClick);
         newRoomBtn = (Button) findViewById(R.id.new_room_btn);
         newRoomBtn.setOnClickListener(newRoomBtnClickListener);
         applyRoomList(app.getUserPresentRoomList());
+
     }
 
     private View.OnClickListener newRoomBtnClickListener = new View.OnClickListener() {

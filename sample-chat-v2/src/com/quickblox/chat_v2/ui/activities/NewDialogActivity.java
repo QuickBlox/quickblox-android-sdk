@@ -58,7 +58,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 	
 	private void initViews() {
 		topBar = (TopBar) findViewById(R.id.top_bar);
-		topBar.setFragmentParams(TopBar.NEW_DIALOG_ACTIVITY, View.INVISIBLE, View.VISIBLE);
+		topBar.setFragmentParams(TopBar.NEW_DIALOG_ACTIVITY, View.INVISIBLE);
 		contactListView = (ListView) findViewById(R.id.contacts_listView);
         contactListView.setOnItemClickListener(this);
 		searchBtn = (Button) findViewById(R.id.search_button);
@@ -71,7 +71,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 		public void onClick(View v) {
 			if (!TextUtils.isEmpty(contactName.getText().toString())) {
 				getContactList();
-				blockUi(true);
+				blockUi(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_search_user));
 			}
 		}
 	};
@@ -86,7 +86,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 					refreshContactList(new ArrayList<QBUser>());
 				    Toast.makeText(NewDialogActivity.this, getResources().getString(R.string.dialog_activity_reject), Toast.LENGTH_LONG).show();
 				}
-				blockUi(false);
+				NewDialogActivity.this.blockUi(false, new String());
 			}
 		});
 	}
@@ -103,6 +103,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         QBUser user = (QBUser) adapterView.getItemAtPosition(i);
         app.getMsgManager().setDialogCreateListener(this);
         app.getMsgManager().createDialog(user, true);
+        blockUi(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_create_dialog));
     }
 
     @Override
@@ -139,22 +140,19 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         finishActivityReceivedResult(tUserId, createdDialogId);
     }
 
-    public void blockUi(boolean enable) {
-        if (progress == null) {
-            return;
-        }
+    public void blockUi(boolean enable, String progressText) {
 
         if (enable) {
-            progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.new_dialog_activity_create_dialog), true);
+            progress = ProgressDialog.show(NewDialogActivity.this, getString(R.string.app_name), progressText, true);
         } else {
-            if(progress.isShowing()){
+            if(progress.isShowing() && progress != null){
                 progress.dismiss();
             }
         }
     }
 
     private void finishActivityReceivedResult(int userId, String dialogId) {
-        blockUi(false);
+        blockUi(false, new String());
         Intent intent = new Intent();
         intent.putExtra(GlobalConsts.USER_ID, String.valueOf(userId));
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);

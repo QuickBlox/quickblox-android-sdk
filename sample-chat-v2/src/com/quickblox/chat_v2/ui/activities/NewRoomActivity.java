@@ -18,12 +18,6 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoom;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Andrew Dmitrenko
- * Date: 4/12/13
- * Time: 4:38 PM
- */
 public class NewRoomActivity extends ListActivity {
 
     private EditText roomNameEditText;

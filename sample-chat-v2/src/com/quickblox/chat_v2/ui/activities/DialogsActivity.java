@@ -112,7 +112,6 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
         intent.putExtra(GlobalConsts.USER_ID, userId);
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         startActivity(intent);
-        finish();
     }
 
 }

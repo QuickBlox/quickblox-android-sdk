@@ -45,7 +45,8 @@
     
     <string name="dialog_activity_reject">User not found!</string>
     <string name="dialog_activity_search_dialog">Searching</string>
-    
+
+    <string name="new_dialog_activity_search_user">Searching user</string>
     <string name="new_dialog_activity_create_dialog">Create new dialog</string>
     
     <string name="fragment_new_button">New</string>

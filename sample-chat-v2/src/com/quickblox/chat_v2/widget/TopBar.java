@@ -16,10 +16,14 @@ import com.quickblox.chat_v2.ui.activities.UserProfileActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.users.model.QBUser;
 
+import java.util.Random;
+
 public class TopBar extends RelativeLayout {
 
-    public static final String CHAT_ACTIVITY = "Chat";
+    public static final String CHAT_ACTIVITY = "Dialog";
     public static final String NEW_DIALOG_ACTIVITY = "New Dialog";
+    public static final String PROFILE_ACTIVITY = "Profile";
+    public static final String ROOM_ACTIVITY = "Group chat";
 
     private TextView screenTitle;
     private ImageView userAvatar;
@@ -61,7 +65,7 @@ public class TopBar extends RelativeLayout {
                 switch (which) {
                     case 0:
                         Intent i = new Intent(getContext(), UserProfileActivity.class);
-                        i.putExtra(GlobalConsts.FRIEND_ID, friend.getId());
+                        i.putExtra(GlobalConsts.FRIEND_ID, String.valueOf(friend.getId()));
                         getContext().startActivity(i);
                         break;
 
@@ -75,15 +79,12 @@ public class TopBar extends RelativeLayout {
         adb.create().show();
     }
 
-    public void setFragmentParams(String fragmentName, int isUserPicVisible, int isTitleVisible) {
+    public void setFragmentParams(String fragmentName, int isUserPicVisible) {
         if (fragmentName != null) {
             screenTitle.setText(fragmentName);
         }
         userAvatar.setVisibility(isUserPicVisible);
         userAvatar.setClickable(false);
-        screenTitle.setVisibility(isTitleVisible);
-
-
     }
 
     public void setFriendParams(QBUser friend, boolean isContacts) {

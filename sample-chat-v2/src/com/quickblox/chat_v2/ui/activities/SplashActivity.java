@@ -63,6 +63,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		blockUi(true);
 		
 		fbm = new FaceBookManager();
+        ChatApplication.getInstance().setFbm(fbm);
 		
 		OnClickListener clickButtonListener = new OnClickListener() {
 			
@@ -184,7 +185,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		if (result.isSuccess()) {
 			
 			QBUser qbUser = ((QBUserResult) result).getUser();
-			SharedPreferencesHelper.setLogin(getBaseContext(), qbUser.getLogin());
+			SharedPreferencesHelper.setLogin(SplashActivity.this, qbUser.getLogin());
 			
 			// Logged in using Facebook
 			if (context.toString().equals("social")) {
@@ -197,7 +198,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					
 					Session session = new Session(SplashActivity.this);
 					try {
-						fbm.getMyInfo(SplashActivity.this, session.getAccessToken());
+						fbm.getUserInfo(true, null);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -245,7 +246,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		if (TextUtils.isEmpty(session.getAccessToken())) {
 			return;
 		}
-		
+		ChatApplication.getInstance().setAccessTokien(session.getAccessToken());
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
 		blockUi(true);
 	}

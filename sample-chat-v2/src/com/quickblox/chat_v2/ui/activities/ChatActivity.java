@@ -113,7 +113,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         } else {
             app.getMsgManager().downloadPersistentRoom();
         }
-        if (chatRoom != null){
+        if (chatRoom != null) {
             chatRoom.leave();
         }
         this.finish();
@@ -145,6 +145,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
                 friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
 
+                topBar.setFragmentParams(TopBar.ROOM_ACTIVITY, View.INVISIBLE);
+
                 sendButton.setOnClickListener(onRoomSendBtnClick);
                 attachButton.setVisibility(View.GONE);
                 break;
@@ -156,7 +158,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
                 dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 
-                topBar.setFriendParams(opponentUser, app.getContactsMap().containsValue(opponentUser));
+                topBar.setFriendParams(opponentUser, app.getContactsMap().containsKey(String.valueOf(opponentUser.getId())));
+                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE);
 
                 msgManager.getDialogMessages(opponentUser.getId());
                 msgManager.setNewMessageListener(this, opponentUser.getId());
@@ -171,6 +174,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 opponentUser = arrayIndicator ? app.getContactsList().get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
 
                 topBar.setFriendParams(opponentUser, true);
+                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE);
 
                 msgManager.getDialogMessages(opponentUser.getId());
                 msgManager.setNewMessageListener(this, opponentUser.getId());
@@ -264,6 +268,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             userAttach.setLayoutParams(params);
             userAttach.setBackgroundResource(bgRes);
             userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
+
 
             app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
 
@@ -359,8 +364,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             builder.setLength(0);
             builder.append(matcher.group(0)).append(" : ").append(incomeHistoryRoomMessage.getBody());
 
-            Log.w("CHAT ACTIVITY", "export message = "+builder.toString());
-
             messageQuery.add(builder.toString());
 
 
@@ -448,4 +451,14 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     }
 
 
+private void startViewActivity(String userPicUrl){
+
+    Intent intent = new Intent(this, ChatActivity.class);
+    intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
+    intent.putExtra(GlobalConsts.USER_ID, userId);
+    intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
+    startActivity(intent);
+
+}
+    
 }

@@ -13,6 +13,7 @@ import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -92,10 +93,11 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
         rosterManager = new RosterManager(MainActivity.this);
         app.setRstManager(rosterManager);
-
         app.setQbRoster(QBChat.registerRoster(rosterManager));
         QBChat.registerSubscription(rosterManager);
+        QBChatRoster qbRoster;
         QBChat.openXmmpChat(msgManager);
+
         downloadStartUpInfo();
     }
 

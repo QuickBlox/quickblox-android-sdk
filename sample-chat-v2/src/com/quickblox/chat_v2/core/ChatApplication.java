@@ -11,6 +11,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.quickblox.chat_v2.apis.FaceBookManager;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
@@ -36,12 +37,13 @@ public class ChatApplication extends Application {
         return instance;
     }
 
-
     private Bitmap myPic;
     private QBUser qbUser;
+    private String accessTokien;
 
     private MessageManager msgManager;
     private QuickBloxManager qbm;
+    private FaceBookManager fbm;
     private PictureManager picManager;
     private RosterManager rstManager;
 
@@ -211,5 +213,21 @@ public class ChatApplication extends Application {
 
     public void setOptions(DisplayImageOptions options) {
         this.options = options;
+    }
+
+    public FaceBookManager getFbm() {
+        return fbm;
+    }
+
+    public void setFbm(FaceBookManager fbm) {
+        this.fbm = fbm;
+    }
+
+    public String getAccessTokien() {
+        return accessTokien;
+    }
+
+    public void setAccessTokien(String accessTokien) {
+        this.accessTokien = accessTokien;
     }
 }

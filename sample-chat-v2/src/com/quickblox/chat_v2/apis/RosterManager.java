@@ -112,7 +112,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
                         ArrayList<String> userIds = new ArrayList<String>();
                         if (app.getQbRoster().getUsersId() != null) {
                             for (Integer in : app.getQbRoster().getUsersId()) {
-                                Log.d("ROSTER", "user = "+in);
                                 userIds.add(String.valueOf(in));
                             }
                             app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);

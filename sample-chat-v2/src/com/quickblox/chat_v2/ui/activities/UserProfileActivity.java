@@ -1,7 +1,6 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -13,10 +12,14 @@ import android.widget.TextView;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.users.model.QBUser;
 
+import org.json.JSONException;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 08.04.13 Time: 8:58
@@ -29,6 +32,7 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
 
     private ChatApplication app;
     private QBUser friend;
+    private String friendId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,23 +44,37 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
         low.setVisibility(View.GONE);
 
         TopBar tb = (TopBar) findViewById(R.id.top_bar);
-        tb.setFragmentParams(null, View.INVISIBLE, View.INVISIBLE);
+        tb.setFragmentParams(TopBar.PROFILE_ACTIVITY, View.INVISIBLE);
 
         app = ChatApplication.getInstance();
         app.getQbm().setPictureDownloadComplete(this);
+        friendId = getIntent().getStringExtra(GlobalConsts.FRIEND_ID);
 
         userpic = (ImageView) findViewById(R.id.profile_userpic);
         username = (TextView) findViewById(R.id.chat_dialog_view_profile);
+        username.setText(friendId);
 
-        //getUserPicture();
+        getUserPicture();
     }
 
     private void getUserPicture() {
+        friend = app.getDialogsUsersMap().get(friendId);
 
-        if (friend.getFileId() != null) {
+        if (friend == null){
+            friend = app.getContactsMap().get(friendId);
+        }
+
+        if (friend.getFacebookId() == null) {
             app.getQbm().setPictureDownloadComplete(UserProfileActivity.this);
             app.getQbm().downloadQBFile(friend);
-
+        } else {
+            try {
+                app.getFbm().getUserInfo(false, friend);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         username.setText(friend.getFullName() != null ? friend.getFullName() : friend.getLogin());

@@ -106,10 +106,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     }
 
-
-
-
-
     // send messages into xmpp & customobject
     public void sendSingleMessage(Integer userId, String messageBody, String dialogId) {
 
