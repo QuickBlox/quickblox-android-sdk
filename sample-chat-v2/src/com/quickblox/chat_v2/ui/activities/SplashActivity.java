@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.facebook.Session;
@@ -56,7 +57,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		
 		setContentView(R.layout.activity_splash);
 		
-		Button facebookButton = (Button) findViewById(R.id.splash_facebook_button);
+		ImageButton facebookButton = (ImageButton) findViewById(R.id.splash_facebook_button);
 		Button registrationButton = (Button) findViewById(R.id.splash_registration_button);
 		Button siginButton = (Button) findViewById(R.id.splash_sign_in_button);
 		

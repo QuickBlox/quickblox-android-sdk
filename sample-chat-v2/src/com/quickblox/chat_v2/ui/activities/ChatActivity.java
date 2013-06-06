@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.core.CustomPictureAttachListener;
 import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
@@ -248,6 +249,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         }
     };
 
+
+
     private void showMessage(String message, boolean leftSide) {
 
         if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
@@ -262,12 +265,26 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 params.gravity = Gravity.RIGHT;
             }
 
+
+            CustomPictureAttachListener attachViewListener = new CustomPictureAttachListener(){
+                @Override
+                public void onClick(View view) {
+                    super.onClick(view);
+
+                    Intent intent = new Intent(ChatActivity.this, AttachWiewActivity.class);
+                    intent.putExtra(GlobalConsts.ATTACH_URL, getPictureUrl());
+                    ChatActivity.this.startActivity(intent);
+                }
+            };
+
             userAttach = new ImageView(ChatActivity.this);
             userAttach.setMaxHeight(90);
             userAttach.setMaxWidth(90);
             userAttach.setLayoutParams(params);
             userAttach.setBackgroundResource(bgRes);
             userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
+            userAttach.setOnClickListener(attachViewListener);
+            attachViewListener.setPictureUrl(parts[1]);
 
 
             app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
@@ -450,15 +467,4 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         msgManager.setDialogCreateListener(null);
     }
 
-
-private void startViewActivity(String userPicUrl){
-
-    Intent intent = new Intent(this, ChatActivity.class);
-    intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
-    intent.putExtra(GlobalConsts.USER_ID, userId);
-    intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
-    startActivity(intent);
-
-}
-    
 }

@@ -4,6 +4,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -78,12 +80,19 @@ public class NewRoomActivity extends ListActivity {
 
     private void createRoomInfoAndSendtoQb() {
         roomName = roomNameEditText.getText().toString();
+//        Handler handler = new android.os.Handler(Looper.getMainLooper());
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
 
-        QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
+                app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id))
+                        .append(roomName).append("_").append("@muc.quickblox.com").toString(), app.getInviteUserList());
+                sb.setLength(0);
+        //    }
+        //}, 5000);
 
-        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id))
-                .append(roomName).append("_").append("@muc.quickblox.com").toString(), app.getInviteUserList());
-        sb.setLength(0);
+
     }
 
 }

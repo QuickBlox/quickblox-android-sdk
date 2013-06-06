@@ -13,6 +13,7 @@ import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.chat_v2.utils.SingleChatDialogTable;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
@@ -30,8 +31,6 @@ import org.jivesoftware.smack.packet.Message;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded {
 
@@ -40,7 +39,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     private String message;
     private String backgroundMessage;
-    private String tmpIdforReview;
     private int authorId;
     private int opponentId;
     private QBUser tQbuser;
@@ -56,6 +54,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnDialogListRefresh dialogRefreshListener;
     private OnRoomListDownloaded roomListDownloadListener;
 
+    private SingleChatDialogTable coupleTable;
+    private Message tempMessage;
 
 
     public MessageManager(Context context) {
@@ -63,15 +63,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         app = ChatApplication.getInstance();
     }
 
-    // Глобальный слушатель
     @Override
     public void processMessage(Chat chat, Message message) {
         if (message.getBody() == null) {
             return;
         }
 
-        String[] partsId = message.getFrom().split("-");
-        authorMessageId = Integer.parseInt(partsId[0]);
+        String[] partsIdto = message.getTo().split("-");
+        String[] partsIdfrom = message.getFrom().split("-");
+        authorMessageId = Integer.parseInt(partsIdfrom[0]);
         if (newMessageListener != null && authorMessageId == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
             sendToQB(authorMessageId, message.getBody(), authorMessageId);
@@ -81,18 +81,16 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         if (localResult != null) {
             updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
         } else {
-            if (tmpIdforReview == null && !tmpIdforReview.equals(String.valueOf(authorMessageId))) {
-                tmpIdforReview = String.valueOf(authorMessageId);
-                backgroundMessage = message.getBody();
-                ((Activity) context).runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        app.getQbm().setUserProfileListener(MessageManager.this);
-                        app.getQbm().getSingleUserInfo(opponentId);
+            if (coupleTable == null) {
+                coupleTable = new SingleChatDialogTable();
+                coupleTable.setCoupleDate(authorMessageId, Integer.parseInt(partsIdto[0]));
+                startDialogCreate(message);
+            } else {
 
-                    }
-                });
+                if (!coupleTable.reviewCoupleIsExist(authorMessageId, Integer.parseInt(partsIdto[0]))) {
+                    startDialogCreate(message);
+                }
             }
         }
         // separate attach
@@ -104,6 +102,20 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             app.getQbm().downloadQBFile(tmpUser);
         }
 
+    }
+
+    private void startDialogCreate(Message message) {
+
+        backgroundMessage = message.getBody();
+        ((Activity) context).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                app.getQbm().setUserProfileListener(MessageManager.this);
+                app.getQbm().getSingleUserInfo(opponentId);
+
+            }
+        });
     }
 
     // send messages into xmpp & customobject

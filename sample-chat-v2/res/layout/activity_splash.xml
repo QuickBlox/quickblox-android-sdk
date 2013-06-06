@@ -38,12 +38,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 
-    <Button
+    <ImageButton
         android:id="@+id/splash_facebook_button"
-        android:layout_width="230dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/fcebook_login" />
+        android:src="@drawable/fcebook_login"
+        android:scaleType="center"
+        android:clickable="false"/>
 
 </RelativeLayout>

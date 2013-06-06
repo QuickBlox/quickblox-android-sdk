@@ -27,7 +27,6 @@ public class GlobalConsts {
     public static final String ARRAY_TYPE = "array_type";
     public static final String CONTACTS_ARRAY = "contacts_array";
     public static final String CONTACTS_CANDIDATE_ARRAY = "candidate_array";
-    public static final String DIALOGS_USER_ARRAY = "dialogs_user_array";
     public static final String ARRAY_POSITION = "array_position";
 
     public static final String NAME_FIELD = "name";
@@ -49,11 +48,12 @@ public class GlobalConsts {
     public static final String MSG_TEXT = "message";
     public static final String MESSAGES = "messages";
     public static final String ROOM_NAME = "name";
-    public static final String RECEPIENT_AVATAR = "recepient_avatar";
 
     public static final String PREVIOUS_ACTIVITY = "previous_activity";
     public static final byte ROOM_ACTIVITY = 0;
     public static final byte DIALOG_ACTIVITY = 1;
     public static final byte CONTACTS_ACTIVITY = 2;
     public static final String IS_NEW_ROOM = "is_new_room";
+
+    public static final String ATTACH_URL = "attach_url";
 }
