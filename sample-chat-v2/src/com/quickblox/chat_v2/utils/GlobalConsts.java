@@ -7,8 +7,7 @@ package com.quickblox.chat_v2.utils;
  * Time: 9:05 AM
  */
 public class GlobalConsts {
-
-
+    public static final long GCM_CLIENT_ID = 328124915270L;
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
     
@@ -56,4 +55,7 @@ public class GlobalConsts {
     public static final String IS_NEW_ROOM = "is_new_room";
 
     public static final String ATTACH_URL = "attach_url";
+    public static final String PRESENCE_TYPE = "available";
+
+    public static final String PUSH_WELCOME = "You have unread message";
 }

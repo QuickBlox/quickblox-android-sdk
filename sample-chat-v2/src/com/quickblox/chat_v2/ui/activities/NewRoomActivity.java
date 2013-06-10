@@ -84,7 +84,8 @@ public class NewRoomActivity extends ListActivity {
 //        handler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
+                QBChat.openXmmpRoom();
+                QBChatRoom chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true);
 
                 app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id))
                         .append(roomName).append("_").append("@muc.quickblox.com").toString(), app.getInviteUserList());

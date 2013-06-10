@@ -139,14 +139,14 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.ROOM_ACTIVITY:
 
-                QBChat.openXmmpRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
+                QBChat.startWatchRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
                 String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 
                 chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser());
 
                 friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
 
-                topBar.setFragmentParams(TopBar.ROOM_ACTIVITY, View.INVISIBLE);
+                topBar.setFragmentParams(TopBar.ROOM_ACTIVITY, View.INVISIBLE, false);
 
                 sendButton.setOnClickListener(onRoomSendBtnClick);
                 attachButton.setVisibility(View.GONE);
@@ -160,7 +160,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
 
                 topBar.setFriendParams(opponentUser, app.getContactsMap().containsKey(String.valueOf(opponentUser.getId())));
-                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE);
+                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
 
                 msgManager.getDialogMessages(opponentUser.getId());
                 msgManager.setNewMessageListener(this, opponentUser.getId());
@@ -175,7 +175,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 opponentUser = arrayIndicator ? app.getContactsList().get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
 
                 topBar.setFriendParams(opponentUser, true);
-                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE);
+                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
 
                 msgManager.getDialogMessages(opponentUser.getId());
                 msgManager.setNewMessageListener(this, opponentUser.getId());

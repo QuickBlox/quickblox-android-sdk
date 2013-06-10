@@ -47,6 +47,11 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     @Override
     public void presenceChanged(Presence presence) {
+        Log.d("Roster manager", "presence from = "+presence.getFrom());
+        Log.d("Roster manager", "presence type = "+presence.getType());
+
+        String[] parts = presence.getFrom().split("-");
+        app.getUserNetStatusMap().put(Integer.parseInt(parts[0]), presence.getType().toString());
     }
 
     @Override

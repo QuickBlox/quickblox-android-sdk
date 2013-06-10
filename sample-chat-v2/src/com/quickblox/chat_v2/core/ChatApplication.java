@@ -2,16 +2,15 @@ package com.quickblox.chat_v2.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import android.app.Application;
 import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.FaceBookManager;
+import com.quickblox.chat_v2.apis.GcmManager;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
@@ -46,6 +45,7 @@ public class ChatApplication extends Application {
     private FaceBookManager fbm;
     private PictureManager picManager;
     private RosterManager rstManager;
+    private GcmManager gcmManager;
 
     private QBChatRoster qbRoster;
 
@@ -59,6 +59,8 @@ public class ChatApplication extends Application {
 
     private HashMap<String,QBUser> dialogsUsersMap;
     private HashMap<String, QBUser> contactsMap;
+    private HashMap<Integer,String> userNetStatusMap;
+    private HashMap<Integer, Long> pushNotificationsMap;
 
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
             .displayer(new RoundedBitmapDisplayer(20)).build();
@@ -84,6 +86,8 @@ public class ChatApplication extends Application {
         inviteUserList = null;
         dialogsUsersMap = null;
         contactsMap = null;
+        gcmManager = null;
+        userNetStatusMap = null;
     }
 
     // DATA
@@ -229,5 +233,29 @@ public class ChatApplication extends Application {
 
     public void setAccessTokien(String accessTokien) {
         this.accessTokien = accessTokien;
+    }
+
+    public GcmManager getGcmManager() {
+        return gcmManager;
+    }
+
+    public void setGcmManager(GcmManager gcmManager) {
+        this.gcmManager = gcmManager;
+    }
+
+    public HashMap<Integer, String> getUserNetStatusMap() {
+        return userNetStatusMap;
+    }
+
+    public void setUserNetStatusMap(HashMap<Integer, String> userNetStatusMap) {
+        this.userNetStatusMap = userNetStatusMap;
+    }
+
+    public HashMap<Integer, Long> getPushNotificationsMap() {
+        return pushNotificationsMap;
+    }
+
+    public void setPushNotificationsMap(HashMap<Integer, Long> pushNotificationsMap) {
+        this.pushNotificationsMap = pushNotificationsMap;
     }
 }

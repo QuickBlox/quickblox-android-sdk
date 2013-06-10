@@ -32,7 +32,7 @@ public class AttachWiewActivity extends Activity {
     }
 
     private void initView() {
-        topBar.setFragmentParams(getString(R.string.chat_activity_attach_view), View.INVISIBLE);
+        topBar.setFragmentParams(getString(R.string.chat_activity_attach_view), View.INVISIBLE, false);
         ChatApplication.getInstance().getPicManager().downloadPicAndDisplay(getIntent().getStringExtra(GlobalConsts.ATTACH_URL), content);
         Toast.makeText(this, getString(R.string.chat_activity_attach_info_2), Toast.LENGTH_LONG).show();
     }

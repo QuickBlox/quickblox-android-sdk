@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 import com.quickblox.chat_v2.R;
+import com.quickblox.chat_v2.apis.GcmManager;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.gcm.GCMHelper;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster;
@@ -42,6 +44,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        GCMHelper.register(this);
         app = ChatApplication.getInstance();
         setupTabs();
 
@@ -53,6 +56,8 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         app.setPicManager(picManager);
         app.setMsgManager(msgManager);
         app.setQbm(qbm);
+        app.setGcmManager(new GcmManager(this));
+
         app.setContactsList(new ArrayList<QBUser>());
         app.setContactsCandidateList(new ArrayList<QBUser>());
         app.setContactsMap(new HashMap<String, QBUser>());
@@ -62,6 +67,8 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
         app.setOutSideInvite(new ArrayList<String>());
         app.setDialogsUsersMap(new HashMap<String, QBUser>());
+
+        app.setUserNetStatusMap(new HashMap<Integer, String>());
 
         registerRoster();
     }
@@ -90,14 +97,13 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     private void registerRoster() {
+        QBChat.openXmmpChat(msgManager);
 
         rosterManager = new RosterManager(MainActivity.this);
         app.setRstManager(rosterManager);
         app.setQbRoster(QBChat.registerRoster(rosterManager));
         QBChat.registerSubscription(rosterManager);
         QBChatRoster qbRoster;
-        QBChat.openXmmpChat(msgManager);
-
         downloadStartUpInfo();
     }
 

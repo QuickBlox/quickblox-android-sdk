@@ -44,7 +44,7 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
         low.setVisibility(View.GONE);
 
         TopBar tb = (TopBar) findViewById(R.id.top_bar);
-        tb.setFragmentParams(TopBar.PROFILE_ACTIVITY, View.INVISIBLE);
+        tb.setFragmentParams(TopBar.PROFILE_ACTIVITY, View.INVISIBLE, true);
 
         app = ChatApplication.getInstance();
         app.getQbm().setPictureDownloadComplete(this);

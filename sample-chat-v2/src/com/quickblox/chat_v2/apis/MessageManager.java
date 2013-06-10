@@ -3,6 +3,7 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
@@ -30,12 +31,14 @@ import org.jivesoftware.smack.packet.Message;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded {
 
     private Context context;
     private ChatApplication app;
+    private Calendar calendar;
 
     private String message;
     private String backgroundMessage;
@@ -61,10 +64,12 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
+        calendar = Calendar.getInstance();
     }
 
     @Override
     public void processMessage(Chat chat, Message message) {
+
         if (message.getBody() == null) {
             return;
         }
@@ -72,12 +77,14 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         String[] partsIdto = message.getTo().split("-");
         String[] partsIdfrom = message.getFrom().split("-");
         authorMessageId = Integer.parseInt(partsIdfrom[0]);
+
         if (newMessageListener != null && authorMessageId == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
-            sendToQB(authorMessageId, message.getBody(), authorMessageId);
         }
-        QBCustomObject localResult = dialogReview(authorMessageId);
+        sendToQB(authorMessageId, message.getBody(), authorMessageId);
 
+
+        QBCustomObject localResult = dialogReview(authorMessageId);
         if (localResult != null) {
             updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
         } else {
@@ -123,6 +130,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
         if (messageBody == null && dialogId == null && userId == null) {
             return;
+        }
+
+        if (app.getUserNetStatusMap().get(userId) != null
+                && !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE)
+                && ((app.getPushNotificationsMap().get(userId) - calendar.getTimeInMillis()) > 3600000)) {
+            //TODO сгенерить отправку пушей.
+
+            app.getPushNotificationsMap().put(userId, calendar.getTimeInMillis());
+
         }
 
         QBChat.sendMessage(userId, messageBody);

@@ -58,7 +58,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 	
 	private void initViews() {
 		topBar = (TopBar) findViewById(R.id.top_bar);
-		topBar.setFragmentParams(TopBar.NEW_DIALOG_ACTIVITY, View.INVISIBLE);
+		topBar.setFragmentParams(TopBar.NEW_DIALOG_ACTIVITY, View.INVISIBLE, false);
 		contactListView = (ListView) findViewById(R.id.contacts_listView);
         contactListView.setOnItemClickListener(this);
 		searchBtn = (Button) findViewById(R.id.search_button);

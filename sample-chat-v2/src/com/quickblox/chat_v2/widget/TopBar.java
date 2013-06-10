@@ -79,12 +79,12 @@ public class TopBar extends RelativeLayout {
         adb.create().show();
     }
 
-    public void setFragmentParams(String fragmentName, int isUserPicVisible) {
+    public void setFragmentParams(String fragmentName, int isUserPicVisible, boolean isAvatarClicable) {
         if (fragmentName != null) {
             screenTitle.setText(fragmentName);
         }
         userAvatar.setVisibility(isUserPicVisible);
-        userAvatar.setClickable(false);
+        userAvatar.setClickable(isAvatarClicable);
     }
 
     public void setFriendParams(QBUser friend, boolean isContacts) {
