@@ -2,6 +2,7 @@ package com.quickblox.chat_v2.gcm;
 
 import android.app.Activity;
 import android.util.Log;
+
 import com.google.android.gcm.GCMRegistrar;
 
 /**

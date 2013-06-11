@@ -55,7 +55,8 @@ public class GlobalConsts {
     public static final String IS_NEW_ROOM = "is_new_room";
 
     public static final String ATTACH_URL = "attach_url";
-    public static final String PRESENCE_TYPE = "available";
+    public static final String PRESENCE_TYPE_AVAIABLE = "available";
+    public static final String PRESENCE_TYPE_UNAVAIABLE = "unavailable";
 
     public static final String PUSH_WELCOME = "You have unread message";
 }

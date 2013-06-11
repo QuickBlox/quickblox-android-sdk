@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -39,13 +42,13 @@ public class ChatApplication extends Application {
     private Bitmap myPic;
     private QBUser qbUser;
     private String accessTokien;
+    private String deviceId;
 
     private MessageManager msgManager;
     private QuickBloxManager qbm;
     private FaceBookManager fbm;
     private PictureManager picManager;
     private RosterManager rstManager;
-    private GcmManager gcmManager;
 
     private QBChatRoster qbRoster;
 
@@ -55,7 +58,6 @@ public class ChatApplication extends Application {
     private ArrayList<QBUser> contactsList;
     private ArrayList<QBUser> contactsCandidateList;
     private ArrayList<String> inviteUserList;
-    private ArrayList<String> outSideInvite;
 
     private HashMap<String,QBUser> dialogsUsersMap;
     private HashMap<String, QBUser> contactsMap;
@@ -72,22 +74,52 @@ public class ChatApplication extends Application {
         SmackAndroid.init(this);
     }
 
+
+    public void createData(Context context) {
+        msgManager =  new MessageManager(context);
+        qbm = new QuickBloxManager(context);
+        fbm = new FaceBookManager();
+        picManager = new PictureManager(context);
+        rstManager = new RosterManager(context);
+
+        contactsList = new ArrayList<QBUser>();
+        contactsCandidateList = new ArrayList<QBUser>();
+        contactsMap = new HashMap<String, QBUser>();
+
+        dialogsUsersMap = new HashMap<String, QBUser>();
+        pushNotificationsMap = new HashMap<Integer, Long>();
+
+        inviteUserList = new ArrayList<String>();
+        userNetStatusMap = new HashMap<Integer, String>();
+
+
+        deviceId = ((TelephonyManager) getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+    }
+
+
     public void clearAllData() {
         myPic = null;
+        qbRoster = null;
+        deviceId = null;
+
         qbUser = null;
         msgManager = null;
         qbm = null;
+        fbm = null;
         picManager = null;
         rstManager = null;
+
         dialogList = null;
         userPresentRoomList = null;
         contactsList = null;
         contactsCandidateList = null;
         inviteUserList = null;
+
         dialogsUsersMap = null;
         contactsMap = null;
-        gcmManager = null;
         userNetStatusMap = null;
+        pushNotificationsMap = null;
+
     }
 
     // DATA
@@ -112,16 +144,8 @@ public class ChatApplication extends Application {
         return qbm;
     }
 
-    public void setQbm(QuickBloxManager qbm) {
-        this.qbm = qbm;
-    }
-
     public MessageManager getMsgManager() {
         return msgManager;
-    }
-
-    public void setMsgManager(MessageManager msgManager) {
-        this.msgManager = msgManager;
     }
 
     public ArrayList<QBCustomObject> getDialogList() {
@@ -134,10 +158,6 @@ public class ChatApplication extends Application {
 
     public PictureManager getPicManager() {
         return picManager;
-    }
-
-    public void setPicManager(PictureManager picManager) {
-        this.picManager = picManager;
     }
 
     public RosterManager getRstManager() {
@@ -184,47 +204,20 @@ public class ChatApplication extends Application {
         return inviteUserList;
     }
 
-    public void setInviteUserList(ArrayList<String> inviteUserList) {
-        this.inviteUserList = inviteUserList;
-    }
-
-    public ArrayList<String> getOutSideInvite() {
-        return outSideInvite;
-    }
-
-    public void setOutSideInvite(ArrayList<String> outSideInvite) {
-        this.outSideInvite = outSideInvite;
-    }
-
     public HashMap<String, QBUser> getDialogsUsersMap() {
         return dialogsUsersMap;
     }
 
-    public void setDialogsUsersMap(HashMap<String, QBUser> dialogsUsersMap) {
-        this.dialogsUsersMap = dialogsUsersMap;
-    }
     public HashMap<String, QBUser> getContactsMap() {
         return contactsMap;
-    }
-
-    public void setContactsMap(HashMap<String, QBUser> contactsMap) {
-        this.contactsMap = contactsMap;
     }
 
     public DisplayImageOptions getOptions() {
         return options;
     }
 
-    public void setOptions(DisplayImageOptions options) {
-        this.options = options;
-    }
-
     public FaceBookManager getFbm() {
         return fbm;
-    }
-
-    public void setFbm(FaceBookManager fbm) {
-        this.fbm = fbm;
     }
 
     public String getAccessTokien() {
@@ -235,27 +228,15 @@ public class ChatApplication extends Application {
         this.accessTokien = accessTokien;
     }
 
-    public GcmManager getGcmManager() {
-        return gcmManager;
-    }
-
-    public void setGcmManager(GcmManager gcmManager) {
-        this.gcmManager = gcmManager;
-    }
-
     public HashMap<Integer, String> getUserNetStatusMap() {
         return userNetStatusMap;
-    }
-
-    public void setUserNetStatusMap(HashMap<Integer, String> userNetStatusMap) {
-        this.userNetStatusMap = userNetStatusMap;
     }
 
     public HashMap<Integer, Long> getPushNotificationsMap() {
         return pushNotificationsMap;
     }
 
-    public void setPushNotificationsMap(HashMap<Integer, Long> pushNotificationsMap) {
-        this.pushNotificationsMap = pushNotificationsMap;
+    public String getDeviceId() {
+        return deviceId;
     }
 }

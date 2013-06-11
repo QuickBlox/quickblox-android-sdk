@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.TabHost;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.GcmManager;
@@ -13,6 +15,7 @@ import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMHelper;
+import com.quickblox.chat_v2.gcm.GCMSubscriber;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster;
@@ -31,10 +34,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     private static final String CONTACTS_TAB = "tab3";
     private static final String PROFILE_TAB = "tab4";
 
-    private RosterManager rosterManager;
-    private MessageManager msgManager;
-    private PictureManager picManager;
-    private QuickBloxManager qbm;
     private ChatApplication app;
 
     private ProgressDialog progress;
@@ -44,33 +43,15 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        GCMHelper.register(this);
         app = ChatApplication.getInstance();
+        GCMHelper.register(this);
+        GCMSubscriber.newInstance().subscribe(GCMHelper.SENDER_ID, app.getDeviceId());
+
         setupTabs();
-
         blockUi(true);
-
-        qbm = new QuickBloxManager(this);
-        picManager = new PictureManager(this);
-        msgManager = new MessageManager(this);
-        app.setPicManager(picManager);
-        app.setMsgManager(msgManager);
-        app.setQbm(qbm);
-        app.setGcmManager(new GcmManager(this));
-
-        app.setContactsList(new ArrayList<QBUser>());
-        app.setContactsCandidateList(new ArrayList<QBUser>());
-        app.setContactsMap(new HashMap<String, QBUser>());
-
-        app.setInviteUserList(new ArrayList<String>());
         app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
-
-        app.setOutSideInvite(new ArrayList<String>());
-        app.setDialogsUsersMap(new HashMap<String, QBUser>());
-
-        app.setUserNetStatusMap(new HashMap<Integer, String>());
-
-        registerRoster();
+        GCMHelper.register(this);
+        downloadStartUpInfo();
     }
 
     private void setupTabs() {
@@ -96,24 +77,13 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     }
 
-    private void registerRoster() {
-        QBChat.openXmmpChat(msgManager);
-
-        rosterManager = new RosterManager(MainActivity.this);
-        app.setRstManager(rosterManager);
-        app.setQbRoster(QBChat.registerRoster(rosterManager));
-        QBChat.registerSubscription(rosterManager);
-        QBChatRoster qbRoster;
-        downloadStartUpInfo();
-    }
-
     private void downloadStartUpInfo(){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 app.getQbm().setUserProfileListener(MainActivity.this);
                 app.getMsgManager().downloadPersistentRoom();
-                rosterManager.refreshContactList();
+                app.getRstManager().refreshContactList();
             }
         });
 

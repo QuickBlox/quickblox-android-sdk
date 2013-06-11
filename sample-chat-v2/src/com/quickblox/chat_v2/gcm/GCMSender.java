@@ -20,6 +20,7 @@ import java.util.HashMap;
  * E-mail: nikolay.dymura@gmail.com
  */
 public class GCMSender {
+
     public void sendPushNotifications(StringifyArrayList<Integer> userIds) {
 
         QBEvent event = new QBEvent();
@@ -28,7 +29,6 @@ public class GCMSender {
         event.setNotificationType(QBNotificationType.PUSH);
         event.setPushType(QBPushType.GCM);
 
-        //GCMMessage message = GCMMessage.newInstance()
         HashMap<String, String> data = new HashMap<String, String>();
         data.put("data.message", "Hello");
         data.put("data.type", "welcome message");

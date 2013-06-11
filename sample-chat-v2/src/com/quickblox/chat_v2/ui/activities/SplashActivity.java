@@ -25,6 +25,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.apis.FaceBookManager;
+import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.dialogs.SplashDialog;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
@@ -37,6 +38,7 @@ import com.quickblox.internal.core.server.BaseService;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.xmpp.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -46,8 +48,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 	
 	private DialogFragment quickBloxDialog;
 	private ProgressDialog progress;
-	
-	private FaceBookManager fbm;
+
+    private ChatApplication app;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,9 +64,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		Button siginButton = (Button) findViewById(R.id.splash_sign_in_button);
 		
 		blockUi(true);
-		
-		fbm = new FaceBookManager();
-        ChatApplication.getInstance().setFbm(fbm);
+
+        app = ChatApplication.getInstance();
+        app.createData(this);
 		
 		OnClickListener clickButtonListener = new OnClickListener() {
 			
@@ -199,7 +201,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 					
 					Session session = new Session(SplashActivity.this);
 					try {
-						fbm.getUserInfo(true, null);
+						app.getFbm().getUserInfo(true, null);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -231,7 +233,11 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 				
 				@Override
 				public void onLoginSuccess(){
-					loadMainScreen();
+                    QBChat.openXmmpChat(app.getMsgManager());
+                    QBChat.openXmmpRoom();
+                    app.setQbRoster(QBChat.registerRoster(app.getRstManager()));
+                    QBChat.registerSubscription(app.getRstManager());
+                    loadMainScreen();
 				}
 			});
 			

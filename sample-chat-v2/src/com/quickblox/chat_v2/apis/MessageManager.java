@@ -3,9 +3,9 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.gcm.GCMSender;
 import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
@@ -17,6 +17,7 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.utils.SingleChatDialogTable;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.custom.QBCustomObjects;
@@ -132,20 +133,31 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
 
-        if (app.getUserNetStatusMap().get(userId) != null
-                && !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE)
-                && ((app.getPushNotificationsMap().get(userId) - calendar.getTimeInMillis()) > 3600000)) {
-            //TODO сгенерить отправку пушей.
+        if (app.getUserNetStatusMap().get(userId) == null) {
+            pushSender(userId);
+            app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
+        } else {
+            if (!app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)
+                    && ((app.getPushNotificationsMap().get(userId) - calendar.getTimeInMillis()) > 3600000)) {
 
-            app.getPushNotificationsMap().put(userId, calendar.getTimeInMillis());
+                pushSender(userId);
 
+            }
         }
-
         QBChat.sendMessage(userId, messageBody);
 
         sendToQB(userId, messageBody, app.getQbUser().getId());
         updateDialogLastMessage(messageBody, dialogId);
 
+    }
+
+    private void pushSender(Integer userId) {
+        GCMSender gs = new GCMSender();
+        StringifyArrayList users = new StringifyArrayList();
+        users.add(userId);
+        gs.sendPushNotifications(users);
+
+        app.getPushNotificationsMap().put(userId, calendar.getTimeInMillis());
     }
 
     private void sendToQB(Integer opponentID, String messageBody, Integer authorID) {

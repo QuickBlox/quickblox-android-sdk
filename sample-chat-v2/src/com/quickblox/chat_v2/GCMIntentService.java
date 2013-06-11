@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
 import com.google.android.gcm.GCMBaseIntentService;
 import com.quickblox.chat_v2.gcm.GCMHelper;
 import com.quickblox.chat_v2.gcm.GCMParser;
