@@ -45,12 +45,10 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
         app = ChatApplication.getInstance();
         GCMHelper.register(this);
-        GCMSubscriber.newInstance().subscribe(GCMHelper.SENDER_ID, app.getDeviceId());
 
         setupTabs();
         blockUi(true);
         app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
-        GCMHelper.register(this);
         downloadStartUpInfo();
     }
 

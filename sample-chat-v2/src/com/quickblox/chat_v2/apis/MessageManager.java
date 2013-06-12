@@ -32,14 +32,12 @@ import org.jivesoftware.smack.packet.Message;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded {
 
     private Context context;
     private ChatApplication app;
-    private Calendar calendar;
 
     private String message;
     private String backgroundMessage;
@@ -65,7 +63,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
-        calendar = Calendar.getInstance();
     }
 
     @Override
@@ -82,8 +79,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         if (newMessageListener != null && authorMessageId == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
         }
-        sendToQB(authorMessageId, message.getBody(), authorMessageId);
 
+
+        sendToQB(authorMessageId, message.getBody(), authorMessageId);
 
         QBCustomObject localResult = dialogReview(authorMessageId);
         if (localResult != null) {
@@ -133,17 +131,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
 
-        if (app.getUserNetStatusMap().get(userId) == null) {
+        //if (app.getUserNetStatusMap().get(userId) == null || !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
             pushSender(userId);
+
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
-        } else {
-            if (!app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)
-                    && ((app.getPushNotificationsMap().get(userId) - calendar.getTimeInMillis()) > 3600000)) {
-
-                pushSender(userId);
-
-            }
-        }
+        //}
         QBChat.sendMessage(userId, messageBody);
 
         sendToQB(userId, messageBody, app.getQbUser().getId());
@@ -151,13 +143,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     }
 
-    private void pushSender(Integer userId) {
-        GCMSender gs = new GCMSender();
-        StringifyArrayList users = new StringifyArrayList();
-        users.add(userId);
-        gs.sendPushNotifications(users);
-
-        app.getPushNotificationsMap().put(userId, calendar.getTimeInMillis());
+    private void pushSender(final int userId) {
+         GCMSender gs = new GCMSender();
+         gs.sendPushNotifications(userId);
     }
 
     private void sendToQB(Integer opponentID, String messageBody, Integer authorID) {
@@ -246,9 +234,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     app.setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
-
                     dialogRefreshListener.refreshList();
 
+                    for (QBCustomObject co : app.getDialogList()) {
+                        app.getUserIdDialogIdMap().put(Integer.parseInt(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()), co);
+                    }
                     if (isNeedDownloadUser) {
                         ArrayList<String> userIds = new ArrayList<String>();
                         for (QBCustomObject co : app.getDialogList()) {

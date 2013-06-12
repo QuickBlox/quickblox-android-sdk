@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -171,9 +170,13 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.CONTACTS_ACTIVITY:
                 boolean arrayIndicator = getIntent().getStringExtra(GlobalConsts.ARRAY_TYPE).equals(GlobalConsts.CONTACTS_ARRAY) ? true : false;
+
                 int currentPosition = getIntent().getIntExtra(GlobalConsts.ARRAY_POSITION, 0);
                 opponentUser = arrayIndicator ? app.getContactsList().get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
 
+                if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
+                    dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();
+                }
                 topBar.setFriendParams(opponentUser, true);
                 topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
 
@@ -250,7 +253,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     };
 
 
-
     private void showMessage(String message, boolean leftSide) {
 
         if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
@@ -266,7 +268,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             }
 
 
-            CustomPictureAttachListener attachViewListener = new CustomPictureAttachListener(){
+            CustomPictureAttachListener attachViewListener = new CustomPictureAttachListener() {
                 @Override
                 public void onClick(View view) {
                     super.onClick(view);

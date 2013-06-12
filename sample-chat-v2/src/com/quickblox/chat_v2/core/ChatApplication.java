@@ -42,7 +42,6 @@ public class ChatApplication extends Application {
     private Bitmap myPic;
     private QBUser qbUser;
     private String accessTokien;
-    private String deviceId;
 
     private MessageManager msgManager;
     private QuickBloxManager qbm;
@@ -60,9 +59,9 @@ public class ChatApplication extends Application {
     private ArrayList<String> inviteUserList;
 
     private HashMap<String,QBUser> dialogsUsersMap;
+    private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<String, QBUser> contactsMap;
     private HashMap<Integer,String> userNetStatusMap;
-    private HashMap<Integer, Long> pushNotificationsMap;
 
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
             .displayer(new RoundedBitmapDisplayer(20)).build();
@@ -87,20 +86,16 @@ public class ChatApplication extends Application {
         contactsMap = new HashMap<String, QBUser>();
 
         dialogsUsersMap = new HashMap<String, QBUser>();
-        pushNotificationsMap = new HashMap<Integer, Long>();
+        userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
         userNetStatusMap = new HashMap<Integer, String>();
-
-
-        deviceId = ((TelephonyManager) getSystemService(TELEPHONY_SERVICE)).getDeviceId();
     }
 
 
     public void clearAllData() {
         myPic = null;
         qbRoster = null;
-        deviceId = null;
 
         qbUser = null;
         msgManager = null;
@@ -118,7 +113,7 @@ public class ChatApplication extends Application {
         dialogsUsersMap = null;
         contactsMap = null;
         userNetStatusMap = null;
-        pushNotificationsMap = null;
+        userIdDialogIdMap = null;
 
     }
 
@@ -232,11 +227,7 @@ public class ChatApplication extends Application {
         return userNetStatusMap;
     }
 
-    public HashMap<Integer, Long> getPushNotificationsMap() {
-        return pushNotificationsMap;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
+    public HashMap<Integer, QBCustomObject> getUserIdDialogIdMap() {
+        return userIdDialogIdMap;
     }
 }

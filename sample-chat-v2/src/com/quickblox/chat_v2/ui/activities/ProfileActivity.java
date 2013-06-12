@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.facebook.Session;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.gcm.GCMHelper;
 import com.quickblox.chat_v2.gcm.GCMSubscriber;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
@@ -78,8 +79,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 				SharedPreferencesHelper.setPassword(ProfileActivity.this, null);
 				
 				app.clearAllData();
-
-                GCMSubscriber.newInstance().unsubscribe(app.getDeviceId());
+                GCMHelper.unregister(ProfileActivity.this);
 
 				Session session = new Session(ProfileActivity.this);
 				session.closeAndClearTokenInformation();

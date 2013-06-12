@@ -19,7 +19,7 @@ import com.quickblox.chat_v2.gcm.GCMSubscriber;
  * E-mail: nikolay.dymura@gmail.com
  */
 public class GCMIntentService extends GCMBaseIntentService {
-    static final String LOG_TAG = GCMIntentService.class.getName();
+    static final String LOG_TAG = GCMIntentService.class.getSimpleName();
 
     private GCMParser gcmParser;
     private GCMSubscriber gcmSubscriber;
@@ -47,7 +47,6 @@ public class GCMIntentService extends GCMBaseIntentService {
     public void onRegistered(Context context, final String registrationId) {
         Log.d(LOG_TAG, "onRegistered() registrationId=" + registrationId);
         handler.post(new Runnable() {
-
             @Override
             public void run() {
                 gcmSubscriber.subscribe(registrationId, getDeviceId());

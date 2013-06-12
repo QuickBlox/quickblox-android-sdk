@@ -24,7 +24,9 @@ public final class GCMHelper {
         try {
             GCMRegistrar.checkDevice(activity);
             GCMRegistrar.checkManifest(activity);
+
             final String regId = GCMRegistrar.getRegistrationId(activity);
+
             if (regId.equals("")) {
                 GCMRegistrar.register(activity, SENDER_ID);
             } else {
