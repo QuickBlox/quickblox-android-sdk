@@ -14,6 +14,7 @@ import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.chat_v2.utils.OfflineMessageSeparatorQuery;
 import com.quickblox.chat_v2.utils.SingleChatDialogTable;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -39,9 +40,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private Context context;
     private ChatApplication app;
 
-    private String message;
     private String backgroundMessage;
-    private int authorId;
     private int opponentId;
     private QBUser tQbuser;
     private boolean isNeedreview;
@@ -57,12 +56,12 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnRoomListDownloaded roomListDownloadListener;
 
     private SingleChatDialogTable coupleTable;
-    private Message tempMessage;
-
+    private OfflineMessageSeparatorQuery omsq;
 
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
+        omsq = new OfflineMessageSeparatorQuery(context);
     }
 
     @Override
@@ -81,7 +80,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         }
 
 
-        sendToQB(authorMessageId, message.getBody(), authorMessageId);
+        omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
+
 
         QBCustomObject localResult = dialogReview(authorMessageId);
         if (localResult != null) {
@@ -131,14 +131,14 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
 
-        //if (app.getUserNetStatusMap().get(userId) == null || !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
+        if (app.getUserNetStatusMap().get(userId) == null || !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
             pushSender(userId);
 
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
-        //}
+        }
         QBChat.sendMessage(userId, messageBody);
 
-        sendToQB(userId, messageBody, app.getQbUser().getId());
+        omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
         updateDialogLastMessage(messageBody, dialogId);
 
     }
@@ -146,37 +146,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private void pushSender(final int userId) {
          GCMSender gs = new GCMSender();
          gs.sendPushNotifications(userId);
-    }
-
-    private void sendToQB(Integer opponentID, String messageBody, Integer authorID) {
-        message = messageBody;
-        authorId = authorID;
-        opponentId = opponentID;
-
-        ((Activity) context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                QBCustomObject custobj = new QBCustomObject();
-
-                custobj.setClassName(GlobalConsts.MESSAGES);
-
-                HashMap<String, Object> fields = new HashMap<String, Object>();
-
-                fields.put(GlobalConsts.AUTHOR_ID, authorId);
-                fields.put(GlobalConsts.OPPONENT_ID, opponentId);
-                fields.put(GlobalConsts.MSG_TEXT, message);
-
-                custobj.setFields(fields);
-
-                QBCustomObjects.createObject(custobj, new QBCallbackImpl() {
-                    @Override
-                    public void onComplete(Result result) {
-                    }
-                });
-            }
-
-        });
-
     }
 
     public synchronized void createDialog(QBUser qbuser, boolean isNeedExtraReview) {

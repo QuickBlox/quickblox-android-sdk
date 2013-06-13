@@ -3,6 +3,8 @@ package com.quickblox.chat_v2.apis;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -17,6 +19,8 @@ import com.quickblox.core.result.Result;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.result.QBFileDownloadResult;
 import com.quickblox.module.content.result.QBFileUploadTaskResult;
+import com.quickblox.module.custom.QBCustomObjects;
+import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
@@ -198,6 +202,27 @@ public class QuickBloxManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createSingleCustomObject(final QBCustomObject pCustomObject){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                QBCustomObjects.createObject(pCustomObject, new QBCallback() {
+                    @Override
+                    public void onComplete(Result result) {
+                       Log.d("QBM", "result = "+result.isSuccess());
+                    }
+
+                    @Override
+                    public void onComplete(Result result, Object context) {
+
+                    }
+                });
+            }
+        });
+
     }
 
     // LISTENERS

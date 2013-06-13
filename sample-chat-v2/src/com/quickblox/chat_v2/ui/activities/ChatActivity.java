@@ -280,8 +280,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             };
 
             userAttach = new ImageView(ChatActivity.this);
-            userAttach.setMaxHeight(90);
-            userAttach.setMaxWidth(90);
+            userAttach.setMaxHeight(getResources().getDimensionPixelSize(R.dimen.attach_preview_margin));
+            userAttach.setMaxWidth(getResources().getDimensionPixelSize(R.dimen.attach_preview_margin));
             userAttach.setLayoutParams(params);
             userAttach.setBackgroundResource(bgRes);
             userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
