@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +28,6 @@ import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
-import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.chat.QBChat;
@@ -42,14 +42,13 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.InvitationListener;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnPictureDownloadComplete, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete {
 
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
@@ -80,9 +79,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private MessageManager msgManager;
     private ChatApplication app;
 
-    private Pattern idFromJidPattern;
-    private Matcher matcher;
-
     //new arch
 
     private QBUser opponentUser;
@@ -98,8 +94,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         msgManager = app.getMsgManager();
         msgManager.setListDownloadedListener(this);
         messageQuery = new ArrayList<String>();
-
-        idFromJidPattern = Pattern.compile(GlobalConsts.REGEX_MESSAGE_AUTHOR_ID);
         initViews();
 
     }
@@ -138,10 +132,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.ROOM_ACTIVITY:
 
-                QBChat.startWatchRoom(pChatMessageListener, pInvitationListener, pParticipantListener);
+                QBChat.startWatchRoom(pInvitationListener);
                 String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 
-                chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser());
+                chatRoom = app.getJoinedRoom();
+                chatRoom.addMessageListener(pChatMessageListener);
+                chatRoom.addParticipantListener(pParticipantListener);
 
                 friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
 
@@ -204,7 +200,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
         meLabel.setText(app.getQbUser().getFullName());
 
-        if (app.getInviteUserList().size() > 1) {
+        if (app.getInviteUserList().size() > 1 && chatRoom != null) {
             chatRoom.invite(app.getInviteUserList());
             app.getInviteUserList().clear();
         }
@@ -243,7 +239,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                     chatRoom.sendMessage(lastMsg);
                 } else {
                     String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-                    chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser());
+                    chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser(), pChatMessageListener, pParticipantListener);
                     Toast.makeText(ChatActivity.this, getResources().getString(R.string.room_join_fall), Toast.LENGTH_LONG).show();
                 }
             } catch (XMPPException e) {
@@ -376,21 +372,16 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
         @Override
         public void processPacket(Packet packet) {
-
             incomeHistoryRoomMessage = (Message) packet;
             StringBuilder builder = new StringBuilder();
-            matcher = idFromJidPattern.matcher(incomeHistoryRoomMessage.getFrom());
-            builder.setLength(0);
-            builder.append(matcher.group(0)).append(" : ").append(incomeHistoryRoomMessage.getBody());
-
+            String[] parts = incomeHistoryRoomMessage.getFrom().split("/");
+            builder.append(parts[1]).append(" : ").append(incomeHistoryRoomMessage.getBody());
             messageQuery.add(builder.toString());
-
-
             Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(new Runnable() {
+
                 public void run() {
                     if (messageQuery.size() > 0) {
-
                         roomShowMessage(new ArrayList<String>(messageQuery));
                         messageQuery.clear();
                         messageQuery.trimToSize();
@@ -440,12 +431,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                     }
                 }
         }
-    }
-
-    @Override
-    public void downloadComlete(Bitmap bitmap, File file) {
-
-
     }
 
     @Override

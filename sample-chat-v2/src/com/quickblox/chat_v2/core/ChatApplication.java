@@ -6,22 +6,21 @@ import java.util.HashMap;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.FaceBookManager;
-import com.quickblox.chat_v2.apis.GcmManager;
 import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
+import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.model.QBChatRoster;
-import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
+
+import org.jivesoftware.smack.SmackAndroid;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/12/13 Time: 4:41
@@ -42,6 +41,7 @@ public class ChatApplication extends Application {
     private Bitmap myPic;
     private QBUser qbUser;
     private String accessTokien;
+    private QBChatRoom joinedRoom;
 
     private MessageManager msgManager;
     private QuickBloxManager qbm;
@@ -73,6 +73,10 @@ public class ChatApplication extends Application {
         SmackAndroid.init(this);
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
 
     public void createData(Context context) {
         msgManager =  new MessageManager(context);
@@ -96,6 +100,7 @@ public class ChatApplication extends Application {
     public void clearAllData() {
         myPic = null;
         qbRoster = null;
+        joinedRoom = null;
 
         qbUser = null;
         msgManager = null;
@@ -229,5 +234,13 @@ public class ChatApplication extends Application {
 
     public HashMap<Integer, QBCustomObject> getUserIdDialogIdMap() {
         return userIdDialogIdMap;
+    }
+
+    public QBChatRoom getJoinedRoom() {
+        return joinedRoom;
+    }
+
+    public void setJoinedRoom(QBChatRoom joinedRoom) {
+        this.joinedRoom = joinedRoom;
     }
 }

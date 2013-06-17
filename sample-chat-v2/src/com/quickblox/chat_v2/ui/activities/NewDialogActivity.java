@@ -71,7 +71,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 		public void onClick(View v) {
 			if (!TextUtils.isEmpty(contactName.getText().toString())) {
 				getContactList();
-				blockUi(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_search_user));
+				switchProgressDialog(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_search_user));
 			}
 		}
 	};
@@ -86,7 +86,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
 					refreshContactList(new ArrayList<QBUser>());
 				    Toast.makeText(NewDialogActivity.this, getResources().getString(R.string.dialog_activity_reject), Toast.LENGTH_LONG).show();
 				}
-				NewDialogActivity.this.blockUi(false, new String());
+				NewDialogActivity.this.switchProgressDialog(false, new String());
 			}
 		});
 	}
@@ -103,7 +103,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         QBUser user = (QBUser) adapterView.getItemAtPosition(i);
         app.getMsgManager().setDialogCreateListener(this);
         app.getMsgManager().createDialog(user, true);
-        blockUi(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_create_dialog));
+        switchProgressDialog(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_create_dialog));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         finishActivityReceivedResult(tUserId, createdDialogId);
     }
 
-    public void blockUi(boolean enable, String progressText) {
+    public void switchProgressDialog(boolean enable, String progressText) {
 
         if (enable) {
             progress = ProgressDialog.show(NewDialogActivity.this, getString(R.string.app_name), progressText, true);
@@ -152,7 +152,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
     }
 
     private void finishActivityReceivedResult(int userId, String dialogId) {
-        blockUi(false, new String());
+        switchProgressDialog(false, new String());
         Intent intent = new Intent();
         intent.putExtra(GlobalConsts.USER_ID, String.valueOf(userId));
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);

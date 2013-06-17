@@ -15,6 +15,7 @@ import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
+import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
             Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
             i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
             i.putExtra(GlobalConsts.ROOM_NAME, app.getUserPresentRoomList().get(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());

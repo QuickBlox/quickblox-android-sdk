@@ -19,9 +19,11 @@ import java.util.ArrayList;
 
 public class DialogsAdapter extends ArrayAdapter<QBCustomObject> {
 
+    private ArrayList<QBCustomObject> mDialogList;
 
     public DialogsAdapter(Context context, ArrayList<QBCustomObject> dialogList) {
         super(context, 0, dialogList);
+        mDialogList = dialogList;
     }
 
     @Override
@@ -42,27 +44,13 @@ public class DialogsAdapter extends ArrayAdapter<QBCustomObject> {
 
         viewHolder.dialogName.setText(getItem(position).getFields().get(GlobalConsts.ROOM_NAME).toString());
 
-       // viewHolder.container.setTag(position);
-//        viewHolder.container.setOnClickListener(dialogClickListener);
-//
-//        Object lastMsg = dialogList.get(position).getFields().get(GlobalConsts.LAST_MSG);
-//        if (lastMsg != null) {
-//            viewHolder.dialogLastMsg.setText(lastMsg.toString());
-//        }
-//        Object userAvatarUrl = dialogList.get(position).getFields().get(GlobalConsts.RECEPIENT_AVATAR);
-//        if (userAvatarUrl != null) {
-//            applyAvatar(viewHolder.userAvatar, userAvatarUrl.toString());
-//        }
+        viewHolder.container.setTag(position);
+
+        Object lastMsg = mDialogList.get(position).getFields().get(GlobalConsts.LAST_MSG);
+        if (lastMsg != null) {
+            viewHolder.dialogLastMsg.setText(lastMsg.toString());
+        }
         return convertView;
-    }
-
-    private void applyAvatar(ImageView userAvatar, String userAvatarUrl) {
-
-        // Load and display image
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                .defaultDisplayImageOptions(ChatApplication.getInstance().getOptions()).build();
-        ImageLoader.getInstance().init(config);
-        ImageLoader.getInstance().displayImage(userAvatarUrl, userAvatar);
     }
 
     public static class ViewHolder {

@@ -14,7 +14,6 @@ public class GlobalConsts {
     public static final String FRIEND_ID = "friend_id";
 
     public static final String ATTACH_INDICATOR = "<Attach file>";
-    public static final String REGEX_MESSAGE_AUTHOR_ID = "^[^_]*_([^@]*)@.*$";
 
     public static final byte DOWNLOAD_LIST_FOR_DIALOG = 0;
     public static final byte DOWNLOAD_LIST_FOR_CONTACTS = 1;

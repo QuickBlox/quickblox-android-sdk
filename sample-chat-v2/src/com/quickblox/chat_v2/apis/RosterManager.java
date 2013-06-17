@@ -1,21 +1,21 @@
 package com.quickblox.chat_v2.apis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import android.util.Log;
-import com.quickblox.chat_v2.utils.GlobalConsts;
-import org.jivesoftware.smack.packet.Presence;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.listeners.SubscriptionListener;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
-import com.quickblox.module.chat.xmpp.SubscriptionListener;
 import com.quickblox.module.users.model.QBUser;
+
+import org.jivesoftware.smack.packet.Presence;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class RosterManager implements QBRosterListener, SubscriptionListener {
 
@@ -28,7 +28,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     public RosterManager(Context context) {
         this.context = context;
-        QBChat.startAutoSendPresence(30);
+        QBChat.startAutoSendPresence(15);
         subscribes = new ArrayList<String>();
         app = ChatApplication.getInstance();
     }
@@ -47,8 +47,8 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     @Override
     public void presenceChanged(Presence presence) {
-        Log.d("Roster manager", "presence from = "+presence.getFrom());
-        Log.d("Roster manager", "presence type = "+presence.getType());
+        Log.d("Roster manager", "presence from = " + presence.getFrom());
+        Log.d("Roster manager", "presence type = " + presence.getType());
 
         String[] parts = presence.getFrom().split("-");
         app.getUserNetStatusMap().put(Integer.parseInt(parts[0]), presence.getType().toString());

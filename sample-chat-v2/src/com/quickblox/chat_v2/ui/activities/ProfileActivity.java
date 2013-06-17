@@ -77,14 +77,13 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 				
 				SharedPreferencesHelper.setLogin(ProfileActivity.this, null);
 				SharedPreferencesHelper.setPassword(ProfileActivity.this, null);
-				
+
 				app.clearAllData();
                 GCMHelper.unregister(ProfileActivity.this);
 
 				Session session = new Session(ProfileActivity.this);
 				session.closeAndClearTokenInformation();
-				
-				Intent intent = new Intent(ProfileActivity.this, SplashActivity.class);
+              	Intent intent = new Intent(ProfileActivity.this, SplashActivity.class);
 				startActivity(intent);
 				
 				getParent().finish();

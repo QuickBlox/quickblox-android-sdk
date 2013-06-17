@@ -16,12 +16,10 @@ import java.util.TimerTask;
 public class OfflineMessageSeparatorQuery {
 
     private ChatApplication app;
-    private Context mContext;
     private ArrayList<QBCustomObject> mQueryList;
     private Timer mMessageBufferTimer;
 
-    public OfflineMessageSeparatorQuery(Context pContext) {
-        mContext = pContext;
+    public OfflineMessageSeparatorQuery() {
         app = ChatApplication.getInstance();
         mQueryList = new ArrayList<QBCustomObject>();
         startOfflineMessageBuffer();

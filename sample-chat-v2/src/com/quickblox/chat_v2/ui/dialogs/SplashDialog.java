@@ -57,7 +57,7 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 					tempUser.setLogin(inputNameField.getText().toString());
 					tempUser.setPassword(inputPasswordField.getText().toString());
 					tempUser.setFullName(tempUser.getLogin());
-					((SplashActivity)context).blockUi(true);
+					((SplashActivity)context).switchProgressDialog(true);
 					
 					QBUsers.signUpSignInTask(tempUser, (QBCallback) getActivity(), tempUser.getPassword());
 					
@@ -65,7 +65,7 @@ public class SplashDialog extends DialogFragment implements OnClickListener {
 				} else {
 					QBUsers.signIn(inputNameField.getText().toString(), inputPasswordField.getText().toString(), (QBCallback) getActivity(), inputPasswordField.getText().toString());
 					
-					((SplashActivity)context).blockUi(true);
+					((SplashActivity)context).switchProgressDialog(true);
 				}
 				
 				dismiss();

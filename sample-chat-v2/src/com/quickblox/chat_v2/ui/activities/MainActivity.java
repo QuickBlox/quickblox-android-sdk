@@ -4,25 +4,12 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.TabHost;
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.apis.GcmManager;
-import com.quickblox.chat_v2.apis.MessageManager;
-import com.quickblox.chat_v2.apis.PictureManager;
-import com.quickblox.chat_v2.apis.QuickBloxManager;
-import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMHelper;
-import com.quickblox.chat_v2.gcm.GCMSubscriber;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
-import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.users.model.QBUser;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/8/13 Time: 1:34 PM
@@ -47,7 +34,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         GCMHelper.register(this);
 
         setupTabs();
-        blockUi(true);
+        switchProgressDialog(true);
         app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
         downloadStartUpInfo();
     }
@@ -87,7 +74,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     }
 
-    public void blockUi(boolean enable) {
+    public void switchProgressDialog(boolean enable) {
         if (enable) {
             progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.loading), true);
         } else {
@@ -97,6 +84,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     @Override
     public void downloadComlete(QBUser friend) {
-        blockUi(false);
+        switchProgressDialog(false);
     }
 }

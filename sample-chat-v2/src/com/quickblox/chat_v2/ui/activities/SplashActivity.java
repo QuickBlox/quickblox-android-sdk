@@ -24,8 +24,6 @@ import android.widget.Toast;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.apis.FaceBookManager;
-import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.dialogs.SplashDialog;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
@@ -38,8 +36,7 @@ import com.quickblox.internal.core.server.BaseService;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.model.QBProvider;
 import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.model.QBChatRoster;
-import com.quickblox.module.chat.xmpp.LoginListener;
+import com.quickblox.module.chat.listeners.LoginListener;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserResult;
@@ -63,7 +60,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		Button registrationButton = (Button) findViewById(R.id.splash_registration_button);
 		Button siginButton = (Button) findViewById(R.id.splash_sign_in_button);
 		
-		blockUi(true);
+		switchProgressDialog(true);
 
         app = ChatApplication.getInstance();
         app.createData(this);
@@ -129,7 +126,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 							QBUsers.signIn(user, SplashActivity.this, user.getPassword());
 							
 						} else {
-							blockUi(false);
+							switchProgressDialog(false);
 						}
 					} else {
 						QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, SplashActivity.this, "social");
@@ -139,7 +136,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			});
 			
 		} else {
-			blockUi(false);
+			switchProgressDialog(false);
 			Toast.makeText(this, getResources().getString(R.string.splash_internet_error), Toast.LENGTH_LONG).show();
 			
 		}
@@ -225,12 +222,12 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			
 			// Login to Chat and open Main screen
 			QBChat.loginWithUser(qbUser, new LoginListener() {
-				
+
 				@Override
 				public void onLoginError() {
-					blockUi(false);
+					switchProgressDialog(false);
 				}
-				
+
 				@Override
 				public void onLoginSuccess(){
                     QBChat.openXmmpChat(app.getMsgManager());
@@ -242,7 +239,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 			});
 			
 		} else {
-			blockUi(false);
+			switchProgressDialog(false);
 			Toast.makeText(this, getResources().getString(R.string.splash_login_reject), Toast.LENGTH_LONG).show();
 		}
 	}
@@ -255,7 +252,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		}
 		ChatApplication.getInstance().setAccessTokien(session.getAccessToken());
 		QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, session.getAccessToken(), null, this, "social");
-		blockUi(true);
+		switchProgressDialog(true);
 	}
 	
 	private void loadMainScreen() {
@@ -264,7 +261,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 		finish();
 	}
 	
-	public void blockUi(boolean enable) {
+	public void switchProgressDialog(boolean enable) {
 		if (enable) {
 			progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_ui_block),
 					true);

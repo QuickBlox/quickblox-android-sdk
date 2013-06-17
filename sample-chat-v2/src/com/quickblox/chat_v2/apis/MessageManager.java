@@ -3,6 +3,8 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMSender;
@@ -61,7 +63,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
-        omsq = new OfflineMessageSeparatorQuery(context);
+        omsq = new OfflineMessageSeparatorQuery();
     }
 
     @Override
@@ -78,10 +80,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         if (newMessageListener != null && authorMessageId == openChatOpponentId) {
             newMessageListener.incomeNewMessage(message.getBody());
         }
-
-
         omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
-
 
         QBCustomObject localResult = dialogReview(authorMessageId);
         if (localResult != null) {
@@ -239,17 +238,25 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void updateDialogLastMessage(String lastMsg, String dialogId) {
-        QBCustomObject co = new QBCustomObject();
-        co.setClassName(GlobalConsts.DIALOGS);
-        HashMap<String, Object> fields = new HashMap<String, Object>();
-        fields.put(GlobalConsts.LAST_MSG, lastMsg);
-        co.setFields(fields);
-        co.setCustomObjectId(dialogId);
-        QBCustomObjects.updateObject(co, new QBCallbackImpl() {
+    public void updateDialogLastMessage(final String lastMsg, final String dialogId) {
+
+        ((Activity)context).runOnUiThread(new Runnable() {
             @Override
-            public void onComplete(Result result) {
-                dialogRefreshListener.refreshList();
+            public void run() {
+
+                QBCustomObject co = new QBCustomObject();
+                co.setClassName(GlobalConsts.DIALOGS);
+                HashMap<String, Object> fields = new HashMap<String, Object>();
+                fields.put(GlobalConsts.LAST_MSG, lastMsg);
+                co.setFields(fields);
+                co.setCustomObjectId(dialogId);
+                QBCustomObjects.updateObject(co, new QBCallbackImpl() {
+                    @Override
+                    public void onComplete(Result result) {
+                        dialogRefreshListener.refreshList();
+                    }
+                });
+
             }
         });
     }
