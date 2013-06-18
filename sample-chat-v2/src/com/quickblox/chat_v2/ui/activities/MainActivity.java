@@ -36,6 +36,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
         setupTabs();
         switchProgressDialog(true);
         app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
+        app.getRstManager().sendPresence(this);
         downloadStartUpInfo();
     }
 

@@ -1,6 +1,7 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ public class NewRoomActivity extends ListActivity {
     private Button joinRoomButton;
     private ContactsAdapter contactsAdapter;
     private ListView selectionTable;
+    private ProgressDialog progress;
 
     private ChatApplication app;
     private QBChatRoom chatRoom;
@@ -60,31 +62,24 @@ public class NewRoomActivity extends ListActivity {
         public void onClick(View v) {
             String roomName = roomNameEditText.getText().toString();
             if (!TextUtils.isEmpty(roomName)) {
-                createRoomInfoAndSendtoQb();
+                switchProgressDialog(true);
+                createAndSaveRoom();
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.room_name_emty_msg), Toast.LENGTH_SHORT).show();
             }
         }
     };
 
-    private void finishArctivityRecivedResult() {
-        Intent intent = new Intent();
-        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    private void createRoomInfoAndSendtoQb() {
+    private void createAndSaveRoom() {
 
         roomName = roomNameEditText.getText().toString();
 
         chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true, new RoomListener() {
             @Override
             public void onCreatedRoom() {
-                Log.d("ROOM", "CREATED") ;
                 app.setJoinedRoom(chatRoom);
                 finishArctivityRecivedResult();
+                switchProgressDialog(false);
             }
 
             @Override
@@ -98,9 +93,27 @@ public class NewRoomActivity extends ListActivity {
             }
         });
 
-        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id)).append(roomName).append("_")
-                .append("@muc.quickblox.com").toString(), app.getInviteUserList());
+        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id)).append("_")
+                .append(roomName).append("@muc.quickblox.com").toString(), app.getInviteUserList());
         sb.setLength(0);
+    }
+
+
+    private void finishArctivityRecivedResult() {
+        Intent intent = new Intent();
+        intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
+        intent.putExtra(GlobalConsts.ROOM_NAME, roomName);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public void switchProgressDialog(boolean enable) {
+        if (enable) {
+            progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.room_activity_connecting_room),
+                    true);
+        } else {
+            progress.dismiss();
+        }
     }
 
 }

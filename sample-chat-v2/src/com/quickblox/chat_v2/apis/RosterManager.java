@@ -3,7 +3,6 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
@@ -21,14 +20,13 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     private ArrayList<String> subscribes;
 
-    private Context context;
+    private Context mContext;
     private ChatApplication app;
 
     private int userID;
 
-    public RosterManager(Context context) {
-        this.context = context;
-        QBChat.startAutoSendPresence(15);
+    public RosterManager(Context pContext) {
+        mContext = pContext;
         subscribes = new ArrayList<String>();
         app = ChatApplication.getInstance();
     }
@@ -47,9 +45,6 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     @Override
     public void presenceChanged(Presence presence) {
-        Log.d("Roster manager", "presence from = " + presence.getFrom());
-        Log.d("Roster manager", "presence type = " + presence.getType());
-
         String[] parts = presence.getFrom().split("-");
         app.getUserNetStatusMap().put(Integer.parseInt(parts[0]), presence.getType().toString());
     }
@@ -57,7 +52,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
     @Override
     public void onSubscribe(int userId) {
         subscribes.add(String.valueOf(userId));
-        ((Activity) context).runOnUiThread(new Runnable() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -81,7 +76,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     public void sendRequestToSubscribe(int userId) {
         userID = userId;
-        ((Activity) context).runOnUiThread(new Runnable() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -93,7 +88,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     public void sendRequestToUnSubscribe(int userId) {
         userID = userId;
-        ((Activity) context).runOnUiThread(new Runnable() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -103,13 +98,23 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
         });
     }
 
+    public void sendPresence(Context context) {
+        ((Activity) context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                QBChat.startAutoSendPresence(30);
+            }
+        });
+    }
+
+
     public void refreshContactList() {
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
 
-                ((Activity) context).runOnUiThread(new Runnable() {
+                ((Activity) mContext).runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {

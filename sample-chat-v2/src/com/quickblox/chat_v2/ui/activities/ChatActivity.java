@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,8 +44,6 @@ import org.jivesoftware.smackx.muc.InvitationListener;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ChatActivity extends Activity implements OnMessageListDownloaded, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete {
 
@@ -102,13 +99,14 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     public void onBackPressed() {
 
 
-        if (previousActivity == GlobalConsts.DIALOG_ACTIVITY) {
+        if (previousActivity == GlobalConsts.DIALOG_ACTIVITY || previousActivity == GlobalConsts.CONTACTS_ACTIVITY) {
             msgManager.updateDialogLastMessage(lastMsg, dialogId);
         } else {
             app.getMsgManager().downloadPersistentRoom();
         }
         if (chatRoom != null) {
             chatRoom.leave();
+            app.setJoinedRoom(null);
         }
         this.finish();
     }
@@ -221,7 +219,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 msgManager.createDialog(opponentUser, false);
                 dialogFreezingStatus = "processed";
             }
-
+            dialogFreezingStatus = null;
             msgManager.sendSingleMessage(opponentUser.getId(), lastMsg, dialogId);
 
         }
@@ -238,8 +236,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 if (chatRoom != null) {
                     chatRoom.sendMessage(lastMsg);
                 } else {
-                    String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-                    chatRoom = QBChat.joinRoom(chatRoomName, app.getQbUser(), pChatMessageListener, pParticipantListener);
                     Toast.makeText(ChatActivity.this, getResources().getString(R.string.room_join_fall), Toast.LENGTH_LONG).show();
                 }
             } catch (XMPPException e) {

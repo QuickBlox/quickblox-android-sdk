@@ -51,7 +51,6 @@ public class GlobalConsts {
     public static final byte ROOM_ACTIVITY = 0;
     public static final byte DIALOG_ACTIVITY = 1;
     public static final byte CONTACTS_ACTIVITY = 2;
-    public static final String IS_NEW_ROOM = "is_new_room";
 
     public static final String ATTACH_URL = "attach_url";
     public static final String PRESENCE_TYPE_AVAIABLE = "available";

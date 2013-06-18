@@ -61,6 +61,7 @@
     <string name="contacts_inside_reject_button">Reject</string>
 
     <string name="new_room_activity_creating_room">Creating room</string>
+    <string name="room_activity_connecting_room">Connecting room</string>
 
     <string name="room_name_title">Name</string>
     <string name="room_join_fall">Join unsuccessfull</string>
