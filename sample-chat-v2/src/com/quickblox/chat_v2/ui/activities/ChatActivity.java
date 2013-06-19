@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +25,7 @@ import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
+import com.quickblox.chat_v2.interfaces.OnNewRoomMessageIncome;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.module.chat.QBChat;
@@ -45,7 +44,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete {
+public class ChatActivity extends Activity implements OnMessageListDownloaded, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete, OnNewRoomMessageIncome {
 
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
@@ -64,8 +63,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private TextView friendLabel;
 
     private ArrayList<String> incomeRoomMessages;
-    private Message incomeHistoryRoomMessage;
-    private ArrayList<String> messageQuery;
+    private String bufferMessageForNewDialog;
 
     private String dialogId;
     private String lastMsg;
@@ -84,13 +82,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.chat_layout);
 
         app = ChatApplication.getInstance();
         msgManager = app.getMsgManager();
         msgManager.setListDownloadedListener(this);
-        messageQuery = new ArrayList<String>();
         initViews();
 
     }
@@ -105,9 +101,11 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             app.getMsgManager().downloadPersistentRoom();
         }
         if (chatRoom != null) {
+            chatRoom.removeMessageListener(app.getMsgManager());
             chatRoom.leave();
             app.setJoinedRoom(null);
         }
+
         this.finish();
     }
 
@@ -130,12 +128,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.ROOM_ACTIVITY:
 
-                QBChat.startWatchRoom(pInvitationListener);
+                QBChat.getInstance().startWatchRoom(pInvitationListener);
                 String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
 
                 chatRoom = app.getJoinedRoom();
-                chatRoom.addMessageListener(pChatMessageListener);
                 chatRoom.addParticipantListener(pParticipantListener);
+                app.getMsgManager().setmNewRoomMessageIncome(this);
 
                 friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
 
@@ -217,9 +215,10 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             if (dialogId == null && dialogFreezingStatus == null) {
                 msgManager.setDialogCreateListener(ChatActivity.this);
                 msgManager.createDialog(opponentUser, false);
+                app.getMsgManager().setLastHoldMessage(lastMsg);
                 dialogFreezingStatus = "processed";
             }
-            dialogFreezingStatus = null;
+
             msgManager.sendSingleMessage(opponentUser.getId(), lastMsg, dialogId);
 
         }
@@ -364,30 +363,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         });
     }
 
-    private PacketListener pChatMessageListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-            incomeHistoryRoomMessage = (Message) packet;
-            StringBuilder builder = new StringBuilder();
-            String[] parts = incomeHistoryRoomMessage.getFrom().split("/");
-            builder.append(parts[1]).append(" : ").append(incomeHistoryRoomMessage.getBody());
-            messageQuery.add(builder.toString());
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-
-                public void run() {
-                    if (messageQuery.size() > 0) {
-                        roomShowMessage(new ArrayList<String>(messageQuery));
-                        messageQuery.clear();
-                        messageQuery.trimToSize();
-                    }
-                }
-            }, 1000);
-
-        }
-    };
-
     private InvitationListener pInvitationListener = new InvitationListener() {
         @Override
         public void invitationReceived(Connection connection, String s, String s2, String s3, String s4, Message message) {
@@ -448,6 +423,18 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         dialogId = String.valueOf(userId);
         dialogFreezingStatus = null;
         msgManager.setDialogCreateListener(null);
+        if (lastMsg != null) {
+            showMessage(lastMsg, false);
+        }
     }
 
+    @Override
+    public void incomeMessagePool(final ArrayList<String> messagesPool) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                roomShowMessage(messagesPool);
+            }
+        });
+    }
 }

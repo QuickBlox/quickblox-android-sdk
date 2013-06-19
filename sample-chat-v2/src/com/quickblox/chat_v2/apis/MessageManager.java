@@ -3,7 +3,6 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
@@ -12,6 +11,7 @@ import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
 import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
+import com.quickblox.chat_v2.interfaces.OnNewRoomMessageIncome;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
@@ -20,7 +20,6 @@ import com.quickblox.chat_v2.utils.OfflineMessageSeparatorQuery;
 import com.quickblox.chat_v2.utils.SingleChatDialogTable;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
-import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.custom.QBCustomObjects;
@@ -31,13 +30,17 @@ import com.quickblox.module.users.model.QBUser;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded {
+public class MessageManager implements MessageListener, OnPictureDownloadComplete, OnUserProfileDownloaded, PacketListener {
 
     private Context context;
     private ChatApplication app;
@@ -50,12 +53,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private QBCustomObject customDialog;
     private boolean isNeedDownloadUser;
     private int authorMessageId;
+    private ArrayList<String> messageQuery;
+    private String lastHoldMessage;
 
     private OnMessageListDownloaded listDownloadedListener;
     private OnDialogCreateComplete dialogCreateListener;
     private OnNewMessageIncome newMessageListener;
     private OnDialogListRefresh dialogRefreshListener;
     private OnRoomListDownloaded roomListDownloadListener;
+    private OnNewRoomMessageIncome mNewRoomMessageIncome;
 
     private SingleChatDialogTable coupleTable;
     private OfflineMessageSeparatorQuery omsq;
@@ -64,6 +70,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         this.context = context;
         app = ChatApplication.getInstance();
         omsq = new OfflineMessageSeparatorQuery();
+        messageQuery = new ArrayList<String>();
     }
 
     @Override
@@ -135,7 +142,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
         }
-        QBChat.sendMessage(userId, messageBody);
+        QBChat.getInstance().sendMessage(userId, messageBody);
 
         omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
         updateDialogLastMessage(messageBody, dialogId);
@@ -143,8 +150,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     private void pushSender(final int userId) {
-         GCMSender gs = new GCMSender();
-         gs.sendPushNotifications(userId);
+        GCMSender gs = new GCMSender();
+        gs.sendPushNotifications(userId);
     }
 
     public synchronized void createDialog(QBUser qbuser, boolean isNeedExtraReview) {
@@ -183,6 +190,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                             } else {
                                 updateDialogLastMessage(backgroundMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
                                 dialogRefreshListener.refreshList();
+                            }
+                            if (lastHoldMessage != null) {
+                                updateDialogLastMessage(lastHoldMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
                             }
                         }
                     }
@@ -240,7 +250,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     public void updateDialogLastMessage(final String lastMsg, final String dialogId) {
 
-        ((Activity)context).runOnUiThread(new Runnable() {
+        ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
@@ -290,7 +300,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void createRoom(String roomName, String roomJid, ArrayList<String> invaiteList) {
+    public void
+    createRoom(String roomName, String roomJid, ArrayList<String> invaiteList) {
 
         customDialog = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
@@ -334,6 +345,30 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     }
 
+    @Override
+    public void processPacket(Packet packet) {
+
+        Message roomMessage = (Message) packet;
+        Log.e("MM", "message = " + roomMessage.getBody());
+
+        StringBuilder builder = new StringBuilder();
+        String[] parts = roomMessage.getFrom().split("/");
+        builder.append(parts[1]).append(" : ").append(roomMessage.getBody());
+        messageQuery.add(builder.toString());
+        Timer time = new Timer();
+        time.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (messageQuery.size() > 0) {
+                    mNewRoomMessageIncome.incomeMessagePool(new ArrayList<String>(messageQuery));
+                    messageQuery.clear();
+                    messageQuery.trimToSize();
+                }
+            }
+        }, 3000L, 2000L);
+
+    }
+
     public void setDialogCreateListener(OnDialogCreateComplete dialogCreateListener) {
         this.dialogCreateListener = dialogCreateListener;
     }
@@ -349,5 +384,17 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     public void setRoomListDownloadListener(OnRoomListDownloaded roomListDownloadListener) {
         this.roomListDownloadListener = roomListDownloadListener;
+    }
+
+    public void setmNewRoomMessageIncome(OnNewRoomMessageIncome mNewRoomMessageIncome) {
+        this.mNewRoomMessageIncome = mNewRoomMessageIncome;
+    }
+
+    public String getLastHoldMessage() {
+        return lastHoldMessage;
+    }
+
+    public void setLastHoldMessage(String lastHoldMessage) {
+        this.lastHoldMessage = lastHoldMessage;
     }
 }

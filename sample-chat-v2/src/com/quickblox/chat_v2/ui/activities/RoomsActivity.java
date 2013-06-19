@@ -1,7 +1,6 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -105,7 +104,7 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
 
             QBCustomObject co = (QBCustomObject) parent.getItemAtPosition(position);
             roomName = co.getFields().get(GlobalConsts.ROOM_NAME).toString();
-            chatRoom = QBChat.joinRoom(roomName, app.getQbUser(), RoomsActivity.this);
+            QBChat.getInstance().joinRoom(roomName, app.getQbUser(), RoomsActivity.this);
         }
 
 
@@ -141,18 +140,16 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
     }
 
     @Override
-    public void onCreatedRoom() {
+    public void onCreatedRoom(QBChatRoom pRoom) {
 
     }
 
     @Override
-    public void onJoinedRoom() {
+    public void onJoinedRoom(QBChatRoom pRoom) {
+        chatRoom = pRoom;
+        chatRoom.addMessageListener(app.getMsgManager());
         app.setJoinedRoom(chatRoom);
         saveRoomAndStartActivity();
     }
 
-    @Override
-    public void onReceiveRooms(List<String> list) {
-
-    }
 }

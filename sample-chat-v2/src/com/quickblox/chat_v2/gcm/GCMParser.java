@@ -34,6 +34,7 @@ public final class GCMParser {
 
         NotificationCompat.Builder newNotify = new NotificationCompat.Builder(context)
                 .setContentTitle("QB chats")
+                .setTicker("New QB chat")
                 .setContentText("You have unread QB chats. Tap to launch application")
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_launcher);

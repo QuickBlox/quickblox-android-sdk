@@ -80,7 +80,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
             @Override
             public void run() {
-                QBChat.subscribe(userID);
+                QBChat.getInstance().subscribe(userID);
                 refreshContactList();
             }
         });
@@ -92,7 +92,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
             @Override
             public void run() {
-                QBChat.unsubscribed(userID);
+                QBChat.getInstance().unsubscribed(userID);
                 refreshContactList();
             }
         });
@@ -102,7 +102,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                QBChat.startAutoSendPresence(30);
+                QBChat.getInstance().startAutoSendPresence(30);
             }
         });
     }

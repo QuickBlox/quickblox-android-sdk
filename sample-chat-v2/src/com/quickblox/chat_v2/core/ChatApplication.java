@@ -1,8 +1,5 @@
 package com.quickblox.chat_v2.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,6 +18,9 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
 import org.jivesoftware.smack.SmackAndroid;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/12/13 Time: 4:41
@@ -58,10 +58,10 @@ public class ChatApplication extends Application {
     private ArrayList<QBUser> contactsCandidateList;
     private ArrayList<String> inviteUserList;
 
-    private HashMap<String,QBUser> dialogsUsersMap;
+    private HashMap<String, QBUser> dialogsUsersMap;
     private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<String, QBUser> contactsMap;
-    private HashMap<Integer,String> userNetStatusMap;
+    private HashMap<Integer, String> userNetStatusMap;
 
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
             .displayer(new RoundedBitmapDisplayer(20)).build();
@@ -79,7 +79,7 @@ public class ChatApplication extends Application {
     }
 
     public void createData(Context context) {
-        msgManager =  new MessageManager(context);
+        msgManager = new MessageManager(context);
         qbm = new QuickBloxManager(context);
         fbm = new FaceBookManager();
         picManager = new PictureManager(context);
@@ -93,6 +93,7 @@ public class ChatApplication extends Application {
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
+        inviteUserList.add(String.valueOf(qbUser.getId()));
         userNetStatusMap = new HashMap<Integer, String>();
     }
 

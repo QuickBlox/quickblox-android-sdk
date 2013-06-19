@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +18,6 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.model.QBChatRoom;
-
-import java.util.List;
 
 public class NewRoomActivity extends ListActivity {
 
@@ -74,22 +71,18 @@ public class NewRoomActivity extends ListActivity {
 
         roomName = roomNameEditText.getText().toString();
 
-        chatRoom = QBChat.createRoom(roomName, app.getQbUser(), true, true, new RoomListener() {
+        QBChat.getInstance().createRoom(roomName, app.getQbUser(), true, false, new RoomListener() {
             @Override
-            public void onCreatedRoom() {
+            public void onCreatedRoom(QBChatRoom pRoom) {
+                chatRoom = pRoom;
+                chatRoom.addMessageListener(app.getMsgManager());
                 app.setJoinedRoom(chatRoom);
                 finishArctivityRecivedResult();
                 switchProgressDialog(false);
             }
 
             @Override
-            public void onJoinedRoom() {
-
-            }
-
-            @Override
-            public void onReceiveRooms(List<String> list) {
-
+            public void onJoinedRoom(QBChatRoom pRoom) {
             }
         });
 
