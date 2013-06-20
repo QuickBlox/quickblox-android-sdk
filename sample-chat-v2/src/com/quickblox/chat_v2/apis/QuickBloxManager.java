@@ -204,7 +204,7 @@ public class QuickBloxManager {
         }
     }
 
-    public void createSingleCustomObject(final QBCustomObject pCustomObject){
+    public void createSingleCustomObject(final QBCustomObject pCustomObject) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -212,7 +212,7 @@ public class QuickBloxManager {
                 QBCustomObjects.createObject(pCustomObject, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-                       Log.d("QBM", "result = "+result.isSuccess());
+                        Log.d("QBM", "result = " + result.isSuccess());
                     }
 
                     @Override
@@ -227,8 +227,8 @@ public class QuickBloxManager {
 
     // LISTENERS
 
-    public void setUserProfileListener(OnUserProfileDownloaded friendProvileListener) {
-        this.userProfileListener = friendProvileListener;
+    public void setUserProfileListener(OnUserProfileDownloaded friendProfileListener) {
+        this.userProfileListener = friendProfileListener;
     }
 
     public void setPictureDownloadComplete(OnPictureDownloadComplete pictureDownloadComplete) {

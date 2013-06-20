@@ -215,7 +215,8 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
             } else {
                 // save QB User
                 qbUser.setPassword((String) context);
-                ChatApplication.getInstance().setQbUser(qbUser);
+                app.setQbUser(qbUser);
+                app.getInviteUserList().add(String.valueOf(qbUser.getId()));
 
                 SharedPreferencesHelper.setPassword(getBaseContext(), context.toString());
             }
@@ -269,6 +270,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
             progress.dismiss();
         }
     }
+
 
     // INTERNET REVIEW
     public boolean isOnline() {

@@ -300,8 +300,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void
-    createRoom(String roomName, String roomJid, ArrayList<String> invaiteList) {
+    public void createRoom(String roomName, String roomJid, ArrayList<String> invaiteList) {
 
         customDialog = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();

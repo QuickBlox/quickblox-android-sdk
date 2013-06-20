@@ -72,11 +72,18 @@ public class NewRoomActivity extends ListActivity {
         roomName = roomNameEditText.getText().toString();
 
         QBChat.getInstance().createRoom(roomName, app.getQbUser(), true, false, new RoomListener() {
+
             @Override
             public void onCreatedRoom(QBChatRoom pRoom) {
                 chatRoom = pRoom;
                 chatRoom.addMessageListener(app.getMsgManager());
                 app.setJoinedRoom(chatRoom);
+
+                app.getInviteUserList().clear();
+                app.getInviteUserList().trimToSize();
+
+                app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
+
                 finishArctivityRecivedResult();
                 switchProgressDialog(false);
             }
@@ -86,13 +93,14 @@ public class NewRoomActivity extends ListActivity {
             }
         });
 
-        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id)).append("_")
-                .append(roomName).append("@muc.quickblox.com").toString(), app.getInviteUserList());
+        app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id)).append("_").append(roomName).append("@muc.quickblox.com").toString(),
+                app.getInviteUserList());
         sb.setLength(0);
     }
 
 
     private void finishArctivityRecivedResult() {
+
         Intent intent = new Intent();
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
         intent.putExtra(GlobalConsts.ROOM_NAME, roomName);

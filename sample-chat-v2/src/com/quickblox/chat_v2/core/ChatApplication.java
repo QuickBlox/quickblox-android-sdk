@@ -93,7 +93,6 @@ public class ChatApplication extends Application {
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
-        inviteUserList.add(String.valueOf(qbUser.getId()));
         userNetStatusMap = new HashMap<Integer, String>();
     }
 
