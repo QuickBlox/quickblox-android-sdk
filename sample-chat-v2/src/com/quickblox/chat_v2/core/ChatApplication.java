@@ -14,10 +14,9 @@ import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.model.QBChatRoster;
+import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
-
-import org.jivesoftware.smack.SmackAndroid;
 
 import java.util.ArrayList;
 import java.util.HashMap;

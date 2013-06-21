@@ -54,7 +54,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
 
         if (app.getQbUser().getFacebookId() != null) {
-            app.getPicManager().downloadPicAndDisplay(app.getQbUser().getWebsite(), userpic);
+            app.getPicManager().downloadPicAndDisplay(app.getQbUser().getWebsite(), userpic, null);
             username.setText(app.getQbUser().getFullName());
         } else {
 

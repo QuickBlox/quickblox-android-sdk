@@ -91,6 +91,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
         QBCustomObject localResult = dialogReview(authorMessageId);
         if (localResult != null) {
+            if (message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+                updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult.getCustomObjectId());
+            }
             updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
         } else {
 
@@ -136,7 +139,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         if (messageBody == null && dialogId == null && userId == null) {
             return;
         }
-
         if (app.getUserNetStatusMap().get(userId) == null || !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
             pushSender(userId);
 
@@ -144,8 +146,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         }
         QBChat.getInstance().sendMessage(userId, messageBody);
 
-        omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
-        updateDialogLastMessage(messageBody, dialogId);
+
+        if (messageBody.length() > 12 && messageBody.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+            updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, dialogId);
+        } else {
+
+            omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
+            updateDialogLastMessage(messageBody, dialogId);
+        }
+
 
     }
 

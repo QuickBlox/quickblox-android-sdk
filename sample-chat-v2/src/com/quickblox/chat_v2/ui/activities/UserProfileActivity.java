@@ -60,7 +60,7 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
     private void getUserPicture() {
         friend = app.getDialogsUsersMap().get(friendId);
 
-        if (friend == null){
+        if (friend == null) {
             friend = app.getContactsMap().get(friendId);
         }
 
@@ -90,6 +90,7 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
             @Override
             public void run() {
                 userpic.setImageBitmap(userBitmap);
+
             }
         });
     }

@@ -92,7 +92,7 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
             @Override
             public void run() {
-                QBChat.getInstance().unsubscribed(userID);
+                QBChat.getInstance().unsubscribe(userID);
                 refreshContactList();
             }
         });

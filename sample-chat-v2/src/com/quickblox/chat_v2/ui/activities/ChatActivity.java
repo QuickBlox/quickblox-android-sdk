@@ -273,6 +273,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             userAttach = new ImageView(ChatActivity.this);
             userAttach.setMaxHeight(getResources().getDimensionPixelSize(R.dimen.attach_preview_margin));
             userAttach.setMaxWidth(getResources().getDimensionPixelSize(R.dimen.attach_preview_margin));
+
             userAttach.setLayoutParams(params);
             userAttach.setBackgroundResource(bgRes);
             userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
@@ -280,7 +281,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             attachViewListener.setPictureUrl(parts[1]);
 
 
-            app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
+            app.getPicManager().downloadPicAndDisplay(parts[1], userAttach, null);
+
 
             isAttach = true;
         } else {
@@ -392,6 +394,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                     try {
 
                         Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
+                        topBar.swichProgressBarVisibility(View.VISIBLE);
 
                         app.getQbm().setUploadListener(ChatActivity.this);
                         Bitmap yourSelectedImage = app.getPicManager().decodeUri(imageReturnedIntent.getData());
@@ -409,6 +412,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         String serviceMessage = "<Attach file>#" + picUrl;
         msgManager.sendSingleMessage(opponentUser.getId(), serviceMessage, dialogId);
         showMessage(serviceMessage, true);
+        topBar.swichProgressBarVisibility(View.INVISIBLE);
     }
 
     @Override

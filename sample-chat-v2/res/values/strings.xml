@@ -16,7 +16,7 @@
     <string name="splash_progressdialog">Setup Connection</string>
     <string name="splash_login_reject">Login is not successfull</string>
     <string name="splash_internet_error">Internet connection not found</string>
-    <string name="splash_ui_block">Waiting request from server</string>
+    <string name="splash_ui_block">Waiting response from server</string>
 
 
     <string name="splash_dialog_name_1">Register in QuickBlox</string>
@@ -35,8 +35,8 @@
 
     <string name="profile_activity_exit_button">Exit</string>
     <string name="profile_activity_photo_refresh">Uploading photo</string>
-	
-	<string name="chat_activity_send_button">Send</string>
+
+    <string name="chat_activity_send_button">Send</string>
     <string name="chat_activity_attach_button">Attach</string>
     <string name="chat_activity_attach_info">Start attach transfer</string>
     <string name="chat_activity_attach_view">Attach</string>
@@ -47,13 +47,14 @@
 
     <string name="new_dialog_activity_search_user">Searching user</string>
     <string name="new_dialog_activity_create_dialog">Create new dialog</string>
-    
+
     <string name="fragment_new_button">New</string>
     <string name="fragment_join_button">Join</string>
 
-   	<string name="chat_dialog_view_profile">View profile</string>
+    <string name="chat_dialog_view_profile">View profile</string>
     <string name="chat_dialog_add_contact">Add to contact list</string>
-	<string name="chat_dialog_name">User actions</string>
+    <string name="chat_dialog_remove_contact">Remove from contact list</string>
+    <string name="chat_dialog_name">User actions</string>
 
     <string name="contacts_contact_button">Contacts</string>
     <string name="contacts_request_button">Request</string>
@@ -74,7 +75,7 @@
         join room )
     </string>
 
-    
+
     <string name="fragment_rooms_namefield">Name</string>
     <string name="fragment_rooms_checkbox_members">Only members</string>
 

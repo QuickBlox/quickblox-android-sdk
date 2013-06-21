@@ -1,19 +1,14 @@
 package com.quickblox.chat_v2.utils;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Andrew Dmitrenko
- * Date: 4/9/13
- * Time: 9:05 AM
- */
 public class GlobalConsts {
     public static final long GCM_CLIENT_ID = 328124915270L;
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
-    
+
     public static final String FRIEND_ID = "friend_id";
 
     public static final String ATTACH_INDICATOR = "<Attach file>";
+    public static final String ATTACH_TEXT_FOR_DIALOGS = "Attach";
 
     public static final byte DOWNLOAD_LIST_FOR_DIALOG = 0;
     public static final byte DOWNLOAD_LIST_FOR_CONTACTS = 1;
@@ -29,7 +24,7 @@ public class GlobalConsts {
 
     public static final String NAME_FIELD = "name";
     public static final String RECEPIENT_ID_FIELD = "recepient_id";
-    
+
     public static final String DIALOGS = "dialogs";
     public static final String USER_ID_FIELD = "user_id";
 

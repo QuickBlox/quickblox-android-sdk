@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,8 +16,6 @@ import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.activities.UserProfileActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.users.model.QBUser;
-
-import java.util.Random;
 
 public class TopBar extends RelativeLayout {
 
@@ -27,7 +26,16 @@ public class TopBar extends RelativeLayout {
 
     private TextView screenTitle;
     private ImageView userAvatar;
-    private String[] data;
+    private ProgressBar progBar;
+
+
+    public enum ContactAction {ADD, REMOVE}
+
+    ;
+
+    private ContactAction action = ContactAction.ADD;
+
+    private static String[] dialogTabledata = new String[2];
     private QBUser friend;
 
     public TopBar(Context context, AttributeSet attrs) {
@@ -35,18 +43,20 @@ public class TopBar extends RelativeLayout {
         inflate(context, R.layout.top_bar, this);
         setBackgroundResource(android.R.color.darker_gray);
         initViews();
+        dialogTabledata[0] = getContext().getResources().getString(R.string.chat_dialog_view_profile);
     }
 
     private void initViews() {
 
         screenTitle = (TextView) findViewById(R.id.screen_title);
         userAvatar = (ImageView) findViewById(R.id.user_avatar_iv);
+        progBar = (ProgressBar) findViewById(R.id.attach_progress_indicator);
         userAvatar.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                showDialog(data);
+                showDialog(dialogTabledata);
             }
 
         });
@@ -64,13 +74,26 @@ public class TopBar extends RelativeLayout {
 
                 switch (which) {
                     case 0:
-                        Intent i = new Intent(getContext(), UserProfileActivity.class);
-                        i.putExtra(GlobalConsts.FRIEND_ID, String.valueOf(friend.getId()));
-                        getContext().startActivity(i);
+                        Intent intent = new Intent(getContext(), UserProfileActivity.class);
+                        intent.putExtra(GlobalConsts.FRIEND_ID, String.valueOf(friend.getId()));
+                        getContext().startActivity(intent);
                         break;
 
                     case 1:
-                        ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friend.getId());
+
+                        if (action == ContactAction.ADD) {
+                            ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friend.getId());
+                        } else {
+                            ChatApplication.getInstance().getRstManager().sendRequestToUnSubscribe(friend.getId());
+                            ChatApplication.getInstance().getContactsMap().remove(friend.getId());
+
+                            for (int i = 0; i < ChatApplication.getInstance().getContactsList().size(); i++) {
+                                QBUser qu = ChatApplication.getInstance().getContactsList().get(i);
+                                if (qu.getId() == friend.getId()) {
+                                    ChatApplication.getInstance().getContactsList().remove(i);
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -87,13 +110,19 @@ public class TopBar extends RelativeLayout {
         userAvatar.setClickable(isAvatarClicable);
     }
 
+    public void swichProgressBarVisibility(int isVisbleConstant) {
+        progBar.setVisibility(isVisbleConstant);
+    }
+
     public void setFriendParams(QBUser friend, boolean isContacts) {
         this.friend = friend;
 
         if (isContacts) {
-            data = new String[]{getContext().getResources().getString(R.string.chat_dialog_view_profile)};
+            action = ContactAction.REMOVE;
+            dialogTabledata[1] = getContext().getResources().getString(R.string.chat_dialog_remove_contact);
         } else {
-            data = new String[]{getContext().getResources().getString(R.string.chat_dialog_view_profile), getContext().getResources().getString(R.string.chat_dialog_add_contact)};
+            action = ContactAction.ADD;
+            dialogTabledata[1] = getContext().getResources().getString(R.string.chat_dialog_add_contact);
         }
     }
 
