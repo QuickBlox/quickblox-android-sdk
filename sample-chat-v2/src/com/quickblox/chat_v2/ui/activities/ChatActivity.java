@@ -63,7 +63,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private TextView friendLabel;
 
     private ArrayList<String> incomeRoomMessages;
-    private String bufferMessageForNewDialog;
+    private ArrayList<QBUser> contactsList;
 
     private String dialogId;
     private String lastMsg;
@@ -87,6 +87,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         app = ChatApplication.getInstance();
         msgManager = app.getMsgManager();
         msgManager.setListDownloadedListener(this);
+
+        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
         initViews();
 
     }
@@ -164,7 +166,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 boolean arrayIndicator = getIntent().getStringExtra(GlobalConsts.ARRAY_TYPE).equals(GlobalConsts.CONTACTS_ARRAY) ? true : false;
 
                 int currentPosition = getIntent().getIntExtra(GlobalConsts.ARRAY_POSITION, 0);
-                opponentUser = arrayIndicator ? app.getContactsList().get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
+                opponentUser = arrayIndicator ? contactsList.get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
 
                 if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
                     dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();

@@ -4,7 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.core.CustomButtonClickListener;
@@ -12,14 +19,13 @@ import com.quickblox.chat_v2.core.CustomCheckBoxListener;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ContactsAdapter extends BaseAdapter {
 
     private Context context;
     private LayoutInflater inflater;
 
-    private List<QBUser> incomeUserList;
+    private ArrayList<QBUser> incomeUserList;
     private boolean isContacts;
     private boolean isInviteList;
 
@@ -115,9 +121,9 @@ public class ContactsAdapter extends BaseAdapter {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 super.onCheckedChanged(compoundButton, b);
                 if (b) {
-                    app.getInviteUserList().add(String.valueOf(app.getContactsList().get(this.getPosition()).getId()));
+                    app.getInviteUserList().add(String.valueOf(incomeUserList.get(this.getPosition()).getId()));
                 } else {
-                    app.getInviteUserList().remove(String.valueOf(app.getContactsList().get(this.getPosition()).getId()));
+                    app.getInviteUserList().remove(String.valueOf(incomeUserList.get(this.getPosition()).getId()));
                 }
             }
         };

@@ -18,6 +18,9 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.model.QBChatRoom;
+import com.quickblox.module.users.model.QBUser;
+
+import java.util.ArrayList;
 
 public class NewRoomActivity extends ListActivity {
 
@@ -29,6 +32,7 @@ public class NewRoomActivity extends ListActivity {
 
     private ChatApplication app;
     private QBChatRoom chatRoom;
+    private ArrayList<QBUser> contactsList;
 
     private StringBuilder sb;
     private String roomName;
@@ -39,6 +43,8 @@ public class NewRoomActivity extends ListActivity {
         setContentView(R.layout.new_room_layout);
         app = ChatApplication.getInstance();
         sb = new StringBuilder();
+
+        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
         initViews();
     }
 
@@ -50,7 +56,7 @@ public class NewRoomActivity extends ListActivity {
 
         selectionTable = (ListView) findViewById(android.R.id.list);
         selectionTable.setClickable(true);
-        contactsAdapter = new ContactsAdapter(this, app.getContactsList(), true, true);
+        contactsAdapter = new ContactsAdapter(this, contactsList, true, true);
         setListAdapter(contactsAdapter);
     }
 

@@ -3,7 +3,9 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMSender;
@@ -74,49 +76,56 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     @Override
-    public void processMessage(Chat chat, Message message) {
+    public void processMessage(Chat chat, final Message message) {
 
-        if (message.getBody() == null) {
-            return;
-        }
+        ((Activity) context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-        String[] partsIdto = message.getTo().split("-");
-        String[] partsIdfrom = message.getFrom().split("-");
-        authorMessageId = Integer.parseInt(partsIdfrom[0]);
-
-        if (newMessageListener != null && authorMessageId == openChatOpponentId) {
-            newMessageListener.incomeNewMessage(message.getBody());
-        }
-        omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
-
-        QBCustomObject localResult = dialogReview(authorMessageId);
-        if (localResult != null) {
-            if (message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-                updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult.getCustomObjectId());
-            }
-            updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
-        } else {
-
-            if (coupleTable == null) {
-                coupleTable = new SingleChatDialogTable();
-                coupleTable.setCoupleDate(authorMessageId, Integer.parseInt(partsIdto[0]));
-                startDialogCreate(message);
-            } else {
-
-                if (!coupleTable.reviewCoupleIsExist(authorMessageId, Integer.parseInt(partsIdto[0]))) {
-                    startDialogCreate(message);
+                if (message.getBody() == null) {
+                    return;
                 }
+
+                String[] partsIdto = message.getTo().split("-");
+                String[] partsIdfrom = message.getFrom().split("-");
+                authorMessageId = Integer.parseInt(partsIdfrom[0]);
+
+                if (newMessageListener != null && authorMessageId == openChatOpponentId) {
+                    newMessageListener.incomeNewMessage(message.getBody());
+                }
+                omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
+
+                QBCustomObject localResult = dialogReview(authorMessageId);
+                if (localResult != null) {
+                    if (message.getBody().length() > 13 && message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+                        updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult.getCustomObjectId());
+                    } else {
+                        updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
+                    }
+                } else {
+
+                    if (coupleTable == null) {
+                        coupleTable = new SingleChatDialogTable();
+                        coupleTable.setCoupleDate(authorMessageId, Integer.parseInt(partsIdto[0]));
+                        startDialogCreate(message);
+                    } else {
+
+                        if (!coupleTable.reviewCoupleIsExist(authorMessageId, Integer.parseInt(partsIdto[0]))) {
+                            startDialogCreate(message);
+                        }
+                    }
+                }
+                // separate attach
+                if (message.getBody().length() > 13 && message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+                    String[] parts = message.getBody().split("#");
+
+                    QBUser tmpUser = new QBUser();
+                    tmpUser.setFileId(Integer.parseInt(parts[1]));
+                    app.getQbm().downloadQBFile(tmpUser);
+                }
+                configureAndPlaySoundNotification();
             }
-        }
-        // separate attach
-        if (message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-            String[] parts = message.getBody().split("#");
-
-            QBUser tmpUser = new QBUser();
-            tmpUser.setFileId(Integer.parseInt(parts[1]));
-            app.getQbm().downloadQBFile(tmpUser);
-        }
-
+        });
     }
 
     private void startDialogCreate(Message message) {
@@ -198,7 +207,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                                 dialogCreateListener.dialogCreate(opponentId, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
                             } else {
                                 updateDialogLastMessage(backgroundMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
-                                dialogRefreshListener.refreshList();
+                                dialogRefreshListener.reSetList();
                             }
                             if (lastHoldMessage != null) {
                                 updateDialogLastMessage(lastHoldMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
@@ -221,10 +230,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
                     app.setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
-                    dialogRefreshListener.refreshList();
+                    dialogRefreshListener.reSetList();
 
                     for (QBCustomObject co : app.getDialogList()) {
                         app.getUserIdDialogIdMap().put(Integer.parseInt(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()), co);
+                        app.getDialogMap().put(co.getCustomObjectId(), co);
                     }
                     if (isNeedDownloadUser) {
                         ArrayList<String> userIds = new ArrayList<String>();
@@ -272,7 +282,12 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
                 QBCustomObjects.updateObject(co, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
-                        dialogRefreshListener.refreshList();
+                        if (dialogRefreshListener != null) {
+                            dialogRefreshListener.reFreshList();
+                            if (app.getDialogMap().containsKey(dialogId)) {
+                                app.getDialogMap().get(dialogId).getFields().put(GlobalConsts.LAST_MSG, lastMsg);
+                            }
+                        }
                     }
                 });
 
@@ -357,8 +372,6 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     public void processPacket(Packet packet) {
 
         Message roomMessage = (Message) packet;
-        Log.e("MM", "message = " + roomMessage.getBody());
-
         StringBuilder builder = new StringBuilder();
         String[] parts = roomMessage.getFrom().split("/");
         builder.append(parts[1]).append(" : ").append(roomMessage.getBody());
@@ -375,6 +388,17 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             }
         }, 3000L, 2000L);
 
+    }
+
+    private void configureAndPlaySoundNotification() {
+        ((Activity) context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(context, notification);
+                r.play();
+            }
+        });
     }
 
     public void setDialogCreateListener(OnDialogCreateComplete dialogCreateListener) {

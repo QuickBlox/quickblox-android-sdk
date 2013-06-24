@@ -7,18 +7,20 @@
 
     <Button
             android:id="@+id/splash_registration_button"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/splash_buttons_dimen"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/splash_margin_buttons"
             android:text="@string/splash_registration_button"/>
 
     <Button
             android:id="@+id/splash_sign_in_button"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/splash_buttons_dimen"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/splash_margin_buttons"
             android:text="@string/splash_sign_in"/>
 
     <TextView

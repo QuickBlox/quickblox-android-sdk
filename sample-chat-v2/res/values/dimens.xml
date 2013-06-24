@@ -1,12 +1,16 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="splash_button_margin">16dp</dimen>
+    <dimen name="splash_fb_button_margin">16dp</dimen>
     <dimen name="splash_quickblox_header_text_size">40dp</dimen>
 
     <dimen name="splash_quickblox_header_text_width">400dp</dimen>
 
     <dimen name="topbar_element_default_dimen">50dp</dimen>
     <dimen name="attach_preview_margin">90dp</dimen>
+
+    <dimen name="splash_margin_buttons">30dp</dimen>
+
+    <dimen name="splash_buttons_dimen">110dp</dimen>
 
 </resources>

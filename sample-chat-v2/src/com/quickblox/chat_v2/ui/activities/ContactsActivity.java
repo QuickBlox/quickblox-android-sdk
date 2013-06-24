@@ -19,6 +19,8 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/12/13 Time: 4:39
  * PM
@@ -29,11 +31,13 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
     private boolean isContactButtonEnable;
     private boolean isContacts;
+    private ArrayList<QBUser> contactsList;
 
     private ListView contactsTable;
     private ContactsAdapter contactsAdapter;
     private Button contactsButton;
     private Button requestButton;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,9 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         contactsButton = (RadioButton) findViewById(R.id.contacts_contact_button);
         requestButton = (RadioButton) findViewById(R.id.contacts_request_button);
 
-        contactsAdapter = new ContactsAdapter(this, app.getContactsList(), true, false);
+        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
+
+        contactsAdapter = new ContactsAdapter(this, contactsList, true, false);
         isContactButtonEnable = true;
         setListAdapter(contactsAdapter);
 
@@ -90,7 +96,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
             if (isContactButtonEnable) {
                 i.putExtra(GlobalConsts.ARRAY_TYPE, GlobalConsts.CONTACTS_ARRAY);
                 i.putExtra(GlobalConsts.ARRAY_POSITION, position);
-                tmpId = app.getContactsList().get(position).getId();
+                tmpId = contactsList.get(position).getId();
             } else {
                 i.putExtra(GlobalConsts.ARRAY_TYPE, GlobalConsts.CONTACTS_CANDIDATE_ARRAY);
                 i.putExtra(GlobalConsts.ARRAY_POSITION, position);
@@ -111,13 +117,13 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
     };
 
     private void installNewAdapter() {
-        ContactsActivity.this.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
 
                 if (isContacts) {
-                    contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsList(), true, false);
+                    contactsAdapter = new ContactsAdapter(ContactsActivity.this, contactsList, true, false);
 
                     isContactButtonEnable = true;
 
@@ -137,6 +143,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
     protected void onResume() {
         super.onResume();
         app.getQbm().setUserProfileListener(this);
+        contactsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -145,7 +152,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
             @Override
             public void run() {
-                contactsAdapter = new ContactsAdapter(ContactsActivity.this, isContactButtonEnable ? app.getContactsList() : app.getContactsCandidateList(),
+                contactsAdapter = new ContactsAdapter(ContactsActivity.this, isContactButtonEnable ? contactsList : app.getContactsCandidateList(),
                         isContactButtonEnable ? true : false, false);
             }
         });

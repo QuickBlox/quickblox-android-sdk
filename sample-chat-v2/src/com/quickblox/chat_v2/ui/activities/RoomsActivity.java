@@ -30,6 +30,7 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
     private ListView roomListLv;
     private Button newRoomBtn;
     private RoomListAdapter roomListAdapter;
+    private RoomListAdapter.RoomViewHolder roomHolder;
 
     private QBChatRoom chatRoom;
     private String roomName;
@@ -101,10 +102,13 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         @Override
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-
             QBCustomObject co = (QBCustomObject) parent.getItemAtPosition(position);
             roomName = co.getFields().get(GlobalConsts.ROOM_NAME).toString();
             QBChat.getInstance().joinRoom(roomName, app.getQbUser(), RoomsActivity.this);
+
+            roomHolder = ((RoomListAdapter.RoomViewHolder) v.getTag());
+            roomHolder.connectinRoomProgress.setVisibility(View.VISIBLE);
+
         }
 
 
@@ -150,6 +154,7 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         chatRoom.addMessageListener(app.getMsgManager());
         app.setJoinedRoom(chatRoom);
         saveRoomAndStartActivity();
-    }
+        roomHolder.connectinRoomProgress.setVisibility(View.INVISIBLE);
 
+    }
 }

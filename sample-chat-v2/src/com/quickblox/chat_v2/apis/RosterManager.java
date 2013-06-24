@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
+import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.SubscriptionListener;
@@ -16,14 +18,16 @@ import org.jivesoftware.smack.packet.Presence;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RosterManager implements QBRosterListener, SubscriptionListener {
+public class RosterManager implements QBRosterListener, SubscriptionListener, OnUserProfileDownloaded {
 
     private ArrayList<String> subscribes;
 
     private Context mContext;
     private ChatApplication app;
 
-    private int userID;
+    private int mUserId;
+
+    private OnContactRefreshListener mOnContactRefreshListener;
 
     public RosterManager(Context pContext) {
         mContext = pContext;
@@ -33,6 +37,11 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     @Override
     public void entriesAdded(Collection<Integer> addedEntriesIds) {
+
+        app.getQbm().setUserProfileListener(this);
+        for (Integer ae : addedEntriesIds) {
+            app.getQbm().getSingleUserInfo(ae);
+        }
     }
 
     @Override
@@ -65,34 +74,27 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
 
     @Override
     public void onUnSubscribe(int userId) {
-
-        for (QBUser user : app.getContactsList()) {
-            if (user.getId() == userId) {
-                app.getContactsList().remove(user);
-                refreshContactList();
-            }
-        }
     }
 
     public void sendRequestToSubscribe(int userId) {
-        userID = userId;
+        mUserId = userId;
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                QBChat.getInstance().subscribe(userID);
+                QBChat.getInstance().subscribe(mUserId);
                 refreshContactList();
             }
         });
     }
 
     public void sendRequestToUnSubscribe(int userId) {
-        userID = userId;
+        mUserId = userId;
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                QBChat.getInstance().unsubscribe(userID);
+                QBChat.getInstance().unsubscribe(mUserId);
                 refreshContactList();
             }
         });
@@ -122,14 +124,29 @@ public class RosterManager implements QBRosterListener, SubscriptionListener {
                         ArrayList<String> userIds = new ArrayList<String>();
                         if (app.getQbRoster().getUsersId() != null) {
                             for (Integer in : app.getQbRoster().getUsersId()) {
+                                if (in == -1) {
+                                    continue;
+                                }
                                 userIds.add(String.valueOf(in));
                             }
                             app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);
+                            if (mOnContactRefreshListener != null) {
+                                mOnContactRefreshListener.reSetCurrentList();
+                            }
                         }
                     }
                 });
             }
         }, 1000);
 
+    }
+
+    public void setmOnContactRefreshListener(OnContactRefreshListener pOnContactRefreshListener) {
+        mOnContactRefreshListener = pOnContactRefreshListener;
+    }
+
+    @Override
+    public void downloadComlete(QBUser friend) {
+        app.getContactsMap().put(String.valueOf(friend.getId()), friend);
     }
 }

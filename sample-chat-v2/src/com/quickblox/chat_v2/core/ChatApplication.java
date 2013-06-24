@@ -51,9 +51,9 @@ public class ChatApplication extends Application {
     private QBChatRoster qbRoster;
 
     private ArrayList<QBCustomObject> dialogList;
+    private HashMap<String, QBCustomObject> dialogMap;
     private ArrayList<QBCustomObject> userPresentRoomList;
 
-    private ArrayList<QBUser> contactsList;
     private ArrayList<QBUser> contactsCandidateList;
     private ArrayList<String> inviteUserList;
 
@@ -84,11 +84,11 @@ public class ChatApplication extends Application {
         picManager = new PictureManager(context);
         rstManager = new RosterManager(context);
 
-        contactsList = new ArrayList<QBUser>();
         contactsCandidateList = new ArrayList<QBUser>();
         contactsMap = new HashMap<String, QBUser>();
 
         dialogsUsersMap = new HashMap<String, QBUser>();
+        dialogMap = new HashMap<String, QBCustomObject>();
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
@@ -110,7 +110,6 @@ public class ChatApplication extends Application {
 
         dialogList = null;
         userPresentRoomList = null;
-        contactsList = null;
         contactsCandidateList = null;
         inviteUserList = null;
 
@@ -118,6 +117,7 @@ public class ChatApplication extends Application {
         contactsMap = null;
         userNetStatusMap = null;
         userIdDialogIdMap = null;
+        dialogMap = null;
 
     }
 
@@ -173,14 +173,6 @@ public class ChatApplication extends Application {
 
     public void setUserPresentRoomList(ArrayList<QBCustomObject> userPresentRoomList) {
         this.userPresentRoomList = userPresentRoomList;
-    }
-
-    public ArrayList<QBUser> getContactsList() {
-        return contactsList;
-    }
-
-    public void setContactsList(ArrayList<QBUser> contactsList) {
-        this.contactsList = contactsList;
     }
 
     public ArrayList<QBUser> getContactsCandidateList() {
@@ -241,5 +233,13 @@ public class ChatApplication extends Application {
 
     public void setJoinedRoom(QBChatRoom joinedRoom) {
         this.joinedRoom = joinedRoom;
+    }
+
+    public HashMap<String, QBCustomObject> getDialogMap() {
+        return dialogMap;
+    }
+
+    public void setDialogMap(HashMap<String, QBCustomObject> pDialogMap) {
+        dialogMap = pDialogMap;
     }
 }

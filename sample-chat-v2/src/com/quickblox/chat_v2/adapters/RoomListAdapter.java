@@ -1,10 +1,10 @@
 package com.quickblox.chat_v2.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
@@ -12,12 +12,10 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RoomListAdapter extends ArrayAdapter<QBCustomObject> {
 
-    private LayoutInflater inflater;
-    private List<QBCustomObject> roomList;
+    private RoomViewHolder viewHolder;
 
     public RoomListAdapter(Context context, ArrayList<QBCustomObject> roomList) {
         super(context, 0, roomList);
@@ -25,20 +23,20 @@ public class RoomListAdapter extends ArrayAdapter<QBCustomObject> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+
 
         if (convertView == null) {
             convertView = View.inflate(getContext(), R.layout.room_list_item, null);
-            viewHolder = new ViewHolder();
+            viewHolder = new RoomViewHolder();
 
 
             viewHolder.roomName = (TextView) convertView.findViewById(R.id.room_name_tv);
-            viewHolder.onlineUsersCount = (TextView) convertView.findViewById(R.id.online_user_count_tv);
+            viewHolder.connectinRoomProgress = (ProgressBar) convertView.findViewById(R.id.room_tap_progress);
 
             convertView.setTag(viewHolder);
         } else {
 
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (RoomViewHolder) convertView.getTag();
         }
 
         applyRoomName(viewHolder.roomName, position);
@@ -49,8 +47,8 @@ public class RoomListAdapter extends ArrayAdapter<QBCustomObject> {
         roomNameTv.setText(getItem(position).getFields().get(GlobalConsts.ROOM_LIST_NAME).toString());
     }
 
-    private static class ViewHolder {
+    public static class RoomViewHolder {
         TextView roomName;
-        TextView onlineUsersCount;
+        public ProgressBar connectinRoomProgress;
     }
 }

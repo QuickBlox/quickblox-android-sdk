@@ -37,7 +37,7 @@ public final class GCMParser {
                 .setTicker("New QB chat")
                 .setContentText("You have unread QB chats. Tap to launch application")
                 .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.drawable.qb_ico);
         newNotify.setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, SplashActivity.class), 0));
         nm.notify(0, newNotify.build());
     }

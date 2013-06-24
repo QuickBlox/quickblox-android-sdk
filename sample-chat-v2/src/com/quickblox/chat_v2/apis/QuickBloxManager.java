@@ -76,7 +76,6 @@ public class QuickBloxManager {
                         break;
 
                     case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS): {
-                        app.setContactsList(usersResult.getUsers());
                         for (QBUser contact : usersResult.getUsers()) {
                             app.getContactsMap().put(String.valueOf(contact.getId()), contact);
                         }

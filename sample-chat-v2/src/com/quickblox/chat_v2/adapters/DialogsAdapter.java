@@ -8,10 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
@@ -47,9 +44,11 @@ public class DialogsAdapter extends ArrayAdapter<QBCustomObject> {
         viewHolder.container.setTag(position);
 
         Object lastMsg = mDialogList.get(position).getFields().get(GlobalConsts.LAST_MSG);
+
         if (lastMsg != null) {
             viewHolder.dialogLastMsg.setText(lastMsg.toString());
         }
+
         return convertView;
     }
 

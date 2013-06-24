@@ -79,6 +79,7 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
         } else {
             app.getMsgManager().downloadDialogList(true);
         }
+
     }
 
 
@@ -101,8 +102,13 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
     }
 
     @Override
-    public void refreshList() {
+    public void reSetList() {
         applyDialogList();
+    }
+
+    @Override
+    public void reFreshList() {
+        dialogsAdapter.notifyDataSetChanged();
     }
 
     private void loadChatActivity(String userId, String dialogId) {
@@ -113,5 +119,4 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         startActivity(intent);
     }
-
 }

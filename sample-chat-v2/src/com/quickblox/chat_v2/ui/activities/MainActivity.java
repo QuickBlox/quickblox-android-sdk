@@ -5,6 +5,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
+
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMHelper;
@@ -35,7 +36,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
         setupTabs();
         switchProgressDialog(true);
-        app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
         app.getRstManager().sendPresence(this);
         downloadStartUpInfo();
     }
@@ -63,7 +63,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     }
 
-    private void downloadStartUpInfo(){
+    private void downloadStartUpInfo() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
