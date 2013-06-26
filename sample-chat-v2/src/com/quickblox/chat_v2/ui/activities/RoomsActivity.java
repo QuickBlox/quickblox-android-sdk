@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.RoomListAdapter;
@@ -68,8 +69,13 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
     private View.OnClickListener newRoomBtnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(RoomsActivity.this, NewRoomActivity.class);
-            startActivityForResult(intent, REQUEST_NEW_ROOM);
+
+            if (!app.getContactsMap().isEmpty()) {
+                Intent intent = new Intent(RoomsActivity.this, NewRoomActivity.class);
+                startActivityForResult(intent, REQUEST_NEW_ROOM);
+            } else {
+                Toast.makeText(RoomsActivity.this, getString(R.string.new_room_activity_block_create_room), Toast.LENGTH_LONG).show();
+            }
         }
     };
 

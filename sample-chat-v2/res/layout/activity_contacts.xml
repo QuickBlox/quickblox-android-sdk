@@ -24,7 +24,7 @@
             android:gravity="center">
 
         <RadioGroup
-                android:id="@+id/radioGroup1"
+                android:id="@+id/contact_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

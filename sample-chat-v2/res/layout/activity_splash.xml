@@ -12,6 +12,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/splash_margin_buttons"
+            android:layout_marginBottom="@dimen/splash_buttons_buttom_margin"
             android:text="@string/splash_registration_button"/>
 
     <Button
@@ -21,6 +22,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/splash_margin_buttons"
+            android:layout_marginBottom="@dimen/splash_buttons_buttom_margin"
             android:text="@string/splash_sign_in"/>
 
     <TextView

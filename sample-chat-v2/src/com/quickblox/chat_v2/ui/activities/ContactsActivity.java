@@ -4,16 +4,15 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.ContactsAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
+import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
@@ -21,22 +20,18 @@ import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/12/13 Time: 4:39
- * PM
- */
-public class ContactsActivity extends ListActivity implements OnUserProfileDownloaded {
+public class ContactsActivity extends ListActivity implements OnUserProfileDownloaded, OnContactRefreshListener {
 
     private ChatApplication app;
 
     private boolean isContactButtonEnable;
-    private boolean isContacts;
+
     private ArrayList<QBUser> contactsList;
+    private ArrayList<QBUser> mContactsCandidateList;
+    private RadioGroup mRadioGroup;
 
     private ListView contactsTable;
     private ContactsAdapter contactsAdapter;
-    private Button contactsButton;
-    private Button requestButton;
 
 
     @Override
@@ -46,42 +41,32 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
         app = ChatApplication.getInstance();
 
+        mRadioGroup = (RadioGroup) findViewById(R.id.contact_radio_group);
+
         contactsTable = (ListView) findViewById(android.R.id.list);
         contactsTable.setClickable(true);
 
-        contactsButton = (RadioButton) findViewById(R.id.contacts_contact_button);
-        requestButton = (RadioButton) findViewById(R.id.contacts_request_button);
-
-        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
-
-        contactsAdapter = new ContactsAdapter(this, contactsList, true, false);
         isContactButtonEnable = true;
-        setListAdapter(contactsAdapter);
 
-        OnClickListener oclBtn = new OnClickListener() {
 
-            public void onClick(View v) {
-                switch (v.getId()) {
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup pRadioGroup, int i) {
+                switch (i) {
                     case R.id.contacts_contact_button:
-
-                        isContacts = true;
-                        installNewAdapter();
-
+                        setCurrentListInAdapter(true, contactsList);
+                        isContactButtonEnable = true;
                         break;
+
                     case R.id.contacts_request_button:
-
-                        isContacts = false;
-                        installNewAdapter();
-
+                        setCurrentListInAdapter(false, mContactsCandidateList);
+                        isContactButtonEnable = false;
                         break;
                 }
             }
-        };
+        });
 
-        contactsButton.setOnClickListener(oclBtn);
-        requestButton.setOnClickListener(oclBtn);
         contactsTable.setOnItemClickListener(onClicListener);
-
     }
 
     private OnItemClickListener onClicListener = new OnItemClickListener() {
@@ -92,15 +77,16 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
             int tmpId = 0;
             String tmpDialogId = null;
             String tmpFullName = null;
+            QBUser qb = (QBUser) parent.getItemAtPosition(position);
 
             if (isContactButtonEnable) {
                 i.putExtra(GlobalConsts.ARRAY_TYPE, GlobalConsts.CONTACTS_ARRAY);
-                i.putExtra(GlobalConsts.ARRAY_POSITION, position);
+                i.putExtra(GlobalConsts.USER_ID, String.valueOf(qb.getId()));
                 tmpId = contactsList.get(position).getId();
             } else {
                 i.putExtra(GlobalConsts.ARRAY_TYPE, GlobalConsts.CONTACTS_CANDIDATE_ARRAY);
-                i.putExtra(GlobalConsts.ARRAY_POSITION, position);
-                tmpId = app.getContactsCandidateList().get(position).getId();
+                i.putExtra(GlobalConsts.USER_ID, String.valueOf(qb.getId()));
+                tmpId = qb.getId();
             }
 
             for (QBCustomObject dialogs : app.getDialogList()) {
@@ -116,44 +102,66 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         }
     };
 
-    private void installNewAdapter() {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                if (isContacts) {
-                    contactsAdapter = new ContactsAdapter(ContactsActivity.this, contactsList, true, false);
-
-                    isContactButtonEnable = true;
-
-                } else {
-                    contactsAdapter = new ContactsAdapter(ContactsActivity.this, app.getContactsCandidateList(), false, false);
-                    isContactButtonEnable = false;
-                }
-                setListAdapter(contactsAdapter);
-                contactsAdapter.notifyDataSetChanged();
-
-            }
-        });
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
+        mContactsCandidateList = new ArrayList<QBUser>(app.getContactsCandidateMap().values());
+
+        contactsAdapter = new ContactsAdapter(this, contactsList, true, false);
+        setListAdapter(contactsAdapter);
+
+
         app.getQbm().setUserProfileListener(this);
-        contactsAdapter.notifyDataSetChanged();
+        app.getRstManager().setOnContactRefreshListener(this);
+        if (isContactButtonEnable) {
+            setCurrentListInAdapter(true, contactsList);
+        } else {
+            setCurrentListInAdapter(false, mContactsCandidateList);
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
     public void downloadComlete(QBUser friend) {
+
+        if (friend == null) {
+            return;
+        }
+
         this.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                contactsAdapter = new ContactsAdapter(ContactsActivity.this, isContactButtonEnable ? contactsList : app.getContactsCandidateList(),
-                        isContactButtonEnable ? true : false, false);
+                contactsAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void setCurrentListInAdapter(boolean pIsContacts, ArrayList<QBUser> pCurrentArrayList) {
+        contactsAdapter = new ContactsAdapter(ContactsActivity.this, pCurrentArrayList, pIsContacts, false);
+        setListAdapter(contactsAdapter);
+    }
+
+    @Override
+    public void reSetCurrentList() {
+
+    }
+
+    @Override
+    public void reFreshCurrentList() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContactsCandidateList = new ArrayList<QBUser>(app.getContactsCandidateMap().values());
+                setCurrentListInAdapter(false, mContactsCandidateList);
             }
         });
     }

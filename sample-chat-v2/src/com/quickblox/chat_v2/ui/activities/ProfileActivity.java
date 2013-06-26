@@ -19,6 +19,7 @@ import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.utils.SharedPreferencesHelper;
 import com.quickblox.chat_v2.widget.TopBar;
+import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.users.model.QBUser;
 
 import java.io.File;
@@ -77,14 +78,15 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
                 SharedPreferencesHelper.setLogin(ProfileActivity.this, null);
                 SharedPreferencesHelper.setPassword(ProfileActivity.this, null);
 
+
                 app.clearAllData();
                 GCMHelper.unregister(ProfileActivity.this);
+                QBChat.getInstance().stopAutoSendPresence();
 
                 Session session = new Session(ProfileActivity.this);
                 session.closeAndClearTokenInformation();
                 Intent intent = new Intent(ProfileActivity.this, SplashActivity.class);
                 startActivity(intent);
-
                 getParent().finish();
             }
         });

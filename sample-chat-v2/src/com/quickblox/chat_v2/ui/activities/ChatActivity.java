@@ -49,6 +49,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
     private String[] parts;
+    private String userId;
 
     private TopBar topBar;
 
@@ -63,7 +64,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private TextView friendLabel;
 
     private ArrayList<String> incomeRoomMessages;
-    private ArrayList<QBUser> contactsList;
 
     private String dialogId;
     private String lastMsg;
@@ -87,8 +87,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         app = ChatApplication.getInstance();
         msgManager = app.getMsgManager();
         msgManager.setListDownloadedListener(this);
-
-        contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
         initViews();
 
     }
@@ -147,7 +145,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
 
             case GlobalConsts.DIALOG_ACTIVITY:
 
-                String userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
+                userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
                 opponentUser = app.getDialogsUsersMap().get(userId);
 
                 dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
@@ -165,8 +163,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
             case GlobalConsts.CONTACTS_ACTIVITY:
                 boolean arrayIndicator = getIntent().getStringExtra(GlobalConsts.ARRAY_TYPE).equals(GlobalConsts.CONTACTS_ARRAY) ? true : false;
 
-                int currentPosition = getIntent().getIntExtra(GlobalConsts.ARRAY_POSITION, 0);
-                opponentUser = arrayIndicator ? contactsList.get(currentPosition) : app.getContactsCandidateList().get(currentPosition);
+                userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
+                opponentUser = arrayIndicator ? app.getContactsMap().get(userId) : app.getContactsCandidateMap().get(userId);
 
                 if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
                     dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();

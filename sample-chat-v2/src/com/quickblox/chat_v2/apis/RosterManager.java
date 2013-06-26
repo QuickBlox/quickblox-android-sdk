@@ -3,6 +3,8 @@ package com.quickblox.chat_v2.apis;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
@@ -40,16 +42,42 @@ public class RosterManager implements QBRosterListener, SubscriptionListener, On
 
         app.getQbm().setUserProfileListener(this);
         for (Integer ae : addedEntriesIds) {
+            Log.d("RST-M", "asked user = " + ae);
             app.getQbm().getSingleUserInfo(ae);
         }
+        if (mOnContactRefreshListener != null) {
+            mOnContactRefreshListener.reFreshCurrentList();
+        }
+
     }
 
     @Override
     public void entriesDeleted(Collection<Integer> deletedEntriesIds) {
+
+        for (Integer de : deletedEntriesIds) {
+            ChatApplication.getInstance().getContactsMap().remove(String.valueOf(de));
+        }
+        if (mOnContactRefreshListener != null) {
+            mOnContactRefreshListener.reFreshCurrentList();
+        }
     }
 
     @Override
     public void entriesUpdated(Collection<Integer> updatedEntriesIds) {
+
+        for (Integer ue : updatedEntriesIds) {
+            ChatApplication.getInstance().getContactsCandidateMap().remove(String.valueOf(ue));
+            if (!ChatApplication.getInstance().getContactsMap().containsKey(String.valueOf(ue))) {
+
+                ChatApplication.getInstance().getQbm().setUserProfileListener(this);
+                ChatApplication.getInstance().getQbm().getSingleUserInfo(ue);
+
+            }
+
+            if (mOnContactRefreshListener != null) {
+                mOnContactRefreshListener.reFreshCurrentList();
+            }
+        }
     }
 
     @Override
@@ -60,6 +88,9 @@ public class RosterManager implements QBRosterListener, SubscriptionListener, On
 
     @Override
     public void onSubscribe(int userId) {
+        if (userId == app.getQbUser().getId() || app.getContactsMap().containsKey(String.valueOf(userId))) {
+            return;
+        }
         subscribes.add(String.valueOf(userId));
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
@@ -112,41 +143,32 @@ public class RosterManager implements QBRosterListener, SubscriptionListener, On
 
     public void refreshContactList() {
 
-        Handler handler = new Handler();
+        Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             public void run() {
-
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        ArrayList<String> userIds = new ArrayList<String>();
-                        if (app.getQbRoster().getUsersId() != null) {
-                            for (Integer in : app.getQbRoster().getUsersId()) {
-                                if (in == -1) {
-                                    continue;
-                                }
-                                userIds.add(String.valueOf(in));
-                            }
-                            app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);
-                            if (mOnContactRefreshListener != null) {
-                                mOnContactRefreshListener.reSetCurrentList();
-                            }
+                ArrayList<String> userIds = new ArrayList<String>();
+                if (app.getQbRoster().getUsersId() != null) {
+                    for (Integer in : app.getQbRoster().getUsersId()) {
+                        if (in == -1) {
+                            continue;
                         }
+                        userIds.add(String.valueOf(in));
                     }
-                });
+                    app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);
+                }
             }
         }, 1000);
 
     }
 
-    public void setmOnContactRefreshListener(OnContactRefreshListener pOnContactRefreshListener) {
-        mOnContactRefreshListener = pOnContactRefreshListener;
-    }
-
     @Override
     public void downloadComlete(QBUser friend) {
-        app.getContactsMap().put(String.valueOf(friend.getId()), friend);
+        if (friend != null) {
+            ChatApplication.getInstance().getContactsMap().put(String.valueOf(friend.getId()), friend);
+        }
+    }
+
+    public void setOnContactRefreshListener(OnContactRefreshListener pOnContactRefreshListener) {
+        mOnContactRefreshListener = pOnContactRefreshListener;
     }
 }

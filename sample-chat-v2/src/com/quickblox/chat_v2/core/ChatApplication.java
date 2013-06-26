@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.FaceBookManager;
 import com.quickblox.chat_v2.apis.MessageManager;
@@ -54,16 +53,15 @@ public class ChatApplication extends Application {
     private HashMap<String, QBCustomObject> dialogMap;
     private ArrayList<QBCustomObject> userPresentRoomList;
 
-    private ArrayList<QBUser> contactsCandidateList;
     private ArrayList<String> inviteUserList;
 
     private HashMap<String, QBUser> dialogsUsersMap;
-    private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<String, QBUser> contactsMap;
+    private HashMap<String, QBUser> contactsCandidateMap;
+    private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<Integer, String> userNetStatusMap;
 
-    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .displayer(new RoundedBitmapDisplayer(20)).build();
+    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().displayer(new RoundedBitmapDisplayer(20)).build();
 
     //
     @Override
@@ -84,7 +82,7 @@ public class ChatApplication extends Application {
         picManager = new PictureManager(context);
         rstManager = new RosterManager(context);
 
-        contactsCandidateList = new ArrayList<QBUser>();
+        contactsCandidateMap = new HashMap<String, QBUser>();
         contactsMap = new HashMap<String, QBUser>();
 
         dialogsUsersMap = new HashMap<String, QBUser>();
@@ -109,15 +107,18 @@ public class ChatApplication extends Application {
         rstManager = null;
 
         dialogList = null;
-        userPresentRoomList = null;
-        contactsCandidateList = null;
+        dialogsUsersMap = null;
+        dialogMap = null;
+
+
+        contactsCandidateMap = null;
+        contactsMap = null;
         inviteUserList = null;
 
-        dialogsUsersMap = null;
-        contactsMap = null;
+
+        userPresentRoomList = null;
         userNetStatusMap = null;
         userIdDialogIdMap = null;
-        dialogMap = null;
 
     }
 
@@ -173,14 +174,6 @@ public class ChatApplication extends Application {
 
     public void setUserPresentRoomList(ArrayList<QBCustomObject> userPresentRoomList) {
         this.userPresentRoomList = userPresentRoomList;
-    }
-
-    public ArrayList<QBUser> getContactsCandidateList() {
-        return contactsCandidateList;
-    }
-
-    public void setContactsCandidateList(ArrayList<QBUser> contactsCandidateList) {
-        this.contactsCandidateList = contactsCandidateList;
     }
 
     public QBChatRoster getQbRoster() {
@@ -239,7 +232,7 @@ public class ChatApplication extends Application {
         return dialogMap;
     }
 
-    public void setDialogMap(HashMap<String, QBCustomObject> pDialogMap) {
-        dialogMap = pDialogMap;
+    public HashMap<String, QBUser> getContactsCandidateMap() {
+        return contactsCandidateMap;
     }
 }

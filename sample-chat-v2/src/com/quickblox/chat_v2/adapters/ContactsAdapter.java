@@ -18,6 +18,8 @@ import com.quickblox.chat_v2.core.CustomButtonClickListener;
 import com.quickblox.chat_v2.core.CustomCheckBoxListener;
 import com.quickblox.module.users.model.QBUser;
 
+import org.jivesoftware.smack.XMPPException;
+
 import java.util.ArrayList;
 
 public class ContactsAdapter extends BaseAdapter {
@@ -104,8 +106,12 @@ public class ContactsAdapter extends BaseAdapter {
                     case R.id.contact_iside_accept:
 
                         app.getRstManager().sendRequestToSubscribe(incomeUserList.get(this.getPosition()).getId());
-                        app.getContactsCandidateList().remove(incomeUserList.get(this.getPosition()));
-                        ContactsAdapter.this.notifyDataSetChanged();
+                        try {
+                            app.getQbRoster().createEntry(incomeUserList.get(this.getPosition()).getId(), incomeUserList.get(this.getPosition()).getLogin(), null);
+                        } catch (XMPPException e) {
+                            e.printStackTrace();
+                        }
+                        app.getContactsCandidateMap().remove(String.valueOf(incomeUserList.get(this.getPosition()).getId()));
                         break;
 
                     case R.id.contact_inside_reject:

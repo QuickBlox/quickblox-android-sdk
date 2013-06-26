@@ -283,4 +283,9 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
         return false;
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ChatApplication.getInstance().createData(this);
+    }
 }

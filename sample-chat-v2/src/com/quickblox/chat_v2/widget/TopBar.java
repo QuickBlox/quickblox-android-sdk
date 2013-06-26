@@ -83,11 +83,16 @@ public class TopBar extends RelativeLayout {
 
                         if (action == ContactAction.ADD) {
                             ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friend.getId());
+                            if (friend != null) {
+                                setFriendParams(friend, true);
+                            }
+
                         } else {
                             ChatApplication.getInstance().getRstManager().sendRequestToUnSubscribe(friend.getId());
                             ChatApplication.getInstance().getQbRoster().removeUserFromRoster(friend.getId());
-
-                            ChatApplication.getInstance().getContactsMap().remove(friend.getId());
+                            if (friend != null) {
+                                setFriendParams(friend, false);
+                            }
                         }
 
                         break;

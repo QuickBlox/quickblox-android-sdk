@@ -12,5 +12,6 @@
     <dimen name="splash_margin_buttons">30dp</dimen>
 
     <dimen name="splash_buttons_dimen">110dp</dimen>
+    <dimen name="splash_buttons_buttom_margin">10dp</dimen>
 
 </resources>

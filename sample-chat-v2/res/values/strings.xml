@@ -10,7 +10,7 @@
     <string name="quickblox_auth_secret">YavMAxm5T59-BRw</string>
 
     <string name="splash_main_name">QuickBlox chat</string>
-    <string name="splash_registration_button">Registration</string>
+    <string name="splash_registration_button">Sign up</string>
     <string name="splash_sign_in">Sign in</string>
 
     <string name="splash_progressdialog">Setup Connection</string>
@@ -62,6 +62,7 @@
     <string name="contacts_inside_reject_button">Reject</string>
 
     <string name="new_room_activity_creating_room">Creating room</string>
+    <string name="new_room_activity_block_create_room">You haven\'t friend. Search and add it in dialogs section</string>
     <string name="room_activity_connecting_room">Connecting room</string>
 
     <string name="room_name_title">Name</string>

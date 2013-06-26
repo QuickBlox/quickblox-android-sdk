@@ -1,5 +1,6 @@
 package com.quickblox.chat_v2.apis;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -64,20 +65,27 @@ public class QuickBloxManager {
                 QBUserPagedResult usersResult = (QBUserPagedResult) result;
 
                 switch ((Byte) context) {
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG): {
+                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG):
 
                         for (QBUser qu : usersResult.getUsers()) {
                             app.getDialogsUsersMap().put(String.valueOf(qu.getId()), qu);
                         }
-                    }
-                    break;
+
+                        break;
+
                     case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE):
-                        app.setContactsCandidateList(usersResult.getUsers());
+
+                        for (QBUser candidate : usersResult.getUsers()) {
+                            if (!app.getContactsMap().containsKey(String.valueOf(candidate.getId()))) {
+                                app.getContactsCandidateMap().put(String.valueOf(candidate.getId()), candidate);
+                            }
+                        }
                         break;
 
                     case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS): {
                         for (QBUser contact : usersResult.getUsers()) {
                             app.getContactsMap().put(String.valueOf(contact.getId()), contact);
+                            app.getContactsCandidateMap().remove(String.valueOf(contact.getId()));
                         }
 
                         break;
@@ -172,18 +180,26 @@ public class QuickBloxManager {
         });
     }
 
-    public void getSingleUserInfo(int userId) {
-        QBUsers.getUser(userId, new QBCallback() {
+    public synchronized void getSingleUserInfo(final int userId) {
 
+        ((Activity) context).runOnUiThread(new Runnable() {
             @Override
-            public void onComplete(Result result, Object context) {
-            }
+            public void run() {
+                QBUsers.getUser(userId, new QBCallback() {
 
-            @Override
-            public void onComplete(Result result) {
-                userProfileListener.downloadComlete(((QBUserResult) result).getUser());
+                    @Override
+                    public void onComplete(Result result, Object context) {
+                    }
+
+                    @Override
+                    public void onComplete(Result result) {
+                        Log.e("QBM", "result = " + result.getErrors());
+                        userProfileListener.downloadComlete(((QBUserResult) result).getUser());
+                    }
+                });
             }
         });
+
     }
 
 
