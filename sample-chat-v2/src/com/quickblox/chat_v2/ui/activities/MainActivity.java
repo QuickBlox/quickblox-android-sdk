@@ -69,16 +69,22 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
             public void run() {
                 app.getQbm().setUserProfileListener(MainActivity.this);
                 app.getMsgManager().downloadPersistentRoom();
-                app.getRstManager().refreshContactList();
+                app.getRstManager().getContactListFromRoster();
             }
         });
 
     }
 
     public void switchProgressDialog(boolean enable) {
+
+
         if (enable) {
             progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.loading), true);
         } else {
+
+            if (progress == null) {
+                return;
+            }
             progress.dismiss();
         }
     }

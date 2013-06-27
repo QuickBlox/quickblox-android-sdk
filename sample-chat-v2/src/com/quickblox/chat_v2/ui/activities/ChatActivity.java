@@ -161,14 +161,15 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 break;
 
             case GlobalConsts.CONTACTS_ACTIVITY:
-                boolean arrayIndicator = getIntent().getStringExtra(GlobalConsts.ARRAY_TYPE).equals(GlobalConsts.CONTACTS_ARRAY) ? true : false;
+
 
                 userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
-                opponentUser = arrayIndicator ? app.getContactsMap().get(userId) : app.getContactsCandidateMap().get(userId);
+                opponentUser = app.getContactsMap().get(userId);
 
                 if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
                     dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();
                 }
+
                 topBar.setFriendParams(opponentUser, true);
                 topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
 

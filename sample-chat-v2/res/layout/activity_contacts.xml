@@ -13,38 +13,4 @@
             android:layout_weight="0.1"
             android:layout_above="@+id/low_button"
             />
-
-    <TableRow
-            android:id="@+id/low_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:background="@android:color/darker_gray"
-            android:gravity="center">
-
-        <RadioGroup
-                android:id="@+id/contact_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-            <RadioButton
-                    android:id="@+id/contacts_contact_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:text="@string/contacts_contact_button"/>
-
-            <RadioButton
-                    android:id="@+id/contacts_request_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/contacts_request_button"/>
-        </RadioGroup>
-    </TableRow>
-
 </RelativeLayout>

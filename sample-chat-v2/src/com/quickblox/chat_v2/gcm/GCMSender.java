@@ -15,37 +15,32 @@ import com.quickblox.module.messages.model.QBNotificationType;
 import com.quickblox.module.messages.model.QBPushType;
 
 import java.util.Arrays;
-import java.util.HashMap;
-/**
- * Created with IntelliJ IDEA.
- * User: Nikolay Dymura
- * Date: 5/27/13
- * E-mail: nikolay.dymura@gmail.com
- */
+
 public class GCMSender {
 
+    private String mHybridMessageBody;
 
-    public void sendPushNotifications(final Integer ...user){
-        if(Thread.currentThread().equals(Looper.getMainLooper().getThread())){
-            createQbEvent(user);
-        }else {
+
+    public void sendPushNotifications(final int pUserId, String pHybridMessageBody) {
+        mHybridMessageBody = pHybridMessageBody;
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            createQbEvent(pUserId);
+        } else {
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    createQbEvent(user);
+                    createQbEvent(pUserId);
                 }
             });
         }
     }
 
 
-    public void createQbEvent(Integer ...userId) {
+    public void createQbEvent(int pUserId) {
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.addAll(Arrays.asList(userId));
-
-        Log.d("Push sender", "ids = " + userIds.toString());
+        userIds.addAll(Arrays.asList(pUserId));
 
         QBEvent event = new QBEvent();
         event.setUserIds(userIds);
@@ -53,7 +48,7 @@ public class GCMSender {
         event.setNotificationType(QBNotificationType.PUSH);
         event.setNotificationChannel(QBNotificationChannel.GCM);
         event.setPushType(QBPushType.GCM);
-        event.setMessage("indicator");
+        event.setMessage(mHybridMessageBody);
         event.setName("QBPush");
 
         QBMessages.createEvent(event, new QBCallbackImpl() {
@@ -69,6 +64,4 @@ public class GCMSender {
             }
         });
     }
-
-
 }

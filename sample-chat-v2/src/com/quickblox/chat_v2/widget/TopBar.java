@@ -15,7 +15,10 @@ import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.ui.activities.UserProfileActivity;
 import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.users.model.QBUser;
+
+import org.jivesoftware.smack.XMPPException;
 
 public class TopBar extends RelativeLayout {
 
@@ -27,6 +30,7 @@ public class TopBar extends RelativeLayout {
     private TextView screenTitle;
     private ImageView userAvatar;
     private ProgressBar progBar;
+    private QBChatRoster mQBChatRoster;
 
 
     public enum ContactAction {ADD, REMOVE}
@@ -44,6 +48,7 @@ public class TopBar extends RelativeLayout {
         setBackgroundResource(android.R.color.darker_gray);
         initViews();
         dialogTabledata[0] = getContext().getResources().getString(R.string.chat_dialog_view_profile);
+        mQBChatRoster = ChatApplication.getInstance().getQbRoster();
     }
 
     private void initViews() {
@@ -82,14 +87,18 @@ public class TopBar extends RelativeLayout {
                     case 1:
 
                         if (action == ContactAction.ADD) {
-                            ChatApplication.getInstance().getRstManager().sendRequestToSubscribe(friend.getId());
+
                             if (friend != null) {
                                 setFriendParams(friend, true);
+                                try {
+                                    mQBChatRoster.createEntry(friend.getId(), friend.getLogin(), null);
+                                } catch (XMPPException e) {
+                                    e.printStackTrace();
+                                }
                             }
 
                         } else {
-                            ChatApplication.getInstance().getRstManager().sendRequestToUnSubscribe(friend.getId());
-                            ChatApplication.getInstance().getQbRoster().removeUserFromRoster(friend.getId());
+                            mQBChatRoster.removeUserFromRoster(friend.getId());
                             if (friend != null) {
                                 setFriendParams(friend, false);
                             }

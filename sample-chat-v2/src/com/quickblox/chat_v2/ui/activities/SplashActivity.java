@@ -234,7 +234,6 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
                     QBChat.getInstance().setChatMessageListener(app.getMsgManager());
 
                     app.setQbRoster(QBChat.getInstance().registerRoster(app.getRstManager()));
-                    QBChat.getInstance().registerSubscriptionListener(app.getRstManager());
                     loadMainScreen();
                 }
             });
@@ -263,10 +262,14 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
     }
 
     public void switchProgressDialog(boolean enable) {
+
+
         if (enable) {
-            progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_ui_block),
-                    true);
+            progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.splash_ui_block), true);
         } else {
+            if (progress == null) {
+                return;
+            }
             progress.dismiss();
         }
     }

@@ -53,21 +53,21 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
         app = ChatApplication.getInstance();
 
+        QBUser tUser = app.getQbUser();
+        if (tUser != null && tUser.getFileId() != null) {
+            app.getQbm().setPictureDownloadComplete(this);
+            app.getQbm().downloadQBFile(tUser);
 
-        if (app.getQbUser().getFacebookId() != null) {
-            app.getPicManager().downloadPicAndDisplay(app.getQbUser().getWebsite(), userpic, null);
-            username.setText(app.getQbUser().getFullName());
-        } else {
-
-            if (app.getQbUser() != null) {
-                app.getQbm().setPictureDownloadComplete(this);
-                app.getQbm().downloadQBFile(app.getQbUser());
-                setOnProfilePictureClicListener();
-            }
         }
 
-        username.setText(app.getQbUser().getFullName() != null ? app.getQbUser().getFullName() : app.getQbUser()
-                .getLogin());
+        if (tUser != null && tUser.getWebsite() != null) {
+            app.getPicManager().downloadPicAndDisplay(tUser.getWebsite(), userpic, null);
+            username.setText(tUser.getFullName());
+
+        }
+        setOnProfilePictureClicListener();
+
+        username.setText(tUser.getFullName() != null ? tUser.getFullName() : tUser.getLogin());
 
         Button exitButton = (Button) findViewById(R.id.exit_profile_button);
         exitButton.setOnClickListener(new OnClickListener() {
@@ -81,13 +81,21 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
                 app.clearAllData();
                 GCMHelper.unregister(ProfileActivity.this);
-                QBChat.getInstance().stopAutoSendPresence();
+                QBChat qbChat = QBChat.getInstance();
+
+                qbChat.stopAutoSendPresence();
+//                qbChat.logout();
+//                qbChat.setChatMessageListener(null);
+//                qbChat.startWatchRoom(null);
+//                qbChat.disconnect();
 
                 Session session = new Session(ProfileActivity.this);
                 session.closeAndClearTokenInformation();
+
+                getParent().finish();
+
                 Intent intent = new Intent(ProfileActivity.this, SplashActivity.class);
                 startActivity(intent);
-                getParent().finish();
             }
         });
     }
@@ -108,7 +116,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
                         ChatApplication.getInstance().setMyPic(yourSelectedImage);
                         app.getQbm().setUploadListener(ProfileActivity.this);
                         app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(app.getMyPic()), false);
-                        blockUi(true);
+                        swichProgressDialog(true);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -140,13 +148,13 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
             public void run() {
                 userpic.setImageBitmap(userBitmap);
                 ChatApplication.getInstance().setMyPic(userBitmap);
-                blockUi(false);
+                swichProgressDialog(false);
             }
         });
 
     }
 
-    public void blockUi(boolean enable) {
+    public void swichProgressDialog(boolean enable) {
         blockUiMode = enable;
         runOnUiThread(new Runnable() {
 
@@ -166,6 +174,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
     @Override
     public void uploadComplete(int uploafFileId, String picUrl) {
-        blockUi(false);
+
+        swichProgressDialog(false);
     }
 }

@@ -47,7 +47,6 @@ public class QuickBloxManager {
     private int currentFileId;
 
     private Context context;
-    private QBUser qbuser;
 
     public QuickBloxManager(Context context) {
         app = ChatApplication.getInstance();
@@ -113,10 +112,9 @@ public class QuickBloxManager {
                     QBFileUploadTaskResult fileUploadTaskResultResult = (QBFileUploadTaskResult) result;
                     if (!pictureMode) {
                         app.getQbUser().setFileId(fileUploadTaskResultResult.getFile().getId());
+
                         updateQBUser(app.getQbUser());
-
                     } else {
-
                         uploadListener.uploadComplete(fileUploadTaskResultResult.getFile().getId(), fileUploadTaskResultResult.getFile().getPublicUrl());
                     }
                 }
@@ -125,16 +123,23 @@ public class QuickBloxManager {
     }
 
     private void updateQBUser(QBUser upadtedUser) {
-        qbuser = upadtedUser;
-        qbuser.setPassword(null);
 
-        QBUsers.updateUser(upadtedUser, new QBCallbackImpl() {
+        final QBUser userToUpdate = new QBUser();
+        userToUpdate.setId(upadtedUser.getId());
+        userToUpdate.setFileId(upadtedUser.getFileId());
 
+        ((Activity) context).runOnUiThread(new Runnable() {
             @Override
-            public void onComplete(Result result) {
-                uploadListener.uploadComplete(qbuser.getFileId(), null);
-            }
+            public void run() {
+                QBUsers.updateUser(userToUpdate, new QBCallbackImpl() {
 
+                    @Override
+                    public void onComplete(Result result) {
+                        uploadListener.uploadComplete(userToUpdate.getFileId(), null);
+                    }
+
+                });
+            }
         });
     }
 

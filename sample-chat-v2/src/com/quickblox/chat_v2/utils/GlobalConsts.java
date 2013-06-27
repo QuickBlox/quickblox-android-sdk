@@ -19,8 +19,6 @@ public class GlobalConsts {
 
     public static final String ARRAY_TYPE = "array_type";
     public static final String CONTACTS_ARRAY = "contacts_array";
-    public static final String CONTACTS_CANDIDATE_ARRAY = "candidate_array";
-    public static final String ARRAY_POSITION = "array_position";
 
     public static final String NAME_FIELD = "name";
     public static final String RECEPIENT_ID_FIELD = "recepient_id";

@@ -56,7 +56,7 @@ public class NewRoomActivity extends ListActivity {
 
         selectionTable = (ListView) findViewById(android.R.id.list);
         selectionTable.setClickable(true);
-        contactsAdapter = new ContactsAdapter(this, contactsList, true, true);
+        contactsAdapter = new ContactsAdapter(this, contactsList, true);
         setListAdapter(contactsAdapter);
     }
 

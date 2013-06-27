@@ -87,6 +87,7 @@ public class ChatApplication extends Application {
 
         dialogsUsersMap = new HashMap<String, QBUser>();
         dialogMap = new HashMap<String, QBCustomObject>();
+        dialogList = new ArrayList<QBCustomObject>();
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
@@ -150,10 +151,6 @@ public class ChatApplication extends Application {
 
     public ArrayList<QBCustomObject> getDialogList() {
         return dialogList;
-    }
-
-    public void setDialogList(ArrayList<QBCustomObject> dialogList) {
-        this.dialogList = dialogList;
     }
 
     public PictureManager getPicManager() {

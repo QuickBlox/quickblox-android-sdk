@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.ui.activities.SplashActivity;
@@ -25,7 +24,6 @@ public final class GCMParser {
     }
 
     public void parseMessage(Context context, Bundle extras) {
-        Log.d("INcomne push", "push =  " + extras);
 
         Vibrator vibrato = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrato.vibrate(1000);
@@ -35,7 +33,7 @@ public final class GCMParser {
         NotificationCompat.Builder newNotify = new NotificationCompat.Builder(context)
                 .setContentTitle("QB chats")
                 .setTicker("New QB chat")
-                .setContentText("You have unread QB chats. Tap to launch application")
+                .setContentText(extras.getString("message"))
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.qb_ico);
         newNotify.setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, SplashActivity.class), 0));

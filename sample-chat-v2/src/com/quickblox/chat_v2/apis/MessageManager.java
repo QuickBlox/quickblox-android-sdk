@@ -148,8 +148,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         if (messageBody == null && dialogId == null && userId == null) {
             return;
         }
-        if (app.getUserNetStatusMap().get(userId) == null || !app.getUserNetStatusMap().get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
-            pushSender(userId);
+        HashMap<Integer, String> tmpMap = app.getUserNetStatusMap();
+        if (tmpMap.get(userId) == null && app.getContactsMap().containsKey(String.valueOf(userId)) || !tmpMap.get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
+            pushSender(userId, app.getContactsMap().get(String.valueOf(userId)), messageBody);
 
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
         }
@@ -167,9 +168,9 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     }
 
-    private void pushSender(final int userId) {
+    private void pushSender(int userId, QBUser pQBUser, String pMessage) {
         GCMSender gs = new GCMSender();
-        gs.sendPushNotifications(userId);
+        gs.sendPushNotifications(userId, buldHybridMessageBody(pQBUser, pMessage));
     }
 
     public synchronized void createDialog(QBUser qbuser, boolean isNeedExtraReview) {
@@ -229,7 +230,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    app.setDialogList(((QBCustomObjectLimitedResult) result).getCustomObjects());
+                    app.getDialogList().addAll(((QBCustomObjectLimitedResult) result).getCustomObjects());
                     dialogRefreshListener.reSetList();
 
                     for (QBCustomObject co : app.getDialogList()) {
@@ -400,6 +401,13 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             }
         });
     }
+
+    private String buldHybridMessageBody(QBUser pQbuser, String pMessage) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(pQbuser.getLogin()).append(" : ").append(pMessage);
+        return sb.toString();
+    }
+
 
     public void setDialogCreateListener(OnDialogCreateComplete dialogCreateListener) {
         this.dialogCreateListener = dialogCreateListener;
