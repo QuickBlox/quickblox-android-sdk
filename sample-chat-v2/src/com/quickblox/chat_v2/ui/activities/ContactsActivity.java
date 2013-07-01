@@ -73,7 +73,10 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
     @Override
     protected void onResume() {
         super.onResume();
+        rebuildAdapterData();
+    }
 
+    private void rebuildAdapterData() {
         contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
         app.getQbm().setUserProfileListener(this);
         app.getRstManager().setOnContactRefreshListener(this);
@@ -87,7 +90,6 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
             contactsTable.setVisibility(View.VISIBLE);
             mEmtyListLabel.setVisibility(View.INVISIBLE);
         }
-
     }
 
 
@@ -122,7 +124,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                onResume();
+                rebuildAdapterData();
             }
         });
     }
