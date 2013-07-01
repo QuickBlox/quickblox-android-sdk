@@ -16,6 +16,8 @@ import com.quickblox.chat_v2.interfaces.OnDialogListRefresh;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
+import java.util.ArrayList;
+
 public class DialogsActivity extends Activity implements OnDialogListRefresh, AdapterView.OnItemClickListener {
 
     private ProgressDialog progressDialog;
@@ -72,8 +74,8 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
 
 
     private void applyDialogList() {
-        if (ChatApplication.getInstance().getDialogList() != null) {
-            dialogsAdapter = new DialogsAdapter(DialogsActivity.this, ChatApplication.getInstance().getDialogList());
+        if (app.getDialogMap() != null) {
+            dialogsAdapter = new DialogsAdapter(DialogsActivity.this, new ArrayList<QBCustomObject>(app.getDialogMap().values()));
             dialogsListView.setAdapter(dialogsAdapter);
 
         } else {

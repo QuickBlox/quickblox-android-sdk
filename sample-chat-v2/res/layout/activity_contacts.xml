@@ -10,7 +10,14 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_weight="0.1"
-            android:layout_above="@+id/low_button"
+            android:visibility="invisible"
+            />
+
+    <TextView
+            android:id="@+id/emty_contactList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="invisible"
             />
 </RelativeLayout>

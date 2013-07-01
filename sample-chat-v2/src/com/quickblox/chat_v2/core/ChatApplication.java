@@ -49,7 +49,6 @@ public class ChatApplication extends Application {
 
     private QBChatRoster qbRoster;
 
-    private ArrayList<QBCustomObject> dialogList;
     private HashMap<String, QBCustomObject> dialogMap;
     private ArrayList<QBCustomObject> userPresentRoomList;
 
@@ -87,7 +86,6 @@ public class ChatApplication extends Application {
 
         dialogsUsersMap = new HashMap<String, QBUser>();
         dialogMap = new HashMap<String, QBCustomObject>();
-        dialogList = new ArrayList<QBCustomObject>();
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
@@ -107,7 +105,6 @@ public class ChatApplication extends Application {
         picManager = null;
         rstManager = null;
 
-        dialogList = null;
         dialogsUsersMap = null;
         dialogMap = null;
 
@@ -147,10 +144,6 @@ public class ChatApplication extends Application {
 
     public MessageManager getMsgManager() {
         return msgManager;
-    }
-
-    public ArrayList<QBCustomObject> getDialogList() {
-        return dialogList;
     }
 
     public PictureManager getPicManager() {

@@ -68,15 +68,7 @@
     <string name="room_name_title">Name</string>
     <string name="room_join_fall">Join unsuccessfull</string>
 
-
-    <string name="fragment_rooms_persistent_annotation">( Persistent - A room that is not destroyed if the last user
-        exit )
-    </string>
-    <string name="fragment_rooms_members_annotation">( If selected -you can select your contacts which will be able to
-        join room )
-    </string>
-
-
+    <string name="empty_contacts">"To add contacts - just start dialog with user from Dialogs screen and add him by tap on user pic in Chat screen"</string>
     <string name="fragment_rooms_namefield">Name</string>
     <string name="fragment_rooms_checkbox_members">Only members</string>
 

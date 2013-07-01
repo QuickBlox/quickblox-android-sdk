@@ -15,7 +15,6 @@ import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.result.QBFileDownloadResult;
@@ -104,7 +103,7 @@ public class QuickBloxManager {
     public void uploadPic(File file, boolean isFileTransferAttach) {
         pictureMode = isFileTransferAttach;
 
-        QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file, true, new QBCallbackImpl() {
+        QBContent.uploadFileTask(file, true, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
 
@@ -142,6 +141,7 @@ public class QuickBloxManager {
             }
         });
     }
+
 
     public void downloadQBFile(QBUser currentUser) {
         if (currentUser.getFileId() == null) {
@@ -198,7 +198,6 @@ public class QuickBloxManager {
 
                     @Override
                     public void onComplete(Result result) {
-                        Log.e("QBM", "result = " + result.getErrors());
                         userProfileListener.downloadComlete(((QBUserResult) result).getUser());
                     }
                 });

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.ContactsAdapter;
@@ -27,6 +28,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
     private ListView contactsTable;
     private ContactsAdapter contactsAdapter;
+    private TextView mEmtyListLabel;
 
 
     @Override
@@ -36,9 +38,11 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
         app = ChatApplication.getInstance();
         contactsTable = (ListView) findViewById(android.R.id.list);
+        mEmtyListLabel = (TextView) findViewById(R.id.emty_contactList);
         contactsTable.setClickable(true);
 
         contactsTable.setOnItemClickListener(onClicListener);
+        mEmtyListLabel.setText(getString(R.string.empty_contacts));
     }
 
     private OnItemClickListener onClicListener = new OnItemClickListener() {
@@ -53,7 +57,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
             i.putExtra(GlobalConsts.USER_ID, String.valueOf(qb.getId()));
             tmpId = contactsList.get(position).getId();
 
-            for (QBCustomObject dialogs : app.getDialogList()) {
+            for (QBCustomObject dialogs : new ArrayList<QBCustomObject>(app.getDialogMap().values())) {
                 if (Integer.parseInt(dialogs.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()) == tmpId) {
                     tmpDialogId = dialogs.getCustomObjectId();
                 }
@@ -71,15 +75,18 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         super.onResume();
 
         contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
-
-        contactsAdapter = new ContactsAdapter(this, contactsList, false);
-        setListAdapter(contactsAdapter);
-
-
         app.getQbm().setUserProfileListener(this);
         app.getRstManager().setOnContactRefreshListener(this);
 
         setCurrentListInAdapter(contactsList);
+
+        if (app.getContactsMap().isEmpty()) {
+            contactsTable.setVisibility(View.INVISIBLE);
+            mEmtyListLabel.setVisibility(View.VISIBLE);
+        } else {
+            contactsTable.setVisibility(View.VISIBLE);
+            mEmtyListLabel.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -115,7 +122,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //TODO Добавить обновление списка при добавлении нового перца.
+                onResume();
             }
         });
     }

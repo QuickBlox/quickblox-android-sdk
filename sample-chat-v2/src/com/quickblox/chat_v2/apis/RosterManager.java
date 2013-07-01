@@ -20,18 +20,12 @@ import java.util.Collection;
 
 public class RosterManager implements QBRosterListener, OnUserProfileDownloaded {
 
-    private ArrayList<String> subscribes;
 
-    private Context mContext;
     private ChatApplication app;
-
-    private int mUserId;
 
     private OnContactRefreshListener mOnContactRefreshListener;
 
     public RosterManager(Context pContext) {
-        mContext = pContext;
-        subscribes = new ArrayList<String>();
         app = ChatApplication.getInstance();
     }
 

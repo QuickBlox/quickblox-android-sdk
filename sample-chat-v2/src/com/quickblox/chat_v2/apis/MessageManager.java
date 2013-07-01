@@ -149,7 +149,8 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             return;
         }
         HashMap<Integer, String> tmpMap = app.getUserNetStatusMap();
-        if (tmpMap.get(userId) == null && app.getContactsMap().containsKey(String.valueOf(userId)) || !tmpMap.get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) {
+        if ((tmpMap.get(userId) == null || !tmpMap.get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) && app.getContactsMap().containsKey(String.valueOf(userId))) {
+
             pushSender(userId, app.getContactsMap().get(String.valueOf(userId)), messageBody);
 
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
@@ -230,16 +231,18 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    app.getDialogList().addAll(((QBCustomObjectLimitedResult) result).getCustomObjects());
-                    dialogRefreshListener.reSetList();
 
-                    for (QBCustomObject co : app.getDialogList()) {
+
+                    for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
                         app.getUserIdDialogIdMap().put(Integer.parseInt(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()), co);
                         app.getDialogMap().put(co.getCustomObjectId(), co);
                     }
+
+                    dialogRefreshListener.reSetList();
+
                     if (isNeedDownloadUser) {
                         ArrayList<String> userIds = new ArrayList<String>();
-                        for (QBCustomObject co : app.getDialogList()) {
+                        for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
                             if (!app.getDialogsUsersMap().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
 
                                 userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
@@ -297,7 +300,7 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     public QBCustomObject dialogReview(int opponentId) {
-        for (QBCustomObject dialog : app.getDialogList()) {
+        for (QBCustomObject dialog : new ArrayList<QBCustomObject>(app.getDialogMap().values())) {
             HashMap<String, Object> test = dialog.getFields();
             if (Integer.parseInt((String) test.get(GlobalConsts.RECEPIENT_ID_FIELD)) == opponentId) {
                 return dialog;
