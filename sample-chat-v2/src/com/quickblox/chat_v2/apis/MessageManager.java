@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMSender;
@@ -17,9 +19,9 @@ import com.quickblox.chat_v2.interfaces.OnNewRoomMessageIncome;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.utils.OfflineMessageSeparatorQuery;
-import com.quickblox.chat_v2.utils.SingleChatDialogTable;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
@@ -39,6 +41,7 @@ import org.jivesoftware.smack.packet.Packet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,16 +50,13 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private Context context;
     private ChatApplication app;
 
-    private String backgroundMessage;
     private int opponentId;
-    private QBUser tQbuser;
-    private boolean isNeedreview;
     private int openChatOpponentId;
     private QBCustomObject customDialog;
-    private boolean isNeedDownloadUser;
     private int authorMessageId;
     private ArrayList<String> messageQuery;
     private String lastHoldMessage;
+    private QBCustomObject localResult;
 
     private OnMessageListDownloaded listDownloadedListener;
     private OnDialogCreateComplete dialogCreateListener;
@@ -65,54 +65,53 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     private OnRoomListDownloaded roomListDownloadListener;
     private OnNewRoomMessageIncome mNewRoomMessageIncome;
 
-    private SingleChatDialogTable coupleTable;
     private OfflineMessageSeparatorQuery omsq;
+    private HashSet<Integer> mDialogCreateQueryCache;
 
     public MessageManager(Context context) {
         this.context = context;
         app = ChatApplication.getInstance();
         omsq = new OfflineMessageSeparatorQuery();
         messageQuery = new ArrayList<String>();
+        mDialogCreateQueryCache = new HashSet<Integer>();
     }
 
     @Override
     public void processMessage(Chat chat, final Message message) {
 
+
+        if (message.getBody() == null) {
+            return;
+        }
+
+        // cut the full-name message author
+        String[] partsIdto = message.getTo().split("-");
+        String[] partsIdfrom = message.getFrom().split("-");
+        authorMessageId = Integer.parseInt(partsIdfrom[0]);
+
+        //notify open chat if this message foe him
+        if (newMessageListener != null && authorMessageId == openChatOpponentId) {
+            newMessageListener.incomeNewMessage(message.getBody());
+        }
+        omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
+
+        // look in created dialogs, for dialog with this user and if current message is attach
+        localResult = dialogReview(authorMessageId);
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                if (message.getBody() == null) {
-                    return;
-                }
-
-                String[] partsIdto = message.getTo().split("-");
-                String[] partsIdfrom = message.getFrom().split("-");
-                authorMessageId = Integer.parseInt(partsIdfrom[0]);
-
-                if (newMessageListener != null && authorMessageId == openChatOpponentId) {
-                    newMessageListener.incomeNewMessage(message.getBody());
-                }
-                omsq.addNewQueryElement(authorMessageId, message.getBody(), authorMessageId);
-
-                QBCustomObject localResult = dialogReview(authorMessageId);
                 if (localResult != null) {
+
+
                     if (message.getBody().length() > 13 && message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
                         updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult.getCustomObjectId());
                     } else {
                         updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
                     }
                 } else {
-
-                    if (coupleTable == null) {
-                        coupleTable = new SingleChatDialogTable();
-                        coupleTable.setCoupleDate(authorMessageId, Integer.parseInt(partsIdto[0]));
-                        startDialogCreate(message);
-                    } else {
-
-                        if (!coupleTable.reviewCoupleIsExist(authorMessageId, Integer.parseInt(partsIdto[0]))) {
-                            startDialogCreate(message);
-                        }
+                    if (!mDialogCreateQueryCache.contains(authorMessageId)) {
+                        mDialogCreateQueryCache.add(authorMessageId);
+                        startDialogCreate(authorMessageId);
                     }
                 }
                 // separate attach
@@ -128,15 +127,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    private void startDialogCreate(Message message) {
+    private void startDialogCreate(final Integer pAuthorMessageId) {
 
-        backgroundMessage = message.getBody();
+
         ((Activity) context).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                app.getQbm().setUserProfileListener(MessageManager.this);
-                app.getQbm().getSingleUserInfo(opponentId);
+                app.getQbm().addUserProfileListener(MessageManager.this);
+                app.getQbm().getSingleUserInfo(pAuthorMessageId, ContextForDownloadUser.DOWNLOAD_FOR_MESSAGE_MANAGER);
 
             }
         });
@@ -174,15 +173,15 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         gs.sendPushNotifications(userId, buldHybridMessageBody(pQBUser, pMessage));
     }
 
-    public synchronized void createDialog(QBUser qbuser, boolean isNeedExtraReview) {
-
+    public synchronized void createDialog(final QBUser qbuser, final boolean isNeedExtraReview) {
+        //TODO: убрать костыль.
+        if (qbuser == null) {
+            return;
+        }
         opponentId = qbuser.getId();
-        isNeedreview = isNeedExtraReview;
-        tQbuser = qbuser;
 
         if (isNeedExtraReview) {
             QBCustomObject oldDialog = dialogReview(opponentId);
-
             if (oldDialog != null) {
                 dialogCreateListener.dialogCreate(opponentId, oldDialog.getCustomObjectId());
                 return;
@@ -196,24 +195,19 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
                 QBCustomObject co = new QBCustomObject();
                 HashMap<String, Object> fields = new HashMap<String, Object>();
-                fields.put(GlobalConsts.RECEPIENT_ID_FIELD, tQbuser.getId());
-                fields.put(GlobalConsts.NAME_FIELD, tQbuser.getFullName());
+                fields.put(GlobalConsts.RECEPIENT_ID_FIELD, opponentId);
+                fields.put(GlobalConsts.NAME_FIELD, qbuser.getFullName());
                 co.setFields(fields);
                 co.setClassName(GlobalConsts.DIALOGS_CLASS);
                 QBCustomObjects.createObject(co, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
                         if (result.isSuccess()) {
-
-                            if (isNeedreview) {
+                            if (dialogCreateListener != null) {
                                 dialogCreateListener.dialogCreate(opponentId, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
-                            } else {
-                                updateDialogLastMessage(backgroundMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
-                                dialogRefreshListener.reSetList();
                             }
-                            if (lastHoldMessage != null) {
-                                updateDialogLastMessage(lastHoldMessage, ((QBCustomObjectResult) result).getCustomObject().getCustomObjectId());
-                            }
+
+                            mDialogCreateQueryCache.remove(opponentId);
                         }
                     }
                 });
@@ -222,37 +216,57 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
         });
     }
 
-    public void downloadDialogList(boolean isNeedDownloadUsers) {
-        isNeedDownloadUser = isNeedDownloadUsers;
-        QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
+    public void downloadDialogList(final boolean isNeedDownloadUsers) {
 
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            getUsersDialogsInUiTread(isNeedDownloadUsers);
+        } else {
+
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    getUsersDialogsInUiTread(isNeedDownloadUsers);
+                }
+
+            });
+        }
+    }
+
+    private void getUsersDialogsInUiTread(final boolean isNeedDownloadUsers) {
+        final QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
         requestBuilder.eq(GlobalConsts.USER_ID_FIELD, app.getQbUser().getId());
-        QBCustomObjects.getObjects(GlobalConsts.DIALOGS, requestBuilder, new QBCallbackImpl() {
-            @Override
-            public void onComplete(Result result) {
-                if (result.isSuccess()) {
 
+        QBCustomObjects.getObjects(GlobalConsts.DIALOGS, requestBuilder, new
 
-                    for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
-                        app.getUserIdDialogIdMap().put(Integer.parseInt(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()), co);
-                        app.getDialogMap().put(co.getCustomObjectId(), co);
-                    }
-
-                    dialogRefreshListener.reSetList();
-
-                    if (isNeedDownloadUser) {
-                        ArrayList<String> userIds = new ArrayList<String>();
-                        for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
-                            if (!app.getDialogsUsersMap().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
-
-                                userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+                QBCallbackImpl() {
+                    @Override
+                    public void onComplete(Result result) {
+                        if (result.isSuccess()) {
+                            for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
+                                app.getUserIdDialogIdMap().put(Integer.parseInt(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()), co);
+                                app.getDialogMap().put(co.getCustomObjectId(), co);
                             }
+                            if (isNeedDownloadUsers) {
+                                ArrayList userIds = new ArrayList<String>();
+                                for (QBCustomObject co : ((QBCustomObjectLimitedResult) result).getCustomObjects()) {
+                                    if (!app.getDialogsUsersMap().containsKey(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString())) {
+                                        userIds.add(co.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+                                    }
+                                }
+
+                                app.getQbm().getQbUsersFromCollection(userIds, ContextForDownloadUser.DOWNLOAD_FOR_DIALOG);
+
+                            }
+
                         }
-                        app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG);
+
+                        dialogRefreshListener.reSetList();
                     }
                 }
-            }
-        });
+        );
     }
 
     public void getDialogMessages(int userId) {
@@ -273,16 +287,17 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
 
     public void updateDialogLastMessage(final String lastMsg, final String dialogId) {
 
+
+        final QBCustomObject co = new QBCustomObject();
+        co.setClassName(GlobalConsts.DIALOGS);
+        HashMap<String, Object> fields = new HashMap<String, Object>();
+        fields.put(GlobalConsts.LAST_MSG, lastMsg);
+        co.setFields(fields);
+        co.setCustomObjectId(dialogId);
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-                QBCustomObject co = new QBCustomObject();
-                co.setClassName(GlobalConsts.DIALOGS);
-                HashMap<String, Object> fields = new HashMap<String, Object>();
-                fields.put(GlobalConsts.LAST_MSG, lastMsg);
-                co.setFields(fields);
-                co.setCustomObjectId(dialogId);
                 QBCustomObjects.updateObject(co, new QBCallbackImpl() {
                     @Override
                     public void onComplete(Result result) {
@@ -359,8 +374,11 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     @Override
-    public void downloadComlete(QBUser friend) {
-        createDialog(friend, false);
+    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+        if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_MESSAGE_MANAGER) {
+            createDialog(friend, false);
+        }
+
     }
 
     public void setListDownloadedListener(OnMessageListDownloaded listDownloadedListener) {
@@ -395,19 +413,17 @@ public class MessageManager implements MessageListener, OnPictureDownloadComplet
     }
 
     private void configureAndPlaySoundNotification() {
-        ((Activity) context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                Ringtone r = RingtoneManager.getRingtone(context, notification);
-                r.play();
-            }
-        });
+
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(context, notification);
+        //TODO: снять блокировку перед билдом.
+        //r.play();
     }
+
 
     private String buldHybridMessageBody(QBUser pQbuser, String pMessage) {
         StringBuilder sb = new StringBuilder();
-        sb.append(pQbuser.getLogin()).append(" : ").append(pMessage);
+        sb.append(pQbuser.getFullName() != null ? pQbuser.getFullName() : pQbuser.getLogin()).append(" : ").append(pMessage);
         return sb.toString();
     }
 

@@ -56,7 +56,6 @@ public class ChatApplication extends Application {
 
     private HashMap<String, QBUser> dialogsUsersMap;
     private HashMap<String, QBUser> contactsMap;
-    private HashMap<String, QBUser> contactsCandidateMap;
     private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<Integer, String> userNetStatusMap;
 
@@ -81,7 +80,6 @@ public class ChatApplication extends Application {
         picManager = new PictureManager(context);
         rstManager = new RosterManager(context);
 
-        contactsCandidateMap = new HashMap<String, QBUser>();
         contactsMap = new HashMap<String, QBUser>();
 
         dialogsUsersMap = new HashMap<String, QBUser>();
@@ -108,8 +106,6 @@ public class ChatApplication extends Application {
         dialogsUsersMap = null;
         dialogMap = null;
 
-
-        contactsCandidateMap = null;
         contactsMap = null;
         inviteUserList = null;
 
@@ -220,9 +216,5 @@ public class ChatApplication extends Application {
 
     public HashMap<String, QBCustomObject> getDialogMap() {
         return dialogMap;
-    }
-
-    public HashMap<String, QBUser> getContactsCandidateMap() {
-        return contactsCandidateMap;
     }
 }

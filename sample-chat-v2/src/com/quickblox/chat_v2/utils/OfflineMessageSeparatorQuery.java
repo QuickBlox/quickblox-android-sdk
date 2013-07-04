@@ -1,7 +1,5 @@
 package com.quickblox.chat_v2.utils;
 
-import android.content.Context;
-
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.module.custom.model.QBCustomObject;
 
@@ -51,13 +49,17 @@ public class OfflineMessageSeparatorQuery {
             @Override
             public void run() {
                 if (!mQueryList.isEmpty()) {
+
                     for (QBCustomObject co : mQueryList) {
                         app.getQbm().createSingleCustomObject(co);
                     }
-                    clearQueryList();
                 }
-            };
 
+                clearQueryList();
+
+            }
+
+            ;
         }, 2000, 2000);
     }
 

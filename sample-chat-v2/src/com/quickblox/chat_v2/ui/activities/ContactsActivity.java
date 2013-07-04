@@ -14,6 +14,7 @@ import com.quickblox.chat_v2.adapters.ContactsAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
@@ -42,7 +43,6 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         contactsTable.setClickable(true);
 
         contactsTable.setOnItemClickListener(onClicListener);
-        mEmtyListLabel.setText(getString(R.string.empty_contacts));
     }
 
     private OnItemClickListener onClicListener = new OnItemClickListener() {
@@ -78,7 +78,7 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
     private void rebuildAdapterData() {
         contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
-        app.getQbm().setUserProfileListener(this);
+        app.getQbm().addUserProfileListener(this);
         app.getRstManager().setOnContactRefreshListener(this);
 
         setCurrentListInAdapter(contactsList);
@@ -94,19 +94,17 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
 
     @Override
-    public void downloadComlete(QBUser friend) {
+    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
 
-        if (friend == null) {
-            return;
+        if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_CONTACTS) {
+            this.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    contactsAdapter.notifyDataSetChanged();
+                }
+            });
         }
-
-        this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                contactsAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     private void setCurrentListInAdapter(ArrayList<QBUser> pCurrentArrayList) {

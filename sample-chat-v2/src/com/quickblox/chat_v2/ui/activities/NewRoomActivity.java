@@ -51,11 +51,13 @@ public class NewRoomActivity extends ListActivity {
     private void initViews() {
 
         roomNameEditText = (EditText) findViewById(R.id.room_name_et);
+
         joinRoomButton = (Button) findViewById(R.id.room_join_btn);
         joinRoomButton.setOnClickListener(joinButtonClickListener);
 
         selectionTable = (ListView) findViewById(android.R.id.list);
         selectionTable.setClickable(true);
+
         contactsAdapter = new ContactsAdapter(this, contactsList, true);
         setListAdapter(contactsAdapter);
     }

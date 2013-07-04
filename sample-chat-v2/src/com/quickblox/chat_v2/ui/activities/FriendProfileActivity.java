@@ -13,6 +13,7 @@ import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.users.model.QBUser;
 
@@ -53,31 +54,33 @@ public class FriendProfileActivity extends Activity implements OnPictureDownload
 
     private void getFullUserInfo() {
         int uid = i.getIntExtra(GlobalConsts.FRIEND_ID, 0);
-        app.getQbm().setUserProfileListener(this);
+        app.getQbm().addUserProfileListener(this);
         if (uid != 0) {
-            app.getQbm().getSingleUserInfo(uid);
+            app.getQbm().getSingleUserInfo(uid, ContextForDownloadUser.DOWNLOAD_FOR_FRIENDS_ACTIVITY);
         }
     }
 
     @Override
-    public void downloadComlete(QBUser frien) {
-        this.friend = frien;
-        runOnUiThread(new Runnable() {
+    public void downloadComlete(QBUser frien, ContextForDownloadUser pContextForDownloadUser) {
+        if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_FRIENDS_ACTIVITY) {
+            this.friend = frien;
 
-            @Override
-            public void run() {
-                System.out.println("QBUSERlistener");
+            runOnUiThread(new Runnable() {
 
-                if (friend != null) {
-                    app.getQbm().downloadQBFile(friend);
+                @Override
+                public void run() {
+
+                    if (friend != null) {
+                        app.getQbm().downloadQBFile(friend);
+
+                    }
+
+                    username.setText(friend.getFullName() != null ? friend.getFullName() : friend.getLogin());
 
                 }
+            });
 
-                username.setText(friend.getFullName() != null ? friend.getFullName() : friend.getLogin());
-
-            }
-        });
-
+        }
     }
 
     @Override

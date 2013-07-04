@@ -8,62 +8,62 @@
               android:padding="1dp">
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black"/>
-
-    <RelativeLayout
-        android:id="@+id/container"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/white">
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="75dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:background="@android:color/black"/>
 
+    <RelativeLayout
+            android:id="@+id/container"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
+
+        <View
+                android:layout_width="1dp"
+                android:layout_height="75dp"
+                android:background="@android:color/black"/>
+
         <ImageView
-            android:id="@+id/user_avatar"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:padding="1dp"
-            android:src="@drawable/com_facebook_profile_default_icon" />
+                android:id="@+id/user_avatar"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:padding="1dp"
+                android:src="@drawable/com_facebook_profile_default_icon"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/user_avatar"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/dialog_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:text="Garry Johns"/>
+                android:layout_toRightOf="@+id/user_avatar"
+                android:orientation="vertical">
 
             <TextView
-                android:id="@+id/dialog_last_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
+                    android:id="@+id/dialog_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:textStyle="bold"
+                    android:text="Garry Johns"/>
+
+            <TextView
+                    android:id="@+id/dialog_last_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
                     />
 
         </LinearLayout>
 
         <View
-            android:layout_width="1dp"
-            android:layout_height="75dp"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/black"/>
+                android:layout_width="1dp"
+                android:layout_height="75dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/black"/>
     </RelativeLayout>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black"/>
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
 
 </LinearLayout>

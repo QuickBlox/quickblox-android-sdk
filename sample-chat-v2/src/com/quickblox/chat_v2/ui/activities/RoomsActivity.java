@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat_v2.R;
@@ -32,6 +33,7 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
     private Button newRoomBtn;
     private RoomListAdapter roomListAdapter;
     private RoomListAdapter.RoomViewHolder roomHolder;
+    private TextView mEmptyRooms;
 
     private QBChatRoom chatRoom;
     private String roomName;
@@ -53,7 +55,6 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         super.onResume();
         app.getMsgManager().setRoomListDownloadListener(this);
         app.getMsgManager().downloadPersistentRoom();
-        initViews();
     }
 
     private void initViews() {
@@ -62,8 +63,8 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         roomListLv.setOnItemClickListener(itemClick);
         newRoomBtn = (Button) findViewById(R.id.new_room_btn);
         newRoomBtn.setOnClickListener(newRoomBtnClickListener);
+        mEmptyRooms = (TextView) findViewById(R.id.empty_rooms_label);
         applyRoomList(app.getUserPresentRoomList());
-
     }
 
     private View.OnClickListener newRoomBtnClickListener = new View.OnClickListener() {
@@ -96,11 +97,26 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         }
     }
 
-    private void applyRoomList(List<QBCustomObject> roomList) {
+    private void applyRoomList(final List<QBCustomObject> roomList) {
 
         roomListAdapter = new RoomListAdapter(this, (ArrayList) roomList);
         roomListLv.setAdapter(roomListAdapter);
-        refreshData();
+
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                roomListAdapter.notifyDataSetChanged();
+                if (((ArrayList) roomList).size() > 0) {
+                    roomListLv.setVisibility(View.VISIBLE);
+                    mEmptyRooms.setVisibility(View.INVISIBLE);
+                } else {
+                    roomListLv.setVisibility(View.INVISIBLE);
+                    mEmptyRooms.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 
     private OnItemClickListener itemClick = new OnItemClickListener() {
@@ -125,16 +141,6 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
         i.putExtra(GlobalConsts.ROOM_NAME, roomName);
         RoomsActivity.this.startActivity(i);
-    }
-
-    private void refreshData() {
-        this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                roomListAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override

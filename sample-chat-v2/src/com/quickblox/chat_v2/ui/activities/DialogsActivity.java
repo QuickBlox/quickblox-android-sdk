@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.DialogsAdapter;
@@ -25,6 +26,7 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
     private ListView dialogsListView;
     private DialogsAdapter dialogsAdapter;
     private Button newDialogButton;
+    private TextView mEmptyDialogLabel;
 
     private ChatApplication app;
 
@@ -43,6 +45,7 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
         super.onResume();
         app.getMsgManager().setDialogRefreshListener(this);
         app.getMsgManager().downloadDialogList(true);
+        switchViewVisibility();
     }
 
     private void initialize() {
@@ -53,6 +56,9 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
         dialogsListView.setOnItemClickListener(this);
         newDialogButton = (Button) findViewById(R.id.new_dialog_button);
         newDialogButton.setOnClickListener(newDialogButtonClickListener);
+
+        mEmptyDialogLabel = (TextView) findViewById(R.id.empty_dialog_label);
+
     }
 
     View.OnClickListener newDialogButtonClickListener = new View.OnClickListener() {
@@ -106,11 +112,32 @@ public class DialogsActivity extends Activity implements OnDialogListRefresh, Ad
     @Override
     public void reSetList() {
         applyDialogList();
+        switchViewVisibility();
+
     }
 
     @Override
     public void reFreshList() {
-        dialogsAdapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switchViewVisibility();
+                dialogsAdapter.notifyDataSetChanged();
+
+
+            }
+        });
+
+    }
+
+    private void switchViewVisibility() {
+        if (app.getDialogMap() != null && app.getDialogMap().size() > 0) {
+            mEmptyDialogLabel.setVisibility(View.INVISIBLE);
+            dialogsListView.setVisibility(View.VISIBLE);
+        } else {
+            dialogsListView.setVisibility(View.INVISIBLE);
+            mEmptyDialogLabel.setVisibility(View.VISIBLE);
+        }
     }
 
     private void loadChatActivity(String userId, String dialogId) {

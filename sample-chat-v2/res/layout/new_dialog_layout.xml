@@ -6,34 +6,34 @@
               android:layout_height="fill_parent">
 
     <com.quickblox.chat_v2.widget.TopBar
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
-        <EditText
-            android:id="@+id/contact_name"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:hint=" &quot;Enter name of user you would like to chat with&quot;" />
-
-        <Button
-            android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ok"
-            />
+            android:orientation="horizontal"
+            >
+
+        <EditText
+                android:id="@+id/contact_name"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:hint=" &quot;Enter name of user you would like to chat with&quot;"/>
+
+        <Button
+                android:id="@+id/search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/new_dialog_activity_search_button"
+                />
     </LinearLayout>
 
     <ListView
-        android:id="@+id/contacts_listView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            android:id="@+id/contacts_listView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>

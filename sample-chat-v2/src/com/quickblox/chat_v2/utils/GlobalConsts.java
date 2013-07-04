@@ -1,7 +1,7 @@
 package com.quickblox.chat_v2.utils;
 
 public class GlobalConsts {
-    public static final long GCM_CLIENT_ID = 328124915270L;
+    //  public static final long GCM_CLIENT_ID = 328124915270L;
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
 
@@ -10,16 +10,9 @@ public class GlobalConsts {
     public static final String ATTACH_INDICATOR = "<Attach file>";
     public static final String ATTACH_TEXT_FOR_DIALOGS = "Attach";
 
-    public static final byte DOWNLOAD_LIST_FOR_DIALOG = 0;
-    public static final byte DOWNLOAD_LIST_FOR_CONTACTS = 1;
-    public static final byte DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE = 2;
 
     //dialog section
     public static final String DIALOGS_CLASS = "dialogs";
-
-    public static final String ARRAY_TYPE = "array_type";
-    public static final String CONTACTS_ARRAY = "contacts_array";
-
     public static final String NAME_FIELD = "name";
     public static final String RECEPIENT_ID_FIELD = "recepient_id";
 
@@ -49,5 +42,4 @@ public class GlobalConsts {
     public static final String PRESENCE_TYPE_AVAIABLE = "available";
     public static final String PRESENCE_TYPE_UNAVAIABLE = "unavailable";
 
-    public static final String PUSH_WELCOME = "You have unread message";
 }

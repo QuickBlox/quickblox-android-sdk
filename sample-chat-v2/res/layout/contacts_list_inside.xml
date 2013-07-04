@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/is_selected_to_invite"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             />

@@ -9,7 +9,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="2dp"
+            android:visibility="invisible"
             android:layout_above="@+id/bottom_bar"/>
+
+    <TextView
+            android:id="@+id/empty_rooms_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/empty_rooms"
+            android:visibility="invisible"
+            />
 
     <RelativeLayout
             android:id="@+id/bottom_bar"
@@ -23,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
-                android:text="@string/NEW"/>
+                android:text="@string/fragment_new_button"/>
     </RelativeLayout>
 
 

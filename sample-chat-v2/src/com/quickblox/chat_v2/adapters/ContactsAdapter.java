@@ -24,7 +24,6 @@ public class ContactsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     private ArrayList<QBUser> incomeUserList;
-    private boolean isContacts;
     private boolean isInviteList;
 
     private ContactHolder contactsHolder;
@@ -33,7 +32,6 @@ public class ContactsAdapter extends BaseAdapter {
     public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isInviteList) {
         this.context = context;
         incomeUserList = qbuserArray;
-        this.isContacts = isContacts;
         this.isInviteList = isInviteList;
         app = ChatApplication.getInstance();
     }
@@ -105,6 +103,15 @@ public class ContactsAdapter extends BaseAdapter {
                 }
             }
         };
+
+        if (!isInviteList) {
+            contactsHolder.selected.setVisibility(View.GONE);
+        } else {
+            contactsHolder.selected.setVisibility(View.VISIBLE);
+            contactsHolder.selected.setOnCheckedChangeListener(onCheck);
+            onCheck.setPosition(position);
+
+        }
 
         return contactView;
     }

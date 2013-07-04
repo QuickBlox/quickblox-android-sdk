@@ -32,8 +32,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
     private ImageView userpic;
     private ChatApplication app;
-
-    private Bitmap userBitmap;
+    private QBUser tUser;
 
     private final int SELECT_PHOTO = 1;
     private boolean blockUiMode;
@@ -53,18 +52,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
 
         app = ChatApplication.getInstance();
 
-        QBUser tUser = app.getQbUser();
-        if (tUser != null && tUser.getFileId() != null) {
-            app.getQbm().setPictureDownloadComplete(this);
-            app.getQbm().downloadQBFile(tUser);
-
-        }
-
-        if (tUser != null && tUser.getWebsite() != null) {
-            app.getPicManager().downloadPicAndDisplay(tUser.getWebsite(), userpic, null);
-            username.setText(tUser.getFullName());
-
-        }
+        tUser = app.getQbUser();
         setOnProfilePictureClicListener();
 
         username.setText(tUser.getFullName() != null ? tUser.getFullName() : tUser.getLogin());
@@ -82,12 +70,8 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
                 app.clearAllData();
                 GCMHelper.unregister(ProfileActivity.this);
                 QBChat qbChat = QBChat.getInstance();
-
                 qbChat.stopAutoSendPresence();
-//                qbChat.logout();
-//                qbChat.setChatMessageListener(null);
-//                qbChat.startWatchRoom(null);
-//                qbChat.disconnect();
+                qbChat.disconnect();
 
                 Session session = new Session(ProfileActivity.this);
                 session.closeAndClearTokenInformation();
@@ -140,14 +124,12 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
     }
 
     @Override
-    public void downloadComlete(Bitmap bitmap, File file) {
-        userBitmap = bitmap;
-        runOnUiThread(new Runnable() {
-
+    public void downloadComlete(final Bitmap bitmap, File file) {
+        ProfileActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                userpic.setImageBitmap(userBitmap);
-                ChatApplication.getInstance().setMyPic(userBitmap);
+                userpic.setImageBitmap(bitmap);
+                app.setMyPic(bitmap);
                 swichProgressDialog(false);
             }
         });
@@ -169,6 +151,27 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (app.getMyPic() != null) {
+            userpic.setImageBitmap(app.getMyPic());
+            return;
+        }
+
+        if (tUser != null && tUser.getFileId() != null) {
+            app.getQbm().setPictureDownloadComplete(this);
+            app.getQbm().downloadQBFile(tUser);
+            return;
+
+        }
+
+        if (tUser != null && tUser.getWebsite() != null) {
+            app.getPicManager().downloadPicAndDisplay(tUser.getWebsite(), userpic, null);
+        }
 
     }
 

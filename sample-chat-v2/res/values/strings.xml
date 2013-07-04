@@ -26,11 +26,6 @@
     <string name="splash_dialog_button_ok">OK</string>
     <string name="splash_dialog_button_cancel">Cancel</string>
 
-    <string name="maintab_tab_1">Dialogs</string>
-    <string name="maintab_tab_2">Rooms</string>
-    <string name="maintab_tab_3">Contacts</string>
-    <string name="maintab_tab_4">Profile</string>
-
     <string name="title_activity_main_tab">MainTabActivity</string>
 
     <string name="profile_activity_exit_button">Exit</string>
@@ -45,6 +40,7 @@
     <string name="dialog_activity_reject">User not found!</string>
     <string name="dialog_activity_search_dialog">Searching</string>
 
+    <string name="new_dialog_activity_search_button">Search</string>
     <string name="new_dialog_activity_search_user">Searching user</string>
     <string name="new_dialog_activity_create_dialog">Create new dialog</string>
 
@@ -62,13 +58,17 @@
     <string name="contacts_inside_reject_button">Reject</string>
 
     <string name="new_room_activity_creating_room">Creating room</string>
-    <string name="new_room_activity_block_create_room">You haven\'t friend. Search and add it in dialogs section</string>
+    <string name="new_room_activity_block_create_room">"You don\'t have any contacts to start group chat"</string>
     <string name="room_activity_connecting_room">Connecting room</string>
 
     <string name="room_name_title">Name</string>
     <string name="room_join_fall">Join unsuccessfull</string>
 
     <string name="empty_contacts">"To add contacts - just start dialog with user from Dialogs screen and add him by tap on user pic in Chat screen"</string>
+    <string name="empty_dialogs">"Don't have dialogs? Press 'New' button bellow"</string>
+    <string name="empty_rooms">"Don't have group chats? Press 'New' button bellow"</string>
+
+
     <string name="fragment_rooms_namefield">Name</string>
     <string name="fragment_rooms_checkbox_members">Only members</string>
 
@@ -77,11 +77,10 @@
     <string name="TAB_ROOMS_TITLE">rooms</string>
     <string name="TAB_CONTACTS_TITLE">contacts</string>
     <string name="TAB_PROFILE_TITLE">profile</string>
-    <string name="NEW">new</string>
 
     <string name="back">Back</string>
     <string name="users_text">users</string>
-    <string name="ok">ok</string>
+    <string name="ok">Ok</string>
     <string name="loading">Please wait, Loading!</string>
     <string name="check_connection_error">check internet connection</string>
     <string name="room_name_emty_msg">Room name can`t be empty</string>

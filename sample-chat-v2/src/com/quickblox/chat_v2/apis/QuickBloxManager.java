@@ -6,13 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
 import com.quickblox.chat_v2.interfaces.OnPictureDownloadComplete;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
-import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
@@ -32,71 +31,68 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class QuickBloxManager {
 
     private ChatApplication app;
 
-    private OnUserProfileDownloaded userProfileListener;
+    private List<OnUserProfileDownloaded> mUserProfileListener;
     private OnPictureDownloadComplete pictureDownloadComplete;
     private OnFileUploadComplete uploadListener;
 
     private boolean pictureMode;
     private int currentFileId;
 
-    private Context context;
+    private Context mContext;
 
     public QuickBloxManager(Context context) {
+        mUserProfileListener = new CopyOnWriteArrayList<OnUserProfileDownloaded>();
         app = ChatApplication.getInstance();
-        this.context = context;
+        mContext = context;
 
     }
 
-    public synchronized void getQbUsersFromCollection(List<String> usersIds, byte contexts) {
+    public void getQbUsersFromCollection(final ArrayList<String> usersIds, ContextForDownloadUser pContextForDownloadUser) {
+        final ContextForDownloadUser contextForDownloadUser = pContextForDownloadUser;
+        synchronized (contextForDownloadUser) {
+            QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
 
-        QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result, Object context) {
 
-            @Override
-            public void onComplete(Result result, Object context) {
+                    QBUserPagedResult usersResult = (QBUserPagedResult) result;
 
-                QBUserPagedResult usersResult = (QBUserPagedResult) result;
+                    ContextForDownloadUser contextForDownloadUser = (ContextForDownloadUser) context;
 
-                switch ((Byte) context) {
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_DIALOG):
-
-                        for (QBUser qu : usersResult.getUsers()) {
-                            app.getDialogsUsersMap().put(String.valueOf(qu.getId()), qu);
-                        }
-
-                        break;
-
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS_CANDIDATE):
-
-                        for (QBUser candidate : usersResult.getUsers()) {
-                            if (!app.getContactsMap().containsKey(String.valueOf(candidate.getId()))) {
-                                app.getContactsCandidateMap().put(String.valueOf(candidate.getId()), candidate);
+                    switch (contextForDownloadUser) {
+                        case DOWNLOAD_FOR_DIALOG:
+                            if (app.getContactsMap() != null) {
+                                for (QBUser qu : usersResult.getUsers()) {
+                                    app.getDialogsUsersMap().put(String.valueOf(qu.getId()), qu);
+                                }
                             }
-                        }
-                        break;
+                            break;
 
-                    case (GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS): {
-                        for (QBUser contact : usersResult.getUsers()) {
-                            app.getContactsMap().put(String.valueOf(contact.getId()), contact);
-                            app.getContactsCandidateMap().remove(String.valueOf(contact.getId()));
-                        }
+                        case DOWNLOAD_FOR_CONTACTS:
+                        case DOWNLOAD_FOR_MAIN_ACTIVITY:
+                            for (QBUser contact : usersResult.getUsers()) {
+                                app.getContactsMap().put(String.valueOf(contact.getId()), contact);
 
-                        break;
+                            }
+                            break;
+
+                    }
+
+
+                    for (OnUserProfileDownloaded listener : mUserProfileListener) {
+                        listener.downloadComlete(null, contextForDownloadUser);
                     }
                 }
-
-
-                if (userProfileListener != null) {
-                    userProfileListener.downloadComlete(null);
-                }
-            }
-        }, contexts);
-
+            }, pContextForDownloadUser);
+        }
     }
 
     // WARNING ! upload section
@@ -127,7 +123,7 @@ public class QuickBloxManager {
         userToUpdate.setId(upadtedUser.getId());
         userToUpdate.setFileId(upadtedUser.getFileId());
 
-        ((Activity) context).runOnUiThread(new Runnable() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 QBUsers.updateUser(userToUpdate, new QBCallbackImpl() {
@@ -147,10 +143,10 @@ public class QuickBloxManager {
         if (currentUser.getFileId() == null) {
             return;
         }
-        File targetFile = new File(context.getCacheDir(), String.valueOf(currentUser.getFileId()) + ".jpg");
+        File targetFile = new File(mContext.getCacheDir(), String.valueOf(currentUser.getFileId()));
 
         if (targetFile.exists()) {
-            Bitmap userPic = BitmapFactory.decodeFile(String.valueOf(currentUser.getFileId()) + ".jpg");
+            Bitmap userPic = BitmapFactory.decodeFile(targetFile.getPath());
             pictureDownloadComplete.downloadComlete(userPic, targetFile);
             return;
         }
@@ -165,9 +161,8 @@ public class QuickBloxManager {
                 if (result.isSuccess()) {
 
                     InputStream is = qbFileDownloadResult.getContentStream();
-                    Bitmap userPic = BitmapFactory.decodeStream(is);
 
-                    File userPicFile = new File(context.getCacheDir(), String.valueOf(currentFileId) + ".jpg");
+                    File userPicFile = new File(mContext.getCacheDir(), String.valueOf(currentFileId));
                     FileOutputStream fos;
                     try {
                         fos = new FileOutputStream(userPicFile);
@@ -179,28 +174,34 @@ public class QuickBloxManager {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    Bitmap userPic = BitmapFactory.decodeFile(userPicFile.getPath());
                     pictureDownloadComplete.downloadComlete(userPic, userPicFile);
                 }
             }
         });
     }
 
-    public synchronized void getSingleUserInfo(final int userId) {
+    public synchronized void getSingleUserInfo(final int userId, final ContextForDownloadUser pContextForDownloadUser) {
 
-        ((Activity) context).runOnUiThread(new Runnable() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 QBUsers.getUser(userId, new QBCallback() {
 
                     @Override
                     public void onComplete(Result result, Object context) {
+                        ContextForDownloadUser contextForDownloadUser = (ContextForDownloadUser) context;
+                        for (OnUserProfileDownloaded listeners : mUserProfileListener) {
+                            listeners.downloadComlete(((QBUserResult) result).getUser(), (ContextForDownloadUser) context);
+                        }
                     }
 
                     @Override
                     public void onComplete(Result result) {
-                        userProfileListener.downloadComlete(((QBUserResult) result).getUser());
+
                     }
-                });
+                }, pContextForDownloadUser);
             }
         });
 
@@ -231,7 +232,6 @@ public class QuickBloxManager {
                 QBCustomObjects.createObject(pCustomObject, new QBCallback() {
                     @Override
                     public void onComplete(Result result) {
-                        Log.d("QBM", "result = " + result.isSuccess());
                     }
 
                     @Override
@@ -246,8 +246,15 @@ public class QuickBloxManager {
 
     // LISTENERS
 
-    public void setUserProfileListener(OnUserProfileDownloaded friendProfileListener) {
-        this.userProfileListener = friendProfileListener;
+    public void addUserProfileListener(OnUserProfileDownloaded friendProfileListener) {
+        if (friendProfileListener != null) {
+            this.mUserProfileListener.add(friendProfileListener);
+        }
+    }
+
+    public void removeUserProfileListener(OnUserProfileDownloaded friendProfileListener) {
+        this.mUserProfileListener.remove(friendProfileListener);
+
     }
 
     public void setPictureDownloadComplete(OnPictureDownloadComplete pictureDownloadComplete) {

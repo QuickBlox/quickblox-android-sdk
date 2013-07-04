@@ -2,13 +2,11 @@ package com.quickblox.chat_v2.apis;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
-import com.quickblox.chat_v2.utils.GlobalConsts;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.model.QBChatRoster.QBRosterListener;
 import com.quickblox.module.users.model.QBUser;
@@ -32,9 +30,9 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
     @Override
     public void entriesAdded(Collection<Integer> addedEntriesIds) {
 
-        app.getQbm().setUserProfileListener(this);
+        app.getQbm().addUserProfileListener(this);
         for (Integer ae : addedEntriesIds) {
-            app.getQbm().getSingleUserInfo(ae);
+            app.getQbm().getSingleUserInfo(ae, ContextForDownloadUser.DOWNLOAD_FOR_ROSTER);
         }
     }
 
@@ -70,34 +68,33 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
     }
 
 
-    public void getContactListFromRoster() {
+    public boolean getContactListFromRoster() {
 
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                ArrayList<String> userIds = new ArrayList<String>();
-                if (app.getQbRoster().getUsersId() != null) {
-                    for (Integer in : app.getQbRoster().getUsersId()) {
-                        if (in == -1) {
-                            continue;
-                        }
-                        userIds.add(String.valueOf(in));
-                    }
-                    app.getQbm().getQbUsersFromCollection(userIds, GlobalConsts.DOWNLOAD_LIST_FOR_CONTACTS);
+        ArrayList<String> userIds = new ArrayList<String>();
+        if (app.getQbRoster().getUsersId() != null) {
+            for (Integer in : app.getQbRoster().getUsersId()) {
+                if (in != -1) {
+                    userIds.add(String.valueOf(in));
                 }
             }
-        }, 1000);
-
-    }
-
-    @Override
-    public void downloadComlete(QBUser friend) {
-        if (friend != null) {
-            ChatApplication.getInstance().getContactsMap().put(String.valueOf(friend.getId()), friend);
+            if (userIds.isEmpty()) {
+                return false;
+            } else {
+                app.getQbm().getQbUsersFromCollection(userIds, ContextForDownloadUser.DOWNLOAD_FOR_MAIN_ACTIVITY);
+            }
         }
+        return true;
     }
+
 
     public void setOnContactRefreshListener(OnContactRefreshListener pOnContactRefreshListener) {
         mOnContactRefreshListener = pOnContactRefreshListener;
+    }
+
+    @Override
+    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+        if (friend != null && ContextForDownloadUser.DOWNLOAD_FOR_ROSTER == pContextForDownloadUser) {
+            app.getContactsMap().put(String.valueOf(friend.getId()), friend);
+        }
     }
 }

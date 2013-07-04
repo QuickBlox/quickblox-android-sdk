@@ -9,7 +9,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="2dp"
-            android:layout_above="@+id/bottom_bar"/>
+            android:layout_above="@+id/bottom_bar"
+            android:visibility="invisible"/>
+
+    <TextView
+            android:id="@+id/empty_dialog_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:text="@string/empty_dialogs"/>
+
 
     <RelativeLayout
             android:id="@+id/bottom_bar"
@@ -24,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:padding="2dp"
-                android:text="@string/NEW"/>
+                android:text="@string/fragment_new_button"/>
 
     </RelativeLayout>
 

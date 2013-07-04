@@ -10,6 +10,7 @@ import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMHelper;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
+import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.module.users.model.QBUser;
 
 /**
@@ -23,7 +24,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     private static final String PROFILE_TAB = "tab4";
 
     private ChatApplication app;
-
     private ProgressDialog progress;
 
     @Override
@@ -64,14 +64,13 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     private void downloadStartUpInfo() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                app.getQbm().setUserProfileListener(MainActivity.this);
-                app.getMsgManager().downloadPersistentRoom();
-                app.getRstManager().getContactListFromRoster();
-            }
-        });
+        app.getQbm().addUserProfileListener(MainActivity.this);
+        app.getMsgManager().downloadPersistentRoom();
+        boolean isNeedLoadUsersFromQb = app.getRstManager().getContactListFromRoster();
+        if (!isNeedLoadUsersFromQb) {
+            switchProgressDialog(false);
+            app.getQbm().removeUserProfileListener(MainActivity.this);
+        }
 
     }
 
@@ -90,7 +89,10 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     @Override
-    public void downloadComlete(QBUser friend) {
-        switchProgressDialog(false);
+    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+        if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_MAIN_ACTIVITY) {
+            switchProgressDialog(false);
+            app.getQbm().removeUserProfileListener(MainActivity.this);
+        }
     }
 }
