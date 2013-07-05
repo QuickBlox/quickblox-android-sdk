@@ -7,10 +7,11 @@ import android.graphics.Bitmap;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.FaceBookManager;
-import com.quickblox.chat_v2.apis.MessageManager;
+import com.quickblox.chat_v2.apis.MessageFacade;
 import com.quickblox.chat_v2.apis.PictureManager;
 import com.quickblox.chat_v2.apis.QuickBloxManager;
 import com.quickblox.chat_v2.apis.RosterManager;
+import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.smack.SmackAndroid;
@@ -18,6 +19,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -41,7 +43,7 @@ public class ChatApplication extends Application {
     private String accessTokien;
     private QBChatRoom joinedRoom;
 
-    private MessageManager msgManager;
+    private MessageFacade msgManager;
     private QuickBloxManager qbm;
     private FaceBookManager fbm;
     private PictureManager picManager;
@@ -74,7 +76,7 @@ public class ChatApplication extends Application {
     }
 
     public void createData(Context context) {
-        msgManager = new MessageManager(context);
+        msgManager = new MessageFacade(context);
         qbm = new QuickBloxManager(context);
         fbm = new FaceBookManager();
         picManager = new PictureManager(context);
@@ -82,8 +84,10 @@ public class ChatApplication extends Application {
 
         contactsMap = new HashMap<String, QBUser>();
 
+        // map for user in contacts list (key - userID, values - QBUser)
         dialogsUsersMap = new HashMap<String, QBUser>();
         dialogMap = new HashMap<String, QBCustomObject>();
+
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
 
         inviteUserList = new ArrayList<String>();
@@ -104,7 +108,7 @@ public class ChatApplication extends Application {
         rstManager = null;
 
         dialogsUsersMap = null;
-        dialogMap = null;
+        dialogMap.clear();
 
         contactsMap = null;
         inviteUserList = null;
@@ -138,7 +142,7 @@ public class ChatApplication extends Application {
         return qbm;
     }
 
-    public MessageManager getMsgManager() {
+    public MessageFacade getMsgManager() {
         return msgManager;
     }
 
@@ -216,5 +220,21 @@ public class ChatApplication extends Application {
 
     public HashMap<String, QBCustomObject> getDialogMap() {
         return dialogMap;
+    }
+
+
+    public String getDialogByUser(int userId) {
+
+        String dialog = null;
+
+        Collection<QBCustomObject> customObjects = getDialogMap().values();
+        for (QBCustomObject dialogs : customObjects) {
+            int dialogUser = Integer.parseInt(dialogs.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
+            if (dialogUser == userId) {
+                dialog = dialogs.getCustomObjectId();
+                break;
+            }
+        }
+        return dialog;
     }
 }

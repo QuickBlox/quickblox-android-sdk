@@ -1,105 +1,70 @@
 package com.quickblox.chat_v2.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.core.CustomCheckBoxListener;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ContactsAdapter extends BaseAdapter {
+public class ContactsAdapter extends ArrayAdapter<QBUser> {
 
-    private Context context;
-    private LayoutInflater inflater;
+    private final boolean isInviteList;
 
-    private ArrayList<QBUser> incomeUserList;
-    private boolean isInviteList;
+    private final List<Integer> checkedUsers = new ArrayList<Integer>();
 
-    private ContactHolder contactsHolder;
-    private ChatApplication app;
-
-    public ContactsAdapter(Context context, ArrayList<QBUser> qbuserArray, boolean isInviteList) {
-        this.context = context;
-        incomeUserList = qbuserArray;
+    public ContactsAdapter(Context context, List<QBUser> pList, boolean isInviteList) {
+        super(context, 0, pList);
         this.isInviteList = isInviteList;
-        app = ChatApplication.getInstance();
     }
 
-    static class ContactHolder {
+    private static class ContactHolder {
 
         public ImageView userPic;
         public TextView userName;
-
-        public Button accept;
-        public Button reject;
-
         public CheckBox selected;
     }
 
-    @Override
-    public int getCount() {
-        return incomeUserList.size();
+    public List<Integer> getCheckedUsers() {
+        return checkedUsers;
     }
 
-    @Override
-    public Object getItem(int num) {
-        return incomeUserList.get(num);
-    }
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
-    @Override
-    public long getItemId(int id) {
-        return id;
-    }
+        QBUser currentUser = getItem(position);
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        View contactView = convertView;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        QBUser currentUser = incomeUserList.get(position);
-
-        if (contactView == null) {
-
+        ContactHolder contactsHolder;
+        if (convertView == null) {
             contactsHolder = new ContactHolder();
-            contactView = inflater.inflate(R.layout.contacts_list_inside, parent, false);
-            contactsHolder.userPic = (ImageView) contactView.findViewById(R.id.contacts_inside_userpic);
-            contactsHolder.userName = (TextView) contactView.findViewById(R.id.contacts_inside_username);
-
-            contactsHolder.selected = (CheckBox) contactView.findViewById(R.id.is_selected_to_invite);
-
-            contactsHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
-
-            contactView.setTag(contactsHolder);
-
+            convertView = View.inflate(getContext(), R.layout.contacts_list_inside, null);
+            contactsHolder.userPic = (ImageView) convertView.findViewById(R.id.contacts_inside_userpic);
+            contactsHolder.userName = (TextView) convertView.findViewById(R.id.contacts_inside_username);
+            contactsHolder.selected = (CheckBox) convertView.findViewById(R.id.is_selected_to_invite);
+            convertView.setTag(contactsHolder);
         } else {
-
-            contactsHolder = (ContactHolder) contactView.getTag();
-
-            contactsHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
-
+            contactsHolder = (ContactHolder) convertView.getTag();
         }
+        contactsHolder.userName.setText(currentUser.getFullName() != null ? currentUser.getFullName() : currentUser.getLogin());
 
         CustomCheckBoxListener onCheck = new CustomCheckBoxListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 super.onCheckedChanged(compoundButton, b);
-                int tUserId = incomeUserList.get(this.getPosition()).getId();
+                Integer tUserId = getItem(position).getId();
                 if (b) {
-                    app.getInviteUserList().add(String.valueOf(tUserId));
+                    checkedUsers.add(tUserId);
                 } else {
-                    app.getInviteUserList().remove(String.valueOf(tUserId));
+                    checkedUsers.remove(tUserId);
                 }
             }
         };
@@ -109,10 +74,7 @@ public class ContactsAdapter extends BaseAdapter {
         } else {
             contactsHolder.selected.setVisibility(View.VISIBLE);
             contactsHolder.selected.setOnCheckedChangeListener(onCheck);
-            onCheck.setPosition(position);
-
         }
-
-        return contactView;
+        return convertView;
     }
 }

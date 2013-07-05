@@ -61,7 +61,7 @@ public class FriendProfileActivity extends Activity implements OnPictureDownload
     }
 
     @Override
-    public void downloadComlete(QBUser frien, ContextForDownloadUser pContextForDownloadUser) {
+    public void downloadComplete(QBUser frien, ContextForDownloadUser pContextForDownloadUser) {
         if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_FRIENDS_ACTIVITY) {
             this.friend = frien;
 

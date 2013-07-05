@@ -64,15 +64,23 @@ public class PictureManager {
         File f = new File(context.getCacheDir(), "new_avtar.png");
 
         Bitmap bitmap = mypic;
-
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fos = new FileOutputStream(f);
+            fos = new FileOutputStream(f);
             bitmap.compress(CompressFormat.PNG, 0, fos);
-            fos.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return f;

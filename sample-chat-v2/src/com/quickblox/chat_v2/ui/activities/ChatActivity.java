@@ -1,10 +1,11 @@
 package com.quickblox.chat_v2.ui.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,41 +16,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quickblox.chat_v2.R;
-import com.quickblox.chat_v2.apis.MessageManager;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.core.CustomPictureAttachListener;
-import com.quickblox.chat_v2.interfaces.OnDialogCreateComplete;
-import com.quickblox.chat_v2.interfaces.OnFileUploadComplete;
-import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
-import com.quickblox.chat_v2.interfaces.OnNewMessageIncome;
-import com.quickblox.chat_v2.interfaces.OnNewRoomMessageIncome;
+import com.quickblox.chat_v2.ui.activities.chat.Chat;
+import com.quickblox.chat_v2.ui.activities.chat.RoomChat;
+import com.quickblox.chat_v2.ui.activities.chat.SingleChat;
+import com.quickblox.chat_v2.ui.activities.chat.UIChat;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
-import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.model.QBChatRoom;
-import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
-import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.muc.InvitationListener;
-
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends Activity implements OnMessageListDownloaded, OnFileUploadComplete, OnNewMessageIncome, OnDialogCreateComplete, OnNewRoomMessageIncome {
+public class ChatActivity extends Activity implements UIChat {
 
     private final int SELECT_PHOTO = 2;
     private boolean isAttach;
     private String[] parts;
-    private String userId;
 
     private TopBar topBar;
 
@@ -63,21 +48,50 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
     private TextView meLabel;
     private TextView friendLabel;
 
-    private ArrayList<String> incomeRoomMessages;
+    private List<String> incomeRoomMessages;
 
-    private String dialogId;
-    private String lastMsg;
-    private QBChatRoom chatRoom;
-
-    private String dialogFreezingStatus;
-
-    private MessageManager msgManager;
     private ChatApplication app;
 
-    //new arch
+    @Override
+    public void setBarTitle(String pTitle) {
+        friendLabel.setText(pTitle);
+    }
 
-    private QBUser opponentUser;
-    private byte previousActivity;
+    @Override
+    public void setTopBarParams(String s, int v, boolean b) {
+        topBar.setFragmentParams(s, v, b);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void showMessages(List<String> pList) {
+        roomShowMessage(pList);
+    }
+
+    @Override
+    public void setTopBarFriendParams(QBUser pOpponentUser, boolean b) {
+        topBar.setFriendParams(pOpponentUser, b);
+    }
+
+    @Override
+    public void changeUploadState(boolean b) {
+        topBar.swichProgressBarVisibility(b ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void showMessage(String pLastMsg, boolean b) {
+        showMessageUI(pLastMsg, b);
+    }
+
+    private enum Mode {SINGLE, GROUP}
+
+    private Mode mMode = Mode.SINGLE;
+
+    private Chat mChat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,28 +99,27 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         setContentView(R.layout.chat_layout);
 
         app = ChatApplication.getInstance();
-        msgManager = app.getMsgManager();
-        msgManager.setListDownloadedListener(this);
+
         initViews();
 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mChat.registerListeners();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mChat.unRegisterListeners();
+    }
+
+    @Override
     public void onBackPressed() {
-
-
-        if (previousActivity == GlobalConsts.DIALOG_ACTIVITY || previousActivity == GlobalConsts.CONTACTS_ACTIVITY) {
-            msgManager.updateDialogLastMessage(lastMsg, dialogId);
-        } else {
-            app.getMsgManager().downloadPersistentRoom();
-        }
-        if (chatRoom != null) {
-            chatRoom.removeMessageListener(app.getMsgManager());
-            chatRoom.leave();
-            app.setJoinedRoom(null);
-        }
-
-        this.finish();
+        mChat.release();
+        super.onBackPressed();
     }
 
     private void initViews() {
@@ -121,131 +134,65 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         sendButton = (Button) findViewById(R.id.chatSendButton);
         attachButton = (Button) findViewById(R.id.attachbutton);
 
-        previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
+        byte previousActivity = getIntent().getByteExtra(GlobalConsts.PREVIOUS_ACTIVITY, (byte) 0);
 
         switch (previousActivity) {
-
-
             case GlobalConsts.ROOM_ACTIVITY:
-
-                QBChat.getInstance().startWatchRoom(pInvitationListener);
-                String chatRoomName = getIntent().getStringExtra(GlobalConsts.ROOM_NAME);
-
-                chatRoom = app.getJoinedRoom();
-                chatRoom.addParticipantListener(pParticipantListener);
-                app.getMsgManager().setmNewRoomMessageIncome(this);
-
-                friendLabel.setText(getIntent().getStringExtra(GlobalConsts.ROOM_NAME));
-
-                topBar.setFragmentParams(TopBar.ROOM_ACTIVITY, View.INVISIBLE, false);
-
-                sendButton.setOnClickListener(onRoomSendBtnClick);
-                attachButton.setVisibility(View.GONE);
+                mMode = Mode.GROUP;
+                mChat = new RoomChat(this);
                 break;
 
             case GlobalConsts.DIALOG_ACTIVITY:
-
-                userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
-                opponentUser = app.getDialogsUsersMap().get(userId);
-
-                dialogId = getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
-
-                topBar.setFriendParams(opponentUser, app.getContactsMap().containsKey(String.valueOf(opponentUser.getId())));
-                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
-
-                msgManager.getDialogMessages(opponentUser.getId());
-                msgManager.setNewMessageListener(this, opponentUser.getId());
-
-                friendLabel.setText(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
-                sendButton.setOnClickListener(onDialogSendBtnClick);
+                mMode = Mode.SINGLE;
+                mChat = new SingleChat(this, false);
                 break;
-
             case GlobalConsts.CONTACTS_ACTIVITY:
-
-
-                userId = getIntent().getStringExtra(GlobalConsts.USER_ID);
-                opponentUser = app.getContactsMap().get(userId);
-
-                if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
-                    dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();
-                }
-
-                topBar.setFriendParams(opponentUser, true);
-                topBar.setFragmentParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
-
-                msgManager.getDialogMessages(opponentUser.getId());
-                msgManager.setNewMessageListener(this, opponentUser.getId());
-
-                friendLabel.setText(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
-                sendButton.setOnClickListener(onDialogSendBtnClick);
+                mMode = Mode.SINGLE;
+                mChat = new SingleChat(this, true);
                 break;
         }
 
+        if (mMode == Mode.SINGLE) {
+            attachButton.setOnClickListener(new OnClickListener() {
 
-        attachButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            @Override
-            public void onClick(View v) {
-
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-            }
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                }
+            });
+        } else {
+            attachButton.setVisibility(View.GONE);
         }
 
-        );
 
+        sendButton.setOnClickListener(onSendClick);
         meLabel.setText(app.getQbUser().getFullName());
-
-        if (app.getInviteUserList().size() > 1 && chatRoom != null) {
-            chatRoom.invite(app.getInviteUserList());
-            app.getInviteUserList().clear();
-        }
-
     }
 
-    public OnClickListener onDialogSendBtnClick = new OnClickListener() {
+    public OnClickListener onSendClick = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
 
-            lastMsg = msgTxt.getText().toString();
-            msgTxt.setText("");
-            showMessage(lastMsg, true);
-
-            if (dialogId == null && dialogFreezingStatus == null) {
-                msgManager.setDialogCreateListener(ChatActivity.this);
-                msgManager.createDialog(opponentUser, false);
-                app.getMsgManager().setLastHoldMessage(lastMsg);
-                dialogFreezingStatus = "processed";
+            String lastMsg = msgTxt.getText().toString();
+            if (TextUtils.isEmpty(lastMsg)) {
+                return;
             }
 
-            msgManager.sendSingleMessage(opponentUser.getId(), lastMsg, dialogId);
-
-        }
-    };
-
-    public OnClickListener onRoomSendBtnClick = new OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            lastMsg = msgTxt.getText().toString();
             msgTxt.setText("");
 
-            try {
-                if (chatRoom != null) {
-                    chatRoom.sendMessage(lastMsg);
-                } else {
-                    Toast.makeText(ChatActivity.this, getResources().getString(R.string.room_join_fall), Toast.LENGTH_LONG).show();
-                }
-            } catch (XMPPException e) {
-                e.printStackTrace();
+            mChat.sendMessage(lastMsg);
+
+            if (mMode == Mode.SINGLE) {
+                showMessageUI(lastMsg, true);
             }
         }
     };
 
-
-    private void showMessage(String message, boolean leftSide) {
+    private void showMessageUI(String message, boolean leftSide) {
 
         if (message.length() > 12 && message.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
             parts = message.split("#");
@@ -265,7 +212,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 public void onClick(View view) {
                     super.onClick(view);
 
-                    Intent intent = new Intent(ChatActivity.this, AttachWiewActivity.class);
+                    Intent intent = new Intent(ChatActivity.this, AttachViewActivity.class);
                     intent.putExtra(GlobalConsts.ATTACH_URL, getPictureUrl());
                     ChatActivity.this.startActivity(intent);
                 }
@@ -321,7 +268,7 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         scrollDown();
     }
 
-    private void roomShowMessage(ArrayList<String> messageQuery) {
+    private void roomShowMessage(List<String> messageQuery) {
         incomeRoomMessages = messageQuery;
 
         ChatActivity.this.runOnUiThread(new Runnable() {
@@ -335,25 +282,8 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
                 }
                 scrollDown();
                 incomeRoomMessages.clear();
-                incomeRoomMessages.trimToSize();
             }
         });
-    }
-
-    public void applyDialogMessags(List<QBCustomObject> messageList) {
-
-
-        for (QBCustomObject message : messageList) {
-
-            int userId = Integer.parseInt(message.getFields().get("author_id").toString());
-
-            if (userId == app.getQbUser().getId()) {
-                showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), true);
-            } else {
-                showMessage(message.getFields().get(GlobalConsts.MSG_TEXT).toString(), false);
-            }
-        }
-
     }
 
     private void scrollDown() {
@@ -366,25 +296,6 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         });
     }
 
-    private InvitationListener pInvitationListener = new InvitationListener() {
-        @Override
-        public void invitationReceived(Connection connection, String s, String s2, String s3, String s4, Message message) {
-
-        }
-    };
-
-    private PacketListener pParticipantListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-
-        }
-    };
-
-    @Override
-    public void messageListDownloaded(List<QBCustomObject> downloadedList) {
-        applyDialogMessags(downloadedList);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -392,54 +303,12 @@ public class ChatActivity extends Activity implements OnMessageListDownloaded, O
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    try {
-
-                        Toast.makeText(ChatActivity.this, getResources().getString(R.string.chat_activity_attach_info), Toast.LENGTH_LONG).show();
-                        topBar.swichProgressBarVisibility(View.VISIBLE);
-
-                        app.getQbm().setUploadListener(ChatActivity.this);
-                        Bitmap yourSelectedImage = app.getPicManager().decodeUri(imageReturnedIntent.getData());
-                        app.getQbm().uploadPic(app.getPicManager().convertBitmapToFile(yourSelectedImage), true);
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                    if (mChat instanceof SingleChat) {
+                        ((SingleChat) mChat).uploadAttach(imageReturnedIntent.getData());
                     }
                 }
         }
     }
 
-    @Override
-    public void uploadComplete(int uploafFileId, String picUrl) {
-        String serviceMessage = "<Attach file>#" + picUrl;
-        msgManager.sendSingleMessage(opponentUser.getId(), serviceMessage, dialogId);
-        showMessage(serviceMessage, true);
-        topBar.swichProgressBarVisibility(View.INVISIBLE);
-    }
 
-    @Override
-    public void incomeNewMessage(String messageBody) {
-        lastMsg = messageBody;
-        showMessage(lastMsg, false);
-
-    }
-
-    @Override
-    public void dialogCreate(int userId, String customObjectUid) {
-        dialogId = String.valueOf(userId);
-        dialogFreezingStatus = null;
-        msgManager.setDialogCreateListener(null);
-        if (lastMsg != null) {
-            showMessage(lastMsg, false);
-        }
-    }
-
-    @Override
-    public void incomeMessagePool(final ArrayList<String> messagesPool) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                roomShowMessage(messagesPool);
-            }
-        });
-    }
 }

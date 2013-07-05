@@ -16,30 +16,23 @@ import com.quickblox.chat_v2.adapters.RoomListAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.interfaces.OnRoomListDownloaded;
 import com.quickblox.chat_v2.utils.GlobalConsts;
-import com.quickblox.module.chat.QBChat;
-import com.quickblox.module.chat.listeners.RoomListener;
-import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.custom.model.QBCustomObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 11.04.13 Time: 9:58
  */
-public class RoomsActivity extends Activity implements RoomListener, OnRoomListDownloaded {
+public class RoomsActivity extends Activity implements OnRoomListDownloaded {
 
     private ListView roomListLv;
     private Button newRoomBtn;
     private RoomListAdapter roomListAdapter;
-    private RoomListAdapter.RoomViewHolder roomHolder;
     private TextView mEmptyRooms;
-
-    private QBChatRoom chatRoom;
     private String roomName;
-
     private ChatApplication app;
     private static final int REQUEST_NEW_ROOM = 0;
+
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -64,8 +57,10 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         newRoomBtn = (Button) findViewById(R.id.new_room_btn);
         newRoomBtn.setOnClickListener(newRoomBtnClickListener);
         mEmptyRooms = (TextView) findViewById(R.id.empty_rooms_label);
-        applyRoomList(app.getUserPresentRoomList());
+
+        roomListLv.setEmptyView(mEmptyRooms);
     }
+
 
     private View.OnClickListener newRoomBtnClickListener = new View.OnClickListener() {
         @Override
@@ -97,26 +92,12 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
         }
     }
 
-    private void applyRoomList(final List<QBCustomObject> roomList) {
+    private void applyRoomList(List<QBCustomObject> roomList) {
 
-        roomListAdapter = new RoomListAdapter(this, (ArrayList) roomList);
+        roomListAdapter = new RoomListAdapter(this, roomList);
         roomListLv.setAdapter(roomListAdapter);
 
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                roomListAdapter.notifyDataSetChanged();
-                if (((ArrayList) roomList).size() > 0) {
-                    roomListLv.setVisibility(View.VISIBLE);
-                    mEmptyRooms.setVisibility(View.INVISIBLE);
-                } else {
-                    roomListLv.setVisibility(View.INVISIBLE);
-                    mEmptyRooms.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
+        roomListAdapter.notifyDataSetChanged();
     }
 
     private OnItemClickListener itemClick = new OnItemClickListener() {
@@ -126,22 +107,15 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
 
             QBCustomObject co = (QBCustomObject) parent.getItemAtPosition(position);
             roomName = co.getFields().get(GlobalConsts.ROOM_NAME).toString();
-            QBChat.getInstance().joinRoom(roomName, app.getQbUser(), RoomsActivity.this);
 
-            roomHolder = ((RoomListAdapter.RoomViewHolder) v.getTag());
-            roomHolder.connectinRoomProgress.setVisibility(View.VISIBLE);
-
+            Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
+            i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
+            i.putExtra(GlobalConsts.ROOM_NAME, roomName);
+            RoomsActivity.this.startActivity(i);
         }
 
 
     };
-
-    private void saveRoomAndStartActivity() {
-        Intent i = new Intent(RoomsActivity.this, ChatActivity.class);
-        i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.ROOM_ACTIVITY);
-        i.putExtra(GlobalConsts.ROOM_NAME, roomName);
-        RoomsActivity.this.startActivity(i);
-    }
 
     @Override
     public void roomListDownloaded() {
@@ -150,23 +124,16 @@ public class RoomsActivity extends Activity implements RoomListener, OnRoomListD
             @Override
             public void run() {
                 applyRoomList(app.getUserPresentRoomList());
+                app.getMsgManager().setRoomListDownloadListener(null);
+
             }
         });
 
     }
 
     @Override
-    public void onCreatedRoom(QBChatRoom pRoom) {
-
-    }
-
-    @Override
-    public void onJoinedRoom(QBChatRoom pRoom) {
-        chatRoom = pRoom;
-        chatRoom.addMessageListener(app.getMsgManager());
-        app.setJoinedRoom(chatRoom);
-        saveRoomAndStartActivity();
-        roomHolder.connectinRoomProgress.setVisibility(View.INVISIBLE);
-
+    protected void onPause() {
+        super.onPause();
+        app.getMsgManager().setRoomListDownloadListener(null);
     }
 }

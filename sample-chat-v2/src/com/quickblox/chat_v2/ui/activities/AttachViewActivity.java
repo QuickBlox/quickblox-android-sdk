@@ -17,7 +17,7 @@ import com.quickblox.chat_v2.widget.TopBar;
 /**
  * Created by andrey on 06.06.13.
  */
-public class AttachWiewActivity extends Activity implements ImageLoadingListener {
+public class AttachViewActivity extends Activity implements ImageLoadingListener {
 
     private TopBar topBar;
     private ImageView content;

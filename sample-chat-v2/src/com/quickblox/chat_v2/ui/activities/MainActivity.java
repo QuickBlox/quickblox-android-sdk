@@ -64,12 +64,12 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     private void downloadStartUpInfo() {
-        app.getQbm().addUserProfileListener(MainActivity.this);
+        app.getQbm().addUserProfileListener(this);
         app.getMsgManager().downloadPersistentRoom();
         boolean isNeedLoadUsersFromQb = app.getRstManager().getContactListFromRoster();
         if (!isNeedLoadUsersFromQb) {
             switchProgressDialog(false);
-            app.getQbm().removeUserProfileListener(MainActivity.this);
+            app.getQbm().removeUserProfileListener(this);
         }
 
     }
@@ -89,7 +89,7 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     @Override
-    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+    public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
         if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_MAIN_ACTIVITY) {
             switchProgressDialog(false);
             app.getQbm().removeUserProfileListener(MainActivity.this);

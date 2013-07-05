@@ -5,5 +5,5 @@ import com.quickblox.module.users.model.QBUser;
 
 public interface OnUserProfileDownloaded {
 
-    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser);
+    public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser);
 }

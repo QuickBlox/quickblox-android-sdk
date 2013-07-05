@@ -1,6 +1,5 @@
 package com.quickblox.chat_v2.apis;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -47,6 +45,7 @@ public class QuickBloxManager {
     private int currentFileId;
 
     private Context mContext;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     public QuickBloxManager(Context context) {
         mUserProfileListener = new CopyOnWriteArrayList<OnUserProfileDownloaded>();
@@ -55,7 +54,7 @@ public class QuickBloxManager {
 
     }
 
-    public void getQbUsersFromCollection(final ArrayList<String> usersIds, ContextForDownloadUser pContextForDownloadUser) {
+    public void getQbUsersFromCollection(final List<String> usersIds, ContextForDownloadUser pContextForDownloadUser) {
         final ContextForDownloadUser contextForDownloadUser = pContextForDownloadUser;
         synchronized (contextForDownloadUser) {
             QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {
@@ -88,7 +87,7 @@ public class QuickBloxManager {
 
 
                     for (OnUserProfileDownloaded listener : mUserProfileListener) {
-                        listener.downloadComlete(null, contextForDownloadUser);
+                        listener.downloadComplete(null, contextForDownloadUser);
                     }
                 }
             }, pContextForDownloadUser);
@@ -123,7 +122,7 @@ public class QuickBloxManager {
         userToUpdate.setId(upadtedUser.getId());
         userToUpdate.setFileId(upadtedUser.getFileId());
 
-        ((Activity) mContext).runOnUiThread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 QBUsers.updateUser(userToUpdate, new QBCallbackImpl() {
@@ -184,7 +183,7 @@ public class QuickBloxManager {
 
     public synchronized void getSingleUserInfo(final int userId, final ContextForDownloadUser pContextForDownloadUser) {
 
-        ((Activity) mContext).runOnUiThread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 QBUsers.getUser(userId, new QBCallback() {
@@ -193,7 +192,7 @@ public class QuickBloxManager {
                     public void onComplete(Result result, Object context) {
                         ContextForDownloadUser contextForDownloadUser = (ContextForDownloadUser) context;
                         for (OnUserProfileDownloaded listeners : mUserProfileListener) {
-                            listeners.downloadComlete(((QBUserResult) result).getUser(), (ContextForDownloadUser) context);
+                            listeners.downloadComplete(((QBUserResult) result).getUser(), (ContextForDownloadUser) context);
                         }
                     }
 
@@ -225,8 +224,7 @@ public class QuickBloxManager {
     }
 
     public void createSingleCustomObject(final QBCustomObject pCustomObject) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 QBCustomObjects.createObject(pCustomObject, new QBCallback() {

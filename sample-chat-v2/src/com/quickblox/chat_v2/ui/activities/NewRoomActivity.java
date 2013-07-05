@@ -21,6 +21,7 @@ import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewRoomActivity extends ListActivity {
 
@@ -79,30 +80,31 @@ public class NewRoomActivity extends ListActivity {
 
         roomName = roomNameEditText.getText().toString();
 
+        final List<Integer> users = contactsAdapter.getCheckedUsers();
+
         QBChat.getInstance().createRoom(roomName, app.getQbUser(), true, false, new RoomListener() {
 
             @Override
             public void onCreatedRoom(QBChatRoom pRoom) {
                 chatRoom = pRoom;
+
                 chatRoom.addMessageListener(app.getMsgManager());
                 app.setJoinedRoom(chatRoom);
-
-                app.getInviteUserList().clear();
-                app.getInviteUserList().trimToSize();
-
-                app.getInviteUserList().add(String.valueOf(app.getQbUser().getId()));
-
+                chatRoom.addMembers(users);
+                pRoom.invite(users);
                 finishArctivityRecivedResult();
                 switchProgressDialog(false);
             }
 
             @Override
             public void onJoinedRoom(QBChatRoom pRoom) {
+
             }
         });
 
+        users.add(app.getQbUser().getId());
         app.getMsgManager().createRoom(roomName, sb.append(getResources().getString(R.string.quickblox_app_id)).append("_").append(roomName).append("@muc.quickblox.com").toString(),
-                app.getInviteUserList());
+                users);
         sb.setLength(0);
     }
 

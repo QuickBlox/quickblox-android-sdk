@@ -43,7 +43,7 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
             ChatApplication.getInstance().getContactsMap().remove(String.valueOf(de));
         }
         if (mOnContactRefreshListener != null) {
-            mOnContactRefreshListener.reFreshCurrentList();
+            mOnContactRefreshListener.onRefreshCurrentList();
         }
     }
 
@@ -92,7 +92,7 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
     }
 
     @Override
-    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+    public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
         if (friend != null && ContextForDownloadUser.DOWNLOAD_FOR_ROSTER == pContextForDownloadUser) {
             app.getContactsMap().put(String.valueOf(friend.getId()), friend);
         }

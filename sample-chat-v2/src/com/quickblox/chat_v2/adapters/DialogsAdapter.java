@@ -12,15 +12,13 @@ import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class DialogsAdapter extends ArrayAdapter<QBCustomObject> {
 
-    private ArrayList<QBCustomObject> mDialogList;
-
-    public DialogsAdapter(Context context, ArrayList<QBCustomObject> dialogList) {
+    public DialogsAdapter(Context context, List<QBCustomObject> dialogList) {
         super(context, 0, dialogList);
-        mDialogList = dialogList;
     }
 
     @Override
@@ -39,20 +37,28 @@ public class DialogsAdapter extends ArrayAdapter<QBCustomObject> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.dialogName.setText(getItem(position).getFields().get(GlobalConsts.ROOM_NAME).toString());
+        HashMap<String, Object> fields = getItem(position).getFields();
+
+        viewHolder.dialogName.setText(fields.get(GlobalConsts.ROOM_NAME).toString());
 
         viewHolder.container.setTag(position);
 
-        Object lastMsg = mDialogList.get(position).getFields().get(GlobalConsts.LAST_MSG);
+        Object msgObject = fields.get(GlobalConsts.LAST_MSG);
 
-        if (lastMsg != null) {
-            viewHolder.dialogLastMsg.setText(lastMsg.toString());
+        if (msgObject != null) {
+
+            String lastMsg = msgObject.toString();
+
+            if (lastMsg.length() > 13 && lastMsg.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+                lastMsg = GlobalConsts.ATTACH_TEXT_FOR_DIALOGS;
+            }
+
+            viewHolder.dialogLastMsg.setText(lastMsg);
         }
-
         return convertView;
     }
 
-    public static class ViewHolder {
+    private static class ViewHolder {
         ImageView userAvatar;
         TextView dialogName;
         TextView dialogLastMsg;

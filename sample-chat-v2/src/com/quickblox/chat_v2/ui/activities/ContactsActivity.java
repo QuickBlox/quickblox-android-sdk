@@ -4,10 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.ContactsAdapter;
@@ -16,21 +13,18 @@ import com.quickblox.chat_v2.interfaces.OnContactRefreshListener;
 import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
 import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.chat_v2.utils.GlobalConsts;
-import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactsActivity extends ListActivity implements OnUserProfileDownloaded, OnContactRefreshListener {
 
     private ChatApplication app;
 
-    private ArrayList<QBUser> contactsList;
+    private List<QBUser> contactsList;
 
-    private ListView contactsTable;
     private ContactsAdapter contactsAdapter;
-    private TextView mEmtyListLabel;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,63 +32,46 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         setContentView(R.layout.activity_contacts);
 
         app = ChatApplication.getInstance();
-        contactsTable = (ListView) findViewById(android.R.id.list);
-        mEmtyListLabel = (TextView) findViewById(R.id.emty_contactList);
-        contactsTable.setClickable(true);
 
-        contactsTable.setOnItemClickListener(onClicListener);
+        View textView = findViewById(android.R.id.empty);
+        getListView().setEmptyView(textView);
+        rebuildAdapterData();
     }
 
-    private OnItemClickListener onClicListener = new OnItemClickListener() {
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            Intent i = new Intent(ContactsActivity.this, ChatActivity.class);
-            int tmpId = 0;
-            String tmpDialogId = null;
-            QBUser qb = (QBUser) parent.getItemAtPosition(position);
+        QBUser user = (QBUser) l.getItemAtPosition(position);
 
-            i.putExtra(GlobalConsts.USER_ID, String.valueOf(qb.getId()));
-            tmpId = contactsList.get(position).getId();
+        int userId = user.getId();
 
-            for (QBCustomObject dialogs : new ArrayList<QBCustomObject>(app.getDialogMap().values())) {
-                if (Integer.parseInt(dialogs.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString()) == tmpId) {
-                    tmpDialogId = dialogs.getCustomObjectId();
-                }
 
-            }
-            i.putExtra(GlobalConsts.DIALOG_ID, tmpDialogId);
-            i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.CONTACTS_ACTIVITY);
+        String dialog = app.getDialogByUser(userId);
 
-            startActivity(i);
-        }
-    };
+        Intent i = new Intent(ContactsActivity.this, ChatActivity.class);
+        i.putExtra(GlobalConsts.USER_ID, String.valueOf(userId));
+        i.putExtra(GlobalConsts.DIALOG_ID, dialog);
+        i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.CONTACTS_ACTIVITY);
+
+        startActivity(i);
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        rebuildAdapterData();
+        refreshList();
     }
 
     private void rebuildAdapterData() {
         contactsList = new ArrayList<QBUser>(app.getContactsMap().values());
-        app.getQbm().addUserProfileListener(this);
-        app.getRstManager().setOnContactRefreshListener(this);
-
-        setCurrentListInAdapter(contactsList);
-
-        if (app.getContactsMap().isEmpty()) {
-            contactsTable.setVisibility(View.INVISIBLE);
-            mEmtyListLabel.setVisibility(View.VISIBLE);
-        } else {
-            contactsTable.setVisibility(View.VISIBLE);
-            mEmtyListLabel.setVisibility(View.INVISIBLE);
-        }
+        contactsAdapter = new ContactsAdapter(this, contactsList, false);
+        setListAdapter(contactsAdapter);
     }
 
 
     @Override
-    public void downloadComlete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
+    public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
 
         if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_CONTACTS) {
             this.runOnUiThread(new Runnable() {
@@ -107,23 +84,33 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
         }
     }
 
-    private void setCurrentListInAdapter(ArrayList<QBUser> pCurrentArrayList) {
-        contactsAdapter = new ContactsAdapter(ContactsActivity.this, pCurrentArrayList, false);
-        setListAdapter(contactsAdapter);
-    }
-
     @Override
-    public void reSetCurrentList() {
-
-    }
-
-    @Override
-    public void reFreshCurrentList() {
+    public void onRefreshCurrentList() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                rebuildAdapterData();
+                contactsAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        app.getQbm().addUserProfileListener(this);
+        app.getRstManager().setOnContactRefreshListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        app.getQbm().removeUserProfileListener(this);
+        app.getRstManager().setOnContactRefreshListener(null);
+    }
+
+    private void refreshList() {
+        contactsList.clear();
+        contactsList.addAll(app.getContactsMap().values());
+        contactsAdapter.notifyDataSetChanged();
     }
 }

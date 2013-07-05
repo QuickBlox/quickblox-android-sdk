@@ -1,6 +1,16 @@
 package com.quickblox.chat_v2.utils;
 
 public class GlobalConsts {
+
+    public static final String DIALOG_CREATED_ACTION = "com.quickblox.chat_v2.intent.action.DIALOG_CREATED";
+    public static final String INCOMING_MESSAGE_ACTION = "com.quickblox.chat_v2.intent.action.INCOMING_MESSAGE";
+    public static final String EXTRA_MESSAGE = "message";
+    public static final String DIALOG_REFRESHED_ACTION = "com.quickblox.chat_v2.intent.action.DIALOG_REFRESHED";
+
+    private GlobalConsts() {
+
+    }
+
     //  public static final long GCM_CLIENT_ID = 328124915270L;
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";

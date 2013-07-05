@@ -11,13 +11,13 @@ import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.module.custom.model.QBCustomObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RoomListAdapter extends ArrayAdapter<QBCustomObject> {
 
     private RoomViewHolder viewHolder;
 
-    public RoomListAdapter(Context context, ArrayList<QBCustomObject> roomList) {
+    public RoomListAdapter(Context context, List<QBCustomObject> roomList) {
         super(context, 0, roomList);
     }
 
