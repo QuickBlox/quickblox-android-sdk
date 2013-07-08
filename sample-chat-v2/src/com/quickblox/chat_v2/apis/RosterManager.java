@@ -94,7 +94,7 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
     @Override
     public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
         if (friend != null && ContextForDownloadUser.DOWNLOAD_FOR_ROSTER == pContextForDownloadUser) {
-            app.getContactsMap().put(String.valueOf(friend.getId()), friend);
+            app.getContactsMap().put(friend.getId(), friend);
         }
     }
 }

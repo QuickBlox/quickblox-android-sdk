@@ -2,6 +2,8 @@ package com.quickblox.chat_v2.ui.activities;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
@@ -25,6 +27,13 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
     private ChatApplication app;
     private ProgressDialog progress;
+
+    private BroadcastReceiver mDialogsRefresh = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context pContext, Intent pIntent) {
+
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,8 +84,6 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
     }
 
     public void switchProgressDialog(boolean enable) {
-
-
         if (enable) {
             progress = ProgressDialog.show(this, getResources().getString(R.string.app_name), getResources().getString(R.string.loading), true);
         } else {

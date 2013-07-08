@@ -138,7 +138,7 @@ public class MessageFacade implements OnPictureDownloadComplete, PacketListener 
     }
 
     public void createDialog(QBUser pUser, boolean b) {
-        mParts.createDialog(pUser, b);
+        mParts.createDialog(pUser);
     }
 
     public MessageListener getGlobalMessagesListener() {

@@ -111,7 +111,7 @@ public class DialogsActivity extends ListActivity {
     private void startChatActivity(String userId, String dialogId) {
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
-        intent.putExtra(GlobalConsts.USER_ID, userId);
+        intent.putExtra(GlobalConsts.USER_ID, Integer.parseInt(userId));
         intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
         startActivity(intent);
     }
