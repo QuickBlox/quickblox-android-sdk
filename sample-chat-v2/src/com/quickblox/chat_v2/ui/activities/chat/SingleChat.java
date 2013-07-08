@@ -20,7 +20,9 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by andrey on 05.07.13.
@@ -31,11 +33,11 @@ public class SingleChat implements Chat, OnFileUploadComplete {
 
     private UIChat mChat;
 
-    private String userId;
+    private int userId;
 
     private QBUser opponentUser;
 
-    private String dialogFreezingStatus;
+    private boolean dialogFreezingStatus;
 
     private MessageFacade msgManager;
 
@@ -43,13 +45,17 @@ public class SingleChat implements Chat, OnFileUploadComplete {
 
     private String lastMsg;
 
+    private Queue<String> messages = new LinkedList<String>();
 
     private BroadcastReceiver mainReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context pContext, Intent pIntent) {
             String action = pIntent.getAction();
             if (action.equalsIgnoreCase(GlobalConsts.DIALOG_CREATED_ACTION)) {
-                dialogCreated(pIntent.getIntExtra(GlobalConsts.OPPONENT_ID, 0));
+
+                String dialogId = pIntent.getStringExtra(GlobalConsts.DIALOG_ID);
+                dialogCreated(dialogId);
+
             } else if (action.equalsIgnoreCase(GlobalConsts.INCOMING_MESSAGE_ACTION)) {
                 String messageBody = pIntent.getStringExtra(GlobalConsts.EXTRA_MESSAGE);
                 lastMsg = messageBody;
@@ -65,8 +71,8 @@ public class SingleChat implements Chat, OnFileUploadComplete {
         @Override
         public void messageListDownloaded(List<QBCustomObject> downloadedList) {
             for (QBCustomObject customObject : downloadedList) {
-                int userId = Integer.parseInt(customObject.getFields().get("author_id").toString());
-                String message = customObject.getFields().get(GlobalConsts.MSG_TEXT).toString();
+                int userId = Integer.parseInt(customObject.getFields().get(GlobalConsts.AUTHOR_ID).toString());
+                String message = customObject.getFields().get(GlobalConsts.MESSAGE).toString();
                 mChat.showMessage(message, userId == app.getQbUser().getId());
             }
         }
@@ -79,14 +85,14 @@ public class SingleChat implements Chat, OnFileUploadComplete {
 
         msgManager = app.getMsgManager();
 
-        userId = mChat.getIntent().getStringExtra(GlobalConsts.USER_ID);
+        userId = mChat.getIntent().getIntExtra(GlobalConsts.USER_ID, 0);
 
         if (inContacts) {
 
             opponentUser = app.getContactsMap().get(userId);
-
-            if (app.getUserIdDialogIdMap().get(opponentUser.getId()) != null) {
-                dialogId = app.getUserIdDialogIdMap().get(opponentUser.getId()).getCustomObjectId();
+            QBCustomObject co = app.getUserIdDialogIdMap().get(userId);
+            if (co != null) {
+                dialogId = co.getCustomObjectId();
             }
         } else {
             dialogId = mChat.getIntent().getStringExtra(GlobalConsts.DIALOG_ID);
@@ -96,10 +102,7 @@ public class SingleChat implements Chat, OnFileUploadComplete {
         mChat.setTopBarFriendParams(opponentUser, app.getContactsMap().containsKey(userId));
         mChat.setTopBarParams(TopBar.CHAT_ACTIVITY, View.VISIBLE, true);
 
-        int intParseUserId = Integer.parseInt(userId);
-
-
-        msgManager.getDialogMessages(intParseUserId, dialogMessagesListDownloadedListener);
+        msgManager.getDialogMessages(userId, dialogMessagesListDownloadedListener);
 
         mChat.setBarTitle(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
 
@@ -109,13 +112,14 @@ public class SingleChat implements Chat, OnFileUploadComplete {
     public void sendMessage(String message) {
         lastMsg = message;
         //mChat.showMessage(lastMsg, true);
-        if (dialogId == null && dialogFreezingStatus == null) {
-            msgManager.createDialog(opponentUser, false);
-            dialogFreezingStatus = "processed";
+        if (dialogId == null && !dialogFreezingStatus) {
+            msgManager.createDialog(opponentUser, true);
+            dialogFreezingStatus = true;
+            messages.add(message);
+            return;
         }
 
         msgManager.sendSingleMessage(opponentUser.getId(), message, dialogId);
-
     }
 
     @Override
@@ -132,11 +136,13 @@ public class SingleChat implements Chat, OnFileUploadComplete {
         mChat.changeUploadState(false);
     }
 
-    public void dialogCreated(int userId) {
-        dialogId = String.valueOf(userId);
-        dialogFreezingStatus = null;
-        if (lastMsg != null) {
-            mChat.showMessage(lastMsg, true);
+    public void dialogCreated(String pDialogId) {
+
+        dialogId = pDialogId;
+
+        dialogFreezingStatus = false;
+        while (!messages.isEmpty()) {
+            msgManager.sendSingleMessage(opponentUser.getId(), messages.poll(), dialogId);
         }
     }
 

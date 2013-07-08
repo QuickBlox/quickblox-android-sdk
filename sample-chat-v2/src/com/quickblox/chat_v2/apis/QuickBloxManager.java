@@ -70,7 +70,7 @@ public class QuickBloxManager {
                         case DOWNLOAD_FOR_DIALOG:
                             if (app.getContactsMap() != null) {
                                 for (QBUser qu : usersResult.getUsers()) {
-                                    app.getDialogsUsersMap().put(String.valueOf(qu.getId()), qu);
+                                    app.getDialogsUsersMap().put(qu.getId(), qu);
                                 }
                             }
                             break;
@@ -78,7 +78,7 @@ public class QuickBloxManager {
                         case DOWNLOAD_FOR_CONTACTS:
                         case DOWNLOAD_FOR_MAIN_ACTIVITY:
                             for (QBUser contact : usersResult.getUsers()) {
-                                app.getContactsMap().put(String.valueOf(contact.getId()), contact);
+                                app.getContactsMap().put(contact.getId(), contact);
 
                             }
                             break;

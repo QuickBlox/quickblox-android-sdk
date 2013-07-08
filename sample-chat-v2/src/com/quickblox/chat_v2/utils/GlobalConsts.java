@@ -39,7 +39,7 @@ public class GlobalConsts {
     public static final String DIALOG_ID = "dialog_id";
     public static final String OPPONENT_ID = "opponent_id";
     public static final String AUTHOR_ID = "author_id";
-    public static final String MSG_TEXT = "message";
+    public static final String MESSAGE = "message";
     public static final String MESSAGES = "messages";
     public static final String ROOM_NAME = "name";
 

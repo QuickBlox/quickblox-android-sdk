@@ -1,11 +1,12 @@
 package com.quickblox.chat_v2.apis;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -97,7 +98,8 @@ public class PictureManager {
         ImageLoader.getInstance().init(configuration);
         imageLoader = ImageLoader.getInstance();
 
-        ((Activity) context).runOnUiThread(new Runnable() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 if (pImageLoadingListener == null) {

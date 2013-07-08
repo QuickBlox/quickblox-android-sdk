@@ -56,8 +56,8 @@ public class ChatApplication extends Application {
 
     private ArrayList<String> inviteUserList;
 
-    private HashMap<String, QBUser> dialogsUsersMap;
-    private HashMap<String, QBUser> contactsMap;
+    private HashMap<Integer, QBUser> dialogsUsersMap;
+    private HashMap<Integer, QBUser> contactsMap;
     private HashMap<Integer, QBCustomObject> userIdDialogIdMap;
     private HashMap<Integer, String> userNetStatusMap;
 
@@ -82,10 +82,10 @@ public class ChatApplication extends Application {
         picManager = new PictureManager(context);
         rstManager = new RosterManager(context);
 
-        contactsMap = new HashMap<String, QBUser>();
+        contactsMap = new HashMap<Integer, QBUser>();
 
         // map for user in contacts list (key - userID, values - QBUser)
-        dialogsUsersMap = new HashMap<String, QBUser>();
+        dialogsUsersMap = new HashMap<Integer, QBUser>();
         dialogMap = new HashMap<String, QBCustomObject>();
 
         userIdDialogIdMap = new HashMap<Integer, QBCustomObject>();
@@ -178,11 +178,11 @@ public class ChatApplication extends Application {
         return inviteUserList;
     }
 
-    public HashMap<String, QBUser> getDialogsUsersMap() {
+    public HashMap<Integer, QBUser> getDialogsUsersMap() {
         return dialogsUsersMap;
     }
 
-    public HashMap<String, QBUser> getContactsMap() {
+    public HashMap<Integer, QBUser> getContactsMap() {
         return contactsMap;
     }
 
@@ -223,18 +223,18 @@ public class ChatApplication extends Application {
     }
 
 
-    public String getDialogByUser(int userId) {
+    public String getDialogIdByUser(int userId) {
 
-        String dialog = null;
+        String dialogId = null;
 
         Collection<QBCustomObject> customObjects = getDialogMap().values();
         for (QBCustomObject dialogs : customObjects) {
             int dialogUser = Integer.parseInt(dialogs.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
             if (dialogUser == userId) {
-                dialog = dialogs.getCustomObjectId();
+                dialogId = dialogs.getCustomObjectId();
                 break;
             }
         }
-        return dialog;
+        return dialogId;
     }
 }

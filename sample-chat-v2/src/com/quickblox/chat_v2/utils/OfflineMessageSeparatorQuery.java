@@ -33,7 +33,7 @@ public class OfflineMessageSeparatorQuery {
 
         fields.put(GlobalConsts.AUTHOR_ID, authorId);
         fields.put(GlobalConsts.OPPONENT_ID, opponentId);
-        fields.put(GlobalConsts.MSG_TEXT, messageBody);
+        fields.put(GlobalConsts.MESSAGE, messageBody);
 
         custobj.setFields(fields);
 

@@ -32,7 +32,6 @@ import org.jivesoftware.smack.packet.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -69,14 +68,14 @@ public class SingleChatParts {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    QBCustomObject localResult = dialogReview(userFrom, app.getDialogMap());
+                    String localResult = app.getDialogIdByUser(userFrom);
 
                     if (localResult != null) {
 
                         if (message.getBody().length() > 13 && message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-                            updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult.getCustomObjectId());
+                            updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult);
                         } else {
-                            updateDialogLastMessage(message.getBody(), localResult.getCustomObjectId());
+                            updateDialogLastMessage(message.getBody(), localResult);
                         }
                     } else {
                         if (!mMessageStack.containsKey(userFrom)) {
@@ -94,7 +93,6 @@ public class SingleChatParts {
         @Override
         public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
             if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_MESSAGE_MANAGER) {
-                createDialog(friend, false);
             }
         }
     };
@@ -117,23 +115,21 @@ public class SingleChatParts {
             return;
         }
         HashMap<Integer, String> tmpMap = app.getUserNetStatusMap();
-        if ((tmpMap.get(userId) == null || !tmpMap.get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) && app.getContactsMap().containsKey(String.valueOf(userId))) {
 
-            sendPush(userId, app.getContactsMap().get(String.valueOf(userId)), messageBody);
+        if ((tmpMap.get(userId) == null || !tmpMap.get(userId).equals(GlobalConsts.PRESENCE_TYPE_AVAIABLE)) && app.getContactsMap().containsKey(userId)) {
+
+            sendPush(userId, app.getContactsMap().get(userId), messageBody);
 
             app.getUserNetStatusMap().put(userId, GlobalConsts.PRESENCE_TYPE_UNAVAIABLE);
         }
         QBChat.getInstance().sendMessage(userId, messageBody);
 
-
         if (messageBody.length() > 12 && messageBody.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
             updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, dialogId);
         } else {
-
-            omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
             updateDialogLastMessage(messageBody, dialogId);
         }
-
+        omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
 
     }
 
@@ -147,19 +143,18 @@ public class SingleChatParts {
         gs.sendPushNotifications(userId, sb.toString());
     }
 
-    public void createDialog(final QBUser qbuser, boolean isNeedExtraReview) {
+    public void createDialog(final QBUser qbuser) {
         final int opponentId = qbuser.getId();
 
-        if (isNeedExtraReview) {
-            QBCustomObject oldDialog = dialogReview(opponentId, app.getDialogMap());
-            if (oldDialog != null) {
+        String localDialog = app.getDialogIdByUser(opponentId);
+        if (localDialog != null) {
 
-                app.sendBroadcast(new Intent(GlobalConsts.DIALOG_CREATED_ACTION)
-                        .putExtra(GlobalConsts.OPPONENT_ID, opponentId)
-                        .putExtra(GlobalConsts.DIALOG_ID, oldDialog.getCustomObjectId()));
-                return;
-            }
+            app.sendBroadcast(new Intent(GlobalConsts.DIALOG_CREATED_ACTION)
+                    .putExtra(GlobalConsts.OPPONENT_ID, opponentId)
+                    .putExtra(GlobalConsts.DIALOG_ID, localDialog));
+            return;
         }
+
         QBCustomObject co = new QBCustomObject();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(GlobalConsts.RECEPIENT_ID_FIELD, opponentId);
@@ -181,7 +176,7 @@ public class SingleChatParts {
                     ;
                     String dialogId = customObject.getCustomObjectId();
                     app.getDialogMap().put(dialogId, customObject);
-                    app.getDialogsUsersMap().put(String.valueOf(opponentId), qbuser);
+                    app.getDialogsUsersMap().put(opponentId, qbuser);
                     app.getUserIdDialogIdMap().put(opponentId, customObject);
 
                     app.sendBroadcast(new Intent(GlobalConsts.DIALOG_CREATED_ACTION)
@@ -283,16 +278,6 @@ public class SingleChatParts {
         });
     }
 
-
-    private QBCustomObject dialogReview(int opponentId, Map<String, QBCustomObject> pObjectMap) {
-        for (QBCustomObject dialog : pObjectMap.values()) {
-            HashMap<String, Object> test = dialog.getFields();
-            if (Integer.parseInt((String) test.get(GlobalConsts.RECEPIENT_ID_FIELD)) == opponentId) {
-                return dialog;
-            }
-        }
-        return null;
-    }
 
     private void notifyRefreshDialogs() {
         app.sendBroadcast(new Intent(GlobalConsts.DIALOG_REFRESHED_ACTION));

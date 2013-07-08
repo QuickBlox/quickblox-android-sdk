@@ -172,7 +172,7 @@ public class ChatActivity extends Activity implements UIChat {
         meLabel.setText(app.getQbUser().getFullName());
     }
 
-    public OnClickListener onSendClick = new OnClickListener() {
+    private OnClickListener onSendClick = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -226,13 +226,11 @@ public class ChatActivity extends Activity implements UIChat {
             userAttach.setBackgroundResource(bgRes);
             userAttach.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_profile_default_icon));
             userAttach.setOnClickListener(attachViewListener);
+
             attachViewListener.setPictureUrl(parts[1]);
-
-
             app.getPicManager().downloadPicAndDisplay(parts[1], userAttach, null);
-
-
             isAttach = true;
+
         } else {
             messageText = new TextView(ChatActivity.this);
             messageText.setTextColor(Color.BLACK);

@@ -2,10 +2,7 @@ package com.quickblox.chat_v2.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,8 +16,6 @@ import android.widget.Toast;
 import com.quickblox.chat_v2.R;
 import com.quickblox.chat_v2.adapters.NewDialogAdapter;
 import com.quickblox.chat_v2.core.ChatApplication;
-import com.quickblox.chat_v2.interfaces.OnUserProfileDownloaded;
-import com.quickblox.chat_v2.utils.ContextForDownloadUser;
 import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.chat_v2.widget.TopBar;
 import com.quickblox.core.QBCallbackImpl;
@@ -35,7 +30,7 @@ import java.util.ArrayList;
  * Created with IntelliJ IDEA. User: Andrew Dmitrenko Date: 4/11/13 Time: 5:07
  * PM
  */
-public class NewDialogActivity extends Activity implements AdapterView.OnItemClickListener, OnUserProfileDownloaded {
+public class NewDialogActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private TopBar topBar;
     private ListView contactListView;
@@ -47,19 +42,7 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
     private ProgressDialog progress;
 
     private ChatApplication app;
-    private String createdDialogId;
-    private int tUserId;
 
-
-    private BroadcastReceiver newDialogCreatedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context pContext, Intent pIntent) {
-            createdDialogId = pIntent.getStringExtra(GlobalConsts.DIALOG_ID);
-            tUserId = pIntent.getIntExtra(GlobalConsts.OPPONENT_ID, 0);
-            app.getQbm().addUserProfileListener(NewDialogActivity.this);
-            app.getQbm().getSingleUserInfo(tUserId, ContextForDownloadUser.DOWNLOAD_FOR_DIALOG);
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,19 +50,6 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         app = ChatApplication.getInstance();
         setContentView(R.layout.new_dialog_layout);
         initViews();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerReceiver(newDialogCreatedReceiver,
-                new IntentFilter(GlobalConsts.DIALOG_CREATED_ACTION));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(newDialogCreatedReceiver);
     }
 
     private void initViews() {
@@ -127,29 +97,15 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         QBUser user = (QBUser) adapterView.getItemAtPosition(i);
-        app.getMsgManager().createDialog(user, true);
-        switchProgressDialog(true, NewDialogActivity.this.getResources().getString(R.string.new_dialog_activity_create_dialog));
+        app.getDialogsUsersMap().put(user.getId(), user);
+        finishActivityReceivedResult(user.getId());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        app.getQbm().removeUserProfileListener(this);
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         setResult(RESULT_CANCELED);
-    }
-
-    @Override
-    public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
-        if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_DIALOG) {
-            app.getDialogsUsersMap().put(String.valueOf(friend.getId()), friend);
-            finishActivityReceivedResult(friend.getId(), createdDialogId);
-        }
-        app.getQbm().removeUserProfileListener(this);
     }
 
     public void switchProgressDialog(boolean enable, String progressText) {
@@ -163,11 +119,10 @@ public class NewDialogActivity extends Activity implements AdapterView.OnItemCli
         }
     }
 
-    private void finishActivityReceivedResult(int userId, String dialogId) {
-        switchProgressDialog(false, new String());
+    private void finishActivityReceivedResult(int userId) {
+        switchProgressDialog(false, "");
         Intent intent = new Intent();
-        intent.putExtra(GlobalConsts.USER_ID, String.valueOf(userId));
-        intent.putExtra(GlobalConsts.DIALOG_ID, dialogId);
+        intent.putExtra(GlobalConsts.USER_ID, userId);
         intent.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.DIALOG_ACTIVITY);
         setResult(RESULT_OK, intent);
         finish();

@@ -45,11 +45,10 @@ public class ContactsActivity extends ListActivity implements OnUserProfileDownl
 
         int userId = user.getId();
 
-
-        String dialog = app.getDialogByUser(userId);
+        String dialog = app.getDialogIdByUser(userId);
 
         Intent i = new Intent(ContactsActivity.this, ChatActivity.class);
-        i.putExtra(GlobalConsts.USER_ID, String.valueOf(userId));
+        i.putExtra(GlobalConsts.USER_ID, userId);
         i.putExtra(GlobalConsts.DIALOG_ID, dialog);
         i.putExtra(GlobalConsts.PREVIOUS_ACTIVITY, GlobalConsts.CONTACTS_ACTIVITY);
 
