@@ -56,6 +56,7 @@ public class DialogsActivity extends ListActivity {
     public void onResume() {
         super.onResume();
         app.getMsgManager().getDialogs(true);
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(GlobalConsts.DIALOG_CREATED_ACTION);
         intentFilter.addAction(GlobalConsts.DIALOG_REFRESHED_ACTION);

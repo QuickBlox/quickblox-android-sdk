@@ -40,4 +40,22 @@ public final class GCMHelper {
     public static void unregister(Activity activity) {
         GCMRegistrar.unregister(activity);
     }
+
+    public enum Modes {
+        mode1("Mode1"),
+        mode2("Mode2"),
+        mode3("Mode3");
+
+        private final String name;
+
+        private Modes(String s) {
+            name = s;
+        }
+
+        public String getValue() {
+            return name;
+        }
+
+    }
+
 }
