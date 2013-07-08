@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
@@ -24,9 +25,9 @@ public class SnippetsCustomObjects extends Snippets {
 
     // Define custom object model in QB Admin Panel
     // http://image.quickblox.com/3f71573f1fd8b23a1e375b904a80.injoit.png
-    String className = "hero";
-    String fieldHealth = "health";
-    String fieldPower = "power";
+    String className = "SuperSample";
+    String fieldHealth = "rating";
+    String fieldPower = "text";
 
     public SnippetsCustomObjects(Context context) {
         super(context);
@@ -65,7 +66,7 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject customObject = new QBCustomObject(className);
             customObject.put(fieldHealth, 99);
-            customObject.put(fieldPower, 123.45);
+            customObject.put(fieldPower, "android");
             customObject.setParentId("50d9bf2d535c12344701c43a");
 
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
@@ -76,7 +77,7 @@ public class SnippetsCustomObjects extends Snippets {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
 
-                        System.out.println(">>> custom object: " + newCustomObject);
+                        System.out.println(">>> custom object fields: " + newCustomObject.getFields().keySet().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -89,13 +90,11 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
 
-            ArrayList<String> coIDs = new ArrayList<String>();
-            coIDs.add("50e67e6e535c121c66004c74");
-            coIDs.add("50e67e6d535c127f66004f47");
-            coIDs.add("50e67e6b535c121c66004c72");
-            coIDs.add("50e59f81535c121c660015fd");
+            StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
+            coIDs.add("51d5a979efa357c7fa000006");
+            coIDs.add("51d5d82aefa357ea2800000b");
 
-            QBCustomObjects.getObjectsByIdsTask(className, coIDs, new QBCallbackImpl() {
+            QBCustomObjects.getObjectsByIds(className, coIDs, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -165,7 +164,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjectById = new Snippet("get object") {
         @Override
         public void execute() {
-            QBCustomObject customObject = new QBCustomObject(className, "50e3f8c7535c126073000d52");
+            QBCustomObject customObject = new QBCustomObject(className, "51d5a979efa357c7fa000006");
 
             QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -186,7 +185,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
-            QBCustomObject customObject = new QBCustomObject(className, "af3514342afbbb3555");
+            QBCustomObject customObject = new QBCustomObject(className, "51db14adefa3575e6400000a");
 
             QBCustomObjects.deleteObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -208,9 +207,9 @@ public class SnippetsCustomObjects extends Snippets {
             co.setClassName(className);
             HashMap<String, Object> fields = new HashMap<String, Object>();
             fields.put(fieldPower, 1);
-            fields.put(fieldHealth, 10);
+            fields.put(fieldHealth, "android nes");
             co.setFields(fields);
-            co.setCustomObjectId("50e3f85f535c123376000d31");
+            co.setCustomObjectId("51db14adefa3575e6400000a");
 
             QBCustomObjects.updateObject(co, new QBCallbackImpl() {
                 @Override
@@ -218,8 +217,8 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
 
-                        System.out.println(">>> updatedAt: " + updateResult.getCustomObject().getUpdatedAt());
-                        System.out.println(">>> createdAt: " + updateResult.getCustomObject().getCreatedAt());
+                        System.out.println(">>> fields keys: " + updateResult.getCustomObject().getFields().keySet().toString());
+                        System.out.println(">>> values keys: " + updateResult.getCustomObject().getFields().values().toString());
 
                         System.out.println(">>> co : " + updateResult.getCustomObject().toString());
                     } else {
