@@ -232,6 +232,7 @@ public class ChatActivity extends Activity implements UIChat {
             isAttach = true;
 
         } else {
+
             messageText = new TextView(ChatActivity.this);
             messageText.setTextColor(Color.BLACK);
             messageText.setText(message);

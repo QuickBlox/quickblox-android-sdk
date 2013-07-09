@@ -32,7 +32,7 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
 
     private ChatApplication app;
     private QBUser friend;
-    private String friendId;
+    private int friendId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,11 +48,11 @@ public class UserProfileActivity extends Activity implements OnPictureDownloadCo
 
         app = ChatApplication.getInstance();
         app.getQbm().setPictureDownloadComplete(this);
-        friendId = getIntent().getStringExtra(GlobalConsts.FRIEND_ID);
+        friendId = getIntent().getIntExtra(GlobalConsts.FRIEND_ID, 0);
 
         userpic = (ImageView) findViewById(R.id.profile_userpic);
         username = (TextView) findViewById(R.id.chat_dialog_view_profile);
-        username.setText(friendId);
+        username.setText(String.valueOf(friendId));
 
         getUserPicture();
     }

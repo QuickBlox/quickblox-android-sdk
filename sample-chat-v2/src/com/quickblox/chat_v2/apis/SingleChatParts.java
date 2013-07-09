@@ -1,7 +1,8 @@
 package com.quickblox.chat_v2.apis;
 
 import android.content.Intent;
-import android.media.Ringtone;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,8 @@ public class SingleChatParts {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     private ConcurrentMap<Integer, String> mMessageStack = new ConcurrentHashMap<Integer, String>();
+
+    private MediaPlayer mediaPlayer = new MediaPlayer();
 
     private MessageListener mMessageListener = new MessageListener() {
 
@@ -93,6 +97,7 @@ public class SingleChatParts {
         @Override
         public void downloadComplete(QBUser friend, ContextForDownloadUser pContextForDownloadUser) {
             if (pContextForDownloadUser == ContextForDownloadUser.DOWNLOAD_FOR_MESSAGE_MANAGER) {
+                createDialog(friend);
             }
         }
     };
@@ -105,6 +110,7 @@ public class SingleChatParts {
     private void startDialogCreate(int pAuthorMessageId) {
         app.getQbm().addUserProfileListener(mOnUserProfileDownloaded);
         app.getQbm().getSingleUserInfo(pAuthorMessageId, ContextForDownloadUser.DOWNLOAD_FOR_MESSAGE_MANAGER);
+
 
     }
 
@@ -285,9 +291,22 @@ public class SingleChatParts {
 
     private void configureAndPlaySoundNotification() {
 
+        if (mediaPlayer.isPlaying()) {
+            return;
+        }
+
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Ringtone r = RingtoneManager.getRingtone(app, notification);
-        r.play();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
+
+        try {
+            mediaPlayer.setDataSource(app, notification);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public MessageListener getMessageListener() {
