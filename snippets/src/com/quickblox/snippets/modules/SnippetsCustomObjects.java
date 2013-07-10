@@ -164,7 +164,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjectById = new Snippet("get object") {
         @Override
         public void execute() {
-            QBCustomObject customObject = new QBCustomObject(className, "51d5a979efa357c7fa000006");
+            QBCustomObject customObject = new QBCustomObject(className, "51dc2120efa357546600000b");
 
             QBCustomObjects.getObject(customObject, new QBCallbackImpl() {
                 @Override

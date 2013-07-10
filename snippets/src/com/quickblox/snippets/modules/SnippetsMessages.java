@@ -156,8 +156,8 @@ public class SnippetsMessages extends Snippets {
 
             // recipient
             StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(53779);
-            userIds.add(960);
+            userIds.add(3055);
+//            userIds.add(960);
 
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);
@@ -297,7 +297,7 @@ public class SnippetsMessages extends Snippets {
                 deviceId = "UniversalDevice";
             }
 
-            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
+            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.PRODUCTION, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {

@@ -47,7 +47,7 @@ public class SnippetsAuth extends Snippets {
         @Override
         public void execute() {
 
-            QBAuth.createSession("ddddddddddd", "ddddddddddd", new QBCallbackImpl() {
+            QBAuth.createSession("AndroidProd", "AndroidProd", new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
