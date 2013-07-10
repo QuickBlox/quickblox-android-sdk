@@ -12,7 +12,6 @@ import com.quickblox.module.custom.model.QBPermissionsLevel;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectPermissionResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
-import com.quickblox.module.custom.result.QBCustomObjectTaskResult;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
@@ -102,14 +101,14 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
 
             StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
-            coIDs.add("51d5a979efa357c7fa000006");
-            coIDs.add("51d5d82aefa357ea2800000b");
+            coIDs.add("51dd5d98efa357bc9d000006");
+            coIDs.add("51dd4fa9efa3573864000051");
 
             QBCustomObjects.getObjectsByIds(className, coIDs, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        QBCustomObjectTaskResult taskResult = (QBCustomObjectTaskResult) result;
+                        QBCustomObjectLimitedResult taskResult = (QBCustomObjectLimitedResult) result;
 
                         System.out.format(">>> custom objects: " + taskResult.getCustomObjects().toString());
                     }
