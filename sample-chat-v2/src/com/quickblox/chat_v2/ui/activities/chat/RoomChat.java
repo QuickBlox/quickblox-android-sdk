@@ -79,6 +79,19 @@ public class RoomChat implements OnNewRoomMessageIncome, Chat {
         }
     }
 
+    public void sendMessage(String pMessage, boolean pIsDelivered, boolean pIsComposed) {
+        try {
+            if (chatRoom != null) {
+                chatRoom.sendMessage(pMessage, pIsDelivered, pIsComposed);
+            } else {
+                Toast.makeText(mChat.getContext(), R.string.room_join_fall, Toast.LENGTH_LONG).show();
+            }
+        } catch (XMPPException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Override
     public void release() {
         app.getMsgManager().downloadPersistentRoom();

@@ -80,7 +80,7 @@ public class TopBar extends RelativeLayout {
                 switch (which) {
                     case 0:
                         Intent intent = new Intent(getContext(), UserProfileActivity.class);
-                        intent.putExtra(GlobalConsts.FRIEND_ID, String.valueOf(friend.getId()));
+                        intent.putExtra(GlobalConsts.FRIEND_ID, friend.getId());
                         getContext().startActivity(intent);
                         break;
 
