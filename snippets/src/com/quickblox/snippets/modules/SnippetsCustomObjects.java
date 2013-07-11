@@ -74,10 +74,20 @@ public class SnippetsCustomObjects extends Snippets {
 //            customObject.put(fieldPower, "android");
 //            customObject.setParentId("50d9bf2d535c12344701c43a");
             QBPermissions qbPermissions = new QBPermissions();
-            qbPermissions.setReadPermission(QBPermissionsLevel.OPEN);
-            qbPermissions.setUpdatePermission(QBPermissionsLevel.OPEN);
+//            qbPermissions.setReadPermission(QBPermissionsLevel.OPEN);
+//            qbPermissions.setUpdatePermission(QBPermissionsLevel.OPEN);
+
+            ArrayList<String> usersIds = new ArrayList<String>();
+            usersIds.add("1234");
+            usersIds.add("3047");
+            qbPermissions.setReadPermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, usersIds);
+            ArrayList<String> groups = new ArrayList<String>();
+            groups.add("user1");
+            groups.add("user");
+            qbPermissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, groups);
             qbPermissions.setDeletePermission(QBPermissionsLevel.OPEN);
             customObject.setPermission(qbPermissions);
+
 
             QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
                 @Override
@@ -86,8 +96,9 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
+                        System.out.println(">>> custom object fields: " + newCustomObject.getFields().toString());
+                        System.out.println(">>> custom object permissions : " + newCustomObject.getPermission().toString());
 
-                        System.out.println(">>> custom object fields: " + newCustomObject.getFields().keySet().toString());
                     } else {
                         handleErrors(result);
                     }
