@@ -237,9 +237,9 @@ public class SnippetsCustomObjects extends Snippets {
 //            fields.put(fieldHealth, "android nes");
 //            co.setFields(fields);
 
-            co.setCustomObjectId("51dd2b65efa357cf59000029");
+            co.setCustomObjectId("51dd8a60efa3577520000007");
             QBPermissions qbPermissions = new QBPermissions();
-            qbPermissions.setReadPermission(QBPermissionsLevel.OPEN);
+            qbPermissions.setReadPermission(QBPermissionsLevel.OPEN_FOR_GROUPS);
             qbPermissions.setUpdatePermission(QBPermissionsLevel.OPEN);
             qbPermissions.setDeletePermission(QBPermissionsLevel.OPEN);
             co.setPermission(qbPermissions);
@@ -252,6 +252,10 @@ public class SnippetsCustomObjects extends Snippets {
 
                         System.out.println(">>> fields keys: " + updateResult.getCustomObject().getFields().keySet().toString());
                         System.out.println(">>> values keys: " + updateResult.getCustomObject().getFields().values().toString());
+
+                        System.out.println(">>> values keys: " + updateResult.getCustomObject().getPermission().toString());
+
+
 
                         System.out.println(">>> co : " + updateResult.getCustomObject().toString());
                     } else {
