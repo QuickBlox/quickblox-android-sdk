@@ -4,7 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.quickblox.chat_v2.apis.FaceBookManager;
 import com.quickblox.chat_v2.apis.MessageFacade;
@@ -68,6 +72,10 @@ public class ChatApplication extends Application {
     public void onCreate() {
         super.onCreate();
         SmackAndroid.init(this);
+        ImageLoaderConfiguration configurationImageLoader = new ImageLoaderConfiguration.Builder(this).threadPriority(Thread.NORM_PRIORITY - 2).memoryCacheSize(2 * 1024 * 1024)
+                .denyCacheImageMultipleSizesInMemory().discCacheFileNameGenerator(new Md5FileNameGenerator()).tasksProcessingOrder(QueueProcessingType.LIFO).build();
+
+        ImageLoader.getInstance().init(configurationImageLoader);
     }
 
     @Override

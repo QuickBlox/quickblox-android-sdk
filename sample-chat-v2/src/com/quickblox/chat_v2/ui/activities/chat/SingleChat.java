@@ -124,7 +124,6 @@ public class SingleChat implements Chat, OnFileUploadComplete {
 
     @Override
     public void release() {
-        msgManager.updateDialogLastMessage(lastMsg, dialogId);
     }
 
 

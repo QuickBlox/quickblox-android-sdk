@@ -40,7 +40,7 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
     public void entriesDeleted(Collection<Integer> deletedEntriesIds) {
 
         for (Integer de : deletedEntriesIds) {
-            ChatApplication.getInstance().getContactsMap().remove(String.valueOf(de));
+            ChatApplication.getInstance().getContactsMap().remove(de);
         }
         if (mOnContactRefreshListener != null) {
             mOnContactRefreshListener.onRefreshCurrentList();

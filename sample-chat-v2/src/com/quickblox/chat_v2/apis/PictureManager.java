@@ -5,15 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.ImageView;
-
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,11 +17,10 @@ public class PictureManager {
 
     private Context context;
     private ImageLoader imageLoader;
-    private String targetUrl;
-    private ImageView targetView;
 
     public PictureManager(Context context) {
         this.context = context;
+        imageLoader = ImageLoader.getInstance();
     }
 
     public Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
@@ -87,27 +79,8 @@ public class PictureManager {
         return f;
     }
 
-    public void downloadPicAndDisplay(String url, ImageView targetImageView, final ImageLoadingListener pImageLoadingListener) {
-        targetUrl = url;
-        targetView = targetImageView;
+    public void downloadPicAndDisplay(String url, ImageView targetImageView) {
 
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(context).threadPriority(Thread.NORM_PRIORITY - 2)
-                .memoryCacheSize(2 * 1024 * 1024).denyCacheImageMultipleSizesInMemory().discCacheFileNameGenerator(new Md5FileNameGenerator())
-                .tasksProcessingOrder(QueueProcessingType.LIFO).build();
-
-        ImageLoader.getInstance().init(configuration);
-        imageLoader = ImageLoader.getInstance();
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (pImageLoadingListener == null) {
-                    imageLoader.displayImage(targetUrl, targetView);
-                } else {
-                    imageLoader.displayImage(targetUrl, targetView, pImageLoadingListener);
-                }
-            }
-        });
+        imageLoader.displayImage(url, targetImageView);
     }
 }

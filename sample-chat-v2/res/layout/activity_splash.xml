@@ -39,12 +39,12 @@
 
     <ImageButton
             android:id="@+id/splash_facebook_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:src="@drawable/facebook_login"
-            android:scaleType="center"
-            android:clickable="false"/>
+            android:scaleType="fitXY"/>
+
 
 </RelativeLayout>

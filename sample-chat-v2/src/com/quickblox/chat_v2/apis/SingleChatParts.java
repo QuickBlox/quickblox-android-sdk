@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
+import android.util.Log;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.chat_v2.gcm.GCMSender;
 import com.quickblox.chat_v2.interfaces.OnMessageListDownloaded;
@@ -69,18 +70,13 @@ public class SingleChatParts {
 
             omsq.addNewQueryElement(userFrom, message.getBody(), userFrom);
 
-            handler.post(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     String localResult = app.getDialogIdByUser(userFrom);
 
                     if (localResult != null) {
-
-                        if (message.getBody().length() > 13 && message.getBody().substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-                            updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, localResult);
-                        } else {
-                            updateDialogLastMessage(message.getBody(), localResult);
-                        }
+                          updateDialogLastMessage(message.getBody(), localResult);
                     } else {
                         if (!mMessageStack.containsKey(userFrom)) {
                             startDialogCreate(userFrom);
@@ -89,7 +85,7 @@ public class SingleChatParts {
                     }
                     configureAndPlaySoundNotification();
                 }
-            });
+            }, 2000);
         }
     };
 
@@ -130,11 +126,8 @@ public class SingleChatParts {
         }
         QBChat.getInstance().sendMessage(userId, messageBody);
 
-        if (messageBody.length() > 12 && messageBody.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
-            updateDialogLastMessage(GlobalConsts.ATTACH_TEXT_FOR_DIALOGS, dialogId);
-        } else {
-            updateDialogLastMessage(messageBody, dialogId);
-        }
+        updateDialogLastMessage(messageBody, dialogId);
+
         omsq.addNewQueryElement(userId, messageBody, app.getQbUser().getId());
 
     }
@@ -266,7 +259,14 @@ public class SingleChatParts {
         });
     }
 
-    public void updateDialogLastMessage(final String lastMsg, final String dialogId) {
+    public void updateDialogLastMessage(String lastMsg, final String dialogId) {
+
+        Log.e("Update dialog message", "update ="+lastMsg);
+
+        if (lastMsg.length() > 12 && lastMsg.substring(0, 13).equals(GlobalConsts.ATTACH_INDICATOR)) {
+            lastMsg = GlobalConsts.ATTACH_TEXT_FOR_DIALOGS;
+        }
+        final String lastMessage = lastMsg;
         final QBCustomObject co = new QBCustomObject();
         co.setClassName(GlobalConsts.DIALOGS);
         HashMap<String, Object> fields = new HashMap<String, Object>();
@@ -278,7 +278,7 @@ public class SingleChatParts {
             public void onComplete(Result result) {
                 notifyRefreshDialogs();
                 if (app.getDialogMap().containsKey(dialogId)) {
-                    app.getDialogMap().get(dialogId).getFields().put(GlobalConsts.LAST_MSG, lastMsg);
+                    app.getDialogMap().get(dialogId).getFields().put(GlobalConsts.LAST_MSG, lastMessage);
                 }
             }
         });

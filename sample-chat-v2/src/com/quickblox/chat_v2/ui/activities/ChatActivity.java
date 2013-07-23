@@ -228,7 +228,7 @@ public class ChatActivity extends Activity implements UIChat {
             userAttach.setOnClickListener(attachViewListener);
 
             attachViewListener.setPictureUrl(parts[1]);
-            app.getPicManager().downloadPicAndDisplay(parts[1], userAttach, null);
+            app.getPicManager().downloadPicAndDisplay(parts[1], userAttach);
             isAttach = true;
 
         } else {

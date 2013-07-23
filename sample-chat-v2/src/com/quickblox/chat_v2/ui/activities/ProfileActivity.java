@@ -170,7 +170,7 @@ public class ProfileActivity extends Activity implements OnPictureDownloadComple
         }
 
         if (tUser != null && tUser.getWebsite() != null) {
-            app.getPicManager().downloadPicAndDisplay(tUser.getWebsite(), userpic, null);
+            app.getPicManager().downloadPicAndDisplay(tUser.getWebsite(), userpic);
         }
 
     }
