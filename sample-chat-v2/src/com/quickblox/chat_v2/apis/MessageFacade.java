@@ -13,6 +13,7 @@ import com.quickblox.chat_v2.utils.GlobalConsts;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
+import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
@@ -141,7 +142,7 @@ public class MessageFacade implements OnPictureDownloadComplete, PacketListener 
         mParts.createDialog(pUser);
     }
 
-    public MessageListener getGlobalMessagesListener() {
+    public ChatMessageListener getGlobalMessagesListener() {
         return mParts.getMessageListener();
     }
 

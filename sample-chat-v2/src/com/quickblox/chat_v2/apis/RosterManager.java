@@ -15,6 +15,8 @@ import org.jivesoftware.smack.packet.Presence;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RosterManager implements QBRosterListener, OnUserProfileDownloaded {
 
@@ -62,7 +64,15 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                QBChat.getInstance().startAutoSendPresence(30);
+//                QBChat.getInstance().startAutoSendPresence(30);
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        QBChat.getInstance().sendPresence();
+                    }
+                }, 0, 30000);
             }
         });
     }
@@ -70,11 +80,11 @@ public class RosterManager implements QBRosterListener, OnUserProfileDownloaded 
 
     public boolean getContactListFromRoster() {
 
-        ArrayList<String> userIds = new ArrayList<String>();
+        ArrayList<Integer> userIds = new ArrayList<Integer>();
         if (app.getQbRoster().getUsersId() != null) {
             for (Integer in : app.getQbRoster().getUsersId()) {
                 if (in != -1) {
-                    userIds.add(String.valueOf(in));
+                    userIds.add(in);
                 }
             }
             if (userIds.isEmpty()) {

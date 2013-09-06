@@ -20,6 +20,7 @@ import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
@@ -53,10 +54,10 @@ public class SingleChatParts {
 
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
-    private MessageListener mMessageListener = new MessageListener() {
+    private ChatMessageListener mMessageListener = new ChatMessageListener() {
 
         @Override
-        public void processMessage(Chat pChat, final Message message) {
+        public void processMessage(final Message message) {
             if (message.getBody() == null) {
                 return;
             }
@@ -86,6 +87,11 @@ public class SingleChatParts {
                     configureAndPlaySoundNotification();
                 }
             }, 2000);
+        }
+
+        @Override
+        public boolean accept(Message.Type type) {
+            return false;
         }
     };
 
@@ -215,13 +221,13 @@ public class SingleChatParts {
                         if (result.isSuccess()) {
                             QBCustomObjectLimitedResult limitedResult = (QBCustomObjectLimitedResult) result;
 
-                            List<String> userIds = new ArrayList<String>();
+                            List<Integer> userIds = new ArrayList<Integer>();
 
                             for (QBCustomObject customObject : limitedResult.getCustomObjects()) {
 
-                                String recepientId = customObject.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString();
+                                Integer recepientId = Integer.parseInt(customObject.getFields().get(GlobalConsts.RECEPIENT_ID_FIELD).toString());
 
-                                app.getUserIdDialogIdMap().put(Integer.parseInt(recepientId), customObject);
+                                app.getUserIdDialogIdMap().put(recepientId, customObject);
                                 app.getDialogMap().put(customObject.getCustomObjectId(), customObject);
                                 if (isNeedDownloadUsers) {
                                     if (!app.getDialogsUsersMap().containsKey(recepientId)) {
@@ -309,7 +315,7 @@ public class SingleChatParts {
 
     }
 
-    public MessageListener getMessageListener() {
+    public ChatMessageListener getMessageListener() {
         return mMessageListener;
     }
 }

@@ -54,7 +54,7 @@ public class QuickBloxManager {
 
     }
 
-    public void getQbUsersFromCollection(final List<String> usersIds, ContextForDownloadUser pContextForDownloadUser) {
+    public void getQbUsersFromCollection(final List<Integer> usersIds, ContextForDownloadUser pContextForDownloadUser) {
         final ContextForDownloadUser contextForDownloadUser = pContextForDownloadUser;
         synchronized (contextForDownloadUser) {
             QBUsers.getUsersByIDs(usersIds, new QBCallbackImpl() {

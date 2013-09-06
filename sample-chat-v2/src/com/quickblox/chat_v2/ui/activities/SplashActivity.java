@@ -231,7 +231,7 @@ public class SplashActivity extends FragmentActivity implements QBCallback, Sess
 
                 @Override
                 public void onLoginSuccess() {
-                    QBChat.getInstance().setChatMessageListener(app.getMsgManager().getGlobalMessagesListener());
+                    QBChat.getInstance().addChatMessageListener(app.getMsgManager().getGlobalMessagesListener());
 
                     app.setQbRoster(QBChat.getInstance().registerRoster(app.getRstManager()));
                     loadMainScreen();

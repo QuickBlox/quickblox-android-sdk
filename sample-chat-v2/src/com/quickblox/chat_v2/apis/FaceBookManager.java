@@ -1,7 +1,6 @@
 package com.quickblox.chat_v2.apis;
 
 import android.os.Bundle;
-
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -9,7 +8,6 @@ import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.quickblox.chat_v2.core.ChatApplication;
 import com.quickblox.module.users.model.QBUser;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
