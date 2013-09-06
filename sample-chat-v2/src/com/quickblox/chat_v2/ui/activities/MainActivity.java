@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
 import com.quickblox.chat_v2.R;
@@ -45,7 +46,12 @@ public class MainActivity extends TabActivity implements OnUserProfileDownloaded
 
         setupTabs();
         switchProgressDialog(true);
-        app.getRstManager().sendPresence(this);
+        if(app.getRstManager() == null){
+             Log.e("ERROR", "ROSTER manager=nil");
+        }else{
+            app.getRstManager().sendPresence(this);
+        }
+
         downloadStartUpInfo();
     }
 

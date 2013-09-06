@@ -28,8 +28,6 @@ import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
 import com.quickblox.module.users.model.QBUser;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
 import java.io.IOException;
@@ -58,6 +56,8 @@ public class SingleChatParts {
 
         @Override
         public void processMessage(final Message message) {
+            Log.w("NEW MSG", message.toString());
+
             if (message.getBody() == null) {
                 return;
             }
@@ -91,7 +91,7 @@ public class SingleChatParts {
 
         @Override
         public boolean accept(Message.Type type) {
-            return false;
+            return true;
         }
     };
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -104,7 +105,11 @@ public class SingleChat implements Chat, OnFileUploadComplete {
 
         msgManager.getDialogMessages(userId, dialogMessagesListDownloadedListener);
 
-        mChat.setBarTitle(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
+        if(opponentUser != null){
+             Log.e("opponentUser", "opponentUser nil");
+            mChat.setBarTitle(opponentUser.getFullName() != null ? opponentUser.getFullName() : opponentUser.getLogin());
+        }
+
 
     }
 
