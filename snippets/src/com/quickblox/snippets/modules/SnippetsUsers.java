@@ -15,6 +15,7 @@ import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Oleg Soroka
@@ -205,10 +206,10 @@ public class SnippetsUsers extends Snippets {
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersIds = new ArrayList<String>();
-            usersIds.add("378");
-            usersIds.add("379");
-            usersIds.add("380");
+            List<Integer> usersIds = new ArrayList<Integer>();
+            usersIds.add(378);
+            usersIds.add(379);
+            usersIds.add(380);
 
             QBUsers.getUsersByIDs(usersIds, pagedRequestBuilder, new QBCallbackImpl() {
                 @Override
@@ -322,7 +323,7 @@ public class SnippetsUsers extends Snippets {
     Snippet getUserById = new Snippet("get user by id") {
         @Override
         public void execute() {
-            QBRequestCanceler canceler =  QBUsers.getUser(37823232, new QBCallbackImpl() {
+            QBUsers.getUser(53779, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -333,9 +334,6 @@ public class SnippetsUsers extends Snippets {
                     }
                 }
             });
-
-
-            canceler.cancel();
         }
     };
 
