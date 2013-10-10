@@ -3,6 +3,7 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
@@ -89,13 +90,13 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
 
-            ArrayList<String> coIDs = new ArrayList<String>();
+            StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
             coIDs.add("50e67e6e535c121c66004c74");
             coIDs.add("50e67e6d535c127f66004f47");
             coIDs.add("50e67e6b535c121c66004c72");
             coIDs.add("50e59f81535c121c660015fd");
 
-            QBCustomObjects.getObjectsByIdsTask(className, coIDs, new QBCallbackImpl() {
+            QBCustomObjects.getObjectsByIds(className, coIDs, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
