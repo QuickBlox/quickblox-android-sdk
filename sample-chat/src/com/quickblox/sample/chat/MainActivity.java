@@ -26,8 +26,8 @@ import com.quickblox.module.users.model.QBUser;
  */
 public class MainActivity extends Activity implements QBCallback, View.OnClickListener {
 
-    private static final String DEFAULT_LOGIN = "romeo";
-    private static final String DEFAULT_PASSWORD = "password";
+    private static final String DEFAULT_LOGIN = "bob";
+    private static final String DEFAULT_PASSWORD = "bobbobbob";
 
     private Button loginButton;
     private Button registerButton;
