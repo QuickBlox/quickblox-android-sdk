@@ -1,7 +1,6 @@
 package com.quickblox.snippets;
 
 import com.quickblox.core.QBSettings;
-import com.quickblox.core.TransferProtocol;
 import com.quickblox.module.auth.QBAuth;
 
 /**
@@ -11,10 +10,12 @@ import com.quickblox.module.auth.QBAuth;
  */
 public class InitializeSnippets {
 
+
     public InitializeSnippets() {
 
         // App credentials from QB Admin Panel
         QBSettings.getInstance().fastConfigInit("99", "63ebrp5VZt7qTOv", "YavMAxm5T59-BRw");
         QBAuth.createSession(null);
+
     }
 }

@@ -4,10 +4,13 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
+import android.widget.Toast;
+import com.quickblox.core.QBCallback;
+import com.quickblox.core.result.Result;
 import com.quickblox.snippets.InitializeSnippets;
 import com.quickblox.snippets.R;
 
-public class StartActivity extends TabActivity {
+public class StartActivity extends TabActivity{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,8 +27,9 @@ public class StartActivity extends TabActivity {
         TabHost.TabSpec content = tabHost.newTabSpec("tab4");
         TabHost.TabSpec messages = tabHost.newTabSpec("tab5");
         TabHost.TabSpec customObjects = tabHost.newTabSpec("tab6");
-        TabHost.TabSpec chat = tabHost.newTabSpec("tab7");
-        TabHost.TabSpec ratings = tabHost.newTabSpec("tab8");
+        TabHost.TabSpec customObjectFiles = tabHost.newTabSpec("tab7");
+        TabHost.TabSpec chat = tabHost.newTabSpec("tab8");
+        TabHost.TabSpec ratings = tabHost.newTabSpec("tab9");
 
         auth.setIndicator("Auth")
                 .setContent(new Intent(this, AuthActivity.class));
@@ -44,6 +48,8 @@ public class StartActivity extends TabActivity {
 
         customObjects.setIndicator("Custom Objects")
                 .setContent(new Intent(this, CustomObjectsActivity.class));
+        customObjectFiles.setIndicator("Custom Object Files")
+                .setContent(new Intent(this, CustomObjectFilesActivity.class));
 
         chat.setIndicator("Chat")
                 .setContent(new Intent(this, ChatActivity.class));
@@ -54,10 +60,13 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(auth);
         tabHost.addTab(users);
         tabHost.addTab(customObjects);
+        tabHost.addTab(customObjectFiles);
         tabHost.addTab(locations);
         tabHost.addTab(content);
         tabHost.addTab(ratings);
         tabHost.addTab(messages);
         tabHost.addTab(chat);
     }
+
+
 }

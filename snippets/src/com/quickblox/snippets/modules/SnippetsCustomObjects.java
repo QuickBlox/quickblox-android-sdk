@@ -27,6 +27,8 @@ public class SnippetsCustomObjects extends Snippets {
     String fieldPower = "power";
     String fieldName = "name";
 
+    private final String NOTE1_ID = "529daf702195be5d8d478389";
+
     public SnippetsCustomObjects(Context context) {
         super(context);
 
