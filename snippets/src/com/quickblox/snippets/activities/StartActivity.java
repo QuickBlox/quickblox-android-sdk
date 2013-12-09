@@ -4,13 +4,10 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
-import android.widget.Toast;
-import com.quickblox.core.QBCallback;
-import com.quickblox.core.result.Result;
 import com.quickblox.snippets.InitializeSnippets;
 import com.quickblox.snippets.R;
 
-public class StartActivity extends TabActivity{
+public class StartActivity extends TabActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

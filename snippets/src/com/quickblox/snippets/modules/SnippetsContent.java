@@ -46,6 +46,7 @@ public class SnippetsContent extends Snippets {
 
         snippets.add(uploadFileTask);
         snippets.add(downloadFileTask);
+        snippets.add(updateFileTask);
 
         // get file
         int fileId = R.raw.sample_file;
@@ -302,6 +303,28 @@ public class SnippetsContent extends Snippets {
                         InputStream is = qbFileDownloadResult.getContentStream(); // that's downloaded file content
 
                         System.out.println(">>> file downloaded successful" + qbFileDownloadResult.getContent().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet updateFileTask = new Snippet("update file Task") {
+        @Override
+        public void execute() {
+            QBFile qbfile = new QBFile();
+            qbfile.setId(15216);
+            qbfile.setName("my Car15216");
+            qbfile.setPublic(true);
+            QBContent.updateFileTask(qbfile,  new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+
+                    if (result.isSuccess()) {
+
+                        System.out.println(">>> file updated successful");
                     } else {
                         handleErrors(result);
                     }
