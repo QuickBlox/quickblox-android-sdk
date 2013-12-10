@@ -27,6 +27,8 @@ public class SnippetsCustomObjects extends Snippets {
     String fieldPower = "power";
     String fieldName = "name";
 
+    private final String NOTE1_ID = "529daf702195be5d8d478389";
+
     public SnippetsCustomObjects(Context context) {
         super(context);
 
@@ -312,9 +314,9 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObject co1 = createObject();
             co1.setCustomObjectId("50e3f85f535c123376000d31");
             QBCustomObject co2 = createObject();
-            co1.setCustomObjectId("50e3f85f535c123376000d32");
+            co2.setCustomObjectId("50e3f85f535c123376000d32");
             QBCustomObject co3 = createObject();
-            co1.setCustomObjectId("50e3f85f535c123376000d33");
+            co3.setCustomObjectId("50e3f85f535c123376000d33");
             List<QBCustomObject> qbCustomObjectList = new LinkedList<QBCustomObject>();
             qbCustomObjectList.add(co1);
             qbCustomObjectList.add(co2);

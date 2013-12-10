@@ -21,6 +21,7 @@
         <activity android:name=".activities.UsersActivity"></activity>
         <activity android:name=".activities.LocationsActivity"></activity>
         <activity android:name=".activities.CustomObjectsActivity"></activity>
+        <activity android:name=".activities.CustomObjectFilesActivity"></activity>
         <activity android:name=".activities.ContentActivity"></activity>
         <activity android:name=".activities.RatingsActivity"></activity>
         <activity android:name=".activities.MessagesActivity"></activity>
