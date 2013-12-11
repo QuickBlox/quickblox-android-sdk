@@ -24,7 +24,6 @@ public class StartActivity extends TabActivity {
         TabHost.TabSpec content = tabHost.newTabSpec("tab4");
         TabHost.TabSpec messages = tabHost.newTabSpec("tab5");
         TabHost.TabSpec customObjects = tabHost.newTabSpec("tab6");
-        TabHost.TabSpec customObjectFiles = tabHost.newTabSpec("tab7");
         TabHost.TabSpec chat = tabHost.newTabSpec("tab8");
         TabHost.TabSpec ratings = tabHost.newTabSpec("tab9");
 
@@ -45,8 +44,7 @@ public class StartActivity extends TabActivity {
 
         customObjects.setIndicator("Custom Objects")
                 .setContent(new Intent(this, CustomObjectsActivity.class));
-        customObjectFiles.setIndicator("Custom Object Files")
-                .setContent(new Intent(this, CustomObjectFilesActivity.class));
+
 
         chat.setIndicator("Chat")
                 .setContent(new Intent(this, ChatActivity.class));
@@ -57,7 +55,6 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(auth);
         tabHost.addTab(users);
         tabHost.addTab(customObjects);
-        tabHost.addTab(customObjectFiles);
         tabHost.addTab(locations);
         tabHost.addTab(content);
         tabHost.addTab(ratings);

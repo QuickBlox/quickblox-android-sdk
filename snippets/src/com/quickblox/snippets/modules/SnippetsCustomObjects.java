@@ -3,14 +3,24 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.FileHelper;
 import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
+import com.quickblox.module.content.model.QBFileObjectAccess;
+import com.quickblox.module.content.result.QBFileDownloadResult;
 import com.quickblox.module.custom.QBCustomObjects;
+import com.quickblox.module.custom.QBCustomObjectsFiles;
 import com.quickblox.module.custom.model.QBCustomObject;
+import com.quickblox.module.custom.model.QBCustomObjectFileField;
 import com.quickblox.module.custom.result.*;
+import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -26,8 +36,16 @@ public class SnippetsCustomObjects extends Snippets {
     String fieldHealth = "health";
     String fieldPower = "power";
     String fieldName = "name";
+    File file1 = null;
+    File file2 = null;
+    QBFileObjectAccess fileObjectAccess;
 
-    private final String NOTE1_ID = "529daf702195be5d8d478389";
+    private String fileName = "sample";
+
+    private final String NOTE1_ID = "51d816e0535c12d75f006537";
+
+    private final String CLASS_NAME = "note";
+    private final String LICENSE = "license";
 
     public SnippetsCustomObjects(Context context) {
         super(context);
@@ -41,8 +59,21 @@ public class SnippetsCustomObjects extends Snippets {
         snippets.add(updateCustomObject);
         snippets.add(updateCustomObjects);
         snippets.add(getGetCustomObjectsByIds);
-
         snippets.add(getCustomsObjectWithFilters);
+        snippets.add(downloadFile);
+        snippets.add(updateFile);
+        snippets.add(uploadFile);
+        snippets.add(deleteFile);
+
+        // get file
+        file1 = getFileFormRaw(R.raw.sample_file);
+        file2 = getFileFormRaw(R.raw.sample_file1);
+    }
+
+    private File getFileFormRaw(int fileId){
+        InputStream is = context.getResources().openRawResource(fileId);
+        File file = FileHelper.getFileInputStream(is, "sample" + fileId + ".txt", "qb_snippets12");
+        return file;
     }
 
     Snippet getCustomObjects = new Snippet("get objects") {
@@ -153,7 +184,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomsObjectWithFilters = new Snippet("get object with filters") {
         @Override
         public void execute() {
-            String fieldName = "health";
+            String fieldName = "title";
             String fieldForSort = "integer_field";
             QBCustomObjectRequestBuilder requestBuilder = new QBCustomObjectRequestBuilder();
 //            requestBuilder.sortAsc(fieldName);
@@ -186,7 +217,10 @@ public class SnippetsCustomObjects extends Snippets {
 //            requestBuilder.nin("tags", healthList);
 //            requestBuilder.count();
 
-            QBCustomObjects.getObjects(className, requestBuilder, new QBCallbackImpl() {
+
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(fieldName);
+            QBCustomObjects.getObjects(CLASS_NAME, objectList, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -337,5 +371,107 @@ public class SnippetsCustomObjects extends Snippets {
             });
         }
     };
+
+    Snippet uploadFile = new Snippet("upload CO file") {
+        @Override
+        public void execute() {
+            QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE1_ID);
+            QBCustomObjectsFiles.uploadFile(file1, qbCustomObject, LICENSE, fileName, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+
+                        QBCustomObjectFileField customObjectFileField = ((QBCOFileUploadResult) result).getCustomObjectFileField();
+                        System.out.println(">>>upload response:" + customObjectFileField.getFileName() + " " + customObjectFileField.getFileId() + " " +
+                                customObjectFileField.getContentType());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet updateFile = new Snippet("update CO file") {
+        @Override
+        public void execute() {
+            QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE1_ID);
+            QBCustomObjectsFiles.uploadFile(file2, qbCustomObject, LICENSE, null, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        System.out.println(">>> file updated successfully");
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet deleteFile = new Snippet("delete CO file") {
+        @Override
+        public void execute() {
+            QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE1_ID);
+            QBCustomObjectsFiles.deleteFile(qbCustomObject, LICENSE, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        System.out.println(">>> file deleted successfully");
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+
+    Snippet downloadFile = new Snippet("download CO file") {
+        @Override
+        public void execute() {
+            QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE1_ID);
+            QBCustomObjectsFiles.downloadFile(qbCustomObject, LICENSE, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    QBFileDownloadResult downloadResult = (QBFileDownloadResult) result;
+                    if (result.isSuccess()) {
+
+                        byte[] content = downloadResult.getContent();       // that's downloaded file content
+                        InputStream is = downloadResult.getContentStream(); // that's downloaded file content
+
+                        System.out.println(">>> file downloaded successfully" + getContentFromFile(is));
+                        if(is!=null){
+                            try{
+                                is.close();
+                            }
+                            catch(IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+
+    public String getContentFromFile( InputStream is){
+        char[] buffer = new char[1024];
+        StringBuilder stringBuilder = new StringBuilder();
+        try{
+            InputStreamReader inputStreamReader = new InputStreamReader(is, "UTF-8");
+
+            while ( inputStreamReader.read(buffer, 0, 1024) != -1){
+                stringBuilder.append(buffer);
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
 
 }
