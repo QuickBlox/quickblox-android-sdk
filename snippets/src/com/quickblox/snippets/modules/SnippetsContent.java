@@ -49,9 +49,9 @@ public class SnippetsContent extends Snippets {
         snippets.add(updateFileTask);
 
         // get file
-        int fileId = R.raw.sample_file;
+        int fileId = R.raw.sample_file1;
         InputStream is = context.getResources().openRawResource(fileId);
-        file = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+        file = FileHelper.getFileInputStream(is, "sample_file1.txt", "qb_snippets12");
     }
 
     Snippet createFile = new Snippet("create file") {
@@ -314,11 +314,7 @@ public class SnippetsContent extends Snippets {
     Snippet updateFileTask = new Snippet("update file Task") {
         @Override
         public void execute() {
-            QBFile qbfile = new QBFile();
-            qbfile.setId(15216);
-            qbfile.setName("my Car15216");
-            qbfile.setPublic(true);
-            QBContent.updateFileTask(qbfile,  new QBCallbackImpl() {
+            QBContent.updateFileTask(file, 15216, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
 
