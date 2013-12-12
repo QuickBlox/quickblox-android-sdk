@@ -17,10 +17,10 @@ public class InitializeSnippets {
         QBSettings.getInstance().fastConfigInit("99", "63ebrp5VZt7qTOv", "YavMAxm5T59-BRw");
 
         //specify custom domains
-        //QBSettings.getInstance().setServerDomain(Config.SERVER_DOMAIN);
-        //QBSettings.getInstance().setContentBucketDomain(Config.CONTENT_DOMAIN);
-        //QBSettings.getInstance().setChatServerDomain(Config.CHAT_DOMAIN);
-        //QBSettings.getInstance().setTurnServerDomain(Config.TURN_SERVER_DOMAIN);
+//        QBSettings.getInstance().setServerDomain(Config.SERVER_DOMAIN);
+//        QBSettings.getInstance().setContentBucketDomain(Config.CONTENT_DOMAIN);
+//        QBSettings.getInstance().setChatServerDomain(Config.CHAT_DOMAIN);
+//        QBSettings.getInstance().setTurnServerDomain(Config.TURN_SERVER_DOMAIN);
         QBAuth.createSession(null);
 
 

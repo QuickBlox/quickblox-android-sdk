@@ -22,7 +22,7 @@ public class SnippetsCustomObjects extends Snippets {
 
     // Define custom object model in QB Admin Panel
     // http://image.quickblox.com/3f71573f1fd8b23a1e375b904a80.injoit.png
-    String className = "hero";
+    String className = "SuperSample";
     String fieldHealth = "health";
     String fieldPower = "power";
     String fieldName = "name";

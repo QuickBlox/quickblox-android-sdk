@@ -30,10 +30,10 @@ public class SnippetsCustomObjectFiles extends Snippets {
 
     private String fileName = "sample";
 
-    private final String NOTE1_ID = "51d816e0535c12d75f006537";
+    private final String NOTE1_ID = "51c9ab92535c12951b0032d7";
 
-    private final String CLASS_NAME = "note";
-    private final String LICENSE = "license";
+    private final String CLASS_NAME = "SuperSample";
+    private final String LICENSE = "avatar";
 
     public SnippetsCustomObjectFiles(Context context) {
         super(context);
