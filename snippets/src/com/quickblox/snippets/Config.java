@@ -5,8 +5,8 @@ package com.quickblox.snippets;
  */
 public interface Config {
 
-    public  static String SERVER_DOMAIN = "guava.com";
-    public  static String CHAT_DOMAIN = "guavachat";
+    public  static String SERVER_DOMAIN = "api.guava.com";
+    public  static String CHAT_DOMAIN = "chat.guava.com";
     public  static String CONTENT_DOMAIN = "blobatre";
     public  static String TURN_SERVER_DOMAIN = "turnserver.guava.com";
 }
