@@ -89,11 +89,25 @@ public class SnippetsChat extends Snippets {
 
                     // Add Chat message listener
                     initChatMessageListener();
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Success when login", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
                 @Override
                 public void onLoginError() {
                     System.out.println("error when login");
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Error when login", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
