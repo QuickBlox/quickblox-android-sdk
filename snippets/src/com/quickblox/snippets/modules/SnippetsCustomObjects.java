@@ -67,7 +67,7 @@ public class SnippetsCustomObjects extends Snippets {
 
         // get file
         file1 = getFileFormRaw(R.raw.sample_file);
-        file2 = getFileFormRaw(R.raw.sample_file1);
+        file2 = getFileFormRaw(R.raw.sample_file2);
     }
 
     private File getFileFormRaw(int fileId){

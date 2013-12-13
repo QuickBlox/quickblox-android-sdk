@@ -34,9 +34,9 @@ public class SnippetsChat extends Snippets {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     //    private static final String TAG = SnippetsChat.class.getSimpleName();
-    public static final int USER_ID = 576559;
-    public static final String TEST_EMAIL = "test@test.test";
-    public static final String TEST_PASSWORD = "testtest";
+    public static final int USER_ID = 999;
+    public static final String TEST_PASSWORD = "AndroidGirl";
+
     private ChatMessageListener chatMessageListener;
     private final QBUser qbUser;
     private RoomListener roomReceivingListener;
@@ -47,17 +47,18 @@ public class SnippetsChat extends Snippets {
         super(context);
         SmackAndroid.init(context);
 
+        // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
-        qbUser.setEmail(TEST_EMAIL);
         qbUser.setPassword(TEST_PASSWORD);
-
-        QBAuth.createSession(qbUser, new QBCallbackImpl());
 
         initRoomListener();
         initRoomMessageListener();
 
         snippets.add(loginInChat);
+        snippets.add(isLoggedIn);
+        snippets.add(logoutFromChat);
+        //
         snippets.add(sendPresence);
         snippets.add(startAutoSendPresence);
         snippets.add(addChatMessageListener);
@@ -70,6 +71,9 @@ public class SnippetsChat extends Snippets {
         snippets.add(leaveRoom);
     }
 
+    //
+    ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
+    //
     Snippet loginInChat = new Snippet("login in Chat") {
         @Override
         public void execute() {
@@ -87,6 +91,22 @@ public class SnippetsChat extends Snippets {
             });
         }
     };
+
+    Snippet isLoggedIn = new Snippet("Is logged In") {
+        @Override
+        public void execute() {
+            boolean isLoggedIn = QBChat.getInstance().isLoggedIn();
+            System.out.println("isLoggedIn: " + isLoggedIn);
+        }
+    };
+
+    Snippet logoutFromChat = new Snippet("Logout from Chat") {
+        @Override
+        public void execute() {
+            QBChat.getInstance().logout();
+        }
+    };
+
 
     Snippet sendPresence = new Snippet("send presence") {
         @Override
