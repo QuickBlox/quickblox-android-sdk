@@ -25,7 +25,8 @@ import java.io.InputStream;
  */
 public class SnippetsContent extends Snippets {
 
-    File file = null;
+    File file1 = null;
+    File file2 = null;
     QBFileObjectAccess fileObjectAccess;
 
     public SnippetsContent(Context context) {
@@ -48,10 +49,15 @@ public class SnippetsContent extends Snippets {
         snippets.add(downloadFileTask);
         snippets.add(updateFileTask);
 
-        // get file
-        int fileId = R.raw.sample_file1;
+        // get file1
+        int fileId = R.raw.sample_file;
         InputStream is = context.getResources().openRawResource(fileId);
-        file = FileHelper.getFileInputStream(is, "sample_file1.txt", "qb_snippets12");
+        file1 = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+
+        // get file1
+        int fileId2 = R.raw.sample_file2;
+        InputStream is2 = context.getResources().openRawResource(fileId2);
+        file2 = FileHelper.getFileInputStream(is2, "sample_file2.txt", "qb_snippets12");
     }
 
     Snippet createFile = new Snippet("create file") {
@@ -59,9 +65,9 @@ public class SnippetsContent extends Snippets {
         public void execute() {
 
             QBFile qbfile = new QBFile();
-            qbfile.setName(file.getName());
+            qbfile.setName(file1.getName());
             qbfile.setPublic(true);
-            qbfile.setContentType(ContentType.getContentType(file));
+            qbfile.setContentType(ContentType.getContentType(file1));
             //
             QBContent.createFile(qbfile, new QBCallbackImpl() {
                 @Override
@@ -121,7 +127,7 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
-            QBContent.uploadFile(file, params, new QBCallbackImpl() {
+            QBContent.uploadFile(file1, params, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -138,7 +144,7 @@ public class SnippetsContent extends Snippets {
     Snippet declareFileUpload = new Snippet("declare file upload") {
         @Override
         public void execute() {
-            QBContent.declareFileUploaded(20237, (int) file.length(), new QBCallbackImpl() {
+            QBContent.declareFileUploaded(20237, (int) file1.length(), new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -270,7 +276,7 @@ public class SnippetsContent extends Snippets {
         public void execute() {
 
             Boolean fileIsPublic = true;
-            QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
+            QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file1, fileIsPublic, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
 
@@ -314,7 +320,7 @@ public class SnippetsContent extends Snippets {
     Snippet updateFileTask = new Snippet("update file Task") {
         @Override
         public void execute() {
-            QBContent.updateFileTask(file, 15216, new QBCallbackImpl() {
+            QBContent.updateFileTask(file2, 91079, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
 

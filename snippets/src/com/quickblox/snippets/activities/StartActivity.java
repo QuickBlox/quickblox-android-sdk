@@ -54,13 +54,11 @@ public class StartActivity extends TabActivity {
 
         tabHost.addTab(auth);
         tabHost.addTab(users);
+        tabHost.addTab(chat);
         tabHost.addTab(customObjects);
+        tabHost.addTab(messages);
         tabHost.addTab(locations);
         tabHost.addTab(content);
         tabHost.addTab(ratings);
-        tabHost.addTab(messages);
-        tabHost.addTab(chat);
     }
-
-
 }

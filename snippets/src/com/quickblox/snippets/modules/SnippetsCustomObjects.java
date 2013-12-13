@@ -32,7 +32,7 @@ public class SnippetsCustomObjects extends Snippets {
 
     // Define custom object model in QB Admin Panel
     // http://image.quickblox.com/3f71573f1fd8b23a1e375b904a80.injoit.png
-    String className = "hero";
+    String className = "SuperSample";
     String fieldHealth = "health";
     String fieldPower = "power";
     String fieldName = "name";
@@ -67,7 +67,7 @@ public class SnippetsCustomObjects extends Snippets {
 
         // get file
         file1 = getFileFormRaw(R.raw.sample_file);
-        file2 = getFileFormRaw(R.raw.sample_file1);
+        file2 = getFileFormRaw(R.raw.sample_file2);
     }
 
     private File getFileFormRaw(int fileId){

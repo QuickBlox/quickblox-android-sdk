@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.LoginListener;
@@ -30,39 +28,44 @@ import java.util.Collection;
  */
 public class SnippetsChat extends Snippets {
 
-    public static final String ROOM_NAME = "temp_room_for_snippet_test";
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    //    private static final String TAG = SnippetsChat.class.getSimpleName();
-    public static final int USER_ID = 576559;
-    public static final String TEST_EMAIL = "test@test.test";
-    public static final String TEST_PASSWORD = "testtest";
-    private ChatMessageListener chatMessageListener;
+    // test Chat user credentials
+    public static final int USER_ID = 999;
+    public static final String TEST_PASSWORD = "AndroidGirl";
     private final QBUser qbUser;
+
+    // 1-1 Chat properties
+    private ChatMessageListener chatMessageListener;
+
+    // Group Chat properties
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
     private PacketListener pMessageListener;
+    public static final String ROOM_NAME = "temp_room_for_snippet_test";
 
-    public SnippetsChat(Context context) {
+    public SnippetsChat(final Context context) {
         super(context);
         SmackAndroid.init(context);
 
+        // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
-        qbUser.setEmail(TEST_EMAIL);
         qbUser.setPassword(TEST_PASSWORD);
-
-        QBAuth.createSession(qbUser, new QBCallbackImpl());
 
         initRoomListener();
         initRoomMessageListener();
 
         snippets.add(loginInChat);
+        snippets.add(isLoggedIn);
+        snippets.add(logoutFromChat);
+        //
         snippets.add(sendPresence);
         snippets.add(startAutoSendPresence);
-        snippets.add(addChatMessageListener);
-        snippets.add(sendMessageWithStringParameter);
-        snippets.add(sendMessageWithMessageParameter);
+        //
+        snippets.add(sendMessageWithText);
+        snippets.add(sendMessageWithMessage);
+        //
         snippets.add(createRoom);
         snippets.add(joinRoom);
         snippets.add(sendMessageToRoom);
@@ -70,24 +73,65 @@ public class SnippetsChat extends Snippets {
         snippets.add(leaveRoom);
     }
 
+
+    //
+    ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
+    //
     Snippet loginInChat = new Snippet("login in Chat") {
         @Override
         public void execute() {
+
             QBChat.getInstance().loginWithUser(qbUser, new LoginListener() {
                 @Override
                 public void onLoginSuccess() {
                     System.out.println("success when login");
                     QBChat.getInstance().createRoom(ROOM_NAME, qbUser, false, true, roomReceivingListener);
+
+                    // Add Chat message listener
+                    initChatMessageListener();
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Success when login", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
                 @Override
                 public void onLoginError() {
                     System.out.println("error when login");
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Error when login", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
     };
 
+    Snippet isLoggedIn = new Snippet("Is logged In") {
+        @Override
+        public void execute() {
+            boolean isLoggedIn = QBChat.getInstance().isLoggedIn();
+            System.out.println("isLoggedIn: " + isLoggedIn);
+        }
+    };
+
+    Snippet logoutFromChat = new Snippet("Logout from Chat") {
+        @Override
+        public void execute() {
+            QBChat.getInstance().logout();
+        }
+    };
+
+
+    //
+    ///////////////////////////////////////////// Presence /////////////////////////////////////////////
+    //
     Snippet sendPresence = new Snippet("send presence") {
         @Override
         public void execute() {
@@ -103,58 +147,67 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet addChatMessageListener = new Snippet("add chat message listener") {
+
+    //
+    ///////////////////////////////////////////// 1-1 Chat /////////////////////////////////////////////
+    //
+
+    Snippet sendMessageWithText = new Snippet("send message with text") {
         @Override
         public void execute() {
-            chatMessageListener = new ChatMessageListener() {
-                @Override
-                public void processMessage(Message message) {
-                    int userId = QBChatUtils.parseQBUser(message.getFrom());
-                    String messageBody = message.getBody();
-                    Message.Type type = message.getType();
-                    String userChatLogin = QBChat.getInstance().getChatLoginFull(new QBUser(userId));
-                    final String messageText = String.format("Received message from QuickBlox %s from user (full login: %s) with id %s:'%s'", type, userChatLogin, userId, messageBody);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    System.out.println(">>> " + messageText);
-                }
-
-                @Override
-                public boolean accept(Message.Type type) {
-                    switch (type) {
-                        case normal:
-                        case chat:
-                        case groupchat:
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            };
-            QBChat.getInstance().addChatMessageListener(chatMessageListener);
+            QBChat.getInstance().sendMessage(USER_ID, "Hey man!");
         }
     };
 
-    Snippet sendMessageWithStringParameter = new Snippet("send message with String parameter") {
-        @Override
-        public void execute() {
-            QBChat.getInstance().sendMessage(USER_ID, "some message as String parameter");
-        }
-    };
-
-    Snippet sendMessageWithMessageParameter = new Snippet("send message with Message parameter") {
+    Snippet sendMessageWithMessage = new Snippet("send message with Message") {
         @Override
         public void execute() {
             Message message = new Message(QBChatUtils.getChatLoginFull(USER_ID), Message.Type.chat);
-            String messageText = "some message as Message parameter";
-            message.setBody(messageText);
+            message.setBody("Hey QuickBlox!");
             QBChat.getInstance().sendMessage(USER_ID, message);
         }
     };
+
+    private void initChatMessageListener() {
+        // Set 1-1 Chat message listener
+        chatMessageListener = new ChatMessageListener() {
+            @Override
+            public void processMessage(Message message) {
+
+                // get message params
+                int userId = QBChatUtils.parseQBUser(message.getFrom());
+                String messageBody = message.getBody();
+                //
+                final String messageText = String.format("Received message from user %s:'%s'", userId, messageBody);
+
+                // Show message
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                System.out.println("processMessage >>> " + message.toString());
+            }
+
+            @Override
+            public boolean accept(Message.Type type) {
+                switch (type) {
+                    case normal:
+                    case chat:
+                    case groupchat:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        };
+        //
+        QBChat.getInstance().addChatMessageListener(chatMessageListener);
+    }
+
+
 
     Snippet createRoom = new Snippet("create Room") {
         @Override
