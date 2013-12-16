@@ -19,7 +19,8 @@ public class TestFileTestCase extends CustomObjectsTestCase {
     AssetManager assetManager;
     File fileObject;
     QBFile file;
-
+    public static String FILE_UPLOAD_NOTE_ID  ="51d816e0535c12d75f006537";
+    public static final String SD_CARD_TEST_ROOT = "qb_snippets12";
 
     @Override
     public void setUp() throws Exception {
@@ -35,7 +36,8 @@ public class TestFileTestCase extends CustomObjectsTestCase {
             int n = new Random().nextInt(assetsFileNames.length);
             String fileName = assetsFileNames[n];
             InputStream is = assetManager.open(TEST_ASSETS_ROOT + "/" + fileName);
-            file = FileHelper.getFileFromAsset(is, fileName);
+            file = FileHelper.getFileFromAsset(is, fileName, SD_CARD_TEST_ROOT);
+            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,7 +51,7 @@ public class TestFileTestCase extends CustomObjectsTestCase {
         try {
             for (String fileName : assetManager.list(TEST_ASSETS_ROOT)) {
                 InputStream is = assetManager.open(TEST_ASSETS_ROOT + "/" + fileName);
-                File file = FileHelper.getFileFromAsset(is, fileName);
+                File file = FileHelper.getFileFromAsset(is, fileName, SD_CARD_TEST_ROOT);
                 files.add(file);
             }
 

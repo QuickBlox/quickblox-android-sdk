@@ -154,7 +154,6 @@ public class TestGetObject extends CustomObjectsTestCase {
     @AfterClass
     public static void testCleanUp(){
                      if(note!=null && note.getCustomObjectId()!=null){
-                         Log.i(TAG, "deleting note");
                          QBCustomObjects.deleteObject(note, null);
                      }
     }

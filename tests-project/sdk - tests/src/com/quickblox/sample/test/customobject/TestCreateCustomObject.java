@@ -29,7 +29,7 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
 
     public static final String TAG = "createObjects";
     static public List<QBCustomObject> qbCustomObjectList;
-
+    public static final String PARENT_ID = "51d816e0535c12d75f006537";
 
     private static StringifyArrayList<String> coIds = new StringifyArrayList();
 
@@ -40,7 +40,6 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
         if (qbCustomObjectList == null || qbCustomObjectList.isEmpty()) {
             qbCustomObjectList = new LinkedList<QBCustomObject>();
             QBCustomObject fakeObject = getFakeObject();
-            fakeObject.setParentId("12121212112");
             qbCustomObjectList.add(fakeObject);
             qbCustomObjectList.add(getFakeObject());
         }
@@ -71,6 +70,7 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
 
     public void testCreateObject() {
 
+        note.setParentId(PARENT_ID);
         QBCustomObjects.createObject(note, new QBCallbackImpl() {
 
             @Override
@@ -83,6 +83,7 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
                 assertEquals(note.getFields().get(FIELD_COMMENTS), newHero.getFields().get(FIELD_COMMENTS));
                 assertEquals(note.getFields().get(FIELD_TITLE), newHero.getFields().get(FIELD_TITLE));
                 assertEquals(note.getFields().get(FIELD_STATUS), newHero.getFields().get(FIELD_STATUS));
+                assertNotNull(newHero.getParentId());
             }
 
         });

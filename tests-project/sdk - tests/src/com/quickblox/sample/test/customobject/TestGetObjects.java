@@ -129,8 +129,9 @@ public class TestGetObjects extends CustomObjectsTestCase {
                 checkHttpStatus(HttpStatus.SC_OK, result);
                 checkIfSuccess(result);
                 QBCustomObjectLimitedResult customObjectResult = (QBCustomObjectLimitedResult) result;
+                assertNotNull(customObjectResult);
                 ArrayList<QBCustomObject> customObjectsList = customObjectResult.getCustomObjects();
-                assertTrue( customObjectsList.size() > 0);
+                assertNotNull(customObjectsList);
                 for (QBCustomObject co : customObjectsList) {
                     assertNotNull(co.getFields().get(BK_FIELD_TITLE));
                     assertNotNull(co.getFields().get(BK_FIELD_AUTH));
@@ -229,7 +230,6 @@ public class TestGetObjects extends CustomObjectsTestCase {
     @AfterClass
     public static void testCleanUp() {
         if (coIds != null && !coIds.isEmpty()) {
-            Log.i(TAG, "deleting note");
             QBCustomObjects.deleteObjects(BOOK_CLASS_NAME, coIds, null);
         }
     }

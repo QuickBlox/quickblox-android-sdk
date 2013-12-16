@@ -12,18 +12,17 @@ import org.apache.http.HttpStatus;
  */
 public class TestDeleteFile extends TestFileTestCase {
 
-    private QBCustomObjectFileField customObjectFileField;
-
     @Override
 
     public void setUp() throws Exception {
         super.setUp();
         fileObject = getRandomFile();
-        QBCustomObjectsFiles.uploadFile(fileObject, CLASS_NAME, NOTE_ID, FIELD_LICENSE, "license.url", new QBCallbackImpl() {
+        QBCustomObjectsFiles.uploadFile(fileObject, CLASS_NAME, FILE_UPLOAD_NOTE_ID, FIELD_LICENSE,  new QBCallbackImpl() {
 
             @Override
             public void onComplete(Result result) {
-                customObjectFileField = ((QBCOFileUploadResult) result).getCustomObjectFileField();
+                QBCustomObjectFileField customObjectFileField = ((QBCOFileUploadResult) result).getCustomObjectFileField();
+                assertNotNull(customObjectFileField);
             }
 
         });
@@ -33,7 +32,7 @@ public class TestDeleteFile extends TestFileTestCase {
 
     public void testDeleteFile() {
 
-        QBCustomObjectsFiles.deleteFile(CLASS_NAME, customObjectFileField.getCustomObjectId(), FIELD_LICENSE, new QBCallbackImpl() {
+        QBCustomObjectsFiles.deleteFile(CLASS_NAME, FILE_UPLOAD_NOTE_ID, FIELD_LICENSE, new QBCallbackImpl() {
 
             @Override
             public void onComplete(Result result) {

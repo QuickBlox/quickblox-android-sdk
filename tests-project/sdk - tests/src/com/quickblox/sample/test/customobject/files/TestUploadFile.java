@@ -13,8 +13,8 @@ import org.apache.http.HttpStatus;
  */
 public class TestUploadFile extends TestFileTestCase {
 
-    public static String FILE_NAME = "licence.doc";
     private QBCustomObjectFileField customObjectFileField;
+
 
     @Override
     public void setUp() throws Exception {
@@ -24,17 +24,17 @@ public class TestUploadFile extends TestFileTestCase {
 
 
     public void testUploadCOFile() {
-        QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE_ID);
-        QBCustomObjectsFiles.uploadFile(fileObject, qbCustomObject, FIELD_LICENSE, FILE_NAME,  new QBCallbackImpl() {
+        QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, FILE_UPLOAD_NOTE_ID);
+        QBCustomObjectsFiles.uploadFile(fileObject, qbCustomObject, FIELD_LICENSE, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
-                    checkHttpStatus(HttpStatus.SC_CREATED, result);
+                    checkHttpStatus(HttpStatus.SC_OK, result);
                     checkIfSuccess(result);
                     customObjectFileField = ((QBCOFileUploadResult) result).getCustomObjectFileField();
-                    assertEquals(FILE_NAME, customObjectFileField.getFileName());
+                    assertEquals(fileObject.getName(), customObjectFileField.getFileName());
                     assertTrue(customObjectFileField.getSize() > 0);
-                    assertEquals(((int)fileObject.length()), (int)customObjectFileField.getSize());
-                    assertEquals(NOTE_ID, customObjectFileField.getCustomObjectId());
+                    assertEquals(((int)fileObject.length()), customObjectFileField.getSize());
+                    assertNotNull( customObjectFileField.getId());
                     assertNotNull(customObjectFileField.getContentType());
                     assertNotNull( customObjectFileField.getFileId());
             }
@@ -44,7 +44,7 @@ public class TestUploadFile extends TestFileTestCase {
     @Override
     public void tearDown() throws Exception {
         if (customObjectFileField != null) {
-            QBCustomObjectsFiles.deleteFile(CLASS_NAME, customObjectFileField.getCustomObjectId(), FIELD_LICENSE, null);
+            QBCustomObjectsFiles.deleteFile(CLASS_NAME, FILE_UPLOAD_NOTE_ID, FIELD_LICENSE, null);
         }
     }
 }
