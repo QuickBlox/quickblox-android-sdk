@@ -4,6 +4,7 @@ import android.util.Log;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBErrors;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.Lo;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.model.QBPermissions;
@@ -22,6 +23,8 @@ import java.util.List;
 public class TestGetObject extends CustomObjectsTestCase {
     private static final String TAG = "DELETE NOTE";
     static QBCustomObject note;// = getFakeObject();
+
+    Lo lo = new Lo(this);
 
     public static final int[] ERROR_STATUSES = new int[]{HttpStatus.SC_NOT_FOUND, HttpStatus.SC_FORBIDDEN, HttpStatus.SC_UNPROCESSABLE_ENTITY};
 
@@ -65,6 +68,7 @@ public class TestGetObject extends CustomObjectsTestCase {
                 checkHttpStatus(HttpStatus.SC_OK, result);
                 checkIfSuccess(result);
                 QBPermissions qbPermissions = ((QBCustomObjectPermissionResult) result).getPermissions();
+                lo.g(qbPermissions.toString());
                 assertNotNull(qbPermissions.getReadLevel());
                 assertNotNull(qbPermissions.getUpdateLevel());
                 assertNotNull(qbPermissions.getDeleteLevel() );

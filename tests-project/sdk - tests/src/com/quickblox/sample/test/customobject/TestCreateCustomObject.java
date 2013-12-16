@@ -3,6 +3,7 @@ package com.quickblox.sample.test.customobject;
 import android.util.Log;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.helper.Lo;
 import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
@@ -30,6 +31,7 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
     public static final String TAG = "createObjects";
     static public List<QBCustomObject> qbCustomObjectList;
     public static final String PARENT_ID = "51d816e0535c12d75f006537";
+    Lo lo = new Lo(this);
 
     private static StringifyArrayList<String> coIds = new StringifyArrayList();
 
@@ -106,6 +108,7 @@ public class TestCreateCustomObject extends CustomObjectsTestCase {
                 checkHttpStatus(HttpStatus.SC_CREATED, result);
                 checkIfSuccess(result);
                 QBCustomObject newHero = ((QBCustomObjectResult) result).getCustomObject();
+                lo.g(newHero.toString());
                 coIds.add(newHero.getCustomObjectId());
                 QBPermissions qbPermissions =    newHero.getPermission();
                 assertNotNull(qbPermissions);
