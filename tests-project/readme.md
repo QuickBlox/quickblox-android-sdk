@@ -1,8 +1,7 @@
-
-QuickBlox Android Custom Objects tests
+#QuickBlox Android Custom Objects tests
 Junit tests on "Custom Objects" module.
 
-To run Snippets project:
+##To run tests project:
 
     Clone this project
 
