@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
+
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.LoginListener;
@@ -14,12 +15,14 @@ import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * User: Oleg Soroka
@@ -70,6 +73,7 @@ public class SnippetsChat extends Snippets {
         snippets.add(joinRoom);
         snippets.add(sendMessageToRoom);
         snippets.add(getOnlineRoomUsers);
+        snippets.add(getRooms);
         snippets.add(leaveRoom);
     }
 
@@ -208,7 +212,6 @@ public class SnippetsChat extends Snippets {
     }
 
 
-
     Snippet createRoom = new Snippet("create Room") {
         @Override
         public void execute() {
@@ -246,6 +249,16 @@ public class SnippetsChat extends Snippets {
             }
             for (Integer id : onlineRoomUsers) {
                 System.out.println("id: " + id);
+            }
+        }
+    };
+
+    Snippet getRooms = new Snippet("get list of rooms") {
+        @Override
+        public void execute() {
+            List<QBChatRoom> rooms = QBChat.getInstance().getRooms(qbUser);
+            for (QBChatRoom room : rooms) {
+                System.out.println("room: " + room.getJid());
             }
         }
     };
