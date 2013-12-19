@@ -35,7 +35,6 @@ public class SnippetsCustomObjects extends Snippets {
     String className = "SuperSample";
     String fieldHealth = "health";
     String fieldPower = "power";
-    String fieldName = "name";
     File file1 = null;
     File file2 = null;
     QBFileObjectAccess fileObjectAccess;
@@ -376,7 +375,7 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
             QBCustomObject qbCustomObject = new QBCustomObject(CLASS_NAME, NOTE1_ID);
-            QBCustomObjectsFiles.uploadFile(file1, qbCustomObject, LICENSE, fileName, new QBCallbackImpl() {
+            QBCustomObjectsFiles.uploadFile(file1, qbCustomObject, LICENSE, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
