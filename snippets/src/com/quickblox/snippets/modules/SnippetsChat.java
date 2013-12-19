@@ -270,7 +270,7 @@ public class SnippetsChat extends Snippets {
     Snippet getRooms = new Snippet("get list of rooms") {
         @Override
         public void execute() {
-            List<QBChatRoom> rooms = QBChat.getInstance().getRooms(qbUser);
+            List<QBChatRoom> rooms = QBChat.getInstance().getRooms();
             for (QBChatRoom room : rooms) {
                 System.out.println("room: " + room.getJid());
             }
