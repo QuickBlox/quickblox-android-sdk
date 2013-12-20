@@ -50,7 +50,7 @@ public class SnippetsChat extends Snippets {
     public SnippetsChat(final Context context) {
         super(context);
         SmackAndroid.init(context);
-
+        initChatMessageListener();
         // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
@@ -93,7 +93,7 @@ public class SnippetsChat extends Snippets {
                         @Override
                         public void onLoginSuccess() {
                             System.out.println("success when login");
-                                QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
+                                //QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
 
 
                             // Add Chat message listener
@@ -273,8 +273,14 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             try {
                 currentQBChatRoom.sendMessage("message to room");
-            } catch (XMPPException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (final XMPPException e) {
+                e.printStackTrace();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     };
@@ -340,6 +346,14 @@ public class SnippetsChat extends Snippets {
             public void processPacket(Packet packet) {
                 Message message = (Message) packet;
                 System.out.println(">>>received message from room: " + message.getBody() + " " + message.getFrom());
+                final String messageText = String.format("Received message from user %s:'%s'", message.getFrom(), message.getBody());
+                // Show message
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         };
     }
