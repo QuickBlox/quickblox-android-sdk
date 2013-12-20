@@ -45,7 +45,7 @@ public class SnippetsChat extends Snippets {
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
     private PacketListener pMessageListener;
-    public static final String ROOM_NAME = "temp_room_for_snippet_test";
+    public static final String ROOM_NAME = "temp_room_for_snippet";
 
     public SnippetsChat(final Context context) {
         super(context);
@@ -194,7 +194,6 @@ public class SnippetsChat extends Snippets {
     //
     ///////////////////////////////////////////// 1-1 Chat /////////////////////////////////////////////
     //
-
     Snippet sendMessageWithText = new Snippet("send message with text") {
         @Override
         public void execute() {
@@ -251,6 +250,9 @@ public class SnippetsChat extends Snippets {
     }
 
 
+    //
+    ///////////////////////////////////////////// Group Chat /////////////////////////////////////////////
+    //
     Snippet createRoom = new Snippet("create Room") {
         @Override
         public void execute() {

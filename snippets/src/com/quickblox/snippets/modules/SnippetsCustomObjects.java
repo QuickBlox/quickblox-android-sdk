@@ -12,6 +12,8 @@ import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.QBCustomObjectsFiles;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.model.QBCustomObjectFileField;
+import com.quickblox.module.custom.model.QBPermissions;
+import com.quickblox.module.custom.model.QBPermissionsLevel;
 import com.quickblox.module.custom.result.*;
 import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
@@ -37,9 +39,6 @@ public class SnippetsCustomObjects extends Snippets {
     String fieldPower = "power";
     File file1 = null;
     File file2 = null;
-    QBFileObjectAccess fileObjectAccess;
-
-    private String fileName = "sample";
 
     private final String NOTE1_ID = "51d816e0535c12d75f006537";
 
@@ -97,20 +96,35 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet createCustomObject = new Snippet("create object") {
         @Override
         public void execute() {
-            QBCustomObject customObject = new QBCustomObject(className);
-            customObject.put(fieldHealth, 99);
-            customObject.put(fieldPower, 123.45);
-            customObject.setParentId("50d9bf2d535c12344701c43a");
+            // Create new record
+            //
+            QBCustomObject newRecord = new QBCustomObject(className);
+            newRecord.put(fieldHealth, 99);
+            newRecord.put(fieldPower, 123.45);
+            newRecord.setParentId("50d9bf2d535c12344701c43a");
+            //
+            // set permissions:
+            // READ
+            QBPermissions permissions = new QBPermissions();
+            permissions.setReadPermission(QBPermissionsLevel.OPEN);
+            //
+            // DELETE
+            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            openPermissionsForUserIDS.add("33");
+            openPermissionsForUserIDS.add("92");
+            permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
+            //
+            // UPDATE
+            permissions.setUpdatePermission(QBPermissionsLevel.OWNER);
+            newRecord.setPermission(permissions);
 
-            QBCustomObjects.createObject(customObject, new QBCallbackImpl() {
+            QBCustomObjects.createObject(newRecord, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
-
                     if (result.isSuccess()) {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
-
-                        System.out.println(">>> custom object: " + newCustomObject);
+                        System.out.println(">>> created record: " + newCustomObject);
                     } else {
                         handleErrors(result);
                     }
@@ -304,24 +318,40 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            QBCustomObject co = new QBCustomObject();
-            co.setClassName(className);
+            QBCustomObject record = new QBCustomObject();
+            //
+            // set Class name and record ID:
+            record.setClassName(className);
+            record.setCustomObjectId("52b30274535c12fbf80121bd");
+            //
+            // set fields:
             HashMap<String, Object> fields = new HashMap<String, Object>();
             fields.put(fieldPower, 1);
             fields.put(fieldHealth, 10);
-            co.setFields(fields);
-            co.setCustomObjectId("50e3f85f535c123376000d31");
+            record.setFields(fields);
+            //
+            // update permissions:
+            // READ
+            QBPermissions permissions = new QBPermissions();
+            permissions.setReadPermission(QBPermissionsLevel.OPEN);
+            //
+            // DELETE
+            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            openPermissionsForUserIDS.add("33");
+            openPermissionsForUserIDS.add("92");
+            permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
+            //
+            // UPDATE
+            permissions.setUpdatePermission(QBPermissionsLevel.OWNER);
+            record.setPermission(permissions);
 
-            QBCustomObjects.updateObject(co, new QBCallbackImpl() {
+            QBCustomObjects.updateObject(record, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
 
-                        System.out.println(">>> updatedAt: " + updateResult.getCustomObject().getUpdatedAt());
-                        System.out.println(">>> createdAt: " + updateResult.getCustomObject().getCreatedAt());
-
-                        System.out.println(">>> co : " + updateResult.getCustomObject().toString());
+                        System.out.println(">>> updated record: : " + updateResult.getCustomObject().toString());
                     } else {
                         handleErrors(result);
                     }
