@@ -64,7 +64,9 @@ public class SnippetsChat extends Snippets {
         snippets.add(logoutFromChat);
         //
         snippets.add(sendPresence);
+        snippets.add(sendPresenceWithStatus);
         snippets.add(startAutoSendPresence);
+        snippets.add(stopAutoSendPresence);
         //
         snippets.add(sendMessageWithText);
         snippets.add(sendMessageWithMessage);
@@ -91,7 +93,8 @@ public class SnippetsChat extends Snippets {
                         @Override
                         public void onLoginSuccess() {
                             System.out.println("success when login");
-                            QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
+                                QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
+
 
                             // Add Chat message listener
                             initChatMessageListener();
@@ -127,6 +130,11 @@ public class SnippetsChat extends Snippets {
                                 }
                             });
                         }
+
+                        @Override
+                        public void onDisconnectOnError(Exception exc) {
+
+                        }
                     });
         }
     };
@@ -157,6 +165,15 @@ public class SnippetsChat extends Snippets {
         }
     };
 
+
+    Snippet sendPresenceWithStatus = new Snippet("send presence") {
+        String status = "";
+        @Override
+        public void execute() {
+            QBChat.getInstance().sendPresence(status);
+        }
+    };
+
     Snippet startAutoSendPresence = new Snippet("start auto send presence") {
         @Override
         public void execute() {
@@ -164,6 +181,14 @@ public class SnippetsChat extends Snippets {
             QBChat.getInstance().startAutoSendPresence(intervalInSecondsBetweenSending);
         }
     };
+
+    Snippet stopAutoSendPresence = new Snippet("stop auto send presence") {
+        @Override
+        public void execute() {
+            QBChat.getInstance().stopAutoSendPresence();
+        }
+    };
+
 
 
     //
@@ -173,7 +198,7 @@ public class SnippetsChat extends Snippets {
     Snippet sendMessageWithText = new Snippet("send message with text") {
         @Override
         public void execute() {
-                    QBChat.getInstance().sendMessage(USER_ID, "Hey man!");
+            QBChat.getInstance().sendMessage(USER_ID, "Hey man!");
         }
     };
 
