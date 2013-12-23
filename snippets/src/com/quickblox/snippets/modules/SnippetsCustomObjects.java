@@ -57,6 +57,7 @@ public class SnippetsCustomObjects extends Snippets {
         snippets.add(updateCustomObject);
         snippets.add(updateCustomObjects);
         snippets.add(getGetCustomObjectsByIds);
+        snippets.add(getCustomObjectPermissionById);
         snippets.add(getCustomsObjectWithFilters);
         snippets.add(downloadFile);
         snippets.add(updateFile);
@@ -248,6 +249,27 @@ public class SnippetsCustomObjects extends Snippets {
                     // if we use requestBuilder.count()
 //                    QBCustomObjectCountResult countResult = (QBCustomObjectCountResult) result;
 //                    Log.d("Count", String.valueOf(countResult.getCount()));
+                }
+            });
+        }
+    };
+
+    Snippet getCustomObjectPermissionById = new Snippet("get object permissions") {
+        @Override
+        public void execute() {
+            String OBJ_ID = "51dbe2ca535c122c0700014f";
+
+            QBCustomObjects.getObjectPermissions(CLASS_NAME, OBJ_ID, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+                    if (result.isSuccess()) {
+                        QBCustomObjectPermissionResult customObjectPermissionResult = (QBCustomObjectPermissionResult) result;
+                        QBPermissions permissions = customObjectPermissionResult.getPermissions();
+
+                        System.out.println(">>> custom object: " + permissions.toString());
+                    } else {
+                        handleErrors(result);
+                    }
                 }
             });
         }
