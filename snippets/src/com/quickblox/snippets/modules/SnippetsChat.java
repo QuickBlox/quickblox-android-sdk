@@ -3,26 +3,37 @@ package com.quickblox.snippets.modules;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
-
+import com.quickblox.core.QBCallbackImpl;
+import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.exception.BaseServiceException;
+import com.quickblox.internal.core.helper.ToStringHelper;
+import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
+import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
+import com.quickblox.module.custom.QBCustomObjects;
+import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
+import com.quickblox.module.videochat.model.objects.MessageExtension;
+import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
-
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Oleg Soroka
@@ -31,6 +42,7 @@ import java.util.List;
  */
 public class SnippetsChat extends Snippets {
 
+    private static final String TAG = SnippetsChat.class.getSimpleName();
     private Handler handler = new Handler(Looper.getMainLooper());
 
     // test Chat user credentials
@@ -50,7 +62,7 @@ public class SnippetsChat extends Snippets {
     public SnippetsChat(final Context context) {
         super(context);
         SmackAndroid.init(context);
-
+        initChatMessageListener();
         // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
@@ -64,10 +76,13 @@ public class SnippetsChat extends Snippets {
         snippets.add(logoutFromChat);
         //
         snippets.add(sendPresence);
+        snippets.add(sendPresenceWithStatus);
         snippets.add(startAutoSendPresence);
+        snippets.add(stopAutoSendPresence);
         //
         snippets.add(sendMessageWithText);
         snippets.add(sendMessageWithMessage);
+        snippets.add(sendMessageWithSaving);
         //
         snippets.add(createRoom);
         snippets.add(joinRoom);
@@ -126,6 +141,11 @@ public class SnippetsChat extends Snippets {
                                 }
                             });
                         }
+
+                        @Override
+                        public void onDisconnectOnError(Exception exc) {
+
+                        }
                     });
         }
     };
@@ -156,6 +176,15 @@ public class SnippetsChat extends Snippets {
         }
     };
 
+
+    Snippet sendPresenceWithStatus = new Snippet("send presence") {
+        String status = "";
+        @Override
+        public void execute() {
+            QBChat.getInstance().sendPresence(status);
+        }
+    };
+
     Snippet startAutoSendPresence = new Snippet("start auto send presence") {
         @Override
         public void execute() {
@@ -164,6 +193,14 @@ public class SnippetsChat extends Snippets {
         }
     };
 
+    Snippet stopAutoSendPresence = new Snippet("stop auto send presence") {
+        @Override
+        public void execute() {
+            QBChat.getInstance().stopAutoSendPresence();
+        }
+    };
+
+
 
     //
     ///////////////////////////////////////////// 1-1 Chat /////////////////////////////////////////////
@@ -171,7 +208,7 @@ public class SnippetsChat extends Snippets {
     Snippet sendMessageWithText = new Snippet("send message with text") {
         @Override
         public void execute() {
-                    QBChat.getInstance().sendMessage(USER_ID, "Hey man!");
+            QBChat.getInstance().sendMessage(USER_ID, "Hey man!");
         }
     };
 
@@ -183,6 +220,58 @@ public class SnippetsChat extends Snippets {
             QBChat.getInstance().sendMessage(USER_ID, message);
         }
     };
+
+    Snippet sendMessageWithSaving = new Snippet("send message with saving in history") {
+        @Override
+        public void execute() {
+            Map<String, Object> addinfoParams = new HashMap<String, Object>();
+            addinfoParams.put(Consts.AGE, 22);
+            addinfoParams.put(Consts.TYPE, "actor");
+            final String BODY = "Hey QuickBlox!";
+            Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
+            QBChat.getInstance().sendMessage(USER_ID, message);
+            registerMsgOnServer(USER_ID, BODY, addinfoParams);
+        }
+    };
+
+    private Message createMsgWithAdditionalInfo(int userId, String body,  Map<?, ?> addinfoParams){
+        Message message = new Message(QBChatUtils.getChatLoginFull(userId), Message.Type.chat);
+        String addInfo = ToStringHelper.toString(addinfoParams, "", Consts.ESCAPED_AMPERSAND);
+        MessageExtension messageExtension = new MessageExtension(Consts.QB_INFO, "");
+        try {
+            messageExtension.setValue(Consts.QBTOKEN, QBAuth.getBaseService().getToken());
+            //messageExtension.setValue(Consts.CLASS_NAME, Consts.MESSAGES);
+            messageExtension.setValue(Consts.ADDITIONAL_INFO, addInfo);
+        } catch (BaseServiceException e) {
+            e.printStackTrace();
+        }
+        message.addExtension(messageExtension);
+        message.setBody(body);
+        return message;
+    }
+
+    private void registerMsgOnServer(int userId, String msg,  Map<String, Object> addParams){
+        QBCustomObject custobj = new QBCustomObject();
+
+        custobj.setClassName(Consts.MESSAGES);
+
+        HashMap<String, Object> fields = new HashMap<String, Object>();
+
+        fields.put(Consts.AUTHOR_ID, qbUser.getId());
+        fields.put(Consts.OPPONENT_ID, userId);
+        fields.put(Consts.MESSAGE, msg);
+        fields.putAll(addParams);
+
+        custobj.setFields(fields);
+        QBCustomObjects.createObject(custobj, new QBCallbackImpl(){
+            @Override
+            public void onComplete(Result result) {
+                if(result.isSuccess()){
+                    Log.i(TAG, "Message stored in history");
+                }
+            }
+        });
+    }
 
     private void initChatMessageListener() {
         // Set 1-1 Chat message listener
@@ -247,8 +336,14 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             try {
                 currentQBChatRoom.sendMessage("message to room");
-            } catch (XMPPException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (final XMPPException e) {
+                e.printStackTrace();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     };
@@ -271,10 +366,14 @@ public class SnippetsChat extends Snippets {
     Snippet getRooms = new Snippet("get list of rooms") {
         @Override
         public void execute() {
-            List<QBChatRoom> rooms = QBChat.getInstance().getRooms();
-            for (QBChatRoom room : rooms) {
-                System.out.println("room: " + room.getJid());
-            }
+            QBChat.getInstance().getRooms(new RoomReceivingListener() {
+                @Override
+                public void onReceiveRooms(List<QBChatRoom> list) {
+                    for (QBChatRoom room : list) {
+                        System.out.println("room: " + room.getJid());
+                    }
+                }
+            });
         }
     };
 
@@ -313,17 +412,16 @@ public class SnippetsChat extends Snippets {
             @Override
             public void processPacket(Packet packet) {
                 final Message message = (Message) packet;
-                System.out.println(">>>received message from room: " + message.getBody() + " " + message.getFrom());
+
+                final String messageText = String.format("Received message in room, %s:'%s'", message.getFrom(), message.getBody());
 
                 // Show message
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "received message from room: " + message.getBody() + " " + message.getFrom(),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         };
     }
