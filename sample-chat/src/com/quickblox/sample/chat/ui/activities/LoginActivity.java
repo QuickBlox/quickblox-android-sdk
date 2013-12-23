@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat;
+package com.quickblox.sample.chat.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,24 +8,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
+import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.listeners.SessionListener;
+import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
+import com.quickblox.sample.chat.QuickbloxSampleChat;
+import com.quickblox.sample.chat.R;
 
-/**
- * Date: 24.10.12
- * Time: 22:16
- */
-
-/**
- * Activity provides interface for user auth.
- *
- * @author <a href="mailto:oleg@quickblox.com">Oleg Soroka</a>
- */
-public class MainActivity extends Activity implements QBCallback, View.OnClickListener {
-
+public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
     private static final String DEFAULT_LOGIN = "romeo";
     private static final String DEFAULT_PASSWORD = "password";
 
@@ -42,7 +36,7 @@ public class MainActivity extends Activity implements QBCallback, View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_login);
 
         // UI stuff
         loginEdit = (EditText) findViewById(R.id.loginEdit);
@@ -55,6 +49,8 @@ public class MainActivity extends Activity implements QBCallback, View.OnClickLi
         registerButton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading");
+
+        SmackAndroid.init(this);
     }
 
     @Override
@@ -72,32 +68,48 @@ public class MainActivity extends Activity implements QBCallback, View.OnClickLi
                 // Login user into QuickBlox.
                 // Pass this activity , because it implements QBCallback interface.
                 // Callback result will come into onComplete method below.
-                QBUsers.signIn(user, MainActivity.this);
+                QBUsers.signIn(user, LoginActivity.this);
                 break;
             case R.id.registerButton:
 
                 // ================= QuickBlox ===== Step 3 =================
                 // Register user in QuickBlox.
-                QBUsers.signUpSignInTask(user, MainActivity.this);
+                QBUsers.signUpSignInTask(user, LoginActivity.this);
                 break;
         }
     }
 
     @Override
     public void onComplete(Result result) {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-
         if (result.isSuccess()) {
-            Intent intent = new Intent(this, UsersListActivity.class);
-            intent.putExtra("myId", user.getId());
-            intent.putExtra("myLogin", user.getLogin());
-            intent.putExtra("myPassword", user.getPassword());
 
-            startActivity(intent);
-            Toast.makeText(this, "You've been successfully logged in application",
-                    Toast.LENGTH_SHORT).show();
+            QuickbloxSampleChat.getInstance().setQbUser(user);
+            QBChat.getInstance().loginWithUser(user, new SessionListener() {
+                @Override
+                public void onLoginSuccess() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    System.out.println("success when login");
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onLoginError() {
+                    System.out.println("error when login");
+                }
+
+                @Override
+                public void onDisconnect() {
+                    System.out.println("disconnect when login");
+                }
+
+                @Override
+                public void onDisconnectOnError(Exception exc) {
+                    System.out.println("disconnect error when login");
+                }
+            });
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Error(s) occurred. Look into DDMS log for details, " +
@@ -106,5 +118,6 @@ public class MainActivity extends Activity implements QBCallback, View.OnClickLi
     }
 
     @Override
-    public void onComplete(Result result, Object context) { }
+    public void onComplete(Result result, Object context) {
+    }
 }

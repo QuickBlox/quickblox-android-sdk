@@ -1,0 +1,107 @@
+package com.quickblox.sample.chat.ui.activities;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.core.Chat;
+import com.quickblox.sample.chat.core.RoomChat;
+import com.quickblox.sample.chat.core.SingleChat;
+import com.quickblox.sample.chat.model.ChatMessage;
+import com.quickblox.sample.chat.ui.adapters.ChatAdapter;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+public class ChatActivity extends Activity {
+
+    public static final String MODE = "mode";
+
+    private EditText messageEditText;
+    private Mode mode = Mode.SINGLE;
+    private Chat chat;
+    private ChatAdapter adapter;
+    private ListView messagesContainer;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+
+        initViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        chat.release();
+        super.onBackPressed();
+    }
+
+    private void initViews() {
+        messagesContainer = (ListView) findViewById(R.id.messagesContainer);
+        messageEditText = (EditText) findViewById(R.id.messageEdit);
+        Button sendButton = (Button) findViewById(R.id.chatSendButton);
+
+        adapter = new ChatAdapter(this, new ArrayList<ChatMessage>());
+        messagesContainer.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        mode = (Mode) intent.getSerializableExtra(MODE);
+        switch (mode) {
+            case GROUP:
+                chat = new RoomChat(this);
+                break;
+            case SINGLE:
+                chat = new SingleChat(this);
+                break;
+        }
+
+        sendButton.setOnClickListener(onSendClick);
+    }
+
+    private View.OnClickListener onSendClick = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+
+            String lastMsg = messageEditText.getText().toString();
+            if (TextUtils.isEmpty(lastMsg)) {
+                return;
+            }
+
+            messageEditText.setText("");
+            chat.sendMessage(lastMsg);
+
+            if (mode == Mode.SINGLE) {
+                showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), true));
+            }
+        }
+    };
+
+    public void showMessage(ChatMessage message) {
+        adapter.add(message);
+        adapter.notifyDataSetChanged();
+        scrollDown();
+    }
+
+    private void scrollDown() {
+        messagesContainer.setSelection(messagesContainer.getCount() - 1);
+    }
+
+    private void showMessage(List<ChatMessage> messageQuery) {
+        for (ChatMessage message : messageQuery) {
+            adapter.add(message);
+        }
+        adapter.notifyDataSetChanged();
+        scrollDown();
+    }
+
+    public enum Mode {SINGLE, GROUP}
+}
