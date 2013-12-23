@@ -45,7 +45,7 @@ public class SnippetsChat extends Snippets {
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
     private PacketListener pMessageListener;
-    public static final String ROOM_NAME = "temp_room_for_snippet";
+    public static final String ROOM_NAME = "quickblox";
 
     public SnippetsChat(final Context context) {
         super(context);
@@ -91,7 +91,6 @@ public class SnippetsChat extends Snippets {
                         @Override
                         public void onLoginSuccess() {
                             System.out.println("success when login");
-                            QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
 
                             // Add Chat message listener
                             initChatMessageListener();
@@ -289,7 +288,7 @@ public class SnippetsChat extends Snippets {
     private void initRoomListener() {
         roomReceivingListener = new RoomListener() {
             @Override
-            public void onCreatedRoom(QBChatRoom qbChatRoom) {
+                public void onCreatedRoom(QBChatRoom qbChatRoom) {
                 System.out.println("on Created Room listener");
                 currentQBChatRoom = qbChatRoom;
                 currentQBChatRoom.addMessageListener(pMessageListener);
@@ -313,8 +312,18 @@ public class SnippetsChat extends Snippets {
         pMessageListener = new PacketListener() {
             @Override
             public void processPacket(Packet packet) {
-                Message message = (Message) packet;
+                final Message message = (Message) packet;
                 System.out.println(">>>received message from room: " + message.getBody() + " " + message.getFrom());
+
+                // Show message
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "received message from room: " + message.getBody() + " " + message.getFrom(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         };
     }
