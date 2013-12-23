@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
+import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
@@ -297,10 +298,14 @@ public class SnippetsChat extends Snippets {
     Snippet getRooms = new Snippet("get list of rooms") {
         @Override
         public void execute() {
-            List<QBChatRoom> rooms = QBChat.getInstance().getRooms();
-            for (QBChatRoom room : rooms) {
-                System.out.println("room: " + room.getJid());
-            }
+            QBChat.getInstance().getRooms(new RoomReceivingListener() {
+                @Override
+                public void onReceiveRooms(List<QBChatRoom> list) {
+                    for (QBChatRoom room : list) {
+                        System.out.println("room: " + room.getJid());
+                    }
+                }
+            });
         }
     };
 
