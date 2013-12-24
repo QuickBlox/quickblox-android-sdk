@@ -1,12 +1,13 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.FileHelper;
 import com.quickblox.internal.core.helper.StringifyArrayList;
 import com.quickblox.internal.module.custom.request.QBCustomObjectRequestBuilder;
-import com.quickblox.module.content.model.QBFileObjectAccess;
 import com.quickblox.module.content.result.QBFileDownloadResult;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.QBCustomObjectsFiles;
@@ -14,7 +15,13 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.model.QBCustomObjectFileField;
 import com.quickblox.module.custom.model.QBPermissions;
 import com.quickblox.module.custom.model.QBPermissionsLevel;
-import com.quickblox.module.custom.result.*;
+import com.quickblox.module.custom.result.QBCOFileUploadResult;
+import com.quickblox.module.custom.result.QBCustomObjectDeletedResult;
+import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
+import com.quickblox.module.custom.result.QBCustomObjectMultiUpdatedResult;
+import com.quickblox.module.custom.result.QBCustomObjectPermissionResult;
+import com.quickblox.module.custom.result.QBCustomObjectResult;
+import com.quickblox.module.custom.result.QBCustomObjectTaskResult;
 import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -23,7 +30,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * User: Oleg Soroka
@@ -32,6 +43,7 @@ import java.util.*;
  */
 public class SnippetsCustomObjects extends Snippets {
 
+    private static final String TAG = SnippetsCustomObjects.class.getSimpleName();
     // Define custom object model in QB Admin Panel
     // http://image.quickblox.com/3f71573f1fd8b23a1e375b904a80.injoit.png
     String className = "SuperSample";
@@ -85,7 +97,7 @@ public class SnippetsCustomObjects extends Snippets {
                         QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult) result;
 
                         ArrayList<QBCustomObject> co = coresult.getCustomObjects();
-                        System.out.println(">>> custom object list: " + co.toString());
+                        Log.i(TAG, ">>> custom object list: " + co.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -125,7 +137,7 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
-                        System.out.println(">>> created record: " + newCustomObject);
+                        Log.i(TAG, ">>> created record: " + newCustomObject);
                     } else {
                         handleErrors(result);
                     }
@@ -162,7 +174,7 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectLimitedResult customObjectsResult = (QBCustomObjectLimitedResult) result;
                         ArrayList<QBCustomObject> newCustomObjects = customObjectsResult.getCustomObjects();
-                        System.out.println(">>> custom object list: " + newCustomObjects.toString());
+                        Log.i(TAG, ">>> custom object list: " + newCustomObjects.toString());
 
                     } else {
                         handleErrors(result);
@@ -240,7 +252,7 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectLimitedResult coresult = (QBCustomObjectLimitedResult) result;
                         ArrayList<QBCustomObject> co = coresult.getCustomObjects();
-                        System.out.println(">>> custom object list: " + co.toString());
+                        Log.i(TAG, ">>> custom object list: " + co.toString());
 
                     } else {
                         handleErrors(result);
@@ -266,7 +278,7 @@ public class SnippetsCustomObjects extends Snippets {
                         QBCustomObjectPermissionResult customObjectPermissionResult = (QBCustomObjectPermissionResult) result;
                         QBPermissions permissions = customObjectPermissionResult.getPermissions();
 
-                        System.out.println(">>> custom object: " + permissions.toString());
+                        Log.i(TAG, ">>> custom object: " + permissions.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -287,7 +299,7 @@ public class SnippetsCustomObjects extends Snippets {
                         QBCustomObjectResult customObjectResult = (QBCustomObjectResult) result;
                         QBCustomObject newCustomObject = customObjectResult.getCustomObject();
 
-                        System.out.println(">>> custom object: " + newCustomObject);
+                        Log.i(TAG, ">>> custom object: " + newCustomObject);
                     } else {
                         handleErrors(result);
                     }
@@ -305,7 +317,7 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> custom object deleted OK");
+                        Log.i(TAG, ">>> custom object deleted OK");
                     } else {
                         handleErrors(result);
                     }
@@ -326,9 +338,9 @@ public class SnippetsCustomObjects extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBCustomObjectDeletedResult qbCustomObjectDeletedResult = (QBCustomObjectDeletedResult) result;
-                        System.out.println(">>> deletedObjs: " + qbCustomObjectDeletedResult.getDeleted().toString());
-                        System.out.println(">>> notFoundObjs: " + qbCustomObjectDeletedResult.getNotFound().toString());
-                        System.out.println(">>> wrongPermissionsObjs: " + qbCustomObjectDeletedResult.getWrongPermissions().toString());
+                        Log.i(TAG, ">>> deletedObjs: " + qbCustomObjectDeletedResult.getDeleted().toString());
+                        Log.i(TAG, ">>> notFoundObjs: " + qbCustomObjectDeletedResult.getNotFound().toString());
+                        Log.i(TAG, ">>> wrongPermissionsObjs: " + qbCustomObjectDeletedResult.getWrongPermissions().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -373,7 +385,7 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectResult updateResult = (QBCustomObjectResult) result;
 
-                        System.out.println(">>> updated record: : " + updateResult.getCustomObject().toString());
+                        Log.i(TAG, ">>> updated record: : " + updateResult.getCustomObject().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -413,8 +425,8 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
                         QBCustomObjectMultiUpdatedResult updateResult = (QBCustomObjectMultiUpdatedResult) result;
 
-                        System.out.println(">>> updatedObjects: " + updateResult.getCustomObjects().toString());
-                        System.out.println(">>> notFoundObjects: " + updateResult.getNotFoundIds().toString());
+                        Log.i(TAG, ">>> updatedObjects: " + updateResult.getCustomObjects().toString());
+                        Log.i(TAG, ">>> notFoundObjects: " + updateResult.getNotFoundIds().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -433,7 +445,7 @@ public class SnippetsCustomObjects extends Snippets {
                     if (result.isSuccess()) {
 
                         QBCustomObjectFileField customObjectFileField = ((QBCOFileUploadResult) result).getCustomObjectFileField();
-                        System.out.println(">>>upload response:" + customObjectFileField.getFileName() + " " + customObjectFileField.getFileId() + " " +
+                        Log.i(TAG, ">>>upload response:" + customObjectFileField.getFileName() + " " + customObjectFileField.getFileId() + " " +
                                 customObjectFileField.getContentType());
                     } else {
                         handleErrors(result);
@@ -451,7 +463,7 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> file updated successfully");
+                        Log.i(TAG, ">>> file updated successfully");
                     } else {
                         handleErrors(result);
                     }
@@ -468,7 +480,7 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> file deleted successfully");
+                        Log.i(TAG, ">>> file deleted successfully");
                     } else {
                         handleErrors(result);
                     }
@@ -491,7 +503,7 @@ public class SnippetsCustomObjects extends Snippets {
                         byte[] content = downloadResult.getContent();       // that's downloaded file content
                         InputStream is = downloadResult.getContentStream(); // that's downloaded file content
 
-                        System.out.println(">>> file downloaded successfully" + getContentFromFile(is));
+                        Log.i(TAG, ">>> file downloaded successfully" + getContentFromFile(is));
                         if(is!=null){
                             try{
                                 is.close();
