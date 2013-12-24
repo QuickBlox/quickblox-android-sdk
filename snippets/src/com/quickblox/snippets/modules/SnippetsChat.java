@@ -13,6 +13,7 @@ import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.chat.QBChat;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
+import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
@@ -178,8 +179,8 @@ public class SnippetsChat extends Snippets {
     };
 
 
-    Snippet sendPresenceWithStatus = new Snippet("send presence") {
-        String status = "";
+    Snippet sendPresenceWithStatus = new Snippet("send presence with status") {
+        String status = "I'm ok";
         @Override
         public void execute() {
             QBChat.getInstance().sendPresence(status);
@@ -231,7 +232,6 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             QBChat.getInstance().sendMessage(USER_ID, message);
-            registerMsgOnServer(USER_ID, BODY, addinfoParams);
         }
     };
 
@@ -249,29 +249,6 @@ public class SnippetsChat extends Snippets {
         message.addExtension(messageExtension);
         message.setBody(body);
         return message;
-    }
-
-    private void registerMsgOnServer(int userId, String msg,  Map<String, Object> addParams){
-        QBCustomObject custobj = new QBCustomObject();
-
-        custobj.setClassName(Consts.MESSAGES);
-
-        HashMap<String, Object> fields = new HashMap<String, Object>();
-
-        fields.put(Consts.AUTHOR_ID, qbUser.getId());
-        fields.put(Consts.OPPONENT_ID, userId);
-        fields.put(Consts.MESSAGE, msg);
-        fields.putAll(addParams);
-
-        custobj.setFields(fields);
-        QBCustomObjects.createObject(custobj, new QBCallbackImpl(){
-            @Override
-            public void onComplete(Result result) {
-                if(result.isSuccess()){
-                    Log.i(TAG, "Message stored in history");
-                }
-            }
-        });
     }
 
     private void initChatMessageListener() {
@@ -367,10 +344,12 @@ public class SnippetsChat extends Snippets {
     Snippet getRooms = new Snippet("get list of rooms") {
         @Override
         public void execute() {
-            List<QBChatRoom> rooms = QBChat.getInstance().getRooms();
-            for (QBChatRoom room : rooms) {
-                System.out.println("room: " + room.getJid());
-            }
+            QBChat.getInstance().getRooms(new RoomReceivingListener() {
+                @Override
+                public void onReceiveRooms(List<QBChatRoom> list) {
+
+                }
+            });
         }
     };
 
