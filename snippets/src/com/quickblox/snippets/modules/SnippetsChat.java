@@ -5,8 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.Result;
+
 import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.helper.ToStringHelper;
 import com.quickblox.module.auth.QBAuth;
@@ -18,13 +17,12 @@ import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
-import com.quickblox.module.custom.QBCustomObjects;
-import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -333,7 +331,7 @@ public class SnippetsChat extends Snippets {
             try {
                 onlineRoomUsers = currentQBChatRoom.getOnlineRoomUsers();
             } catch (XMPPException e) {
-                Log.i(TAG, e);
+                Log.i(TAG, "failed get online users", e);
             }
             for (Integer id : onlineRoomUsers) {
                 Log.i(TAG, "id: " + id);
