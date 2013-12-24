@@ -179,8 +179,8 @@ public class SnippetsChat extends Snippets {
     };
 
 
-    Snippet sendPresenceWithStatus = new Snippet("send presence with status") {
-        String status = "I'm ok";
+    Snippet sendPresenceWithStatus = new Snippet("send presence") {
+        String status = "";
         @Override
         public void execute() {
             QBChat.getInstance().sendPresence(status);
@@ -232,6 +232,7 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             QBChat.getInstance().sendMessage(USER_ID, message);
+            registerMsgOnServer(USER_ID, BODY, addinfoParams);
         }
     };
 
@@ -249,6 +250,29 @@ public class SnippetsChat extends Snippets {
         message.addExtension(messageExtension);
         message.setBody(body);
         return message;
+    }
+
+    private void registerMsgOnServer(int userId, String msg,  Map<String, Object> addParams){
+        QBCustomObject custobj = new QBCustomObject();
+
+        custobj.setClassName(Consts.MESSAGES);
+
+        HashMap<String, Object> fields = new HashMap<String, Object>();
+
+        fields.put(Consts.AUTHOR_ID, qbUser.getId());
+        fields.put(Consts.OPPONENT_ID, userId);
+        fields.put(Consts.MESSAGE, msg);
+        fields.putAll(addParams);
+
+        custobj.setFields(fields);
+        QBCustomObjects.createObject(custobj, new QBCallbackImpl(){
+            @Override
+            public void onComplete(Result result) {
+                if(result.isSuccess()){
+                    Log.i(TAG, "Message stored in history");
+                }
+            }
+        });
     }
 
     private void initChatMessageListener() {
@@ -347,7 +371,9 @@ public class SnippetsChat extends Snippets {
             QBChat.getInstance().getRooms(new RoomReceivingListener() {
                 @Override
                 public void onReceiveRooms(List<QBChatRoom> list) {
-
+                    for (QBChatRoom room : list) {
+                        System.out.println("room: " + room.getJid());
+                    }
                 }
             });
         }
