@@ -15,8 +15,8 @@
             android:id="@+id/txtTime"
             android:layout_width="wrap_content"
             android:layout_height="20sp"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"
+            android:gravity="right"
+            android:layout_gravity="right"
             android:textSize="10sp"
             android:textColor="@android:color/secondary_text_dark" />
 

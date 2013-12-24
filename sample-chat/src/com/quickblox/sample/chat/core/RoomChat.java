@@ -17,7 +17,6 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.packet.DelayInformation;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -109,21 +108,20 @@ public class RoomChat implements Chat {
         public void processPacket(final Packet packet) {
             Log.d(TAG, "got message in room");
             final Message message = (Message) packet;
-            DelayInformation delayInformation = (DelayInformation) packet.getExtension("jabber:x:delay");
-            final Date time;
-            if (delayInformation != null) {
-                time = delayInformation.getStamp();
-            } else {
+            Date time = QBChatUtils.parseTime(packet);
+            if (time == null) {
                 time = Calendar.getInstance().getTime();
             }
             // Show message
+            final Date finalTime = time;
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (QuickbloxSampleChat.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(packet.getFrom())) {
-                        chatActivity.showMessage(new ChatMessage(message.getBody(), time, true));
+                    String from = packet.getFrom();
+                    if (QuickbloxSampleChat.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(from)) {
+                        chatActivity.showMessage(new ChatMessage(message.getBody(), finalTime, true));
                     } else {
-                        chatActivity.showMessage(new ChatMessage(message.getBody(), time, false));
+                        chatActivity.showMessage(new ChatMessage(message.getBody(), finalTime, false));
                     }
                 }
             });
