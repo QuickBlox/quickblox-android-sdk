@@ -1,6 +1,8 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.FileHelper;
@@ -26,6 +28,7 @@ import java.io.InputStream;
  */
 public class SnippetsLocations extends Snippets {
 
+    private static final String TAG = SnippetsLocations.class.getSimpleName();
 
     // Coordinates for follow points
     // First point is SW, second is NE
@@ -85,7 +88,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBLocationResult locationResult = (QBLocationResult) result;
 
-                        System.out.println(">>> Location is: " + locationResult.getLocation());
+                        Log.i(TAG, ">>> Location is: " + locationResult.getLocation());
                     } else {
                         handleErrors(result);
                     }
@@ -104,7 +107,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBLocationResult locationResult = (QBLocationResult) result;
 
-                        System.out.println(">>> Location is: " + locationResult.getLocation());
+                        Log.i(TAG, ">>> Location is: " + locationResult.getLocation());
                     } else {
                         handleErrors(result);
                     }
@@ -126,7 +129,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBLocationResult locationResult = (QBLocationResult) result;
 
-                        System.out.println(">>> Location is: " + locationResult.getLocation());
+                        Log.i(TAG, ">>> Location is: " + locationResult.getLocation());
                     } else {
                         handleErrors(result);
                     }
@@ -144,7 +147,7 @@ public class SnippetsLocations extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> Delete location OK ");
+                        Log.i(TAG, ">>> Delete location OK ");
                     } else {
                         handleErrors(result);
                     }
@@ -165,7 +168,7 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBLocationPagedResult qbLocationPagedResult = (QBLocationPagedResult) result;
-                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().toString());
+                        Log.i(TAG, ">>> Locations:" + qbLocationPagedResult.getLocations().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -208,7 +211,7 @@ public class SnippetsLocations extends Snippets {
 
                         ;
 
-                        System.out.println(">>> Locations:" + qbLocationPagedResult.getLocations().get(0).getUser());
+                        Log.i(TAG, ">>> Locations:" + qbLocationPagedResult.getLocations().get(0).getUser());
                     } else {
                         handleErrors(result);
                     }
@@ -224,7 +227,7 @@ public class SnippetsLocations extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> Delete locations OK ");
+                        Log.i(TAG, ">>> Delete locations OK ");
                     } else {
                         handleErrors(result);
                     }
@@ -252,7 +255,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBPlaceResult placeResult = (QBPlaceResult) result;
 
-                        System.out.println(">> Place: " + placeResult.getPlace());
+                        Log.i(TAG, ">> Place: " + placeResult.getPlace());
                     } else {
                         handleErrors(result);
                     }
@@ -273,7 +276,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBPlaceResult placeResult = (QBPlaceResult) result;
 
-                        System.out.println(">> Place: " + placeResult.getPlace());
+                        Log.i(TAG, ">> Place: " + placeResult.getPlace());
                     } else {
                         handleErrors(result);
                     }
@@ -296,7 +299,7 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     QBPlaceResult qbPlaceResult = (QBPlaceResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> Place" + qbPlaceResult.getPlace());
+                        Log.i(TAG, ">>> Place" + qbPlaceResult.getPlace());
                     } else {
                         handleErrors(result);
                     }
@@ -314,7 +317,7 @@ public class SnippetsLocations extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">> Place was deleted");
+                        Log.i(TAG, ">> Place was deleted");
                     } else {
                         handleErrors(result);
                     }
@@ -331,7 +334,7 @@ public class SnippetsLocations extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBPlacePagedResult qbPlacePagedResult = (QBPlacePagedResult) result;
-                        System.out.println(">>> Places:" + qbPlacePagedResult.getPlaces());
+                        Log.i(TAG, ">>> Places:" + qbPlacePagedResult.getPlaces());
                     } else {
                         handleErrors(result);
                     }
@@ -363,7 +366,7 @@ public class SnippetsLocations extends Snippets {
                     if (result.isSuccess()) {
                         QBPlaceResult placeResult = (QBPlaceResult) result;
 
-                        System.out.println(">> Place: " + placeResult.getPlace());
+                        Log.i(TAG, ">> Place: " + placeResult.getPlace());
                     } else {
                         handleErrors(result);
                     }

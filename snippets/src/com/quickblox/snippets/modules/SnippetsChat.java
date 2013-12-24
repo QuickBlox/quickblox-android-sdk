@@ -5,8 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import com.quickblox.core.QBCallbackImpl;
-import com.quickblox.core.result.Result;
+
 import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.helper.ToStringHelper;
 import com.quickblox.module.auth.QBAuth;
@@ -18,13 +17,12 @@ import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
-import com.quickblox.module.custom.QBCustomObjects;
-import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -105,7 +103,7 @@ public class SnippetsChat extends Snippets {
                     QBChat.getInstance().loginWithUser(qbUser, new SessionListener() {
                         @Override
                         public void onLoginSuccess() {
-                            System.out.println("success when login");
+                            Log.i(TAG, "success when login");
                                 //QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
 
 
@@ -122,7 +120,7 @@ public class SnippetsChat extends Snippets {
 
                         @Override
                         public void onLoginError() {
-                            System.out.println("error when login");
+                            Log.i(TAG, "error when login");
 
                             handler.post(new Runnable() {
                                 @Override
@@ -134,7 +132,7 @@ public class SnippetsChat extends Snippets {
 
                         @Override
                         public void onDisconnect() {
-                            System.out.println("You have been disconnected");
+                            Log.i(TAG, "You have been disconnected");
 
                             handler.post(new Runnable() {
                                 @Override
@@ -156,7 +154,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             boolean isLoggedIn = QBChat.getInstance().isLoggedIn();
-            System.out.println("isLoggedIn: " + isLoggedIn);
+            Log.i(TAG, "isLoggedIn: " + isLoggedIn);
         }
     };
 
@@ -179,7 +177,7 @@ public class SnippetsChat extends Snippets {
     };
 
 
-    Snippet sendPresenceWithStatus = new Snippet("send presence") {
+    Snippet sendPresenceWithStatus = new Snippet("send presence with status") {
         String status = "";
         @Override
         public void execute() {
@@ -232,7 +230,6 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             QBChat.getInstance().sendMessage(USER_ID, message);
-            registerMsgOnServer(USER_ID, BODY, addinfoParams);
         }
     };
 
@@ -250,29 +247,6 @@ public class SnippetsChat extends Snippets {
         message.addExtension(messageExtension);
         message.setBody(body);
         return message;
-    }
-
-    private void registerMsgOnServer(int userId, String msg,  Map<String, Object> addParams){
-        QBCustomObject custobj = new QBCustomObject();
-
-        custobj.setClassName(Consts.MESSAGES);
-
-        HashMap<String, Object> fields = new HashMap<String, Object>();
-
-        fields.put(Consts.AUTHOR_ID, qbUser.getId());
-        fields.put(Consts.OPPONENT_ID, userId);
-        fields.put(Consts.MESSAGE, msg);
-        fields.putAll(addParams);
-
-        custobj.setFields(fields);
-        QBCustomObjects.createObject(custobj, new QBCallbackImpl(){
-            @Override
-            public void onComplete(Result result) {
-                if(result.isSuccess()){
-                    Log.i(TAG, "Message stored in history");
-                }
-            }
-        });
     }
 
     private void initChatMessageListener() {
@@ -295,7 +269,7 @@ public class SnippetsChat extends Snippets {
                     }
                 });
 
-                System.out.println("processMessage >>> " + message.toString());
+                Log.i(TAG, "processMessage >>> " + message.toString());
             }
 
             @Override
@@ -357,10 +331,10 @@ public class SnippetsChat extends Snippets {
             try {
                 onlineRoomUsers = currentQBChatRoom.getOnlineRoomUsers();
             } catch (XMPPException e) {
-                System.out.println(e);
+                Log.i(TAG, "failed get online users", e);
             }
             for (Integer id : onlineRoomUsers) {
-                System.out.println("id: " + id);
+                Log.i(TAG, "id: " + id);
             }
         }
     };
@@ -372,7 +346,7 @@ public class SnippetsChat extends Snippets {
                 @Override
                 public void onReceiveRooms(List<QBChatRoom> list) {
                     for (QBChatRoom room : list) {
-                        System.out.println("room: " + room.getJid());
+                        Log.i(TAG, "room: " + room.getJid());
                     }
                 }
             });
@@ -382,7 +356,7 @@ public class SnippetsChat extends Snippets {
     Snippet leaveRoom = new Snippet("leave Room") {
         @Override
         public void execute() {
-            QBChat.getInstance().leaveRoom(ROOM_NAME);
+            QBChat.getInstance().leaveRoom(currentQBChatRoom);
         }
     };
 
@@ -390,21 +364,21 @@ public class SnippetsChat extends Snippets {
         roomReceivingListener = new RoomListener() {
             @Override
             public void onCreatedRoom(QBChatRoom qbChatRoom) {
-                System.out.println("on Created Room listener");
+                Log.i(TAG, "on Created Room listener");
                 currentQBChatRoom = qbChatRoom;
                 currentQBChatRoom.addMessageListener(pMessageListener);
             }
 
             @Override
             public void onJoinedRoom(QBChatRoom qbChatRoom) {
-                System.out.println("on Joined Room listener");
+                Log.i(TAG, "on Joined Room listener");
                 currentQBChatRoom = qbChatRoom;
                 currentQBChatRoom.addMessageListener(pMessageListener);
             }
 
             @Override
             public void onError(String msg) {
-                System.out.println("on join Room error listener");
+                Log.i(TAG, "on join Room error listener");
             }
         };
     }
@@ -414,7 +388,7 @@ public class SnippetsChat extends Snippets {
             @Override
             public void processPacket(Packet packet) {
                 Message message = (Message) packet;
-                System.out.println(">>>received message from room: " + message.getBody() + " " + message.getFrom());
+                Log.i(TAG, ">>>received message from room: " + message.getBody() + " " + message.getFrom());
                 final String messageText = String.format("Received message from user %s:'%s'", message.getFrom(), message.getBody());
                 // Show message
                 handler.post(new Runnable() {

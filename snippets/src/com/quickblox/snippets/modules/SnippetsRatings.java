@@ -1,6 +1,8 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.request.QBPagedRequestBuilder;
@@ -8,7 +10,12 @@ import com.quickblox.module.ratings.QBRatings;
 import com.quickblox.module.ratings.model.QBAverage;
 import com.quickblox.module.ratings.model.QBGameMode;
 import com.quickblox.module.ratings.model.QBScore;
-import com.quickblox.module.ratings.result.*;
+import com.quickblox.module.ratings.result.QBAverageArrayResult;
+import com.quickblox.module.ratings.result.QBAverageResult;
+import com.quickblox.module.ratings.result.QBGameModeArrayResult;
+import com.quickblox.module.ratings.result.QBGameModeResult;
+import com.quickblox.module.ratings.result.QBScorePagedResult;
+import com.quickblox.module.ratings.result.QBScoreResult;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -22,6 +29,8 @@ import java.util.List;
  * Time: 15:27
  */
 public class SnippetsRatings extends Snippets {
+
+    private static final String TAG = SnippetsRatings.class.getSimpleName();
 
     public SnippetsRatings(Context context) {
         super(context);
@@ -57,7 +66,7 @@ public class SnippetsRatings extends Snippets {
                     if (result.isSuccess()) {
                         QBGameModeResult gameModeResult = (QBGameModeResult) result;
 
-                        System.out.println(">>> new game mode is:" + gameModeResult.getGameMode().toString());
+                        Log.i(TAG, ">>> new game mode is:" + gameModeResult.getGameMode().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -75,7 +84,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBGameModeResult gameModeResult = (QBGameModeResult) result;
-                        System.out.println(">>>game mode:" + gameModeResult.getGameMode().toString());
+                        Log.i(TAG, ">>>game mode:" + gameModeResult.getGameMode().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -96,7 +105,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBGameModeResult gameModeResult = (QBGameModeResult) result;
-                        System.out.println("GameMode " + gameModeResult.getGameMode().toString());
+                        Log.i(TAG, "GameMode " + gameModeResult.getGameMode().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -114,7 +123,7 @@ public class SnippetsRatings extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>>game mode successfully deleted:");
+                        Log.i(TAG, ">>>game mode successfully deleted:");
                     } else {
                         handleErrors(result);
                     }
@@ -132,7 +141,7 @@ public class SnippetsRatings extends Snippets {
 
                     if (result.isSuccess()) {
                         QBGameModeArrayResult gameModeArrayResult = (QBGameModeArrayResult) result;
-                        System.out.println("GameMode list - " + gameModeArrayResult.getGameModes().toString());
+                        Log.i(TAG, "GameMode list - " + gameModeArrayResult.getGameModes().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -156,7 +165,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBScoreResult qbScoreResult = (QBScoreResult) result;
-                        System.out.println(">>>game mode successfully deleted:" + qbScoreResult.getScore().toString());
+                        Log.i(TAG, ">>>game mode successfully deleted:" + qbScoreResult.getScore().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -177,7 +186,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBScoreResult scoreResult = (QBScoreResult) result;
-                        System.out.println("Score " + scoreResult.getScore().toString());
+                        Log.i(TAG, "Score " + scoreResult.getScore().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -195,7 +204,7 @@ public class SnippetsRatings extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println("Score deleted");
+                        Log.i(TAG, "Score deleted");
                     } else {
                         handleErrors(result);
                     }
@@ -218,7 +227,7 @@ public class SnippetsRatings extends Snippets {
                         QBScoreResult scoreResult = (QBScoreResult) result;
 
 
-                        System.out.println("Score - " + scoreResult.getScore().toString());
+                        Log.i(TAG, "Score - " + scoreResult.getScore().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -243,7 +252,7 @@ public class SnippetsRatings extends Snippets {
 
                     if (result.isSuccess()) {
                         QBScorePagedResult scorePagedResult = (QBScorePagedResult) result;
-                        System.out.println("Score list " + scorePagedResult.getScores().toString());
+                        Log.i(TAG, "Score list " + scorePagedResult.getScores().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -267,7 +276,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBScorePagedResult qbScorePagedResult = (QBScorePagedResult) result;
-                        System.out.println("Score list - " + qbScorePagedResult.getScores().toString());
+                        Log.i(TAG, "Score list - " + qbScorePagedResult.getScores().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -290,7 +299,7 @@ public class SnippetsRatings extends Snippets {
                     if (result.isSuccess()) {
                         QBAverageArrayResult averageArrayResult = (QBAverageArrayResult) result;
                         List<QBAverage> averageList = averageArrayResult.getAverages();
-                        System.out.println("AverageList- " + averageList.toString());
+                        Log.i(TAG, "AverageList- " + averageList.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -309,7 +318,7 @@ public class SnippetsRatings extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBAverageResult averageResult = (QBAverageResult) result;
-                        System.out.println("Average - " + averageResult.getAverage().toString());
+                        Log.i(TAG, "Average - " + averageResult.getAverage().toString());
                     } else {
                         handleErrors(result);
                     }
