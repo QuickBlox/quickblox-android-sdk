@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -25,14 +24,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-
-        // ================= QuickBlox ===== Step 1 =================
-        // Initialize QuickBlox application with credentials.
-        // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
         QBSettings.getInstance().fastConfigInit("5418", "f9xJ5M6FPqchHbr", "ScxbhMTyS9zcC3H");
-
-        // ================= QuickBlox ===== Step 2 =================
-        // Authorize application.
         QBAuth.createSession(this);
     }
 
@@ -49,7 +41,6 @@ public class SplashActivity extends Activity implements QBCallback {
             dialog.setMessage("Error(s) occurred. Look into DDMS log for details, " +
                     "please. Errors: " + result.getErrors()).create().show();
         }
-
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import com.quickblox.sample.chat.R;
 public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
     private static final String DEFAULT_LOGIN = "romeo";
     private static final String DEFAULT_PASSWORD = "password";
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     private Button loginButton;
     private Button registerButton;
@@ -90,24 +92,24 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    System.out.println("success when login");
+                    Log.i(TAG, "success when login");
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
 
                 @Override
                 public void onLoginError() {
-                    System.out.println("error when login");
+                    Log.i(TAG, "error when login");
                 }
 
                 @Override
                 public void onDisconnect() {
-                    System.out.println("disconnect when login");
+                    Log.i(TAG, "disconnect when login");
                 }
 
                 @Override
                 public void onDisconnectOnError(Exception exc) {
-                    System.out.println("disconnect error when login");
+                    Log.i(TAG, "disconnect error when login");
                 }
             });
         } else {
