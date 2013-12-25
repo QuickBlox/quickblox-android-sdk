@@ -62,7 +62,7 @@ public class SnippetsChat extends Snippets {
     public SnippetsChat(final Context context) {
         super(context);
         SmackAndroid.init(context);
-        initChatMessageListener();
+
         // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
@@ -90,6 +90,9 @@ public class SnippetsChat extends Snippets {
         snippets.add(getOnlineRoomUsers);
         snippets.add(getRooms);
         snippets.add(leaveRoom);
+
+//        // Add Chat message listener
+        initChatMessageListener();
     }
 
 
@@ -106,9 +109,6 @@ public class SnippetsChat extends Snippets {
                         @Override
                         public void onLoginSuccess() {
                             System.out.println("success when login");
-
-                            // Add Chat message listener
-                            initChatMessageListener();
 
                             handler.post(new Runnable() {
                                 @Override
@@ -177,15 +177,15 @@ public class SnippetsChat extends Snippets {
     };
 
 
-    Snippet sendPresenceWithStatus = new Snippet("send presence") {
-        String status = "";
+    Snippet sendPresenceWithStatus = new Snippet("send presence with custom status") {
+        String status = "Away";
         @Override
         public void execute() {
             QBChat.getInstance().sendPresence(status);
         }
     };
 
-    Snippet startAutoSendPresence = new Snippet("start auto send presence") {
+    Snippet startAutoSendPresence = new Snippet("start auto sending presence") {
         @Override
         public void execute() {
             int intervalInSecondsBetweenSending = 10;
@@ -193,7 +193,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet stopAutoSendPresence = new Snippet("stop auto send presence") {
+    Snippet stopAutoSendPresence = new Snippet("stop auto sending presence") {
         @Override
         public void execute() {
             QBChat.getInstance().stopAutoSendPresence();
@@ -230,7 +230,9 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             QBChat.getInstance().sendMessage(USER_ID, message);
-            registerMsgOnServer(USER_ID, BODY, addinfoParams);
+
+//            registerMsgOnServer(USER_ID, BODY, addinfoParams);
+
         }
     };
 
