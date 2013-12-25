@@ -12,12 +12,12 @@ import android.widget.EditText;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
-import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
-import com.quickblox.sample.chat.QuickbloxSampleChat;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 
 public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
@@ -85,8 +85,8 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     public void onComplete(Result result) {
         if (result.isSuccess()) {
 
-            QuickbloxSampleChat.getInstance().setQbUser(user);
-            QBChat.getInstance().loginWithUser(user, new SessionListener() {
+            App.getInstance().setQbUser(user);
+            QBChatService.getInstance().loginWithUser(user, new SessionListener() {
                 @Override
                 public void onLoginSuccess() {
                     if (progressDialog != null) {

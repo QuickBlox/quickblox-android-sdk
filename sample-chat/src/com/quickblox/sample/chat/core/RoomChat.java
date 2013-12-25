@@ -5,11 +5,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.utils.QBChatUtils;
-import com.quickblox.sample.chat.QuickbloxSampleChat;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.model.ChatMessage;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
 
@@ -66,16 +66,20 @@ public class RoomChat implements Chat {
     @Override
     public void release() {
         if (chatRoom != null) {
-            chatRoom.leave();
+            try {
+                chatRoom.leave();
+            } catch (XMPPException e) {
+                Log.e(TAG, "failed to send a message", e);
+            }
         }
     }
 
     public void create(String roomName) {
-        QBChat.getInstance().createRoom(roomName, false, true, roomListener);
+        QBChatService.getInstance().createRoom(roomName, false, false, roomListener);
     }
 
     public void join(String roomName) {
-        QBChat.getInstance().joinRoom(roomName, roomListener);
+        QBChatService.getInstance().joinRoom(roomName, roomListener);
     }
 
     public enum RoomAction {CREATE, JOIN}
@@ -118,7 +122,7 @@ public class RoomChat implements Chat {
                 @Override
                 public void run() {
                     String from = packet.getFrom();
-                    if (QuickbloxSampleChat.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(from)) {
+                    if (App.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(from)) {
                         chatActivity.showMessage(new ChatMessage(message.getBody(), finalTime, true));
                     } else {
                         chatActivity.showMessage(new ChatMessage(message.getBody(), finalTime, false));

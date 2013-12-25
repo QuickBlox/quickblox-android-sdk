@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.sample.chat.R;
@@ -94,7 +94,7 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
         if (getActivity() != null) {
             progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
         }
-        QBChat.getInstance().getRooms(this);
+        QBChatService.getInstance().getRooms(this);
     }
 
     @Override
