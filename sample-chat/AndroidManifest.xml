@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.quickblox.sample.chat"
-          android:versionCode="1"
-          android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="8"
-              android:targetSdkVersion="16"/>
-    <application android:label="@string/app_name" android:icon="@drawable/icon">
-        <activity android:name=".SplashActivity"
-                  android:label="QuickBlox Chat Sample"
-                  android:noHistory="true"
-                  android:screenOrientation="portrait">
+    package="com.quickblox.sample.chat"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".QuickbloxSampleChat"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:noHistory="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activities.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-                  android:label="QuickBlox Chat: Log in">
-        </activity>
-        <activity android:name=".UsersListActivity"
-                  android:label="Friends list">
-        </activity>
-        <activity android:name=".ChatActivity"
-                  android:label="Chat room">
-        </activity>
+        <activity android:name=".ui.activities.MainActivity" />
+        <activity
+            android:name=".ui.activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.activities.LoginActivity" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-</manifest> 
+</manifest>
