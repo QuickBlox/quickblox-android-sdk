@@ -18,12 +18,10 @@ import com.quickblox.sample.chat.ui.adapters.ChatAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class ChatActivity extends Activity {
 
     public static final String MODE = "mode";
-
     private EditText messageEditText;
     private Mode mode = Mode.SINGLE;
     private Chat chat;
@@ -63,27 +61,23 @@ public class ChatActivity extends Activity {
                 break;
         }
 
-        sendButton.setOnClickListener(onSendClick);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String lastMsg = messageEditText.getText().toString();
+                if (TextUtils.isEmpty(lastMsg)) {
+                    return;
+                }
+
+                messageEditText.setText("");
+                chat.sendMessage(lastMsg);
+
+                if (mode == Mode.SINGLE) {
+                    showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), true));
+                }
+            }
+        });
     }
-
-    private View.OnClickListener onSendClick = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-
-            String lastMsg = messageEditText.getText().toString();
-            if (TextUtils.isEmpty(lastMsg)) {
-                return;
-            }
-
-            messageEditText.setText("");
-            chat.sendMessage(lastMsg);
-
-            if (mode == Mode.SINGLE) {
-                showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), true));
-            }
-        }
-    };
 
     public void showMessage(ChatMessage message) {
         adapter.add(message);
@@ -95,13 +89,5 @@ public class ChatActivity extends Activity {
         messagesContainer.setSelection(messagesContainer.getCount() - 1);
     }
 
-    private void showMessage(List<ChatMessage> messageQuery) {
-        for (ChatMessage message : messageQuery) {
-            adapter.add(message);
-        }
-        adapter.notifyDataSetChanged();
-        scrollDown();
-    }
-
-    public enum Mode {SINGLE, GROUP}
+    public static enum Mode {SINGLE, GROUP}
 }

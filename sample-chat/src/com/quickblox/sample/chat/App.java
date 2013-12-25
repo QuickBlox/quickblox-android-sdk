@@ -4,12 +4,12 @@ import android.app.Application;
 
 import com.quickblox.module.users.model.QBUser;
 
-public class QuickbloxSampleChat extends Application {
+public class App extends Application {
 
-    private static QuickbloxSampleChat instance;
+    private static App instance;
     private QBUser qbUser;
 
-    public static synchronized QuickbloxSampleChat getInstance() {
+    public static synchronized App getInstance() {
         return instance;
     }
 

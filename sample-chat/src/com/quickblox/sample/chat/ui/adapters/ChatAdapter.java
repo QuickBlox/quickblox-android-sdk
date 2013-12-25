@@ -2,11 +2,13 @@ package com.quickblox.sample.chat.ui.adapters;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
@@ -22,7 +24,6 @@ public class ChatAdapter extends BaseAdapter {
     private Context context;
 
     public ChatAdapter(Context context, List<ChatMessage> chatMessages) {
-        super();
         this.context = context;
         this.chatMessages = chatMessages;
     }
@@ -47,7 +48,7 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -56,36 +57,70 @@ public class ChatAdapter extends BaseAdapter {
         ChatMessage chatMessage = getItem(position);
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View v = convertView;
-        if (v == null) {
-            if (chatMessage.isIncoming()) {
-                v = vi.inflate(R.layout.list_item_message_incoming, null);
-            } else {
-                v = vi.inflate(R.layout.list_item_message_outgoing, null);
-            }
-            holder = createViewHolder(v);
-            v.setTag(holder);
+        if (convertView == null) {
+            convertView = vi.inflate(R.layout.list_item_message, null);
+            holder = createViewHolder(convertView);
+            convertView.setTag(holder);
         } else {
-            holder = (ViewHolder) v.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
+        setAlignment(holder, chatMessage.isIncoming());
         holder.txtMessage.setText(chatMessage.getText());
         holder.txtTime.setText(getTimeText(chatMessage.getTime()));
 
-        return v;
+        return convertView;
     }
 
     public void add(ChatMessage message) {
         chatMessages.add(message);
     }
 
+    private void setAlignment(ViewHolder holder, boolean isIncoming) {
+        if (isIncoming) {
+            holder.contentWithBG.setBackgroundResource(R.drawable.incoming_message_bg);
+
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            holder.contentWithBG.setLayoutParams(layoutParams);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            holder.content.setLayoutParams(lp);
+            layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            holder.txtMessage.setLayoutParams(layoutParams);
+
+            layoutParams = (LinearLayout.LayoutParams) holder.txtTime.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            holder.txtTime.setLayoutParams(layoutParams);
+        } else {
+            holder.contentWithBG.setBackgroundResource(R.drawable.outgoing_message_bg);
+
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
+            layoutParams.gravity = Gravity.LEFT;
+            holder.contentWithBG.setLayoutParams(layoutParams);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            holder.content.setLayoutParams(lp);
+            layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+            layoutParams.gravity = Gravity.LEFT;
+            holder.txtMessage.setLayoutParams(layoutParams);
+
+            layoutParams = (LinearLayout.LayoutParams) holder.txtTime.getLayoutParams();
+            layoutParams.gravity = Gravity.LEFT;
+            holder.txtTime.setLayoutParams(layoutParams);
+        }
+    }
+
     private ViewHolder createViewHolder(View v) {
-        ViewHolder holder;
-        holder = new ViewHolder();
+        ViewHolder holder = new ViewHolder();
         holder.txtMessage = (TextView) v.findViewById(R.id.txtMessage);
         holder.content = (LinearLayout) v.findViewById(R.id.content);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
         holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
-        v.setTag(holder);
         return holder;
     }
 

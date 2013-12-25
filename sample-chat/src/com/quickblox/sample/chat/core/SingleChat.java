@@ -1,7 +1,5 @@
 package com.quickblox.sample.chat.core;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.module.chat.QBChatService;
@@ -19,8 +17,6 @@ public class SingleChat implements Chat, ChatMessageListener {
 
     public static final String USER_ID = "user_id";
     private static final String TAG = SingleChat.class.getSimpleName();
-
-    private Handler handler = new Handler(Looper.getMainLooper());
     private ChatActivity chatActivity;
     private QBPrivateChat chat;
     private int companionId;
@@ -43,19 +39,13 @@ public class SingleChat implements Chat, ChatMessageListener {
 
     @Override
     public void release() {
-
     }
 
     @Override
     public void processMessage(Message message) {
         final String messageBody = message.getBody();
         // Show message
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                chatActivity.showMessage(new ChatMessage(messageBody, Calendar.getInstance().getTime(), false));
-            }
-        });
+        chatActivity.showMessage(new ChatMessage(messageBody, Calendar.getInstance().getTime(), false));
     }
 
     @Override

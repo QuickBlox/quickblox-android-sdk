@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,15 +31,24 @@ import java.util.Map;
 
 public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
+    public static final String KEY_ROOM_NAME = "roomName";
     private ListView roomsList;
     private List<QBChatRoom> rooms;
     private ProgressDialog progressDialog;
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null) {
+            progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
+        }
+        QBChatService.getInstance().getRooms(this);
     }
 
     @Override
@@ -60,13 +67,12 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_add) {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Title");
             final EditText input = new EditText(getActivity());
             builder.setView(input);
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -77,7 +83,7 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
                     startActivity(intent);
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -90,13 +96,6 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateData() {
-        if (getActivity() != null) {
-            progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
-        }
-        QBChatService.getInstance().getRooms(this);
-    }
-
     @Override
     public void onReceiveRooms(List<QBChatRoom> list) {
         if (progressDialog != null) {
@@ -107,16 +106,16 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
         // Prepare rooms list for simple adapter.
         final List<Map<String, String>> roomsListForAdapter = new ArrayList<Map<String, String>>();
-        for (QBChatRoom r : rooms) {
-            Map<String, String> rmap = new HashMap<String, String>();
-            rmap.put("roomName", r.getName());
-            roomsListForAdapter.add(rmap);
+        for (QBChatRoom room : rooms) {
+            Map<String, String> roomMap = new HashMap<String, String>();
+            roomMap.put(KEY_ROOM_NAME, room.getName());
+            roomsListForAdapter.add(roomMap);
         }
 
         // Put rooms list into adapter.
         final SimpleAdapter roomsAdapter = new SimpleAdapter(getActivity(), roomsListForAdapter,
                 R.layout.list_item_room,
-                new String[]{"roomName"},
+                new String[]{KEY_ROOM_NAME},
                 new int[]{R.id.roomName});
 
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,11 +131,6 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
             }
         });
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                roomsList.setAdapter(roomsAdapter);
-            }
-        });
+        roomsList.setAdapter(roomsAdapter);
     }
 }
