@@ -16,7 +16,8 @@ import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
-import com.quickblox.module.chat.xmpp.XmppChat;
+import com.quickblox.module.chat.xmpp.QBPrivateChat;
+import com.quickblox.module.chat.xmpp.XMPPWrapper;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
@@ -55,7 +56,7 @@ public class SnippetsChat extends Snippets {
     private QBChatRoom currentQBChatRoom;
     private PacketListener pMessageListener;
     public static final String ROOM_NAME = "temp_room_for_snippet";
-    private XmppChat xmppChat;
+    private QBPrivateChat QBPrivateChat;
 
     public SnippetsChat(final Context context) {
         super(context);
@@ -150,8 +151,8 @@ public class SnippetsChat extends Snippets {
     };
 
     private void initChat() {
-        xmppChat = QBChatService.getInstance().createChat();
-        initChatMessageListener(xmppChat);
+        QBPrivateChat = QBChatService.getInstance().createChat();
+        initChatMessageListener(QBPrivateChat);
     }
 
     Snippet isLoggedIn = new Snippet("Is logged In") {
@@ -213,7 +214,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             try {
-                xmppChat.sendMessage(USER_ID, "Hey man!");
+                QBPrivateChat.sendMessage(USER_ID, "Hey man!");
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -226,11 +227,12 @@ public class SnippetsChat extends Snippets {
             Message message = new Message(QBChatUtils.getChatLoginFull(USER_ID), Message.Type.chat);
             message.setBody("Hey QuickBlox!");
             try {
-                xmppChat.sendMessage(USER_ID, message);
+                QBPrivateChat.sendMessage(USER_ID, message);
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
         }
+
     };
 
     Snippet sendMessageWithSaving = new Snippet("send message with saving in history") {
@@ -242,7 +244,7 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             try {
-                xmppChat.sendMessage(USER_ID, message);
+                QBPrivateChat.sendMessage(USER_ID, message);
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -265,7 +267,7 @@ public class SnippetsChat extends Snippets {
         return message;
     }
 
-    private void initChatMessageListener(XmppChat xmppChat) {
+    private void initChatMessageListener(QBPrivateChat QBPrivateChat) {
         // Set 1-1 Chat message listener
         chatMessageListener = new ChatMessageListener() {
             @Override
@@ -301,7 +303,7 @@ public class SnippetsChat extends Snippets {
             }
         };
         //
-        xmppChat.addChatMessageListener(chatMessageListener);
+        QBPrivateChat.addChatMessageListener(chatMessageListener);
     }
 
 
