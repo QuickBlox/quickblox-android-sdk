@@ -45,15 +45,13 @@ public class SingleChat implements Chat, ChatMessageListener {
     public void processMessage(Message message) {
         final String messageBody = message.getBody();
         // Show message
-        chatActivity.showMessage(new ChatMessage(messageBody, Calendar.getInstance().getTime(), false));
+        chatActivity.showMessage(new ChatMessage(messageBody, Calendar.getInstance().getTime(), true));
     }
 
     @Override
     public boolean accept(Message.Type messageType) {
         switch (messageType) {
-            case normal:
             case chat:
-            case groupchat:
                 return true;
             default:
                 return false;

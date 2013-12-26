@@ -111,8 +111,6 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
     @Override
     public boolean accept(Message.Type messageType) {
         switch (messageType) {
-            case normal:
-            case chat:
             case groupchat:
                 return true;
             default:
