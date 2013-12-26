@@ -20,15 +20,15 @@ import com.quickblox.module.users.model.QBUser;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 
-public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
+public class RegistrationActivity extends Activity implements QBCallback, View.OnClickListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private static final String DEFAULT_LOGIN = "romeo";
-    private static final String DEFAULT_PASSWORD = "password";
-    private Button loginButton;
+
+    private Button registerButton;
     private EditText loginEdit;
     private EditText passwordEdit;
     private ProgressDialog progressDialog;
+
     private String login;
     private String password;
     private QBUser user;
@@ -36,14 +36,12 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_registration);
 
         loginEdit = (EditText) findViewById(R.id.loginEdit);
         passwordEdit = (EditText) findViewById(R.id.passwordEdit);
-        loginEdit.setText(DEFAULT_LOGIN);
-        passwordEdit.setText(DEFAULT_PASSWORD);
-        loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(this);
+        registerButton = (Button) findViewById(R.id.registerButton);
+        registerButton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading");
 
@@ -58,14 +56,14 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         user = new QBUser(login, password);
 
         progressDialog.show();
-        QBUsers.signIn(user, this);
+        QBUsers.signUpSignInTask(user, this);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent();
-        setResult(RESULT_CANCELED, intent);
+        Intent i = new Intent();
+        setResult(RESULT_CANCELED, i);
         finish();
     }
 
@@ -80,9 +78,8 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
                         progressDialog.dismiss();
                     }
                     Log.i(TAG, "success when login");
-
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
+                    Intent i = new Intent();
+                    setResult(RESULT_OK, i);
                     finish();
                 }
 

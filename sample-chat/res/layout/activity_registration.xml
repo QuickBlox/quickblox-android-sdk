@@ -17,11 +17,11 @@
         android:hint="password" />
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:text="Log in" />
+        android:text="Register" />
 
 </LinearLayout>
 

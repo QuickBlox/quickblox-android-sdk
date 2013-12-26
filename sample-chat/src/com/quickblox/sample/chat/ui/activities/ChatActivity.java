@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.ui.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,6 +28,12 @@ public class ChatActivity extends Activity {
     private Chat chat;
     private ChatAdapter adapter;
     private ListView messagesContainer;
+
+    public static void start(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +80,7 @@ public class ChatActivity extends Activity {
                 chat.sendMessage(lastMsg);
 
                 if (mode == Mode.SINGLE) {
-                    showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), true));
+                    showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), false));
                 }
             }
         });

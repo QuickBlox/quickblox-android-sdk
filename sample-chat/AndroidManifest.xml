@@ -5,7 +5,7 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +29,12 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.activities.LoginActivity" />
+        <activity
+            android:name=".ui.activities.LoginActivity"
+            android:label="Login" />
+        <activity
+            android:name=".ui.activities.RegistrationActivity"
+            android:label="Registration" />
     </application>
 
 </manifest>

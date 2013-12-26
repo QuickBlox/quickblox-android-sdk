@@ -2,7 +2,6 @@ package com.quickblox.sample.chat.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,19 +16,22 @@ import com.quickblox.core.result.Result;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.SingleChat;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
+import com.quickblox.sample.chat.ui.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UsersFragment extends Fragment implements QBCallback {
+public class UsersFragment extends Fragment implements UpdateableFragment, QBCallback {
 
     private static final String KEY_USER_LOGIN = "userLogin";
     private ListView usersList;
     private ProgressDialog progressDialog;
+    private QBUser companionUser;
 
     public static UsersFragment getInstance() {
         UsersFragment usersFragment = new UsersFragment();
@@ -41,15 +43,6 @@ public class UsersFragment extends Fragment implements QBCallback {
         View v = inflater.inflate(R.layout.fragment_users, container, false);
         usersList = (ListView) v.findViewById(R.id.usersList);
         return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() != null) {
-            progressDialog = ProgressDialog.show(getActivity(), null, "Loading fiends list");
-        }
-        QBUsers.getUsers(this);
     }
 
     @Override
@@ -81,14 +74,14 @@ public class UsersFragment extends Fragment implements QBCallback {
             usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                    // Prepare QBUser objects to pass it into next activities using bundle.
-                    QBUser friendUser = users.get(position);
-
-                    Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    intent.putExtra(ChatActivity.EXTRA_MODE, ChatActivity.Mode.SINGLE);
-                    intent.putExtra(SingleChat.EXTRA_USER_ID, friendUser.getId());
-
-                    startActivity(intent);
+                    companionUser = users.get(position);
+                    if (App.getInstance().getQbUser() != null) {
+                        startChat();
+                    } else {
+                        MainActivity activity = (MainActivity) getActivity();
+                        activity.setLastAction(MainActivity.Action.CHAT);
+                        activity.showAuthenticateDialog();
+                    }
                 }
             });
         } else {
@@ -101,5 +94,20 @@ public class UsersFragment extends Fragment implements QBCallback {
     @Override
     public void onComplete(Result result, Object context) {
 
+    }
+
+    @Override
+    public void updateData() {
+        if (getActivity() != null) {
+            progressDialog = ProgressDialog.show(getActivity(), null, "Loading fiends list");
+        }
+        QBUsers.getUsers(this);
+    }
+
+    public void startChat() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.SINGLE);
+        bundle.putInt(SingleChat.EXTRA_USER_ID, companionUser.getId());
+        ChatActivity.start(getActivity(), bundle);
     }
 }
