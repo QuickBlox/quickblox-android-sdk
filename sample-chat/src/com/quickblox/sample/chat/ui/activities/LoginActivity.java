@@ -32,6 +32,7 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     private String login;
     private String password;
     private QBUser user;
+    private SmackAndroid smackAndroid;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,13 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading");
 
-        SmackAndroid.init(this);
+        smackAndroid = SmackAndroid.init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        smackAndroid.onDestroy();
+        super.onDestroy();
     }
 
     @Override
