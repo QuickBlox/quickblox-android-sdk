@@ -27,9 +27,14 @@ import java.util.Map;
 
 public class UsersFragment extends Fragment implements QBCallback {
 
-    public static final String KEY_USER_LOGIN = "userLogin";
+    private static final String KEY_USER_LOGIN = "userLogin";
     private ListView usersList;
     private ProgressDialog progressDialog;
+
+    public static UsersFragment getInstance() {
+        UsersFragment usersFragment = new UsersFragment();
+        return usersFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,8 +85,8 @@ public class UsersFragment extends Fragment implements QBCallback {
                     QBUser friendUser = users.get(position);
 
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    intent.putExtra(ChatActivity.MODE, ChatActivity.Mode.SINGLE);
-                    intent.putExtra(SingleChat.USER_ID, friendUser.getId());
+                    intent.putExtra(ChatActivity.EXTRA_MODE, ChatActivity.Mode.SINGLE);
+                    intent.putExtra(SingleChat.EXTRA_USER_ID, friendUser.getId());
 
                     startActivity(intent);
                 }

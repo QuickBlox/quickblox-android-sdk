@@ -30,8 +30,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         List<Fragment> tabs = new ArrayList<Fragment>();
-        tabs.add(new UsersFragment());
-        tabs.add(new RoomsFragment());
+        tabs.add(UsersFragment.getInstance());
+        tabs.add(RoomsFragment.getInstance());
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabs);
 

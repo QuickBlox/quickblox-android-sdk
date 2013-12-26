@@ -31,10 +31,15 @@ import java.util.Map;
 
 public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
-    public static final String KEY_ROOM_NAME = "roomName";
+    private static final String KEY_ROOM_NAME = "roomName";
     private ListView roomsList;
     private List<QBChatRoom> rooms;
     private ProgressDialog progressDialog;
+
+    public static RoomsFragment getInstance() {
+        RoomsFragment roomsFragment = new RoomsFragment();
+        return roomsFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,9 +81,9 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    intent.putExtra(ChatActivity.MODE, ChatActivity.Mode.GROUP);
-                    intent.putExtra(RoomChat.ROOM_NAME, input.getText().toString());
-                    intent.putExtra(RoomChat.ROOM_ACTION, RoomChat.RoomAction.JOIN);
+                    intent.putExtra(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
+                    intent.putExtra(RoomChat.EXTRA_ROOM_NAME, input.getText().toString());
+                    intent.putExtra(RoomChat.EXTRA_ROOM_ACTION, RoomChat.RoomAction.JOIN);
 
                     startActivity(intent);
                 }
@@ -123,9 +128,9 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra(ChatActivity.MODE, ChatActivity.Mode.GROUP);
-                intent.putExtra(RoomChat.ROOM_NAME, rooms.get(position).getName());
-                intent.putExtra(RoomChat.ROOM_ACTION, RoomChat.RoomAction.JOIN);
+                intent.putExtra(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
+                intent.putExtra(RoomChat.EXTRA_ROOM_NAME, rooms.get(position).getName());
+                intent.putExtra(RoomChat.EXTRA_ROOM_ACTION, RoomChat.RoomAction.JOIN);
 
                 startActivity(intent);
             }
