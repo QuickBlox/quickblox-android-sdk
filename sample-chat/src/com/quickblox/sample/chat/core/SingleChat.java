@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 public class SingleChat implements Chat, ChatMessageListener {
 
-    public static final String USER_ID = "user_id";
+    public static final String EXTRA_USER_ID = "user_id";
     private static final String TAG = SingleChat.class.getSimpleName();
     private ChatActivity chatActivity;
     private QBPrivateChat chat;
@@ -23,7 +23,7 @@ public class SingleChat implements Chat, ChatMessageListener {
 
     public SingleChat(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
-        companionId = chatActivity.getIntent().getIntExtra(USER_ID, 0);
+        companionId = chatActivity.getIntent().getIntExtra(EXTRA_USER_ID, 0);
         chat = QBChatService.getInstance().createChat();
         chat.addChatMessageListener(this);
     }

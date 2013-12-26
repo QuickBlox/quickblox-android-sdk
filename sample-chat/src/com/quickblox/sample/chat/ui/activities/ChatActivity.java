@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 public class ChatActivity extends Activity {
 
-    public static final String MODE = "mode";
+    public static final String EXTRA_MODE = "mode";
     private EditText messageEditText;
     private Mode mode = Mode.SINGLE;
     private Chat chat;
@@ -51,7 +51,7 @@ public class ChatActivity extends Activity {
         messagesContainer.setAdapter(adapter);
 
         Intent intent = getIntent();
-        mode = (Mode) intent.getSerializableExtra(MODE);
+        mode = (Mode) intent.getSerializableExtra(EXTRA_MODE);
         switch (mode) {
             case GROUP:
                 chat = new RoomChat(this);

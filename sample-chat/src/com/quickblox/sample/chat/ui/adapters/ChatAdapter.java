@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
     private final List<ChatMessage> chatMessages;
     private Context context;
 

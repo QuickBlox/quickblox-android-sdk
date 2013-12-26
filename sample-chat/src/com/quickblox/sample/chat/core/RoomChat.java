@@ -20,8 +20,8 @@ import java.util.Date;
 
 public class RoomChat implements Chat, RoomListener, ChatMessageListener {
 
-    public static final String ROOM_NAME = "name";
-    public static final String ROOM_ACTION = "action";
+    public static final String EXTRA_ROOM_NAME = "name";
+    public static final String EXTRA_ROOM_ACTION = "action";
     private static final String TAG = RoomChat.class.getSimpleName();
     private ChatActivity chatActivity;
     private QBChatRoom chatRoom;
@@ -29,8 +29,8 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
     public RoomChat(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
 
-        String chatRoomName = chatActivity.getIntent().getStringExtra(ROOM_NAME);
-        RoomAction action = (RoomAction) chatActivity.getIntent().getSerializableExtra(ROOM_ACTION);
+        String chatRoomName = chatActivity.getIntent().getStringExtra(EXTRA_ROOM_NAME);
+        RoomAction action = (RoomAction) chatActivity.getIntent().getSerializableExtra(EXTRA_ROOM_ACTION);
 
         switch (action) {
             case CREATE:
