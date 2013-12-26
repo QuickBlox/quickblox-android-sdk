@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.quickblox.core.QBSettings;
 import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.helper.ToStringHelper;
 import com.quickblox.module.auth.QBAuth;
@@ -17,16 +19,14 @@ import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.module.chat.xmpp.QBPrivateChat;
-import com.quickblox.module.chat.xmpp.XMPPWrapper;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
-import org.jivesoftware.smack.PacketListener;
+
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,14 +49,15 @@ public class SnippetsChat extends Snippets {
     private final QBUser qbUser;
 
     // 1-1 Chat properties
-    private ChatMessageListener chatMessageListener;
+    private QBPrivateChat qbPrivateChat;
 
     // Group Chat properties
+    public static final String ROOM_NAME = "temp_room_for_snippet";
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
-    private PacketListener pMessageListener;
-    public static final String ROOM_NAME = "temp_room_for_snippet";
-    private QBPrivateChat QBPrivateChat;
+
+    // Common properties
+    private ChatMessageListener chatMessageListener;
 
     public SnippetsChat(final Context context) {
         super(context);
@@ -66,8 +67,8 @@ public class SnippetsChat extends Snippets {
         qbUser.setId(USER_ID);
         qbUser.setPassword(TEST_PASSWORD);
 
+        initChatMessageListener();
         initRoomListener();
-        initRoomMessageListener();
 
         snippets.add(loginInChat);
         snippets.add(isLoggedIn);
@@ -151,8 +152,8 @@ public class SnippetsChat extends Snippets {
     };
 
     private void initChat() {
-        QBPrivateChat = QBChatService.getInstance().createChat();
-        initChatMessageListener(QBPrivateChat);
+        qbPrivateChat = QBChatService.getInstance().createChat();
+        initChatMessageListener(qbPrivateChat);
     }
 
     Snippet isLoggedIn = new Snippet("Is logged In") {
@@ -214,7 +215,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             try {
-                QBPrivateChat.sendMessage(USER_ID, "Hey man!");
+                qbPrivateChat.sendMessage(USER_ID, "Hey man!");
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -227,7 +228,7 @@ public class SnippetsChat extends Snippets {
             Message message = new Message(QBChatUtils.getChatLoginFull(USER_ID), Message.Type.chat);
             message.setBody("Hey QuickBlox!");
             try {
-                QBPrivateChat.sendMessage(USER_ID, message);
+                qbPrivateChat.sendMessage(USER_ID, message);
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -244,7 +245,7 @@ public class SnippetsChat extends Snippets {
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
             try {
-                QBPrivateChat.sendMessage(USER_ID, message);
+                qbPrivateChat.sendMessage(USER_ID, message);
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -269,40 +270,6 @@ public class SnippetsChat extends Snippets {
 
     private void initChatMessageListener(QBPrivateChat QBPrivateChat) {
         // Set 1-1 Chat message listener
-        chatMessageListener = new ChatMessageListener() {
-            @Override
-            public void processMessage(Message message) {
-
-                // get message params
-                int userId = QBChatUtils.parseQBUser(message.getFrom());
-                String messageBody = message.getBody();
-                //
-                final String messageText = String.format("Received message from user %s:'%s'", userId, messageBody);
-
-                // Show message
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-               Log.i(TAG, "processMessage >>> " + message.toString());
-            }
-
-            @Override
-            public boolean accept(Message.Type type) {
-                switch (type) {
-                    case normal:
-                    case chat:
-                    case groupchat:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
-        //
         QBPrivateChat.addChatMessageListener(chatMessageListener);
     }
 
@@ -384,14 +351,14 @@ public class SnippetsChat extends Snippets {
             public void onCreatedRoom(QBChatRoom qbChatRoom) {
                Log.i(TAG, "on Created Room listener");
                 currentQBChatRoom = qbChatRoom;
-                currentQBChatRoom.addMessageListener(pMessageListener);
+                currentQBChatRoom.addMessageListener(chatMessageListener);
             }
 
             @Override
             public void onJoinedRoom(QBChatRoom qbChatRoom) {
                Log.i(TAG, "on Joined Room listener");
                 currentQBChatRoom = qbChatRoom;
-                currentQBChatRoom.addMessageListener(pMessageListener);
+                currentQBChatRoom.addMessageListener(chatMessageListener);
             }
 
             @Override
@@ -401,20 +368,37 @@ public class SnippetsChat extends Snippets {
         };
     }
 
-    private void initRoomMessageListener() {
-        pMessageListener = new PacketListener() {
+    private void initChatMessageListener() {
+        chatMessageListener = new ChatMessageListener() {
             @Override
-            public void processPacket(Packet packet) {
-                Message message = (Message) packet;
-               Log.i(TAG, ">>>received message from room: " + message.getBody() + " " + message.getFrom());
-                final String messageText = String.format("Received message from user %s:'%s'", message.getFrom(), message.getBody());
+            public void processMessage(Message message) {
+                String from = message.getFrom();
+                String messageBody = message.getBody();
+                String messageText;
+                if (message.getType() == Message.Type.groupchat) {
+                    String room = QBChatUtils.parseRoomName(from, QBSettings.getInstance().getApplicationId());
+                    messageText = String.format("Received message from room %s:'%s'", room, messageBody);
+                } else {
+                    int userId = QBChatUtils.parseQBUser(from);
+                    messageText = String.format("Received message from user %s:'%s'", userId, messageBody);
+                }
+
                 // Show message
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
+
+                Log.i(TAG, "processMessage >>> " + message.toString());
+            }
+
+            @Override
+            public boolean accept(Message.Type type) {
+                switch (type) {
+                    case normal:
+                    case chat:
+                    case groupchat:
+                        return true;
+                    default:
+                        return false;
+                }
             }
         };
     }
