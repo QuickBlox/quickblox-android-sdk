@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.quickblox.core.QBSettings;
 import com.quickblox.internal.core.exception.BaseServiceException;
 import com.quickblox.internal.core.helper.ToStringHelper;
@@ -15,16 +14,15 @@ import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.listeners.SessionListener;
-import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
+import com.quickblox.module.chat.QBChatRoom;
 import com.quickblox.module.chat.xmpp.QBPrivateChat;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
-
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
@@ -52,9 +50,9 @@ public class SnippetsChat extends Snippets {
     private QBPrivateChat qbPrivateChat;
 
     // Group Chat properties
-    public static final String ROOM_NAME = "temp_room_for_snippet";
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
+    public static final String ROOM_NAME = "temp_room_for_snippet";
 
     // Common properties
     private ChatMessageListener chatMessageListener;
@@ -66,13 +64,13 @@ public class SnippetsChat extends Snippets {
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
         qbUser.setPassword(TEST_PASSWORD);
-
-        initChatMessageListener();
         initRoomListener();
+        initChatMessageListener();
 
         snippets.add(loginInChat);
         snippets.add(isLoggedIn);
         snippets.add(logoutFromChat);
+        snippets.add(createChat);
         //
         snippets.add(sendPresence);
         snippets.add(sendPresenceWithStatus);
@@ -109,7 +107,7 @@ public class SnippetsChat extends Snippets {
 
 
                             // Add Chat message listener
-                            initChat();
+                            //initChat();
 
                             handler.post(new Runnable() {
                                 @Override
@@ -155,6 +153,13 @@ public class SnippetsChat extends Snippets {
         qbPrivateChat = QBChatService.getInstance().createChat();
         initChatMessageListener(qbPrivateChat);
     }
+
+    Snippet createChat = new Snippet("create 1 to 1 chat") {
+        @Override
+        public void execute() {
+           initChat();
+        }
+    };
 
     Snippet isLoggedIn = new Snippet("Is logged In") {
         @Override
@@ -268,9 +273,8 @@ public class SnippetsChat extends Snippets {
         return message;
     }
 
-    private void initChatMessageListener(QBPrivateChat QBPrivateChat) {
-        // Set 1-1 Chat message listener
-        QBPrivateChat.addChatMessageListener(chatMessageListener);
+    private void initChatMessageListener(QBPrivateChat qbPrivateChat) {
+        qbPrivateChat.addChatMessageListener(chatMessageListener);
     }
 
 
@@ -341,7 +345,17 @@ public class SnippetsChat extends Snippets {
     Snippet leaveRoom = new Snippet("leave Room") {
         @Override
         public void execute() {
-            QBChatService.getInstance().leaveRoom(currentQBChatRoom);
+            try {
+                QBChatService.getInstance().leaveRoom(currentQBChatRoom);
+            } catch (final XMPPException e) {
+                e.printStackTrace();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     };
 
