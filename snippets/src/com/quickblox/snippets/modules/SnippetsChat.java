@@ -381,6 +381,8 @@ public class SnippetsChat extends Snippets {
     }
 
     private void initChatMessageListener() {
+        // listener for room msg and chat 1to1 msg
+        // You can define which msg will be accept in accept method
         chatMessageListener = new ChatMessageListener() {
             @Override
             public void processMessage(Message message) {
