@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.Chat;
 import com.quickblox.sample.chat.core.RoomChat;
@@ -22,6 +25,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ChatActivity extends Activity {
 
@@ -61,6 +65,9 @@ public class ChatActivity extends Activity {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         messageEditText = (EditText) findViewById(R.id.messageEdit);
         Button sendButton = (Button) findViewById(R.id.chatSendButton);
+        TextView meLabel = (TextView) findViewById(R.id.meLabel);
+        TextView companionLabel = (TextView) findViewById(R.id.companionLabel);
+        RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
 
         adapter = new ChatAdapter(this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
@@ -70,9 +77,14 @@ public class ChatActivity extends Activity {
         switch (mode) {
             case GROUP:
                 chat = new RoomChat(this);
+                container.removeView(meLabel);
+                container.removeView(companionLabel);
                 break;
             case SINGLE:
                 chat = new SingleChat(this);
+                int userId = intent.getIntExtra(SingleChat.EXTRA_USER_ID, 0);
+                companionLabel.setText("user(id" + userId + ")");
+                restoreMessagesFromHistory(userId);
                 break;
         }
 
@@ -99,9 +111,29 @@ public class ChatActivity extends Activity {
     }
 
     public void showMessage(ChatMessage message) {
+        saveMessageToHistory(message);
         adapter.add(message);
         adapter.notifyDataSetChanged();
         scrollDown();
+    }
+
+    public void showMessage(List<ChatMessage> messages) {
+        adapter.add(messages);
+        adapter.notifyDataSetChanged();
+        scrollDown();
+    }
+
+    private void saveMessageToHistory(ChatMessage message) {
+        if (mode == Mode.SINGLE) {
+            App.getInstance().addMessage(getIntent().getIntExtra(SingleChat.EXTRA_USER_ID, 0), message);
+        }
+    }
+
+    private void restoreMessagesFromHistory(int userId) {
+        List<ChatMessage> messages = App.getInstance().getMessages(userId);
+        if (messages != null) {
+            showMessage(messages);
+        }
     }
 
     private void scrollDown() {

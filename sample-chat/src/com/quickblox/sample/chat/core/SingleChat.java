@@ -14,7 +14,6 @@ import java.util.Calendar;
 public class SingleChat implements Chat, ChatMessageListener {
 
     public static final String EXTRA_USER_ID = "user_id";
-    private static final String TAG = SingleChat.class.getSimpleName();
     private ChatActivity chatActivity;
     private QBPrivateChat chat;
     private int companionId;

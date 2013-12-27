@@ -37,7 +37,7 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
                 create(chatRoomName);
                 break;
             case JOIN:
-                join(chatRoomName);
+                join(App.getInstance().getCurrentRoom());
                 break;
         }
     }
@@ -86,10 +86,11 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
         }
         // Show message
         String from = message.getFrom();
-        if (App.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(from)) {
-            chatActivity.showMessage(new ChatMessage(message.getBody(), time, false));
+        int senderId = QBChatUtils.parseQBRoomOccupant(from);
+        if (App.getInstance().getQbUser().getId() == senderId) {
+            chatActivity.showMessage(new ChatMessage(message.getBody(), "me", time, false));
         } else {
-            chatActivity.showMessage(new ChatMessage(message.getBody(), time, true));
+            chatActivity.showMessage(new ChatMessage(message.getBody(), Integer.toString(senderId), time, true));
         }
     }
 
@@ -107,8 +108,8 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
         QBChatService.getInstance().createRoom(roomName, false, false, this);
     }
 
-    public void join(String roomName) {
-        QBChatService.getInstance().joinRoom(roomName, this);
+    public void join(QBChatRoom room) {
+        QBChatService.getInstance().joinRoom(room, this);
     }
 
     public static enum RoomAction {CREATE, JOIN}

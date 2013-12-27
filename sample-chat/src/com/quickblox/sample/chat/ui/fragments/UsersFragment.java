@@ -25,8 +25,6 @@ import com.quickblox.sample.chat.ui.activities.ChatActivity;
 import com.quickblox.sample.chat.ui.activities.MainActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +35,11 @@ public class UsersFragment extends Fragment implements QBCallback {
     private static final int PAGE_SIZE = 10;
     private PullToRefreshListView usersList;
     private QBUser companionUser;
+    private int listViewIndex;
+    private int listViewTop;
 
     public static UsersFragment getInstance() {
-        UsersFragment usersFragment = new UsersFragment();
-        return usersFragment;
+        return new UsersFragment();
     }
 
     public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
@@ -58,7 +57,7 @@ public class UsersFragment extends Fragment implements QBCallback {
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                companionUser = DataHolder.INSTANCE.getAllQbUsers().get(position);
+                companionUser = App.getInstance().getAllQbUsers().get(position-1);
                 if (App.getInstance().getQbUser() != null) {
                     startChat();
                 } else {
@@ -73,6 +72,9 @@ public class UsersFragment extends Fragment implements QBCallback {
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                 // Do work to refresh the list here.
                 loadNextPage();
+                listViewIndex = usersList.getRefreshableView().getFirstVisiblePosition();
+                View v = usersList.getRefreshableView().getChildAt(0);
+                listViewTop = (v == null) ? 0 : v.getTop();
             }
         });
         loadNextPage();
@@ -86,12 +88,12 @@ public class UsersFragment extends Fragment implements QBCallback {
             List<QBUser> users = usersResult.getUsers();
 
             if (users != null && !users.isEmpty()) {
-                DataHolder.INSTANCE.addQBUsers(users.toArray(new QBUser[users.size()]));
+                App.getInstance().addQBUsers(users.toArray(new QBUser[users.size()]));
             }
 
             // Prepare users list for simple adapter.
             ArrayList<Map<String, String>> usersListForAdapter = new ArrayList<Map<String, String>>();
-            for (QBUser user : DataHolder.INSTANCE.getAllQbUsers()) {
+            for (QBUser user : App.getInstance().getAllQbUsers()) {
                 Map<String, String> userMap = new HashMap<String, String>();
                 userMap.put(KEY_USER_LOGIN, user.getLogin());
                 usersListForAdapter.add(userMap);
@@ -105,9 +107,7 @@ public class UsersFragment extends Fragment implements QBCallback {
 
             usersList.setAdapter(usersAdapter);
             usersList.onRefreshComplete();
-            ListView listView = usersList.getRefreshableView();
-            int count = listView.getAdapter().getCount();
-            listView.setSelection(count - 1);
+            usersList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage("Error(s) occurred. Look into DDMS log for details, " +
@@ -128,40 +128,8 @@ public class UsersFragment extends Fragment implements QBCallback {
     }
 
     private void loadNextPage() {
-        int currentPage = DataHolder.INSTANCE.getCurrentPage();
+        int currentPage = App.getInstance().getCurrentPage();
         QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), UsersFragment.this);
-        DataHolder.INSTANCE.setCurrentPage(currentPage + 1);
-    }
-
-    public enum DataHolder {
-        INSTANCE;
-
-        private int currentPage = 0;
-        private HashMap<Integer, QBUser> allQbUsers = new HashMap<Integer, QBUser>();
-
-        public List<QBUser> getAllQbUsers() {
-            List<QBUser> qbUsers = new ArrayList<QBUser>(allQbUsers.values());
-            Collections.sort(qbUsers, new Comparator<QBUser>() {
-                @Override
-                public int compare(QBUser lhs, QBUser rhs) {
-                    return (int) Math.signum(lhs.getId() - rhs.getId());
-                }
-            });
-            return qbUsers;
-        }
-
-        public void addQBUsers(QBUser... qbUsers) {
-            for (QBUser qbUser : qbUsers) {
-                allQbUsers.put(qbUser.getId(), qbUser);
-            }
-        }
-
-        public int getCurrentPage() {
-            return currentPage;
-        }
-
-        public void setCurrentPage(int currentPage) {
-            this.currentPage = currentPage;
-        }
+        App.getInstance().setCurrentPage(currentPage + 1);
     }
 }

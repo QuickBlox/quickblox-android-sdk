@@ -37,8 +37,7 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
     private ProgressDialog progressDialog;
 
     public static RoomsFragment getInstance() {
-        RoomsFragment roomsFragment = new RoomsFragment();
-        return roomsFragment;
+        return new RoomsFragment();
     }
 
     @Override
@@ -121,7 +120,8 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = createChatBundle(rooms.get(position).getName(), true);
+                Bundle bundle = createChatBundle(rooms.get(position).getName(), false);
+                App.getInstance().setCurrentRoom(rooms.get(position));
                 ChatActivity.start(getActivity(), bundle);
             }
         });
