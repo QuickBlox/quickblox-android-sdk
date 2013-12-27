@@ -1,7 +1,5 @@
 package com.quickblox.sample.chat.core;
 
-import android.util.Log;
-
 import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.xmpp.QBPrivateChat;
@@ -29,16 +27,13 @@ public class SingleChat implements Chat, ChatMessageListener {
     }
 
     @Override
-    public void sendMessage(String message) {
-        try {
-            chat.sendMessage(companionId, message);
-        } catch (XMPPException e) {
-            Log.e(TAG, "failed to send a message", e);
-        }
+    public void sendMessage(String message) throws XMPPException {
+        chat.sendMessage(companionId, message);
     }
 
     @Override
     public void release() {
+        chat.removeChatMessageListener(this);
     }
 
     @Override

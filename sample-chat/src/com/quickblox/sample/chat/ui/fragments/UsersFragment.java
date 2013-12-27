@@ -1,7 +1,6 @@
 package com.quickblox.sample.chat.ui.fragments;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,8 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
@@ -23,14 +25,17 @@ import com.quickblox.sample.chat.ui.activities.ChatActivity;
 import com.quickblox.sample.chat.ui.activities.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class UsersFragment extends Fragment implements UpdateableFragment, QBCallback {
+public class UsersFragment extends Fragment implements QBCallback {
 
     private static final String KEY_USER_LOGIN = "userLogin";
-    private ListView usersList;
-    private ProgressDialog progressDialog;
+    private static final int PAGE_SIZE = 10;
+    private PullToRefreshListView usersList;
     private QBUser companionUser;
 
     public static UsersFragment getInstance() {
@@ -38,27 +43,55 @@ public class UsersFragment extends Fragment implements UpdateableFragment, QBCal
         return usersFragment;
     }
 
+    public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
+        QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+        pagedRequestBuilder.setPage(page);
+        pagedRequestBuilder.setPerPage(PAGE_SIZE);
+
+        return pagedRequestBuilder;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_users, container, false);
-        usersList = (ListView) v.findViewById(R.id.usersList);
+        usersList = (PullToRefreshListView) v.findViewById(R.id.usersList);
+        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                companionUser = DataHolder.INSTANCE.getAllQbUsers().get(position);
+                if (App.getInstance().getQbUser() != null) {
+                    startChat();
+                } else {
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.setLastAction(MainActivity.Action.CHAT);
+                    activity.showAuthenticateDialog();
+                }
+            }
+        });
+        usersList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                // Do work to refresh the list here.
+                loadNextPage();
+            }
+        });
+        loadNextPage();
         return v;
     }
 
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
+            QBUserPagedResult usersResult = (QBUserPagedResult) result;
+            List<QBUser> users = usersResult.getUsers();
 
-            // Cast 'result' to specific result class QBUserPagedResult.
-            QBUserPagedResult pagedResult = (QBUserPagedResult) result;
-            final ArrayList<QBUser> users = pagedResult.getUsers();
+            if (users != null && !users.isEmpty()) {
+                DataHolder.INSTANCE.addQBUsers(users.toArray(new QBUser[users.size()]));
+            }
 
             // Prepare users list for simple adapter.
             ArrayList<Map<String, String>> usersListForAdapter = new ArrayList<Map<String, String>>();
-            for (QBUser user : users) {
+            for (QBUser user : DataHolder.INSTANCE.getAllQbUsers()) {
                 Map<String, String> userMap = new HashMap<String, String>();
                 userMap.put(KEY_USER_LOGIN, user.getLogin());
                 usersListForAdapter.add(userMap);
@@ -71,19 +104,10 @@ public class UsersFragment extends Fragment implements UpdateableFragment, QBCal
                     new int[]{R.id.userLogin});
 
             usersList.setAdapter(usersAdapter);
-            usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                    companionUser = users.get(position);
-                    if (App.getInstance().getQbUser() != null) {
-                        startChat();
-                    } else {
-                        MainActivity activity = (MainActivity) getActivity();
-                        activity.setLastAction(MainActivity.Action.CHAT);
-                        activity.showAuthenticateDialog();
-                    }
-                }
-            });
+            usersList.onRefreshComplete();
+            ListView listView = usersList.getRefreshableView();
+            int count = listView.getAdapter().getCount();
+            listView.setSelection(count - 1);
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage("Error(s) occurred. Look into DDMS log for details, " +
@@ -96,18 +120,48 @@ public class UsersFragment extends Fragment implements UpdateableFragment, QBCal
 
     }
 
-    @Override
-    public void updateData() {
-        if (getActivity() != null) {
-            progressDialog = ProgressDialog.show(getActivity(), null, "Loading fiends list");
-        }
-        QBUsers.getUsers(this);
-    }
-
     public void startChat() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.SINGLE);
         bundle.putInt(SingleChat.EXTRA_USER_ID, companionUser.getId());
         ChatActivity.start(getActivity(), bundle);
+    }
+
+    private void loadNextPage() {
+        int currentPage = DataHolder.INSTANCE.getCurrentPage();
+        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), UsersFragment.this);
+        DataHolder.INSTANCE.setCurrentPage(currentPage + 1);
+    }
+
+    public enum DataHolder {
+        INSTANCE;
+
+        private int currentPage = 0;
+        private HashMap<Integer, QBUser> allQbUsers = new HashMap<Integer, QBUser>();
+
+        public List<QBUser> getAllQbUsers() {
+            List<QBUser> qbUsers = new ArrayList<QBUser>(allQbUsers.values());
+            Collections.sort(qbUsers, new Comparator<QBUser>() {
+                @Override
+                public int compare(QBUser lhs, QBUser rhs) {
+                    return (int) Math.signum(lhs.getId() - rhs.getId());
+                }
+            });
+            return qbUsers;
+        }
+
+        public void addQBUsers(QBUser... qbUsers) {
+            for (QBUser qbUser : qbUsers) {
+                allQbUsers.put(qbUser.getId(), qbUser);
+            }
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public void setCurrentPage(int currentPage) {
+            this.currentPage = currentPage;
+        }
     }
 }

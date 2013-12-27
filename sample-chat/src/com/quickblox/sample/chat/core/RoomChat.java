@@ -3,10 +3,10 @@ package com.quickblox.sample.chat.core;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.quickblox.module.chat.QBChatRoom;
 import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
-import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.model.ChatMessage;
@@ -43,35 +43,20 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
     }
 
     @Override
-    public void sendMessage(String message) {
-        try {
-            if (chatRoom != null) {
-                chatRoom.sendMessage(message);
-            } else {
-                Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
-            }
-        } catch (XMPPException e) {
-            e.printStackTrace();
+    public void sendMessage(String message) throws XMPPException {
+        if (chatRoom != null) {
+            chatRoom.sendMessage(message);
+        } else {
+            Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void release() {
+    public void release() throws XMPPException {
         if (chatRoom != null) {
-            try {
-                chatRoom.leave();
-            } catch (XMPPException e) {
-                Log.e(TAG, "failed to send a message", e);
-            }
+            QBChatService.getInstance().leaveRoom(chatRoom);
+            chatRoom.removeMessageListener(this);
         }
-    }
-
-    public void create(String roomName) {
-        QBChatService.getInstance().createRoom(roomName, false, false, this);
-    }
-
-    public void join(String roomName) {
-        QBChatService.getInstance().joinRoom(roomName, this);
     }
 
     @Override
@@ -116,6 +101,14 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
             default:
                 return false;
         }
+    }
+
+    public void create(String roomName) {
+        QBChatService.getInstance().createRoom(roomName, false, false, this);
+    }
+
+    public void join(String roomName) {
+        QBChatService.getInstance().joinRoom(roomName, this);
     }
 
     public static enum RoomAction {CREATE, JOIN}

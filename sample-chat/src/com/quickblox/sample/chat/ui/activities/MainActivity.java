@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarActivity;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.fragments.RoomsFragment;
-import com.quickblox.sample.chat.ui.fragments.UpdateableFragment;
 import com.quickblox.sample.chat.ui.fragments.UsersFragment;
 
 import java.util.ArrayList;
@@ -64,12 +63,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         int position = tab.getPosition();
-        if (position == POSITION_ROOM && App.getInstance().getQbUser() == null) {
+        if (App.getInstance().getQbUser() != null) {
+            viewPager.setCurrentItem(position);
+            if (position == POSITION_ROOM) {
+                ((RoomsFragment) sectionsPagerAdapter.getItem(position)).updateData();
+            }
+        } else if (position == POSITION_ROOM) {
             lastAction = Action.ROOM_LIST;
             showAuthenticateDialog();
-        } else {
-            viewPager.setCurrentItem(position);
-            ((UpdateableFragment) sectionsPagerAdapter.getItem(position)).updateData();
         }
     }
 
@@ -94,7 +95,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     viewPager.setCurrentItem(POSITION_ROOM);
                     break;
             }
+        } else {
+            showUsersFragment();
         }
+    }
+
+    private void showUsersFragment() {
+        getSupportActionBar().selectTab(getSupportActionBar().getTabAt(POSITION_USER));
+        viewPager.setCurrentItem(POSITION_USER);
     }
 
     public void setLastAction(Action lastAction) {
@@ -117,6 +125,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         startActivityForResult(intent, AUTHENTICATION_REQUEST);
                         break;
                 }
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                showUsersFragment();
             }
         });
         builder.show();

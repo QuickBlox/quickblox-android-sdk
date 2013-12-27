@@ -16,9 +16,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.quickblox.module.chat.QBChatRoom;
 import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
-import com.quickblox.module.chat.model.QBChatRoom;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.RoomChat;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoomsFragment extends Fragment implements UpdateableFragment, RoomReceivingListener {
+public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
     private static final String KEY_ROOM_NAME = "roomName";
     private ListView roomsList;
@@ -44,6 +45,14 @@ public class RoomsFragment extends Fragment implements UpdateableFragment, RoomR
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (App.getInstance().getQbUser() != null) {
+            updateData();
+        }
     }
 
     @Override
@@ -120,7 +129,6 @@ public class RoomsFragment extends Fragment implements UpdateableFragment, RoomR
         roomsList.setAdapter(roomsAdapter);
     }
 
-    @Override
     public void updateData() {
         if (getActivity() != null) {
             progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");

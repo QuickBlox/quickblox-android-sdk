@@ -23,8 +23,8 @@ import com.quickblox.sample.chat.R;
 public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private static final String DEFAULT_LOGIN = "romeo";
-    private static final String DEFAULT_PASSWORD = "password";
+    private static final String DEFAULT_LOGIN = "ced";
+    private static final String DEFAULT_PASSWORD = "ced";
     private Button loginButton;
     private EditText loginEdit;
     private EditText passwordEdit;

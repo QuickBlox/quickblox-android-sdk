@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,12 +18,15 @@ import com.quickblox.sample.chat.core.SingleChat;
 import com.quickblox.sample.chat.model.ChatMessage;
 import com.quickblox.sample.chat.ui.adapters.ChatAdapter;
 
+import org.jivesoftware.smack.XMPPException;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ChatActivity extends Activity {
 
     public static final String EXTRA_MODE = "mode";
+    private static final String TAG = ChatActivity.class.getSimpleName();
     private EditText messageEditText;
     private Mode mode = Mode.SINGLE;
     private Chat chat;
@@ -45,7 +49,11 @@ public class ChatActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        chat.release();
+        try {
+            chat.release();
+        } catch (XMPPException e) {
+            Log.e(TAG, "failed to release chat", e);
+        }
         super.onBackPressed();
     }
 
@@ -77,7 +85,11 @@ public class ChatActivity extends Activity {
                 }
 
                 messageEditText.setText("");
-                chat.sendMessage(lastMsg);
+                try {
+                    chat.sendMessage(lastMsg);
+                } catch (XMPPException e) {
+                    Log.e(TAG, "failed to send a message", e);
+                }
 
                 if (mode == Mode.SINGLE) {
                     showMessage(new ChatMessage(lastMsg, Calendar.getInstance().getTime(), false));
