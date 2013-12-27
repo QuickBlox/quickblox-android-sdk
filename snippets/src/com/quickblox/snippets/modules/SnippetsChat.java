@@ -103,11 +103,9 @@ public class SnippetsChat extends Snippets {
                         @Override
                         public void onLoginSuccess() {
                            Log.i(TAG, "success when login");
-                                //QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
-
 
                             // Add Chat message listener
-                            //initChat();
+                            initChat();
 
                             handler.post(new Runnable() {
                                 @Override
