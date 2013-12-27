@@ -15,12 +15,11 @@ import com.quickblox.sample.chat.ui.fragments.UsersFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    private SectionsPagerAdapter sectionsPagerAdapter;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +33,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         tabs.add(new UsersFragment());
         tabs.add(new RoomsFragment());
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabs);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabs);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
 
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
             }
         });
 
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < sectionsPagerAdapter.getCount(); i++) {
             actionBar.addTab(actionBar.newTab()
-                    .setText(mSectionsPagerAdapter.getPageTitle(i))
+                    .setText(sectionsPagerAdapter.getPageTitle(i))
                     .setTabListener(this));
         }
     }
@@ -56,15 +55,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         int position = tab.getPosition();
-        mViewPager.setCurrentItem(position);
-        switch (position) {
-            case 0:
-                ((UsersFragment) mSectionsPagerAdapter.getItem(position)).updateData();
-                break;
-            case 1:
-                ((RoomsFragment) mSectionsPagerAdapter.getItem(position)).updateData();
-                break;
-        }
+        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -77,9 +68,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        List<Fragment> fragments;
+        private static final int POSITION_USER = 0;
+        private static final int POSITION_ROOM = 1;
+        private List<Fragment> fragments;
 
         public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
             super(fm);
@@ -93,16 +86,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public int getCount() {
-            return 2;
+            return fragments.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
             switch (position) {
-                case 0:
+                case POSITION_USER:
                     return "Users";
-                case 1:
+                case POSITION_ROOM:
                     return "Rooms";
             }
             return null;

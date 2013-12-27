@@ -27,6 +27,7 @@ import java.util.Map;
 
 public class UsersFragment extends Fragment implements QBCallback {
 
+    public static final String KEY_USER_LOGIN = "userLogin";
     private ListView usersList;
     private ProgressDialog progressDialog;
 
@@ -37,7 +38,9 @@ public class UsersFragment extends Fragment implements QBCallback {
         return v;
     }
 
-    public void updateData() {
+    @Override
+    public void onResume() {
+        super.onResume();
         if (getActivity() != null) {
             progressDialog = ProgressDialog.show(getActivity(), null, "Loading fiends list");
         }
@@ -57,16 +60,16 @@ public class UsersFragment extends Fragment implements QBCallback {
 
             // Prepare users list for simple adapter.
             ArrayList<Map<String, String>> usersListForAdapter = new ArrayList<Map<String, String>>();
-            for (QBUser u : users) {
-                Map<String, String> umap = new HashMap<String, String>();
-                umap.put("userLogin", u.getLogin());
-                usersListForAdapter.add(umap);
+            for (QBUser user : users) {
+                Map<String, String> userMap = new HashMap<String, String>();
+                userMap.put(KEY_USER_LOGIN, user.getLogin());
+                usersListForAdapter.add(userMap);
             }
 
             // Put users list into adapter.
             SimpleAdapter usersAdapter = new SimpleAdapter(getActivity(), usersListForAdapter,
                     R.layout.list_item_user,
-                    new String[]{"userLogin"},
+                    new String[]{KEY_USER_LOGIN},
                     new int[]{R.id.userLogin});
 
             usersList.setAdapter(usersAdapter);

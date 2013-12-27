@@ -12,12 +12,12 @@ import android.widget.EditText;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
-import com.quickblox.module.chat.QBChat;
+import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.SessionListener;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
-import com.quickblox.sample.chat.QuickbloxSampleChat;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 
 public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
@@ -40,7 +40,6 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // UI stuff
         loginEdit = (EditText) findViewById(R.id.loginEdit);
         passwordEdit = (EditText) findViewById(R.id.passwordEdit);
         loginEdit.setText(DEFAULT_LOGIN);
@@ -65,18 +64,10 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         progressDialog.show();
         switch (view.getId()) {
             case R.id.loginButton:
-
-                // ================= QuickBlox ===== Step 3 =================
-                // Login user into QuickBlox.
-                // Pass this activity , because it implements QBCallback interface.
-                // Callback result will come into onComplete method below.
-                QBUsers.signIn(user, LoginActivity.this);
+                QBUsers.signIn(user, this);
                 break;
             case R.id.registerButton:
-
-                // ================= QuickBlox ===== Step 3 =================
-                // Register user in QuickBlox.
-                QBUsers.signUpSignInTask(user, LoginActivity.this);
+                QBUsers.signUpSignInTask(user, this);
                 break;
         }
     }
@@ -84,9 +75,8 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-
-            QuickbloxSampleChat.getInstance().setQbUser(user);
-            QBChat.getInstance().loginWithUser(user, new SessionListener() {
+            App.getInstance().setQbUser(user);
+            QBChatService.getInstance().loginWithUser(user, new SessionListener() {
                 @Override
                 public void onLoginSuccess() {
                     if (progressDialog != null) {
