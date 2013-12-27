@@ -239,6 +239,8 @@ public class SnippetsChat extends Snippets {
 
     };
 
+
+    // to use this feature you should login with user in QBApp
     Snippet sendMessageWithSaving = new Snippet("send message with saving in history") {
         @Override
         public void execute() {
