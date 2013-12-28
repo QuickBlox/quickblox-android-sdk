@@ -77,7 +77,7 @@ public class RegistrationActivity extends Activity implements QBCallback, View.O
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            App.getInstance().setQbUser(user);
+            ((App)getApplication()).setQbUser(user);
             QBChatService.getInstance().loginWithUser(user, new SessionListener() {
                 @Override
                 public void onLoginSuccess() {

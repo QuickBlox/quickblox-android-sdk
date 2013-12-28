@@ -15,21 +15,15 @@ import java.util.Map;
 
 public class App extends Application {
 
-    private static App instance;
     private QBUser qbUser;
     private int currentPage = 1;
     private Map<Integer, QBUser> allQbUsers = new HashMap<Integer, QBUser>();
     private Map<Integer, List<ChatMessage>> allMessages = new HashMap<Integer, List<ChatMessage>>();
     private QBChatRoom currentRoom;
 
-    public static synchronized App getInstance() {
-        return instance;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
     }
 
     public QBUser getQbUser() {

@@ -125,12 +125,12 @@ public class ChatActivity extends Activity {
 
     private void saveMessageToHistory(ChatMessage message) {
         if (mode == Mode.SINGLE) {
-            App.getInstance().addMessage(getIntent().getIntExtra(SingleChat.EXTRA_USER_ID, 0), message);
+            ((App)getApplication()).addMessage(getIntent().getIntExtra(SingleChat.EXTRA_USER_ID, 0), message);
         }
     }
 
     private void restoreMessagesFromHistory(int userId) {
-        List<ChatMessage> messages = App.getInstance().getMessages(userId);
+        List<ChatMessage> messages = ((App)getApplication()).getMessages(userId);
         if (messages != null) {
             showMessage(messages);
         }

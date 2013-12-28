@@ -113,7 +113,7 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = createChatBundle(rooms.get(position).getName(), false);
-                App.getInstance().setCurrentRoom(rooms.get(position));
+                ((App)getActivity().getApplication()).setCurrentRoom(rooms.get(position));
                 ChatActivity.start(getActivity(), bundle);
             }
         });

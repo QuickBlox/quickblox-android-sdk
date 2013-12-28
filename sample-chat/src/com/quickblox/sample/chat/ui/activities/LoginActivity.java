@@ -79,7 +79,7 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            App.getInstance().setQbUser(user);
+            ((App)getApplication()).setQbUser(user);
             QBChatService.getInstance().loginWithUser(user, new SessionListener() {
                 @Override
                 public void onLoginSuccess() {

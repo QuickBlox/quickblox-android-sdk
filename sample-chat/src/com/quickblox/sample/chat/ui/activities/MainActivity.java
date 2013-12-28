@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
+import com.quickblox.module.users.model.QBUser;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.fragments.RoomsFragment;
@@ -63,7 +64,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         int position = tab.getPosition();
-        if (App.getInstance().getQbUser() != null) {
+        QBUser qbUser = ((App) getApplication()).getQbUser();
+        if (qbUser != null) {
             viewPager.setCurrentItem(position);
 
         } else if (position == POSITION_ROOM) {
