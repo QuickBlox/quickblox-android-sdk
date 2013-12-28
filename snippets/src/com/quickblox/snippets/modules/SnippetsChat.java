@@ -110,7 +110,7 @@ public class SnippetsChat extends Snippets {
                                 //QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
 
                             // Add Chat message listener
-                            //initChat();
+                            initChat();
 
                             handler.post(new Runnable() {
                                 @Override
@@ -252,6 +252,7 @@ public class SnippetsChat extends Snippets {
             addinfoParams.put(Consts.TYPE, "actor");
             final String BODY = "Hey QuickBlox!";
             Message message = createMsgWithAdditionalInfo(USER_ID, BODY, addinfoParams);
+            Log.i(TAG, "message: " + message.toXML());
             try {
                 qbPrivateChat.sendMessage(USER_ID, message);
             } catch (XMPPException e) {
