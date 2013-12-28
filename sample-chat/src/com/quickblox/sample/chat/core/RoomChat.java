@@ -8,6 +8,7 @@ import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.utils.QBChatUtils;
+import com.quickblox.module.users.model.QBUser;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.model.ChatMessage;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
@@ -85,12 +86,12 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
             time = Calendar.getInstance().getTime();
         }
         // Show message
-        String from = message.getFrom();
-        int senderId = QBChatUtils.parseQBRoomOccupant(from);
-        if (App.getInstance().getQbUser().getId() == senderId) {
+        String sender = QBChatUtils.parseRoomOccupant(message.getFrom());
+        QBUser user = App.getInstance().getQbUser();
+        if (sender.equals(user.getFullName()) || sender.equals(user.getId().toString())) {
             chatActivity.showMessage(new ChatMessage(message.getBody(), "me", time, false));
         } else {
-            chatActivity.showMessage(new ChatMessage(message.getBody(), Integer.toString(senderId), time, true));
+            chatActivity.showMessage(new ChatMessage(message.getBody(), sender, time, true));
         }
     }
 

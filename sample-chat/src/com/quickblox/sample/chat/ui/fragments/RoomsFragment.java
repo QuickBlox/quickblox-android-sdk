@@ -47,14 +47,6 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (App.getInstance().getQbUser() != null) {
-            updateData();
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_rooms, container, false);
         roomsList = (ListView) v.findViewById(R.id.roomsList);
@@ -129,7 +121,7 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
         roomsList.setAdapter(roomsAdapter);
     }
 
-    public void updateData() {
+    public void loadRooms() {
         if (getActivity() != null) {
             progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
         }

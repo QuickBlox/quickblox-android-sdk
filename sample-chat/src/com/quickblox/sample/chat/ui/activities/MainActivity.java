@@ -65,9 +65,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         int position = tab.getPosition();
         if (App.getInstance().getQbUser() != null) {
             viewPager.setCurrentItem(position);
-            if (position == POSITION_ROOM) {
-                ((RoomsFragment) sectionsPagerAdapter.getItem(position)).updateData();
-            }
+
         } else if (position == POSITION_ROOM) {
             lastAction = Action.ROOM_LIST;
             showAuthenticateDialog();
@@ -93,6 +91,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     break;
                 case ROOM_LIST:
                     viewPager.setCurrentItem(POSITION_ROOM);
+                    ((RoomsFragment) sectionsPagerAdapter.getItem(POSITION_ROOM)).loadRooms();
                     break;
             }
         } else {
