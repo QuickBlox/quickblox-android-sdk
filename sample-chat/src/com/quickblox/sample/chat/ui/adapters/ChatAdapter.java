@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
     private final List<ChatMessage> chatMessages;
     private Context context;
 
@@ -66,13 +66,21 @@ public class ChatAdapter extends BaseAdapter {
         }
         setAlignment(holder, chatMessage.isIncoming());
         holder.txtMessage.setText(chatMessage.getText());
-        holder.txtTime.setText(getTimeText(chatMessage.getTime()));
+        if (chatMessage.getSender() != null) {
+            holder.txtInfo.setText(chatMessage.getSender() + ": " + getTimeText(chatMessage.getTime()));
+        } else {
+            holder.txtInfo.setText(getTimeText(chatMessage.getTime()));
+        }
 
         return convertView;
     }
 
     public void add(ChatMessage message) {
         chatMessages.add(message);
+    }
+
+    public void add(List<ChatMessage> messages) {
+        chatMessages.addAll(messages);
     }
 
     private void setAlignment(ViewHolder holder, boolean isIncoming) {
@@ -91,9 +99,9 @@ public class ChatAdapter extends BaseAdapter {
             layoutParams.gravity = Gravity.RIGHT;
             holder.txtMessage.setLayoutParams(layoutParams);
 
-            layoutParams = (LinearLayout.LayoutParams) holder.txtTime.getLayoutParams();
+            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
             layoutParams.gravity = Gravity.RIGHT;
-            holder.txtTime.setLayoutParams(layoutParams);
+            holder.txtInfo.setLayoutParams(layoutParams);
         } else {
             holder.contentWithBG.setBackgroundResource(R.drawable.outgoing_message_bg);
 
@@ -109,9 +117,9 @@ public class ChatAdapter extends BaseAdapter {
             layoutParams.gravity = Gravity.LEFT;
             holder.txtMessage.setLayoutParams(layoutParams);
 
-            layoutParams = (LinearLayout.LayoutParams) holder.txtTime.getLayoutParams();
+            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
-            holder.txtTime.setLayoutParams(layoutParams);
+            holder.txtInfo.setLayoutParams(layoutParams);
         }
     }
 
@@ -120,7 +128,7 @@ public class ChatAdapter extends BaseAdapter {
         holder.txtMessage = (TextView) v.findViewById(R.id.txtMessage);
         holder.content = (LinearLayout) v.findViewById(R.id.content);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
-        holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
+        holder.txtInfo = (TextView) v.findViewById(R.id.txtInfo);
         return holder;
     }
 
@@ -130,7 +138,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         public TextView txtMessage;
-        public TextView txtTime;
+        public TextView txtInfo;
         public LinearLayout content;
         public LinearLayout contentWithBG;
     }

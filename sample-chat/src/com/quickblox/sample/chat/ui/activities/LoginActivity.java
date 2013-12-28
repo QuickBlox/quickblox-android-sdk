@@ -21,19 +21,18 @@ import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 
 public class LoginActivity extends Activity implements QBCallback, View.OnClickListener {
-    private static final String DEFAULT_LOGIN = "romeo";
-    private static final String DEFAULT_PASSWORD = "password";
-    private static final String TAG = LoginActivity.class.getSimpleName();
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String DEFAULT_LOGIN = "ced";
+    private static final String DEFAULT_PASSWORD = "ced";
     private Button loginButton;
-    private Button registerButton;
     private EditText loginEdit;
     private EditText passwordEdit;
     private ProgressDialog progressDialog;
-
     private String login;
     private String password;
     private QBUser user;
+    private SmackAndroid smackAndroid;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,13 +44,17 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         loginEdit.setText(DEFAULT_LOGIN);
         passwordEdit.setText(DEFAULT_PASSWORD);
         loginButton = (Button) findViewById(R.id.loginButton);
-        registerButton = (Button) findViewById(R.id.registerButton);
         loginButton.setOnClickListener(this);
-        registerButton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading");
 
-        SmackAndroid.init(this);
+        smackAndroid = SmackAndroid.init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        smackAndroid.onDestroy();
+        super.onDestroy();
     }
 
     @Override
@@ -62,14 +65,15 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
         user = new QBUser(login, password);
 
         progressDialog.show();
-        switch (view.getId()) {
-            case R.id.loginButton:
-                QBUsers.signIn(user, this);
-                break;
-            case R.id.registerButton:
-                QBUsers.signUpSignInTask(user, this);
-                break;
-        }
+        QBUsers.signIn(user, this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 
     @Override
@@ -83,8 +87,10 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
                         progressDialog.dismiss();
                     }
                     Log.i(TAG, "success when login");
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
 
                 @Override

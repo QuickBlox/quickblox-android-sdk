@@ -3,10 +3,10 @@ package com.quickblox.sample.chat.core;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.quickblox.module.chat.QBChatRoom;
 import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
-import com.quickblox.module.chat.model.QBChatRoom;
 import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.model.ChatMessage;
@@ -20,8 +20,8 @@ import java.util.Date;
 
 public class RoomChat implements Chat, RoomListener, ChatMessageListener {
 
-    public static final String ROOM_NAME = "name";
-    public static final String ROOM_ACTION = "action";
+    public static final String EXTRA_ROOM_NAME = "name";
+    public static final String EXTRA_ROOM_ACTION = "action";
     private static final String TAG = RoomChat.class.getSimpleName();
     private ChatActivity chatActivity;
     private QBChatRoom chatRoom;
@@ -29,49 +29,34 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
     public RoomChat(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
 
-        String chatRoomName = chatActivity.getIntent().getStringExtra(ROOM_NAME);
-        RoomAction action = (RoomAction) chatActivity.getIntent().getSerializableExtra(ROOM_ACTION);
+        String chatRoomName = chatActivity.getIntent().getStringExtra(EXTRA_ROOM_NAME);
+        RoomAction action = (RoomAction) chatActivity.getIntent().getSerializableExtra(EXTRA_ROOM_ACTION);
 
         switch (action) {
             case CREATE:
                 create(chatRoomName);
                 break;
             case JOIN:
-                join(chatRoomName);
+                join(App.getInstance().getCurrentRoom());
                 break;
         }
     }
 
     @Override
-    public void sendMessage(String message) {
-        try {
-            if (chatRoom != null) {
-                chatRoom.sendMessage(message);
-            } else {
-                Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
-            }
-        } catch (XMPPException e) {
-            e.printStackTrace();
+    public void sendMessage(String message) throws XMPPException {
+        if (chatRoom != null) {
+            chatRoom.sendMessage(message);
+        } else {
+            Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void release() {
+    public void release() throws XMPPException {
         if (chatRoom != null) {
-            try {
-                chatRoom.leave();
-            } catch (XMPPException e) {
-                Log.e(TAG, "failed to send a message", e);
-            }
+            QBChatService.getInstance().leaveRoom(chatRoom);
+            chatRoom.removeMessageListener(this);
         }
-    }
-
-    public void create(String roomName) {
-        QBChatService.getInstance().createRoom(roomName, false, false, this);
-    }
-
-    public void join(String roomName) {
-        QBChatService.getInstance().joinRoom(roomName, this);
     }
 
     @Override
@@ -101,23 +86,30 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
         }
         // Show message
         String from = message.getFrom();
-        if (App.getInstance().getQbUser().getId() == QBChatUtils.parseQBRoomOccupant(from)) {
-            chatActivity.showMessage(new ChatMessage(message.getBody(), time, false));
+        int senderId = QBChatUtils.parseQBRoomOccupant(from);
+        if (App.getInstance().getQbUser().getId() == senderId) {
+            chatActivity.showMessage(new ChatMessage(message.getBody(), "me", time, false));
         } else {
-            chatActivity.showMessage(new ChatMessage(message.getBody(), time, true));
+            chatActivity.showMessage(new ChatMessage(message.getBody(), Integer.toString(senderId), time, true));
         }
     }
 
     @Override
     public boolean accept(Message.Type messageType) {
         switch (messageType) {
-            case normal:
-            case chat:
             case groupchat:
                 return true;
             default:
                 return false;
         }
+    }
+
+    public void create(String roomName) {
+        QBChatService.getInstance().createRoom(roomName, false, false, this);
+    }
+
+    public void join(QBChatRoom room) {
+        QBChatService.getInstance().joinRoom(room, this);
     }
 
     public static enum RoomAction {CREATE, JOIN}

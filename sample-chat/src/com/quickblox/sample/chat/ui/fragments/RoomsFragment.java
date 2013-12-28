@@ -3,7 +3,6 @@ package com.quickblox.sample.chat.ui.fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,9 +16,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.quickblox.module.chat.QBChatRoom;
 import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
-import com.quickblox.module.chat.model.QBChatRoom;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.RoomChat;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
@@ -31,10 +31,14 @@ import java.util.Map;
 
 public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
-    public static final String KEY_ROOM_NAME = "roomName";
+    private static final String KEY_ROOM_NAME = "roomName";
     private ListView roomsList;
     private List<QBChatRoom> rooms;
     private ProgressDialog progressDialog;
+
+    public static RoomsFragment getInstance() {
+        return new RoomsFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,10 +49,9 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (getActivity() != null) {
-            progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
+        if (App.getInstance().getQbUser() != null) {
+            updateData();
         }
-        QBChatService.getInstance().getRooms(this);
     }
 
     @Override
@@ -75,12 +78,8 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
             builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    intent.putExtra(ChatActivity.MODE, ChatActivity.Mode.GROUP);
-                    intent.putExtra(RoomChat.ROOM_NAME, input.getText().toString());
-                    intent.putExtra(RoomChat.ROOM_ACTION, RoomChat.RoomAction.JOIN);
-
-                    startActivity(intent);
+                    Bundle bundle = createChatBundle(input.getText().toString(), true);
+                    ChatActivity.start(getActivity(), bundle);
                 }
             });
             builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
@@ -121,16 +120,31 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra(ChatActivity.MODE, ChatActivity.Mode.GROUP);
-                intent.putExtra(RoomChat.ROOM_NAME, rooms.get(position).getName());
-                intent.putExtra(RoomChat.ROOM_ACTION, RoomChat.RoomAction.JOIN);
-
-                startActivity(intent);
+                Bundle bundle = createChatBundle(rooms.get(position).getName(), false);
+                App.getInstance().setCurrentRoom(rooms.get(position));
+                ChatActivity.start(getActivity(), bundle);
             }
         });
 
         roomsList.setAdapter(roomsAdapter);
+    }
+
+    public void updateData() {
+        if (getActivity() != null) {
+            progressDialog = ProgressDialog.show(getActivity(), null, "Loading rooms list");
+        }
+        QBChatService.getInstance().getRooms(this);
+    }
+
+    private Bundle createChatBundle(String roomName, boolean createChat) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
+        bundle.putString(RoomChat.EXTRA_ROOM_NAME, roomName);
+        if (createChat) {
+            bundle.putSerializable(RoomChat.EXTRA_ROOM_ACTION, RoomChat.RoomAction.CREATE);
+        } else {
+            bundle.putSerializable(RoomChat.EXTRA_ROOM_ACTION, RoomChat.RoomAction.JOIN);
+        }
+        return bundle;
     }
 }

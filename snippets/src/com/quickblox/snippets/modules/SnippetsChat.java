@@ -106,8 +106,7 @@ public class SnippetsChat extends Snippets {
                     QBChatService.getInstance().loginWithUser(qbUser, new SessionListener() {
                         @Override
                         public void onLoginSuccess() {
-                           Log.i(TAG, "success when login");
-                                //QBChat.getInstance().createRoom(ROOM_NAME,  false, true, roomReceivingListener);
+                            Log.i(TAG, "success when login");
 
                             // Add Chat message listener
                             initChat();
@@ -244,6 +243,8 @@ public class SnippetsChat extends Snippets {
 
     };
 
+
+    // to use this feature you should login with user in QBApp
     Snippet sendMessageWithSaving = new Snippet("send message with saving in history") {
         @Override
         public void execute() {
@@ -387,6 +388,8 @@ public class SnippetsChat extends Snippets {
     }
 
     private void initChatMessageListener() {
+        // listener for room msg and chat 1to1 msg
+        // You can define which msg will be accept in accept method
         chatMessageListener = new ChatMessageListener() {
             @Override
             public void processMessage(Message message) {

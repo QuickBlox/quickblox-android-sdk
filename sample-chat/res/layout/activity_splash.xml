@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/splash_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/splash_bg"
         android:layout_gravity="center"
-        android:src="@drawable/qb_splash_bg"
+        android:longClickable="true"
         android:scaleType="fitXY"
-        android:visibility="visible"
-        android:longClickable="true"/>
+        android:src="@drawable/qb_splash_bg"
+        android:visibility="visible" />
+
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/splash_hero"
-        android:src="@drawable/qb_splash_hero"
-        android:scaleType="fitCenter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
-        android:focusableInTouchMode="false"
-        android:layout_marginRight="50dp"
+        android:layout_below="@+id/splash_app_title"
+        android:layout_above="@+id/splash_qb_link"
         android:layout_marginLeft="50dp"
-        android:visibility="visible"
-        android:layout_below="@+id/splash_app_title"/>
+        android:layout_marginRight="50dp"
+        android:focusableInTouchMode="false"
+        android:scaleType="fitCenter"
+        android:src="@drawable/qb_splash_hero"
+        android:visibility="visible" />
+
     <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar" android:layout_gravity="center" android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp" />
+
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@id/splash_qb_link"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/splash_qb_link" android:src="@drawable/qb_splash_link"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:scaleType="fitEnd"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/qb_splash_link" />
+
     <TextView
+        android:id="@+id/splash_app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chat"
-        android:id="@+id/splash_app_title"
-        android:textColor="#ffffff"
-        android:textSize="80sp"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:text="Chat"
+        android:textColor="#ffffff"
+        android:textSize="80sp" />
+
 </RelativeLayout>

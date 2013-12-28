@@ -15,6 +15,10 @@ import com.quickblox.sample.chat.R;
 
 public class SplashActivity extends Activity implements QBCallback {
 
+    private static final String APP_ID = "99";
+    private static final String AUTH_KEY = "63ebrp5VZt7qTOv";
+    private static final String AUTH_SECRET = "YavMAxm5T59-BRw";
+
     private ProgressBar progressBar;
 
     @Override
@@ -24,7 +28,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        QBSettings.getInstance().fastConfigInit("5418", "f9xJ5M6FPqchHbr", "ScxbhMTyS9zcC3H");
+        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
         QBAuth.createSession(this);
     }
 
@@ -33,7 +37,7 @@ public class SplashActivity extends Activity implements QBCallback {
         progressBar.setVisibility(View.GONE);
 
         if (result.isSuccess()) {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         } else {
