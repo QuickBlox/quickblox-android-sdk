@@ -38,7 +38,7 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
                 create(chatRoomName);
                 break;
             case JOIN:
-                join(App.getInstance().getCurrentRoom());
+                join( ((App) chatActivity.getApplication()).getCurrentRoom());
                 break;
         }
     }
@@ -87,9 +87,8 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
         }
         // Show message
         String sender = QBChatUtils.parseRoomOccupant(message.getFrom());
-        ((App)(chatActivity.getApplication())).getQbUser();
-        QBUser user = App.getInstance().getQbUser();
-        if (sender.equals(user.getFullName()) || sender.equals(user.getId().toString())) {
+        QBUser qbUser = ((App) (chatActivity.getApplication())).getQbUser();
+        if (sender.equals(qbUser.getFullName()) || sender.equals(qbUser.getId().toString())) {
             chatActivity.showMessage(new ChatMessage(message.getBody(), "me", time, false));
         } else {
             chatActivity.showMessage(new ChatMessage(message.getBody(), sender, time, true));
