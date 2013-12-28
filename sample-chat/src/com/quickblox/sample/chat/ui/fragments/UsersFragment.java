@@ -57,8 +57,8 @@ public class UsersFragment extends Fragment implements QBCallback {
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                companionUser = App.getInstance().getAllQbUsers().get(position-1);
-                if (App.getInstance().getQbUser() != null) {
+                companionUser = ((App)getActivity().getApplication()).getAllQbUsers().get(position-1);
+                if (((App)getActivity().getApplication()).getQbUser() != null) {
                     startChat();
                 } else {
                     MainActivity activity = (MainActivity) getActivity();
@@ -88,12 +88,12 @@ public class UsersFragment extends Fragment implements QBCallback {
             List<QBUser> users = usersResult.getUsers();
 
             if (users != null && !users.isEmpty()) {
-                App.getInstance().addQBUsers(users.toArray(new QBUser[users.size()]));
+                ((App)getActivity().getApplication()).addQBUsers(users.toArray(new QBUser[users.size()]));
             }
 
             // Prepare users list for simple adapter.
             ArrayList<Map<String, String>> usersListForAdapter = new ArrayList<Map<String, String>>();
-            for (QBUser user : App.getInstance().getAllQbUsers()) {
+            for (QBUser user : ((App)getActivity().getApplication()).getAllQbUsers()) {
                 Map<String, String> userMap = new HashMap<String, String>();
                 userMap.put(KEY_USER_LOGIN, user.getLogin());
                 usersListForAdapter.add(userMap);
@@ -128,8 +128,8 @@ public class UsersFragment extends Fragment implements QBCallback {
     }
 
     private void loadNextPage() {
-        int currentPage = App.getInstance().getCurrentPage();
+        int currentPage = ((App)getActivity().getApplication()).getCurrentPage();
         QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), UsersFragment.this);
-        App.getInstance().setCurrentPage(currentPage + 1);
+        ((App)getActivity().getApplication()).setCurrentPage(currentPage + 1);
     }
 }
