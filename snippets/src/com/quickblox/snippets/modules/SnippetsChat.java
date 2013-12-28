@@ -321,14 +321,14 @@ public class SnippetsChat extends Snippets {
     Snippet getOnlineRoomUsers = new Snippet("get Online Room users") {
         @Override
         public void execute() {
-            Collection<Integer> onlineRoomUsers = null;
+            Collection<String> onlineRoomUsers = null;
             try {
                 onlineRoomUsers = currentQBChatRoom.getOnlineRoomUsers();
             } catch (XMPPException e) {
                Log.i(TAG, e.getLocalizedMessage());
             }
-            for (Integer id : onlineRoomUsers) {
-               Log.i(TAG, "id: " + id);
+            for (String nickname : onlineRoomUsers) {
+               Log.i(TAG, "nickname: " + nickname);
             }
         }
     };
