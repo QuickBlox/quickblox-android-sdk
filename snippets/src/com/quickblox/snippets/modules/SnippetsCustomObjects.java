@@ -89,7 +89,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjects = new Snippet("get objects") {
         @Override
         public void execute() {
-            QBCustomObjects.getObjects(className, new QBCallbackImpl() {
+            QBCustomObjects.getObjects(CLASS_NAME, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -187,7 +187,7 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
 
-            ArrayList<String> coIDs = new ArrayList<String>();
+            StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
             coIDs.add("50e67e6e535c121c66004c74");
             coIDs.add("50e67e6d535c127f66004f47");
             coIDs.add("50e67e6b535c121c66004c72");
