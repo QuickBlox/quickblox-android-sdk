@@ -5,14 +5,7 @@ import com.quickblox.customobject.object.Note;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 20.11.12
- * Time: 14:18
- */
 public class DataHolder {
-
 
     private static DataHolder dataHolder;
     private int signInUserId;
@@ -25,12 +18,12 @@ public class DataHolder {
         return dataHolder;
     }
 
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
     public int getSignInUserId() {
         return signInUserId;
+    }
+
+    public void setSignInUserId(int signInUserId) {
+        this.signInUserId = signInUserId;
     }
 
     public void addNoteToList(String id, String title, String status, String date, String comments) {
@@ -78,8 +71,8 @@ public class DataHolder {
     public String getComments(int notePosition) {
         return noteList.get(notePosition).getComments();
     }
-    public void removeNoteFromList(int position){
+
+    public void removeNoteFromList(int position) {
         noteList.remove(position);
     }
-
 }

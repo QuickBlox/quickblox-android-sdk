@@ -2,19 +2,14 @@ package com.quickblox.customobject.object;
 
 import java.util.ArrayList;
 import java.util.List;
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 30.11.12
- * Time: 16:23
- */
+
 public class Note {
 
-    String id;
-    String title;
-    String status;
-    String date;
-    List<String> commentList;
+    private String id;
+    private String title;
+    private String status;
+    private String date;
+    private List<String> commentList;
 
     public Note(String id, String title, String status, String date, String commentList) {
         this.id = id;

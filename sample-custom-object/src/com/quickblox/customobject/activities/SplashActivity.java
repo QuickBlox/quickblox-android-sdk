@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
@@ -21,14 +22,7 @@ import com.quickblox.module.users.model.QBUser;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 03.12.12
- * Time: 12:38
- * To change this template use File | Settings | File Templates.
- */
-public class SplashActivity extends Activity implements QBCallback{
+public class SplashActivity extends Activity implements QBCallback {
 
     private final int APP_ID = 99;
     private final String AUTH_KEY = "63ebrp5VZt7qTOv";
@@ -39,7 +33,6 @@ public class SplashActivity extends Activity implements QBCallback{
     private final String TITLE = "title";
     private final String STATUS = "status";
     private final String COMMENTS = "comments";
-
     private ProgressBar progressBar;
 
     @Override
@@ -103,7 +96,7 @@ public class SplashActivity extends Activity implements QBCallback{
         }
     }
 
-    private void startDisplayNoteListActivity(){
+    private void startDisplayNoteListActivity() {
         Intent intent = new Intent(this, DisplayNoteListActivity.class);
         startActivity(intent);
         finish();

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobject.R;
@@ -17,25 +18,50 @@ import com.quickblox.module.custom.result.QBCustomObjectResult;
 
 import java.util.HashMap;
 
-import static com.quickblox.customobject.definition.Consts.*;
+import static com.quickblox.customobject.definition.Consts.CLASS_NAME;
+import static com.quickblox.customobject.definition.Consts.COMMENTS;
+import static com.quickblox.customobject.definition.Consts.STATUS;
+import static com.quickblox.customobject.definition.Consts.STATUS_NEW;
+import static com.quickblox.customobject.definition.Consts.TITLE;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 30.11.12
- * Time: 18:23
- */
 public class AddNewNoteActivity extends Activity implements QBCallback {
 
-    EditText note;
-    EditText comments;
-    ProgressDialog progressDialog;
+    private EditText note;
+    private EditText comments;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_note);
         initialize();
+    }
+
+    @Override
+    public void onComplete(Result result, Object context) {
+        QBQueries qbQueryType = (QBQueries) context;
+        if (result.isSuccess()) {
+            switch (qbQueryType) {
+                case CREATE_NOTE:
+                    // return QBCustomObjectResult for createObject() query
+                    QBCustomObjectResult qbCustomObjectResult = (QBCustomObjectResult) result;
+                    QBCustomObject qbCustomObject = qbCustomObjectResult.getCustomObject();
+                    DataHolder.getDataHolder().addNoteToList(qbCustomObject.getCustomObjectId(), qbCustomObject.getFields().get(TITLE).toString(),
+                            qbCustomObject.getFields().get(STATUS).toString(), qbCustomObject.getUpdatedAt().toLocaleString(), qbCustomObject.getFields().get(COMMENTS).toString());
+                    finish();
+                    break;
+
+            }
+            progressDialog.hide();
+        } else {
+            // print errors that came from server
+            Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
+            progressDialog.hide();
+        }
+    }
+
+    @Override
+    public void onComplete(Result result) {
     }
 
     private void initialize() {
@@ -65,33 +91,5 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
         QBCustomObjects.createObject(qbCustomObject, this, QBQueries.CREATE_NOTE);
-    }
-
-    @Override
-    public void onComplete(Result result) {
-
-    }
-
-    @Override
-    public void onComplete(Result result, Object context) {
-        QBQueries qbQueryType = (QBQueries) context;
-        if (result.isSuccess()) {
-            switch (qbQueryType) {
-                case CREATE_NOTE:
-                    // return QBCustomObjectResult for createObject() query
-                    QBCustomObjectResult qbCustomObjectResult = (QBCustomObjectResult) result;
-                    QBCustomObject qbCustomObject = qbCustomObjectResult.getCustomObject();
-                    DataHolder.getDataHolder().addNoteToList(qbCustomObject.getCustomObjectId(), qbCustomObject.getFields().get(TITLE).toString(),
-                            qbCustomObject.getFields().get(STATUS).toString(), qbCustomObject.getUpdatedAt().toLocaleString(), qbCustomObject.getFields().get(COMMENTS).toString());
-                    finish();
-                    break;
-
-            }
-            progressDialog.hide();
-        } else {
-            // print errors that came from server
-            Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
-            progressDialog.hide();
-        }
     }
 }
