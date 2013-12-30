@@ -20,7 +20,7 @@ import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectLimitedResult;
 import com.quickblox.module.users.model.QBUser;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SplashActivity extends Activity implements QBCallback {
 
@@ -78,7 +78,7 @@ public class SplashActivity extends Activity implements QBCallback {
                 case GET_NOTE_LIST:
                     //return QBCustomObjectLimitedResult for getObjects query
                     // get all custom objects by .getCustomObjects()
-                    ArrayList<QBCustomObject> qbCustomObjects = ((QBCustomObjectLimitedResult) result).getCustomObjects();
+                    List<QBCustomObject> qbCustomObjects = ((QBCustomObjectLimitedResult) result).getCustomObjects();
                     if (qbCustomObjects.size() != 0) {
                         for (QBCustomObject co : qbCustomObjects) {
                             DataHolder.getDataHolder().addNoteToList(co.getCustomObjectId(), co.getFields().get(TITLE).toString(),
@@ -101,5 +101,4 @@ public class SplashActivity extends Activity implements QBCallback {
         startActivity(intent);
         finish();
     }
-
 }

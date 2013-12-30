@@ -52,11 +52,11 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
                     break;
 
             }
-            progressDialog.hide();
+            progressDialog.dismiss();
         } else {
             // print errors that came from server
             Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
@@ -65,9 +65,6 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
     }
 
     private void initialize() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getResources().getString(R.string.please_wait));
         note = (EditText) findViewById(R.id.note);
         comments = (EditText) findViewById(R.id.comments);
     }
@@ -82,7 +79,7 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
 
     private void createNewNote() {
         // create new score in note class
-        progressDialog.show();
+        showProgressDialog();
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(TITLE, note.getText().toString());
         fields.put(COMMENTS, comments.getText().toString());
@@ -91,5 +88,9 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
         QBCustomObjects.createObject(qbCustomObject, this, QBQueries.CREATE_NOTE);
+    }
+
+    private void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, null, getResources().getString(R.string.please_wait), false, false);
     }
 }

@@ -50,7 +50,6 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     public void onComplete(Result result, Object context) {
         QBQueries qbQueryType = (QBQueries) context;
         if (result.isSuccess()) {
-
             switch (qbQueryType) {
                 case UPDATE_STATUS:
                     // return QBCustomObjectResult for updateObject()
@@ -68,11 +67,11 @@ public class ShowNoteActivity extends Activity implements QBCallback {
                     finish();
                     break;
             }
-            progressDialog.hide();
+            progressDialog.dismiss();
         } else {
             // print errors that came from server
             Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
@@ -81,9 +80,6 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     }
 
     private void initialize() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getResources().getString(R.string.please_wait));
         position = getIntent().getIntExtra(POSITION, 0);
         title = (TextView) findViewById(R.id.note);
         status = (TextView) findViewById(R.id.status);
@@ -106,7 +102,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
                 showSetNewStatusDialog();
                 break;
             case R.id.delete:
-                progressDialog.show();
+                showProgressDialog();
                 // create query for delete score
                 // set className and scoreId
                 QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), this, QBQueries.DELETE_NOTE);
@@ -116,7 +112,6 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     }
 
     private void showAddNewCommentDialog() {
-
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getResources().getString(R.string.new_comment));
         alert.setMessage(getResources().getString(R.string.write_new_comment));
@@ -125,7 +120,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         input.setSingleLine();
         alert.setPositiveButton(getBaseContext().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int buttonNumber) {
-                progressDialog.show();
+                showProgressDialog();
                 addNewComment(input.getText().toString());
                 dialog.cancel();
             }
@@ -133,7 +128,6 @@ public class ShowNoteActivity extends Activity implements QBCallback {
 
         alert.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-
                 dialog.cancel();
             }
         });
@@ -148,7 +142,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         alert.setItems(statusList, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                progressDialog.show();
+                showProgressDialog();
                 String status;
                 if (item == 0) {
                     status = STATUS_NEW;
@@ -198,11 +192,14 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     }
 
     private void setNewNote(QBCustomObjectResult qbCustomObjectResult) {
-
         QBCustomObject qbCustomObject = qbCustomObjectResult.getCustomObject();
         Note note = new Note(qbCustomObject.getCustomObjectId(), qbCustomObject.getFields().get(TITLE).toString(),
                 qbCustomObject.getFields().get(STATUS).toString(), qbCustomObject.getUpdatedAt().toLocaleString(), qbCustomObject.getFields().get(COMMENTS).toString());
         DataHolder.getDataHolder().setNoteToNoteList(position, note);
+    }
+
+    private void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, null, getResources().getString(R.string.please_wait), false, false);
     }
 }
 
