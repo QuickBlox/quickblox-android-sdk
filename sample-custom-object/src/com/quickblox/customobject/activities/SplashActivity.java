@@ -11,6 +11,7 @@ import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobject.R;
+import com.quickblox.customobject.definition.Consts;
 import com.quickblox.customobject.definition.QBQueries;
 import com.quickblox.customobject.helper.DataHolder;
 import com.quickblox.module.auth.QBAuth;
@@ -27,12 +28,8 @@ public class SplashActivity extends Activity implements QBCallback {
     private final int APP_ID = 99;
     private final String AUTH_KEY = "63ebrp5VZt7qTOv";
     private final String AUTH_SECRET = "YavMAxm5T59-BRw";
-    private final String USER_LOGIN = "Gerrit";
-    private final String USER_PASSWORD = "qwerty123";
-    private final String CLASS_NAME = "note";
-    private final String TITLE = "title";
-    private final String STATUS = "status";
-    private final String COMMENTS = "comments";
+    private final String USER_LOGIN = "bobbobbob";
+    private final String USER_PASSWORD = "bobbobbob";
     private ProgressBar progressBar;
 
     @Override
@@ -56,7 +53,7 @@ public class SplashActivity extends Activity implements QBCallback {
     private void getNoteList() {
         // ================= QuickBlox ===== Step 2 =================
         // Get all notes
-        QBCustomObjects.getObjects(CLASS_NAME, this, QBQueries.GET_NOTE_LIST);
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, this, QBQueries.GET_NOTE_LIST);
     }
 
     @Override
@@ -77,14 +74,17 @@ public class SplashActivity extends Activity implements QBCallback {
                     break;
                 case GET_NOTE_LIST:
                     //return QBCustomObjectLimitedResult for getObjects query
+                    if (DataHolder.getDataHolder().size() > 0) {
+                        DataHolder.getDataHolder().clear();
+                    }
                     // get all custom objects by .getCustomObjects()
                     List<QBCustomObject> qbCustomObjects = ((QBCustomObjectLimitedResult) result).getCustomObjects();
-                    if (qbCustomObjects.size() != 0) {
-                        for (QBCustomObject co : qbCustomObjects) {
-                            DataHolder.getDataHolder().addNoteToList(co.getCustomObjectId(), co.getFields().get(TITLE).toString(),
-                                    co.getFields().get(STATUS).toString(), co.getUpdatedAt().toLocaleString(), co.getFields().get(COMMENTS).toString());
+                    if (qbCustomObjects != null && qbCustomObjects.size() != 0) {
+                        for (QBCustomObject customObject : qbCustomObjects) {
+                            DataHolder.getDataHolder().addNoteToList(customObject);
                         }
                     }
+                    //DataHolder.getDataHolder().sort();
                     startDisplayNoteListActivity();
                     break;
             }

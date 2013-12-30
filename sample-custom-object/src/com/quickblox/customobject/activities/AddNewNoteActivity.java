@@ -45,9 +45,8 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
                 case CREATE_NOTE:
                     // return QBCustomObjectResult for createObject() query
                     QBCustomObjectResult qbCustomObjectResult = (QBCustomObjectResult) result;
-                    QBCustomObject qbCustomObject = qbCustomObjectResult.getCustomObject();
-                    DataHolder.getDataHolder().addNoteToList(qbCustomObject.getCustomObjectId(), qbCustomObject.getFields().get(TITLE).toString(),
-                            qbCustomObject.getFields().get(STATUS).toString(), qbCustomObject.getUpdatedAt().toLocaleString(), qbCustomObject.getFields().get(COMMENTS).toString());
+                    QBCustomObject customObject= qbCustomObjectResult.getCustomObject();
+                    DataHolder.getDataHolder().addNoteToList(customObject);
                     finish();
                     break;
 

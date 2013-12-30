@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.quickblox.customobject.R;
 import com.quickblox.customobject.helper.DataHolder;
+import com.quickblox.customobject.object.Note;
+
+import java.util.List;
 
 public class NoteListAdapter extends BaseAdapter {
 

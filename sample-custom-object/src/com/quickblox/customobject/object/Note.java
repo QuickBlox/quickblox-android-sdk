@@ -1,6 +1,10 @@
 package com.quickblox.customobject.object;
 
+import com.quickblox.customobject.definition.Consts;
+import com.quickblox.module.custom.model.QBCustomObject;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Note {
@@ -11,15 +15,16 @@ public class Note {
     private String date;
     private List<String> commentList;
 
-    public Note(String id, String title, String status, String date, String commentList) {
-        this.id = id;
-        this.title = title;
-        this.status = status;
-        this.date = date;
-        this.commentList = new ArrayList<String>();
-        String[] comments = commentList.split("/");
-        for (String comment : comments) {
-            this.commentList.add(comment);
+    public Note(QBCustomObject customObject) {
+        id = customObject.getCustomObjectId();
+        title = parseField(Consts.TITLE, customObject);
+        status = parseField(Consts.STATUS, customObject);
+        date = customObject.getUpdatedAt().toString();
+        commentList = new ArrayList<String>();
+        String commentString = parseField(Consts.COMMENTS, customObject);
+        if (commentString != null) {
+            String[] comments = commentString.split("/");
+            Collections.addAll(this.commentList, comments);
         }
     }
 
@@ -53,5 +58,13 @@ public class Note {
 
     public String getId() {
         return id;
+    }
+
+    private String parseField(String field, QBCustomObject customObject) {
+        Object object = customObject.getFields().get(field);
+        if (object != null) {
+            return object.toString();
+        }
+        return null;
     }
 }

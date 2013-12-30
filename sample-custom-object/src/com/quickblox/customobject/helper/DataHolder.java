@@ -1,6 +1,7 @@
 package com.quickblox.customobject.helper;
 
 import com.quickblox.customobject.object.Note;
+import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,6 @@ public class DataHolder {
 
     public void setSignInUserId(int signInUserId) {
         this.signInUserId = signInUserId;
-    }
-
-    public void addNoteToList(String id, String title, String status, String date, String comments) {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
-        }
-        noteList.add(new Note(id, title, status, date, comments));
     }
 
     public int getNoteListSize() {
@@ -74,5 +68,23 @@ public class DataHolder {
 
     public void removeNoteFromList(int position) {
         noteList.remove(position);
+    }
+
+    public void clear() {
+        noteList.clear();
+    }
+
+    public int size() {
+        if (noteList != null) {
+            return noteList.size();
+        }
+        return 0;
+    }
+
+    public void addNoteToList(QBCustomObject customObject) {
+        if (noteList == null) {
+            noteList = new ArrayList<Note>();
+        }
+        noteList.add(new Note(customObject));
     }
 }

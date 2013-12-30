@@ -193,8 +193,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
 
     private void setNewNote(QBCustomObjectResult qbCustomObjectResult) {
         QBCustomObject qbCustomObject = qbCustomObjectResult.getCustomObject();
-        Note note = new Note(qbCustomObject.getCustomObjectId(), qbCustomObject.getFields().get(TITLE).toString(),
-                qbCustomObject.getFields().get(STATUS).toString(), qbCustomObject.getUpdatedAt().toLocaleString(), qbCustomObject.getFields().get(COMMENTS).toString());
+        Note note = new Note(qbCustomObject);
         DataHolder.getDataHolder().setNoteToNoteList(position, note);
     }
 
