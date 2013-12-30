@@ -93,9 +93,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     break;
                 case ROOM_LIST:
                     viewPager.setCurrentItem(POSITION_ROOM);
-                    ((RoomsFragment) sectionsPagerAdapter.getItem(POSITION_ROOM)).loadRooms();
                     break;
             }
+            ((RoomsFragment) sectionsPagerAdapter.getItem(POSITION_ROOM)).loadRooms();
         } else {
             showUsersFragment();
         }
