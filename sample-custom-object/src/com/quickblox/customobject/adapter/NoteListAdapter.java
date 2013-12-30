@@ -6,18 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.quickblox.customobject.R;
 import com.quickblox.customobject.helper.DataHolder;
+import com.quickblox.customobject.object.Note;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 30.11.12
- * Time: 16:22
- */
+import java.util.List;
+
 public class NoteListAdapter extends BaseAdapter {
 
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
 
     public NoteListAdapter(Context ctx) {
         this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -70,7 +68,7 @@ public class NoteListAdapter extends BaseAdapter {
         date.setText(DataHolder.getDataHolder().getNoteDate(position));
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView title;
         TextView status;
         TextView date;
