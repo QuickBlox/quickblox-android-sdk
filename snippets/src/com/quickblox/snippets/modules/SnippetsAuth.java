@@ -1,6 +1,8 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
@@ -15,6 +17,8 @@ import com.quickblox.snippets.Snippets;
  * Time: 19:28
  */
 public class SnippetsAuth extends Snippets {
+
+    private static final String TAG = SnippetsAuth.class.getSimpleName();
 
     public SnippetsAuth(Context context) {
         super(context);
@@ -34,7 +38,7 @@ public class SnippetsAuth extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
-                        System.out.println(">>> Session = " + sessionResult.getSession());
+                        Log.i(TAG, ">>> Session = " + sessionResult.getSession());
                     } else {
                         handleErrors(result);
                     }
@@ -47,12 +51,12 @@ public class SnippetsAuth extends Snippets {
         @Override
         public void execute() {
 
-            QBAuth.createSession("testuser", "testpassword", new QBCallbackImpl() {
+            QBAuth.createSession("AndroidGirl", "AndroidGirl", new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
-                        System.out.println(">>> Session = " + sessionResult.getSession());
+                        Log.i(TAG, ">>> Session = " + sessionResult.getSession());
                     } else {
                         handleErrors(result);
                     }
@@ -70,7 +74,7 @@ public class SnippetsAuth extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
-                        System.out.println(">>> Session = " + sessionResult.getSession());
+                        Log.i(TAG, ">>> Session = " + sessionResult.getSession());
 
                     } else {
                         handleErrors(result);
@@ -91,7 +95,7 @@ public class SnippetsAuth extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBSessionResult sessionResult = (QBSessionResult) result;
-                        System.out.println(">>> Session = " + sessionResult.getSession());
+                        Log.i(TAG, ">>> Session = " + sessionResult.getSession());
 
                     } else {
                         handleErrors(result);
@@ -108,7 +112,7 @@ public class SnippetsAuth extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> Session Destroy OK");
+                        Log.i(TAG, ">>> Session Destroy OK");
                     } else {
                         handleErrors(result);
                     }

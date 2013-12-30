@@ -16,6 +16,7 @@ import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.QBEnvironment;
 import com.quickblox.module.messages.model.QBEvent;
@@ -113,8 +114,10 @@ public class MessagesActivity extends Activity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        QBPagedRequestBuilder rb = new QBPagedRequestBuilder(100, 1);
+
         // Retrieve all users
-        QBUsers.getUsers(new QBCallback() {
+        QBUsers.getUsers(rb, new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 qbUsersList = ((QBUserPagedResult) result).getUsers();
