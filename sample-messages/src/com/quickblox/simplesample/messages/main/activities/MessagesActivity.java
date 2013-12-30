@@ -11,20 +11,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.google.android.gcm.GCMRegistrar;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
+import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.QBEnvironment;
 import com.quickblox.module.messages.model.QBEvent;
 import com.quickblox.module.messages.model.QBNotificationType;
-import com.quickblox.module.messages.result.QBSubscribeToPushNotificationsResult;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.module.users.result.QBUserPagedResult;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.c2dm.C2DMessaging;
 import com.quickblox.simplesample.messages.main.definitions.Consts;
 
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ public class MessagesActivity extends Activity {
         retrievedMessages = (EditText) findViewById(R.id.receivedMessages);
 
         instance = this;
+
         // add messages to list
         String message = getIntent().getStringExtra("message");
         if (message != null) {
@@ -72,14 +73,26 @@ public class MessagesActivity extends Activity {
 
         // ================= QuickBlox ===== Step 3 =================
         // Request device push token
-        C2DMessaging.register(this, Consts.GSM_SENDER);
+        GCMRegistrar.checkDevice(this);
+        GCMRegistrar.checkManifest(this);
+        final String regId = GCMRegistrar.getRegistrationId(this);
+        if (regId.equals("")) {
+            GCMRegistrar.register(this,  Consts.GSM_SENDER);
+        } else {
+            Log.v(LOG_TAG, "Already registered");
+
+            // ================= QuickBlox ===== Step 4 =================
+            // Subsribe to Push Notifications
+            subscribeToPushNotifications(regId);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         // unregister for gcm
-        C2DMessaging.unregister(this);
+        GCMRegistrar.unregister(this);
     }
 
 
@@ -101,8 +114,10 @@ public class MessagesActivity extends Activity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        QBPagedRequestBuilder rb = new QBPagedRequestBuilder(100, 1);
+
         // Retrieve all users
-        QBUsers.getUsers(new QBCallback() {
+        QBUsers.getUsers(rb, new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 qbUsersList = ((QBUserPagedResult) result).getUsers();
@@ -174,19 +189,18 @@ public class MessagesActivity extends Activity {
 
     //
     //
-    // create Push Token
-    public void createPushToken(String registrationID) {
+    // Subscribe to Push Notifications
+    public void subscribeToPushNotifications(String registrationID) {
         //Create push token with  Registration Id for Android
         //
-        Log.d("createPushToken", "createPushToken");
+        Log.d(LOG_TAG, "subscribing...");
 
         String deviceId = ((TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
         QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
             @Override
             public void onComplete(Result result) {
                 if (result.isSuccess()) {
-                    QBSubscribeToPushNotificationsResult subscribeToPushNotificationsResult = (QBSubscribeToPushNotificationsResult) result;
-                    System.out.println(">>> subscription created" + subscribeToPushNotificationsResult.getSubscriptions().toString());
+                    Log.d(LOG_TAG, "subscribed");
                 }
             }
         });

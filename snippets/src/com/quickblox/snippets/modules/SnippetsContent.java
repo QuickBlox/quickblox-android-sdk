@@ -1,6 +1,8 @@
 package com.quickblox.snippets.modules;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.quickblox.core.QBCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.result.Result;
@@ -10,7 +12,12 @@ import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.model.QBFile;
 import com.quickblox.module.content.model.QBFileObjectAccess;
-import com.quickblox.module.content.result.*;
+import com.quickblox.module.content.result.QBFileDownloadResult;
+import com.quickblox.module.content.result.QBFileObjectAccessResult;
+import com.quickblox.module.content.result.QBFilePagedResult;
+import com.quickblox.module.content.result.QBFileResult;
+import com.quickblox.module.content.result.QBFileUploadResult;
+import com.quickblox.module.content.result.QBFileUploadTaskResult;
 import com.quickblox.snippets.R;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
@@ -25,7 +32,9 @@ import java.io.InputStream;
  */
 public class SnippetsContent extends Snippets {
 
-    File file = null;
+    private static final String TAG = SnippetsContent.class.getSimpleName();
+    File file1 = null;
+    File file2 = null;
     QBFileObjectAccess fileObjectAccess;
 
     public SnippetsContent(Context context) {
@@ -46,11 +55,17 @@ public class SnippetsContent extends Snippets {
 
         snippets.add(uploadFileTask);
         snippets.add(downloadFileTask);
+        snippets.add(updateFileTask);
 
-        // get file
+        // get file1
         int fileId = R.raw.sample_file;
         InputStream is = context.getResources().openRawResource(fileId);
-        file = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+        file1 = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+
+        // get file1
+        int fileId2 = R.raw.sample_file2;
+        InputStream is2 = context.getResources().openRawResource(fileId2);
+        file2 = FileHelper.getFileInputStream(is2, "sample_file2.txt", "qb_snippets12");
     }
 
     Snippet createFile = new Snippet("create file") {
@@ -58,16 +73,16 @@ public class SnippetsContent extends Snippets {
         public void execute() {
 
             QBFile qbfile = new QBFile();
-            qbfile.setName(file.getName());
+            qbfile.setName(file1.getName());
             qbfile.setPublic(true);
-            qbfile.setContentType(ContentType.getContentType(file));
+            qbfile.setContentType(ContentType.getContentType(file1));
             //
             QBContent.createFile(qbfile, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     QBFileResult fileResult = (QBFileResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> File" + fileResult.getFile().toString());
+                        Log.i(TAG, ">>> File" + fileResult.getFile().toString());
 
                         fileObjectAccess = fileResult.getFile().getFileObjectAccess();
                     } else {
@@ -89,7 +104,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFileResult fileResult = (QBFileResult) result;
-                        System.out.println(">>> File:" + fileResult.getFile().toString());
+                        Log.i(TAG, ">>> File:" + fileResult.getFile().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -107,7 +122,7 @@ public class SnippetsContent extends Snippets {
                     if (result.isSuccess()) {
                         QBFileResult fileResult = (QBFileResult) result;
 
-                        System.out.println(">>> file " + fileResult.getFile());
+                        Log.i(TAG, ">>> file " + fileResult.getFile());
                     } else {
                         handleErrors(result);
                     }
@@ -120,12 +135,12 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
-            QBContent.uploadFile(file, params, new QBCallbackImpl() {
+            QBContent.uploadFile(file1, params, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFileUploadResult uploadResult = (QBFileUploadResult) result;
-                        System.out.println(">>> AmazonPostResponse" + uploadResult.getAmazonPostResponse());
+                        Log.i(TAG, ">>> AmazonPostResponse" + uploadResult.getAmazonPostResponse());
                     } else {
                         handleErrors(result);
                     }
@@ -137,11 +152,11 @@ public class SnippetsContent extends Snippets {
     Snippet declareFileUpload = new Snippet("declare file upload") {
         @Override
         public void execute() {
-            QBContent.declareFileUploaded(20237, (int) file.length(), new QBCallbackImpl() {
+            QBContent.declareFileUploaded(20237, (int) file1.length(), new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> declare file uploaded was successful" + result.toString());
+                        Log.i(TAG, ">>> declare file uploaded was successful" + result.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -157,7 +172,7 @@ public class SnippetsContent extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> count of ref increment successfully" + result.toString());
+                        Log.i(TAG, ">>> count of ref increment successfully" + result.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -173,7 +188,7 @@ public class SnippetsContent extends Snippets {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
-                        System.out.println(">>> file deleted successfully");
+                        Log.i(TAG, ">>> file deleted successfully");
                     } else {
                         handleErrors(result);
                     }
@@ -190,7 +205,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     QBFileObjectAccessResult objectAccessResult = (QBFileObjectAccessResult) result;
                     if (result.isSuccess()) {
-                        System.out.println(">>> FileObjectAccess" + objectAccessResult.getFileObjectAccess().toString());
+                        Log.i(TAG, ">>> FileObjectAccess" + objectAccessResult.getFileObjectAccess().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -211,7 +226,7 @@ public class SnippetsContent extends Snippets {
                         byte[] content = downloadResult.getContent();       // that's downloaded file content
                         InputStream is = downloadResult.getContentStream(); // that's downloaded file content
 
-                        System.out.println(">>> file downloaded successfully" + content.toString());
+                        Log.i(TAG, ">>> file downloaded successfully" + content.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -233,7 +248,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
-                        System.out.println(">>> File list:" + qbFilePagedResult.getFiles().toString());
+                        Log.i(TAG, ">>> File list:" + qbFilePagedResult.getFiles().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -252,7 +267,7 @@ public class SnippetsContent extends Snippets {
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
                         QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
-                        System.out.println(">>> File list:" + qbFilePagedResult.getFiles().toString());
+                        Log.i(TAG, ">>> File list:" + qbFilePagedResult.getFiles().toString());
                     } else {
                         handleErrors(result);
                     }
@@ -269,7 +284,7 @@ public class SnippetsContent extends Snippets {
         public void execute() {
 
             Boolean fileIsPublic = true;
-            QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
+            QBRequestCanceler requestCanceler = QBContent.uploadFileTask(file1, fileIsPublic, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
 
@@ -278,7 +293,7 @@ public class SnippetsContent extends Snippets {
 
                         QBFile qbFile = fileUploadTaskResultResult.getFile();
 
-                        System.out.println(">>> QBFile:" + qbFile.toString());
+                        Log.i(TAG, ">>> QBFile:" + qbFile.toString());
                     } else {
                         handleErrors(result);
                     }
@@ -301,7 +316,25 @@ public class SnippetsContent extends Snippets {
                         byte[] content = qbFileDownloadResult.getContent();       // that's downloaded file content
                         InputStream is = qbFileDownloadResult.getContentStream(); // that's downloaded file content
 
-                        System.out.println(">>> file downloaded successful" + qbFileDownloadResult.getContent().toString());
+                        Log.i(TAG, ">>> file downloaded successful" + qbFileDownloadResult.getContent().toString());
+                    } else {
+                        handleErrors(result);
+                    }
+                }
+            });
+        }
+    };
+
+    Snippet updateFileTask = new Snippet("update file Task") {
+        @Override
+        public void execute() {
+            QBContent.updateFileTask(file2, 91079, new QBCallbackImpl() {
+                @Override
+                public void onComplete(Result result) {
+
+                    if (result.isSuccess()) {
+
+                        Log.i(TAG, ">>> file updated successful");
                     } else {
                         handleErrors(result);
                     }
