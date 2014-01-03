@@ -1,16 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
-    }
-}
 apply plugin: 'android-library'
-
-repositories {
-    mavenCentral()
-}
 
 android {
     compileSdkVersion 19
@@ -22,8 +10,5 @@ android {
             java.srcDirs = ['src']
             res.srcDirs = ['res']
         }
-    }
-    lintOptions {
-        abortOnError false
     }
 }
