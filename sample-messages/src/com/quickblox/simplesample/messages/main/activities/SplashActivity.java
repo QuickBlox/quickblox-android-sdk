@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
-import com.quickblox.core.crypto.SharedPreferencesEncoder;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.users.model.QBUser;
@@ -50,18 +49,15 @@ public class SplashActivity extends Activity implements QBCallback {
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
-        QBSettings.getInstance().fastConfigInit("4", "6EWgRXTMjefCGnX", "xfn2AA-mTmgT3FZ");
-
-
-        QBSettings.getInstance().initStorage(getSharedPreferences(SplashActivity.class.getName(), MODE_PRIVATE), new SharedPreferencesEncoder.DefaultEncoder());
+        QBSettings.getInstance().fastConfigInit("99", "63ebrp5VZt7qTOv", "YavMAxm5T59-BRw");
 
 
         // ================= QuickBlox ===== Step 2 =================
         // Authorize application with device & user.
         // You can create user on admin.quickblox.com, Users module or through QBUsers.signUp method
         QBUser qbUser = new QBUser();
-        qbUser.setLogin("igorAndroidTest");
-        qbUser.setPassword("igorAndroidTest");
+        qbUser.setLogin("bobbobbob");
+        qbUser.setPassword("bobbobbob");
 
         //
         // Create session with additional parameters

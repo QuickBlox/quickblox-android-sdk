@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.quickblox.simplesample.messages"
-      android:versionCode="1"
-      android:versionName="1.0">
+    package="com.quickblox.simplesample.messages"
+    android:versionCode="1"
+    android:versionName="1.0">
 
-    <application android:label="@string/app_name" android:icon="@drawable/icon">
-        <activity android:name=".main.activities.SplashActivity"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  android:screenOrientation="portrait" >
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name">
+        <activity
+            android:name=".main.activities.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -16,19 +19,21 @@
         </activity>
 
         <activity
-                android:name=".main.activities.MessagesActivity"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                android:screenOrientation="portrait" >
-        </activity>
+            android:name=".main.activities.MessagesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
         <!-- GCM (Push Notifications) setup: http://developer.android.com/google/gcm/gs.html#android-app -->
 
         <!-- 1. Add the following broadcast receiver.
         Notice that android:name in the category tag must be replaced by your application's package name -->
-        <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+        <receiver
+            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
                 <category android:name="com.quickblox.simplesample.messages" />
             </intent-filter>
         </receiver>
@@ -40,13 +45,17 @@
 
 
     <!-- 3. GCM requires Android 2.2 or later -->
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
 
     <!-- 4. Declare and use a custom permission so only this application can receive GCM messages.
       This permission must be called my_app_package.permission.C2D_MESSAGE
       (where my_app_package is the package name of your app as defined by the manifest tag),
       otherwise it will not work. -->
-    <permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <permission
+        android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />
 
     <!-- 5. Add the following permissions: -->

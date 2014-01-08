@@ -1,18 +1,12 @@
 package com.quickblox.customobject.helper;
 
 import com.quickblox.customobject.object.Note;
+import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 20.11.12
- * Time: 14:18
- */
 public class DataHolder {
-
 
     private static DataHolder dataHolder;
     private int signInUserId;
@@ -25,19 +19,12 @@ public class DataHolder {
         return dataHolder;
     }
 
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
     public int getSignInUserId() {
         return signInUserId;
     }
 
-    public void addNoteToList(String id, String title, String status, String date, String comments) {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
-        }
-        noteList.add(new Note(id, title, status, date, comments));
+    public void setSignInUserId(int signInUserId) {
+        this.signInUserId = signInUserId;
     }
 
     public int getNoteListSize() {
@@ -78,8 +65,26 @@ public class DataHolder {
     public String getComments(int notePosition) {
         return noteList.get(notePosition).getComments();
     }
-    public void removeNoteFromList(int position){
+
+    public void removeNoteFromList(int position) {
         noteList.remove(position);
     }
 
+    public void clear() {
+        noteList.clear();
+    }
+
+    public int size() {
+        if (noteList != null) {
+            return noteList.size();
+        }
+        return 0;
+    }
+
+    public void addNoteToList(QBCustomObject customObject) {
+        if (noteList == null) {
+            noteList = new ArrayList<Note>();
+        }
+        noteList.add(new Note(customObject));
+    }
 }

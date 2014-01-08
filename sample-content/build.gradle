@@ -1,0 +1,23 @@
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "18.1.0"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: '../jar', include: '*.jar')
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
+}

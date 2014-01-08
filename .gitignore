@@ -1,10 +1,5 @@
-# Idea stuff
-*.iml
-*.ipr
-*.iws
-.idea/
-
 # built application files
+*.apk
 *.ap_
 
 # files for the dex VM
@@ -20,6 +15,23 @@ out/
 
 # Local configuration file (sdk path, etc)
 local.properties
+
+# Eclipse project files
+.classpath
+.project
+
+# Android Studio
+.idea/
+.gradle
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
 
 # Mac
 .DS_Store

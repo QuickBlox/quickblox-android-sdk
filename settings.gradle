@@ -1,0 +1,10 @@
+include 'snippets'
+include 'sample-users'
+include 'sample-ratings'
+include 'sample-messages'
+include 'sample-location'
+include 'sample-custom-object'
+include 'sample-content'
+include 'sample-chat'
+include 'pull-to-refresh'
+project(':pull-to-refresh').projectDir = new File('sample-chat/Libraries/pull-to-refresh')
