@@ -106,7 +106,8 @@ public class RoomChat implements Chat, RoomListener, ChatMessageListener {
     }
 
     public void create(String roomName) {
-        QBChatService.getInstance().createRoom(roomName, false, false, this);
+        // Creates open & persistent room
+        QBChatService.getInstance().createRoom(roomName, false, true, this);
     }
 
     public void join(QBChatRoom room) {
