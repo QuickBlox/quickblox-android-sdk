@@ -166,22 +166,22 @@ public class SnippetsChat extends Snippets {
     private void initRoster() {
         qbChatRoster = QBChatService.getInstance().registerRoster(new QBChatRoster.QBRosterListener() {
             @Override
-            public void entriesDeleted(Collection<Integer> users) {
+            public void entriesDeleted(Collection<String> users) {
 
             }
 
             @Override
-            public void entriesAdded(Collection<Integer> users) {
+            public void entriesAdded(Collection<String> users) {
                 //List<Integer> usersId = qbChatRoster.getUsersId();
-                for (Integer integer : users) {
-                    Log.i(TAG, "roster added="+integer);
+                for (String s : users) {
+                    Log.i(TAG, "roster added="+s);
                 }
             }
 
             @Override
-            public void entriesUpdated(Collection<Integer> users) {
-                for (Integer integer : users) {
-                    Log.i(TAG, "roster updated="+integer);
+            public void entriesUpdated(Collection<String> users) {
+                for (String s : users) {
+                    Log.i(TAG, "roster updated="+s);
                 }
             }
 
