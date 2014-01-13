@@ -155,7 +155,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
         if (map == null) {
             map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
             if (map != null) {
-                map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
