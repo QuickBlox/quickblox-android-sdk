@@ -14,6 +14,7 @@ import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
 import com.quickblox.module.chat.listeners.SessionListener;
+import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
 import com.quickblox.module.chat.QBChatRoom;
@@ -23,8 +24,11 @@ import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +47,9 @@ public class SnippetsChat extends Snippets {
 
     // test Chat user credentials
     public static final int USER_ID = 999;
+    public static final int SUBSCRIBE_USER_ID = 13163;
     public static final String TEST_PASSWORD = "AndroidGirl";
+    public static final String TEST_PASSWORD_2 = "Gerrit";
     private final QBUser qbUser;
 
     // 1-1 Chat properties
@@ -56,6 +62,8 @@ public class SnippetsChat extends Snippets {
 
     // Common properties
     private ChatMessageListener chatMessageListener;
+    private PacketListener packetListener;
+    private QBChatRoster qbChatRoster;
 
     public SnippetsChat(final Context context) {
         super(context);
@@ -67,13 +75,15 @@ public class SnippetsChat extends Snippets {
         qbUser.setPassword(TEST_PASSWORD);
         initRoomListener();
         initChatMessageListener();
-
+        initNotMsgListener();
         snippets.add(loginInChat);
         snippets.add(isLoggedIn);
         snippets.add(logoutFromChat);
         snippets.add(createChat);
         //
         snippets.add(sendPresence);
+        snippets.add(addSubscription);
+        snippets.add(sendCustomPresence);
         snippets.add(sendPresenceWithStatus);
         snippets.add(startAutoSendPresence);
         snippets.add(stopAutoSendPresence);
@@ -110,6 +120,7 @@ public class SnippetsChat extends Snippets {
 
                             // Add Chat message listener
                             initChat();
+                            initRoster();
 
                             handler.post(new Runnable() {
                                 @Override
@@ -149,11 +160,42 @@ public class SnippetsChat extends Snippets {
                         }
                     });
         }
+
     };
+
+    private void initRoster() {
+        qbChatRoster = QBChatService.getInstance().registerRoster(new QBChatRoster.QBRosterListener() {
+            @Override
+            public void entriesDeleted(Collection<Integer> users) {
+
+            }
+
+            @Override
+            public void entriesAdded(Collection<Integer> users) {
+                //List<Integer> usersId = qbChatRoster.getUsersId();
+                for (Integer integer : users) {
+                    Log.i(TAG, "roster added="+integer);
+                }
+            }
+
+            @Override
+            public void entriesUpdated(Collection<Integer> users) {
+                for (Integer integer : users) {
+                    Log.i(TAG, "roster updated="+integer);
+                }
+            }
+
+            @Override
+            public void presenceChanged(Presence presence) {
+                Log.i(TAG, "presence changed="+presence.getFrom() + " "+presence.getType());
+            }
+        });
+    }
 
     private void initChat() {
         qbPrivateChat = QBChatService.getInstance().createChat();
         initChatMessageListener(qbPrivateChat);
+        QBChatService.getInstance().addNotMessageListener(packetListener);
     }
 
     Snippet createChat = new Snippet("create 1 to 1 chat") {
@@ -189,6 +231,14 @@ public class SnippetsChat extends Snippets {
         }
     };
 
+    Snippet sendCustomPresence = new Snippet("send custom presence") {
+        @Override
+        public void execute() {
+            Presence presence = new Presence(Presence.Type.subscribed);
+            QBChatService.getInstance().sendPresenceToUser(presence, SUBSCRIBE_USER_ID);
+        }
+    };
+
 
     Snippet sendPresenceWithStatus = new Snippet("send presence with custom status") {
         String status = "Away";
@@ -210,6 +260,17 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             QBChatService.getInstance().stopAutoSendPresence();
+        }
+    };
+
+    Snippet addSubscription = new Snippet("add subscription") {
+        @Override
+        public void execute() {
+            try {
+                qbChatRoster.createEntry(SUBSCRIBE_USER_ID, "friend", null);
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -400,7 +461,7 @@ public class SnippetsChat extends Snippets {
                     String room = QBChatUtils.parseRoomName(from, QBSettings.getInstance().getApplicationId());
                     messageText = String.format("Received message from room %s:'%s'", room, messageBody);
                 } else {
-                    int userId = QBChatUtils.parseQBUser(from);
+                    String userId = QBChatUtils.parseQBUser(from);
                     messageText = String.format("Received message from user %s:'%s'", userId, messageBody);
                 }
 
@@ -419,6 +480,20 @@ public class SnippetsChat extends Snippets {
                         return true;
                     default:
                         return false;
+                }
+            }
+        };
+    }
+
+    private void initNotMsgListener(){
+        packetListener = new PacketListener(){
+
+            @Override
+            public void processPacket(Packet packet) {
+                Log.i(TAG, "processPacket >>> " + packet.getFrom());
+                if(packet instanceof Presence){
+                    Presence presence = (Presence) packet;
+                    Log.i(TAG, "processPresence >>> " +presence.getType());
                 }
             }
         };
