@@ -30,10 +30,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: Oleg Soroka
@@ -94,6 +91,8 @@ public class SnippetsChat extends Snippets {
         //
         snippets.add(createRoom);
         snippets.add(joinRoom);
+        snippets.add(addUsersToRoom);
+        snippets.add(removeUsersFromRoom);
         snippets.add(sendMessageToRoom);
         snippets.add(getOnlineRoomUsers);
         snippets.add(getRooms);
@@ -132,7 +131,7 @@ public class SnippetsChat extends Snippets {
 
                         @Override
                         public void onLoginError() {
-                           Log.i(TAG, "error when login");
+                            Log.i(TAG, "error when login");
 
                             handler.post(new Runnable() {
                                 @Override
@@ -144,7 +143,7 @@ public class SnippetsChat extends Snippets {
 
                         @Override
                         public void onDisconnect() {
-                           Log.i(TAG, "You have been disconnected");
+                            Log.i(TAG, "You have been disconnected");
 
                             handler.post(new Runnable() {
                                 @Override
@@ -375,6 +374,32 @@ public class SnippetsChat extends Snippets {
                         Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        }
+    };
+
+    Snippet addUsersToRoom =  new Snippet("add users to Room") {
+        @Override
+        public void execute() {
+            List<Integer> users = new ArrayList<Integer>();
+            users.add(958); // user ced
+            try {
+                currentQBChatRoom.addRoomUsers(users);
+            } catch (XMPPException e) {
+                Log.i(TAG, e.getLocalizedMessage());
+            }
+        }
+    };
+
+    Snippet removeUsersFromRoom =  new Snippet("remove users from Room") {
+        @Override
+        public void execute() {
+            List<Integer> users = new ArrayList<Integer>();
+            users.add(958); // user ced
+            try {
+                currentQBChatRoom.removeRoomUsers(users);
+            } catch (XMPPException e) {
+                Log.i(TAG, e.getLocalizedMessage());
             }
         }
     };
