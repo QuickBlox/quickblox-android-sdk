@@ -1,4 +1,12 @@
 # QuickBlox Android SDK
+# QuickBlox
+QuickBlox - Communication & cloud backend (BaaS) platform which brings superpowers to mobile apps.
+
+QuickBlox is a suite of communication features & data services (APIs, SDKs, code samples, admin panel, tutorials) which help digital agencies, mobile developers and publishers to add great functionality to smartphone applications.
+
+Please read full Android SDK documentation on the [QuickBlox website, Android section](http://quickblox.com/developers/Android)
+
+# QuickBlox Android SDK
 
 This project contains QuickBlox Android SDK, that includes
 
@@ -6,22 +14,27 @@ This project contains QuickBlox Android SDK, that includes
 * [snippets](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets) (shows main use cases of using this one)
 * samples (separated samples for each QuickBlox module)
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
+  * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-messages)
+  * [Location Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-location)
+  * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
+  * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-object)
+  * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
+  * [Ratings Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-ratings)
 
 ## How to start
 
-To start work you should just put library jar into your project and call desired methods.
+To start work you should just put framework into your project and call desired methods.
 
-Latest jar-packed framework file you can download from [downloads page](https://github.com/QuickBlox/quickblox-android-sdk/downloads).
+Latest framework file you can download from [GitHub](https://github.com/QuickBlox/quickblox-android-sdk/archive/master.zip).
 
 ## Documentation
 
 * [Project page on QuickBlox developers section](http://quickblox.com/developers/Android)
-* **[Start to learn SDK from Android Guide](http://quickblox.com/developers/Android_Guide)**
-* [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
+* [Framework reference in Javadoc format](http://sdk.quickblox.com/android/)
 
 ## Oh, please, please show me the code
 
-Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome functions to store, pass and represent your data. 
+Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome communication features & data services.
 
 ### 1. Get app credentials
 
@@ -33,7 +46,7 @@ Eclipse users: If you got 'Unable to execute dex: Java heap size' - try to upgra
 
 ### 4. Declare internet permission for Android application
 
-* Go to AndroidManifest.xml and add 
+* Go to AndroidManifest.xml and add
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -57,7 +70,6 @@ QBSettings.getInstance().fastConfigInit("961", "PBZxXW3WgGZtFZv", "vvHjRbVFF6mme
 
 or step by step
 
-
 ```java
 QBSettings.getInstance().setApplicationId("961");
 QBSettings.getInstance().setAuthorizationKey("PBZxXW3WgGZtFZv");
@@ -66,13 +78,12 @@ QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
 
 #### 5.2. Create session
 
-
 ```java
 QBAuth.createSession(new QBCallbackImpl() {
     @Override
     public void onComplete(Result result) {
         if (result.isSuccess()) {
-            // result comes here if authorization is success
+            // do stuff you need
         }
     }
 });
@@ -108,7 +119,63 @@ QBUsers.signIn("indianajones", "indianapassword", new QBCallbackImpl() {
 });
 ```
 
+to authorise user in Chat
+```java
+// initialize SMACK
+SmackAndroid.init(this);
+
+final QBUser user = new QBUser("indianajones", "indianapassword");
+// login to Chat
+QBChatService.getInstance().loginWithUser(user, new SessionListener() {
+    @Override
+    public void onLoginSuccess() {
+        Log.d(TAG, "success when login");
+    }
+
+    @Override
+    public void onLoginError() {
+        Log.e(TAG, "error when login");
+    }
+
+    @Override
+    public void onDisconnect() {
+        Log.d(TAG, "disconnect when login");
+    }
+
+    @Override
+    public void onDisconnectOnError(Exception exc) {
+        Log.e(TAG, "disconnect error when login", exc);
+    }
+});
+```
+
 #### 5.4. Perform actions
+
+Send Chat message
+
+```java
+// Create 1-1 chat
+QBPrivateChat chat = QBChatService.getInstance().createChat();
+chat.addChatMessageListener(new ChatMessageListener() {
+    @Override
+    public void processMessage(Message message) {
+        Log.d(TAG, "Messags: " + message.getBody());
+    }
+
+    @Override
+    public boolean accept(Message.Type type) {
+        switch (messageType) {
+            case chat:
+                return true; // process 1-1 chat messages
+            default:
+                return false;
+        }
+    }
+});
+
+// send message
+chat.sendMessage(546, "Hi mate!");
+```
 
 Create new location for Indiana Jones
 
@@ -151,7 +218,7 @@ Java Framework provides following services to interact with QuickBlox functions 
 * QBContent
 * QBRatings
 * QBMessages
-* QBChat
+* QBChatService
 
 ## How to run snippets project
 
