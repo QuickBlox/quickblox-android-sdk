@@ -28,7 +28,7 @@
         <!-- 1. Add the following broadcast receiver.
         Notice that android:name in the category tag must be replaced by your application's package name -->
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -39,7 +39,8 @@
         </receiver>
 
         <!-- 2. Add the following intent service: -->
-        <service android:name=".GCMIntentService" />
+        <service android:name=".GcmIntentService" />
+
 
     </application>
 
