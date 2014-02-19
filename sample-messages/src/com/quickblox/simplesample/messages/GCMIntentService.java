@@ -14,14 +14,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.quickblox.simplesample.messages.main.activities.MessagesActivity;
 
 
-public class GcmIntentService extends IntentService {
+public class GCMIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
-    private static final String TAG = GcmIntentService.class.getSimpleName();
+    private static final String TAG = GCMIntentService.class.getSimpleName();
 
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder builder;
 
-    public GcmIntentService() {
+    public GCMIntentService() {
         super("GcmIntentService");
     }
 

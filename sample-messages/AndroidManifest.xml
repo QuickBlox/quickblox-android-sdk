@@ -39,7 +39,7 @@
         </receiver>
 
         <!-- 2. Add the following intent service: -->
-        <service android:name=".GcmIntentService" />
+        <service android:name=".GCMIntentService" />
 
 
     </application>
