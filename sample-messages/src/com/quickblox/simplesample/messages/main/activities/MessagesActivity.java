@@ -359,14 +359,12 @@ public class MessagesActivity extends Activity {
         //
         Log.d(TAG, "subscribing...");
 
-        // String deviceId = ((TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceId;
 
         final TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (mTelephony.getDeviceId() != null){
+        if (mTelephony.getDeviceId() != null) {
             deviceId = mTelephony.getDeviceId(); //*** use for mobiles
-        }
-        else{
+        } else {
             deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID); //*** use for tablets
         }
         QBMessages.subscribeToPushNotificationsTask(regId, deviceId, QBEnvironment.DEVELOPMENT, new QBCallbackImpl() {
