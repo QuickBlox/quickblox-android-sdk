@@ -4,6 +4,10 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.0'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
+
+ext.compileSdkVersion = 19
+ext.buildToolsVersion = "19.0.0"
+

@@ -5,8 +5,8 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "18.1.0"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     sourceSets {
         main {
