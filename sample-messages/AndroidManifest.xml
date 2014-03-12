@@ -41,13 +41,13 @@
         <!-- 2. Add the following intent service: -->
         <service android:name=".GCMIntentService" />
 
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
     </application>
 
-
     <!-- 3. GCM requires Android 2.2 or later -->
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="19" />
 
     <!-- 4. Declare and use a custom permission so only this application can receive GCM messages.
