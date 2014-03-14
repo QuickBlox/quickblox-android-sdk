@@ -266,7 +266,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             try {
-                qbChatRoster.createEntry(SUBSCRIBE_USER_ID, "friend", null);
+                qbChatRoster.createEntry(SUBSCRIBE_USER_ID, "friend");
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
