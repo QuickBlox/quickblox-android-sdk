@@ -1,6 +1,12 @@
 package com.quickblox.snippets.modules;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -13,7 +19,7 @@ import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.ChatMessageListener;
 import com.quickblox.module.chat.listeners.RoomListener;
 import com.quickblox.module.chat.listeners.RoomReceivingListener;
-import com.quickblox.module.chat.listeners.SessionListener;
+import com.quickblox.module.chat.listeners.SessionCallback;
 import com.quickblox.module.chat.model.QBChatRoster;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.chat.utils.QBChatUtils;
@@ -24,6 +30,7 @@ import com.quickblox.module.videochat.model.objects.MessageExtension;
 import com.quickblox.snippets.Consts;
 import com.quickblox.snippets.Snippet;
 import com.quickblox.snippets.Snippets;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -62,10 +69,26 @@ public class SnippetsChat extends Snippets {
     private PacketListener packetListener;
     private QBChatRoster qbChatRoster;
 
+    private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+
+            if (currentNetworkInfo.isConnected()) {
+                loginInChat.execute();
+            } else {
+                Toast.makeText(context, "Not Connected", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
+
     public SnippetsChat(final Context context) {
         super(context);
         SmackAndroid.init(context);
-
+        registerReceiver( (Activity)context);
         // init test user
         qbUser = new QBUser();
         qbUser.setId(USER_ID);
@@ -102,6 +125,10 @@ public class SnippetsChat extends Snippets {
         initChatMessageListener();
     }
 
+    private void registerReceiver(Activity activity) {
+        activity.registerReceiver(wifiReceiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
 
     //
     ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
@@ -111,53 +138,7 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChat = new Snippet("login in Chat") {
         @Override
         public void execute() {
-
-                    QBChatService.getInstance().loginWithUser(qbUser, new SessionListener() {
-                        @Override
-                        public void onLoginSuccess() {
-                            Log.i(TAG, "success when login");
-
-                            // Add Chat message listener
-                            initChat();
-                            initRoster();
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "Success when login", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onLoginError() {
-                            Log.i(TAG, "error when login");
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "Error when login", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onDisconnect() {
-                            Log.i(TAG, "You have been disconnected");
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "You have been disconnected", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onDisconnectOnError(Exception exc) {
-
-                        }
-                    });
+                    QBChatService.getInstance().loginWithUser(qbUser, sessionCallback);
         }
 
     };
@@ -193,6 +174,7 @@ public class SnippetsChat extends Snippets {
 
     private void initChat() {
         qbPrivateChat = QBChatService.getInstance().createChat();
+        QBChatService.getInstance().addConnectionListener(connectionListener);
         initChatMessageListener(qbPrivateChat);
         QBChatService.getInstance().addNotMessageListener(packetListener);
     }
@@ -523,4 +505,75 @@ public class SnippetsChat extends Snippets {
             }
         };
     }
+
+    SessionCallback sessionCallback = new SessionCallback() {
+        @Override
+        public void onLoginSuccess() {
+
+            // Add Chat message listener
+            initChat();
+            initRoster();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Success when login", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onLoginError(final String error) {
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (com.quickblox.module.chat.Consts.ALREADY_LOGGED_IN.equals(error)){
+                        Toast.makeText(context, "You have already logged in", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(context, "Error when login", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    };
+
+    ConnectionListener connectionListener = new ConnectionListener() {
+        @Override
+        public void connectionClosed() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "connection closed ", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "connection closed on error. It will be established soon", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void reconnectingIn(int seconds) {
+
+        }
+
+        @Override
+        public void reconnectionSuccessful() {
+
+        }
+
+        @Override
+        public void reconnectionFailed(Exception e) {
+
+        }
+    };
+
 }
