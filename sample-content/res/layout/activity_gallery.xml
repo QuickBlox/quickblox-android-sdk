@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -11,8 +12,8 @@
 
         <ImageView
             android:id="@+id/image_imageview"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/item_gallery_width"
+            android:layout_height="@dimen/item_gallery_height"
             android:layout_gravity="center"
             android:visibility="gone" />
 
@@ -21,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@android:color/white"
             android:onClick="onClick"
             android:text="@string/add_new_image" />
 
@@ -30,10 +32,10 @@
         android:id="@+id/gallery_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
+        android:columnWidth="@dimen/item_gallery_column_width"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
+        android:horizontalSpacing="@dimen/gridview_spacing"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:verticalSpacing="@dimen/gridview_spacing" />
 </LinearLayout>

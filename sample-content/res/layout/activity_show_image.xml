@@ -1,7 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="1dip" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dip"
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/image_imageview"
