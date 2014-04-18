@@ -1,82 +1,96 @@
 package com.quickblox.content.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.quickblox.content.R;
 import com.quickblox.content.helper.DataHolder;
+import com.quickblox.content.utils.Constants;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 04.12.12
- * Time: 14:25
- * To change this template use File | Settings | File Templates.
- */
 public class GalleryAdapter extends BaseAdapter {
 
-    private Context ctx;
-    LayoutInflater inflater;
+    private LayoutInflater layoutInflater;
+    private DisplayImageOptions displayImageOptions;
 
-
-    public GalleryAdapter(Context ctx) {
-        this.ctx = ctx;
-        inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public GalleryAdapter(Context context) {
+        layoutInflater = LayoutInflater.from(context);
+        initImageLoaderOptions();
     }
 
+    public void initImageLoaderOptions() {
+        displayImageOptions = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_stub)
+                .showImageForEmptyUri(R.drawable.ic_empty).showImageOnFail(R.drawable.ic_error).cacheInMemory(
+                        true).cacheOnDisc(true).considerExifParams(true).bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+    }
+
+    @Override
     public int getCount() {
         return DataHolder.getDataHolder().getQbFileListSize();
     }
 
+    @Override
     public Object getItem(int position) {
-        return 0;
+        return null;
     }
 
+    @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            viewHolder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.gallery_img, null);
-            viewHolder.img = (ImageView) convertView.findViewById(R.id.img);
-            convertView.setTag(viewHolder);
+        final ViewHolder holder;
+        View view = convertView;
+        if (view == null) {
+            view = layoutInflater.inflate(R.layout.list_item_gallery, parent, false);
+            holder = new ViewHolder();
+            assert view != null;
+            holder.imageView = (ImageView) view.findViewById(R.id.image_image_view);
+            holder.progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            view.setTag(holder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) view.getTag();
         }
-        applyImg(viewHolder.img, position);
-        return convertView;
+
+        ImageLoader.getInstance().displayImage(
+                Constants.URL_S3 + DataHolder.getDataHolder().getPublicUrl(position),
+                holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        holder.progressBar.setProgress(0);
+                        holder.progressBar.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        holder.progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        holder.progressBar.setVisibility(View.GONE);
+                    }
+                }
+        );
+
+        return view;
     }
 
+    private class ViewHolder {
 
-    private void applyImg(ImageView coverIv, final int position) {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory()
-                .cacheOnDisc()
-                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-                .displayer(new RoundedBitmapDisplayer(20))
-                .build();
-        // Load and display image
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(ctx)
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        ImageLoader.getInstance().displayImage("http://qbprod.s3.amazonaws.com/" + DataHolder.getDataHolder().getPublicUrl(position), coverIv);
+        ImageView imageView;
+        ProgressBar progressBar;
     }
-
-    static class ViewHolder {
-        ImageView img;
-    }
-
 }
