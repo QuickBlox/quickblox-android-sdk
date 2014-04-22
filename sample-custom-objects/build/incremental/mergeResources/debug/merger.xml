@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res" >
+            <file
+                name="apptheme_edit_text_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_edit_text_holo_light.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="apptheme_textfield_activated_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_textfield_activated_holo_light.9.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="apptheme_textfield_default_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_textfield_default_holo_light.9.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="apptheme_textfield_disabled_focused_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_textfield_disabled_focused_holo_light.9.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="apptheme_textfield_disabled_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_textfield_disabled_holo_light.9.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="apptheme_textfield_focused_holo_light"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\apptheme_textfield_focused_holo_light.9.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="background"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\background.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="icon"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\icon.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="logo_quickblox"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\drawable\logo_quickblox.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="activity_add_note"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\layout\activity_add_note.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_note"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\layout\activity_note.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_notes_list"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\layout\activity_notes_list.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_splash"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\layout\activity_splash.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="list_item_note"
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\layout\list_item_note.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\values\dimens.xml"
+                qualifiers="" >
+                <dimen name="node_width" >300dp
+                </dimen>
+                <dimen name="comments_width" >300dp
+                </dimen>
+                <dimen name="margin_large" >20dp
+                </dimen>
+                <dimen name="list_item_node_height" >100dp
+                </dimen>
+                <dimen name="margin_middle" >10dp
+                </dimen>
+                <dimen name="padding_small" >5dp
+                </dimen>
+                <dimen name="logo_maxwidth" >320dp
+                </dimen>
+                <dimen name="padding_middle" >10dp
+                </dimen>
+                <dimen name="padding_large" >15dp
+                </dimen>
+                <dimen name="margin_small" >5dp
+                </dimen>
+            </file>
+            <file
+                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\res\values\strings.xml"
+                qualifiers="" >
+                <string name="comments" >Comments:
+                </string>
+                <string name="write_new_comment" >Write new comment
+                </string>
+                <string name="date" >Date:
+                </string>
+                <string name="please_wait" >Please wait...
+                </string>
+                <string name="add_new_note" >Add new note
+                </string>
+                <string name="note" >Note:
+                </string>
+                <string name="note_successfully_deleted" >Note was successfully deleted!
+                </string>
+                <string name="cancel" >cancel
+                </string>
+                <string name="status" >Status:
+                </string>
+                <string name="new_comment" >New comment
+                </string>
+                <string name="ok" >ok
+                </string>
+                <string name="qb_slogan" >YOUR COMMUNICATION \nBACKEND
+                </string>
+                <string name="save" >Save
+                </string>
+                <string name="choose_new_status" >Choose new status
+                </string>
+                <string name="app_name" >Sample CustomObjects
+                </string>
+                <string name="delete" >Delete
+                </string>
+                <string name="change_status" >Change status
+                </string>
+                <string name="add_comment" >Add comment
+                </string>
+            </file>
+        </source>
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\build\res\rs\debug" />
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\build\res\generated\debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\src\debug\res" />
+    </dataSet>
+
+</merger>
