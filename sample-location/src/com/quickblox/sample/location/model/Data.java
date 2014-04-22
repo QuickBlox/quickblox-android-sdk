@@ -1,16 +1,5 @@
 package com.quickblox.sample.location.model;
 
-/**
- * Date: 1.11.12
- * Time: 12:16
- */
-
-/**
- * Custom map marker
- *
- * @author <a href="mailto:igor@quickblox.com">Igor Khomenko</a>
- */
-
 public class Data {
 
     private String userName;
