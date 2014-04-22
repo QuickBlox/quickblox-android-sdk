@@ -34,7 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/note_title_textview"
-        android:paddingLeft="@dimen/padding_middle"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_middle"
         android:text="@string/status"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black"
@@ -47,6 +48,7 @@
         android:layout_below="@+id/note_textview"
         android:layout_toRightOf="@+id/status_title_textview"
         android:paddingLeft="@dimen/padding_middle"
+        android:paddingTop="@dimen/padding_middle"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black" />
 
@@ -63,14 +65,14 @@
         android:textColor="@android:color/black"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/comments_edittext"
+    <TextView
+        android:id="@+id/comments_textview"
         android:layout_width="@dimen/comments_width"
         android:layout_height="wrap_content"
         android:layout_below="@+id/comments_title_textview"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/apptheme_edit_text_holo_light"
         android:enabled="false"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
 
     <Button

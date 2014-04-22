@@ -34,7 +34,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     private final String POSITION = "position";
     private TextView titleTextView;
     private TextView statusTextView;
-    private EditText commentsEditText;
+    private TextView commentsTextView;
     private int position;
     private ProgressDialog progressDialog;
 
@@ -50,7 +50,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         position = getIntent().getIntExtra(POSITION, 0);
         titleTextView = (TextView) findViewById(R.id.note_textview);
         statusTextView = (TextView) findViewById(R.id.status_textview);
-        commentsEditText = (EditText) findViewById(R.id.comments_edittext);
+        commentsTextView = (TextView) findViewById(R.id.comments_textview);
     }
 
     private void fillFields() {
@@ -65,7 +65,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
             commentsStr += "#" + i + "-" + DataHolder.getDataHolder().getNoteComments(position).get(
                     i) + "\n\n";
         }
-        commentsEditText.setText(commentsStr);
+        commentsTextView.setText(commentsStr);
     }
 
     @Override

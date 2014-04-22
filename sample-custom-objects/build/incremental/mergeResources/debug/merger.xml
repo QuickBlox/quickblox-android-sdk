@@ -82,9 +82,9 @@
                 </dimen>
                 <dimen name="margin_large" >20dp
                 </dimen>
-                <dimen name="list_item_node_height" >100dp
-                </dimen>
                 <dimen name="margin_middle" >10dp
+                </dimen>
+                <dimen name="list_item_node_height" >100dp
                 </dimen>
                 <dimen name="padding_small" >5dp
                 </dimen>
@@ -92,9 +92,9 @@
                 </dimen>
                 <dimen name="padding_middle" >10dp
                 </dimen>
-                <dimen name="padding_large" >15dp
-                </dimen>
                 <dimen name="margin_small" >5dp
+                </dimen>
+                <dimen name="padding_large" >15dp
                 </dimen>
             </file>
             <file
