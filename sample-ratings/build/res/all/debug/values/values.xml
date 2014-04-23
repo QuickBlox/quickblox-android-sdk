@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">Simple Sample Ratings</string>
+    <string name="cancel">Cancel</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="rate">Rate</string>
+    <string name="rate_this_film">Rate this film</string>
+
+</resources>

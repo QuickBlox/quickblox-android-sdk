@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res" >
+            <file
+                name="ic_empty"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/ic_empty.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="ic_error"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/ic_error.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="ic_stub"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/ic_stub.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="icon"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/icon.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="logo_quickblox"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/logo_quickblox.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="activity_gallery"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/activity_gallery.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_show_image"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/activity_show_image.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_splash"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/activity_splash.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="list_item_gallery"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/list_item_gallery.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/values/dimens.xml"
+                qualifiers="" >
+                <dimen name="item_gallery_height" >100dp
+                </dimen>
+                <dimen name="item_gallery_column_width" >90dp
+                </dimen>
+                <dimen name="margin_large" >20dp
+                </dimen>
+                <dimen name="margin_middle" >10dp
+                </dimen>
+                <dimen name="padding_small" >5dp
+                </dimen>
+                <dimen name="logo_maxwidth" >320dp
+                </dimen>
+                <dimen name="item_gallery_width" >100dp
+                </dimen>
+                <dimen name="gridview_spacing" >10dp
+                </dimen>
+                <dimen name="padding_middle" >10dp
+                </dimen>
+                <dimen name="padding_large" >15dp
+                </dimen>
+                <dimen name="margin_small" >5dp
+                </dimen>
+            </file>
+            <file
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/values/strings.xml"
+                qualifiers="" >
+                <string name="please_waite" >Please wait..
+                </string>
+                <string name="mgs_decode_error" >Image can not be decoded
+                </string>
+                <string name="add_new_image" >Add new image
+                </string>
+                <string name="descr_image" >Image
+                </string>
+                <string name="qb_slogan" >YOUR COMMUNICATION \nBACKEND
+                </string>
+                <string name="app_name" >Sample Content
+                </string>
+                <string name="mgs_denied_error" >Downloads are denied
+                </string>
+                <string name="mgs_io_error" >Input/Output error
+                </string>
+                <string name="back_to_gallery" >Back to gallery
+                </string>
+                <string name="mgs_unknown_error" >Unknown error
+                </string>
+                <string name="content" >Content
+                </string>
+                <string name="mgs_memory_error" >Out Of Memory error
+                </string>
+            </file>
+        </source>
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/src/debug/res" />
+    </dataSet>
+
+</merger>

@@ -1,0 +1,29 @@
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/AndroidManifest.xml -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.quickblox.snippets">
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:configChanges="locale|keyboard|orientation" android:label="@string/app_name" android:name="com.quickblox.snippets.activities.StartActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.quickblox.snippets.activities.AuthActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.UsersActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.LocationsActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.CustomObjectsActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.ContentActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.RatingsActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.MessagesActivity"/>
+        <activity android:name="com.quickblox.snippets.activities.ChatActivity"/>
+    </application>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>

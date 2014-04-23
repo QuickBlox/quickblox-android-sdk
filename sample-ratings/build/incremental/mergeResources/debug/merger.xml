@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res" >
+            <file
+                name="fight_club"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/fight_club.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="godfather"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/godfather.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="hachiko"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/hachiko.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="harry_potter"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/harry_potter.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="icon"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/icon.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="item"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/item.jpeg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="movie"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/movie.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_bg"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/qb_splash_bg.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_hero"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/qb_splash_hero.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_link"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/qb_splash_link.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="shawshank_redemption"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/shawshank_redemption.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="star_empty"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/star_empty.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="star_full"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/star_full.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="ted"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/ted.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="the_lord_of_the_rings"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/the_lord_of_the_rings.jpg"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="custom_dialog"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/custom_dialog.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="image_holder"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/image_holder.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="movie"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/movie.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="movies_list"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/movies_list.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="movies_list_item"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/movies_list_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="splash"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/splash.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/strings.xml"
+                qualifiers="" >
+                <string name="cancel" >Cancel
+                </string>
+                <string name="app_name" >Simple Sample Ratings
+                </string>
+                <string name="rate" >Rate
+                </string>
+                <string name="please_wait" >Please wait...
+                </string>
+                <string name="rate_this_film" >Rate this film
+                </string>
+            </file>
+        </source>
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/src/debug/res" />
+    </dataSet>
+
+</merger>

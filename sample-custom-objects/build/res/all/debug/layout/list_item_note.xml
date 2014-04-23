@@ -75,4 +75,4 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/black" />
     </RelativeLayout>
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/layout/list_item_note.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/layout/list_item_note.xml -->

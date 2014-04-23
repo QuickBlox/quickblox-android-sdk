@@ -1,0 +1,21 @@
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/AndroidManifest.xml -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.quickblox.sample.chat">
+
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:name="com.quickblox.sample.chat.App" android:theme="@style/AppTheme">
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:label="@string/app_name" android:name="com.quickblox.sample.chat.ui.activities.SplashActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.quickblox.sample.chat.ui.activities.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.quickblox.sample.chat.ui.activities.ChatActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"/>
+        <activity android:label="Login" android:name="com.quickblox.sample.chat.ui.activities.LoginActivity"/>
+        <activity android:label="Registration" android:name="com.quickblox.sample.chat.ui.activities.RegistrationActivity"/>
+    </application>
+
+</manifest>

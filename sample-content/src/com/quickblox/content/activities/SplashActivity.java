@@ -71,7 +71,7 @@ public class SplashActivity extends Activity {
         // ================= QuickBlox ===== Step 2 =================
         // Gey all user's files
         QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
-        builder.setPerPage(100);
+        builder.setPerPage(10);
         builder.setPage(1);
         QBContent.getFiles(builder, new QBCallback() {
             @Override

@@ -6,5 +6,6 @@ include 'sample-location'
 include 'sample-custom-objects'
 include 'sample-content'
 include 'sample-chat'
+include 'sample-videochat'
 include 'pull-to-refresh'
 project(':pull-to-refresh').projectDir = new File('sample-chat/Libraries/pull-to-refresh')

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/values/dimens.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/values/dimens.xml -->
     <eat-comment />
 
     <dimen name="comments_width">300dp</dimen>
@@ -14,7 +14,7 @@
     <dimen name="padding_large">15dp</dimen>
     <dimen name="padding_middle">10dp</dimen>
     <dimen name="padding_small">5dp</dimen>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/values/strings.xml -->
     <eat-comment />
 
     <string name="add_comment">Add comment</string>

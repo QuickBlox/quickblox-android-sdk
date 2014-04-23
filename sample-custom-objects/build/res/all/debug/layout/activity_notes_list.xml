@@ -17,4 +17,4 @@
         android:layout_centerHorizontal="true"
         android:onClick="onClick"
         android:text="@string/add_new_note" />
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/layout/activity_notes_list.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/layout/activity_notes_list.xml -->
