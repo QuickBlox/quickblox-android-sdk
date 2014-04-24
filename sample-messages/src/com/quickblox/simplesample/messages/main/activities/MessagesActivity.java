@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ import com.quickblox.simplesample.messages.main.definitions.Consts;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MessagesActivity extends Activity {
@@ -45,7 +47,7 @@ public class MessagesActivity extends Activity {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
-    private static final String TAG = MessagesActivity.class.getSimpleName();
+    private static final String TAG = "qwerty";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private static MessagesActivity instance;
@@ -88,10 +90,10 @@ public class MessagesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages_layout);
 
-        selectedUserLabel = (TextView) findViewById(R.id.toUserName);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        messageBody = (EditText) findViewById(R.id.messageBody);
-        retrievedMessages = (EditText) findViewById(R.id.receivedMessages);
+        selectedUserLabel = (TextView) findViewById(R.id.selected_user_textview);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        messageBody = (EditText) findViewById(R.id.message_out_edittext);
+        retrievedMessages = (EditText) findViewById(R.id.messages_in_edittext);
 
         instance = this;
         context = getApplicationContext();
@@ -157,17 +159,26 @@ public class MessagesActivity extends Activity {
         });
     }
 
-    private void showAllUsersPicker() {
-        ArrayList<CharSequence> usersNames = new ArrayList<CharSequence>();
+    private List<CharSequence> getUsersNamesList() {
+        List<CharSequence> usersNames = new ArrayList<CharSequence>();
         for (QBUser qbUser : qbUsersList) {
-            String login = qbUser.getLogin();
-            usersNames.add(login);
+            String name;
+            name = qbUser.getLogin();
+            if(TextUtils.isEmpty(name)) {
+                name = qbUser.getEmail();
+            }
+            usersNames.add(name);
         }
+        return usersNames;
+    }
+
+    private void showAllUsersPicker() {
+        List<CharSequence> usersNames = getUsersNamesList();
 
         final CharSequence[] items = usersNames.toArray(new CharSequence[usersNames.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick a user");
+        builder.setTitle("Select User");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 selectedUser = qbUsersList.get(item);

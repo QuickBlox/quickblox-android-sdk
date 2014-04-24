@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/background_color"
+    android:padding="@dimen/padding_middle">
+
+    <EditText
+        android:id="@+id/message_out_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/message_out_width"
+        android:hint="@string/hint_enter_your_message" />
+
+    <TextView
+        android:id="@+id/selected_user_title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/message_out_edittext"
+        android:layout_margin="@dimen/margin_middle"
+        android:text="@string/to_user" />
+
+    <TextView
+        android:id="@+id/selected_user_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/message_out_edittext"
+        android:layout_margin="@dimen/margin_middle"
+        android:layout_toRightOf="@id/selected_user_title_textview"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/selectUserButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/selected_user_title_textview"
+        android:onClick="selectUserButtonClick"
+        android:text="@string/select_user" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/selected_user_title_textview"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/send_message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/selected_user_title_textview"
+        android:onClick="sendMessageButtonClick"
+        android:text="@string/send" />
+
+    <EditText
+        android:id="@+id/messages_in_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:editable="false" />
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/messages_in_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/messages_in_edittext"
+        android:text="@string/received_messages" />
+
+</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-messages/res/layout/messages_layout.xml -->

@@ -29,28 +29,24 @@ public class SplashActivity extends Activity implements QBCallback {
 
     private ProgressBar progressBar;
 
+    private final int APP_ID = 99;
+    private final String AUTH_KEY = "63ebrp5VZt7qTOv";
+    private final String AUTH_SECRET = "YavMAxm5T59-BRw";
+
+    private final String USER_LOGIN = "bobbobbob";
+    private final String USER_PASSWORD = "bobbobbob";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
+        setContentView(R.layout.activity_splash);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        ImageView qbLinkPanel = (ImageView) findViewById(R.id.splash_qb_link);
-        qbLinkPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://quickblox.com/developers/Android"));
-                startActivity(browserIntent);
-            }
-        });
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
-        QBSettings.getInstance().fastConfigInit("5418", "f9xJ5M6FPqchHbr", "ScxbhMTyS9zcC3H");
-
+        QBSettings.getInstance().fastConfigInit(String.valueOf(APP_ID), AUTH_KEY, AUTH_SECRET);
 
         // ================= QuickBlox ===== Step 2 =================
         // Authorize application with device & user.
@@ -66,8 +62,6 @@ public class SplashActivity extends Activity implements QBCallback {
 
     @Override
     public void onComplete(Result result) {
-        progressBar.setVisibility(View.GONE);
-
         if (result.isSuccess()) {
             // Show Messages activity
             Intent intent = new Intent(this, MessagesActivity.class);
@@ -80,6 +74,7 @@ public class SplashActivity extends Activity implements QBCallback {
             dialog.setMessage("Error(s) occurred. Look into DDMS log for details, " +
                     "please. Errors: " + result.getErrors()).create().show();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
