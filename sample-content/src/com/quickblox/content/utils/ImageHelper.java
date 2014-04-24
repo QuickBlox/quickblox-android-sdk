@@ -18,6 +18,7 @@ public class ImageHelper {
 
     public static final int GALLERY_KITKAT_INTENT_CALLED = 2;
     public static final int GALLERY_INTENT_CALLED = 1;
+    private final int PREF_WIDTH_IMAGE = 500;
     private Activity activity;
 
     public ImageHelper(Activity activity) {
@@ -43,12 +44,27 @@ public class ImageHelper {
     }
 
     public File getFileFromImageView(ImageView imageView) throws IOException {
+        int preferredWidth = PREF_WIDTH_IMAGE;
         Bitmap origBitmap = drawableToBitmap(imageView.getDrawable());
+        int origWidth = origBitmap.getWidth();
+        int origHeight = origBitmap.getHeight();
+
+        int destHeight, destWidth;
+
+        if (origWidth <= preferredWidth || origHeight <= preferredWidth) {
+            destWidth = origWidth;
+            destHeight = origHeight;
+        } else {
+            destWidth = PREF_WIDTH_IMAGE;
+            destHeight = origHeight / (origWidth / destWidth);
+        }
+
         File tempFile = new File(activity.getCacheDir(), "temp.png");
         tempFile.createNewFile();
 
+        Bitmap bitmap = resizeBitmap(origBitmap, destWidth, destHeight);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        origBitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
         byte[] bitmapData = bos.toByteArray();
 
         FileOutputStream fos = new FileOutputStream(tempFile);
@@ -78,5 +94,9 @@ public class ImageHelper {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    private Bitmap resizeBitmap(Bitmap inputBitmap, int newWidth, int newHeight) {
+        return Bitmap.createScaledBitmap(inputBitmap, newWidth, newHeight, true);
     }
 }

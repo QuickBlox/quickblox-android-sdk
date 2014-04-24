@@ -13,16 +13,17 @@ import android.widget.ImageView;
 import com.quickblox.content.R;
 import com.quickblox.content.adapter.GalleryAdapter;
 import com.quickblox.content.helper.DataHolder;
+import com.quickblox.content.utils.GetImageFileTask;
 import com.quickblox.content.utils.ImageHelper;
+import com.quickblox.content.utils.OnGetImageFileListener;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.content.QBContent;
 import com.quickblox.module.content.result.QBFileUploadTaskResult;
 
 import java.io.File;
-import java.io.IOException;
 
-public class GalleryActivity extends Activity implements AdapterView.OnItemClickListener {
+public class GalleryActivity extends Activity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
 
     private final String POSITION = "position";
     private final boolean PUBLIC_ACCESS_TRUE = true;
@@ -44,6 +45,11 @@ public class GalleryActivity extends Activity implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         startShowImgActivity(position);
+    }
+
+    @Override
+    public void onGotImageFile(File imageFile) {
+        downloadSelectedImage(imageFile);
     }
 
     private void startShowImgActivity(int position) {
@@ -88,20 +94,13 @@ public class GalleryActivity extends Activity implements AdapterView.OnItemClick
             selectedImageImageView.setImageURI(originalUri);
             selectedImageImageView.setVisibility(View.VISIBLE);
             progressDialog.show();
-            downloadSelectedImage();
+
+            new GetImageFileTask(this).execute(imageHelper, selectedImageImageView);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void downloadSelectedImage() {
-        File imageFile = null;
-
-        try {
-            imageFile = imageHelper.getFileFromImageView(selectedImageImageView);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    private void downloadSelectedImage(File imageFile) {
         // ================= QuickBlox ===== Step 3 =================
         // Upload new file
         // QBContent.uploadFileTask consist of tree query : Create a file, Upload file, Declaring file uploaded

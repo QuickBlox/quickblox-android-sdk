@@ -29,9 +29,6 @@ public final class R {
         public static final int ic_stub=0x7f020002;
         public static final int icon=0x7f020003;
         public static final int logo_quickblox=0x7f020004;
-        public static final int qb_splash_bg=0x7f020005;
-        public static final int qb_splash_hero=0x7f020006;
-        public static final int qb_splash_link=0x7f020007;
     }
     public static final class id {
         public static final int add_new_image_button=0x7f060001;
