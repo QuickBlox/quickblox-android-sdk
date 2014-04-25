@@ -641,12 +641,15 @@
     <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-messages/res/values/strings.xml -->
     <eat-comment />
 
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_ok">OK</string>
     <string name="hint_enter_your_message">Enter Your message here</string>
+    <string name="no_messages">No messages</string>
     <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
     <string name="received_messages">Received messages</string>
     <string name="select_user">Select user</string>
+    <string name="selected_user">Selected user:</string>
     <string name="send">Send</string>
-    <string name="to_user">to user:</string>
     <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-messages/res/values/styles.xml -->
     <eat-comment />
 

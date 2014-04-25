@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/message_out_edittext"
         android:layout_margin="@dimen/margin_middle"
-        android:text="@string/to_user" />
+        android:text="@string/selected_user"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/selected_user_textview"
@@ -28,7 +29,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/selectUserButton"
+        android:id="@+id/select_user_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/selected_user_title_textview"
@@ -49,14 +50,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/selected_user_title_textview"
-        android:onClick="sendMessageButtonClick"
-        android:text="@string/send" />
+        android:onClick="sendMessageOnClick"
+        android:text="@string/send"
+        android:clickable="false"/>
 
     <EditText
         android:id="@+id/messages_in_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:text="@string/no_messages"
         android:editable="false" />
 
     <TextView

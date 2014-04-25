@@ -1364,10 +1364,6 @@
                 <string name="abc_searchview_description_query" >Search query
                 </string>
 
-                <item
-                    name="home"
-                    type="id"/>
-
                 <declare-styleable name="MenuView" >
 
                     <!-- Default appearance of menu item text. -->
@@ -1388,20 +1384,24 @@
                     <attr name="android:preserveIconSpacing" />
                 </declare-styleable>
 
-                <string name="abc_action_bar_up_description" >Navigate up
-                </string>
+                <item
+                    name="home"
+                    type="id"/>
 
                 <attr
                     name="actionModeStyle"
                     format="reference" />
 
-                <item
-                    name="action_bar_activity_content"
-                    type="id"/>
+                <string name="abc_action_bar_up_description" >Navigate up
+                </string>
 
                 <attr
                     name="actionBarSplitStyle"
                     format="reference" />
+
+                <item
+                    name="action_bar_activity_content"
+                    type="id"/>
 
                 <style
                     name="Widget.AppCompat.ActionBar"
@@ -1557,18 +1557,19 @@ true
                     </item>
                 </style>
 
-                <dimen name="abc_action_bar_stacked_max_height" >48dp
-                </dimen>
-
                 <attr
                     name="actionModeCloseDrawable"
                     format="reference" />
-                <attr
-                    name="searchViewTextField"
-                    format="reference" />
+
+                <dimen name="abc_action_bar_stacked_max_height" >48dp
+                </dimen>
 
                 <color name="abc_search_url_text_selected" >@android:color/black
                 </color>
+
+                <attr
+                    name="searchViewTextField"
+                    format="reference" />
 
                 <declare-styleable name="Spinner" >
 
@@ -1654,32 +1655,26 @@ middle
                 </style>
 
                 <style
-                    name="Widget.AppCompat.ActionBar.TabBar"
-                    parent="Widget.AppCompat.Base.ActionBar.TabBar" />
-
-                <style
                     name="Widget.AppCompat.Light.ActionBar.TabText"
                     parent="Widget.AppCompat.Light.Base.ActionBar.TabText" />
+
+                <style
+                    name="Widget.AppCompat.ActionBar.TabBar"
+                    parent="Widget.AppCompat.Base.ActionBar.TabBar" />
 
                 <attr
                     name="isLightTheme"
                     format="boolean" />
                 <attr
-                    name="actionOverflowButtonStyle"
+                    name="textAppearanceSearchResultSubtitle"
                     format="reference" />
                 <attr
-                    name="textAppearanceSearchResultSubtitle"
+                    name="actionOverflowButtonStyle"
                     format="reference" />
 
                 <style
                     name="Widget.AppCompat.ActivityChooserView"
                     parent="Widget.AppCompat.Base.ActivityChooserView" />
-
-                <string name="abc_action_menu_overflow_description" >More options
-                </string>
-
-                <dimen name="abc_action_bar_default_height" >48dip
-                </dimen>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabText.Inverse"
@@ -1688,6 +1683,12 @@ middle
 ?android:attr/textColorPrimaryInverseDisableOnly
                     </item>
                 </style>
+
+                <dimen name="abc_action_bar_default_height" >48dip
+                </dimen>
+
+                <string name="abc_action_menu_overflow_description" >More options
+                </string>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabText"
@@ -1703,10 +1704,6 @@ middle
                 <style
                     name="Widget.AppCompat.ActionBar.TabView"
                     parent="Widget.AppCompat.Base.ActionBar.TabView" />
-
-                <style
-                    name="TextAppearance.AppCompat.Widget.ActionMode.Subtitle.Inverse"
-                    parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle.Inverse" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar"
@@ -1734,6 +1731,10 @@ middle
                     </item>
                 </style>
 
+                <style
+                    name="TextAppearance.AppCompat.Widget.ActionMode.Subtitle.Inverse"
+                    parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle.Inverse" />
+
                 <attr
                     name="actionModeShareDrawable"
                     format="reference" />
@@ -1759,12 +1760,12 @@ normal
                     </item>
                 </style>
 
-                <string name="abc_shareactionprovider_share_with_application" >Share with %s
-                </string>
-
                 <attr
                     name="actionBarTabStyle"
                     format="reference" />
+
+                <string name="abc_shareactionprovider_share_with_application" >Share with %s
+                </string>
 
                 <style
                     name="Widget.AppCompat.Light.Base.PopupMenu"
@@ -1790,13 +1791,13 @@ wrap_content
                     name="TextAppearance.AppCompat.Widget.Base.ActionBar.Subtitle"
                     parent="android:TextAppearance.Small" />
 
-                <integer name="abc_max_action_buttons" >
-2
-                </integer>
-
                 <attr
                     name="actionBarItemBackground"
                     format="reference" />
+
+                <integer name="abc_max_action_buttons" >
+2
+                </integer>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabBar.Inverse"
@@ -1807,12 +1808,12 @@ wrap_content
                     format="reference" />
 
                 <style
-                    name="Widget.AppCompat.ActionMode"
-                    parent="Widget.AppCompat.Base.ActionMode" />
-
-                <style
                     name="Widget.AppCompat.Light.ActionButton"
                     parent="Widget.AppCompat.Light.Base.ActionButton" />
+
+                <style
+                    name="Widget.AppCompat.ActionMode"
+                    parent="Widget.AppCompat.Base.ActionMode" />
 
                 <style
                     name="Widget.AppCompat.ListView.DropDown"
@@ -2601,9 +2602,6 @@ false
                     name="Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
                     parent="Widget.AppCompat.Light.Base.Spinner" />
 
-                <string name="abc_activitychooserview_choose_application" >Choose an app
-                </string>
-
                 <style
                     name="Theme.AppCompat.Light.DarkActionBar"
                     parent="Theme.Base.AppCompat.Light.DarkActionBar" >
@@ -2689,6 +2687,9 @@ true
                     </item>
                 </style>
 
+                <string name="abc_activitychooserview_choose_application" >Choose an app
+                </string>
+
                 <dimen name="abc_action_bar_title_text_size" >18dp
                 </dimen>
 
@@ -2722,15 +2723,14 @@ true
                     <!-- Whether the items are enabled. -->
                     <attr name="android:enabled" />
                 </declare-styleable>
-
-                <attr
-                    name="textColorSearchUrl"
-                    format="reference|color" />
-
                 <declare-styleable name="ActionMenuView" >
 
                     <!-- Size of padding on either end of a divider. -->
                 </declare-styleable>
+
+                <attr
+                    name="textColorSearchUrl"
+                    format="reference|color" />
 
                 <style
                     name="TextAppearance.AppCompat.Base.Widget.PopupMenu.Small"
@@ -2747,12 +2747,12 @@ true
 false
                 </bool>
 
-                <dimen name="abc_dropdownitem_icon_width" >32dip
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.DropDownItem.Spinner"
                     parent="Widget.AppCompat.Base.DropDownItem.Spinner" />
+
+                <dimen name="abc_dropdownitem_icon_width" >32dip
+                </dimen>
 
                 <attr
                     name="listPreferredItemPaddingLeft"
@@ -2905,12 +2905,12 @@ true
                     format="reference" />
 
                 <style
-                    name="Theme.AppCompat.CompactMenu"
-                    parent="Theme.AppCompat.Base.CompactMenu" />
-
-                <style
                     name="Widget.AppCompat.ListView.Menu"
                     parent="Widget.AppCompat.Base.ListView.Menu" />
+
+                <style
+                    name="Theme.AppCompat.CompactMenu"
+                    parent="Theme.AppCompat.Base.CompactMenu" />
 
                 <style
                     name="Theme.Base.AppCompat.Light"
@@ -3059,23 +3059,6 @@ true
                     </item>
                 </style>
 
-                <string name="abc_activity_chooser_view_see_all" >See all
-                </string>
-
-                <dimen name="abc_search_view_text_min_width" >160dip
-                </dimen>
-
-                <style
-                    name="Theme.AppCompat.Base.CompactMenu"
-                    parent="" >
-                    <item name="android:itemTextAppearance">
-            @style/TextAppearance.Widget.AppCompat.ExpandedMenu.Item
-                    </item>
-                    <item name="android:listViewStyle">
-@style/Widget.AppCompat.ListView.Menu
-                    </item>
-                </style>
-
                 <style
                     name="Widget.AppCompat.Base.PopupMenu"
                     parent="" >
@@ -3095,6 +3078,23 @@ true
 wrap_content
                     </item>
                 </style>
+
+                <style
+                    name="Theme.AppCompat.Base.CompactMenu"
+                    parent="" >
+                    <item name="android:itemTextAppearance">
+            @style/TextAppearance.Widget.AppCompat.ExpandedMenu.Item
+                    </item>
+                    <item name="android:listViewStyle">
+@style/Widget.AppCompat.ListView.Menu
+                    </item>
+                </style>
+
+                <dimen name="abc_search_view_text_min_width" >160dip
+                </dimen>
+
+                <string name="abc_activity_chooser_view_see_all" >See all
+                </string>
 
                 <style
                     name="TextAppearance.AppCompat.SearchResult.Subtitle"
@@ -3135,12 +3135,12 @@ wrap_content
                 </string>
 
                 <style
-                    name="TextAppearance.AppCompat.Widget.Base.ActionMode.Title.Inverse"
-                    parent="android:TextAppearance.Medium.Inverse" />
-
-                <style
                     name="TextAppearance.Widget.AppCompat.ExpandedMenu.Item"
                     parent="TextAppearance.Widget.AppCompat.Base.ExpandedMenu.Item" />
+
+                <style
+                    name="TextAppearance.AppCompat.Widget.Base.ActionMode.Title.Inverse"
+                    parent="android:TextAppearance.Medium.Inverse" />
 
                 <style
                     name="Theme.AppCompat"
@@ -3227,9 +3227,6 @@ false
                     </item>
                 </style>
 
-                <dimen name="abc_config_prefDialogWidth" >320dp
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.Spinner"
                     parent="Widget.AppCompat.Base.Spinner" >
@@ -3244,6 +3241,9 @@ false
                     </item>
                 </style>
 
+                <dimen name="abc_config_prefDialogWidth" >320dp
+                </dimen>
+
                 <declare-styleable name="ActionBarWindow" >
                     <attr
                         name="windowActionBar"
@@ -3256,14 +3256,13 @@ false
                         format="boolean" />
                 </declare-styleable>
 
-                <attr
-                    name="actionButtonStyle"
-                    format="reference" />
-
                 <style
                     name="Widget.AppCompat.Light.PopupMenu"
                     parent="Widget.AppCompat.Light.Base.PopupMenu" />
 
+                <attr
+                    name="actionButtonStyle"
+                    format="reference" />
                 <attr
                     name="searchViewAutoCompleteTextView"
                     format="reference" />
@@ -3276,27 +3275,27 @@ false
                     name="Widget.AppCompat.Light.ActionBar.TabView"
                     parent="Widget.AppCompat.Light.Base.ActionBar.TabView" />
 
+                <style
+                    name="Widget.AppCompat.Light.ActionBar.TabBar"
+                    parent="Widget.AppCompat.Light.Base.ActionBar.TabBar" />
+
                 <style name="TextAppearance.AppCompat.Base.SearchResult.Title" >
                     <item name="android:textSize">
 18sp
                     </item>
                 </style>
 
-                <style
-                    name="Widget.AppCompat.Light.ActionBar.TabBar"
-                    parent="Widget.AppCompat.Light.Base.ActionBar.TabBar" />
-
                 <attr
                     name="actionBarTabTextStyle"
                     format="reference" />
-                <attr
-                    name="searchResultListItemHeight"
-                    format="dimension" />
 
                 <style
                     name="Widget.AppCompat.ActionButton.Overflow"
                     parent="Widget.AppCompat.Base.ActionButton.Overflow" />
 
+                <attr
+                    name="searchResultListItemHeight"
+                    format="dimension" />
                 <attr
                     name="listPreferredItemHeight"
                     format="dimension" />
@@ -3341,9 +3340,6 @@ false
                 <style
                     name="Widget.AppCompat.Light.ActionButton.CloseMode"
                     parent="Widget.AppCompat.Light.Base.ActionButton.CloseMode" />
-
-                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
-                </dimen>
 
                 <style
                     name="Theme.Base.AppCompat.Light.DarkActionBar"
@@ -3409,6 +3405,9 @@ false
 @drawable/abc_list_selector_holo_dark
                     </item>
                 </style>
+
+                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                </dimen>
 
                 <style
                     name="TextAppearance.AppCompat.SearchResult.Title"
@@ -3481,9 +3480,6 @@ false
                     name="Widget.AppCompat.ProgressBar.Horizontal"
                     parent="Widget.AppCompat.Base.ProgressBar.Horizontal" />
 
-                <dimen name="abc_panel_menu_list_width" >296dp
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.ActionButton.Overflow"
                     parent="Widget.AppCompat.Light.Base.ActionButton" >
@@ -3492,14 +3488,17 @@ false
                     </item>
                 </style>
 
+                <dimen name="abc_panel_menu_list_width" >296dp
+                </dimen>
+
+                <color name="abc_search_url_text_pressed" >@android:color/black
+                </color>
+
                 <style name="TextAppearance.AppCompat.Light.Base.SearchResult.Title" >
                     <item name="android:textSize">
 18sp
                     </item>
                 </style>
-
-                <color name="abc_search_url_text_pressed" >@android:color/black
-                </color>
 
                 <style
                     name="Widget.AppCompat.Base.AutoCompleteTextView"
@@ -3543,13 +3542,13 @@ false
                     name="TextAppearance.AppCompat.Widget.ActionBar.Title"
                     parent="TextAppearance.AppCompat.Widget.Base.ActionBar.Title" />
 
-                <attr
-                    name="spinnerStyle"
-                    format="reference" />
-
                 <bool name="abc_split_action_bar_is_narrow" >
 true
                 </bool>
+
+                <attr
+                    name="spinnerStyle"
+                    format="reference" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.AutoCompleteTextView"
@@ -3658,6 +3657,11 @@ useLogo|showHome|showTitle
                     <!-- The input type to set on the query text field. -->
                     <attr name="android:inputType" />
                 </declare-styleable>
+
+                <style
+                    name="Theme.AppCompat.CompactMenu.Dialog"
+                    parent="Theme.AppCompat.Base.CompactMenu.Dialog" />
+
                 <declare-styleable name="ActionMode" >
 
                     <!-- Specifies a style to use for title text. -->
@@ -3673,10 +3677,6 @@ useLogo|showHome|showTitle
                 </declare-styleable>
 
                 <style
-                    name="Theme.AppCompat.CompactMenu.Dialog"
-                    parent="Theme.AppCompat.Base.CompactMenu.Dialog" />
-
-                <style
                     name="Widget.AppCompat.Light.Base.ActivityChooserView"
                     parent="Widget.AppCompat.Base.ActivityChooserView" >
                     <item name="android:background">
@@ -3687,12 +3687,13 @@ useLogo|showHome|showTitle
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.android.support\appcompat-v7\18.0.0\res\values-land\values.xml"
                 qualifiers="land" >
+                <dimen name="abc_action_bar_title_text_size" >16dp
+                </dimen>
+
                 <bool name="abc_config_allowActionMenuItemTextWithIcon" >
 true
                 </bool>
 
-                <dimen name="abc_action_bar_title_text_size" >16dp
-                </dimen>
                 <dimen name="abc_action_bar_icon_vertical_padding" >4dip
                 </dimen>
                 <dimen name="abc_action_bar_subtitle_top_margin" >-2dp
@@ -3795,6 +3796,10 @@ false
                     parent="android:Widget.Holo.AutoCompleteTextView" />
 
                 <style
+                    name="Widget.AppCompat.Base.ProgressBar"
+                    parent="android:Widget.Holo.ProgressBar" />
+
+                <style
                     name="Theme.Base"
                     parent="android:Theme.Holo" >
                     <item name="android:windowNoTitle">
@@ -3815,10 +3820,6 @@ false
 ?android:attr/selectableItemBackground
                     </item>
                 </style>
-
-                <style
-                    name="Widget.AppCompat.Base.ProgressBar"
-                    parent="android:Widget.Holo.ProgressBar" />
 
                 <style
                     name="Widget.AppCompat.Base.ProgressBar.Horizontal"
@@ -3980,10 +3981,6 @@ middle
                     parent="android:Widget.Holo.Light.Spinner" />
 
                 <style
-                    name="Widget.AppCompat.Base.DropDownItem.Spinner"
-                    parent="android:Widget.Holo.DropDownItem.Spinner" />
-
-                <style
                     name="Theme.Base.AppCompat.Light"
                     parent="android:Theme.Holo.Light" >
 
@@ -4041,6 +4038,10 @@ middle
 ?android:attr/buttonBarButtonStyle
                     </item>
                 </style>
+
+                <style
+                    name="Widget.AppCompat.Base.DropDownItem.Spinner"
+                    parent="android:Widget.Holo.DropDownItem.Spinner" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.PopupMenu"
@@ -4226,11 +4227,11 @@ middle
                 <bool name="abc_config_allowActionMenuItemTextWithIcon" >
 true
                 </bool>
-                <bool name="abc_action_bar_embed_tabs_pre_jb" >
-true
-                </bool>
                 <bool name="abc_split_action_bar_is_narrow" >
 false
+                </bool>
+                <bool name="abc_action_bar_embed_tabs_pre_jb" >
+true
                 </bool>
             </file>
             <file
@@ -4260,9 +4261,9 @@ false
                 </dimen>
                 <dimen name="abc_action_bar_default_height" >56dip
                 </dimen>
-                <dimen name="abc_action_button_min_width" >64dip
-                </dimen>
                 <dimen name="abc_search_view_text_min_width" >192dip
+                </dimen>
+                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
             </file>
             <file
@@ -4286,20 +4287,20 @@ false
                 </dimen>
                 <dimen name="abc_action_bar_subtitle_text_size" >14dp
                 </dimen>
+                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                </dimen>
 
                 <bool name="abc_action_bar_expanded_action_views_exclusive" >
 false
                 </bool>
 
-                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                <dimen name="abc_action_bar_subtitle_bottom_margin" >9dip
                 </dimen>
                 <dimen name="abc_action_bar_default_height" >56dip
                 </dimen>
-                <dimen name="abc_action_bar_subtitle_bottom_margin" >9dip
+                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
                 <dimen name="abc_action_bar_title_text_size" >18dp
-                </dimen>
-                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
             </file>
         </source>
@@ -4854,11 +4855,11 @@ false
                 </color>
                 <color name="common_signin_btn_light_text_default" >#FF737373
                 </color>
-                <color name="common_signin_btn_dark_text_default" >@android:color/white
+                <color name="common_signin_btn_default_background" >#FFDD4B39
                 </color>
                 <color name="common_signin_btn_light_text_disabled" >#FFAAAAAA
                 </color>
-                <color name="common_signin_btn_default_background" >#FFDD4B39
+                <color name="common_signin_btn_dark_text_default" >@android:color/white
                 </color>
                 <color name="common_signin_btn_dark_text_pressed" >@android:color/white
                 </color>
@@ -4936,9 +4937,9 @@ false
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values\strings.xml"
                 qualifiers="" >
-                <string name="auth_client_needs_enabling_title" >      An application requires Google Play Services to be enabled.
-                </string>
                 <string name="common_google_play_services_unsupported_text" >Google Play services, which some of your applications rely on, is not supported by your device. Please contact the manufacturer for assistance.
+                </string>
+                <string name="auth_client_needs_enabling_title" >      An application requires Google Play Services to be enabled.
                 </string>
                 <string name="auth_client_using_bad_version_title" >      An application attempted to use a bad version of Google Play Services.
                 </string>
@@ -4965,12 +4966,12 @@ false
                 <string name="common_signin_button_text_long" >Sign in with Google
                 </string>
                 <string
-                    name="common_google_play_services_install_text_tablet"
-                    msgid="7351599665250191022" >This app won\'t run without Google Play services, which are missing from your tablet.
-                </string>
-                <string
                     name="common_google_play_services_install_button"
                     msgid="7153882981874058840" >Get Google Play services
+                </string>
+                <string
+                    name="common_google_play_services_install_text_tablet"
+                    msgid="7351599665250191022" >This app won\'t run without Google Play services, which are missing from your tablet.
                 </string>
                 <string name="common_google_play_services_invalid_account_title" >Invalid Account
                 </string>
@@ -5145,16 +5146,16 @@ false
                     msgid="3635065018897986478" >"የGoogle Play አገልግሎቶች ስህተት"
                 </string>
                 <string
-                    name="common_google_play_services_enable_title"
-                    msgid="529078775174559253" >"Google Play አገልግሎቶችን አንቃ"
+                    name="common_google_play_services_network_error_text"
+                    msgid="9038847255613537209" >"ከGoogle Play አገልግሎቶች ጋር ለመገናኘት የውሂብ ግንኙነት ያስፈልጋል።"
                 </string>
                 <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Google Play አገልግሎቶችን እስካላነቁ ድረስ ይህ መተግበሪያ አይሰራም።"
                 </string>
                 <string
-                    name="common_google_play_services_network_error_text"
-                    msgid="9038847255613537209" >"ከGoogle Play አገልግሎቶች ጋር ለመገናኘት የውሂብ ግንኙነት ያስፈልጋል።"
+                    name="common_google_play_services_enable_title"
+                    msgid="529078775174559253" >"Google Play አገልግሎቶችን አንቃ"
                 </string>
                 <string
                     name="common_signin_button_text_long"
@@ -5343,28 +5344,28 @@ false
                     msgid="8932944190611227642" >"تحديث"
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"‏يتطلب أحد التطبيقات تحديث خدمات Google Play."
-                </string>
-                <string
                     name="auth_client_needs_enabling_title"
                     msgid="3983201110833868073" >"‏يتطلب أحد التطبيقات تمكين خدمات Google Play."
+                </string>
+                <string
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"‏يتطلب أحد التطبيقات تحديث خدمات Google Play."
                 </string>
             </file>
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-bg\strings.xml"
                 qualifiers="bg" >
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Услуги за Google Play: Изтегл."
+                    name="common_google_play_services_network_error_title"
+                    msgid="3827284619958211114" >"Грешка в мрежата"
                 </string>
                 <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Активиране на услугите за Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_network_error_title"
-                    msgid="3827284619958211114" >"Грешка в мрежата"
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Услуги за Google Play: Изтегл."
                 </string>
                 <string
                     name="auth_client_using_bad_version_title"
@@ -5398,12 +5399,12 @@ false
                     </ns1:g>"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Услуги за Google Play"
-                </string>
-                <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Това приложение няма да работи, освен ако не активирате услугите за Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Услуги за Google Play"
                 </string>
                 <string
                     name="common_google_play_services_update_button"
@@ -5454,12 +5455,12 @@ false
                     msgid="2429381841831957106" >"Вход с Google"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Изглежда, че датата на устройството е неправилна. Моля, проверете я."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"За свързване с услугите за Google Play се изисква връзка за данни."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Изглежда, че датата на устройството е неправилна. Моля, проверете я."
                 </string>
             </file>
             <file
@@ -5493,12 +5494,12 @@ false
                     msgid="4983316348021735578" >"El compte especificat no existeix en aquest dispositiu. Tria un compte diferent."
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Sembla que la data del dispositiu no és correcta. Comprova-la."
-                </string>
-                <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Aquesta aplicació no funcionarà si la tauleta no té instal·lats els serveis de Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Sembla que la data del dispositiu no és correcta. Comprova-la."
                 </string>
                 <string
                     name="common_google_play_services_network_error_text"
@@ -5577,12 +5578,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-cs\strings.xml"
                 qualifiers="cs" >
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"Přihlásit se účtem Google"
-                </string>
-                <string
                     name="common_google_play_services_update_button"
                     msgid="8932944190611227642" >"Aktualizovat"
+                </string>
+                <string
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"Přihlásit se účtem Google"
                 </string>
                 <string
                     name="common_google_play_services_update_title"
@@ -5605,12 +5606,12 @@ false
                     msgid="4762332809710093730" >"Nastal neznámý problém se službami Google Play."
                 </string>
                 <string
-                    name="common_google_play_services_install_text_tablet"
-                    msgid="1589957570365247855" >"Ke spuštění této aplikace jsou potřeba služby Google Play, které v tabletu nemáte."
-                </string>
-                <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"Chyba sítě"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_tablet"
+                    msgid="1589957570365247855" >"Ke spuštění této aplikace jsou potřeba služby Google Play, které v tabletu nemáte."
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -5624,12 +5625,12 @@ false
                     msgid="8515591849428043265" >"Instalovat služby Google Play"
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Přihlásit se"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Aktivovat služby Google Play"
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Přihlásit se"
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -5799,12 +5800,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-de\strings.xml"
                 qualifiers="de" >
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Google Play-Dienste"
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Google Play-Dienste aktivieren"
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Google Play-Dienste"
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -5827,20 +5828,16 @@ false
                     msgid="7999585836145154206" >"App erfordert die Installation von Google Play-Diensten"
                 </string>
                 <string
-                    name="auth_client_needs_enabling_title"
-                    msgid="3983201110833868073" >"App erfordert aktivierte Google Play-Dienste"
-                </string>
-                <string
                     name="common_google_play_services_unknown_issue"
                     msgid="4762332809710093730" >"Unbekanntes Problem mit Google Play-Diensten"
                 </string>
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"Über Google anmelden"
+                    name="auth_client_needs_enabling_title"
+                    msgid="3983201110833868073" >"App erfordert aktivierte Google Play-Dienste"
                 </string>
                 <string
-                    name="common_google_play_services_invalid_account_text"
-                    msgid="4983316348021735578" >"Das angegebene Konto ist auf diesem Gerät nicht vorhanden. Bitte wählen Sie ein anderes Konto aus."
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"Über Google anmelden"
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -5848,6 +5845,10 @@ false
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>"
+                </string>
+                <string
+                    name="common_google_play_services_invalid_account_text"
+                    msgid="4983316348021735578" >"Das angegebene Konto ist auf diesem Gerät nicht vorhanden. Bitte wählen Sie ein anderes Konto aus."
                 </string>
                 <string
                     name="common_google_play_services_unsupported_date_text"
@@ -5914,24 +5915,24 @@ false
                     msgid="6006316683626838685" >"Ενημέρωση υπηρεσιών Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_install_title"
-                    msgid="26645092511305524" >"Λήψη υπηρεσιών Google Play"
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"Ο συγκεκριμένος λογαριασμός δεν υπάρχει σε αυτήν τη συσκευή. Επιλέξτε έναν διαφορετικό λογαριασμό."
                 </string>
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Σφάλμα υπηρεσιών Google Play"
+                    name="common_google_play_services_install_title"
+                    msgid="26645092511305524" >"Λήψη υπηρεσιών Google Play"
+                </string>
+                <string
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Λήψη υπηρεσιών Google Play"
                 </string>
                 <string
                     name="common_google_play_services_unsupported_text"
                     msgid="3542578567569488671" >"Οι υπηρεσίες Google Play, στις οποίες βασίζονται ορισμένες από τις εφαρμογές σας, δεν υποστηρίζονται στη συσκευή σας. Επικοινωνήστε με τον κατασκευαστή για υποστήριξη."
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Λήψη υπηρεσιών Google Play"
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Σφάλμα υπηρεσιών Google Play"
                 </string>
                 <string
                     name="common_google_play_services_update_text"
@@ -5946,15 +5947,15 @@ false
                     msgid="2534454398764507874" >"Απόπειρα χρήσης ακατάλληλης έκδοσης Υπηρεσιών Google Play από εφαρμογή"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_tablet"
-                    msgid="1589957570365247855" >"Αυτή η εφαρμογή δεν θα εκτελεστεί χωρίς τις υπηρεσίες Google Play, οι οποίες λείπουν από το tablet σας."
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"Υποβλήθηκε αίτημα από την εφαρμογή 
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_tablet"
+                    msgid="1589957570365247855" >"Αυτή η εφαρμογή δεν θα εκτελεστεί χωρίς τις υπηρεσίες Google Play, οι οποίες λείπουν από το tablet σας."
                 </string>
                 <string
                     name="common_google_play_services_install_text_phone"
@@ -6025,20 +6026,16 @@ false
                     msgid="3542578567569488671" >"Google Play services, which some of your applications rely on, is not supported by your device. Please contact the manufacturer for assistance."
                 </string>
                 <string
-                    name="common_google_play_services_install_title"
-                    msgid="26645092511305524" >"Get Google Play services"
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Enable Google Play services"
                 </string>
                 <string
-                    name="common_google_play_services_enable_title"
-                    msgid="529078775174559253" >"Enable Google Play services"
+                    name="common_google_play_services_install_title"
+                    msgid="26645092511305524" >"Get Google Play services"
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Get Google Play services"
+                    name="common_google_play_services_enable_title"
+                    msgid="529078775174559253" >"Enable Google Play services"
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -6048,12 +6045,16 @@ false
                     </ns1:g>"
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"An application requires installation of Google Play Services."
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Get Google Play services"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"The specified account does not exist on this device. Please choose a different account."
+                </string>
+                <string
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"An application requires installation of Google Play Services."
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -6160,15 +6161,15 @@ false
                     msgid="4983316348021735578" >"The specified account does not exist on this device. Please choose a different account."
                 </string>
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Google Play services error"
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"Requested by 
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>"
+                </string>
+                <string
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Google Play services error"
                 </string>
                 <string
                     name="common_signin_button_text"
@@ -6254,12 +6255,12 @@ false
                     msgid="3983201110833868073" >"Una aplicación requiere que se habiliten los servicios de Play."
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Iniciar sesión"
-                </string>
-                <string
                     name="common_google_play_services_install_button"
                     msgid="8515591849428043265" >"Descargar servicios de Google Play"
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Iniciar sesión"
                 </string>
                 <string
                     name="common_google_play_services_network_error_text"
@@ -6358,20 +6359,20 @@ false
                     msgid="1589957570365247855" >"Esta aplicación no se ejecutará si no instalas Google Play Services en tu tablet."
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Google Play Services"
-                </string>
-                <string
                     name="common_google_play_services_install_title"
                     msgid="26645092511305524" >"Obtener Google Play Services"
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"Una aplicación requiere que se instale Google Play Services"
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Google Play Services"
                 </string>
                 <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Activar Google Play Services"
+                </string>
+                <string
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"Una aplicación requiere que se instale Google Play Services"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
@@ -6394,12 +6395,12 @@ false
                     msgid="2534454398764507874" >"Una aplic. intentó usar una versión no válida de Google Play Services"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Esta aplicación no se ejecutará si no instalasGoogle Play Services en tu dispositivo."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"Se necesita una conexión de datos para establecer conexión con Google Play Services."
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Esta aplicación no se ejecutará si no instalasGoogle Play Services en tu dispositivo."
                 </string>
                 <string
                     name="common_google_play_services_update_button"
@@ -6469,12 +6470,12 @@ false
                     msgid="3542578567569488671" >"Teie seade ei toeta Google Play teenuseid, millele mõni teie rakendustest toetub. Abi saamiseks võtke ühendust tootjaga."
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Selle rakenduse käitamiseks on vaja Google Play teenuseid, mida teie telefonis pole."
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Lubage Google Play teenused"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Selle rakenduse käitamiseks on vaja Google Play teenuseid, mida teie telefonis pole."
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -6505,12 +6506,12 @@ false
                     msgid="1066672360770936753" >"Vale konto"
                 </string>
                 <string
-                    name="common_google_play_services_update_title"
-                    msgid="6006316683626838685" >"Värskendage Google Play teenuseid"
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"Google Play teenustega ühenduse loomiseks on vajalik andmesideühendus."
+                </string>
+                <string
+                    name="common_google_play_services_update_title"
+                    msgid="6006316683626838685" >"Värskendage Google Play teenuseid"
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
@@ -6564,36 +6565,36 @@ false
                     msgid="7999585836145154206" >"Rakenduse kasutamiseks peavad olema installitud Google Play teenused."
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"Rakenduse kasutamiseks tuleb värskendada Google Play teenuseid."
-                </string>
-                <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Selle rakenduse käitamiseks on vaja Google Play teenuseid, mida teie tahvelarvutis pole."
+                </string>
+                <string
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"Rakenduse kasutamiseks tuleb värskendada Google Play teenuseid."
                 </string>
             </file>
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-fa\strings.xml"
                 qualifiers="fa" >
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"‏برنامه‌ای تلاش کرد از نسخه نادرستی از خدمات Google Play استفاده کند."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"حساب نامعتبر"
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"‏مشکل نامشخص در خدمات Google Play."
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"‏برنامه‌ای تلاش کرد از نسخه نادرستی از خدمات Google Play استفاده کند."
+                </string>
+                <string
+                    name="common_google_play_services_update_text"
+                    msgid="448354684997260580" >"‏تا زمانی‌که خدمات Google Play را به‌روز نکنید این برنامه کار نمی‌کند."
                 </string>
                 <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"‏به‌روزرسانی خدمات Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_update_text"
-                    msgid="448354684997260580" >"‏تا زمانی‌که خدمات Google Play را به‌روز نکنید این برنامه کار نمی‌کند."
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"‏مشکل نامشخص در خدمات Google Play."
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
@@ -6604,12 +6605,12 @@ false
                     msgid="529078775174559253" >"‏فعال کردن خدمات Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_text"
-                    msgid="3542578567569488671" >"‏خدمات Google Play، که برخی از برنامه‌های شما به آن وابسته است، توسط دستگاه شما پشتیبانی نمی‌شود. لطفاً برای دریافت کمک با سازنده تماس بگیرید."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"‏برای اتصال به خدمات Google Play اتصال داده لازم است."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_text"
+                    msgid="3542578567569488671" >"‏خدمات Google Play، که برخی از برنامه‌های شما به آن وابسته است، توسط دستگاه شما پشتیبانی نمی‌شود. لطفاً برای دریافت کمک با سازنده تماس بگیرید."
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -6723,19 +6724,19 @@ false
                     msgid="6488605506794595966" >"Päivitä Google Play -palvelut, jotta sovellus toimii."
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"Sovellus yritti käyttää virheellistä Google Play -palveluiden versiota"
+                    name="auth_client_requested_by_msg"
+                    msgid="6304135633531965756" >"Pyynnön teki 
+<ns1:g id="APP_NAME" >
+%1$s
+                    </ns1:g>"
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Tämä sovellus ei toimi ilman Google Play -palveluita, jotka puuttuvat tablet-laitteesta."
                 </string>
                 <string
-                    name="auth_client_requested_by_msg"
-                    msgid="6304135633531965756" >"Pyynnön teki 
-<ns1:g id="APP_NAME" >
-%1$s
-                    </ns1:g>"
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"Sovellus yritti käyttää virheellistä Google Play -palveluiden versiota"
                 </string>
                 <string
                     name="auth_client_needs_installation_title"
@@ -6786,12 +6787,12 @@ false
                     msgid="4725396522367789365" >"Laitteen päivämäärä vaikuttaa virheelliseltä. Tarkista laitteen päivämäärä."
                 </string>
                 <string
-                    name="common_google_play_services_update_title"
-                    msgid="6006316683626838685" >"Päivitä Google Play -palvelut"
-                </string>
-                <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"Verkkovirhe"
+                </string>
+                <string
+                    name="common_google_play_services_update_title"
+                    msgid="6006316683626838685" >"Päivitä Google Play -palvelut"
                 </string>
             </file>
             <file
@@ -6818,20 +6819,20 @@ false
                     msgid="8932944190611227642" >"Mettre à jour"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"La date sur l\'appareil semble incorrecte. Veuillez la vérifier."
-                </string>
-                <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Cette application ne fonctionnera pas sans les services Google Play, qui ne sont pas installés sur votre tablette."
                 </string>
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Erreur liée aux services Google Play"
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"La date sur l\'appareil semble incorrecte. Veuillez la vérifier."
                 </string>
                 <string
                     name="common_google_play_services_install_title"
                     msgid="26645092511305524" >"Installer les services Google Play"
+                </string>
+                <string
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Erreur liée aux services Google Play"
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -6845,12 +6846,12 @@ false
                     msgid="6488605506794595966" >"Une application requiert la mise à jour des services Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Installer services Google Play"
-                </string>
-                <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Mettre à jour les services Google Play"
+                </string>
+                <string
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Installer services Google Play"
                 </string>
                 <string
                     name="common_signin_button_text_long"
@@ -6909,12 +6910,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-fr-rCA\strings.xml"
                 qualifiers="fr-rCA" >
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Erreur liée aux services Google Play"
-                </string>
-                <string
                     name="common_google_play_services_unsupported_text"
                     msgid="3542578567569488671" >"Les services Google Play, dont dépendent certaines de vos applications, ne sont pas compatibles avec votre appareil. Veuillez contacter le fabricant pour obtenir de l\'aide."
+                </string>
+                <string
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Erreur liée aux services Google Play"
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -6925,12 +6926,12 @@ false
                     msgid="1589957570365247855" >"Cette application ne fonctionnera pas sans les services Google Play, qui ne sont pas installés sur votre tablette."
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Cette application ne fonctionnera pas sans les services Google Play, qui ne sont pas installés sur votre téléphone."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"Vous devez disposer d\'une connexion de données pour utiliser les services Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Cette application ne fonctionnera pas sans les services Google Play, qui ne sont pas installés sur votre téléphone."
                 </string>
                 <string
                     name="common_google_play_services_enable_title"
@@ -6949,12 +6950,12 @@ false
                     msgid="3827284619958211114" >"Erreur réseau"
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Connexion"
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Activer les services Google Play"
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Connexion"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
@@ -7024,12 +7025,12 @@ false
                     msgid="4762332809710093730" >"Google Play सेवाओं के साथ अज्ञात समस्या."
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_text"
-                    msgid="3542578567569488671" >"Google Play सेवाएं, जिन पर आपके कुछ ऐप्स  निर्भर करते हैं, आपके उपकरण द्वारा समर्थित नहीं हैं. कृपया सहायता के लिए निर्माता से संपर्क करें."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"Google Play सेवाओं से कनेक्ट करने के लिए डेटा कनेक्शन की आवश्यकता है."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_text"
+                    msgid="3542578567569488671" >"Google Play सेवाएं, जिन पर आपके कुछ ऐप्स  निर्भर करते हैं, आपके उपकरण द्वारा समर्थित नहीं हैं. कृपया सहायता के लिए निर्माता से संपर्क करें."
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -7067,12 +7068,12 @@ false
                     msgid="448354684997260580" >"जब तक आप Google Play सेवाओं से नई जानकारी नहीं लेते हैं, तब तक यह ऐप्स  नहीं चलेगा."
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"ऐप्स  के लिए Google Play सेवाओं में Google Play से नई जानकारी की आवश्यकता है."
-                </string>
-                <string
                     name="common_google_play_services_update_button"
                     msgid="8932944190611227642" >"नई जानकारी पाएं"
+                </string>
+                <string
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"ऐप्स  के लिए Google Play सेवाओं में Google Play से नई जानकारी की आवश्यकता है."
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -7159,12 +7160,12 @@ false
                     msgid="3827284619958211114" >"Mrežna pogreška"
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"Aplikacija zahtijeva ažuriranje Usluga za Google Play."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"Nevažeći račun"
+                </string>
+                <string
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"Aplikacija zahtijeva ažuriranje Usluga za Google Play."
                 </string>
                 <string
                     name="common_google_play_services_enable_title"
@@ -7242,28 +7243,28 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-hu\strings.xml"
                 qualifiers="hu" >
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Belépés"
-                </string>
-                <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Az alkalmazás csak akkor fog működni, ha engedélyezi a Google Play Szolgáltatásokat."
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"Egy alkalmazás kéri a Google Play Szolgáltatások telepítését."
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Belépés"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"Érvénytelen fiók"
                 </string>
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Google Play szolgáltatási hiba"
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"Egy alkalmazás kéri a Google Play Szolgáltatások telepítését."
                 </string>
                 <string
                     name="common_google_play_services_install_button"
                     msgid="8515591849428043265" >"Play Szolgáltatások telepítése"
+                </string>
+                <string
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Google Play szolgáltatási hiba"
                 </string>
                 <string
                     name="common_google_play_services_update_text"
@@ -7274,12 +7275,12 @@ false
                     msgid="6488605506794595966" >"Egy alkalmazás kéri a Google Play Szolgáltatások frissítését."
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Google Play Szolgáltatások"
-                </string>
-                <string
                     name="common_google_play_services_install_text_phone"
                     msgid="8685301130651051380" >"Az alkalmazás működéséhez a Google Play Szolgáltatások szükségesek, ezek nincsenek telepítve a telefonon."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Google Play Szolgáltatások"
                 </string>
                 <string
                     name="common_google_play_services_enable_button"
@@ -7377,12 +7378,12 @@ false
                     msgid="1066672360770936753" >"Հաշիվն անվավեր է"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Այս հավելվածը չի գործարկվի առանց Google Play ծառայությունների, որոնք բացակայում են ձեր հեռախոսում:"
-                </string>
-                <string
                     name="common_google_play_services_update_text"
                     msgid="448354684997260580" >"Այս ծրագիրը չի գործարկվի, եթե դուք չնորացնեք Google Play ծառայությունները:"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Այս հավելվածը չի գործարկվի առանց Google Play ծառայությունների, որոնք բացակայում են ձեր հեռախոսում:"
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -7397,12 +7398,12 @@ false
                     msgid="26645092511305524" >"Տեղադրեք Google Play ծառայությունները"
                 </string>
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"Մուտք գործեք Google-ով"
-                </string>
-                <string
                     name="common_signin_button_text"
                     msgid="9071884888741449141" >"Մուտք գործել"
+                </string>
+                <string
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"Մուտք գործեք Google-ով"
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
@@ -7449,15 +7450,15 @@ false
                     msgid="6334768798839376943" >"Google Play ծառայություններ"
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Տեղադրել Google Play ծառայությունները"
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>-ի հարցմամբ"
+                </string>
+                <string
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Տեղադրել Google Play ծառայությունները"
                 </string>
             </file>
             <file
@@ -7710,12 +7711,12 @@ false
                     msgid="3983201110833868073" >"‏יש אפליקציה המחייבת הפעלה של שירותי Google Play."
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"‏יש אפליקציה שניסתה להשתמש בגרסה שגויה של שירותי Google Play."
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"‏הפעלת שירותי Google Play"
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"‏יש אפליקציה שניסתה להשתמש בגרסה שגויה של שירותי Google Play."
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_title"
@@ -7733,12 +7734,12 @@ false
                     msgid="6488605506794595966" >"‏יש אפליקציה המחייבת עדכון של שירותי Google Play."
                 </string>
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"‏היכנס באמצעות Google"
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"‏דרוש חיבור נתונים כדי להתחבר לשירותי Google Play."
+                </string>
+                <string
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"‏היכנס באמצעות Google"
                 </string>
                 <string
                     name="common_google_play_services_update_text"
@@ -7817,27 +7818,27 @@ false
                     msgid="2429381841831957106" >"Googleでログイン"
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"Google Play開発者サービスで原因不明の問題が発生しました。"
-                </string>
-                <string
-                    name="common_google_play_services_install_title"
-                    msgid="26645092511305524" >"Play開発者サービスの入手"
-                </string>
-                <string
-                    name="common_google_play_services_enable_title"
-                    msgid="529078775174559253" >"Play開発者サービスの有効化"
+                    name="auth_client_requested_by_msg"
+                    msgid="6304135633531965756" >"
+<ns1:g id="APP_NAME" >
+%1$s
+                    </ns1:g>によるリクエスト"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"指定したアカウントはこの端末上に存在しません。別のアカウントを選択してください。"
                 </string>
                 <string
-                    name="auth_client_requested_by_msg"
-                    msgid="6304135633531965756" >"
-<ns1:g id="APP_NAME" >
-%1$s
-                    </ns1:g>によるリクエスト"
+                    name="common_google_play_services_enable_title"
+                    msgid="529078775174559253" >"Play開発者サービスの有効化"
+                </string>
+                <string
+                    name="common_google_play_services_install_title"
+                    msgid="26645092511305524" >"Play開発者サービスの入手"
+                </string>
+                <string
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"Google Play開発者サービスで原因不明の問題が発生しました。"
                 </string>
                 <string
                     name="auth_client_needs_update_title"
@@ -7896,12 +7897,12 @@ false
                     msgid="3542578567569488671" >"一部のアプリが使用しているGoogle Play開発者サービスは、お使いの端末ではサポートされていません。詳しくは、端末メーカーまでお問い合わせください。"
                 </string>
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"更新"
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Play開発者サービスの有効化"
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"更新"
                 </string>
             </file>
             <file
@@ -7916,16 +7917,16 @@ false
                     msgid="7999585836145154206" >"აპლიკაცია საჭიროებს Google Play Services-ის ინსტალაციას."
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"აპლიკაცია შეეცადა გამოეყენებინა Google Play სერვისების არასწორი ვერსია."
+                    name="common_google_play_services_invalid_account_title"
+                    msgid="1066672360770936753" >"ანგარიში არასწორია"
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"ეს აპი ვერ გაეშვება Google Play სერვისების გარეშე, რაც თქვენს ტელეფონზე ვერ იძებნება."
                 </string>
                 <string
-                    name="common_google_play_services_invalid_account_title"
-                    msgid="1066672360770936753" >"ანგარიში არასწორია"
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"აპლიკაცია შეეცადა გამოეყენებინა Google Play სერვისების არასწორი ვერსია."
                 </string>
                 <string
                     name="common_signin_button_text_long"
@@ -7952,12 +7953,12 @@ false
                     msgid="448354684997260580" >"ეს აპი ვერ გაეშვება, თუ Google Play სერვისებს არ განაახლებთ."
                 </string>
                 <string
-                    name="common_google_play_services_update_title"
-                    msgid="6006316683626838685" >"Google Play სერვისების განახლება"
-                </string>
-                <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"ქსელის შეცდომა"
+                </string>
+                <string
+                    name="common_google_play_services_update_title"
+                    msgid="6006316683626838685" >"Google Play სერვისების განახლება"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
@@ -8058,12 +8059,12 @@ false
                     msgid="7627896071867667758" >"កម្ម​វិធី​នេះ​នឹង​មិន​ដំណើរការ​ទេ​ លុះត្រាតែ​អ្នក​បើក​សេវាកម្ម​​កម្សាន្ត​ Google ។"
                 </string>
                 <string
-                    name="auth_client_needs_enabling_title"
-                    msgid="3983201110833868073" >"កម្មវិធី​ទាមទារ​​បើក​សេវាកម្ម​ឃ្លាំង​កម្មវិធី។"
-                </string>
-                <string
                     name="common_google_play_services_install_text_phone"
                     msgid="8685301130651051380" >"កម្មវិធី​នេះ​នឹង​មិន​ដំណើរការ​​ទេ​បើ​គ្មាន​​សេវាកម្ម​កម្សាន្ត​ Google ដែល​ទូរស័ព្ទ​របស់​​អ្នក​មិន​មាន។"
+                </string>
+                <string
+                    name="auth_client_needs_enabling_title"
+                    msgid="3983201110833868073" >"កម្មវិធី​ទាមទារ​​បើក​សេវាកម្ម​ឃ្លាំង​កម្មវិធី។"
                 </string>
                 <string
                     name="common_google_play_services_unsupported_title"
@@ -8142,12 +8143,12 @@ false
                     msgid="529078775174559253" >"Google Play 서비스 사용"
                 </string>
                 <string
-                    name="auth_client_needs_enabling_title"
-                    msgid="3983201110833868073" >"Google Play 서비스를 사용하도록 설정해야 하는 애플리케이션입니다."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"지정한 계정이 이 기기에 존재하지 않습니다. 다른 계정을 선택하세요."
+                </string>
+                <string
+                    name="auth_client_needs_enabling_title"
+                    msgid="3983201110833868073" >"Google Play 서비스를 사용하도록 설정해야 하는 애플리케이션입니다."
                 </string>
                 <string
                     name="common_google_play_services_update_button"
@@ -8166,20 +8167,20 @@ false
                     msgid="9071884888741449141" >"로그인"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_tablet"
-                    msgid="1589957570365247855" >"태블릿에 Google Play 서비스가 설치되어 있어야 이 앱이 실행됩니다."
-                </string>
-                <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Google Play 서비스 업데이트"
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"애플리케이션에서 잘못된 버전의 Google Play 서비스를 사용하려고 했습니다."
+                    name="common_google_play_services_install_text_tablet"
+                    msgid="1589957570365247855" >"태블릿에 Google Play 서비스가 설치되어 있어야 이 앱이 실행됩니다."
                 </string>
                 <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Google Play 서비스"
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"애플리케이션에서 잘못된 버전의 Google Play 서비스를 사용하려고 했습니다."
                 </string>
                 <string
                     name="common_google_play_services_enable_button"
@@ -8229,12 +8230,12 @@ false
                     msgid="7999585836145154206" >"Google Play 서비스를 설치해야 하는 애플리케이션입니다."
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"휴대전화에 Google Play 서비스가 설치되어 있어야 이 앱이 실행됩니다."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"올바르지 않은 계정"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"휴대전화에 Google Play 서비스가 설치되어 있어야 이 앱이 실행됩니다."
                 </string>
             </file>
             <file
@@ -8261,12 +8262,12 @@ false
                     msgid="1589957570365247855" >"ແອັບຯນີ້ຈະບໍ່ສາມາດເຮັດວຽກໄດ້ໂດຍທີ່ບໍ່ມີບໍລິການ Google Play ເຊິ່ງຂາດຫາຍໄປໃນແທັບເລັດຂອງທ່ານ."
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"ມີປັນຫາທີ່ບໍ່ຄາດຄິດໃນບໍລິການ Google Play."
-                </string>
-                <string
                     name="common_google_play_services_install_text_phone"
                     msgid="8685301130651051380" >"ແອັບຯນີ້ຈະບໍ່ສາມາດເຮັດວຽກໄດ້ໂດຍທີ່ບໍ່ມີບໍລິການ Google Play ເຊິ່ງຂາດຫາຍໄປໃນໂທລະສັບຂອງທ່ານ."
+                </string>
+                <string
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"ມີປັນຫາທີ່ບໍ່ຄາດຄິດໃນບໍລິການ Google Play."
                 </string>
                 <string
                     name="common_signin_button_text"
@@ -8360,20 +8361,20 @@ false
                     msgid="1066672360770936753" >"Netinkama paskyra"
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"Norint naudoti programą būtina atnaujinti „Google Play“ paslaugas."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_date_text"
                     msgid="4725396522367789365" >"Įrenginyje nurodyta data neteisinga. Patikrinkite įrenginyje nurodytą datą."
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"Programa bandė naudotis netinkama „Google Play“ paslaugų versija."
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"Norint naudoti programą būtina atnaujinti „Google Play“ paslaugas."
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Ši programa neveiks be „Google Play“ paslaugų, kurios neįdiegtos planšetiniame kompiuteryje."
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"Programa bandė naudotis netinkama „Google Play“ paslaugų versija."
                 </string>
                 <string
                     name="common_google_play_services_unknown_issue"
@@ -8487,28 +8488,28 @@ false
                     msgid="8685301130651051380" >"Lai šī lietotne darbotos, tālrunī ir jāinstalē Google Play pakalpojumi."
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Šķiet, ka ierīcē ir iestatīts nepareizs datums. Lūdzu, pārbaudiet ierīces datumu."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_text"
                     msgid="3542578567569488671" >"Jūsu ierīce neatbalsta Google Play pakalpojumus, kuri nepieciešami dažu jūsu lietojumprogrammu darbībai. Lūdzu, sazinieties ar ražotāju, lai saņemtu palīdzību."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Šķiet, ka ierīcē ir iestatīts nepareizs datums. Lūdzu, pārbaudiet ierīces datumu."
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
                     msgid="3983201110833868073" >"Lai lietojumprogramma darbotos, ir jāiespējo Google Play pakalpojumi."
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"Lai lietojumprogramma darbotos, ir jāinstalē Google Play pakalpojumi."
+                    name="common_google_play_services_invalid_account_title"
+                    msgid="1066672360770936753" >"Nederīgs konts"
                 </string>
                 <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Google Play pakalpojumi"
                 </string>
                 <string
-                    name="common_google_play_services_invalid_account_title"
-                    msgid="1066672360770936753" >"Nederīgs konts"
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"Lai lietojumprogramma darbotos, ir jāinstalē Google Play pakalpojumi."
                 </string>
                 <string
                     name="common_google_play_services_update_title"
@@ -8574,12 +8575,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-mn-rMN\strings.xml"
                 qualifiers="mn-rMN" >
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Нэвтрэх"
-                </string>
-                <string
                     name="common_google_play_services_update_text"
                     msgid="448354684997260580" >"Та Google Play үйлчилгээг шинэчлэхгүй бол энэ апп ажиллах боломжгүй."
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Нэвтрэх"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
@@ -8594,20 +8595,20 @@ false
                     msgid="6006316683626838685" >"Google Play үйлчилгээг шинэчлэх"
                 </string>
                 <string
-                    name="common_google_play_services_install_title"
-                    msgid="26645092511305524" >"Google Play үйлчилгээ авах"
-                </string>
-                <string
                     name="common_google_play_services_install_text_tablet"
                     msgid="1589957570365247855" >"Таны таблетэд байхгүй Google Play үйлчилгээг идэвхжүүлж байж энэ апп-г ажиллуулах боломжтой."
                 </string>
                 <string
-                    name="auth_client_needs_update_title"
-                    msgid="6488605506794595966" >"Аппликешн Google Play Үйлчилгээг шинэчлэхийг шаардана."
+                    name="common_google_play_services_install_title"
+                    msgid="26645092511305524" >"Google Play үйлчилгээ авах"
                 </string>
                 <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Google Play үйлчилгээ"
+                </string>
+                <string
+                    name="auth_client_needs_update_title"
+                    msgid="6488605506794595966" >"Аппликешн Google Play Үйлчилгээг шинэчлэхийг шаардана."
                 </string>
                 <string
                     name="common_google_play_services_unsupported_text"
@@ -8716,12 +8717,12 @@ false
                     msgid="9038847255613537209" >"Sambungan data diperlukan untuk menyambung ke perkhidmatan Google Play."
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"Isu tidak diketahui dengan perkhidmatan Google Play."
-                </string>
-                <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Kemas kini perkhidmatan Google Play"
+                </string>
+                <string
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"Isu tidak diketahui dengan perkhidmatan Google Play."
                 </string>
                 <string
                     name="common_google_play_services_unsupported_title"
@@ -8804,36 +8805,36 @@ false
                     msgid="6488605506794595966" >"En app krever at Google Play Tjenester oppdateres."
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"En app prøvde å bruke en skadet versjon av Google Play Tjenester."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"Ugyldig konto"
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"En app prøvde å bruke en skadet versjon av Google Play Tjenester."
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"Den angitte kontoen finnes ikke på enheten. Velg en annen konto."
                 </string>
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"Logg inn med Google"
-                </string>
-                <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Google Play-tjenester"
+                </string>
+                <string
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"Logg inn med Google"
                 </string>
                 <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Aktiver Google Play Tjenester"
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Logg på"
-                </string>
-                <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Oppdater Google Play Tjenester"
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Logg på"
                 </string>
                 <string
                     name="common_google_play_services_network_error_text"
@@ -8950,12 +8951,12 @@ false
                     msgid="3635065018897986478" >"Fout met Google Play-services"
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"Google Play-services moet zijn geïnstalleerd voor een applicatie."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_date_text"
                     msgid="4725396522367789365" >"De datum op het apparaat lijkt onjuist. Controleer de datum op het apparaat."
+                </string>
+                <string
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"Google Play-services moet zijn geïnstalleerd voor een applicatie."
                 </string>
                 <string
                     name="common_google_play_services_unsupported_text"
@@ -9038,24 +9039,24 @@ false
                     msgid="8932944190611227642" >"Aktualizuj"
                 </string>
                 <string
-                    name="common_google_play_services_network_error_text"
-                    msgid="9038847255613537209" >"Korzystanie z usług Google Play wymaga połączenia z internetem."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"Podanego konta nie ma na tym urządzeniu. Wybierz inne konto."
+                </string>
+                <string
+                    name="common_google_play_services_network_error_text"
+                    msgid="9038847255613537209" >"Korzystanie z usług Google Play wymaga połączenia z internetem."
                 </string>
                 <string
                     name="common_signin_button_text_long"
                     msgid="2429381841831957106" >"Zaloguj się przez Google"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Data ustawiona na urządzeniu wydaje się nieprawidłowa. Sprawdź datę ustawioną na urządzeniu."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_text"
                     msgid="3542578567569488671" >"Usługi Google Play, od których zależy działanie niektórych aplikacji, nie są obsługiwane na Twoim urządzeniu. Skontaktuj się z producentem, by uzyskać pomoc."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Data ustawiona na urządzeniu wydaje się nieprawidłowa. Sprawdź datę ustawioną na urządzeniu."
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
@@ -9173,12 +9174,12 @@ false
                     msgid="4725396522367789365" >"A data no dispositivo parece incorreta. Verifique a data no dispositivo."
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Login"
-                </string>
-                <string
                     name="common_google_play_services_unknown_issue"
                     msgid="4762332809710093730" >"Problema desconhecido com o Google Play Services."
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Login"
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
@@ -9240,28 +9241,28 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-pt-rBR\strings.xml"
                 qualifiers="pt-rBR" >
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"A data no dispositivo parece incorreta. Verifique a data no dispositivo."
+                    name="common_google_play_services_enable_button"
+                    msgid="4181637455539816337" >"Ativar o Google Play Services"
                 </string>
                 <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Este aplicativo só funciona com o Google Play Services ativado."
                 </string>
                 <string
-                    name="common_google_play_services_enable_button"
-                    msgid="4181637455539816337" >"Ativar o Google Play Services"
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"A data no dispositivo parece incorreta. Verifique a data no dispositivo."
                 </string>
                 <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"É necessária uma conexão de dados para conectar ao Google Play Services."
                 </string>
                 <string
-                    name="common_signin_button_text_long"
-                    msgid="2429381841831957106" >"Fazer login com o Google"
-                </string>
-                <string
                     name="common_google_play_services_unknown_issue"
                     msgid="4762332809710093730" >"Problema desconhecido com o Google Play Services."
+                </string>
+                <string
+                    name="common_signin_button_text_long"
+                    msgid="2429381841831957106" >"Fazer login com o Google"
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
@@ -9272,16 +9273,12 @@ false
                     msgid="3635065018897986478" >"Ocorreu um erro no Google Play Services"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Este aplicativo não funciona sem o Google Play Services, que não está instalado em seu telefone."
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Ative o Google Play Services"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_text"
-                    msgid="3542578567569488671" >"O Google Play Services, necessário para alguns dos aplicativos, não é compatível com seu dispositivo. Entre em contato com o fabricante para obter assistência."
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Este aplicativo não funciona sem o Google Play Services, que não está instalado em seu telefone."
                 </string>
                 <string
                     name="auth_client_requested_by_msg"
@@ -9289,6 +9286,10 @@ false
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>"
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_text"
+                    msgid="3542578567569488671" >"O Google Play Services, necessário para alguns dos aplicativos, não é compatível com seu dispositivo. Entre em contato com o fabricante para obter assistência."
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
@@ -9351,12 +9352,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-pt-rPT\strings.xml"
                 qualifiers="pt-rPT" >
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"Esta aplicação não será executada sem os serviços do Google Play, que estão em falta no seu telemóvel."
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"É necessária uma ligação de dados para se ligar aos Serviços do Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"Esta aplicação não será executada sem os serviços do Google Play, que estão em falta no seu telemóvel."
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
@@ -9466,12 +9467,12 @@ false
                     msgid="8685301130651051380" >"Această aplicaţie nu poate rula fără Servicii Google Play, care lipsesc de pe telefon."
                 </string>
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"Actualizaţi"
-                </string>
-                <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Această aplicaţie nu va funcţiona decât dacă activaţi Servicii Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"Actualizaţi"
                 </string>
                 <string
                     name="common_google_play_services_unknown_issue"
@@ -9589,10 +9590,6 @@ false
                     msgid="3542578567569488671" >"Сервисы Google Play, необходимые для работы некоторых приложений, не поддерживаются на вашем устройстве. Обратитесь к производителю."
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Войти"
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"Запрос от приложения \"
 <ns1:g id="APP_NAME" >
@@ -9600,16 +9597,20 @@ false
                     </ns1:g>\""
                 </string>
                 <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Войти"
+                </string>
+                <string
                     name="common_google_play_services_unsupported_date_text"
                     msgid="4725396522367789365" >"Проверьте правильность даты, указанной на устройстве."
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"Неизвестная ошибка с Сервисами Google Play."
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_title"
                     msgid="1066672360770936753" >"Недействительный аккаунт"
+                </string>
+                <string
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"Неизвестная ошибка с Сервисами Google Play."
                 </string>
                 <string
                     name="auth_client_needs_update_title"
@@ -9699,24 +9700,24 @@ false
                     </ns1:g>"
                 </string>
                 <string
-                    name="auth_client_needs_installation_title"
-                    msgid="7999585836145154206" >"Aplikácia vyžaduje inštaláciu služieb Google Play."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Služby Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Inštalovať služby Google Play"
+                    name="auth_client_needs_installation_title"
+                    msgid="7999585836145154206" >"Aplikácia vyžaduje inštaláciu služieb Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_network_error_text"
+                    msgid="9038847255613537209" >"Pripojenie k službám Google Play si vyžaduje dátové pripojenie."
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"Chyba siete"
                 </string>
                 <string
-                    name="common_google_play_services_network_error_text"
-                    msgid="9038847255613537209" >"Pripojenie k službám Google Play si vyžaduje dátové pripojenie."
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Inštalovať služby Google Play"
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -9727,12 +9728,12 @@ false
                     msgid="6488605506794595966" >"Aplikácia vyžaduje aktualizáciu služieb Google Play."
                 </string>
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"Aktualizovať"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Povoliť služby Google Play"
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"Aktualizovať"
                 </string>
                 <string
                     name="common_google_play_services_update_title"
@@ -9803,12 +9804,12 @@ false
                     msgid="6006316683626838685" >"Posodobite storitve Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"Posodobi"
-                </string>
-                <string
                     name="common_google_play_services_enable_text"
                     msgid="7627896071867667758" >"Aplikacija ne bo delovala, če ne omogočite storitev Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"Posodobi"
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -9830,12 +9831,12 @@ false
                     msgid="3635065018897986478" >"Napaka storitev Google Play"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Videti je, da je datum v napravi napačen. Preverite ga."
-                </string>
-                <string
                     name="common_google_play_services_unsupported_text"
                     msgid="3542578567569488671" >"Vaša naprava na podpira storitev Google Play, ki jih potrebujejo nekatere od vaših aplikacij. Za pomoč se obrnite na izdelovalca."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Videti je, da je datum v napravi napačen. Preverite ga."
                 </string>
                 <string
                     name="common_google_play_services_unknown_issue"
@@ -9945,20 +9946,20 @@ false
                     msgid="6488605506794595966" >"Апликација захтева ажурирање Google Play услуга."
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"Пријави ме"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Омогућавање Google Play услуга"
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"Апликација је покушала да користи лошу верзију Google Play услуга."
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"Пријави ме"
                 </string>
                 <string
                     name="common_google_play_services_install_button"
                     msgid="8515591849428043265" >"Преузми Google Play услуге"
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"Апликација је покушала да користи лошу верзију Google Play услуга."
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -10037,16 +10038,16 @@ false
                     msgid="4181637455539816337" >"Aktivera Google Play Tjänster"
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"En olämplig version av Google Play Tjänster anropades av en app."
+                    name="common_google_play_services_enable_text"
+                    msgid="7627896071867667758" >"Du måste aktivera Google Play Tjänster för att den här appen ska fungera."
                 </string>
                 <string
                     name="common_signin_button_text"
                     msgid="9071884888741449141" >"Logga in"
                 </string>
                 <string
-                    name="common_google_play_services_enable_text"
-                    msgid="7627896071867667758" >"Du måste aktivera Google Play Tjänster för att den här appen ska fungera."
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"En olämplig version av Google Play Tjänster anropades av en app."
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -10128,23 +10129,23 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-sw\strings.xml"
                 qualifiers="sw" >
                 <string
-                    name="common_google_play_services_unsupported_text"
-                    msgid="3542578567569488671" >"Huduma za Google Play, ambazo baadhi ya programu zako zinategemea, si linganifu na kifaa chako. Tafadhali wasiliana na mtengenezaji kwa usaidizi."
-                </string>
-                <string
-                    name="common_google_play_services_install_title"
-                    msgid="26645092511305524" >"Pata huduma za Google Play"
+                    name="auth_client_requested_by_msg"
+                    msgid="6304135633531965756" >"Imeombwa na 
+<ns1:g id="APP_NAME" >
+%1$s
+                    </ns1:g>"
                 </string>
                 <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Sasisha huduma za Google Play"
                 </string>
                 <string
-                    name="auth_client_requested_by_msg"
-                    msgid="6304135633531965756" >"Imeombwa na 
-<ns1:g id="APP_NAME" >
-%1$s
-                    </ns1:g>"
+                    name="common_google_play_services_install_title"
+                    msgid="26645092511305524" >"Pata huduma za Google Play"
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_text"
+                    msgid="3542578567569488671" >"Huduma za Google Play, ambazo baadhi ya programu zako zinategemea, si linganifu na kifaa chako. Tafadhali wasiliana na mtengenezaji kwa usaidizi."
                 </string>
                 <string
                     name="common_google_play_services_enable_button"
@@ -10239,15 +10240,15 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-th\strings.xml"
                 qualifiers="th" >
                 <string
-                    name="common_google_play_services_install_text_phone"
-                    msgid="8685301130651051380" >"แอปพลิเคชันนี้จะไม่ทำงานหากไม่มีบริการ Google Play ซึ่งไม่มีในโทรศัพท์ของคุณ"
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"ขอโดย 
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_phone"
+                    msgid="8685301130651051380" >"แอปพลิเคชันนี้จะไม่ทำงานหากไม่มีบริการ Google Play ซึ่งไม่มีในโทรศัพท์ของคุณ"
                 </string>
                 <string
                     name="common_google_play_services_install_button"
@@ -10390,19 +10391,19 @@ false
                     msgid="9071884888741449141" >"Sign in"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"Mukhang hindi tama ang petsa sa device. Pakisuri ang petsa sa device."
+                    name="auth_client_requested_by_msg"
+                    msgid="6304135633531965756" >"Hiniling ng 
+<ns1:g id="APP_NAME" >
+%1$s
+                    </ns1:g>"
                 </string>
                 <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"Hindi umiiral ang tinukoy na account sa device na ito. Mangyaring pumili ng ibang account."
                 </string>
                 <string
-                    name="auth_client_requested_by_msg"
-                    msgid="6304135633531965756" >"Hiniling ng 
-<ns1:g id="APP_NAME" >
-%1$s
-                    </ns1:g>"
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"Mukhang hindi tama ang petsa sa device. Pakisuri ang petsa sa device."
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
@@ -10449,12 +10450,12 @@ false
                     msgid="3827284619958211114" >"May Error sa Network"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Mga serbisyo ng Google Play"
-                </string>
-                <string
                     name="common_google_play_services_install_button"
                     msgid="8515591849428043265" >"Kumuha ng Google Play services"
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Mga serbisyo ng Google Play"
                 </string>
             </file>
             <file
@@ -10493,12 +10494,12 @@ false
                     msgid="2429381841831957106" >"Google\'da oturum aç"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Google Play hizmetleri"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Google Play hizmetlerini etkinleştir"
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Google Play hizmetleri"
                 </string>
                 <string
                     name="common_google_play_services_update_text"
@@ -10587,24 +10588,24 @@ false
                     </ns1:g>"
                 </string>
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"Оновити"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"Увімкнути Google Play Послуги"
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"Оновити"
                 </string>
                 <string
                     name="common_google_play_services_update_title"
                     msgid="6006316683626838685" >"Оновити Google Play Послуги"
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Установити Google Play Послуги"
-                </string>
-                <string
                     name="common_google_play_services_enable_button"
                     msgid="4181637455539816337" >"Увімкнути Google Play Послуги"
+                </string>
+                <string
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Установити Google Play Послуги"
                 </string>
                 <string
                     name="common_google_play_services_install_text_tablet"
@@ -10683,12 +10684,12 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-vi\strings.xml"
                 qualifiers="vi" >
                 <string
-                    name="common_google_play_services_unsupported_title"
-                    msgid="6334768798839376943" >"Dịch vụ của Google Play"
-                </string>
-                <string
                     name="common_google_play_services_install_text_phone"
                     msgid="8685301130651051380" >"Ứng dụng này sẽ không chạy nếu không có dịch vụ của Google Play. Điện thoại của bạn bị thiếu dịch vụ này."
+                </string>
+                <string
+                    name="common_google_play_services_unsupported_title"
+                    msgid="6334768798839376943" >"Dịch vụ của Google Play"
                 </string>
                 <string
                     name="common_google_play_services_enable_title"
@@ -10703,12 +10704,12 @@ false
                     msgid="3983201110833868073" >"Ứng dụng yêu cầu Dịch vụ của Google Play phải được bật."
                 </string>
                 <string
-                    name="common_google_play_services_install_button"
-                    msgid="8515591849428043265" >"Cài đặt dịch vụ của Google Play"
-                </string>
-                <string
                     name="common_google_play_services_invalid_account_text"
                     msgid="4983316348021735578" >"Tài khoản đã chỉ định không tồn tại trên thiết bị này. Vui lòng chọn một tài khoản khác."
+                </string>
+                <string
+                    name="common_google_play_services_install_button"
+                    msgid="8515591849428043265" >"Cài đặt dịch vụ của Google Play"
                 </string>
                 <string
                     name="auth_client_using_bad_version_title"
@@ -10782,12 +10783,12 @@ false
                     msgid="9071884888741449141" >"Đăng nhập"
                 </string>
                 <string
-                    name="common_google_play_services_install_text_tablet"
-                    msgid="1589957570365247855" >"Ứng dụng này sẽ không chạy nếu không có dịch vụ của Google Play. Máy tính bảng của bạn bị thiếu dịch vụ này."
-                </string>
-                <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"Lỗi mạng"
+                </string>
+                <string
+                    name="common_google_play_services_install_text_tablet"
+                    msgid="1589957570365247855" >"Ứng dụng này sẽ không chạy nếu không có dịch vụ của Google Play. Máy tính bảng của bạn bị thiếu dịch vụ này."
                 </string>
             </file>
             <file
@@ -10802,15 +10803,15 @@ false
                     msgid="4983316348021735578" >"此设备上不存在指定的帐户，请选择其他帐户。"
                 </string>
                 <string
-                    name="common_google_play_services_update_text"
-                    msgid="448354684997260580" >"您必须先更新 Google Play 服务才能运行此应用。"
-                </string>
-                <string
                     name="auth_client_requested_by_msg"
                     msgid="6304135633531965756" >"由“
 <ns1:g id="APP_NAME" >
 %1$s
                     </ns1:g>”发出"
+                </string>
+                <string
+                    name="common_google_play_services_update_text"
+                    msgid="448354684997260580" >"您必须先更新 Google Play 服务才能运行此应用。"
                 </string>
                 <string
                     name="common_google_play_services_update_button"
@@ -10821,12 +10822,12 @@ false
                     msgid="3542578567569488671" >"您的设备不支持部分应用所依赖的 Google Play 服务。请与设备制造商联系，以寻求帮助。"
                 </string>
                 <string
-                    name="auth_client_play_services_err_notification_msg"
-                    msgid="3635065018897986478" >"Google Play 服务出错"
-                </string>
-                <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"网络错误"
+                </string>
+                <string
+                    name="auth_client_play_services_err_notification_msg"
+                    msgid="3635065018897986478" >"Google Play 服务出错"
                 </string>
                 <string
                     name="auth_client_needs_enabling_title"
@@ -10905,24 +10906,24 @@ false
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\exploded-aar\com.google.android.gms\play-services\4.2.42\res\values-zh-rHK\strings.xml"
                 qualifiers="zh-rHK" >
                 <string
-                    name="common_google_play_services_update_button"
-                    msgid="8932944190611227642" >"更新"
-                </string>
-                <string
                     name="common_google_play_services_install_title"
                     msgid="26645092511305524" >"取得 Google Play 服務"
+                </string>
+                <string
+                    name="common_google_play_services_update_button"
+                    msgid="8932944190611227642" >"更新"
                 </string>
                 <string
                     name="common_google_play_services_update_text"
                     msgid="448354684997260580" >"您必須更新 Google Play 服務，才能執行這個應用程式。"
                 </string>
                 <string
-                    name="common_google_play_services_unknown_issue"
-                    msgid="4762332809710093730" >"Google Play 服務出現不明問題。"
-                </string>
-                <string
                     name="common_google_play_services_enable_title"
                     msgid="529078775174559253" >"啟用 Google Play 服務"
+                </string>
+                <string
+                    name="common_google_play_services_unknown_issue"
+                    msgid="4762332809710093730" >"Google Play 服務出現不明問題。"
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -11048,20 +11049,20 @@ false
                     msgid="4983316348021735578" >"這個裝置上沒有您所指定的帳戶，請選擇其他帳戶。"
                 </string>
                 <string
-                    name="common_google_play_services_unsupported_date_text"
-                    msgid="4725396522367789365" >"裝置上的日期似乎不正確，請檢查裝置上的日期。"
-                </string>
-                <string
                     name="common_google_play_services_network_error_text"
                     msgid="9038847255613537209" >"需要數據連線才能連上 Google Play 服務。"
                 </string>
                 <string
-                    name="auth_client_using_bad_version_title"
-                    msgid="2534454398764507874" >"應用程式嘗試使用的 Google Play 服務版本有誤。"
+                    name="common_google_play_services_unsupported_date_text"
+                    msgid="4725396522367789365" >"裝置上的日期似乎不正確，請檢查裝置上的日期。"
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
                     msgid="3827284619958211114" >"網路錯誤"
+                </string>
+                <string
+                    name="auth_client_using_bad_version_title"
+                    msgid="2534454398764507874" >"應用程式嘗試使用的 Google Play 服務版本有誤。"
                 </string>
                 <string
                     name="auth_client_play_services_err_notification_msg"
@@ -11115,12 +11116,12 @@ false
                     msgid="4181637455539816337" >"啟用 Google Play 服務"
                 </string>
                 <string
-                    name="common_signin_button_text"
-                    msgid="9071884888741449141" >"登入"
-                </string>
-                <string
                     name="common_google_play_services_unsupported_title"
                     msgid="6334768798839376943" >"Google Play 服務"
+                </string>
+                <string
+                    name="common_signin_button_text"
+                    msgid="9071884888741449141" >"登入"
                 </string>
             </file>
             <file
@@ -11166,12 +11167,12 @@ false
                     </ns1:g>"
                 </string>
                 <string
-                    name="common_google_play_services_enable_title"
-                    msgid="529078775174559253" >"Nika amandla amasevisi e-Google Play"
-                </string>
-                <string
                     name="common_google_play_services_update_text"
                     msgid="448354684997260580" >"Lolu hlelo lokusebenza ngeke lusebenze ngaphandle nje kokuthi ubuyekeze amasevisi e-Google Play."
+                </string>
+                <string
+                    name="common_google_play_services_enable_title"
+                    msgid="529078775174559253" >"Nika amandla amasevisi e-Google Play"
                 </string>
                 <string
                     name="common_google_play_services_network_error_title"
@@ -13676,9 +13677,9 @@ false
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\res\values\colors.xml"
                 qualifiers="" >
-                <color name="green" >#1cba48
-                </color>
                 <color name="blue" >#0073b9
+                </color>
+                <color name="green" >#1cba48
                 </color>
                 <color name="white" >#fff
                 </color>
@@ -13696,11 +13697,11 @@ false
                 qualifiers="" >
                 <dimen name="text_size_small" >15sp
                 </dimen>
-                <dimen name="text_size_large" >20sp
+                <dimen name="message_out_width" >100dp
                 </dimen>
                 <dimen name="margin_large" >20dp
                 </dimen>
-                <dimen name="message_out_width" >100dp
+                <dimen name="text_size_large" >20sp
                 </dimen>
                 <dimen name="margin_middle" >10dp
                 </dimen>
@@ -13708,13 +13709,13 @@ false
                 </dimen>
                 <dimen name="logo_maxwidth" >320dp
                 </dimen>
-                <dimen name="text_size_middle" >18sp
-                </dimen>
                 <dimen name="padding_middle" >10dp
                 </dimen>
-                <dimen name="padding_large" >15dp
+                <dimen name="text_size_middle" >18sp
                 </dimen>
                 <dimen name="margin_small" >5dp
+                </dimen>
+                <dimen name="padding_large" >15dp
                 </dimen>
             </file>
             <file
@@ -13724,15 +13725,21 @@ false
                 </string>
                 <string name="hint_enter_your_message" >Enter Your message here
                 </string>
+                <string name="selected_user" >Selected user:
+                </string>
                 <string name="qb_slogan" >YOUR COMMUNICATION \nBACKEND
                 </string>
                 <string name="app_name" >Sample Messages
                 </string>
-                <string name="to_user" >to user:
+                <string name="dlg_ok" >OK
+                </string>
+                <string name="no_messages" >No messages
+                </string>
+                <string name="received_messages" >Received messages
                 </string>
                 <string name="select_user" >Select user
                 </string>
-                <string name="received_messages" >Received messages
+                <string name="dlg_cancel" >Cancel
                 </string>
             </file>
             <file
@@ -13894,6 +13901,14 @@ false
                 </style>
 
                 <style
+                    name="ActionBarTabViewAppTheme"
+                    parent="android:Widget.ActionBar.TabView" >
+                    <item name="android:background">
+@drawable/apptheme_tab_indicator_ab
+                    </item>
+                </style>
+
+                <style
                     name="SeekBarAppTheme"
                     parent="android:Widget.SeekBar" >
                     <item name="android:progressDrawable">
@@ -13919,14 +13934,6 @@ false
                     </item>
                     <item name="android:paddingRight">
 16dip
-                    </item>
-                </style>
-
-                <style
-                    name="ActionBarTabViewAppTheme"
-                    parent="android:Widget.ActionBar.TabView" >
-                    <item name="android:background">
-@drawable/apptheme_tab_indicator_ab
                     </item>
                 </style>
 
@@ -13977,27 +13984,6 @@ false
                     </item>
                 </style>
 
-                <style name="TabTextAppTheme" >
-                    <item name="android:textColor">
-@color/black
-                    </item>
-                    <item name="android:textSize">
-12sp
-                    </item>
-                    <item name="android:textStyle">
-bold
-                    </item>
-                    <item name="android:ellipsize">
-marquee
-                    </item>
-                    <item name="android:maxLines">
-2
-                    </item>
-                    <item name="android:maxWidth">
-180dip
-                    </item>
-                </style>
-
                 <style name="TabAppTheme" >
                     <item name="android:gravity">
 center_horizontal
@@ -14022,6 +14008,27 @@ center_horizontal
                     </item>
                 </style>
 
+                <style name="TabTextAppTheme" >
+                    <item name="android:textColor">
+@color/black
+                    </item>
+                    <item name="android:textSize">
+12sp
+                    </item>
+                    <item name="android:textStyle">
+bold
+                    </item>
+                    <item name="android:ellipsize">
+marquee
+                    </item>
+                    <item name="android:maxLines">
+2
+                    </item>
+                    <item name="android:maxWidth">
+180dip
+                    </item>
+                </style>
+
                 <style
                     name="TextViewAppTheme"
                     parent="android:Widget.TextView" >
@@ -14036,10 +14043,6 @@ center_horizontal
             <file
                 path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\res\values\themes.xml"
                 qualifiers="" >
-
-                <style
-                    name="AppTheme"
-                    parent="@style/_AppTheme" />
 
                 <style
                     name="_AppTheme"
@@ -14129,6 +14132,10 @@ center_horizontal
 @style/ActionButtonCloseModeAppTheme
                     </item>
                 </style>
+
+                <style
+                    name="AppTheme"
+                    parent="@style/_AppTheme" />
             </file>
         </source>
         <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-messages\build\res\rs\debug" />

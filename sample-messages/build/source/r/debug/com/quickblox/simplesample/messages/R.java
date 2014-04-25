@@ -1264,7 +1264,7 @@ containing a value of this type.
         public static final int search_plate=0x7f07003f;
         public static final int search_src_text=0x7f070040;
         public static final int search_voice_btn=0x7f070044;
-        public static final int selectUserButton=0x7f07004b;
+        public static final int select_user_button=0x7f07004b;
         public static final int selected_user_textview=0x7f07004a;
         public static final int selected_user_title_textview=0x7f070049;
         public static final int send_message_button=0x7f07004c;
@@ -1358,12 +1358,15 @@ containing a value of this type.
         public static final int common_google_play_services_update_title=0x7f0a0025;
         public static final int common_signin_button_text=0x7f0a0026;
         public static final int common_signin_button_text_long=0x7f0a0027;
-        public static final int hint_enter_your_message=0x7f0a0028;
-        public static final int qb_slogan=0x7f0a0029;
-        public static final int received_messages=0x7f0a002a;
-        public static final int select_user=0x7f0a002b;
-        public static final int send=0x7f0a002c;
-        public static final int to_user=0x7f0a002d;
+        public static final int dlg_cancel=0x7f0a0028;
+        public static final int dlg_ok=0x7f0a0029;
+        public static final int hint_enter_your_message=0x7f0a002a;
+        public static final int no_messages=0x7f0a002b;
+        public static final int qb_slogan=0x7f0a002c;
+        public static final int received_messages=0x7f0a002d;
+        public static final int select_user=0x7f0a002e;
+        public static final int selected_user=0x7f0a002f;
+        public static final int send=0x7f0a0030;
     }
     public static final class style {
         public static final int ActionBarAppTheme=0x7f0b0000;
