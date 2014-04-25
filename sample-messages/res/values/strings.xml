@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Start Activity -->
-    <string name="app_name">QuickBlox Messages Sample</string>
-
-    <!-- Messages Activity -->
-    <string name="enter_your_message">Enter Your message here:</string>
-    <string name="to_user">to user:</string>
+    <string name="app_name">Sample Messages</string>
+    <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
+    <string name="hint_enter_your_message">Enter Your message here</string>
+    <string name="selected_user">Selected user:</string>
     <string name="select_user">Select user</string>
     <string name="send">Send</string>
-    <string name="received_messages">Received messages:</string>
-
+    <string name="received_messages">Received messages</string>
+    <string name="no_messages">No messages</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Cancel</string>
 </resources>

@@ -9,12 +9,6 @@ import com.quickblox.sample.user.helper.DataHolder;
 
 import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 23.11.12
- * Time: 16:05
- */
 public class QBManager {
 
     public static void singIn(String login, String password, QBCallback callback, QBQueries context) {
@@ -22,7 +16,9 @@ public class QBManager {
         QBUsers.signIn(qbUser, callback, context);
     }
 
-    public static void updateUser(int userId, String login, String oldPassword, String password, String fullName, String email, String phone, String webSite, String tags, QBCallback callback, QBQueries context) {
+    public static void updateUser(int userId, String login, String oldPassword, String password,
+            String fullName, String email, String phone, String webSite, String tags, QBCallback callback,
+            QBQueries context) {
         // create QBUser object
         QBUser qbUser = new QBUser();
         if (userId != -1) {
@@ -57,5 +53,4 @@ public class QBManager {
         qbUser.setPassword(password);
         QBUsers.signUp(qbUser, callback, context);
     }
-
 }

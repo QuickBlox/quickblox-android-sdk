@@ -1,58 +1,49 @@
 package com.quickblox.sample.user.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.widget.TextView;
+
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 
 import static com.quickblox.sample.user.definitions.Consts.POSITION;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 20.11.12
- * Time: 15:35
- */
-public class ShowUserActivity extends Activity {
+public class ShowUserActivity extends BaseActivity {
 
-    EditText login;
-    EditText email;
-    EditText fullName;
-    EditText phone;
-    EditText webSite;
-    EditText tags;
-    int position;
+    private TextView loginTextView;
+    private TextView emailTextView;
+    private TextView fullNameTextView;
+    private TextView phoneTextView;
+    private TextView webSiteTextView;
+    private TextView tagsTextView;
+
+    private int position;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
-        setContentView(R.layout.show_user);
-        initialize();
-    }
-
-    private void initialize() {
-        position = getIntent().getIntExtra(POSITION, 0);
-        login = (EditText) findViewById(R.id.login);
-        email = (EditText) findViewById(R.id.email);
-        fullName = (EditText) findViewById(R.id.full_name);
-        phone = (EditText) findViewById(R.id.phone);
-        webSite = (EditText) findViewById(R.id.web_site);
-        tags = (EditText) findViewById(R.id.tags);
+        setContentView(R.layout.activity_show_user);
+        initUI();
         fillAllFields();
     }
 
-
-    private void fillAllFields() {
-
-        login.setText(DataHolder.getDataHolder().getQBUser(position).getLogin());
-        email.setText(DataHolder.getDataHolder().getQBUser(position).getEmail());
-        fullName.setText(DataHolder.getDataHolder().getQBUser(position).getFullName());
-        phone.setText(DataHolder.getDataHolder().getQBUser(position).getPhone());
-        webSite.setText(DataHolder.getDataHolder().getQBUser(position).getWebsite());
-        if (DataHolder.getDataHolder().getQBUser(position).getTags() != null) {
-            tags.append(DataHolder.getDataHolder().getQBUser(position).getTags().toString());
-        }
+    private void initUI() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        loginTextView = (TextView) findViewById(R.id.login_textview);
+        emailTextView = (TextView) findViewById(R.id.email_textview);
+        fullNameTextView = (TextView) findViewById(R.id.full_name_textview);
+        phoneTextView = (TextView) findViewById(R.id.phone_textview);
+        webSiteTextView = (TextView) findViewById(R.id.web_site_textview);
+        tagsTextView = (TextView) findViewById(R.id.tags_textview);
     }
 
+    private void fillAllFields() {
+        position = getIntent().getIntExtra(POSITION, 0);
+        fillField(loginTextView, DataHolder.getDataHolder().getQBUser(position).getLogin());
+        fillField(emailTextView, DataHolder.getDataHolder().getQBUser(position).getEmail());
+        fillField(fullNameTextView, DataHolder.getDataHolder().getQBUser(position).getFullName());
+        fillField(phoneTextView, DataHolder.getDataHolder().getQBUser(position).getPhone());
+        fillField(webSiteTextView, DataHolder.getDataHolder().getQBUser(position).getWebsite());
+        fillField(tagsTextView, DataHolder.getDataHolder().getQBUser(position).getTags().toString());
+    }
 }
