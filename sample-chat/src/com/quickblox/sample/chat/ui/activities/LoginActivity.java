@@ -13,7 +13,7 @@ import android.widget.EditText;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.chat.QBChatService;
-import com.quickblox.module.chat.listeners.SessionListener;
+import com.quickblox.module.chat.listeners.SessionCallback;
 import com.quickblox.module.chat.smack.SmackAndroid;
 import com.quickblox.module.users.QBUsers;
 import com.quickblox.module.users.model.QBUser;
@@ -80,7 +80,7 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
     public void onComplete(Result result) {
         if (result.isSuccess()) {
             ((App)getApplication()).setQbUser(user);
-            QBChatService.getInstance().loginWithUser(user, new SessionListener() {
+            QBChatService.getInstance().loginWithUser(user, new SessionCallback() {
                 @Override
                 public void onLoginSuccess() {
                     if (progressDialog != null) {
@@ -94,19 +94,10 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
                 }
 
                 @Override
-                public void onLoginError() {
+                public void onLoginError(String error) {
                     Log.i(TAG, "error when login");
                 }
 
-                @Override
-                public void onDisconnect() {
-                    Log.i(TAG, "disconnect when login");
-                }
-
-                @Override
-                public void onDisconnectOnError(Exception exc) {
-                    Log.i(TAG, "disconnect error when login");
-                }
             });
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
