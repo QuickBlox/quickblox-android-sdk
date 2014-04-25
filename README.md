@@ -220,10 +220,6 @@ Java Framework provides following services to interact with QuickBlox functions 
 * QBRatings
 * QBMessages
 
-## How to run snippets project
-
-* See <https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets#snippets>
-
 ## See also
 
 * [QuickBlox REST API](http://quickblox.com/developers/Overview)
