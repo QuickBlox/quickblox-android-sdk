@@ -6,14 +6,6 @@ QuickBlox is a suite of communication features & data services (APIs, SDKs, code
 Please read full Android SDK documentation on the [QuickBlox website, Android section](http://quickblox.com/developers/Android)
 
 # QuickBlox Android SDK
-# QuickBlox
-QuickBlox - Communication & cloud backend (BaaS) platform which brings superpowers to mobile apps.
-
-QuickBlox is a suite of communication features & data services (APIs, SDKs, code samples, admin panel, tutorials) which help digital agencies, mobile developers and publishers to add great functionality to smartphone applications.
-
-Please read full Android SDK documentation on the [QuickBlox website, Android section](http://quickblox.com/developers/Android)
-
-# QuickBlox Android SDK
 
 This project contains QuickBlox Android SDK, that includes
 
