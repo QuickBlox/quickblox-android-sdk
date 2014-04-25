@@ -158,20 +158,7 @@ public class SnippetsUsers extends Snippets {
             user.setTags(tags);
             user.setWebsite("website.com");
 
-//            QBUsers.signUp(user, new QBCallbackImpl() {
-//                @Override
-//                public void onComplete(Result result) {
-//                    if (result.isSuccess()) {
-//                        QBUserResult qbUserResult = (QBUserResult) result;
-//
-//                        Log.i(TAG, ">>> User was successfully signed up, " + qbUserResult.getUser().toString());
-//                    } else {
-//                        handleErrors(result);
-//                    }
-//                }
-//            });
-
-            QBUsers.signUpSignInTask(user, new QBCallbackImpl() {
+            QBUsers.signUp(user, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
                     if (result.isSuccess()) {
@@ -183,7 +170,6 @@ public class SnippetsUsers extends Snippets {
                     }
                 }
             });
-
         }
     };
 
