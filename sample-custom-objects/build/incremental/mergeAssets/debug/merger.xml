@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/main/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/debug/assets" />
+    </dataSet>
+
+</merger>

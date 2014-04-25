@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QuickBlox VideoChat</string>
+    <string name="start_chat">start chat</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="please_wait">Please wait</string>
+    <string name="login_by_first_user">Login as the first user</string>
+    <string name="login_by_second_user">Login as the second user</string>
+    <string name="call_user">call </string>
+    <string name="calling_dialog_title">Incoming call</string>
+    <string name="calling_dialog_txt">Calling</string>
+    <string name="login_screen_title">Login as a User1 on the 1st device and as a User2 on the second device</string>
+    <string name="call_start_txt">Call Start</string>
+    <string name="call_canceled_txt">Call canceled by caller</string>
+    <string name="video_call_txt">VideoCall</string>
+    <string name="audio_call_txt">AudioCall</string>
+</resources>

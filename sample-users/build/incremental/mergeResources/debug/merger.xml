@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res" >
+            <file
+                name="icon"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/icon.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_bg"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/qb_splash_bg.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_hero"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/qb_splash_hero.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="qb_splash_link"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/qb_splash_link.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="user_avatar"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/user_avatar.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="show_user"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/show_user.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="sign_in"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/sign_in.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="sign_up"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/sign_up.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="splash"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/splash.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="update_user"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/update_user.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="user_list"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/user_list.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="user_list_item"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/user_list_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/values/strings.xml"
+                qualifiers="" >
+                <string name="user_successfully_deleted" >User was successfully deleted!
+                </string>
+                <string name="test_user_login" >androiduser
+                </string>
+                <string name="phone" >Phone:
+                </string>
+                <string name="tags" >Tags
+                </string>
+                <string name="choose" >choose
+                </string>
+                <string name="please_sign_in" >Please signIn by this user!
+                </string>
+                <string name="user_log_out_msg" >User successfully logout!
+                </string>
+                <string name="update" >update
+                </string>
+                <string name="name" >Name
+                </string>
+                <string name="web_site" >Web Site:
+                </string>
+                <string name="password" >Password:
+                </string>
+                <string name="login" >Login:
+                </string>
+                <string name="sign_in" >Sign In
+                </string>
+                <string name="test_user_password" >androiduser
+                </string>
+                <string name="self_edit" >self edit
+                </string>
+                <string name="full_name" >Full Name:
+                </string>
+                <string name="create" >create
+                </string>
+                <string name="email" >Email:
+                </string>
+                <string name="logout" >LogOut
+                </string>
+                <string name="please_wait" >Please wait...
+                </string>
+                <string name="sign_up" >Sign Up
+                </string>
+                <string name="user_successfully_updated" >User was successfully updated!
+                </string>
+                <string name="save" >save
+                </string>
+                <string name="app_name" >SimpleSample-users-android
+                </string>
+                <string name="colon" >:
+                </string>
+                <string name="delete" >delete
+                </string>
+                <string name="user_successfully_sign_in" >User was successfully sign in!
+                </string>
+            </file>
+        </source>
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/src/debug/res" />
+    </dataSet>
+
+</merger>

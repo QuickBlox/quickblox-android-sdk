@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="unspecified" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/assets" />
+    </dataSet>
+    <dataSet config="19.0.0" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/src/main/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/src/debug/assets" />
+    </dataSet>
+
+</merger>

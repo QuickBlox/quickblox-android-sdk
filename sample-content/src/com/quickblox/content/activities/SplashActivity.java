@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+
 import com.quickblox.content.R;
 import com.quickblox.content.helper.DataHolder;
 import com.quickblox.core.QBCallback;
@@ -22,17 +23,18 @@ public class SplashActivity extends Activity {
     private final int APP_ID = 99;
     private final String AUTH_KEY = "63ebrp5VZt7qTOv";
     private final String AUTH_SECRET = "YavMAxm5T59-BRw";
+
     private final String USER_LOGIN = "bobbobbob";
     private final String USER_PASSWORD = "bobbobbob";
-    private ProgressBar progressBar;
 
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
+        setContentView(R.layout.activity_splash);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
         // ================= QuickBlox ===== Step 1 =================
@@ -52,7 +54,6 @@ public class SplashActivity extends Activity {
                     // return result from QBAuth.authorizeApp() query
                     QBSessionResult qbSessionResult = (QBSessionResult) result;
                     DataHolder.getDataHolder().setSignInUserId(qbSessionResult.getSession().getUserId());
-
                     // retrieve user's files
                     getFileList();
                 } else {
@@ -67,20 +68,17 @@ public class SplashActivity extends Activity {
     }
 
     private void getFileList() {
-
         // ================= QuickBlox ===== Step 2 =================
         // Gey all user's files
-
-        QBPagedRequestBuilder builder = new  QBPagedRequestBuilder();
-        builder.setPerPage(100);
+        QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
+        builder.setPerPage(10);
         builder.setPage(1);
         QBContent.getFiles(builder, new QBCallback() {
             @Override
             public void onComplete(Result result) {
                 QBFilePagedResult qbFilePagedResult = (QBFilePagedResult) result;
                 DataHolder.getDataHolder().setQbFileList(qbFilePagedResult.getFiles());
-
-                // show gallery
+                // show activity_gallery
                 startGalleryActivity();
             }
 

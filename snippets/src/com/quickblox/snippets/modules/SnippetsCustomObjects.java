@@ -408,14 +408,16 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject co1 = createObject();
             co1.setCustomObjectId("50e3f85f535c123376000d31");
+            QBPermissions permissions = new QBPermissions();
+            permissions.setReadPermission(QBPermissionsLevel.OPEN);
+            co1.setPermission(permissions);
+
             QBCustomObject co2 = createObject();
+
             co2.setCustomObjectId("50e3f85f535c123376000d32");
-            QBCustomObject co3 = createObject();
-            co3.setCustomObjectId("50e3f85f535c123376000d33");
             List<QBCustomObject> qbCustomObjectList = new LinkedList<QBCustomObject>();
             qbCustomObjectList.add(co1);
             qbCustomObjectList.add(co2);
-            qbCustomObjectList.add(co3);
 
             QBCustomObjects.updateObjects(qbCustomObjectList, new QBCallbackImpl() {
                 @Override
