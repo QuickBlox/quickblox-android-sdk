@@ -11,12 +11,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
+import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.fragments.RoomsFragment;
 import com.quickblox.sample.chat.ui.fragments.UsersFragment;
+
+import org.jivesoftware.smack.ConnectionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ViewPager viewPager;
     private Action lastAction;
+    private ConnectionListener connectionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +60,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         });
 
         for (int i = 0; i < sectionsPagerAdapter.getCount(); i++) {
-            actionBar.addTab(actionBar.newTab()
-                    .setText(sectionsPagerAdapter.getPageTitle(i))
-                    .setTabListener(this));
+            actionBar.addTab(actionBar.newTab().setText(sectionsPagerAdapter.getPageTitle(i)).setTabListener(
+                    this));
         }
     }
 
@@ -67,7 +71,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         QBUser qbUser = ((App) getApplication()).getQbUser();
         if (qbUser != null) {
             viewPager.setCurrentItem(position);
-
         } else if (position == POSITION_ROOM) {
             lastAction = Action.ROOM_LIST;
             showAuthenticateDialog();
@@ -95,6 +98,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     viewPager.setCurrentItem(POSITION_ROOM);
                     break;
             }
+            connectionListener = new ChatConnectionListener();
+            QBChatService.getInstance().addConnectionListener(connectionListener);
             ((RoomsFragment) sectionsPagerAdapter.getItem(POSITION_ROOM)).loadRooms();
         } else {
             showUsersFragment();
@@ -137,6 +142,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         builder.show();
     }
 
+    private void showToast(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public static enum Action {CHAT, ROOM_LIST}
 
     public static class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -167,6 +181,34 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     return "Rooms";
             }
             return null;
+        }
+    }
+
+    private class ChatConnectionListener implements ConnectionListener {
+
+        @Override
+        public void connectionClosed() {
+            showToast("connectionClosed");
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            showToast("connectionClosed on error" + e.getLocalizedMessage());
+        }
+
+        @Override
+        public void reconnectingIn(int i) {
+
+        }
+
+        @Override
+        public void reconnectionSuccessful() {
+
+        }
+
+        @Override
+        public void reconnectionFailed(Exception e) {
+
         }
     }
 }
