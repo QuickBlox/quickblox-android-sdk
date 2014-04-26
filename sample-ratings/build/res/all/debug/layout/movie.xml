@@ -9,7 +9,6 @@
             android:layout_width="250dp"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/fight_club"
             />
     <TextView
             android:id="@+id/movie_description"
@@ -42,4 +41,4 @@
             android:onClick="onClick"
             android:text="@string/rate"
             />
-</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/movie.xml -->
+</RelativeLayout><!-- From: file:/D:/Workspace/Android/git/quickblox-android-sdk/sample-ratings/res/layout/movie.xml -->

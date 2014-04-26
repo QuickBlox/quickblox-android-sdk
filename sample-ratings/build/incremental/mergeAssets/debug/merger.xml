@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merger>
 
+    <dataSet config="18.0.0" >
+        <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\build\exploded-aar\com.android.support\appcompat-v7\18.0.0\assets" />
+    </dataSet>
     <dataSet config="main" >
-        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/src/main/assets" />
+        <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets" >
+            <file
+                name="image_fight_club.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_fight_club.jpg" />
+            <file
+                name="image_godfather.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_godfather.jpg" />
+            <file
+                name="image_hachiko.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_hachiko.jpg" />
+            <file
+                name="image_harry_potter.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_harry_potter.jpg" />
+            <file
+                name="image_shawshank_redemption.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_shawshank_redemption.jpg" />
+            <file
+                name="image_ted.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_ted.jpg" />
+            <file
+                name="image_the_lord_of_the_rings.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_the_lord_of_the_rings.jpg" />
+        </source>
     </dataSet>
     <dataSet config="debug" >
-        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/src/debug/assets" />
+        <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\src\debug\assets" />
     </dataSet>
 
 </merger>

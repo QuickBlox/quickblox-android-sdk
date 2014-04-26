@@ -50,7 +50,7 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
         super.onResume();
         int index = DataHolder.getDataHolder().getChosenMoviePosition();
         if (index != NONE_SCORE_CHANGE) {
-            getAvarageRatingForMovie(index, QBQueries.GET_AVARAGE_FOR_GAME_MODE);
+            getAvarageRatingForMovie(index, QBQueries.GET_AVERAGE_FOR_GAME_MODE);
         }
     }
 
@@ -78,7 +78,7 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
         QBQueries qbQueries = (QBQueries) context;
         if (result.isSuccess()) {
             switch (qbQueries) {
-                case GET_AVARAGE_FOR_GAME_MODE:
+                case GET_AVERAGE_FOR_GAME_MODE:
                     QBAverageResult qbAverageResult1 = (QBAverageResult) result;
                     if (qbAverageResult1.getAverage().getValue() != null) {
                         DataHolder.getDataHolder().setMovieRating(DataHolder.getDataHolder().getChosenMoviePosition(), qbAverageResult1.getAverage().getValue());

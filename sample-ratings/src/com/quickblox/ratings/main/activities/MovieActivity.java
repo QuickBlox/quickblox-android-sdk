@@ -44,7 +44,6 @@ public class MovieActivity extends Activity implements QBCallback {
         super.onCreate(savedInstanceBundle);
         setContentView(R.layout.movie);
         initialize();
-
     }
 
     private void initialize() {
