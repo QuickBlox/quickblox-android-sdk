@@ -3,12 +3,12 @@ package com.quickblox.ratings.main.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.quickblox.core.QBCallback;
@@ -19,30 +19,23 @@ import com.quickblox.ratings.main.R;
 import com.quickblox.ratings.main.core.DataHolder;
 import com.quickblox.ratings.main.definitions.QBQueries;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 27.11.12
- * Time: 16:31
- */
 public class MovieActivity extends Activity implements QBCallback {
 
     private final String POSITION = "position";
-    ImageView movieCover;
-    TextView movieDescription;
-    LinearLayout starsHolder;
-    final int STARS_NUMBER = 10;
-    double movieRating;
-    ProgressDialog progressDialog;
-    int position;
-    LinearLayout dialogStarsHolder;
-
-    LayoutInflater inflater;
-    AlertDialog alert;
+    private ImageView movieCover;
+    private TextView movieDescription;
+    private RatingBar ratingBar;
+    private final int STARS_NUMBER = 10;
+    private ProgressDialog progressDialog;
+    private int position;
+    private RatingBar dialogRatingBar;
+    private LayoutInflater layoutInflater;
+    private AlertDialog alert;
 
     public void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
-        setContentView(R.layout.movie);
+        setContentView(R.layout.activity_movie);
+        layoutInflater = getLayoutInflater();
         initialize();
     }
 
@@ -52,72 +45,42 @@ public class MovieActivity extends Activity implements QBCallback {
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
 
-        movieCover = (ImageView) findViewById(R.id.movie_cover);
-        movieDescription = (TextView) findViewById(R.id.movie_description);
-        starsHolder = (LinearLayout) findViewById(R.id.starts_ll);
+        movieCover = (ImageView) findViewById(R.id.movie_cover_imageview);
+        movieDescription = (TextView) findViewById(R.id.movie_description_imageview);
+        ratingBar = (RatingBar) findViewById(R.id.rating_bar);
         movieCover.setImageDrawable(DataHolder.getDataHolder().getMovieCover(position));
         movieDescription.setText(DataHolder.getDataHolder().getMovieDescription(position));
-        applyStars(DataHolder.getDataHolder().getMovieRating(position), starsHolder);
+        applyStars(DataHolder.getDataHolder().getMovieRating(position));
     }
 
-    private void applyStars(double movieRating, LinearLayout imageHolder) {
-        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (imageHolder != null) {
-            imageHolder.removeAllViews();
-        }
-        this.movieRating = movieRating;
-        for (int i = 0; i < STARS_NUMBER; ) {
-            ImageView star = (ImageView) inflater.inflate(R.layout.image_holder, null);
-            if (i < movieRating) {
-                star.setImageDrawable(getResources().getDrawable(R.drawable.star_full));
-            } else {
-                star.setImageDrawable(getResources().getDrawable(R.drawable.star_empty));
-            }
-            star.setTag(++i);
-            star.setOnClickListener(getOnStarClickListener());
-            if (imageHolder != null) {
-                imageHolder.addView(star);
-            }
-        }
-    }
-
-    private View.OnClickListener getOnStarClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                applyStars((Integer) view.getTag(), dialogStarsHolder);
-            }
-        };
+    private void applyStars(double movieRating) {
+       ratingBar.setNumStars(STARS_NUMBER);
+        ratingBar.setRating((float) movieRating);
     }
 
     private void showCustomAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LinearLayout customDialog = (LinearLayout) inflater.inflate(R.layout.custom_dialog, null);
-        dialogStarsHolder = (LinearLayout) customDialog.findViewById(R.id.stars_holder);
-        applyStars(0, dialogStarsHolder);
+        RelativeLayout customDialog = (RelativeLayout) layoutInflater.inflate(R.layout.dialog_rate, null);
+        dialogRatingBar = (RatingBar) customDialog.findViewById(R.id.rating_bar);
         builder.setView(customDialog);
         alert = builder.create();
         alert.show();
-
     }
-
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rate_dialog_btn:
+            case R.id.rate_dialog_button:
                 // Create new Score
                 createScore();
                 this.alert.dismiss();
                 break;
-            case R.id.rate_main_view_btn:
+            case R.id.rate_button:
                 showCustomAlert();
                 break;
-            case R.id.cancel:
+            case R.id.cancel_button:
                 this.alert.dismiss();
                 break;
-
         }
-
     }
 
     private void createScore() {
@@ -126,12 +89,10 @@ public class MovieActivity extends Activity implements QBCallback {
         // Rate it!
         QBScore qbScore = new QBScore();
         qbScore.setGameModeId(DataHolder.getDataHolder().getMovieGameModeId(position));
-        qbScore.setValue((int)movieRating);
+        qbScore.setValue((int) dialogRatingBar.getRating());
         qbScore.setUserId(DataHolder.getDataHolder().getQbUserId());
         QBRatings.createScore(qbScore, this, QBQueries.CREATE_SCORE);
     }
-
-
 
     @Override
     public void onComplete(Result result) {}

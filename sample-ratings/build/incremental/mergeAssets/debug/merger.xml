@@ -7,26 +7,35 @@
     <dataSet config="main" >
         <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets" >
             <file
-                name="image_fight_club.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_fight_club.jpg" />
+                name="cover_fight_club.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_fight_club.jpg" />
             <file
-                name="image_godfather.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_godfather.jpg" />
+                name="cover_ted.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_ted.jpg" />
             <file
-                name="image_hachiko.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_hachiko.jpg" />
+                name="cover_harry_potter.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_harry_potter.jpg" />
             <file
-                name="image_harry_potter.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_harry_potter.jpg" />
+                name="cover_hachiko.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_hachiko.jpg" />
             <file
-                name="image_shawshank_redemption.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_shawshank_redemption.jpg" />
+                name="cover_the_lord_of_the_rings.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_the_lord_of_the_rings.jpg" />
             <file
-                name="image_ted.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_ted.jpg" />
+                name="cover_shawshank_redemption.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_shawshank_redemption.jpg" />
             <file
-                name="image_the_lord_of_the_rings.jpg"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\image_the_lord_of_the_rings.jpg" />
+                name="cover_godfather.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_godfather.jpg" />
+            <file
+                name="cover_robocop.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_robocop.jpg" />
+            <file
+                name="cover_spider_man.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_spider_man.jpg" />
+            <file
+                name="cover_i_robot.jpg"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_i_robot.jpg" />
         </source>
     </dataSet>
     <dataSet config="debug" >

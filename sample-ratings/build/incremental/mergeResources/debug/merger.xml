@@ -1364,10 +1364,6 @@
                 <string name="abc_searchview_description_query" >Search query
                 </string>
 
-                <item
-                    name="home"
-                    type="id"/>
-
                 <declare-styleable name="MenuView" >
 
                     <!-- Default appearance of menu item text. -->
@@ -1388,20 +1384,24 @@
                     <attr name="android:preserveIconSpacing" />
                 </declare-styleable>
 
-                <string name="abc_action_bar_up_description" >Navigate up
-                </string>
+                <item
+                    name="home"
+                    type="id"/>
 
                 <attr
                     name="actionModeStyle"
                     format="reference" />
 
-                <item
-                    name="action_bar_activity_content"
-                    type="id"/>
+                <string name="abc_action_bar_up_description" >Navigate up
+                </string>
 
                 <attr
                     name="actionBarSplitStyle"
                     format="reference" />
+
+                <item
+                    name="action_bar_activity_content"
+                    type="id"/>
 
                 <style
                     name="Widget.AppCompat.ActionBar"
@@ -1557,18 +1557,19 @@ true
                     </item>
                 </style>
 
-                <dimen name="abc_action_bar_stacked_max_height" >48dp
-                </dimen>
-
                 <attr
                     name="actionModeCloseDrawable"
                     format="reference" />
-                <attr
-                    name="searchViewTextField"
-                    format="reference" />
+
+                <dimen name="abc_action_bar_stacked_max_height" >48dp
+                </dimen>
 
                 <color name="abc_search_url_text_selected" >@android:color/black
                 </color>
+
+                <attr
+                    name="searchViewTextField"
+                    format="reference" />
 
                 <declare-styleable name="Spinner" >
 
@@ -1654,32 +1655,26 @@ middle
                 </style>
 
                 <style
-                    name="Widget.AppCompat.ActionBar.TabBar"
-                    parent="Widget.AppCompat.Base.ActionBar.TabBar" />
-
-                <style
                     name="Widget.AppCompat.Light.ActionBar.TabText"
                     parent="Widget.AppCompat.Light.Base.ActionBar.TabText" />
+
+                <style
+                    name="Widget.AppCompat.ActionBar.TabBar"
+                    parent="Widget.AppCompat.Base.ActionBar.TabBar" />
 
                 <attr
                     name="isLightTheme"
                     format="boolean" />
                 <attr
-                    name="actionOverflowButtonStyle"
+                    name="textAppearanceSearchResultSubtitle"
                     format="reference" />
                 <attr
-                    name="textAppearanceSearchResultSubtitle"
+                    name="actionOverflowButtonStyle"
                     format="reference" />
 
                 <style
                     name="Widget.AppCompat.ActivityChooserView"
                     parent="Widget.AppCompat.Base.ActivityChooserView" />
-
-                <string name="abc_action_menu_overflow_description" >More options
-                </string>
-
-                <dimen name="abc_action_bar_default_height" >48dip
-                </dimen>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabText.Inverse"
@@ -1688,6 +1683,12 @@ middle
 ?android:attr/textColorPrimaryInverseDisableOnly
                     </item>
                 </style>
+
+                <dimen name="abc_action_bar_default_height" >48dip
+                </dimen>
+
+                <string name="abc_action_menu_overflow_description" >More options
+                </string>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabText"
@@ -1703,10 +1704,6 @@ middle
                 <style
                     name="Widget.AppCompat.ActionBar.TabView"
                     parent="Widget.AppCompat.Base.ActionBar.TabView" />
-
-                <style
-                    name="TextAppearance.AppCompat.Widget.ActionMode.Subtitle.Inverse"
-                    parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle.Inverse" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar"
@@ -1734,6 +1731,10 @@ middle
                     </item>
                 </style>
 
+                <style
+                    name="TextAppearance.AppCompat.Widget.ActionMode.Subtitle.Inverse"
+                    parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle.Inverse" />
+
                 <attr
                     name="actionModeShareDrawable"
                     format="reference" />
@@ -1759,12 +1760,12 @@ normal
                     </item>
                 </style>
 
-                <string name="abc_shareactionprovider_share_with_application" >Share with %s
-                </string>
-
                 <attr
                     name="actionBarTabStyle"
                     format="reference" />
+
+                <string name="abc_shareactionprovider_share_with_application" >Share with %s
+                </string>
 
                 <style
                     name="Widget.AppCompat.Light.Base.PopupMenu"
@@ -1790,13 +1791,13 @@ wrap_content
                     name="TextAppearance.AppCompat.Widget.Base.ActionBar.Subtitle"
                     parent="android:TextAppearance.Small" />
 
-                <integer name="abc_max_action_buttons" >
-2
-                </integer>
-
                 <attr
                     name="actionBarItemBackground"
                     format="reference" />
+
+                <integer name="abc_max_action_buttons" >
+2
+                </integer>
 
                 <style
                     name="Widget.AppCompat.Light.Base.ActionBar.TabBar.Inverse"
@@ -1807,12 +1808,12 @@ wrap_content
                     format="reference" />
 
                 <style
-                    name="Widget.AppCompat.ActionMode"
-                    parent="Widget.AppCompat.Base.ActionMode" />
-
-                <style
                     name="Widget.AppCompat.Light.ActionButton"
                     parent="Widget.AppCompat.Light.Base.ActionButton" />
+
+                <style
+                    name="Widget.AppCompat.ActionMode"
+                    parent="Widget.AppCompat.Base.ActionMode" />
 
                 <style
                     name="Widget.AppCompat.ListView.DropDown"
@@ -2601,9 +2602,6 @@ false
                     name="Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
                     parent="Widget.AppCompat.Light.Base.Spinner" />
 
-                <string name="abc_activitychooserview_choose_application" >Choose an app
-                </string>
-
                 <style
                     name="Theme.AppCompat.Light.DarkActionBar"
                     parent="Theme.Base.AppCompat.Light.DarkActionBar" >
@@ -2689,6 +2687,9 @@ true
                     </item>
                 </style>
 
+                <string name="abc_activitychooserview_choose_application" >Choose an app
+                </string>
+
                 <dimen name="abc_action_bar_title_text_size" >18dp
                 </dimen>
 
@@ -2722,15 +2723,14 @@ true
                     <!-- Whether the items are enabled. -->
                     <attr name="android:enabled" />
                 </declare-styleable>
-
-                <attr
-                    name="textColorSearchUrl"
-                    format="reference|color" />
-
                 <declare-styleable name="ActionMenuView" >
 
                     <!-- Size of padding on either end of a divider. -->
                 </declare-styleable>
+
+                <attr
+                    name="textColorSearchUrl"
+                    format="reference|color" />
 
                 <style
                     name="TextAppearance.AppCompat.Base.Widget.PopupMenu.Small"
@@ -2747,12 +2747,12 @@ true
 false
                 </bool>
 
-                <dimen name="abc_dropdownitem_icon_width" >32dip
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.DropDownItem.Spinner"
                     parent="Widget.AppCompat.Base.DropDownItem.Spinner" />
+
+                <dimen name="abc_dropdownitem_icon_width" >32dip
+                </dimen>
 
                 <attr
                     name="listPreferredItemPaddingLeft"
@@ -2905,12 +2905,12 @@ true
                     format="reference" />
 
                 <style
-                    name="Theme.AppCompat.CompactMenu"
-                    parent="Theme.AppCompat.Base.CompactMenu" />
-
-                <style
                     name="Widget.AppCompat.ListView.Menu"
                     parent="Widget.AppCompat.Base.ListView.Menu" />
+
+                <style
+                    name="Theme.AppCompat.CompactMenu"
+                    parent="Theme.AppCompat.Base.CompactMenu" />
 
                 <style
                     name="Theme.Base.AppCompat.Light"
@@ -3059,23 +3059,6 @@ true
                     </item>
                 </style>
 
-                <string name="abc_activity_chooser_view_see_all" >See all
-                </string>
-
-                <dimen name="abc_search_view_text_min_width" >160dip
-                </dimen>
-
-                <style
-                    name="Theme.AppCompat.Base.CompactMenu"
-                    parent="" >
-                    <item name="android:itemTextAppearance">
-            @style/TextAppearance.Widget.AppCompat.ExpandedMenu.Item
-                    </item>
-                    <item name="android:listViewStyle">
-@style/Widget.AppCompat.ListView.Menu
-                    </item>
-                </style>
-
                 <style
                     name="Widget.AppCompat.Base.PopupMenu"
                     parent="" >
@@ -3095,6 +3078,23 @@ true
 wrap_content
                     </item>
                 </style>
+
+                <style
+                    name="Theme.AppCompat.Base.CompactMenu"
+                    parent="" >
+                    <item name="android:itemTextAppearance">
+            @style/TextAppearance.Widget.AppCompat.ExpandedMenu.Item
+                    </item>
+                    <item name="android:listViewStyle">
+@style/Widget.AppCompat.ListView.Menu
+                    </item>
+                </style>
+
+                <dimen name="abc_search_view_text_min_width" >160dip
+                </dimen>
+
+                <string name="abc_activity_chooser_view_see_all" >See all
+                </string>
 
                 <style
                     name="TextAppearance.AppCompat.SearchResult.Subtitle"
@@ -3135,12 +3135,12 @@ wrap_content
                 </string>
 
                 <style
-                    name="TextAppearance.AppCompat.Widget.Base.ActionMode.Title.Inverse"
-                    parent="android:TextAppearance.Medium.Inverse" />
-
-                <style
                     name="TextAppearance.Widget.AppCompat.ExpandedMenu.Item"
                     parent="TextAppearance.Widget.AppCompat.Base.ExpandedMenu.Item" />
+
+                <style
+                    name="TextAppearance.AppCompat.Widget.Base.ActionMode.Title.Inverse"
+                    parent="android:TextAppearance.Medium.Inverse" />
 
                 <style
                     name="Theme.AppCompat"
@@ -3227,9 +3227,6 @@ false
                     </item>
                 </style>
 
-                <dimen name="abc_config_prefDialogWidth" >320dp
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.Spinner"
                     parent="Widget.AppCompat.Base.Spinner" >
@@ -3244,6 +3241,9 @@ false
                     </item>
                 </style>
 
+                <dimen name="abc_config_prefDialogWidth" >320dp
+                </dimen>
+
                 <declare-styleable name="ActionBarWindow" >
                     <attr
                         name="windowActionBar"
@@ -3256,14 +3256,13 @@ false
                         format="boolean" />
                 </declare-styleable>
 
-                <attr
-                    name="actionButtonStyle"
-                    format="reference" />
-
                 <style
                     name="Widget.AppCompat.Light.PopupMenu"
                     parent="Widget.AppCompat.Light.Base.PopupMenu" />
 
+                <attr
+                    name="actionButtonStyle"
+                    format="reference" />
                 <attr
                     name="searchViewAutoCompleteTextView"
                     format="reference" />
@@ -3276,27 +3275,27 @@ false
                     name="Widget.AppCompat.Light.ActionBar.TabView"
                     parent="Widget.AppCompat.Light.Base.ActionBar.TabView" />
 
+                <style
+                    name="Widget.AppCompat.Light.ActionBar.TabBar"
+                    parent="Widget.AppCompat.Light.Base.ActionBar.TabBar" />
+
                 <style name="TextAppearance.AppCompat.Base.SearchResult.Title" >
                     <item name="android:textSize">
 18sp
                     </item>
                 </style>
 
-                <style
-                    name="Widget.AppCompat.Light.ActionBar.TabBar"
-                    parent="Widget.AppCompat.Light.Base.ActionBar.TabBar" />
-
                 <attr
                     name="actionBarTabTextStyle"
                     format="reference" />
-                <attr
-                    name="searchResultListItemHeight"
-                    format="dimension" />
 
                 <style
                     name="Widget.AppCompat.ActionButton.Overflow"
                     parent="Widget.AppCompat.Base.ActionButton.Overflow" />
 
+                <attr
+                    name="searchResultListItemHeight"
+                    format="dimension" />
                 <attr
                     name="listPreferredItemHeight"
                     format="dimension" />
@@ -3341,9 +3340,6 @@ false
                 <style
                     name="Widget.AppCompat.Light.ActionButton.CloseMode"
                     parent="Widget.AppCompat.Light.Base.ActionButton.CloseMode" />
-
-                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
-                </dimen>
 
                 <style
                     name="Theme.Base.AppCompat.Light.DarkActionBar"
@@ -3409,6 +3405,9 @@ false
 @drawable/abc_list_selector_holo_dark
                     </item>
                 </style>
+
+                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                </dimen>
 
                 <style
                     name="TextAppearance.AppCompat.SearchResult.Title"
@@ -3481,9 +3480,6 @@ false
                     name="Widget.AppCompat.ProgressBar.Horizontal"
                     parent="Widget.AppCompat.Base.ProgressBar.Horizontal" />
 
-                <dimen name="abc_panel_menu_list_width" >296dp
-                </dimen>
-
                 <style
                     name="Widget.AppCompat.Light.Base.ActionButton.Overflow"
                     parent="Widget.AppCompat.Light.Base.ActionButton" >
@@ -3492,14 +3488,17 @@ false
                     </item>
                 </style>
 
+                <dimen name="abc_panel_menu_list_width" >296dp
+                </dimen>
+
+                <color name="abc_search_url_text_pressed" >@android:color/black
+                </color>
+
                 <style name="TextAppearance.AppCompat.Light.Base.SearchResult.Title" >
                     <item name="android:textSize">
 18sp
                     </item>
                 </style>
-
-                <color name="abc_search_url_text_pressed" >@android:color/black
-                </color>
 
                 <style
                     name="Widget.AppCompat.Base.AutoCompleteTextView"
@@ -3543,13 +3542,13 @@ false
                     name="TextAppearance.AppCompat.Widget.ActionBar.Title"
                     parent="TextAppearance.AppCompat.Widget.Base.ActionBar.Title" />
 
-                <attr
-                    name="spinnerStyle"
-                    format="reference" />
-
                 <bool name="abc_split_action_bar_is_narrow" >
 true
                 </bool>
+
+                <attr
+                    name="spinnerStyle"
+                    format="reference" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.AutoCompleteTextView"
@@ -3658,6 +3657,11 @@ useLogo|showHome|showTitle
                     <!-- The input type to set on the query text field. -->
                     <attr name="android:inputType" />
                 </declare-styleable>
+
+                <style
+                    name="Theme.AppCompat.CompactMenu.Dialog"
+                    parent="Theme.AppCompat.Base.CompactMenu.Dialog" />
+
                 <declare-styleable name="ActionMode" >
 
                     <!-- Specifies a style to use for title text. -->
@@ -3673,10 +3677,6 @@ useLogo|showHome|showTitle
                 </declare-styleable>
 
                 <style
-                    name="Theme.AppCompat.CompactMenu.Dialog"
-                    parent="Theme.AppCompat.Base.CompactMenu.Dialog" />
-
-                <style
                     name="Widget.AppCompat.Light.Base.ActivityChooserView"
                     parent="Widget.AppCompat.Base.ActivityChooserView" >
                     <item name="android:background">
@@ -3687,12 +3687,13 @@ useLogo|showHome|showTitle
             <file
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\build\exploded-aar\com.android.support\appcompat-v7\18.0.0\res\values-land\values.xml"
                 qualifiers="land" >
+                <dimen name="abc_action_bar_title_text_size" >16dp
+                </dimen>
+
                 <bool name="abc_config_allowActionMenuItemTextWithIcon" >
 true
                 </bool>
 
-                <dimen name="abc_action_bar_title_text_size" >16dp
-                </dimen>
                 <dimen name="abc_action_bar_icon_vertical_padding" >4dip
                 </dimen>
                 <dimen name="abc_action_bar_subtitle_top_margin" >-2dp
@@ -3795,6 +3796,10 @@ false
                     parent="android:Widget.Holo.AutoCompleteTextView" />
 
                 <style
+                    name="Widget.AppCompat.Base.ProgressBar"
+                    parent="android:Widget.Holo.ProgressBar" />
+
+                <style
                     name="Theme.Base"
                     parent="android:Theme.Holo" >
                     <item name="android:windowNoTitle">
@@ -3815,10 +3820,6 @@ false
 ?android:attr/selectableItemBackground
                     </item>
                 </style>
-
-                <style
-                    name="Widget.AppCompat.Base.ProgressBar"
-                    parent="android:Widget.Holo.ProgressBar" />
 
                 <style
                     name="Widget.AppCompat.Base.ProgressBar.Horizontal"
@@ -3980,10 +3981,6 @@ middle
                     parent="android:Widget.Holo.Light.Spinner" />
 
                 <style
-                    name="Widget.AppCompat.Base.DropDownItem.Spinner"
-                    parent="android:Widget.Holo.DropDownItem.Spinner" />
-
-                <style
                     name="Theme.Base.AppCompat.Light"
                     parent="android:Theme.Holo.Light" >
 
@@ -4041,6 +4038,10 @@ middle
 ?android:attr/buttonBarButtonStyle
                     </item>
                 </style>
+
+                <style
+                    name="Widget.AppCompat.Base.DropDownItem.Spinner"
+                    parent="android:Widget.Holo.DropDownItem.Spinner" />
 
                 <style
                     name="Widget.AppCompat.Light.Base.PopupMenu"
@@ -4226,11 +4227,11 @@ middle
                 <bool name="abc_config_allowActionMenuItemTextWithIcon" >
 true
                 </bool>
-                <bool name="abc_action_bar_embed_tabs_pre_jb" >
-true
-                </bool>
                 <bool name="abc_split_action_bar_is_narrow" >
 false
+                </bool>
+                <bool name="abc_action_bar_embed_tabs_pre_jb" >
+true
                 </bool>
             </file>
             <file
@@ -4260,9 +4261,9 @@ false
                 </dimen>
                 <dimen name="abc_action_bar_default_height" >56dip
                 </dimen>
-                <dimen name="abc_action_button_min_width" >64dip
-                </dimen>
                 <dimen name="abc_search_view_text_min_width" >192dip
+                </dimen>
+                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
             </file>
             <file
@@ -4286,20 +4287,20 @@ false
                 </dimen>
                 <dimen name="abc_action_bar_subtitle_text_size" >14dp
                 </dimen>
+                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                </dimen>
 
                 <bool name="abc_action_bar_expanded_action_views_exclusive" >
 false
                 </bool>
 
-                <dimen name="abc_action_bar_subtitle_top_margin" >-3dp
+                <dimen name="abc_action_bar_subtitle_bottom_margin" >9dip
                 </dimen>
                 <dimen name="abc_action_bar_default_height" >56dip
                 </dimen>
-                <dimen name="abc_action_bar_subtitle_bottom_margin" >9dip
+                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
                 <dimen name="abc_action_bar_title_text_size" >18dp
-                </dimen>
-                <dimen name="abc_action_button_min_width" >64dip
                 </dimen>
             </file>
         </source>
@@ -4444,11 +4445,6 @@ false
             <file
                 name="app_logo"
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\app_logo.png"
-                qualifiers=""
-                type="drawable" />
-            <file
-                name="user_avatar"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\user_avatar.png"
                 qualifiers=""
                 type="drawable" />
             <file
@@ -6737,36 +6733,16 @@ false
                 qualifiers=""
                 type="layout" />
             <file
-                name="custom_dialog"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\custom_dialog.xml"
-                qualifiers=""
-                type="layout" />
-            <file
                 name="image_holder"
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\image_holder.xml"
                 qualifiers=""
                 type="layout" />
             <file
-                name="movie"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\movie.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="movies_list"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\movies_list.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="movies_list_item"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\movies_list_item.xml"
-                qualifiers=""
-                type="layout" />
-            <file
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\values\colors.xml"
                 qualifiers="" >
-                <color name="green" >#1cba48
-                </color>
                 <color name="blue" >#0073b9
+                </color>
+                <color name="green" >#1cba48
                 </color>
                 <color name="white" >#fff
                 </color>
@@ -6782,43 +6758,137 @@ false
             <file
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\values\dimens.xml"
                 qualifiers="" >
-                <dimen name="text_size_small" >15sp
+                <dimen name="text_size_large" >20sp
                 </dimen>
                 <dimen name="margin_large" >20dp
                 </dimen>
-                <dimen name="message_out_width" >100dp
+                <dimen name="movie_cover_big_width" >250dp
                 </dimen>
-                <dimen name="text_size_large" >20sp
-                </dimen>
-                <dimen name="margin_middle" >10dp
-                </dimen>
-                <dimen name="padding_small" >5dp
+                <dimen name="movie_cover_big_height" >250dp
                 </dimen>
                 <dimen name="logo_maxwidth" >320dp
                 </dimen>
                 <dimen name="padding_middle" >10dp
                 </dimen>
+                <dimen name="text_size_small" >15sp
+                </dimen>
+                <dimen name="movie_cover_small_width" >50dp
+                </dimen>
+                <dimen name="margin_middle" >10dp
+                </dimen>
+                <dimen name="padding_small" >5dp
+                </dimen>
                 <dimen name="text_size_middle" >18sp
                 </dimen>
-                <dimen name="margin_small" >5dp
-                </dimen>
                 <dimen name="padding_large" >15dp
+                </dimen>
+                <dimen name="margin_small" >5dp
                 </dimen>
             </file>
             <file
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\values\strings.xml"
                 qualifiers="" >
+                <string name="film_the_lord_of_the_rings_cover" >cover_the_lord_of_the_rings.jpg
+                </string>
+                <string name="film_hachiko_name" >Hachiko: A Dog\'s Tale
+                </string>
+                <string name="film_i_robot_id" >3418
+                </string>
+                <string name="film_ted_name" >Ted
+                </string>
+                <string name="film_the_lord_of_the_rings_description" >An innocent hobbit of The Shire journeys with eight companions to the fires
+        of Mount Doom to destroy the One Ring and the dark lord Sauron forever.
+                </string>
+                <string name="film_ted_cover" >cover_ted.jpg
+                </string>
+                <string name="film_i_robot_description" >In the year 2035 a techno-phobic cop investigates a crime that may have been perpetrated
+        by a robot, which leads to a larger threat to humanity.
+                </string>
+                <string name="film_harry_potter_name" >Harry Potter and the Deathly Hallows
+                </string>
+                <string name="film_shawshank_redemption_id" >3414
+                </string>
                 <string name="cancel" >Cancel
                 </string>
-                <string name="qb_slogan" >YOUR COMMUNICATION \nBACKEND
+                <string name="film_godfather_description" >The aging patriarch of an organized crime dynasty transfers control of his clandestine
+        empire to his reluctant son.
                 </string>
-                <string name="app_name" >Sample Ratings
+                <string name="film_hachiko_cover" >cover_hachiko.jpg
                 </string>
-                <string name="rate" >Rate
+                <string name="film_shawshank_redemption_description" >Two imprisoned men bond over a number of years, finding solace and eventual
+        redemption through acts of common decency.
+                </string>
+                <string name="film_harry_potter_id" >3417
                 </string>
                 <string name="rate_this_film" >Rate this film
                 </string>
+                <string name="film_robocop_name" >RoboCop
+                </string>
+                <string name="film_shawshank_redemption_name" >The Shawshank Redemption
+                </string>
+                <string name="film_shawshank_redemption_cover" >cover_shawshank_redemption.jpg
+                </string>
+                <string name="film_harry_potter_description" >Harry, Ron and Hermione search for Voldemort\'s remaining Horcruxes in their effort
+        to destroy the Dark Lord.
+                </string>
+                <string name="film_fight_club_name" >Fight Club
+                </string>
+                <string name="film_spider_man_id" >3419
+                </string>
+                <string name="film_spider_man_description" >When bitten by a genetically modified spider, a nerdy, shy, and awkward high school
+        student gains spider-like abilities that he eventually must use to fight evil as a superhero after tragedy befalls his family.
+                </string>
+                <string name="film_robocop_description" >In 2028 Detroit, when Alex Murphy - a loving husband, father and good cop - is critically
+        injured in the line of duty, the multinational conglomerate OmniCorp sees their chance for a part-man, part-robot police officer.
+                </string>
+                <string name="rate" >Rate
+                </string>
                 <string name="please_wait" >Please wait…
+                </string>
+                <string name="film_the_lord_of_the_rings_id" >3415
+                </string>
+                <string name="film_ted_description" >As the result of a childhood wish, John Bennett\'s teddy bear, Ted, came to life and has been by
+        John\'s side ever since - a friendship that\'s tested when Lori, John\'s girlfriend of four years, wants more from their relationship.
+                </string>
+                <string name="film_godfather_cover" >cover_godfather.jpg
+                </string>
+                <string name="film_the_lord_of_the_rings_name" >The Lord of the Rings: The Fellowship of the Ring
+                </string>
+                <string name="film_spider_man_name" >Spider-Man
+                </string>
+                <string name="film_i_robot_cover" >cover_i_robot.jpg
+                </string>
+                <string name="film_godfather_id" >3413
+                </string>
+                <string name="film_robocop_id" >3420
+                </string>
+                <string name="film_harry_potter_cover" >cover_harry_potter.jpg
+                </string>
+                <string name="film_ted_id" >3411
+                </string>
+                <string name="qb_slogan" >YOUR COMMUNICATION \nBACKEND
+                </string>
+                <string name="film_robocop_cover" >cover_robocop.jpg
+                </string>
+                <string name="film_i_robot_name" >I, Robot
+                </string>
+                <string name="app_name" >Sample Ratings
+                </string>
+                <string name="film_spider_man_cover" >cover_spider_man.jpg
+                </string>
+                <string name="film_godfather_name" >The Godfather
+                </string>
+                <string name="film_hachiko_description" >A drama based on the true story of a college professor\'s bond with the abandoned dog he takes
+        into his home.
+                </string>
+                <string name="film_fight_club_id" >3416
+                </string>
+                <string name="film_fight_club_description" >An insomniac office worker and a devil-may-care soap maker form an underground fight
+        club that transforms into a violent revolution.
+                </string>
+                <string name="film_fight_club_cover" >cover_fight_club.jpg
+                </string>
+                <string name="film_hachiko_id" >3412
                 </string>
             </file>
             <file
@@ -6980,6 +7050,14 @@ false
                 </style>
 
                 <style
+                    name="ActionBarTabViewAppTheme"
+                    parent="android:Widget.ActionBar.TabView" >
+                    <item name="android:background">
+@drawable/apptheme_tab_indicator_ab
+                    </item>
+                </style>
+
+                <style
                     name="SeekBarAppTheme"
                     parent="android:Widget.SeekBar" >
                     <item name="android:progressDrawable">
@@ -7005,14 +7083,6 @@ false
                     </item>
                     <item name="android:paddingRight">
 16dip
-                    </item>
-                </style>
-
-                <style
-                    name="ActionBarTabViewAppTheme"
-                    parent="android:Widget.ActionBar.TabView" >
-                    <item name="android:background">
-@drawable/apptheme_tab_indicator_ab
                     </item>
                 </style>
 
@@ -7063,27 +7133,6 @@ false
                     </item>
                 </style>
 
-                <style name="TabTextAppTheme" >
-                    <item name="android:textColor">
-@color/black
-                    </item>
-                    <item name="android:textSize">
-12sp
-                    </item>
-                    <item name="android:textStyle">
-bold
-                    </item>
-                    <item name="android:ellipsize">
-marquee
-                    </item>
-                    <item name="android:maxLines">
-2
-                    </item>
-                    <item name="android:maxWidth">
-180dip
-                    </item>
-                </style>
-
                 <style name="TabAppTheme" >
                     <item name="android:gravity">
 center_horizontal
@@ -7108,6 +7157,27 @@ center_horizontal
                     </item>
                 </style>
 
+                <style name="TabTextAppTheme" >
+                    <item name="android:textColor">
+@color/black
+                    </item>
+                    <item name="android:textSize">
+12sp
+                    </item>
+                    <item name="android:textStyle">
+bold
+                    </item>
+                    <item name="android:ellipsize">
+marquee
+                    </item>
+                    <item name="android:maxLines">
+2
+                    </item>
+                    <item name="android:maxWidth">
+180dip
+                    </item>
+                </style>
+
                 <style
                     name="TextViewAppTheme"
                     parent="android:Widget.TextView" >
@@ -7122,10 +7192,6 @@ center_horizontal
             <file
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\values\themes.xml"
                 qualifiers="" >
-
-                <style
-                    name="AppTheme"
-                    parent="@style/_AppTheme" />
 
                 <style
                     name="_AppTheme"
@@ -7215,27 +7281,11 @@ center_horizontal
 @style/ActionButtonCloseModeAppTheme
                     </item>
                 </style>
+
+                <style
+                    name="AppTheme"
+                    parent="@style/_AppTheme" />
             </file>
-            <file
-                name="movie"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\movie.jpg"
-                qualifiers=""
-                type="drawable" />
-            <file
-                name="item"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\item.jpeg"
-                qualifiers=""
-                type="drawable" />
-            <file
-                name="star_empty"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\star_empty.png"
-                qualifiers=""
-                type="drawable" />
-            <file
-                name="star_full"
-                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable\star_full.png"
-                qualifiers=""
-                type="drawable" />
             <file
                 name="app_icon"
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable-xxhdpi\app_icon.png"
@@ -7256,6 +7306,26 @@ center_horizontal
                 path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\drawable-xhdpi\app_icon.png"
                 qualifiers="xhdpi"
                 type="drawable" />
+            <file
+                name="dialog_rate"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\dialog_rate.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_movies_list"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\activity_movies_list.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_movie"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\activity_movie.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="list_item_movie"
+                path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\res\layout\list_item_movie.xml"
+                qualifiers=""
+                type="layout" />
         </source>
         <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\build\res\rs\debug" />
         <source path="D:\Workspace\Android\git\quickblox-android-sdk\sample-ratings\build\res\generated\debug" />

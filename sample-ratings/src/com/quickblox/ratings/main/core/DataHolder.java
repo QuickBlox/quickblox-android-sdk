@@ -1,24 +1,17 @@
 package com.quickblox.ratings.main.core;
 
 import android.graphics.drawable.Drawable;
-import com.quickblox.ratings.main.object.Movie;
+
+import com.quickblox.ratings.main.model.Movie;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: android
- * Date: 29.11.12
- * Time: 9:36
- * To change this template use File | Settings | File Templates.
- */
 public class DataHolder {
 
     private static DataHolder dataHolder;
-    List<Movie> movieList;
-    int qbUserId;
-    int chosenMoviePosition;
-
+    private List<Movie> moviesList;
+    private int qbUserId;
+    private int chosenMoviePosition;
 
     public static synchronized DataHolder getDataHolder() {
         if (dataHolder == null) {
@@ -27,52 +20,51 @@ public class DataHolder {
         return dataHolder;
     }
 
-
-    public void setMovieList(List<Movie> movieList) {
-        this.movieList = movieList;
+    public void setMoviesList(List<Movie> moviesList) {
+        this.moviesList = moviesList;
     }
 
     public int getMovieGameModeId(int position) {
-        return movieList.get(position).getGameModeId();
+        return moviesList.get(position).getGameModeId();
     }
 
     public void setMovieRating(int position, double movieRating) {
-        movieList.get(position).setMovieRating(movieRating);
+        moviesList.get(position).setMovieRating(movieRating);
     }
 
     public int getMovieListSize() {
-        return movieList.size();
-    }
-
-    public void setQbUserId(int qbUserId) {
-        this.qbUserId = qbUserId;
+        return moviesList.size();
     }
 
     public double getMovieRating(int position) {
-        return movieList.get(position).getMovieRating();
+        return moviesList.get(position).getMovieRating();
     }
 
     public Drawable getMovieCover(int position) {
-        return movieList.get(position).getMovieCover();
+        return moviesList.get(position).getMovieCover();
     }
 
     public String getMovieName(int position) {
-        return movieList.get(position).getMovieName();
+        return moviesList.get(position).getMovieName();
     }
 
     public String getMovieDescription(int position) {
-        return movieList.get(position).getMovieDescription();
+        return moviesList.get(position).getMovieDescription();
     }
 
     public int getQbUserId() {
         return qbUserId;
     }
 
-    public void setChosenMoviePosition(int chosenMoviePosition){
-        this.chosenMoviePosition = chosenMoviePosition;
+    public void setQbUserId(int qbUserId) {
+        this.qbUserId = qbUserId;
     }
-    public int getChosenMoviePosition(){
+
+    public int getChosenMoviePosition() {
         return chosenMoviePosition;
     }
 
+    public void setChosenMoviePosition(int chosenMoviePosition) {
+        this.chosenMoviePosition = chosenMoviePosition;
+    }
 }

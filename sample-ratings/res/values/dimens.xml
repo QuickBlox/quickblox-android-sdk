@@ -7,7 +7,10 @@
     <dimen name="padding_middle">10dp</dimen>
     <dimen name="padding_large">15dp</dimen>
 
-    <dimen name="message_out_width">100dp</dimen>
+    <dimen name="movie_cover_big_width">250dp</dimen>
+    <dimen name="movie_cover_big_height">250dp</dimen>
+
+    <dimen name="movie_cover_small_width">50dp</dimen>
 
     <dimen name="logo_maxwidth">320dp</dimen>
 

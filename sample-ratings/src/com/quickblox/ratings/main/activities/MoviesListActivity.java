@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.module.ratings.QBRatings;
@@ -20,29 +21,17 @@ import com.quickblox.ratings.main.definitions.QBQueries;
 
 public class MoviesListActivity extends Activity implements AdapterView.OnItemClickListener, QBCallback {
 
-    private final int APP_ID = 99;
-    ListView moviesLV;
-    MoviesListAdapter moviesListAdapter;
     private final String POSITION = "position";
     private final int NONE_SCORE_CHANGE = -1;
-    int i;
-    ProgressDialog progressDialog;
+    private ListView moviesLV;
+    private MoviesListAdapter moviesListAdapter;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movies_list);
+        setContentView(R.layout.activity_movies_list);
         initialize();
-    }
-
-    private void initialize() {
-        moviesLV = (ListView) findViewById(R.id.movie_list);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getResources().getString(R.string.please_wait));
-        moviesListAdapter = new MoviesListAdapter(this);
-        moviesLV.setAdapter(moviesListAdapter);
-        moviesLV.setOnItemClickListener(this);
     }
 
     @Override
@@ -54,6 +43,16 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
         }
     }
 
+    private void initialize() {
+        moviesLV = (ListView) findViewById(R.id.movies_listview);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getResources().getString(R.string.please_wait));
+        moviesListAdapter = new MoviesListAdapter(this);
+        moviesLV.setAdapter(moviesListAdapter);
+        moviesLV.setOnItemClickListener(this);
+    }
+
     // Get avarage by all score for game mode
     private void getAvarageRatingForMovie(int index, QBQueries queryName) {
         QBGameMode qbGameMode = new QBGameMode();
@@ -63,7 +62,6 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
         Intent intent = new Intent(this, MovieActivity.class);
         intent.putExtra(POSITION, position);
         startActivity(intent);
@@ -81,7 +79,9 @@ public class MoviesListActivity extends Activity implements AdapterView.OnItemCl
                 case GET_AVERAGE_FOR_GAME_MODE:
                     QBAverageResult qbAverageResult1 = (QBAverageResult) result;
                     if (qbAverageResult1.getAverage().getValue() != null) {
-                        DataHolder.getDataHolder().setMovieRating(DataHolder.getDataHolder().getChosenMoviePosition(), qbAverageResult1.getAverage().getValue());
+                        DataHolder.getDataHolder().setMovieRating(
+                                DataHolder.getDataHolder().getChosenMoviePosition(),
+                                qbAverageResult1.getAverage().getValue());
                         DataHolder.getDataHolder().setChosenMoviePosition(NONE_SCORE_CHANGE);
                         progressDialog.hide();
                         moviesListAdapter.notifyDataSetChanged();

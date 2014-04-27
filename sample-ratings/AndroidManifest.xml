@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SplashActivity"
-            android:label="QuickBlox Sample Ratings"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,5 +29,7 @@
             android:label="Movie Description"
             android:screenOrientation="portrait"/>
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
