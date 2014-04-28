@@ -18,8 +18,8 @@ import com.quickblox.module.ratings.result.QBAverageResult;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.ratings.main.R;
 import com.quickblox.ratings.main.core.DataHolder;
-import com.quickblox.ratings.main.definitions.Consts;
 import com.quickblox.ratings.main.definitions.QBQueries;
+import com.quickblox.ratings.main.definitions.Consts;
 import com.quickblox.ratings.main.model.Movie;
 import com.quickblox.ratings.main.utils.DialogUtils;
 

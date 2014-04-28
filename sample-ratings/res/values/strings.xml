@@ -6,6 +6,7 @@
     <string name="cancel">Cancel</string>
     <string name="rate_this_film">Rate this film</string>
     <string name="please_wait">Please wait…</string>
+    <string name="score_success_send">Score successfully send!</string>
 
     // film_ted
     <string name="film_ted_id">3411</string>

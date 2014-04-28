@@ -1,9 +1,12 @@
 package com.quickblox.ratings.main.utils;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
+
+import com.quickblox.ratings.main.R;
 
 public class DialogUtils {
 
@@ -40,5 +43,12 @@ public class DialogUtils {
         builder.setTitle(context.getString(titleId));
         builder.setItems(itemsArray, onClickListener);
         return builder.create();
+    }
+
+    public static ProgressDialog getProgressDialog(Context context) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(context.getResources().getString(R.string.please_wait));
+        return progressDialog;
     }
 }

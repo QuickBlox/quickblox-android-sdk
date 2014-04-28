@@ -10,11 +10,9 @@
         android:padding="@dimen/padding_small"
         android:scaleType="fitCenter" />
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_middle"
         android:layout_toLeftOf="@+id/movie_rating"
         android:layout_toRightOf="@id/movie_cover_imageview"
@@ -50,5 +48,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:paddingRight="@dimen/padding_small"/>
+
 </RelativeLayout>
