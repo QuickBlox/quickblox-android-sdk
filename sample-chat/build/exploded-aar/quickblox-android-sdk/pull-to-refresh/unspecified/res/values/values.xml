@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/attrs.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/attrs.xml -->
     <eat-comment />
 
     <declare-styleable name="PullToRefresh">
@@ -79,7 +79,7 @@
         <attr name="ptrDrawableTop" format="reference" />
         <attr name="ptrDrawableBottom" format="reference" />
     </declare-styleable>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/dimens.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/dimens.xml -->
     <eat-comment />
 
     <dimen name="header_footer_left_right_padding">24dp</dimen>
@@ -87,13 +87,13 @@
     <dimen name="indicator_corner_radius">12dp</dimen>
     <dimen name="indicator_internal_padding">4dp</dimen>
     <dimen name="indicator_right_padding">10dp</dimen>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/ids.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/ids.xml -->
     <eat-comment />
 
     <item name="gridview" type="id"/>
     <item name="scrollview" type="id"/>
     <item name="webview" type="id"/>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/pull_refresh_strings.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/pull_refresh_strings.xml -->
     <eat-comment />
 
     <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>

@@ -1,13 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_node_height"
+    android:background="@drawable/abc_list_selector_holo_light"
     android:orientation="vertical">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_node_height"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,8 +15,6 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/margin_small"
             android:text="@string/note"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <TextView
@@ -29,9 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/note_title_textview"
-            android:paddingLeft="@dimen/margin_small"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black" />
+            android:paddingLeft="@dimen/margin_small"/>
 
         <TextView
             android:id="@+id/status_title_textview"
@@ -40,8 +31,6 @@
             android:layout_below="@+id/note_title_textview"
             android:paddingLeft="@dimen/margin_small"
             android:text="@string/status"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <TextView
@@ -50,9 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/note_textview"
             android:layout_toRightOf="@+id/status_title_textview"
-            android:paddingLeft="@dimen/margin_small"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black" />
+            android:paddingLeft="@dimen/margin_small"/>
 
         <TextView
             android:id="@+id/date_title_textview"
@@ -61,8 +48,6 @@
             android:layout_below="@+id/status_title_textview"
             android:paddingLeft="@dimen/padding_small"
             android:text="@string/date"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <TextView
@@ -71,8 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/status_textview"
             android:layout_toRightOf="@+id/date_title_textview"
-            android:paddingLeft="@dimen/margin_small"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black" />
+            android:paddingLeft="@dimen/margin_small"/>
+
     </RelativeLayout>
 </RelativeLayout>

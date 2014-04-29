@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values-et-rEE/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values-et-rEE/values.xml -->
     <eat-comment />
 
     <string name="abc_action_bar_home_description" msgid="4600421777120114993">"Navigeerimine avaekraanile"</string>

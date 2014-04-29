@@ -1,21 +1,19 @@
 package com.quickblox.customobjects.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobjects.R;
 import com.quickblox.customobjects.definition.QBQueries;
 import com.quickblox.customobjects.helper.DataHolder;
-import com.quickblox.customobjects.objects.Note;
+import com.quickblox.customobjects.model.Note;
+import com.quickblox.customobjects.utils.DialogUtils;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
@@ -29,14 +27,13 @@ import static com.quickblox.customobjects.definition.Consts.STATUS_DONE;
 import static com.quickblox.customobjects.definition.Consts.STATUS_IN_PROCESS;
 import static com.quickblox.customobjects.definition.Consts.STATUS_NEW;
 
-public class ShowNoteActivity extends Activity implements QBCallback {
+public class ShowNoteActivity extends BaseActivity implements QBCallback {
 
     private final String POSITION = "position";
     private TextView titleTextView;
     private TextView statusTextView;
     private TextView commentsTextView;
     private int position;
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +44,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
     }
 
     private void initUI() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
         position = getIntent().getIntExtra(POSITION, 0);
         titleTextView = (TextView) findViewById(R.id.note_textview);
         statusTextView = (TextView) findViewById(R.id.status_textview);
@@ -89,17 +87,16 @@ public class ShowNoteActivity extends Activity implements QBCallback {
                     break;
                 case DELETE_NOTE:
                     DataHolder.getDataHolder().removeNoteFromList(position);
-                    Toast.makeText(getBaseContext(), getBaseContext().getResources().getString(
-                            R.string.note_successfully_deleted), Toast.LENGTH_SHORT).show();
+                    DialogUtils.showLong(baseActivity, baseActivity.getResources().getString(
+                            R.string.note_successfully_deleted));
                     finish();
                     break;
             }
-            progressDialog.dismiss();
         } else {
             // print errors that came from server
-            Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+            DialogUtils.showLong(baseActivity, result.getErrors().get(0));
         }
+        progressDialog.dismiss();
     }
 
     private void setNewNote(QBCustomObjectResult qbCustomObjectResult) {
@@ -117,7 +114,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
                 showSetNewStatusDialog();
                 break;
             case R.id.delete_button:
-                showProgressDialog();
+                progressDialog.show();
                 // create query for delete score
                 // set className and scoreId
                 QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), this,
@@ -136,7 +133,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         alert.setPositiveButton(getBaseContext().getResources().getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int buttonNumber) {
-                        showProgressDialog();
+                        progressDialog.show();
                         addNewComment(input.getText().toString());
                         dialog.cancel();
                     }
@@ -161,7 +158,7 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         alert.setItems(statusList, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                showProgressDialog();
+                progressDialog.show();
                 String status;
                 if (item == 0) {
                     status = STATUS_NEW;
@@ -174,11 +171,6 @@ public class ShowNoteActivity extends Activity implements QBCallback {
             }
         });
         alert.show();
-    }
-
-    private void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, null, getResources().getString(R.string.please_wait),
-                false, false);
     }
 
     private void addNewComment(String comment) {
@@ -207,4 +199,3 @@ public class ShowNoteActivity extends Activity implements QBCallback {
         QBCustomObjects.updateObject(qbCustomObject, this, QBQueries.UPDATE_STATUS);
     }
 }
-

@@ -1,7 +1,5 @@
 package com.quickblox.content.activities;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,12 +21,10 @@ import com.quickblox.module.content.result.QBFileUploadTaskResult;
 
 import java.io.File;
 
-public class GalleryActivity extends Activity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
+public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
 
-    private final String POSITION = "position";
     private final boolean PUBLIC_ACCESS_TRUE = true;
 
-    private ProgressDialog progressDialog;
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
     private ImageHelper imageHelper;
@@ -59,12 +55,11 @@ public class GalleryActivity extends Activity implements AdapterView.OnItemClick
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
         initUI();
-        initProgressDialog();
         initGalleryView();
 
         imageHelper = new ImageHelper(this);
@@ -73,12 +68,6 @@ public class GalleryActivity extends Activity implements AdapterView.OnItemClick
     private void initUI() {
         galleryGridView = (GridView) findViewById(R.id.gallery_gridview);
         selectedImageImageView = (ImageView) findViewById(R.id.image_imageview);
-    }
-
-    private void initProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getResources().getString(R.string.please_waite));
-        progressDialog.setCancelable(false);
     }
 
     private void initGalleryView() {

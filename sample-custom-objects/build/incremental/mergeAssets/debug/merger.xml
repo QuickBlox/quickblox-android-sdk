@@ -2,10 +2,10 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/main/assets" />
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\src\main\assets" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/debug/assets" />
+        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\src\debug\assets" />
     </dataSet>
 
 </merger>

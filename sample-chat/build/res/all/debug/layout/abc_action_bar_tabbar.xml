@@ -20,4 +20,4 @@ limitations under the License.
         android:layout_height="match_parent"
         android:gravity="center"
         style="?attr/actionBarTabBarStyle"/>
-<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_bar_tabbar.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_bar_tabbar.xml -->
+<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_bar_tabbar.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_bar_tabbar.xml -->

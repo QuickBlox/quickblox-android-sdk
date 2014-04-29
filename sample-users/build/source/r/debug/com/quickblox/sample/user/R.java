@@ -766,19 +766,16 @@ containing a value of this type.
         public static final int abc_panel_menu_list_width=0x7f08000d;
         public static final int abc_search_view_preferred_width=0x7f08000e;
         public static final int abc_search_view_text_min_width=0x7f08000f;
-        public static final int comments_width=0x7f080010;
-        public static final int list_item_node_height=0x7f080011;
-        public static final int logo_maxwidth=0x7f080012;
-        public static final int margin_large=0x7f080013;
-        public static final int margin_middle=0x7f080014;
-        public static final int margin_small=0x7f080015;
-        public static final int node_width=0x7f080016;
-        public static final int padding_large=0x7f080017;
-        public static final int padding_middle=0x7f080018;
-        public static final int padding_small=0x7f080019;
-        public static final int text_size_large=0x7f08001a;
-        public static final int text_size_middle=0x7f08001b;
-        public static final int text_size_small=0x7f08001c;
+        public static final int logo_maxwidth=0x7f080010;
+        public static final int margin_large=0x7f080011;
+        public static final int margin_middle=0x7f080012;
+        public static final int margin_small=0x7f080013;
+        public static final int padding_large=0x7f080014;
+        public static final int padding_middle=0x7f080015;
+        public static final int padding_small=0x7f080016;
+        public static final int text_size_large=0x7f080017;
+        public static final int text_size_middle=0x7f080018;
+        public static final int text_size_small=0x7f080019;
     }
     public static final class drawable {
         public static final int abc_ab_bottom_solid_dark_holo=0x7f020000;

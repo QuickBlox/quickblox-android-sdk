@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <attr name="actionBarDivider" format="reference" />
@@ -363,7 +363,7 @@
         <!-- Whether space should be reserved in layout when an icon is missing. -->
         <attr name="android:preserveIconSpacing" />
     </declare-styleable>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="PullToRefresh">
@@ -441,7 +441,7 @@
         <attr name="ptrDrawableTop" format="reference" />
         <attr name="ptrDrawableBottom" format="reference" />
     </declare-styleable>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="SearchView">
@@ -563,7 +563,7 @@
     <dimen name="abc_panel_menu_list_width">296dp</dimen>
     <dimen name="abc_search_view_preferred_width">320dip</dimen>
     <dimen name="abc_search_view_text_min_width">160dip</dimen>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
     <eat-comment />
 
     <dimen name="header_footer_left_right_padding">24dp</dimen>
@@ -571,28 +571,28 @@
     <dimen name="indicator_corner_radius">12dp</dimen>
     <dimen name="indicator_internal_padding">4dp</dimen>
     <dimen name="indicator_right_padding">10dp</dimen>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <item name="action_bar_activity_content" type="id"/>
     <item name="action_menu_divider" type="id"/>
     <item name="action_menu_presenter" type="id"/>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
     <eat-comment />
 
     <item name="gridview" type="id"/>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <item name="home" type="id"/>
     <item name="progress_circular" type="id"/>
     <item name="progress_horizontal" type="id"/>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
     <eat-comment />
 
     <item name="scrollview" type="id"/>
     <item name="webview" type="id"/>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <integer name="abc_max_action_buttons">2</integer>
@@ -610,11 +610,11 @@
     <string name="abc_searchview_description_voice">Voice search</string>
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/res/values/strings.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/res/values/strings.xml -->
     <eat-comment />
 
     <string name="app_name">QuickBlox Sample Chat</string>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values/values.xml -->
     <eat-comment />
 
     <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
@@ -623,13 +623,13 @@
     <string name="pull_to_refresh_pull_label">Pull to refresh…</string>
     <string name="pull_to_refresh_refreshing_label">Loading…</string>
     <string name="pull_to_refresh_release_label">Release to refresh…</string>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/res/values/styles.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/res/values/styles.xml -->
     <eat-comment />
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="TextAppearance.AppCompat.Base.CompactMenu.Dialog" parent="android:TextAppearance.Medium">

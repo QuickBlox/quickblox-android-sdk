@@ -32,8 +32,9 @@ public class SplashActivity extends Activity implements QBCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         context = this;
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+
+        initUI();
+
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
@@ -42,6 +43,10 @@ public class SplashActivity extends Activity implements QBCallback {
         QBAuth.createSession(this, QBQueries.QB_QUERY_AUTHORIZE_APP);
     }
 
+    private void initUI() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
     private void getAllUser() {
         // Get all users for the current app

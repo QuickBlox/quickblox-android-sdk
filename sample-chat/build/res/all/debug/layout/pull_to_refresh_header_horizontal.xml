@@ -26,4 +26,4 @@
             android:visibility="gone" />
     </FrameLayout>
 
-</merge><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/layout/pull_to_refresh_header_horizontal.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/layout/pull_to_refresh_header_horizontal.xml -->
+</merge><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/layout/pull_to_refresh_header_horizontal.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/layout/pull_to_refresh_header_horizontal.xml -->

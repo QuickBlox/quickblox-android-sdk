@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="1dip"
-    android:background="@android:color/white">
+    android:background="@color/background_color">
 
     <ImageView
         android:id="@+id/image_imageview"
@@ -19,4 +19,4 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-</FrameLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/activity_show_image.xml -->
+</FrameLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/layout/activity_show_image.xml -->

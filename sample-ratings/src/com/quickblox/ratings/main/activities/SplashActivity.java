@@ -6,6 +6,8 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
@@ -18,8 +20,8 @@ import com.quickblox.module.ratings.result.QBAverageResult;
 import com.quickblox.module.users.model.QBUser;
 import com.quickblox.ratings.main.R;
 import com.quickblox.ratings.main.core.DataHolder;
-import com.quickblox.ratings.main.definitions.QBQueries;
 import com.quickblox.ratings.main.definitions.Consts;
+import com.quickblox.ratings.main.definitions.QBQueries;
 import com.quickblox.ratings.main.model.Movie;
 import com.quickblox.ratings.main.utils.DialogUtils;
 
@@ -32,8 +34,61 @@ public class SplashActivity extends Activity implements QBCallback {
 
     private final int NONE_SCORE_CHANGE = -1;
 
+    private ProgressBar progressBar;
+
     private Resources resources;
     private int index = 0;
+
+    @Override
+    public void onComplete(Result result) {
+
+    }
+
+    @Override
+    public void onComplete(Result result, Object context) {
+        QBQueries qbQueries = (QBQueries) context;
+        if (result.isSuccess()) {
+            switch (qbQueries) {
+                case SIGN_IN:
+                    DataHolder.getDataHolder().setQbUserId(
+                            ((QBSessionResult) result).getSession().getUserId());
+                    getAverageRatingForMovie(index, QBQueries.GET_AVERAGE_FOR_GAME_MODE);
+                    break;
+                case GET_AVERAGE_FOR_GAME_MODE:
+                    // Result  for ---> getAverageByGameMode query
+                    QBAverageResult qbAverageResult = (QBAverageResult) result;
+                    if (qbAverageResult.getAverage().getValue() != null) {
+                        DataHolder.getDataHolder().setMovieRating(index,
+                                qbAverageResult.getAverage().getValue());
+                    }
+                    if (index + 1 < DataHolder.getDataHolder().getMovieListSize()) {
+                        getAverageRatingForMovie(++index, QBQueries.GET_AVERAGE_FOR_GAME_MODE);
+                    } else {
+                        startMoviesListActivity();
+                    }
+                    break;
+            }
+        } else {
+            DialogUtils.showLong(this, result.getErrors().get(0));
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    // Get average by all score for game mode
+    private void getAverageRatingForMovie(int index, QBQueries queryName) {
+
+        // ================= QuickBlox ===== Step 2 =================
+        // Get averages
+        QBGameMode qbGameMode = new QBGameMode();
+        qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
+        QBRatings.getAverageByGameMode(qbGameMode, this, queryName);
+    }
+
+    private void startMoviesListActivity() {
+        Intent intent = new Intent(this, MoviesListActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +97,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
         resources = getResources();
 
+        initUI();
         initMovies();
 
         // ================= QuickBlox ===== Step 1 =================
@@ -55,14 +111,9 @@ public class SplashActivity extends Activity implements QBCallback {
         QBAuth.createSession(qbUser, this, QBQueries.SIGN_IN);
     }
 
-    // Get average by all score for game mode
-    private void getAverageRatingForMovie(int index, QBQueries queryName) {
-
-        // ================= QuickBlox ===== Step 2 =================
-        // Get averages
-        QBGameMode qbGameMode = new QBGameMode();
-        qbGameMode.setId(DataHolder.getDataHolder().getMovieGameModeId(index));
-        QBRatings.getAverageByGameMode(qbGameMode, this, queryName);
+    private void initUI() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void initMovies() {
@@ -140,45 +191,5 @@ public class SplashActivity extends Activity implements QBCallback {
 
         DataHolder.getDataHolder().setMoviesList(movieList);
         DataHolder.getDataHolder().setChosenMoviePosition(NONE_SCORE_CHANGE);
-    }
-
-    @Override
-    public void onComplete(Result result) {
-
-    }
-
-    @Override
-    public void onComplete(Result result, Object context) {
-        QBQueries qbQueries = (QBQueries) context;
-        if (result.isSuccess()) {
-            switch (qbQueries) {
-                case SIGN_IN:
-                    DataHolder.getDataHolder().setQbUserId(
-                            ((QBSessionResult) result).getSession().getUserId());
-                    getAverageRatingForMovie(index, QBQueries.GET_AVERAGE_FOR_GAME_MODE);
-                    break;
-                case GET_AVERAGE_FOR_GAME_MODE:
-                    // Result  for ---> getAverageByGameMode query
-                    QBAverageResult qbAverageResult = (QBAverageResult) result;
-                    if (qbAverageResult.getAverage().getValue() != null) {
-                        DataHolder.getDataHolder().setMovieRating(index,
-                                qbAverageResult.getAverage().getValue());
-                    }
-                    if (index + 1 < DataHolder.getDataHolder().getMovieListSize()) {
-                        getAverageRatingForMovie(++index, QBQueries.GET_AVERAGE_FOR_GAME_MODE);
-                    } else {
-                        startMoviesListActivity();
-                    }
-                    break;
-            }
-        } else {
-            DialogUtils.showLong(this, result.getErrors().get(0));
-        }
-    }
-
-    private void startMoviesListActivity() {
-        Intent intent = new Intent(this, MoviesListActivity.class);
-        startActivity(intent);
-        finish();
     }
 }

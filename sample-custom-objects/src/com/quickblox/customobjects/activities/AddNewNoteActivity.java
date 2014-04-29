@@ -1,17 +1,16 @@
 package com.quickblox.customobjects.activities;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobjects.R;
 import com.quickblox.customobjects.definition.QBQueries;
 import com.quickblox.customobjects.helper.DataHolder;
+import com.quickblox.customobjects.utils.DialogUtils;
 import com.quickblox.module.custom.QBCustomObjects;
 import com.quickblox.module.custom.model.QBCustomObject;
 import com.quickblox.module.custom.result.QBCustomObjectResult;
@@ -24,11 +23,10 @@ import static com.quickblox.customobjects.definition.Consts.STATUS;
 import static com.quickblox.customobjects.definition.Consts.STATUS_NEW;
 import static com.quickblox.customobjects.definition.Consts.TITLE;
 
-public class AddNewNoteActivity extends Activity implements QBCallback {
+public class AddNewNoteActivity extends BaseActivity implements QBCallback {
 
     private EditText noteEditText;
     private EditText commentsEditText;
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +36,7 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
     }
 
     private void initUI() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
         noteEditText = (EditText) findViewById(R.id.note_edittext);
         commentsEditText = (EditText) findViewById(R.id.comments_edittext);
     }
@@ -62,7 +61,7 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
             progressDialog.dismiss();
         } else {
             // print errors that came from server
-            Toast.makeText(getBaseContext(), result.getErrors().get(0), Toast.LENGTH_SHORT).show();
+            DialogUtils.showLong(baseActivity, result.getErrors().get(0));
             progressDialog.dismiss();
         }
     }
@@ -77,10 +76,19 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
 
     private void createNewNote() {
         // create new score in activity_note class
-        showProgressDialog();
+
+        String note = noteEditText.getText().toString();
+        String comments = commentsEditText.getText().toString();
+
+        if(!isValidData(note, comments)) {
+            DialogUtils.showLong(baseActivity, baseActivity.getResources().getString(R.string.error_fields_is_empty));
+            return;
+        }
+
+        progressDialog.show();
         HashMap<String, Object> fields = new HashMap<String, Object>();
-        fields.put(TITLE, noteEditText.getText().toString());
-        fields.put(COMMENTS, commentsEditText.getText().toString());
+        fields.put(TITLE, note);
+        fields.put(COMMENTS, comments);
         fields.put(STATUS, STATUS_NEW);
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setClassName(CLASS_NAME);
@@ -88,8 +96,7 @@ public class AddNewNoteActivity extends Activity implements QBCallback {
         QBCustomObjects.createObject(qbCustomObject, this, QBQueries.CREATE_NOTE);
     }
 
-    private void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, null, getResources().getString(R.string.please_wait),
-                false, false);
+    private boolean isValidData(String note, String comments) {
+        return (!TextUtils.isEmpty(note) && !TextUtils.isEmpty(comments));
     }
 }

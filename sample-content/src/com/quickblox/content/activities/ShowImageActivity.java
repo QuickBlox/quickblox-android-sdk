@@ -1,13 +1,10 @@
 package com.quickblox.content.activities;
 
-import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -18,20 +15,18 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.quickblox.content.R;
 import com.quickblox.content.helper.DataHolder;
 import com.quickblox.content.utils.Constants;
+import com.quickblox.content.utils.DialogUtils;
 
-public class ShowImageActivity extends Activity {
-
-    private final String POSITION = "position";
+public class ShowImageActivity extends BaseActivity {
 
     private ImageView imageView;
     private ProgressBar progressBar;
 
-    private Resources resources;
     private DisplayImageOptions displayImageOptions;
     private int currentPosition;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         resources = getResources();
@@ -42,6 +37,7 @@ public class ShowImageActivity extends Activity {
     }
 
     private void initUI() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
         imageView = (ImageView) findViewById(R.id.image_imageview);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
     }
@@ -82,9 +78,7 @@ public class ShowImageActivity extends Activity {
                                 message = resources.getString(R.string.mgs_unknown_error);
                                 break;
                         }
-
-                        Toast.makeText(ShowImageActivity.this, message, Toast.LENGTH_SHORT).show();
-
+                        DialogUtils.showLong(baseActivity, message);
                         progressBar.setVisibility(View.GONE);
                     }
 

@@ -14,9 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@android:color/white"
         android:onClick="onClickButtons"
         android:padding="@dimen/padding_middle"
-        android:text="@string/btn_check_in"
-        android:textColor="@android:color/black" />
-</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/layout/activity_map.xml -->
+        android:text="@string/btn_check_in"/>
+</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/layout/activity_map.xml -->

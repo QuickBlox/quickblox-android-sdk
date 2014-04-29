@@ -3,35 +3,48 @@
     android:layout_height="match_parent"
     android:background="@color/background_color">
 
-    <ImageView
-        android:id="@+id/movie_cover_imageview"
-        android:layout_width="@dimen/movie_cover_big_width"
-        android:layout_height="@dimen/movie_cover_big_height"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_middle" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rate_button">
 
-    <TextView
-        android:id="@+id/movie_description_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_cover_imageview"
-        android:layout_centerHorizontal="true"
-        android:padding="@dimen/padding_middle" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-    <RatingBar
-        style="?android:attr/ratingBarStyle"
-        android:id="@+id/rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_description_imageview"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_middle"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:stepSize="1" />
+            <ImageView
+                android:id="@+id/movie_cover_imageview"
+                android:layout_width="@dimen/movie_cover_big_width"
+                android:layout_height="@dimen/movie_cover_big_height"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_middle" />
+
+            <RatingBar
+                style="?android:attr/ratingBarStyle"
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/movie_cover_imageview"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/margin_middle"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/movie_description_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rating_bar"
+                android:layout_centerHorizontal="true"
+                android:padding="@dimen/padding_middle" />
+
+        </RelativeLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/rate_button"
@@ -39,7 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_middle"
+        android:layout_margin="@dimen/margin_middle"
         android:onClick="onClick"
         android:text="@string/rate" />
-</RelativeLayout><!-- From: file:/D:/Workspace/Android/git/quickblox-android-sdk/sample-ratings/res/layout/activity_movie.xml -->
+
+</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/layout/activity_movie.xml -->

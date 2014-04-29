@@ -13,4 +13,8 @@
     <dimen name="gridview_spacing">10dp</dimen>
 
     <dimen name="logo_maxwidth">320dp</dimen>
+
+    <dimen name="text_size_small">15sp</dimen>
+    <dimen name="text_size_middle">18sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
 </resources>

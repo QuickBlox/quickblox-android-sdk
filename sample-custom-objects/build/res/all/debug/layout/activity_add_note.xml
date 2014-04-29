@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:background="@color/background_color">
 
     <TextView
         android:id="@+id/note_title_textview"
@@ -10,8 +10,6 @@
         android:paddingLeft="@dimen/padding_middle"
         android:paddingTop="@dimen/padding_large"
         android:text="@string/note"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <EditText
@@ -20,9 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/note_title_textview"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/apptheme_edit_text_holo_light"
-        android:singleLine="true"
-        android:textColor="@android:color/black" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/comments_title_textview"
@@ -31,8 +27,6 @@
         android:layout_below="@+id/note_edittext"
         android:paddingLeft="@dimen/padding_middle"
         android:text="@string/comments"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <EditText
@@ -40,9 +34,7 @@
         android:layout_width="@dimen/comments_width"
         android:layout_height="wrap_content"
         android:layout_below="@+id/comments_title_textview"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/apptheme_edit_text_holo_light"
-        android:textColor="@android:color/black" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/save_button"
@@ -51,7 +43,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="onClick"
-        android:text="@string/save"
-        android:textColor="@android:color/white" />
+        android:text="@string/save" />
 
-</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/layout/activity_add_note.xml -->
+</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/layout/activity_add_note.xml -->

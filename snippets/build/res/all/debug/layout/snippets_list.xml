@@ -4,4 +4,4 @@
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-</com.quickblox.snippets.SnippetsList><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/layout/snippets_list.xml -->
+</com.quickblox.snippets.SnippetsList><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/snippets/res/layout/snippets_list.xml -->

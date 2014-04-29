@@ -423,8 +423,8 @@ int id listMode 0x7f070001
 int id list_item 0x7f070027
 int id logo_imageview 0x7f070047
 int id middle 0x7f07000b
-int id movie_cover_imageview 0x7f070042
-int id movie_description_imageview 0x7f070043
+int id movie_cover_imageview 0x7f070043
+int id movie_description_imageview 0x7f070045
 int id movie_name 0x7f07004e
 int id movie_rating 0x7f07004d
 int id movies_listview 0x7f070046
@@ -435,7 +435,7 @@ int id progress_bar 0x7f070049
 int id progress_circular 0x7f070034
 int id progress_horizontal 0x7f070035
 int id radio 0x7f07002d
-int id rate_button 0x7f070045
+int id rate_button 0x7f070042
 int id rate_dialog_button 0x7f07004c
 int id rating_bar 0x7f070044
 int id right_container 0x7f070032
@@ -493,9 +493,8 @@ int layout activity_movie 0x7f030018
 int layout activity_movies_list 0x7f030019
 int layout activity_splash 0x7f03001a
 int layout dialog_rate 0x7f03001b
-int layout image_holder 0x7f03001c
-int layout list_item_movie 0x7f03001d
-int layout support_simple_spinner_dropdown_item 0x7f03001e
+int layout list_item_movie 0x7f03001c
+int layout support_simple_spinner_dropdown_item 0x7f03001d
 int string abc_action_bar_home_description 0x7f0a0000
 int string abc_action_bar_up_description 0x7f0a0001
 int string abc_action_menu_overflow_description 0x7f0a0002
@@ -555,6 +554,7 @@ int string please_wait 0x7f0a0037
 int string qb_slogan 0x7f0a0038
 int string rate 0x7f0a0039
 int string rate_this_film 0x7f0a003a
+int string score_success_send 0x7f0a003b
 int style ActionBarAppTheme 0x7f0b0000
 int style ActionBarTabViewAppTheme 0x7f0b0001
 int style ActionButtonCloseModeAppTheme 0x7f0b0002

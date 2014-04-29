@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="120dip"
-    android:background="@android:color/darker_gray">
+    android:background="@color/background_color">
 
     <ImageView
         android:id="@+id/image_image_view"
@@ -18,4 +18,4 @@
         android:indeterminate="false"
         android:max="100"
         android:layout_gravity="bottom" />
-</FrameLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/list_item_gallery.xml -->
+</FrameLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/layout/list_item_gallery.xml -->

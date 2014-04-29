@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="1dip"
-    android:background="@android:color/white">
+    android:background="@color/background_color">
 
     <ImageView
         android:id="@+id/image_imageview"

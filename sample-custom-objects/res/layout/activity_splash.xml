@@ -27,7 +27,7 @@
         android:gravity="center"
         android:paddingTop="@dimen/padding_large"
         android:text="@string/qb_slogan"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/text_size_large"
         android:textColor="@android:color/darker_gray" />
 
     <ProgressBar

@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 
 import com.quickblox.content.R;
 import com.quickblox.content.helper.DataHolder;
+import com.quickblox.content.utils.Constants;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
@@ -20,13 +21,6 @@ import com.quickblox.module.users.model.QBUser;
 
 public class SplashActivity extends Activity {
 
-    private final int APP_ID = 99;
-    private final String AUTH_KEY = "63ebrp5VZt7qTOv";
-    private final String AUTH_SECRET = "YavMAxm5T59-BRw";
-
-    private final String USER_LOGIN = "bobbobbob";
-    private final String USER_PASSWORD = "bobbobbob";
-
     private ProgressBar progressBar;
 
     @Override
@@ -34,18 +28,23 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+        initUI();
 
         // ================= QuickBlox ===== Step 1 =================
         // Initialize QuickBlox application with credentials.
         // Getting app credentials -- http://quickblox.com/developers/Getting_application_credentials
-        QBSettings.getInstance().fastConfigInit(String.valueOf(APP_ID), AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().fastConfigInit(String.valueOf(Constants.APP_ID), Constants.AUTH_KEY,
+                Constants.AUTH_SECRET);
         authorizeApp();
     }
 
+    private void initUI() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private void authorizeApp() {
-        QBUser qbUser = new QBUser(USER_LOGIN, USER_PASSWORD);
+        QBUser qbUser = new QBUser(Constants.USER_LOGIN, Constants.USER_PASSWORD);
         // authorize app with default user
         QBAuth.createSession(qbUser, new QBCallback() {
             @Override
@@ -71,8 +70,8 @@ public class SplashActivity extends Activity {
         // ================= QuickBlox ===== Step 2 =================
         // Gey all user's files
         QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
-        builder.setPerPage(10);
-        builder.setPage(1);
+        builder.setPerPage(Constants.QB_PER_PAGE);
+        builder.setPage(Constants.QB_PAGE);
         QBContent.getFiles(builder, new QBCallback() {
             @Override
             public void onComplete(Result result) {

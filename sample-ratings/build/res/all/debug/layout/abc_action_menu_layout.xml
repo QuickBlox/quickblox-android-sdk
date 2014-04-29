@@ -22,4 +22,4 @@
         app:divider="?attr/actionBarDivider"
         app:dividerPadding="12dip"
         android:gravity="center_vertical"/>
-<!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/layout/abc_action_menu_layout.xml --><!-- From: file:/D:/Workspace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/layout/abc_action_menu_layout.xml -->
+<!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/layout/abc_action_menu_layout.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/layout/abc_action_menu_layout.xml -->

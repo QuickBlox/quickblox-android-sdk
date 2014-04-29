@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values-et-rEE/strings.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values-et-rEE/strings.xml -->
     <eat-comment />
 
     <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"Lubage Google Play teenused"</string>

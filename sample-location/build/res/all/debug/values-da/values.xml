@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values-da/strings.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values-da/strings.xml -->
     <eat-comment />
 
     <string name="auth_client_needs_enabling_title" msgid="3983201110833868073">"En applikation kræver, at Google Play er aktiveret."</string>

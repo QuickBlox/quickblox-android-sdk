@@ -1,19 +1,21 @@
-<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/AndroidManifest.xml -->
+<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-users/AndroidManifest.xml -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.quickblox.sample.user">
 
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="19"/>
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:label="QuickBlox User Sample" android:name="com.quickblox.sample.user.activities.SplashActivity">
+    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="19"/>
+
+    <application android:icon="@drawable/app_icon" android:label="@string/app_name" android:theme="@style/AppTheme">
+        <activity android:label="@string/app_name" android:name="com.quickblox.sample.user.activities.SplashActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:label="Users" android:name="com.quickblox.sample.user.activities.GetAllUsersActivity"/>
-        <activity android:label="Sign Up" android:name="com.quickblox.sample.user.activities.SignUpUserActivity"/>
-        <activity android:label="Log In" android:name="com.quickblox.sample.user.activities.SignInActivity" android:windowSoftInputMode="adjustResize"/>
-        <activity android:label="Show User" android:name="com.quickblox.sample.user.activities.ShowUserActivity"/>
-        <activity android:label="Update User" android:name="com.quickblox.sample.user.activities.UpdateUserActivity"/>
+        <activity android:label="@string/users" android:name="com.quickblox.sample.user.activities.UsersListActivity" android:screenOrientation="portrait"/>
+        <activity android:label="@string/sign_up" android:name="com.quickblox.sample.user.activities.SignUpUserActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"/>
+        <activity android:label="@string/sign_in" android:name="com.quickblox.sample.user.activities.SignInActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"/>
+        <activity android:label="@string/show_user" android:name="com.quickblox.sample.user.activities.ShowUserActivity" android:screenOrientation="portrait"/>
+        <activity android:label="@string/update_user" android:name="com.quickblox.sample.user.activities.UpdateUserActivity" android:screenOrientation="portrait"/>
     </application>
+
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

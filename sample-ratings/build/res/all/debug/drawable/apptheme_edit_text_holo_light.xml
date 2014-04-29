@@ -22,4 +22,4 @@
     <item android:state_enabled="true" android:drawable="@drawable/apptheme_textfield_default_holo_light" />
     <item android:state_focused="true" android:drawable="@drawable/apptheme_textfield_disabled_focused_holo_light" />
     <item android:drawable="@drawable/apptheme_textfield_disabled_holo_light" />
-</selector><!-- From: file:/D:/Workspace/Android/git/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_edit_text_holo_light.xml -->
+</selector><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_edit_text_holo_light.xml -->

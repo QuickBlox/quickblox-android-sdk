@@ -1,6 +1,6 @@
 package com.quickblox.customobjects.helper;
 
-import com.quickblox.customobjects.objects.Note;
+import com.quickblox.customobjects.model.Note;
 import com.quickblox.module.custom.model.QBCustomObject;
 
 import java.util.ArrayList;

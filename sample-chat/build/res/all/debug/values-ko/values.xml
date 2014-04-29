@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values-ko/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/values-ko/values.xml -->
     <eat-comment />
 
     <string name="abc_action_bar_home_description" msgid="4600421777120114993">"홈 탐색"</string>
@@ -17,7 +17,7 @@
     <string name="abc_searchview_description_voice" msgid="893419373245838918">"음성 검색"</string>
     <string name="abc_shareactionprovider_share_with" msgid="3421042268587513524">"공유 대상"</string>
     <string name="abc_shareactionprovider_share_with_application" msgid="7165123711973476752">"%s와(과) 공유"</string>
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values-ko/values.xml -->
+    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values-ko/values.xml -->
     <eat-comment />
 
     <string name="pull_to_refresh_pull_label">당겨서 새로 고침…</string>

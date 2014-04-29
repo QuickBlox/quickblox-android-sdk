@@ -1,6 +1,5 @@
 package com.quickblox.customobjects.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.ListView;
 import com.quickblox.customobjects.R;
 import com.quickblox.customobjects.adapter.NoteListAdapter;
 
-public class DisplayNoteListActivity extends Activity implements AdapterView.OnItemClickListener {
+public class DisplayNoteListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private final String POSITION = "position";
     private ListView notesListView;

@@ -1050,8 +1050,8 @@ containing a value of this type.
         public static final int list_item=0x7f070027;
         public static final int logo_imageview=0x7f070047;
         public static final int middle=0x7f07000b;
-        public static final int movie_cover_imageview=0x7f070042;
-        public static final int movie_description_imageview=0x7f070043;
+        public static final int movie_cover_imageview=0x7f070043;
+        public static final int movie_description_imageview=0x7f070045;
         public static final int movie_name=0x7f07004e;
         public static final int movie_rating=0x7f07004d;
         public static final int movies_listview=0x7f070046;
@@ -1062,7 +1062,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f070034;
         public static final int progress_horizontal=0x7f070035;
         public static final int radio=0x7f07002d;
-        public static final int rate_button=0x7f070045;
+        public static final int rate_button=0x7f070042;
         public static final int rate_dialog_button=0x7f07004c;
         public static final int rating_bar=0x7f070044;
         public static final int right_container=0x7f070032;
@@ -1124,9 +1124,8 @@ containing a value of this type.
         public static final int activity_movies_list=0x7f030019;
         public static final int activity_splash=0x7f03001a;
         public static final int dialog_rate=0x7f03001b;
-        public static final int image_holder=0x7f03001c;
-        public static final int list_item_movie=0x7f03001d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
+        public static final int list_item_movie=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f0a0000;
@@ -1188,6 +1187,7 @@ containing a value of this type.
         public static final int qb_slogan=0x7f0a0038;
         public static final int rate=0x7f0a0039;
         public static final int rate_this_film=0x7f0a003a;
+        public static final int score_success_send=0x7f0a003b;
     }
     public static final class style {
         public static final int ActionBarAppTheme=0x7f0b0000;
