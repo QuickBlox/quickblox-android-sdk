@@ -16,4 +16,4 @@
     <item
         android:drawable="@drawable/common_signin_btn_icon_normal_dark" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/drawable/common_signin_btn_icon_dark.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/drawable/common_signin_btn_icon_dark.xml -->

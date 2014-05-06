@@ -2,44 +2,44 @@
 <merger>
 
     <dataSet config="18.0.0" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\build\exploded-aar\com.android.support\appcompat-v7\18.0.0\assets" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/assets" />
     </dataSet>
     <dataSet config="main" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets" >
             <file
                 name="cover_fight_club.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_fight_club.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_fight_club.jpg" />
             <file
                 name="cover_godfather.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_godfather.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_godfather.jpg" />
             <file
                 name="cover_hachiko.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_hachiko.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_hachiko.jpg" />
             <file
                 name="cover_harry_potter.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_harry_potter.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_harry_potter.jpg" />
             <file
                 name="cover_i_robot.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_i_robot.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_i_robot.jpg" />
             <file
                 name="cover_robocop.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_robocop.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_robocop.jpg" />
             <file
                 name="cover_shawshank_redemption.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_shawshank_redemption.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_shawshank_redemption.jpg" />
             <file
                 name="cover_spider_man.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_spider_man.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_spider_man.jpg" />
             <file
                 name="cover_ted.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_ted.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_ted.jpg" />
             <file
                 name="cover_the_lord_of_the_rings.jpg"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\assets\cover_the_lord_of_the_rings.jpg" />
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/assets/cover_the_lord_of_the_rings.jpg" />
         </source>
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-ratings\src\debug\assets" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/src/debug/assets" />
     </dataSet>
 
 </merger>

@@ -57,4 +57,4 @@
     <item android:state_checked="true" android:drawable="@drawable/apptheme_btn_radio_on_disabled_holo_light" />
 
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/drawable/apptheme_btn_radio_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/drawable/apptheme_btn_radio_holo_light.xml -->

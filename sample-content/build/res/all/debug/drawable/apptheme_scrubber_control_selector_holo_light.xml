@@ -20,4 +20,4 @@
     <item android:state_selected="true" android:drawable="@drawable/apptheme_scrubber_control_focused_holo" />
     <item android:drawable="@drawable/apptheme_scrubber_control_normal_holo" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/drawable/apptheme_scrubber_control_selector_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/apptheme_scrubber_control_selector_holo_light.xml -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values-he/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/values-he/values.xml -->
     <eat-comment />
 
     <string name="pull_to_refresh_pull_label">משוך לרענון…</string>

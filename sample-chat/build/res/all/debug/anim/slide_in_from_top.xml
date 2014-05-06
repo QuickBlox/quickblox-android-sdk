@@ -19,4 +19,4 @@
     android:duration="@android:integer/config_longAnimTime"
     android:fromYDelta="-100%p"
     android:toYDelta="0" />
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_in_from_top.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/anim/slide_in_from_top.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_in_from_top.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/quickblox-android-sdk/pull-to-refresh/unspecified/res/anim/slide_in_from_top.xml -->

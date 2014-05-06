@@ -126,4 +126,4 @@
         android:layout_centerInParent="true"
         android:onClick="onClick"
         android:text="@string/update" />
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-users/res/layout/activity_update_user.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/layout/activity_update_user.xml -->

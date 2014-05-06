@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-users/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values-w480dp/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values-w480dp/values.xml -->
     <eat-comment />
 
     <bool name="abc_action_bar_embed_tabs_pre_jb">true</bool>

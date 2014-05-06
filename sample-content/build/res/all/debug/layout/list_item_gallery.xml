@@ -18,4 +18,4 @@
         android:indeterminate="false"
         android:max="100"
         android:layout_gravity="bottom" />
-</FrameLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/layout/list_item_gallery.xml -->
+</FrameLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/layout/list_item_gallery.xml -->

@@ -30,4 +30,4 @@
             android:layout_below="@+id/audioCallBtn"
             android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"/>
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-videochat/res/layout/call_layout.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/layout/call_layout.xml -->

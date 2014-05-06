@@ -104,4 +104,4 @@ This is the basic layout for a screen, with all of its features enabled.
                  android:foreground="?android:attr/windowContentOverlay"
             />
 </LinearLayout>
-<!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/layout/abc_screen.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/layout/abc_screen.xml -->
+<!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/layout/abc_screen.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/layout/abc_screen.xml -->

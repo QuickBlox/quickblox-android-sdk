@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
 
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <attr name="actionBarDivider" format="reference" />
@@ -78,14 +78,14 @@
     <color name="abc_search_url_text_normal">#7fa87f</color>
     <color name="abc_search_url_text_pressed">@android:color/black</color>
     <color name="abc_search_url_text_selected">@android:color/black</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/colors.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/colors.xml -->
     <eat-comment />
 
     <color name="background_color">#fff</color>
     <color name="black">#111</color>
     <color name="blue">#0073b9</color>
     <color name="blue_highlight">#990073b9</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/colors.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/colors.xml -->
     <eat-comment />
 
     <color name="common_action_bar_splitter">#d2d2d2</color>
@@ -98,13 +98,13 @@
     <color name="common_signin_btn_light_text_disabled">#FFAAAAAA</color>
     <color name="common_signin_btn_light_text_focused">#FF737373</color>
     <color name="common_signin_btn_light_text_pressed">@android:color/white</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/colors.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/colors.xml -->
     <eat-comment />
 
     <color name="gray">#ff5a5b5f</color>
     <color name="green">#1cba48</color>
     <color name="white">#fff</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="ActionBar">
@@ -225,7 +225,7 @@
         <!-- Size of padding on either end of a divider. -->
         <attr name="dividerPadding" format="dimension" />
     </declare-styleable>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/maps_attrs.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/maps_attrs.xml -->
     <eat-comment />
 
     <declare-styleable name="MapAttrs">
@@ -250,7 +250,7 @@
         <attr name="useViewLifecycle" format="boolean" />
         <attr name="zOrderOnTop" format="boolean" />
     </declare-styleable>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="MenuGroup">
@@ -537,7 +537,7 @@
     <dimen name="abc_panel_menu_list_width">296dp</dimen>
     <dimen name="abc_search_view_preferred_width">320dip</dimen>
     <dimen name="abc_search_view_text_min_width">160dip</dimen>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/dimens.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/dimens.xml -->
     <eat-comment />
 
     <dimen name="logo_maxwidth">320dp</dimen>
@@ -550,7 +550,7 @@
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_middle">18sp</dimen>
     <dimen name="text_size_small">15sp</dimen>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <item name="action_bar_activity_content" type="id"/>
@@ -559,11 +559,11 @@
     <item name="home" type="id"/>
 
     <integer name="abc_max_action_buttons">2</integer>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/integers.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/integers.xml -->
     <eat-comment />
 
     <integer name="google_play_services_version">2</integer>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <string name="abc_action_bar_home_description">Navigate home</string>
@@ -579,11 +579,11 @@
     <string name="abc_searchview_description_voice">Voice search</string>
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/strings.xml -->
     <eat-comment />
 
     <string name="app_name">Sample Location</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/strings.xml -->
     <eat-comment />
 
     <string name="auth_client_needs_enabling_title">      An application requires Google Play Services to be enabled.</string>
@@ -592,11 +592,11 @@
     <string name="auth_client_play_services_err_notification_msg">Google Play services error</string>
     <string name="auth_client_requested_by_msg">Requested by <ns1:g id="app_name">%1$s</ns1:g></string>
     <string name="auth_client_using_bad_version_title">      An application attempted to use a bad version of Google Play Services.</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/strings.xml -->
     <eat-comment />
 
     <string name="btn_check_in">Check In</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/values/strings.xml -->
     <eat-comment />
 
     <string name="common_google_play_services_enable_button" msgid="2523291102206661146">Enable Google Play services</string>
@@ -618,7 +618,7 @@
     <string name="common_google_play_services_update_title" msgid="1788179980625863495">Update Google Play services</string>
     <string name="common_signin_button_text">Sign in</string>
     <string name="common_signin_button_text_long">Sign in with Google</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/strings.xml -->
     <eat-comment />
 
     <string name="dlg_cancel">Cancel</string>
@@ -633,7 +633,7 @@
     <string name="empty">empty</string>
     <string name="map">Map</string>
     <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/styles.xml -->
     <eat-comment />
 
     <style name="ActionBarAppTheme" parent="android:Widget.ActionBar">
@@ -647,11 +647,11 @@
     <style name="ActionButtonCloseModeAppTheme" parent="android:Widget.ActionButton.CloseMode">
         <item name="android:background">@drawable/apptheme_btn_cab_done</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/themes.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/themes.xml -->
     <eat-comment />
 
     <style name="AppTheme" parent="@style/_AppTheme" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/styles.xml -->
     <eat-comment />
 
     <style name="AutoCompleteTextViewAppTheme" parent="android:Widget.AutoCompleteTextView">
@@ -760,7 +760,7 @@
         <item name="android:maxLines">2</item>
         <item name="android:maxWidth">180dip</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="TextAppearance.AppCompat.Base.CompactMenu.Dialog" parent="android:TextAppearance.Medium">
@@ -881,14 +881,14 @@
     </style>
 
     <style name="TextAppearance.Widget.AppCompat.ExpandedMenu.Item" parent="TextAppearance.Widget.AppCompat.Base.ExpandedMenu.Item" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/styles.xml -->
     <eat-comment />
 
     <style name="TextViewAppTheme" parent="android:Widget.TextView">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="Theme.AppCompat" parent="Theme.Base.AppCompat">
@@ -1138,7 +1138,7 @@
     </style>
 
     <style name="Theme.Base.Light" parent="android:Theme.Light" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/styles.xml -->
     <eat-comment />
 
     <style name="ToggleAppTheme" parent="android:Widget.Button.Toggle">
@@ -1146,7 +1146,7 @@
         <item name="android:minHeight">48dip</item>
         <item name="android:textColor">@color/black</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="Widget.AppCompat.ActionBar" parent="Widget.AppCompat.Base.ActionBar" />
@@ -1426,7 +1426,7 @@
     <style name="Widget.AppCompat.ProgressBar.Horizontal" parent="Widget.AppCompat.Base.ProgressBar.Horizontal" />
 
     <style name="Widget.AppCompat.Spinner.DropDown.ActionBar" parent="Widget.AppCompat.Base.Spinner" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/values/themes.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/values/themes.xml -->
     <eat-comment />
 
     <style name="_AppTheme" parent="Theme.AppCompat">

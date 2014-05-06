@@ -18,4 +18,4 @@
     <item android:state_pressed="true" android:drawable="@drawable/apptheme_fastscroll_thumb_pressed_holo" />
     <item android:drawable="@drawable/apptheme_fastscroll_thumb_default_holo" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/drawable/apptheme_fastscroll_thumb_holo.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/drawable/apptheme_fastscroll_thumb_holo.xml -->

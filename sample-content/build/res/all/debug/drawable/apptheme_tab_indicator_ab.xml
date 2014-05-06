@@ -35,4 +35,4 @@
     <item android:state_focused="true" android:state_selected="false" android:state_pressed="true" android:drawable="@drawable/apptheme_tab_unselected_pressed" />
     <item android:state_focused="true" android:state_selected="true"  android:state_pressed="true" android:drawable="@drawable/apptheme_tab_selected_pressed" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/drawable/apptheme_tab_indicator_ab.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/apptheme_tab_indicator_ab.xml -->

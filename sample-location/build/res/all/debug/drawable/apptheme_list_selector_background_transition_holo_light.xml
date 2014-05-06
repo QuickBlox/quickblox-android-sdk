@@ -18,4 +18,4 @@
     <item android:drawable="@drawable/apptheme_list_pressed_holo_light"  />
     <item android:drawable="@drawable/apptheme_list_longpressed_holo"  />
 </transition>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/drawable/apptheme_list_selector_background_transition_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/drawable/apptheme_list_selector_background_transition_holo_light.xml -->

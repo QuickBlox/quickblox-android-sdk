@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merger>
 
+    <dataSet config="18.0.0" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/assets" />
+    </dataSet>
     <dataSet config="main" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\src\main\assets" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/main/assets" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-custom-objects\src\debug\assets" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/src/debug/assets" />
     </dataSet>
 
 </merger>

@@ -18,4 +18,4 @@
     <item android:state_focused="true"  android:drawable="@drawable/apptheme_switch_bg_focused_holo_light" />
     <item                               android:drawable="@drawable/apptheme_switch_bg_holo_light" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-users/res/drawable/apptheme_switch_track_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-users/res/drawable/apptheme_switch_track_holo_light.xml -->

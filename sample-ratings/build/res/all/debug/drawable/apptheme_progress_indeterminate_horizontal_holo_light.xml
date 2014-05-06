@@ -28,4 +28,4 @@
     <item android:drawable="@drawable/apptheme_progressbar_indeterminate_holo7" android:duration="50" />
     <item android:drawable="@drawable/apptheme_progressbar_indeterminate_holo8" android:duration="50" />
 </animation-list>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_progress_indeterminate_horizontal_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_progress_indeterminate_horizontal_holo_light.xml -->

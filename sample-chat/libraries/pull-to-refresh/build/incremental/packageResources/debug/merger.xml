@@ -2,94 +2,94 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res" >
             <file
                 name="slide_in_from_bottom"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\anim\slide_in_from_bottom.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_in_from_bottom.xml"
                 qualifiers=""
                 type="anim" />
             <file
                 name="slide_in_from_top"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\anim\slide_in_from_top.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_in_from_top.xml"
                 qualifiers=""
                 type="anim" />
             <file
                 name="slide_out_to_bottom"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\anim\slide_out_to_bottom.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_out_to_bottom.xml"
                 qualifiers=""
                 type="anim" />
             <file
                 name="slide_out_to_top"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\anim\slide_out_to_top.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/anim/slide_out_to_top.xml"
                 qualifiers=""
                 type="anim" />
             <file
                 name="indicator_bg_bottom"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable\indicator_bg_bottom.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable/indicator_bg_bottom.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="indicator_bg_top"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable\indicator_bg_top.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable/indicator_bg_top.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="default_ptr_flip"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-hdpi\default_ptr_flip.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-hdpi/default_ptr_flip.png"
                 qualifiers="hdpi"
                 type="drawable" />
             <file
                 name="default_ptr_rotate"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-hdpi\default_ptr_rotate.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-hdpi/default_ptr_rotate.png"
                 qualifiers="hdpi"
                 type="drawable" />
             <file
                 name="indicator_arrow"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-hdpi\indicator_arrow.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-hdpi/indicator_arrow.png"
                 qualifiers="hdpi"
                 type="drawable" />
             <file
                 name="default_ptr_flip"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-mdpi\default_ptr_flip.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-mdpi/default_ptr_flip.png"
                 qualifiers="mdpi"
                 type="drawable" />
             <file
                 name="default_ptr_rotate"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-mdpi\default_ptr_rotate.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-mdpi/default_ptr_rotate.png"
                 qualifiers="mdpi"
                 type="drawable" />
             <file
                 name="indicator_arrow"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-mdpi\indicator_arrow.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-mdpi/indicator_arrow.png"
                 qualifiers="mdpi"
                 type="drawable" />
             <file
                 name="default_ptr_flip"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-xhdpi\default_ptr_flip.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-xhdpi/default_ptr_flip.png"
                 qualifiers="xhdpi"
                 type="drawable" />
             <file
                 name="default_ptr_rotate"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-xhdpi\default_ptr_rotate.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-xhdpi/default_ptr_rotate.png"
                 qualifiers="xhdpi"
                 type="drawable" />
             <file
                 name="indicator_arrow"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\drawable-xhdpi\indicator_arrow.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/drawable-xhdpi/indicator_arrow.png"
                 qualifiers="xhdpi"
                 type="drawable" />
             <file
                 name="pull_to_refresh_header_horizontal"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\layout\pull_to_refresh_header_horizontal.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/layout/pull_to_refresh_header_horizontal.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="pull_to_refresh_header_vertical"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\layout\pull_to_refresh_header_vertical.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/layout/pull_to_refresh_header_vertical.xml"
                 qualifiers=""
                 type="layout" />
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values\attrs.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/attrs.xml"
                 qualifiers="" >
                 <declare-styleable name="PullToRefresh" >
 
@@ -220,7 +220,7 @@
                 </declare-styleable>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values\dimens.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/dimens.xml"
                 qualifiers="" >
                 <dimen name="indicator_internal_padding" >4dp
                 </dimen>
@@ -234,7 +234,7 @@
                 </dimen>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values\ids.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/ids.xml"
                 qualifiers="" >
                 <item
                     name="gridview"
@@ -247,7 +247,7 @@
                     type="id"/>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values/pull_refresh_strings.xml"
                 qualifiers="" >
                 <string name="pull_to_refresh_from_bottom_pull_label" >@string/pull_to_refresh_pull_label
                 </string>
@@ -263,7 +263,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-ar\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-ar/pull_refresh_strings.xml"
                 qualifiers="ar" >
                 <string name="pull_to_refresh_release_label" >اترك للتحديث…
                 </string>
@@ -273,7 +273,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-cs\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-cs/pull_refresh_strings.xml"
                 qualifiers="cs" >
                 <string name="pull_to_refresh_refreshing_label" >Načítání…
                 </string>
@@ -283,7 +283,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-de\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-de/pull_refresh_strings.xml"
                 qualifiers="de" >
                 <string name="pull_to_refresh_pull_label" >Ziehen zum Aktualisieren…
                 </string>
@@ -293,7 +293,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-es\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-es/pull_refresh_strings.xml"
                 qualifiers="es" >
                 <string name="pull_to_refresh_pull_label" >Tirar para actualizar…
                 </string>
@@ -303,7 +303,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-fi\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-fi/pull_refresh_strings.xml"
                 qualifiers="fi" >
                 <string name="pull_to_refresh_from_bottom_refreshing_label" >@string/pull_to_refresh_refreshing_label
                 </string>
@@ -319,7 +319,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-fr\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-fr/pull_refresh_strings.xml"
                 qualifiers="fr" >
                 <string name="pull_to_refresh_pull_label" >Tirez pour rafraîchir…
                 </string>
@@ -329,7 +329,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-he\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-he/pull_refresh_strings.xml"
                 qualifiers="he" >
                 <string name="pull_to_refresh_release_label" >שחרר לרענון…
                 </string>
@@ -339,7 +339,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-it\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-it/pull_refresh_strings.xml"
                 qualifiers="it" >
                 <string name="pull_to_refresh_refreshing_label" >Caricamento…
                 </string>
@@ -349,7 +349,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-iw\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-iw/pull_refresh_strings.xml"
                 qualifiers="iw" >
                 <string name="pull_to_refresh_pull_label" >משוך לרענון…
                 </string>
@@ -359,7 +359,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-ja\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-ja/pull_refresh_strings.xml"
                 qualifiers="ja" >
                 <string name="pull_to_refresh_pull_label" >画面を引っ張って…
                 </string>
@@ -369,7 +369,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-ko\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-ko/pull_refresh_strings.xml"
                 qualifiers="ko" >
                 <string name="pull_to_refresh_refreshing_label" >로드 중…
                 </string>
@@ -379,7 +379,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-nl\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-nl/pull_refresh_strings.xml"
                 qualifiers="nl" >
                 <string name="pull_to_refresh_release_label" >Loslaten om te vernieuwen…
                 </string>
@@ -389,7 +389,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-pl\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-pl/pull_refresh_strings.xml"
                 qualifiers="pl" >
                 <string name="pull_to_refresh_refreshing_label" >Wczytywanie…
                 </string>
@@ -399,7 +399,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-pt\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-pt/pull_refresh_strings.xml"
                 qualifiers="pt" >
                 <string name="pull_to_refresh_refreshing_label" >A carregar…
                 </string>
@@ -409,7 +409,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-pt-rBR\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-pt-rBR/pull_refresh_strings.xml"
                 qualifiers="pt-rBR" >
                 <string name="pull_to_refresh_release_label" >Libere para atualizar…
                 </string>
@@ -419,7 +419,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-ro\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-ro/pull_refresh_strings.xml"
                 qualifiers="ro" >
                 <string name="pull_to_refresh_refreshing_label" >Încărcare…
                 </string>
@@ -429,7 +429,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-ru\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-ru/pull_refresh_strings.xml"
                 qualifiers="ru" >
                 <string name="pull_to_refresh_release_label" >Отпустите для обновления…
                 </string>
@@ -439,7 +439,7 @@
                 </string>
             </file>
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\res\values-zh\pull_refresh_strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/res/values-zh/pull_refresh_strings.xml"
                 qualifiers="zh" >
                 <string name="pull_to_refresh_release_label" >放开以刷新…
                 </string>
@@ -449,11 +449,11 @@
                 </string>
             </file>
         </source>
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\build\res\rs\debug" />
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\build\res\generated\debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/build/res/generated/debug" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-chat\libraries\pull-to-refresh\src\debug\res" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/libraries/pull-to-refresh/src/debug/res" />
     </dataSet>
 
 </merger>

@@ -2,54 +2,54 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res" >
             <file
                 name="icon"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\drawable\icon.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/drawable/icon.png"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="list_item"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\layout\list_item.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/layout/list_item.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="main"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\layout\main.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/layout/main.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="snippets_list"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\layout\snippets_list.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/layout/snippets_list.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="kharkov"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\raw\kharkov.jpg"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/raw/kharkov.jpg"
                 qualifiers=""
                 type="raw" />
             <file
                 name="sample_file"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\raw\sample_file.txt"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/raw/sample_file.txt"
                 qualifiers=""
                 type="raw" />
             <file
                 name="sample_file2"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\raw\sample_file2.txt"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/raw/sample_file2.txt"
                 qualifiers=""
                 type="raw" />
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\res\values\strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/res/values/strings.xml"
                 qualifiers="" >
                 <string name="app_name" >snippets
                 </string>
             </file>
         </source>
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\build\res\rs\debug" />
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\build\res\generated\debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/build/res/generated/debug" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\snippets\src\debug\res" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/snippets/src/debug/res" />
     </dataSet>
 
 </merger>

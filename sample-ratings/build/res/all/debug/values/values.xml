@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
 
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <attr name="actionBarDivider" format="reference" />
@@ -78,7 +78,7 @@
     <color name="abc_search_url_text_normal">#7fa87f</color>
     <color name="abc_search_url_text_pressed">@android:color/black</color>
     <color name="abc_search_url_text_selected">@android:color/black</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/colors.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/colors.xml -->
     <eat-comment />
 
     <color name="background_color">#fff</color>
@@ -88,7 +88,7 @@
     <color name="gray">#ff5a5b5f</color>
     <color name="green">#1cba48</color>
     <color name="white">#fff</color>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="ActionBar">
@@ -493,7 +493,7 @@
     <dimen name="abc_panel_menu_list_width">296dp</dimen>
     <dimen name="abc_search_view_preferred_width">320dip</dimen>
     <dimen name="abc_search_view_text_min_width">160dip</dimen>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/dimens.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/dimens.xml -->
     <eat-comment />
 
     <dimen name="logo_maxwidth">320dp</dimen>
@@ -509,7 +509,7 @@
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_middle">18sp</dimen>
     <dimen name="text_size_small">15sp</dimen>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <item name="action_bar_activity_content" type="id"/>
@@ -532,7 +532,7 @@
     <string name="abc_searchview_description_voice">Voice search</string>
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/strings.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/strings.xml -->
     <eat-comment />
 
     <string name="app_name">Sample Ratings</string>
@@ -592,7 +592,7 @@
     <string name="rate">Rate</string>
     <string name="rate_this_film">Rate this film</string>
     <string name="score_success_send">Score successfully send!</string>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
     <eat-comment />
 
     <style name="ActionBarAppTheme" parent="android:Widget.ActionBar">
@@ -606,11 +606,11 @@
     <style name="ActionButtonCloseModeAppTheme" parent="android:Widget.ActionButton.CloseMode">
         <item name="android:background">@drawable/apptheme_btn_cab_done</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/themes.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/themes.xml -->
     <eat-comment />
 
     <style name="AppTheme" parent="@style/_AppTheme" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
     <eat-comment />
 
     <style name="AutoCompleteTextViewAppTheme" parent="android:Widget.AutoCompleteTextView">
@@ -719,7 +719,7 @@
         <item name="android:maxLines">2</item>
         <item name="android:maxWidth">180dip</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="TextAppearance.AppCompat.Base.CompactMenu.Dialog" parent="android:TextAppearance.Medium">
@@ -840,14 +840,14 @@
     </style>
 
     <style name="TextAppearance.Widget.AppCompat.ExpandedMenu.Item" parent="TextAppearance.Widget.AppCompat.Base.ExpandedMenu.Item" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
     <eat-comment />
 
     <style name="TextViewAppTheme" parent="android:Widget.TextView">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="Theme.AppCompat" parent="Theme.Base.AppCompat">
@@ -1097,7 +1097,7 @@
     </style>
 
     <style name="Theme.Base.Light" parent="android:Theme.Light" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/styles.xml -->
     <eat-comment />
 
     <style name="ToggleAppTheme" parent="android:Widget.Button.Toggle">
@@ -1105,7 +1105,7 @@
         <item name="android:minHeight">48dip</item>
         <item name="android:textColor">@color/black</item>
     </style>
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values/values.xml -->
     <eat-comment />
 
     <style name="Widget.AppCompat.ActionBar" parent="Widget.AppCompat.Base.ActionBar" />
@@ -1385,7 +1385,7 @@
     <style name="Widget.AppCompat.ProgressBar.Horizontal" parent="Widget.AppCompat.Base.ProgressBar.Horizontal" />
 
     <style name="Widget.AppCompat.Spinner.DropDown.ActionBar" parent="Widget.AppCompat.Base.Spinner" />
-    <!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/values/themes.xml -->
+    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/values/themes.xml -->
     <eat-comment />
 
     <style name="_AppTheme" parent="Theme.AppCompat">

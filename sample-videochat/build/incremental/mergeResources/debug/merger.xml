@@ -2,34 +2,34 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res" >
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res" >
             <file
                 name="background"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\drawable\background.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/drawable/background.png"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="qb_ico"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\drawable\qb_ico.png"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/drawable/qb_ico.png"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="call_layout"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\layout\call_layout.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/layout/call_layout.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="login_layout"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\layout\login_layout.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/layout/login_layout.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="video_chat_layout"
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\layout\video_chat_layout.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/layout/video_chat_layout.xml"
                 qualifiers=""
                 type="layout" />
             <file
-                path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\res\values\strings.xml"
+                path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/values/strings.xml"
                 qualifiers="" >
                 <string name="calling_dialog_title" >Incoming call
                 </string>
@@ -63,11 +63,11 @@
                 </string>
             </file>
         </source>
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\build\res\rs\debug" />
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\build\res\generated\debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/build/res/rs/debug" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/build/res/generated/debug" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\WorkSpace\Android\git\quickblox-android-sdk\sample-videochat\src\debug\res" />
+        <source path="/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/src/debug/res" />
     </dataSet>
 
 </merger>

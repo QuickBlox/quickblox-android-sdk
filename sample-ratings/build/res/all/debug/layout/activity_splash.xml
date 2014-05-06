@@ -38,4 +38,4 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:paddingBottom="@dimen/padding_middle" />
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/layout/activity_splash.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/layout/activity_splash.xml -->

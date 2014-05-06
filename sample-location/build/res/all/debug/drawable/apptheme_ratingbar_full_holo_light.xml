@@ -20,4 +20,4 @@
     <item android:id="@+android:id/progress" android:drawable="@drawable/apptheme_ratingbar_full_filled_holo_light" />
 </layer-list>
 
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/drawable/apptheme_ratingbar_full_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/drawable/apptheme_ratingbar_full_holo_light.xml -->

@@ -24,4 +24,4 @@
     <item android:state_focused="true"                                                             android:drawable="@drawable/apptheme_list_focused_holo" />
     <item                                                                                          android:drawable="@android:color/transparent" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_item_background_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_item_background_holo_light.xml -->

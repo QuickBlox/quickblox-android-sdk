@@ -90,4 +90,4 @@
         android:onClick="onClick"
         android:text="@string/delete" />
 
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/layout/activity_note.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/layout/activity_note.xml -->

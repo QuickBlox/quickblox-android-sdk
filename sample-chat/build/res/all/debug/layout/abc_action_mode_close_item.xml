@@ -30,4 +30,4 @@
                android:scaleType="fitCenter"
                android:src="?attr/actionModeCloseDrawable"/>
 </LinearLayout>
-<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_mode_close_item.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_mode_close_item.xml -->
+<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_mode_close_item.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_mode_close_item.xml -->

@@ -70,4 +70,4 @@
         android:layout_above="@id/messages_in_edittext"
         android:text="@string/received_messages" />
 
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-messages/res/layout/messages_layout.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-messages/res/layout/messages_layout.xml -->

@@ -16,4 +16,4 @@
     <item
         android:color="@color/common_signin_btn_dark_text_default" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/color/common_signin_btn_text_dark.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/build/exploded-aar/com.google.android.gms/play-services/3.2.65/res/color/common_signin_btn_text_dark.xml -->

@@ -20,4 +20,4 @@
     <item android:state_checked="true"  android:drawable="@drawable/apptheme_switch_thumb_activated_holo_light" />
     <item                               android:drawable="@drawable/apptheme_switch_thumb_holo_light" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_switch_inner_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_switch_inner_holo_light.xml -->

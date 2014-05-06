@@ -28,4 +28,4 @@
         android:textAppearance="?attr/actionMenuTextAppearance"
         android:textColor="?attr/actionMenuTextColor"
         style="?attr/actionButtonStyle"/>
-<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_menu_item_layout.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_menu_item_layout.xml -->
+<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_menu_item_layout.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_menu_item_layout.xml -->

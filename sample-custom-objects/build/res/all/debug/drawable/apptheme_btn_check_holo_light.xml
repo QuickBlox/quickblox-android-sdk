@@ -63,4 +63,4 @@
     <item android:state_checked="true" android:drawable="@drawable/apptheme_btn_check_on_disabled_holo_light" />
 
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_btn_check_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-custom-objects/res/drawable/apptheme_btn_check_holo_light.xml -->

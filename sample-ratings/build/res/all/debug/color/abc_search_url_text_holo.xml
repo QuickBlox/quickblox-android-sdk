@@ -18,4 +18,4 @@
     <item android:state_pressed="true" android:color="@color/abc_search_url_text_pressed"/>
     <item android:state_selected="true" android:color="@color/abc_search_url_text_selected"/>
     <item android:color="@color/abc_search_url_text_normal"/> <!-- not selected -->
-</selector><!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/color/abc_search_url_text_holo.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/color/abc_search_url_text_holo.xml -->
+</selector><!-- From: file:/Volumes/Android/int/jb-mr2-ub-dev/frameworks/support/v7/appcompat/res/color/abc_search_url_text_holo.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/color/abc_search_url_text_holo.xml -->

@@ -1,4 +1,4 @@
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/AndroidManifest.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/AndroidManifest.xml -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.quickblox.sample.chat">
 
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19"/>

@@ -26,4 +26,4 @@
                 android:drawable="@drawable/apptheme_scrubber_primary_holo" />
     </item>
 </layer-list>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_scrubber_progress_horizontal_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-ratings/res/drawable/apptheme_scrubber_progress_horizontal_holo_light.xml -->

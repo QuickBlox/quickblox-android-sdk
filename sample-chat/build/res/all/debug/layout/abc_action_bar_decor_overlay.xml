@@ -57,4 +57,4 @@
                                                          android:visibility="gone"
                                                          android:gravity="center"/>
 </android.support.v7.internal.widget.ActionBarOverlayLayout>
-<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_bar_decor_overlay.xml --><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_bar_decor_overlay.xml -->
+<!-- From: file:/usr/local/google/home/raphael/android/klp-dev/frameworks/support/v7/appcompat/res/layout/abc_action_bar_decor_overlay.xml --><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-chat/build/exploded-aar/com.android.support/appcompat-v7/19.0.0/res/layout/abc_action_bar_decor_overlay.xml -->

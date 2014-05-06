@@ -32,4 +32,4 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="30dp"
         android:gravity="center"/>
-</RelativeLayout><!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-videochat/res/layout/login_layout.xml -->
+</RelativeLayout><!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-videochat/res/layout/login_layout.xml -->

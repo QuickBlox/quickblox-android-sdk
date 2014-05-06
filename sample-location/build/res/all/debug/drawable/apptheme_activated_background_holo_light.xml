@@ -18,4 +18,4 @@
     <item android:state_activated="true" android:drawable="@drawable/apptheme_list_activated_holo" />
     <item android:drawable="@android:color/transparent" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-location/res/drawable/apptheme_activated_background_holo_light.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-location/res/drawable/apptheme_activated_background_holo_light.xml -->

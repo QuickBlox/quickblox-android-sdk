@@ -25,4 +25,4 @@
     <item android:state_enabled="true"
         android:drawable="@drawable/apptheme_btn_cab_done_default" />
 </selector>
-<!-- From: file:/D:/WorkSpace/Android/git/quickblox-android-sdk/sample-content/res/drawable/apptheme_btn_cab_done.xml -->
+<!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-content/res/drawable/apptheme_btn_cab_done.xml -->
