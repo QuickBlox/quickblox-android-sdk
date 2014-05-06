@@ -25,14 +25,15 @@ local.properties
 .gradle
 /*/local.properties
 /*/out
+*/build
 /*/*/build
+/*/*/*/build
 /*/*/production
 *.iml
 *.iws
 *.ipr
 *~
 *.swp
-*/build/
 
 # Mac
 .DS_Store
