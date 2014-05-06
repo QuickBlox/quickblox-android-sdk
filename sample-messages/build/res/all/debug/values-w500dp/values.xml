@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- From: file:/Users/igorkhomenko/workspace/quickblox-android-sdk/sample-messages/build/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/values-w500dp/values.xml -->
-    <eat-comment />
-
-    <integer name="abc_max_action_buttons">4</integer>
-
-</resources>
