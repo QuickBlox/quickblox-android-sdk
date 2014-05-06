@@ -32,7 +32,7 @@ local.properties
 *.ipr
 *~
 *.swp
-
+*/build/
 
 # Mac
 .DS_Store
