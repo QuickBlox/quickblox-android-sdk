@@ -22,9 +22,9 @@ import org.jivesoftware.smack.XMPPException;
 
 public class ActivityLogin extends Activity {
 
-    private final String FIRST_USER_PASSWORD = "videoChatUser1";
+    private final String FIRST_USER_PASSWORD = "videoChatUser1pass";
     private final String FIRST_USER_LOGIN = "videoChatUser1";
-    private final String SECOND_USER_PASSWORD = "videoChatUser2";
+    private final String SECOND_USER_PASSWORD = "videoChatUser2pass";
     private final String SECOND_USER_LOGIN = "videoChatUser2";
 
     private final int firstUserId = 65421;
