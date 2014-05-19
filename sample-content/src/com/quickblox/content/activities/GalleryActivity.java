@@ -45,7 +45,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
     @Override
     public void onGotImageFile(File imageFile) {
-        downloadSelectedImage(imageFile);
+        uploadSelectedImage(imageFile);
     }
 
     private void startShowImgActivity(int position) {
@@ -89,7 +89,8 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void downloadSelectedImage(File imageFile) {
+    private void uploadSelectedImage(File imageFile) {
+
         // ================= QuickBlox ===== Step 3 =================
         // Upload new file
         // QBContent.uploadFileTask consist of tree query : Create a file, Upload file, Declaring file uploaded

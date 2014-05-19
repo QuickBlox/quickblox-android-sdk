@@ -60,12 +60,12 @@ public class SnippetsContent extends Snippets {
         // get file1
         int fileId = R.raw.sample_file;
         InputStream is = context.getResources().openRawResource(fileId);
-        file1 = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+        file1 = FileHelper.getFileInputStream(is, "sample file.txt", "qb_snippets12");
 
         // get file1
         int fileId2 = R.raw.sample_file2;
         InputStream is2 = context.getResources().openRawResource(fileId2);
-        file2 = FileHelper.getFileInputStream(is2, "sample_file2.txt", "qb_snippets12");
+        file2 = FileHelper.getFileInputStream(is2, "sample file2.txt", "qb_snippets12");
     }
 
     Snippet createFile = new Snippet("create file") {

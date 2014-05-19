@@ -285,7 +285,7 @@ public class SnippetsUsers extends Snippets {
     Snippet getUsersWithFullName = new Snippet("get user with full name") {
         @Override
         public void execute() {
-            String fullName = "fullName";
+            String fullName = "igor";
             QBUsers.getUsersByFullName(fullName, new QBCallbackImpl() {
                 @Override
                 public void onComplete(Result result) {
