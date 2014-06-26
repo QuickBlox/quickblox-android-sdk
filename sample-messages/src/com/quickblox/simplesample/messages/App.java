@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.TransferProtocol;
 import com.quickblox.simplesample.messages.main.definitions.Consts;
 
 public class App extends Application {

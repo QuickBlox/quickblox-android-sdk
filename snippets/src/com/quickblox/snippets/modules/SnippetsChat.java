@@ -36,6 +36,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.muc.RoomInfo;
 
 import java.util.*;
 
@@ -50,11 +51,11 @@ public class SnippetsChat extends Snippets {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     // test Chat user credentials
-    public static final int USER_ID = 999;
-    public static final int SUBSCRIBE_USER_ID = 13163;
-    public static final String TEST_PASSWORD = "AndroidGirl";
-    public static final String TEST_PASSWORD_2 = "Gerrit";
+    public static final int USER_ID = 958;
+    public static final String TEST_PASSWORD = "cedcedced";
     private final QBUser qbUser;
+    //
+    public static final int SUBSCRIBE_USER_ID = 786514;
 
     // 1-1 Chat properties
     private QBPrivateChat qbPrivateChat;
@@ -62,7 +63,7 @@ public class SnippetsChat extends Snippets {
     // Group Chat properties
     private RoomListener roomReceivingListener;
     private QBChatRoom currentQBChatRoom;
-    public static final String ROOM_NAME = "temp_room_for_snippet";
+    public static final String ROOM_NAME = "temp_room3_for_snippet";
 
     // Common properties
     private ChatMessageListener chatMessageListener;
@@ -116,6 +117,8 @@ public class SnippetsChat extends Snippets {
         snippets.add(joinRoom);
         snippets.add(addUsersToRoom);
         snippets.add(removeUsersFromRoom);
+        snippets.add(getRoomUsers);
+        snippets.add(getRoomInfo);
         snippets.add(sendMessageToRoom);
         snippets.add(getOnlineRoomUsers);
         snippets.add(getRooms);
@@ -331,7 +334,7 @@ public class SnippetsChat extends Snippets {
     Snippet createRoom = new Snippet("create Room") {
         @Override
         public void execute() {
-            QBChatService.getInstance().createRoom(ROOM_NAME, false, true, roomReceivingListener);
+            QBChatService.getInstance().createRoom(ROOM_NAME, true, true, roomReceivingListener);
         }
     };
 
@@ -364,7 +367,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
+            users.add(786514); // user ced2
             try {
                 currentQBChatRoom.addRoomUsers(users);
             } catch (XMPPException e) {
@@ -377,11 +380,35 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
+            users.add(786514); // user ced
             try {
                 currentQBChatRoom.removeRoomUsers(users);
             } catch (XMPPException e) {
                 Log.i(TAG, e.getLocalizedMessage());
+            }
+        }
+    };
+
+    Snippet getRoomUsers = new Snippet("get Room users") {
+        @Override
+        public void execute() {
+            try {
+                Collection<String> roomUsers = currentQBChatRoom.getRoomUsers();
+                Log.i(TAG, "roomUsers: " + roomUsers);
+            } catch (XMPPException e) {
+                Log.i(TAG, e.getLocalizedMessage());
+            }
+        }
+    };
+
+    Snippet getRoomInfo = new Snippet("get Room info") {
+        @Override
+        public void execute() {
+            RoomInfo roomInfo = QBChatService.getInstance().getRoomInfo(ROOM_NAME);
+            if(roomInfo != null) {
+                Log.i(TAG, "roomInfo: " + roomInfo.getRoom() + ", " + roomInfo.getDescription() + ", "
+                        + roomInfo.getOccupantsCount() + ", "
+                        + roomInfo.isMembersOnly() + ", "  + roomInfo.isPersistent());
             }
         }
     };

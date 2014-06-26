@@ -178,6 +178,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
             case R.id.check_in_button:
 
                 final EditText input = new EditText(this);
+                input.setTextColor(getResources().getColor(R.color.white));
                 initAlertListeners(input);
 
                 final Dialog checkInAlert = DialogUtils.createDialog(context, R.string.dlg_check_in,

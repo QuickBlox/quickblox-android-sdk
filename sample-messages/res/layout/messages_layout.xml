@@ -10,49 +10,22 @@
         android:layout_height="@dimen/message_out_width"
         android:hint="@string/hint_enter_your_message" />
 
-    <TextView
-        android:id="@+id/selected_user_title_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/message_out_edittext"
-        android:layout_margin="@dimen/margin_middle"
-        android:text="@string/selected_user"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:id="@+id/selected_user_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/message_out_edittext"
-        android:layout_margin="@dimen/margin_middle"
-        android:layout_toRightOf="@id/selected_user_title_textview"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/select_user_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/selected_user_title_textview"
-        android:onClick="selectUserButtonClick"
-        android:text="@string/select_user" />
-
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/selected_user_title_textview"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_below="@id/message_out_edittext"
+        android:layout_alignParentLeft="true" />
 
     <Button
         android:id="@+id/send_message_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/selected_user_title_textview"
-        android:onClick="sendMessageOnClick"
         android:text="@string/send"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:layout_below="@id/message_out_edittext" />
 
     <EditText
         android:id="@+id/messages_in_edittext"

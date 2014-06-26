@@ -12,7 +12,7 @@ import com.quickblox.core.QBSettings;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobjects.R;
 import com.quickblox.customobjects.definition.Consts;
-import com.quickblox.customobjects.definition.QBQueries;
+import com.quickblox.customobjects.definition.Queries;
 import com.quickblox.customobjects.helper.DataHolder;
 import com.quickblox.module.auth.QBAuth;
 import com.quickblox.module.auth.result.QBSessionResult;
@@ -33,7 +33,7 @@ public class SplashActivity extends Activity implements QBCallback {
 
     @Override
     public void onComplete(Result result, Object context) {
-        QBQueries qbQueryType = (QBQueries) context;
+        Queries qbQueryType = (Queries) context;
         if (result.isSuccess()) {
             switch (qbQueryType) {
                 case SIGN_IN:
@@ -69,7 +69,7 @@ public class SplashActivity extends Activity implements QBCallback {
     private void getNoteList() {
         // ================= QuickBlox ===== Step 2 =================
         // Get all notes
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, this, QBQueries.GET_NOTE_LIST);
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, this, Queries.GET_NOTE_LIST);
     }
 
     private void startDisplayNoteListActivity() {
@@ -91,7 +91,7 @@ public class SplashActivity extends Activity implements QBCallback {
         QBSettings.getInstance().fastConfigInit(String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
         // authorize app with default user
-        QBAuth.createSession(qbUser, this, QBQueries.SIGN_IN);
+        QBAuth.createSession(qbUser, this, Queries.SIGN_IN);
     }
 
     private void initUI() {

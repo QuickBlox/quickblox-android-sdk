@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobjects.R;
-import com.quickblox.customobjects.definition.QBQueries;
+import com.quickblox.customobjects.definition.Queries;
 import com.quickblox.customobjects.helper.DataHolder;
 import com.quickblox.customobjects.model.Note;
 import com.quickblox.customobjects.utils.DialogUtils;
@@ -72,7 +72,7 @@ public class ShowNoteActivity extends BaseActivity implements QBCallback {
 
     @Override
     public void onComplete(Result result, Object context) {
-        QBQueries qbQueryType = (QBQueries) context;
+        Queries qbQueryType = (Queries) context;
         if (result.isSuccess()) {
             switch (qbQueryType) {
                 case UPDATE_STATUS:
@@ -118,7 +118,7 @@ public class ShowNoteActivity extends BaseActivity implements QBCallback {
                 // create query for delete score
                 // set className and scoreId
                 QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), this,
-                        QBQueries.DELETE_NOTE);
+                        Queries.DELETE_NOTE);
                 break;
         }
     }
@@ -184,7 +184,7 @@ public class ShowNoteActivity extends BaseActivity implements QBCallback {
         qbCustomObject.setCustomObjectId(DataHolder.getDataHolder().getNoteId(position));
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
-        QBCustomObjects.updateObject(qbCustomObject, this, QBQueries.ADD_NEW_COMMENT);
+        QBCustomObjects.updateObject(qbCustomObject, this, Queries.ADD_NEW_COMMENT);
     }
 
     private void updateNoteStatus(String status) {
@@ -196,6 +196,6 @@ public class ShowNoteActivity extends BaseActivity implements QBCallback {
         qbCustomObject.setCustomObjectId(DataHolder.getDataHolder().getNoteId(position));
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
-        QBCustomObjects.updateObject(qbCustomObject, this, QBQueries.UPDATE_STATUS);
+        QBCustomObjects.updateObject(qbCustomObject, this, Queries.UPDATE_STATUS);
     }
 }

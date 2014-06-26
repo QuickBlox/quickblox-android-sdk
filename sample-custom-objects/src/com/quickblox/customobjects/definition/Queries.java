@@ -1,6 +1,6 @@
 package com.quickblox.customobjects.definition;
 
-public enum QBQueries {
+public enum Queries {
     SIGN_IN,
     GET_NOTE_LIST,
     UPDATE_STATUS,

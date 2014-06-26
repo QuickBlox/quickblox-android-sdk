@@ -8,7 +8,7 @@ import android.widget.EditText;
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.customobjects.R;
-import com.quickblox.customobjects.definition.QBQueries;
+import com.quickblox.customobjects.definition.Queries;
 import com.quickblox.customobjects.helper.DataHolder;
 import com.quickblox.customobjects.utils.DialogUtils;
 import com.quickblox.module.custom.QBCustomObjects;
@@ -47,7 +47,7 @@ public class AddNewNoteActivity extends BaseActivity implements QBCallback {
 
     @Override
     public void onComplete(Result result, Object context) {
-        QBQueries qbQueryType = (QBQueries) context;
+        Queries qbQueryType = (Queries) context;
         if (result.isSuccess()) {
             switch (qbQueryType) {
                 case CREATE_NOTE:
@@ -93,7 +93,7 @@ public class AddNewNoteActivity extends BaseActivity implements QBCallback {
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
-        QBCustomObjects.createObject(qbCustomObject, this, QBQueries.CREATE_NOTE);
+        QBCustomObjects.createObject(qbCustomObject, this, Queries.CREATE_NOTE);
     }
 
     private boolean isValidData(String note, String comments) {

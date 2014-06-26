@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,6 +90,8 @@ public class RoomsFragment extends Fragment implements RoomReceivingListener {
 
     @Override
     public void onReceiveRooms(List<QBChatRoom> list) {
+        Log.w("onReceiveRooms:", list.toString());
+
         if (progressDialog != null) {
             progressDialog.dismiss();
         }

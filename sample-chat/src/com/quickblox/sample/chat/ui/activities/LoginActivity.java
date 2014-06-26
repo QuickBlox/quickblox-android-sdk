@@ -24,7 +24,7 @@ public class LoginActivity extends Activity implements QBCallback, View.OnClickL
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private static final String DEFAULT_LOGIN = "ced";
-    private static final String DEFAULT_PASSWORD = "ced";
+    private static final String DEFAULT_PASSWORD = "cedcedced";
     private Button loginButton;
     private EditText loginEdit;
     private EditText passwordEdit;

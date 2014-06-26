@@ -32,16 +32,13 @@ import java.util.List;
 
 public class MessagesActivity extends Activity {
 
-    private Button sendMessageButton;
-    private TextView selectedUserTitleTextView;
-    private TextView selectedUserTextView;
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
+    private Button sendMessageButton;
+
 
     private static MessagesActivity instance;
-    private ArrayList<QBUser> qbUsersList;
-    private QBUser selectedQBUser;
     private PlayServicesHelper playServicesHelper;
 
     public static MessagesActivity getInstance() {
@@ -64,9 +61,14 @@ public class MessagesActivity extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         messageOutEditText = (EditText) findViewById(R.id.message_out_edittext);
         messageInEditText = (EditText) findViewById(R.id.messages_in_edittext);
-        selectedUserTitleTextView = (TextView) findViewById(R.id.selected_user_title_textview);
-        selectedUserTextView = (TextView) findViewById(R.id.selected_user_textview);
         sendMessageButton = (Button) findViewById(R.id.send_message_button);
+
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessageOnClick(view);
+            }
+        });
     }
 
     private void addMessageToList() {
@@ -77,7 +79,7 @@ public class MessagesActivity extends Activity {
     }
 
     public void retrieveMessage(final String message) {
-        String text = message + "\n" + messageInEditText.getText().toString();
+        String text = message + "\n\n" + messageInEditText.getText().toString();
         messageInEditText.setText(text);
         progressBar.setVisibility(View.INVISIBLE);
     }
@@ -86,62 +88,6 @@ public class MessagesActivity extends Activity {
     protected void onResume() {
         super.onResume();
         playServicesHelper.checkPlayServices();
-    }
-
-    public void selectUserButtonClick(View view) {
-        if (qbUsersList != null) {
-            showAllUsersPicker();
-            return;
-        }
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        QBPagedRequestBuilder rb = new QBPagedRequestBuilder(100, 1);
-
-        // retrieve all users
-        QBUsers.getUsers(rb, new QBCallback() {
-            @Override
-            public void onComplete(Result result) {
-                qbUsersList = ((QBUserPagedResult) result).getUsers();
-                showAllUsersPicker();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onComplete(Result result, Object o) {
-            }
-        });
-    }
-
-    private void showAllUsersPicker() {
-        List<CharSequence> usersNamesList = getUsersNamesList();
-
-        final CharSequence[] itemsArray = usersNamesList.toArray(new CharSequence[usersNamesList.size()]);
-
-        AlertDialog alert = DialogUtils.createAlertDialog(this, R.string.select_user, itemsArray,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        selectedQBUser = qbUsersList.get(item);
-                        selectedUserTitleTextView.setVisibility(View.VISIBLE);
-                        sendMessageButton.setClickable(true);
-                        selectedUserTextView.setText(selectedQBUser.getLogin());
-                    }
-                }
-        );
-        alert.show();
-    }
-
-    private List<CharSequence> getUsersNamesList() {
-        List<CharSequence> usersNamesList = new ArrayList<CharSequence>();
-        for (QBUser qbUser : qbUsersList) {
-            String name;
-            name = qbUser.getLogin();
-            if (TextUtils.isEmpty(name)) {
-                name = qbUser.getEmail();
-            }
-            usersNamesList.add(name);
-        }
-        return usersNamesList;
     }
 
     public void sendMessageOnClick(View view) {
@@ -154,7 +100,7 @@ public class MessagesActivity extends Activity {
         qbEvent.setMessage(messageOutEditText.getText().toString());
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(selectedQBUser.getId());
+        userIds.add(1243440);
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBCallback() {
