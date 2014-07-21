@@ -45,24 +45,15 @@ public class GCMIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification(Consts.GCM_SEND_ERROR + extras.toString());
+                processNotification(Consts.GCM_SEND_ERROR, extras);
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification(Consts.GCM_DELETED_MESSAGE + extras.toString());
+                processNotification(Consts.GCM_DELETED_MESSAGE, extras);
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.i(TAG, "Working... " + (i + 1) + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(Consts.GCM_RECEIVED + extras.toString());
+                processNotification(Consts.GCM_RECEIVED, extras);
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -73,28 +64,29 @@ public class GCMIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void processNotification(String type, Bundle extras) {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        final String messageValue = extras.getString("message");
+
         Intent intent = new Intent(this, MessagesActivity.class);
-        intent.putExtra(Consts.EXTRA_MESSAGE, msg);
+        intent.putExtra(Consts.EXTRA_MESSAGE, messageValue);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(
                 R.drawable.app_icon).setContentTitle(Consts.GCM_NOTIFICATION).setStyle(
-                new NotificationCompat.BigTextStyle().bigText(msg)).setContentText(msg);
+                new NotificationCompat.BigTextStyle().bigText(messageValue)).setContentText(messageValue);
 
         mBuilder.setContentIntent(contentIntent);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
         // show message on text view
         if (MessagesActivity.getInstance() != null) {
-            final String message = msg;
             MessagesActivity.getInstance().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MessagesActivity.getInstance().retrieveMessage(message);
+                    MessagesActivity.getInstance().retrieveMessage(messageValue);
                 }
             });
         }

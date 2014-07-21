@@ -1,34 +1,24 @@
 package com.quickblox.simplesample.messages.main.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.quickblox.core.QBCallback;
 import com.quickblox.core.result.Result;
 import com.quickblox.internal.core.helper.StringifyArrayList;
-import com.quickblox.internal.core.request.QBPagedRequestBuilder;
 import com.quickblox.module.messages.QBMessages;
 import com.quickblox.module.messages.model.QBEnvironment;
 import com.quickblox.module.messages.model.QBEvent;
 import com.quickblox.module.messages.model.QBNotificationType;
-import com.quickblox.module.users.QBUsers;
-import com.quickblox.module.users.model.QBUser;
-import com.quickblox.module.users.result.QBUserPagedResult;
 import com.quickblox.simplesample.messages.R;
 import com.quickblox.simplesample.messages.main.definitions.Consts;
 import com.quickblox.simplesample.messages.main.playservices.PlayServicesHelper;
-import com.quickblox.simplesample.messages.main.utils.DialogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MessagesActivity extends Activity {
 
@@ -107,6 +97,11 @@ public class MessagesActivity extends Activity {
             @Override
             public void onComplete(Result result) {
                 progressBar.setVisibility(View.INVISIBLE);
+
+                // hide keyboard
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(messageOutEditText.getWindowToken(), 0);
             }
 
             @Override
