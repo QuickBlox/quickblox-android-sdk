@@ -10,7 +10,7 @@ public class Consts {
     public static final String USER_PASSWORD = "samsamsam";
 
     // In GCM, the Sender ID is a project ID that you acquire from the API console
-    public static final String SENDER_ID = "761750217637";
+    public static final String PROJECT_NUMBER = "761750217637";
 
     public static final String EXTRA_MESSAGE = "message";
 

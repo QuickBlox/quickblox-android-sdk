@@ -114,7 +114,7 @@ public class PlayServicesHelper {
                     if (googleCloudMessaging == null) {
                         googleCloudMessaging = GoogleCloudMessaging.getInstance(activity);
                     }
-                    regId = googleCloudMessaging.register(Consts.SENDER_ID);
+                    regId = googleCloudMessaging.register(Consts.PROJECT_NUMBER);
                     msg = "Device registered, registration ID=" + regId;
 
                     // You should send the registration ID to your server over HTTP, so it
