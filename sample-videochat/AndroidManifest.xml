@@ -33,8 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <service android:name="com.quickblox.module.videochat.core.service.QBVideoChatService"/>
     </application>
 
     <uses-permission android:name="android.permission.CAMERA"/>

@@ -26,7 +26,7 @@ public class ActivityLogin extends Activity {
     private final String FIRST_USER_LOGIN = "videoChatUser1";
     private final String SECOND_USER_PASSWORD = "videoChatUser2pass";
     private final String SECOND_USER_LOGIN = "videoChatUser2";
-
+    
     private final int firstUserId = 65421;
     private final String firstUserName = "first user";
     private final String secondUserName = "second user";
