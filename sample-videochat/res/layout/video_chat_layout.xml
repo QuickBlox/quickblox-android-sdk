@@ -39,4 +39,12 @@
         android:layout_below="@+id/camera_preview"
         android:visibility="visible" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Switch camera"
+        android:id="@+id/switch_camera_button"
+        android:layout_below="@+id/opponentView"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

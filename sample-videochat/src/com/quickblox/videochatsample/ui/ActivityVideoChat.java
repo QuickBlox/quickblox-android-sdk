@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class ActivityVideoChat extends Activity {
     private OpponentGlSurfaceView opponentView;
     private ProgressBar opponentImageLoadingPb;
     private VideoChatConfig videoChatConfig;
+    private Button switchCameraButton;
 
 
     @Override
@@ -40,11 +42,18 @@ public class ActivityVideoChat extends Activity {
     }
 
     private void initViews() {
-        Debugger.logConnection("initViews");
 
         // Setup UI
         //
         opponentView = (OpponentGlSurfaceView) findViewById(R.id.opponentView);
+
+        switchCameraButton = (Button)findViewById(R.id.switch_camera_button);
+        switchCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cameraView.switchCamera();
+            }
+        });
 
         cameraView = (CameraView) findViewById(R.id.cameraView);
         cameraView.setCameraFrameProcess(true);
