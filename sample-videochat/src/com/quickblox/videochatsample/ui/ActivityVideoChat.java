@@ -1,8 +1,14 @@
 package com.quickblox.videochatsample.ui;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -14,21 +20,21 @@ import com.quickblox.module.videochat.model.listeners.OnQBVideoChatListener;
 import com.quickblox.module.videochat.model.objects.CallState;
 import com.quickblox.module.videochat.model.objects.CallType;
 import com.quickblox.module.videochat.model.objects.VideoChatConfig;
-import com.quickblox.module.videochat.model.utils.Debugger;
 import com.quickblox.module.videochat.views.CameraView;
 import com.quickblox.videochatsample.R;
 import com.quickblox.videochatsample.model.DataHolder;
+import com.quickblox.videochatsample.model.utils.DrawThread;
 
 import org.jivesoftware.smack.XMPPException;
 
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.OpponentGlSurfaceView;
-
 public class ActivityVideoChat extends Activity {
 
     private CameraView cameraView;
-    private OpponentGlSurfaceView opponentView;
+
+    private OpponentSurfaceView opponentView;
+
     private ProgressBar opponentImageLoadingPb;
     private VideoChatConfig videoChatConfig;
     private Button switchCameraButton;
@@ -45,7 +51,7 @@ public class ActivityVideoChat extends Activity {
 
         // Setup UI
         //
-        opponentView = (OpponentGlSurfaceView) findViewById(R.id.opponentView);
+        opponentView = (OpponentSurfaceView) findViewById(R.id.opponentView);
 
         switchCameraButton = (Button)findViewById(R.id.switch_camera_button);
         switchCameraButton.setOnClickListener(new View.OnClickListener() {
@@ -117,8 +123,8 @@ public class ActivityVideoChat extends Activity {
         }
 
         @Override
-        public void onOpponentVideoDataReceive(byte[] videoData) {
-            opponentView.loadOpponentImage(videoData);
+        public void onOpponentVideoDataReceive(final byte[] videoData) {
+            opponentView.render(videoData);
         }
 
         @Override
