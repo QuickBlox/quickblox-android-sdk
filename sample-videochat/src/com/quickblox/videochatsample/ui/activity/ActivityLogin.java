@@ -1,4 +1,4 @@
-package com.quickblox.videochatsample.ui;
+package com.quickblox.videochatsample.ui.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

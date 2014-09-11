@@ -1,4 +1,4 @@
-package com.quickblox.videochatsample.ui;
+package com.quickblox.videochatsample.ui.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,7 +20,6 @@ import com.quickblox.module.videochat.model.objects.CallState;
 import com.quickblox.module.videochat.model.objects.CallType;
 import com.quickblox.module.videochat.model.objects.VideoChatConfig;
 import com.quickblox.module.videochat.model.utils.Debugger;
-import com.quickblox.module.videochat.model.utils.XMPPSender;
 import com.quickblox.videochatsample.R;
 import com.quickblox.videochatsample.model.DataHolder;
 import com.quickblox.videochatsample.model.listener.OnCallDialogListener;

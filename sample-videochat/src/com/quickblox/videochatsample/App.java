@@ -1,4 +1,4 @@
-package com.quickblox.videochatsample.ui;
+package com.quickblox.videochatsample;
 
 import android.app.Application;
 

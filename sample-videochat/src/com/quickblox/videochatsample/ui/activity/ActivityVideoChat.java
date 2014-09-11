@@ -1,14 +1,8 @@
-package com.quickblox.videochatsample.ui;
+package com.quickblox.videochatsample.ui.activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,10 +14,10 @@ import com.quickblox.module.videochat.model.listeners.OnQBVideoChatListener;
 import com.quickblox.module.videochat.model.objects.CallState;
 import com.quickblox.module.videochat.model.objects.CallType;
 import com.quickblox.module.videochat.model.objects.VideoChatConfig;
-import com.quickblox.module.videochat.views.CameraView;
 import com.quickblox.videochatsample.R;
 import com.quickblox.videochatsample.model.DataHolder;
-import com.quickblox.videochatsample.model.utils.DrawThread;
+import com.quickblox.videochatsample.ui.view.MySurfaceView;
+import com.quickblox.videochatsample.ui.view.OpponentSurfaceView;
 
 import org.jivesoftware.smack.XMPPException;
 
@@ -31,7 +25,7 @@ import java.util.List;
 
 public class ActivityVideoChat extends Activity {
 
-    private CameraView cameraView;
+    private MySurfaceView myView;
 
     private OpponentSurfaceView opponentView;
 
@@ -57,24 +51,24 @@ public class ActivityVideoChat extends Activity {
         switchCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cameraView.switchCamera();
+                myView.switchCamera();
             }
         });
 
-        cameraView = (CameraView) findViewById(R.id.cameraView);
-        cameraView.setCameraFrameProcess(true);
+        myView = (MySurfaceView) findViewById(R.id.cameraView);
+        myView.setCameraFrameProcess(true);
         // Set VideoChat listener
-        cameraView.setQBVideoChatListener(qbVideoChatListener);
+        myView.setQBVideoChatListener(qbVideoChatListener);
 
         // Set Camera init callback
-        cameraView.setFPS(6);
-        cameraView.setOnCameraViewListener(new OnCameraViewListener() {
+        myView.setFPS(6);
+        myView.setOnCameraViewListener(new OnCameraViewListener() {
             @Override
             public void onCameraSupportedPreviewSizes(List<Camera.Size> supportedPreviewSizes) {
 //                cameraView.setFrameSize(supportedPreviewSizes.get(5));
                 Camera.Size firstFrameSize = supportedPreviewSizes.get(0);
                 Camera.Size lastFrameSize = supportedPreviewSizes.get(supportedPreviewSizes.size() - 1);
-                cameraView.setFrameSize(firstFrameSize.width > lastFrameSize.width ? lastFrameSize : firstFrameSize);
+                myView.setFrameSize(firstFrameSize.width > lastFrameSize.width ? lastFrameSize : firstFrameSize);
             }
         });
 
@@ -93,12 +87,12 @@ public class ActivityVideoChat extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        cameraView.reuseCameraView();
+        myView.reuseCameraView();
     }
 
     @Override
     protected void onPause() {
-        cameraView.closeCamera();
+        myView.closeCamera();
         super.onPause();
     }
 

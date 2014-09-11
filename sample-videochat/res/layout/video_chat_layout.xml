@@ -7,14 +7,14 @@
     android:background="@drawable/background"
     android:layout_gravity="center_horizontal">
 
-    <com.quickblox.module.videochat.views.CameraView
+    <com.quickblox.videochatsample.ui.view.MySurfaceView
         android:id="@+id/cameraView"
         android:layout_width="220dp"
         android:layout_height="200dp"
         android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true" />
 
-    <com.quickblox.videochatsample.ui.OpponentSurfaceView
+    <com.quickblox.videochatsample.ui.view.OpponentSurfaceView
         android:id="@+id/opponentView"
         android:layout_height="220dp"
         android:layout_width="200dp"
