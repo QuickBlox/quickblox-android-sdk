@@ -123,7 +123,6 @@ public class ActivityLogin extends Activity {
     private void showCallUserActivity() {
         Intent intent = new Intent(this, ActivityCallUser.class);
         intent.putExtra("userId", DataHolder.getInstance().getCurrentQbUser().getId() == firstUserId ? secondUserId : firstUserId);
-//        intent.putExtra("userName", DataHolder.getInstance().getCurrentQbUser().getId() == firstUserId ? secondUserName : firstUserName);
         intent.putExtra("myName", DataHolder.getInstance().getCurrentQbUser().getId() == firstUserId ? firstUserName : secondUserName);
         startActivity(intent);
         finish();

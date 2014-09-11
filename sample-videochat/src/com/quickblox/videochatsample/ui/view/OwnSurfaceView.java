@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Created by igorkhomenko on 9/11/14.
  */
-public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private volatile Camera camera;
 
@@ -38,7 +38,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     private CameraDataListener cameraDataListener;
 
-    public MySurfaceView(Context ctx, AttributeSet attrSet) {
+    private boolean isCreated = false;
+
+    public OwnSurfaceView(Context ctx, AttributeSet attrSet) {
         super(ctx, attrSet);
 
         getHolder().addCallback(this);
@@ -68,6 +70,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        isCreated = false;
+
         Log.w("MySurfaceView", "surfaceDestroyed");
 
         boolean retry = true;
@@ -90,6 +94,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        isCreated = true;
+
         Log.w("MySurfaceView", "surfaceCreated");
 
         openCamera();
@@ -102,16 +108,20 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     Camera.PreviewCallback cameraPreviewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
+            Log.w("Camera.PreviewCallback", "data=" + data.length);
+
             Camera.Parameters params = camera.getParameters();
             processCameraData(data, params.getPreviewSize().width, params.getPreviewSize().height);
         }
     };
 
 
-    private void openCamera() {
-        if(camera != null){
+    public void openCamera() {
+        if(!isCreated || camera != null){
             return;
         }
+
+        Log.w("MySurfaceView", "openCamera1");
 
         // Open camera
         //
@@ -125,6 +135,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             camera.setPreviewDisplay(getHolder());
             camera.setDisplayOrientation(90);
             camera.setPreviewCallback(cameraPreviewCallback);
+            Log.w("MySurfaceView", "openCamera2");
         } catch (IOException ignore) {
             ignore.printStackTrace();
         } catch (NullPointerException ignore) {
@@ -173,12 +184,14 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         try {
             camera.setParameters(parameters);
             camera.startPreview();
+            Log.w("MySurfaceView", "openCamera3");
         } catch (RuntimeException ignore) {
             ignore.printStackTrace();
         }
     }
 
     public void switchCamera() {
+        Log.w("MySurfaceView", "switchCamera");
         if (Camera.getNumberOfCameras() == 2) {
             currentCameraId = (currentCameraId + 1) % Camera.getNumberOfCameras();
 
@@ -197,6 +210,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         camera = null;
     }
 
+    public void reuseCamera() {
+        closeCamera();
+        openCamera();
+    }
 
     private void processCameraData(final byte[] cameraData, final int imageWidth, final int imageHeight) {
 

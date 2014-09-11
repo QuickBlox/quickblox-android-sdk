@@ -65,7 +65,7 @@ public class ActivityCallUser extends Activity {
 //                QBVideoChatController.getInstance().stopCalling();
             }
         });
-        txtName.setText("You logged in as " + myName);
+        txtName.setText("You logged in as the " + myName);
 
         videoCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override

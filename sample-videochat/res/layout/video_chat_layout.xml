@@ -7,7 +7,7 @@
     android:background="@drawable/background"
     android:layout_gravity="center_horizontal">
 
-    <com.quickblox.videochatsample.ui.view.MySurfaceView
+    <com.quickblox.videochatsample.ui.view.OwnSurfaceView
         android:id="@+id/cameraView"
         android:layout_width="220dp"
         android:layout_height="200dp"
