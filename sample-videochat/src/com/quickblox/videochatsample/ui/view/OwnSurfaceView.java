@@ -34,7 +34,8 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     private int FPS = 4; // by default 4 fps
     private Camera.Size frameSize;
 
-    private Matrix rotationMatrix;
+    private Matrix rotationMatrixFront;
+    private Matrix rotationMatrixBack;
 
     private CameraDataListener cameraDataListener;
 
@@ -49,8 +50,10 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
         currentCameraId = (currentCameraId + 1) % Camera.getNumberOfCameras();
 
-        rotationMatrix = new Matrix();
-        rotationMatrix.postRotate(currentCameraId == getCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT) ? -90 : 180);
+        rotationMatrixFront = new Matrix();
+        rotationMatrixFront.postRotate(-90);
+        rotationMatrixBack = new Matrix();
+        rotationMatrixBack.postRotate(90);
 
         cameraPreviewCallbackQueue = new ConcurrentLinkedQueue<Runnable>();
     }
@@ -108,7 +111,6 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     Camera.PreviewCallback cameraPreviewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            Log.w("Camera.PreviewCallback", "data=" + data.length);
 
             Camera.Parameters params = camera.getParameters();
             processCameraData(data, params.getPreviewSize().width, params.getPreviewSize().height);
@@ -120,8 +122,6 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         if(!isCreated || camera != null){
             return;
         }
-
-        Log.w("MySurfaceView", "openCamera1");
 
         // Open camera
         //
@@ -135,7 +135,6 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             camera.setPreviewDisplay(getHolder());
             camera.setDisplayOrientation(90);
             camera.setPreviewCallback(cameraPreviewCallback);
-            Log.w("MySurfaceView", "openCamera2");
         } catch (IOException ignore) {
             ignore.printStackTrace();
         } catch (NullPointerException ignore) {
@@ -184,14 +183,12 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             camera.setParameters(parameters);
             camera.startPreview();
-            Log.w("MySurfaceView", "openCamera3");
         } catch (RuntimeException ignore) {
             ignore.printStackTrace();
         }
     }
 
     public void switchCamera() {
-        Log.w("MySurfaceView", "switchCamera");
         if (Camera.getNumberOfCameras() == 2) {
             currentCameraId = (currentCameraId + 1) % Camera.getNumberOfCameras();
 
@@ -231,7 +228,7 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                 byte[] jpegVideoFrameData = out.toByteArray();
 
                 // rotate image
-                byte[] rotatedCameraData = rotateImage(jpegVideoFrameData, imageWidth, imageHeight);
+                byte[] rotatedCameraData = rotateImage(jpegVideoFrameData, imageWidth, imageHeight, currentCameraId);
                 if (rotatedCameraData.length == 0) {
                     return;
                 }
@@ -252,9 +249,16 @@ public class OwnSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         });
     }
 
-    private byte[] rotateImage(byte[] cameraData, final int imageWidth, final int imageHeight) {
+    private byte[] rotateImage(byte[] cameraData, final int imageWidth, final int imageHeight, int currentCameraId) {
         Bitmap landscapeCameraDataBitmap = BitmapFactory.decodeByteArray(cameraData, 0, cameraData.length);
-        Bitmap portraitBitmap = Bitmap.createBitmap(landscapeCameraDataBitmap, 0, 0, imageWidth, imageHeight, rotationMatrix, true);
+
+        Bitmap portraitBitmap = null;
+        if(currentCameraId == getCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT)) { // front camera
+            portraitBitmap = Bitmap.createBitmap(landscapeCameraDataBitmap, 0, 0, imageWidth, imageHeight, rotationMatrixFront, true);
+        }else{ // back camera
+            portraitBitmap = Bitmap.createBitmap(landscapeCameraDataBitmap, 0, 0, imageWidth, imageHeight, rotationMatrixBack, true);
+        }
+
         landscapeCameraDataBitmap.recycle();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (!portraitBitmap.isRecycled()) {
