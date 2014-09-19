@@ -528,7 +528,7 @@ public class SnippetsChat extends Snippets {
                 if(packet instanceof Presence){
                     Presence presence = (Presence) packet;
                     Log.i(TAG, "processPresence >>> " +presence.getType());
-                    //confirm subscription
+                    //confirm subscription and look in roster listener for updates
                     /*if (Presence.Type.subscribe.equals(presence.getType())){
                         Presence confirmPresence = new Presence(Presence.Type.subscribed);
                         try{
