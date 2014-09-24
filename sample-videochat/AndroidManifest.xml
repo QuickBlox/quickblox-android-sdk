@@ -9,7 +9,7 @@
         android:targetSdkVersion="11"/>
 
     <application
-        android:name=".App"
+        android:name=".VideoChatApplication"
         android:icon="@drawable/qb_ico"
         android:label="@string/app_name">
         <activity

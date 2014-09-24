@@ -3,6 +3,7 @@ package com.quickblox.videochatsample.ui.view;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,6 +24,20 @@ public class OpponentSurfaceView extends SurfaceView implements SurfaceHolder.Ca
 
     public void render(byte[] videoData){
         drawThread.render(videoData);
+    }
+
+    public void clear(){
+        Canvas canvas = null;
+        try {
+            canvas = getHolder().lockCanvas();
+            canvas.drawColor(Color.BLACK);
+        } catch (Exception e) {
+
+        } finally {
+            if (canvas != null) {
+                getHolder().unlockCanvasAndPost(canvas);
+            }
+        }
     }
 
     @Override

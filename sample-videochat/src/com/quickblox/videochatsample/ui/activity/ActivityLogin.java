@@ -16,21 +16,11 @@ import com.quickblox.module.chat.QBChatService;
 import com.quickblox.module.chat.listeners.SessionCallback;
 import com.quickblox.module.videochat.core.QBVideoChatController;
 import com.quickblox.videochatsample.R;
-import com.quickblox.videochatsample.model.DataHolder;
+import com.quickblox.videochatsample.VideoChatApplication;
 
 import org.jivesoftware.smack.XMPPException;
 
 public class ActivityLogin extends Activity {
-
-    private final String FIRST_USER_PASSWORD = "videoChatUser1pass";
-    private final String FIRST_USER_LOGIN = "videoChatUser1";
-    private final String SECOND_USER_PASSWORD = "videoChatUser2pass";
-    private final String SECOND_USER_LOGIN = "videoChatUser2";
-    
-    private final int firstUserId = 65421;
-    private final String firstUserName = "first user";
-    private final String secondUserName = "second user";
-    private final int secondUserId = 65422;
 
     private ProgressDialog progressDialog;
 
@@ -49,7 +39,7 @@ public class ActivityLogin extends Activity {
             @Override
             public void onClick(View view) {
                 progressDialog.show();
-                createSession(FIRST_USER_LOGIN, FIRST_USER_PASSWORD);
+                createSession(VideoChatApplication.FIRST_USER_LOGIN, VideoChatApplication.FIRST_USER_PASSWORD);
             }
         });
 
@@ -57,7 +47,7 @@ public class ActivityLogin extends Activity {
             @Override
             public void onClick(View view) {
                 progressDialog.show();
-                createSession(SECOND_USER_LOGIN, SECOND_USER_PASSWORD);
+                createSession(VideoChatApplication.SECOND_USER_LOGIN, VideoChatApplication.SECOND_USER_PASSWORD);
             }
         });
 
@@ -86,9 +76,15 @@ public class ActivityLogin extends Activity {
         @Override
         public void onComplete(Result result) {
             if (result.isSuccess()) {
-                // save current user
-                DataHolder.getInstance().setCurrentQbUser(((QBSessionResult) result).getSession().getUserId(), password);
-                QBChatService.getInstance().loginWithUser(DataHolder.getInstance().getCurrentQbUser(), loginListener);
+
+                // Save current user
+                //
+                VideoChatApplication app = (VideoChatApplication)getApplication();
+                app.setCurrentUser(((QBSessionResult) result).getSession().getUserId(), password);
+
+                // Login to chat
+                //
+                QBChatService.getInstance().loginWithUser(app.getCurrentUser(), loginListener);
             }else{
                 progressDialog.dismiss();
                 Toast.makeText(ActivityLogin.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
@@ -121,9 +117,7 @@ public class ActivityLogin extends Activity {
     };
 
     private void showCallUserActivity() {
-        Intent intent = new Intent(this, ActivityCallUser.class);
-        intent.putExtra("userId", DataHolder.getInstance().getCurrentQbUser().getId() == firstUserId ? secondUserId : firstUserId);
-        intent.putExtra("myName", DataHolder.getInstance().getCurrentQbUser().getId() == firstUserId ? firstUserName : secondUserName);
+        Intent intent = new Intent(this, ActivityVideoChat.class);
         startActivity(intent);
         finish();
     }
