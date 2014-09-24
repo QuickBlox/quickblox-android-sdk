@@ -3,9 +3,8 @@ This is a code sample for [QuickBlox](http://quickblox.com/) platform. It is a g
 
 Original sample description & setup guide - [http://quickblox.com/developers/Sample-videochat-android](http://quickblox.com/developers/Sample-videochat-android)
 
-<img src="http://files.quickblox.com/qb_videochat_android1.png" width=200 />
-&nbsp;&nbsp;&nbsp;&nbsp; <img src="http://files.quickblox.com/qb_videochat_android2.png" width=200 />
-&nbsp;&nbsp;&nbsp;&nbsp; <img src="http://files.quickblox.com/qb_videochat_android4.png" width=200 />
+<img src="http://files.quickblox.com/qb_videochat_android2.png" width=200 />
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="http://files.quickblox.com/qb_videochat_android5.png" width=200 />
 
 <h3>Important - how to build your own VideoChat app</h3>
 
