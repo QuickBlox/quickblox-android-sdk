@@ -56,12 +56,6 @@ public class ActivityLogin extends Activity {
         QBSettings.getInstance().fastConfigInit("92", "wJHdOcQSxXQGWx5", "BTFsj7Rtt27DAmT");
     }
 
-    @Override
-    public void onResume() {
-        progressDialog.dismiss();
-        super.onResume();
-    }
-
     private void createSession(String login, final String password) {
         QBAuth.createSession(login, password, new QBCreateSessionCallback(password));
     }
@@ -117,6 +111,8 @@ public class ActivityLogin extends Activity {
     };
 
     private void showCallUserActivity() {
+        progressDialog.dismiss();
+
         Intent intent = new Intent(this, ActivityVideoChat.class);
         startActivity(intent);
         finish();

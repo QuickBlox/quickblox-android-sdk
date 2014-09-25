@@ -134,9 +134,9 @@ public class ActivityVideoChat extends Activity {
     }
 
     @Override
-    public void onDestroy() {
+    public void onStop() {
         QBVideoChatController.getInstance().finishVideoChat(videoChatConfig);
-        super.onDestroy();
+        super.onStop();
     }
 
     OnQBVideoChatListener qbVideoChatListener = new OnQBVideoChatListener() {
