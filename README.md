@@ -6,12 +6,19 @@ This project contains QuickBlox Android SDK, that includes
 * [snippets](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets) (shows main use cases of using this one)
 * samples (separated samples for each QuickBlox module)
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
+  * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
+  * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/messages-chat)
+  * [Location Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/location-chat)
+  * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-objects)
+  * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
+  * [Video Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat)
+  * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
 
 ## How to start
 
-To start work you should just put library jar into your project and call desired methods.
+To start work you should just put library jars into your project and call desired methods.
 
-Latest jar-packed framework file you can download from [downloads page](https://github.com/QuickBlox/quickblox-android-sdk/downloads).
+Latest jar-packed framework file you can clone from [jars  folder](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/jars).
 
 ## Documentation
 
