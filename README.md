@@ -34,8 +34,11 @@ Android SDK is really simple to use. Just in few minutes you can power your mobi
 * [How to get app credentials](http://quickblox.com/developers/Getting_application_credentials)
 
 ### 2. Create new Android project
-### 3. Add [jar library](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/jar) to project libs folder.
+### 3. Add jars to project libs folder.
+Update your build.gradle file if need.
+
 Eclipse users: If you got 'Unable to execute dex: Java heap size' - try to upgrade eclipse.ini to https://groups.google.com/forum/?fromgroups=#!topic/phonegap/yWePvssyiLE
+
 
 ### 4. Declare internet permission for Android application
 
@@ -61,25 +64,19 @@ The common way to interact with QuickBlox can be presented with following sequen
 QBSettings.getInstance().fastConfigInit("961", "PBZxXW3WgGZtFZv", "vvHjRbVFF6mmeyJ");
 ```
 
-or step by step
-
-
-```java
-QBSettings.getInstance().setApplicationId("961");
-QBSettings.getInstance().setAuthorizationKey("PBZxXW3WgGZtFZv");
-QBSettings.getInstance().setAuthorizationSecret("vvHjRbVFF6mmeyJ");
-```
-
 #### 5.2. Create session
 
 
 ```java
-QBAuth.createSession(new QBCallbackImpl() {
+QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
     @Override
-    public void onComplete(Result result) {
-        if (result.isSuccess()) {
-            // result comes here if authorization is success
-        }
+    public void onSuccess(QBSession session, Bundle params) {
+        // success
+    }
+
+    @Override
+    public void onError(List<String> errors) {
+        // errors
     }
 });
 ```
@@ -90,12 +87,17 @@ First create (register) new user
 
 ```java
 // Register new user
-QBUsers.signUp("indianajones", "indianapassword", new QBCallbackImpl() {
+final QBUser user = new QBUser("userlogin", "userpassword");
+
+QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
     @Override
-    public void onComplete(Result result) {
-        if (result.isSuccess()) {
-            // result comes here if request has been completed successfully
-        }
+    public void onSuccess(QBUser user, Bundle args) {
+        // success
+    }
+
+    @Override
+    public void onError(List<String> errors) {
+       // error
     }
 });
 ```
