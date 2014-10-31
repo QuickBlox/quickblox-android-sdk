@@ -106,12 +106,15 @@ then authorize user
 
 ```java
 // Login
-QBUsers.signIn("indianajones", "indianapassword", new QBCallbackImpl() {
+QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
     @Override
-    public void onComplete(Result result) {
-        if (result.isSuccess()) {
-            // result comes here if request has been completed successfully
-        }
+    public void onSuccess(QBUser user, Bundle args) {
+        // success
+    }
+
+    @Override
+    public void onError(List<String> errors) {
+        // error
     }
 });
 ```
@@ -125,12 +128,15 @@ double lat = 25.224820; // Somewhere in Africa
 double lng = 9.272461;
 String statusText = "trying to find adventures";
 QBLocation location = new QBLocation(lat, lng, statusText);
-QBLocations.createLocation(location, new QBCallbackImpl() {
+QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
     @Override
-    public void onComplete(Result result) {
-        if (result.isSuccess()) {
-            // result comes here if authorizations is success
-        }
+    public void onSuccess(QBLocation qbLocation, Bundle args) {
+        // success
+    }
+
+    @Override
+    public void onError(List<String> errors) {
+        // error
     }
 });
 ```
@@ -140,30 +146,30 @@ or put Holy Grail into storage
 ```java
 File file = new File("holy_grail.txt");
 Boolean fileIsPublic = true;
-QBContent.uploadFileTask(file, fileIsPublic, new QBCallbackImpl() {
+QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
     @Override
-    public void onComplete(Result result) {
-        if (result.isSuccess()) {
-            // file has been successfully uploaded
-        }
+    public void onSuccess(QBFile qbFile, Bundle params) {
+        // success
+    }
+
+    @Override
+    public void onError(List<String> errors) {
+        // error
     }
 });
 ```
 
-Java Framework provides following services to interact with QuickBlox functions (each service is represented by model with suite of static methods):
+Java Framework provides following jars/services to interact with QuickBlox functions (each service is represented by a model with suite of static methods):
 
-* QBAuth
-* QBUsers
-* QBCustomObjects
-* QBLocations
-* QBContent
-* QBRatings
-* QBMessages
-* QBChat
-
-## How to run snippets project
-
-* See <https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets#snippets>
+* quickblox-android-sdk-core.jar (contains core, auth and users classes)
+* quickblox-android-sdk-chat.jar (contains chat class)
+* quickblox-android-sdk-customobjects.jar (contains custom objects class)
+* quickblox-android-sdk-location.jar (contains location class)
+* quickblox-android-sdk-content.jar (contains content class) 
+* quickblox-android-sdk-messages.jar (contains messages class) 
+* quickblox-android-sdk-ratings.jar (contains ratings class) 
+* quickblox-android-sdk-videochat.jar (contains video chat classes)  
+* quickblox-android-sdk-videochat-webrtc.jar (contains video chat webrtc classes)
 
 ## See also
 
