@@ -23,7 +23,6 @@ Latest jar-packed framework file you can clone from [jars  folder](https://githu
 ## Documentation
 
 * [Project page on QuickBlox developers section](http://quickblox.com/developers/Android)
-* **[Start to learn SDK from Android Guide](http://quickblox.com/developers/Android_Guide)**
 * [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
 
 ## Oh, please, please show me the code
