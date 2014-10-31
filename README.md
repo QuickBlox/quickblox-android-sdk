@@ -106,7 +106,7 @@ then authorize user
 
 ```java
 // Login
-QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+QBUsers.signIn(user, new QBEntityCallbackImpl<QBUser>() {
     @Override
     public void onSuccess(QBUser user, Bundle args) {
         // success
