@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sample Content</string>
+    <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
+    <string name="content">Content</string>
+    <string name="add_new_image">Add new image</string>
+    <string name="back_to_gallery">Back to gallery</string>
+    <string name="please_waite">Please wait..</string>
+    <string name="descr_image">Image</string>
+    <string name="gallery_title">Gallery</string>
+    <string name="show_image_title">Show image</string>
+    <string name="please_wait">Please wait…</string>
+
+    // messages
+    <string name="mgs_io_error">Input/Output error</string>
+    <string name="mgs_decode_error">Image can not be decoded</string>
+    <string name="mgs_denied_error">Downloads are denied</string>
+    <string name="mgs_memory_error">Out Of Memory error</string>
+    <string name="mgs_unknown_error">Unknown error</string>
+</resources>

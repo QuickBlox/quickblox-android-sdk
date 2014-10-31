@@ -1,0 +1,13 @@
+apply plugin: 'android'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+}
+
+dependencies {
+    compile files('../jars/quickblox-android-sdk-core-2.0.jar',
+            '../jars/quickblox-android-sdk-videochat-2.0.jar', '../jars/quickblox-android-sdk-chat-2.0.jar')
+}
+
+

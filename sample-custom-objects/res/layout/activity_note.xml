@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@color/background_color" />
+
+    <TextView
+        android:id="@+id/note_title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_middle"
+        android:text="@string/note"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/note_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/note_title_textview"
+        android:paddingLeft="@dimen/padding_middle"
+        android:paddingTop="@dimen/padding_middle" />
+
+    <TextView
+        android:id="@+id/status_title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/note_title_textview"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_middle"
+        android:text="@string/status"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/status_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/note_textview"
+        android:layout_toRightOf="@+id/status_title_textview"
+        android:paddingLeft="@dimen/padding_middle"
+        android:paddingTop="@dimen/padding_middle" />
+
+    <TextView
+        android:id="@+id/comments_title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/status_textview"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="@dimen/padding_middle"
+        android:paddingTop="@dimen/padding_middle"
+        android:text="@string/comments"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/comments_textview"
+        android:layout_width="@dimen/comments_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comments_title_textview"
+        android:layout_centerHorizontal="true"
+        android:enabled="false" />
+
+    <Button
+        android:id="@+id/add_comment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:onClick="onClick"
+        android:text="@string/add_comment" />
+
+    <Button
+        android:id="@+id/change_status_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/add_comment_button"
+        android:onClick="onClick"
+        android:text="@string/change_status" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClick"
+        android:text="@string/delete" />
+
+</RelativeLayout>

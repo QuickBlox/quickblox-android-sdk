@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/background_color"
+    android:padding="@dimen/padding_middle">
+
+    <EditText
+        android:id="@+id/message_out_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/message_out_width"
+        android:hint="@string/hint_enter_your_message" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_below="@id/message_out_edittext"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/send_message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/send"
+        android:clickable="false"
+        android:layout_below="@id/message_out_edittext" />
+
+    <EditText
+        android:id="@+id/messages_in_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:hint="@string/no_messages"
+        android:editable="false" />
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/messages_in_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/messages_in_edittext"
+        android:text="@string/received_messages" />
+
+</RelativeLayout>

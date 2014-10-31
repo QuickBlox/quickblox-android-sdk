@@ -1,0 +1,24 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+dependencies {
+    compile files('../jars/quickblox-android-sdk-core-2.0.jar', '../jars/quickblox-android-sdk-content-2.0.jar')
+    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
+}

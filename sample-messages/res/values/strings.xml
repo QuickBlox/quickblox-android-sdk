@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sample Messages</string>
+    <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
+    <string name="hint_enter_your_message">Enter Your message here</string>
+    <string name="send">Send notification to yourself</string>
+    <string name="received_messages">Received messages</string>
+    <string name="no_messages">No messages</string>
+</resources>

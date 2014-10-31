@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sample Location</string>
+    <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
+    <string name="btn_check_in">Check In</string>
+    <string name="dlg_location_error">Error(s) occurred. Look into DDMS log for details, please. Errors: </string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_check_in">Check In</string>
+    <string name="dlg_enter_message">Please enter your message</string>
+    <string name="dlg_check_in_success">Check In was successful!</string>
+    <string name="dlg_it_is_me">It is me</string>
+    <string name="dlg_user_login">User login: </string>
+    <string name="dlg_status">\nStatus: </string>
+    <string name="map">Map</string>
+    <string name="empty">empty</string>
+</resources>

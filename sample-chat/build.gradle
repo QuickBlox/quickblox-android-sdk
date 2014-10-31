@@ -1,0 +1,20 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+dependencies {
+    compile files('../jars/quickblox-android-sdk-core-2.0.jar', '../jars/quickblox-android-sdk-chat-2.0.jar')
+    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile project(':pull-to-refresh')
+}
