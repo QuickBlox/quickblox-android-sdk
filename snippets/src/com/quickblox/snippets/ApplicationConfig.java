@@ -28,8 +28,6 @@ public class ApplicationConfig {
     public static String testRoomJID = "99_54424528535c12a13801b1fa@muc.chat.quickblox.com";
 
 
-
-
     public static int getTestUserID1(){
         return useUser1 ? testUserID1 : testUserID2;
     }

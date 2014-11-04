@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.chat.QBGroupChat;
@@ -38,10 +37,8 @@ import com.quickblox.chat.model.QBPresence;
 import com.quickblox.chat.model.QBPrivacyList;
 import com.quickblox.chat.model.QBPrivacyListItem;
 import com.quickblox.chat.model.QBRosterEntry;
-import com.quickblox.core.request.QBRequestCreateBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
-import com.quickblox.core.server.BaseService;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.snippets.ApplicationConfig;
 import com.quickblox.snippets.AsyncSnippet;
@@ -59,7 +56,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -917,11 +916,6 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogsSynchronous = new AsyncSnippet("Get Dialogs (synchronous)", context) {
         @Override
         public void executeAsync() {
-            try {
-                BaseService.createFromExistentToken("65a84b4fc2757caa8adf7191f1f6f5946479e85f", new Date());
-            } catch (BaseServiceException e) {
-                e.printStackTrace();
-            }
 
             Bundle bundle = new Bundle();
             //
@@ -953,10 +947,6 @@ public class SnippetsChat extends Snippets {
                 return;
             }
 
-            QBRequestCreateBuilder additionalParams = new QBRequestCreateBuilder();
-//            additionalParams.addParameter("data[class_name]", "Advert");
-//            additionalParams.addParameter("data[title]", "bingo");
-
             ArrayList<Integer> occupantIdsList = new ArrayList<Integer>();
             occupantIdsList.add(ApplicationConfig.testUserID2);
 
@@ -966,7 +956,12 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
-            groupChatManager.createDialog(dialog, additionalParams, new QBEntityCallbackImpl<QBDialog>() {
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
+
+            groupChatManager.createDialog(dialog, new QBEntityCallbackImpl<QBDialog>() {
                 @Override
                 public void onSuccess(QBDialog dialog, Bundle args) {
                     Log.i(TAG, "dialog: " + dialog);
@@ -987,9 +982,6 @@ public class SnippetsChat extends Snippets {
                 log("Please login first");
                 return;
             }
-            QBRequestCreateBuilder additionalParams = new QBRequestCreateBuilder();
-//            additionalParams.addParameter("data[class_name]", "Advert");
-//            additionalParams.addParameter("data[title]", "bingo");
 
             ArrayList<Integer> occupantIdsList = new ArrayList<Integer>();
             occupantIdsList.add(ApplicationConfig.testUserID2);
@@ -1000,10 +992,15 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
+
 
             QBDialog createdDialog = null;
             try {
-                createdDialog = groupChatManager.createDialog(dialog, additionalParams);
+                createdDialog = groupChatManager.createDialog(dialog);
             }catch (QBResponseException e){
                 setException(e);
             }
@@ -1024,12 +1021,15 @@ public class SnippetsChat extends Snippets {
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
             requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
-//            requestBuilder.addParameter("data[class_name]", "Advert");
-//            requestBuilder.addParameter("data[title]", "bingo");
 
             QBDialog dialog = new QBDialog("5444bba7535c121d3302245f");
             dialog.setName("Chat with Garry and John");
             dialog.setPhoto("452444");
+
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
 
             groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallbackImpl<QBDialog>() {
                 @Override
@@ -1060,8 +1060,11 @@ public class SnippetsChat extends Snippets {
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
             requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
-//            requestBuilder.addParameter("data[class_name]", "Advert");
-//            requestBuilder.addParameter("data[title]", "bingo");
+
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
 
             QBDialog updatedDialog = null;
             try {

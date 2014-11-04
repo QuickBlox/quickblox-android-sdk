@@ -114,6 +114,12 @@ public class SnippetsAuth extends Snippets{
                     handleErrors(errors);
                 }
             });
+
+            try {
+                BaseService.createFromExistentToken("31ed199120fb998dc472aea785a1825809ad5c04", null);
+            } catch (BaseServiceException e) {
+                e.printStackTrace();
+            }
         }
     };
 
