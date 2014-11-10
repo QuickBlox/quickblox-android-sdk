@@ -199,12 +199,18 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySessionSynchronous = new AsyncSnippet("delete session (synchronous)", context) {
         @Override
         public void executeAsync() {
+            boolean success = false;
             try {
                 QBAuth.deleteSession();
+                success = true;
                 Log.i(TAG, "session destroyed ");
             } catch (QBResponseException e) {
                 Log.i(TAG, "destroy fail");
                 setException(e);
+            }
+
+            if(success){
+
             }
         }
     };

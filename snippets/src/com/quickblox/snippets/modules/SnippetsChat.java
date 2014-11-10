@@ -1289,7 +1289,8 @@ public class SnippetsChat extends Snippets {
                 return;
             }
 
-            QBPresence presence = new QBPresence(QBPresence.Type.online);
+//            QBPresence presence = new QBPresence(QBPresence.Type.online);
+            QBPresence presence = new QBPresence(QBPresence.Type.online, "I'm at home", 1, QBPresence.Mode.available);
             try {
                 сhatRoster.sendPresence(presence);
             } catch (SmackException.NotConnectedException e) {
