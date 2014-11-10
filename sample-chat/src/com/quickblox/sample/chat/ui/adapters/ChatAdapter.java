@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.quickblox.chat.model.QBChatHistoryMessage;
 import com.quickblox.chat.model.QBMessage;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
+import com.quickblox.users.model.QBUser;
 
 import java.util.Date;
 import java.util.List;
@@ -68,7 +70,9 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        setAlignment(holder, chatMessage.getSenderId() == ((ApplicationSingleton)context.getApplication()).getCurrentUser().getId());
+        QBUser currentUser = ((ApplicationSingleton)context.getApplication()).getCurrentUser();
+        boolean isOutgoing = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
+        setAlignment(holder, isOutgoing);
         holder.txtMessage.setText(chatMessage.getBody());
         if (chatMessage.getSenderId() != null) {
             holder.txtInfo.setText(chatMessage.getSenderId() + ": " + getTimeText(chatMessage));
@@ -87,8 +91,8 @@ public class ChatAdapter extends BaseAdapter {
         chatMessages.addAll(messages);
     }
 
-    private void setAlignment(ViewHolder holder, boolean isIncoming) {
-        if (isIncoming) {
+    private void setAlignment(ViewHolder holder, boolean isOutgoing) {
+        if (!isOutgoing) {
             holder.contentWithBG.setBackgroundResource(R.drawable.incoming_message_bg);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
