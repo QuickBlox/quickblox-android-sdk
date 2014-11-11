@@ -19,8 +19,10 @@ import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
 import com.quickblox.users.model.QBUser;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class ChatAdapter extends BaseAdapter {
 
@@ -141,10 +143,13 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private String getTimeText(QBMessage message) {
+        Date date;
         if (message instanceof QBChatHistoryMessage){
-            return DateFormat.format(DATE_FORMAT, ((QBChatHistoryMessage)message).getDateSent()).toString();
+            date = new Date(((QBChatHistoryMessage) message).getDateSent() * 1000);
+        }else{
+            date = new Date();
         }
-        return DateFormat.format(DATE_FORMAT, new Date().getTime()).toString();
+        return DateFormat.format(DATE_FORMAT, date.getTime()).toString();
     }
 
     private static class ViewHolder {
