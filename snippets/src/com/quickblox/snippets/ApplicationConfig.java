@@ -25,7 +25,7 @@ public class ApplicationConfig {
     public static String testUserLogin2 = "igorquickblox91";
     public static String testUserPassword2 = "igorquickblox91";
     //
-    public static String testRoomJID = "99_54424528535c12a13801b1fa@muc.chat.quickblox.com";
+    public static String testRoomJID = "99_546cc796535c12aaaf000fa6@muc.chat.quickblox.com";
 
 
     public static int getTestUserID1(){

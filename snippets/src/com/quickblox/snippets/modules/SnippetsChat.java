@@ -193,6 +193,8 @@ public class SnippetsChat extends Snippets {
         snippets.add(markMessagesAsReadSynchronous);
         snippets.add(deleteMessage);
         snippets.add(deleteMessageSynchronous);
+        snippets.add(createPrivateMessageSynchronous);
+        snippets.add(createGroupMessageSynchronous);
         //
         //
         snippets.add(sendPresence);
@@ -569,9 +571,8 @@ public class SnippetsChat extends Snippets {
 
                 // create a message
                 QBChatMessage chatMessage = new QBChatMessage();
-//                chatMessage.setBody("Hey man! " + new Random().nextInt());
+                chatMessage.setBody("Hey man! " + new Random().nextInt());
                 chatMessage.setProperty("name", "bob");
-                chatMessage.setProperty("body", "{\"lattitude\":\"28.6156275\"}");
                 chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
 
                 chatMessage.setMarkable(true);
@@ -1234,6 +1235,78 @@ public class SnippetsChat extends Snippets {
                 Log.i(TAG, "deleted OK" );
             }catch (QBResponseException e){
                 setException(e);
+            }
+        }
+    };
+
+
+
+
+    Snippet createPrivateMessageSynchronous = new AsyncSnippet("Create Private Message (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getTestUserID2());
+            if (privateChat == null) {
+                privateChat = privateChatManager.createChat(ApplicationConfig.getTestUserID2(), privateChatMessageListener);
+            }
+            QBChatMessage msg = new QBChatMessage();
+            msg.setDialogId("546cc796535c12aaaf000fa6");
+            msg.setBody("hello2");
+
+            QBAttachment attachment = new QBAttachment("photo");
+            attachment.setId("123123");
+            msg.addAttachment(attachment);
+            QBAttachment attachment2 = new QBAttachment("video");
+            attachment2.setUrl("api.qb.com/image.jpg");
+            msg.addAttachment(attachment2);
+
+            msg.setProperty("p1", "v1");
+            msg.setProperty("p2", "v2");
+
+            QBChatHistoryMessage createdMsg = null;
+            try {
+                createdMsg = privateChat.createMessage(msg);
+            } catch (QBResponseException e) {
+                e.printStackTrace();
+            }
+
+            if(createdMsg != null){
+                Log.i(TAG, "created message\n: " + createdMsg);
+            }
+        }
+    };
+
+    Snippet createGroupMessageSynchronous = new AsyncSnippet("Create Group Message (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            QBChatMessage msg = new QBChatMessage();
+            msg.setDialogId("546cc796535c12aaaf000fa6");
+            msg.setBody("hello2");
+
+            QBAttachment attachment = new QBAttachment("photo");
+            attachment.setId("123123");
+            msg.addAttachment(attachment);
+            QBAttachment attachment2 = new QBAttachment("video");
+            attachment2.setUrl("api.qb.com/image.jpg");
+            msg.addAttachment(attachment2);
+
+            msg.setProperty("p1", "v1");
+            msg.setProperty("p2", "v2");
+
+            QBChatHistoryMessage createdMsg = null;
+            try {
+                createdMsg = currentChatRoom.createMessage(msg);
+            } catch (QBResponseException e) {
+                e.printStackTrace();
+            }
+
+            if(createdMsg != null){
+                Log.i(TAG, "created message\n: " + createdMsg);
             }
         }
     };
