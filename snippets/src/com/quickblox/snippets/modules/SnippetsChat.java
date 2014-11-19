@@ -262,6 +262,7 @@ public class SnippetsChat extends Snippets {
     ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
     //
 
+    static int d = 0;
 
     Snippet loginInChat = new Snippet("login to Chat") {
         @Override
@@ -269,8 +270,14 @@ public class SnippetsChat extends Snippets {
 
             // init test user
             QBUser qbUser = new QBUser();
-            qbUser.setId(ApplicationConfig.getTestUserID1());
-            qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat1());
+            if(d % 2 == 0) {
+                qbUser.setId(ApplicationConfig.getTestUserID1());
+                qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat1());
+            }else{
+                qbUser.setId(ApplicationConfig.getTestUserID2());
+                qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat2());
+            }
+            ++d;
 
             log("login with user: " + qbUser);
 
@@ -357,7 +364,7 @@ public class SnippetsChat extends Snippets {
                 public void onSuccess() {
                     log("Logout success");
 
-                    chatService.destroy();
+//                    chatService.destroy();
                 }
 
                 @Override
