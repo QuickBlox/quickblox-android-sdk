@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.chat.QBGroupChat;
@@ -38,10 +37,8 @@ import com.quickblox.chat.model.QBPresence;
 import com.quickblox.chat.model.QBPrivacyList;
 import com.quickblox.chat.model.QBPrivacyListItem;
 import com.quickblox.chat.model.QBRosterEntry;
-import com.quickblox.core.request.QBRequestCreateBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
-import com.quickblox.core.server.BaseService;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.snippets.ApplicationConfig;
 import com.quickblox.snippets.AsyncSnippet;
@@ -59,7 +56,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -194,6 +193,8 @@ public class SnippetsChat extends Snippets {
         snippets.add(markMessagesAsReadSynchronous);
         snippets.add(deleteMessage);
         snippets.add(deleteMessageSynchronous);
+        snippets.add(createPrivateMessageSynchronous);
+        snippets.add(createGroupMessageSynchronous);
         //
         //
         snippets.add(sendPresence);
@@ -261,6 +262,7 @@ public class SnippetsChat extends Snippets {
     ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
     //
 
+    static int d = 0;
 
     Snippet loginInChat = new Snippet("login to Chat") {
         @Override
@@ -268,8 +270,14 @@ public class SnippetsChat extends Snippets {
 
             // init test user
             QBUser qbUser = new QBUser();
-            qbUser.setId(ApplicationConfig.getTestUserID1());
-            qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat1());
+            if(d % 2 == 0) {
+                qbUser.setId(ApplicationConfig.getTestUserID1());
+                qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat1());
+            }else{
+                qbUser.setId(ApplicationConfig.getTestUserID2());
+                qbUser.setPassword(ApplicationConfig.getTestUserPasswordForChat2());
+            }
+            ++d;
 
             log("login with user: " + qbUser);
 
@@ -356,7 +364,7 @@ public class SnippetsChat extends Snippets {
                 public void onSuccess() {
                     log("Logout success");
 
-                    chatService.destroy();
+//                    chatService.destroy();
                 }
 
                 @Override
@@ -570,9 +578,8 @@ public class SnippetsChat extends Snippets {
 
                 // create a message
                 QBChatMessage chatMessage = new QBChatMessage();
-//                chatMessage.setBody("Hey man! " + new Random().nextInt());
+                chatMessage.setBody("Hey man! " + new Random().nextInt());
                 chatMessage.setProperty("name", "bob");
-                chatMessage.setProperty("body", "{\"lattitude\":\"28.6156275\"}");
                 chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
 
                 chatMessage.setMarkable(true);
@@ -917,11 +924,6 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogsSynchronous = new AsyncSnippet("Get Dialogs (synchronous)", context) {
         @Override
         public void executeAsync() {
-            try {
-                BaseService.createFromExistentToken("65a84b4fc2757caa8adf7191f1f6f5946479e85f", new Date());
-            } catch (BaseServiceException e) {
-                e.printStackTrace();
-            }
 
             Bundle bundle = new Bundle();
             //
@@ -953,10 +955,6 @@ public class SnippetsChat extends Snippets {
                 return;
             }
 
-            QBRequestCreateBuilder additionalParams = new QBRequestCreateBuilder();
-//            additionalParams.addParameter("data[class_name]", "Advert");
-//            additionalParams.addParameter("data[title]", "bingo");
-
             ArrayList<Integer> occupantIdsList = new ArrayList<Integer>();
             occupantIdsList.add(ApplicationConfig.testUserID2);
 
@@ -966,7 +964,12 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
-            groupChatManager.createDialog(dialog, additionalParams, new QBEntityCallbackImpl<QBDialog>() {
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
+
+            groupChatManager.createDialog(dialog, new QBEntityCallbackImpl<QBDialog>() {
                 @Override
                 public void onSuccess(QBDialog dialog, Bundle args) {
                     Log.i(TAG, "dialog: " + dialog);
@@ -987,9 +990,6 @@ public class SnippetsChat extends Snippets {
                 log("Please login first");
                 return;
             }
-            QBRequestCreateBuilder additionalParams = new QBRequestCreateBuilder();
-//            additionalParams.addParameter("data[class_name]", "Advert");
-//            additionalParams.addParameter("data[title]", "bingo");
 
             ArrayList<Integer> occupantIdsList = new ArrayList<Integer>();
             occupantIdsList.add(ApplicationConfig.testUserID2);
@@ -1000,10 +1000,15 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
+
 
             QBDialog createdDialog = null;
             try {
-                createdDialog = groupChatManager.createDialog(dialog, additionalParams);
+                createdDialog = groupChatManager.createDialog(dialog);
             }catch (QBResponseException e){
                 setException(e);
             }
@@ -1024,12 +1029,15 @@ public class SnippetsChat extends Snippets {
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
             requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
-//            requestBuilder.addParameter("data[class_name]", "Advert");
-//            requestBuilder.addParameter("data[title]", "bingo");
 
             QBDialog dialog = new QBDialog("5444bba7535c121d3302245f");
             dialog.setName("Chat with Garry and John");
             dialog.setPhoto("452444");
+
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
 
             groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallbackImpl<QBDialog>() {
                 @Override
@@ -1060,8 +1068,11 @@ public class SnippetsChat extends Snippets {
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
             requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
-//            requestBuilder.addParameter("data[class_name]", "Advert");
-//            requestBuilder.addParameter("data[title]", "bingo");
+
+//            Map<String, String> data = new HashMap<String, String>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[title]", "bingo");
+//            dialog.setData(data);
 
             QBDialog updatedDialog = null;
             try {
@@ -1236,6 +1247,78 @@ public class SnippetsChat extends Snippets {
     };
 
 
+
+
+    Snippet createPrivateMessageSynchronous = new AsyncSnippet("Create Private Message (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getTestUserID2());
+            if (privateChat == null) {
+                privateChat = privateChatManager.createChat(ApplicationConfig.getTestUserID2(), privateChatMessageListener);
+            }
+            QBChatMessage msg = new QBChatMessage();
+            msg.setDialogId("546cc796535c12aaaf000fa6");
+            msg.setBody("hello2");
+
+            QBAttachment attachment = new QBAttachment("photo");
+            attachment.setId("123123");
+            msg.addAttachment(attachment);
+            QBAttachment attachment2 = new QBAttachment("video");
+            attachment2.setUrl("api.qb.com/image.jpg");
+            msg.addAttachment(attachment2);
+
+            msg.setProperty("p1", "v1");
+            msg.setProperty("p2", "v2");
+
+            QBChatHistoryMessage createdMsg = null;
+            try {
+                createdMsg = privateChat.createMessage(msg);
+            } catch (QBResponseException e) {
+                e.printStackTrace();
+            }
+
+            if(createdMsg != null){
+                Log.i(TAG, "created message\n: " + createdMsg);
+            }
+        }
+    };
+
+    Snippet createGroupMessageSynchronous = new AsyncSnippet("Create Group Message (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            QBChatMessage msg = new QBChatMessage();
+            msg.setDialogId("546cc796535c12aaaf000fa6");
+            msg.setBody("hello2");
+
+            QBAttachment attachment = new QBAttachment("photo");
+            attachment.setId("123123");
+            msg.addAttachment(attachment);
+            QBAttachment attachment2 = new QBAttachment("video");
+            attachment2.setUrl("api.qb.com/image.jpg");
+            msg.addAttachment(attachment2);
+
+            msg.setProperty("p1", "v1");
+            msg.setProperty("p2", "v2");
+
+            QBChatHistoryMessage createdMsg = null;
+            try {
+                createdMsg = currentChatRoom.createMessage(msg);
+            } catch (QBResponseException e) {
+                e.printStackTrace();
+            }
+
+            if(createdMsg != null){
+                Log.i(TAG, "created message\n: " + createdMsg);
+            }
+        }
+    };
+
+
     //
     ///////////////////////////////////////////// Roster /////////////////////////////////////////////
     //
@@ -1286,7 +1369,8 @@ public class SnippetsChat extends Snippets {
                 return;
             }
 
-            QBPresence presence = new QBPresence(QBPresence.Type.online);
+//            QBPresence presence = new QBPresence(QBPresence.Type.online);
+            QBPresence presence = new QBPresence(QBPresence.Type.online, "I'm at home", 1, QBPresence.Mode.available);
             try {
                 сhatRoster.sendPresence(presence);
             } catch (SmackException.NotConnectedException e) {

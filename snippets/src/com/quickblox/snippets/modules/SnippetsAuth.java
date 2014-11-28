@@ -114,6 +114,12 @@ public class SnippetsAuth extends Snippets{
                     handleErrors(errors);
                 }
             });
+
+            try {
+                BaseService.createFromExistentToken("31ed199120fb998dc472aea785a1825809ad5c04", null);
+            } catch (BaseServiceException e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -193,12 +199,18 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySessionSynchronous = new AsyncSnippet("delete session (synchronous)", context) {
         @Override
         public void executeAsync() {
+            boolean success = false;
             try {
                 QBAuth.deleteSession();
+                success = true;
                 Log.i(TAG, "session destroyed ");
             } catch (QBResponseException e) {
                 Log.i(TAG, "destroy fail");
                 setException(e);
+            }
+
+            if(success){
+
             }
         }
     };

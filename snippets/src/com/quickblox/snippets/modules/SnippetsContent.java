@@ -572,7 +572,7 @@ public class SnippetsContent extends Snippets{
         public void execute() {
             final int fileId = 212963;
 
-            QBContent.downloadFileTask(fileId, new QBEntityCallback<InputStream>(){
+            QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
@@ -581,11 +581,6 @@ public class SnippetsContent extends Snippets{
                     String contentFromFile = Utils.getContentFromFile(inputStream);
                     Log.i(TAG, "file downloaded: "+contentFromFile);
                     Log.i(TAG, "params: " + params);
-                }
-
-                @Override
-                public void onSuccess() {
-
                 }
 
                 @Override
