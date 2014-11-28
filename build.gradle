@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.+'
+        classpath 'com.android.tools.build:gradle:0.14.4'
     }
 }
 
@@ -12,5 +12,5 @@ ext.compileSdkVersion = 19
 ext.buildToolsVersion = "19.1"
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+    gradleVersion = '2.2.1'
 }
