@@ -28,6 +28,27 @@ public class ApplicationConfig {
     public static String testRoomJID = "99_546cc796535c12aaaf000fa6@muc.chat.quickblox.com";
 
 
+//    // stage
+//    //
+//    public static String AppID = "6";
+//    public static String AuthKey = "4EGTYEqm6ESVRVV";
+//    public static String AuthSecret = "Zh7mgXWzLxamK8x";
+//    //
+//    public static String ServerApiDomain = "api.stage.quickblox.com";
+//    public static String ServerChatDomain = "chatstage.quickblox.com";
+//    public static String ContentBucket = "qbprod";
+//    //
+//    public static int testUserID1 = 1529816;
+//    public static String testUserLogin1 = "igorquickblox55";
+//    public static String testUserPassword1 = "igorquickblox55";
+//    //
+//    public static int testUserID2 = 1022725;
+//    public static String testUserLogin2 = "igorquickblox4";
+//    public static String testUserPassword2 = "igorquickblox4";
+//    //
+//    public static String testRoomJID = "6_546de4c9efa357d717000004@muc.chatstage.quickblox.com";
+
+
     public static int getTestUserID1(){
         return useUser1 ? testUserID1 : testUserID2;
     }

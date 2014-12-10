@@ -7,6 +7,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.Consts;
 import com.quickblox.location.QBLocations;
+import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
@@ -28,6 +29,9 @@ public class SnippetsLocation extends Snippets {
 
         snippets.add(createLocation);
         snippets.add(createLocationSynchronous);
+        //
+        snippets.add(createLocationWithPush);
+        snippets.add(createLocationWithPushSynchronous);
         //
         snippets.add(getLocationWithId);
         snippets.add(getLocationWithIdSynchronous);
@@ -103,6 +107,57 @@ public class SnippetsLocation extends Snippets {
             QBLocation locationResult = null;
             try {
                 locationResult = QBLocations.createLocation(location);
+            } catch (QBResponseException e) {
+                setException(e);
+            }
+            if (locationResult != null) {
+                Log.i(TAG, "Location is: " + locationResult);
+            }
+        }
+    };
+
+
+    //
+    //////////////////////////////////// Create Location with push /////////////////////////////////
+    //
+
+
+    Snippet createLocationWithPush = new Snippet("create location with push") {
+        @Override
+        public void execute() {
+            double latitude = 25.3433;
+            double longitude = -5.3454;
+            String status = "Checked here!";
+            //
+            final QBLocation location = new QBLocation(latitude, longitude, status);
+
+            QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+
+                @Override
+                public void onSuccess(QBLocation qbLocation, Bundle args) {
+                    Log.i(TAG, "Location is: " + qbLocation);
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    handleErrors(errors);
+                }
+            }, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
+        }
+    };
+
+    Snippet createLocationWithPushSynchronous = new AsyncSnippet("create location with push (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            double latitude = 25.3433;
+            double longitude = -5.3454;
+            String status = "Checked here!";
+            //
+            final QBLocation location = new QBLocation(latitude, longitude, status);
+
+            QBLocation locationResult = null;
+            try {
+                locationResult = QBLocations.createLocation(location, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
             } catch (QBResponseException e) {
                 setException(e);
             }

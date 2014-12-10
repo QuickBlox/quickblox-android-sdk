@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.BaseServiceException;
@@ -42,6 +43,9 @@ public class SnippetsAuth extends Snippets{
         //
         snippets.add(destroySession);
         snippets.add(destroySessionSynchronous);
+        //
+        snippets.add(getSession);
+        snippets.add(getSessionSynchronous);
     }
 
 
@@ -199,18 +203,48 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySessionSynchronous = new AsyncSnippet("delete session (synchronous)", context) {
         @Override
         public void executeAsync() {
-            boolean success = false;
             try {
                 QBAuth.deleteSession();
-                success = true;
                 Log.i(TAG, "session destroyed ");
             } catch (QBResponseException e) {
                 Log.i(TAG, "destroy fail");
                 setException(e);
             }
+        }
+    };
 
-            if(success){
 
+    //
+    ///////////////////////////////////// Get session //////////////////////////////////////////
+    //
+
+
+    Snippet getSession = new Snippet("get session") {
+        @Override
+        public void execute() {
+            QBAuth.getSession(new QBEntityCallbackImpl<QBSession>() {
+                @Override
+                public void onSuccess(QBSession qbSession, Bundle bundle) {
+                    Log.i(TAG, "session: " + qbSession);
+                }
+
+                @Override
+                public void onError(List<String> strings) {
+
+                }
+            });
+        }
+    };
+
+    Snippet getSessionSynchronous = new AsyncSnippet("get session (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            try {
+                QBSession session = QBAuth.getSession();
+                Log.i(TAG, "session: " + session);
+            } catch (QBResponseException e) {
+                Log.i(TAG, "get session fail");
+                setException(e);
             }
         }
     };

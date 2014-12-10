@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -197,7 +198,8 @@ public class SnippetsCustomObjects extends Snippets{
         public void execute() {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setPagesLimit(10);
-            requestBuilder.gt("rating", 1);
+//            requestBuilder.gt("rating", 1);
+//            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
 
             QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
 
@@ -417,13 +419,16 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "53f365f06fd1dfa9c43ce5a3");
+            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "546c757f535c1287db0adb4d");
             //
             HashMap<String, Object> fields = new HashMap<String, Object>();
             fields.put("rating", 10);
             record.setFields(fields);
 
-            QBCustomObjects.updateObject(record, (QBRequestUpdateBuilder) null, new QBEntityCallbackImpl<QBCustomObject>() {
+            QBRequestUpdateBuilder rb = new QBRequestUpdateBuilder();
+            rb.updateArrayValue("tags", 1, "44");
+
+            QBCustomObjects.updateObject(record, rb, new QBEntityCallbackImpl<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> updated record: : " + object.toString());
