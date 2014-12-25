@@ -1,4 +1,4 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.customobjects.model.QBCustomObjectFileField;
 import com.quickblox.customobjects.model.QBPermissions;
 import com.quickblox.customobjects.model.QBPermissionsLevel;
-import com.quickblox.snippets.*;
+import com.sdk.snippets.*;
 
 import java.io.File;
 import java.io.InputStream;

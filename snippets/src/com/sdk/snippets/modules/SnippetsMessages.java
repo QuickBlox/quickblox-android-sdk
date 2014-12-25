@@ -1,4 +1,4 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,10 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.*;
-import com.quickblox.snippets.ApplicationConfig;
-import com.quickblox.snippets.AsyncSnippet;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.sdk.snippets.ApplicationConfig;
+import com.sdk.snippets.AsyncSnippet;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -287,7 +287,7 @@ public class SnippetsMessages extends Snippets{
         public void execute() {
             // recipient
             StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(ApplicationConfig.testUserID1);
+            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
 
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);
@@ -337,7 +337,7 @@ public class SnippetsMessages extends Snippets{
         public void executeAsync() {
             // recipient
             StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(ApplicationConfig.testUserID1);
+            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
 
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);

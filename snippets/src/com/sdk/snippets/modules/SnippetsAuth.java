@@ -1,12 +1,10 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.BaseService;
@@ -14,10 +12,10 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.snippets.ApplicationConfig;
-import com.quickblox.snippets.AsyncSnippet;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.sdk.snippets.ApplicationConfig;
+import com.sdk.snippets.AsyncSnippet;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
 
 import java.util.Date;
 import java.util.List;
@@ -106,7 +104,8 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void execute() {
 
-            QBAuth.createSession(new QBUser(ApplicationConfig.testUserLogin1, ApplicationConfig.testUserPassword1), new QBEntityCallbackImpl<QBSession>() {
+            QBAuth.createSession(new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
+                    ApplicationConfig.getInstance().getTestUserPassword1()), new QBEntityCallbackImpl<QBSession>() {
                 @Override
                 public void onSuccess(QBSession session, Bundle args) {
                     super.onSuccess(session, args);
@@ -132,7 +131,8 @@ public class SnippetsAuth extends Snippets{
         public void executeAsync() {
             QBSession session = null;
             try {
-                QBUser user = new QBUser(ApplicationConfig.testUserLogin1, ApplicationConfig.testUserPassword1);
+                QBUser user = new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
+                        ApplicationConfig.getInstance().getTestUserPassword1());
                 session = QBAuth.createSession(user);
             } catch (QBResponseException e) {
                 setException(e);
@@ -222,6 +222,7 @@ public class SnippetsAuth extends Snippets{
     Snippet getSession = new Snippet("get session") {
         @Override
         public void execute() {
+
             QBAuth.getSession(new QBEntityCallbackImpl<QBSession>() {
                 @Override
                 public void onSuccess(QBSession qbSession, Bundle bundle) {

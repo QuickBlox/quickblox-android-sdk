@@ -1,16 +1,11 @@
-package com.quickblox.snippets.activities;
+package com.sdk.snippets.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.quickblox.snippets.R;
-import com.quickblox.snippets.SnippetsList;
-import com.quickblox.snippets.modules.SnippetsChat;
+import com.sdk.snippets.R;
+import com.sdk.snippets.SnippetsList;
+import com.sdk.snippets.modules.SnippetsChat;
 
-/**
- * User: Oleg Soroka
- * Date: 11.10.12
- * Time: 14:56
- */
 public class ChatActivity extends Activity {
 
     @Override

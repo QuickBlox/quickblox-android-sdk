@@ -1,4 +1,4 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.quickblox.snippets.AsyncSnippet;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.sdk.snippets.AsyncSnippet;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
 
 import java.util.ArrayList;
 import java.util.List;

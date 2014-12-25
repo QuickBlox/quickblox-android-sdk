@@ -1,4 +1,4 @@
-package com.quickblox.snippets;
+package com.sdk.snippets;
 
 /**
  * User: Oleg Soroka

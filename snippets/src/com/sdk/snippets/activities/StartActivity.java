@@ -1,11 +1,10 @@
-package com.quickblox.snippets.activities;
+package com.sdk.snippets.activities;
 
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
-import com.quickblox.snippets.InitializeSnippets;
-import com.quickblox.snippets.R;
+import com.sdk.snippets.R;
 
 public class StartActivity extends TabActivity {
 
@@ -13,8 +12,6 @@ public class StartActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        new InitializeSnippets();
 
         TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 

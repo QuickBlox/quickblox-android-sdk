@@ -1,10 +1,10 @@
-package com.quickblox.snippets.activities;
+package com.sdk.snippets.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.quickblox.snippets.R;
-import com.quickblox.snippets.SnippetsList;
-import com.quickblox.snippets.modules.SnippetsAuth;
+import com.sdk.snippets.R;
+import com.sdk.snippets.SnippetsList;
+import com.sdk.snippets.modules.SnippetsAuth;
 
 /**
  * User: Oleg Soroka

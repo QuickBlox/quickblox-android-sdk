@@ -1,4 +1,4 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,10 +12,10 @@ import com.quickblox.core.Consts;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.snippets.ApplicationConfig;
-import com.quickblox.snippets.AsyncSnippet;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.sdk.snippets.ApplicationConfig;
+import com.sdk.snippets.AsyncSnippet;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +122,8 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
 
-            final QBUser user = new QBUser(ApplicationConfig.testUserLogin1, ApplicationConfig.testUserPassword1);
+            final QBUser user = new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
+                    ApplicationConfig.getInstance().getTestUserPassword1());
 
             final QBRequestCanceler canceler = QBUsers.signIn(user, new QBEntityCallbackImpl<QBUser>() {
 
@@ -143,8 +144,8 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void executeAsync() {
             QBUser user = new QBUser();
-            user.setLogin(ApplicationConfig.testUserLogin1);
-            user.setPassword(ApplicationConfig.testUserPassword1);
+            user.setLogin(ApplicationConfig.getInstance().getTestUserLogin1());
+            user.setPassword(ApplicationConfig.getInstance().getTestUserPassword1());
             QBUser userResult = null;
             try {
                 userResult =  QBUsers.signIn(user);

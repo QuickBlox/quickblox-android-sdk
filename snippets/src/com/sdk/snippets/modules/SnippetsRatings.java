@@ -1,4 +1,4 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.util.Log;
@@ -17,8 +17,8 @@ import com.quickblox.ratings.result.QBGameModeResult;
 import com.quickblox.ratings.result.QBScorePagedResult;
 import com.quickblox.ratings.result.QBScoreResult;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
 
 import java.util.Date;
 import java.util.List;

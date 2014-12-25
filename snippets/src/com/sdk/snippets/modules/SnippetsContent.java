@@ -1,10 +1,10 @@
-package com.quickblox.snippets.modules;
+package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.ContentType;
 import com.quickblox.core.helper.FileHelper;
@@ -14,11 +14,11 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
 import com.quickblox.content.model.amazon.PostResponse;
-import com.quickblox.snippets.AsyncSnippet;
-import com.quickblox.snippets.R;
-import com.quickblox.snippets.Snippet;
-import com.quickblox.snippets.Snippets;
-import com.quickblox.snippets.Utils;
+import com.sdk.snippets.R;
+import com.sdk.snippets.AsyncSnippet;
+import com.sdk.snippets.Snippet;
+import com.sdk.snippets.Snippets;
+import com.sdk.snippets.Utils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ import java.util.List;
 public class SnippetsContent extends Snippets{
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
-    private static final String FILE_UID = "87f5f1aa368b45e0bccd688e457f08ea00";
+    private static final String FILE_UID = "cc07e4fd13ff4329ac5efd9deb87bd0c00";
 
     File file1 = null;
     File file2 = null;
@@ -269,7 +269,6 @@ public class SnippetsContent extends Snippets{
     /////////////////////////////////////// Upload file ////////////////////////////////////////////
     //
 
-
     Snippet uploadFile = new Snippet("upload file") {
         @Override
         public void execute() {
@@ -282,7 +281,12 @@ public class SnippetsContent extends Snippets{
 
                 @Override
                 public void onError(List<String> errors) {
-                        handleErrors(errors);
+                    handleErrors(errors);
+                }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
                 }
             });
         }
@@ -295,7 +299,12 @@ public class SnippetsContent extends Snippets{
 
             PostResponse amazonS3Response = null;
             try {
-                amazonS3Response = QBContent.uploadFile(file1, params);
+                amazonS3Response = QBContent.uploadFile(file1, params, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -304,7 +313,6 @@ public class SnippetsContent extends Snippets{
             }
         }
     };
-
 
     //
     //////////////////////////////////// Declare file uploaded /////////////////////////////////////
@@ -405,6 +413,11 @@ public class SnippetsContent extends Snippets{
                 public void onError(List<String> errors) {
                        handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -415,7 +428,12 @@ public class SnippetsContent extends Snippets{
             InputStream inputStream = null;
             Bundle params = new Bundle();
             try {
-                inputStream = QBContent.downloadFile(FILE_UID, params);
+                inputStream = QBContent.downloadFile(FILE_UID, params, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }

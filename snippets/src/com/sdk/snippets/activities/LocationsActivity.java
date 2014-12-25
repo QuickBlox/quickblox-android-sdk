@@ -1,16 +1,11 @@
-package com.quickblox.snippets.activities;
+package com.sdk.snippets.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.quickblox.snippets.R;
-import com.quickblox.snippets.SnippetsList;
-import com.quickblox.snippets.modules.SnippetsLocation;
+import com.sdk.snippets.R;
+import com.sdk.snippets.SnippetsList;
+import com.sdk.snippets.modules.SnippetsLocation;
 
-/**
- * User: Oleg Soroka
- * Date: 02.10.12
- * Time: 09:38
- */
 public class LocationsActivity extends Activity {
 
     @Override
