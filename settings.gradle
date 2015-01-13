@@ -11,8 +11,9 @@ include ':sample-videochat-webrtc'
 include 'pull-to-refresh'
 project(':pull-to-refresh').projectDir = new File('sample-chat/libraries/pull-to-refresh')
 
-// for development purpose
-//
+
+////// for development purpose
+//////
 //include ':quickblox-android-sdk-core'
 //project(':quickblox-android-sdk-core').projectDir = new File('../SDK-android/quickblox-android-sdk-core')
 //include ':quickblox-android-sdk-chat'

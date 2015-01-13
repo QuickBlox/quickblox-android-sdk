@@ -22,8 +22,8 @@ dependencies {
             '../jars/quickblox-android-sdk-messages-2.1.jar',
             '../jars/quickblox-android-sdk-ratings-2.1.jar',)
 
-    // for development purpose
-    //
+//    // for development purpose
+//    //
 //    provided project(':quickblox-android-sdk-core')
 //    provided project(':quickblox-android-sdk-chat')
 //    provided project(':quickblox-android-sdk-ratings')

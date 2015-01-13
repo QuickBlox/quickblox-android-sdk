@@ -31,7 +31,7 @@ import java.util.List;
 public class SnippetsContent extends Snippets{
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
-    private static final String FILE_UID = "cc07e4fd13ff4329ac5efd9deb87bd0c00";
+    private static final String FILE_UID = "72bf17cf1c6b47118485b527435b5fd500";
 
     File file1 = null;
     File file2 = null;
@@ -81,9 +81,9 @@ public class SnippetsContent extends Snippets{
         snippets.add(updateFileTaskSynchronous);
 
         // get file1
-        int fileId = R.raw.sample_file;
+        int fileId = R.raw.kharkov;
         InputStream is = context.getResources().openRawResource(fileId);
-        file1 = FileHelper.getFileInputStream(is, "sample_file.txt", "qb_snippets12");
+        file1 = FileHelper.getFileInputStream(is, "kharkov.jpg", "qb_kharkiv");
 
         // get file1
         int fileId2 = R.raw.sample_file2;
@@ -562,6 +562,11 @@ public class SnippetsContent extends Snippets{
                 public void onError(List<String> errors) {
                       handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -572,7 +577,12 @@ public class SnippetsContent extends Snippets{
             Boolean fileIsPublic = false;
             QBFile qbFile = null;
             try {
-                qbFile = QBContent.uploadFileTask(file1, fileIsPublic, (String) null);
+                qbFile = QBContent.uploadFileTask(file1, fileIsPublic, (String) null, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -588,7 +598,7 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 212963;
+            final int fileId = 231153;
 
             QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
@@ -605,6 +615,11 @@ public class SnippetsContent extends Snippets{
                 public void onError(List<String> errors) {
                                handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -612,19 +627,24 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTaskSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 212963;
+            final int fileId = 231153;
 
             InputStream inputStream = null;
             Bundle params = null;
 
             try {
-                inputStream = QBContent.downloadFileTask(fileId, params);
+                inputStream = QBContent.downloadFileTask(fileId, params, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }
 
             if(inputStream != null){
-                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
+//                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
                 InputStream is = inputStream;
                 String contentFromFile = Utils.getContentFromFile(inputStream);
                 Log.i(TAG, "file downloaded: "+contentFromFile);
@@ -636,7 +656,7 @@ public class SnippetsContent extends Snippets{
 
 
     Snippet updateFileTask = new Snippet("TASK: update file") {
-        final int fileId = 257736;
+        final int fileId = 231089;
         @Override
         public void execute() {
             QBContent.updateFileTask(file2, fileId, null, new QBEntityCallbackImpl<QBFile>(){
@@ -651,6 +671,11 @@ public class SnippetsContent extends Snippets{
                 public void onError(List<String> errors) {
                       handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -659,11 +684,16 @@ public class SnippetsContent extends Snippets{
 
         @Override
         public void executeAsync() {
-            final int fileId = 257736;
+            final int fileId = 231089;
 
             QBFile qbFile = null;
             try {
-                qbFile = QBContent.updateFileTask(file2, fileId, (String)null);
+                qbFile = QBContent.updateFileTask(file2, fileId, (String)null, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }

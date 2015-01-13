@@ -53,6 +53,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 import org.jivesoftware.smackx.muc.RoomInfo;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -698,7 +699,7 @@ public class SnippetsChat extends Snippets {
 
             @Override
             public void processError(final QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
-
+                log("Group chat: " + groupChat.getJid() + ", Error: " + error.getCondition().toString());
             }
 
             @Override
@@ -811,8 +812,21 @@ public class SnippetsChat extends Snippets {
 
             // create a message
             QBChatMessage chatMessage = new QBChatMessage();
-            chatMessage.setBody("[USRXXKLFTY9P]");
-            chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
+//            chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
+
+            JSONObject root = new JSONObject();
+            try {
+                root.put("content", "hahaha");
+                root.put("fromUserID", 2118026);
+                root.put("msgType", "TEXT");
+                root.put("name", "nenemalo");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            log("msg: " + root.toString());
+            chatMessage.setBody(root.toString());
+
+//             String s = "{&quot;content&quot;:&quot;{\&quot;name\&quot;:\&quot;wbyang\&quot;,\&quot;userID\&quot;:2156782,\&quot;userInfo\&quot;:{\&quot;gender\&quot;:\&quot;MALE\&quot;,\&quot;status\&quot;:\&quot;Hi! I&apos;m wbyang. Wanna chat with me?\&quot;}}&quot;,&quot;fromUserID&quot;:2156782,&quot;msgType&quot;:&quot;UPDATE_INFO&quot;,&quot;name&quot;:&quot;wbyang&quot;}"
 
             try {
                 currentChatRoom.sendMessage(chatMessage);
@@ -830,6 +844,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             currentChatRoom = groupChatManager.createGroupChat(ApplicationConfig.getInstance().getTestRoomJid());
+            currentChatRoom.addMessageListener(groupChatMessageListener);
+
+            log("currentChatRoom: " + currentChatRoom);
 
             // create a message
             QBChatMessage chatMessage = new QBChatMessage();

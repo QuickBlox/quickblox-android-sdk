@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.TransferProtocol;
 import com.quickblox.core.result.Result;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class Snippets {
         QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
         QBSettings.getInstance().setContentBucketName(ApplicationConfig.getInstance().getBucketName());
 
-//        QBSettings.getInstance().setTransferProtocol(TransferProtocol.HTTP);
+        QBSettings.getInstance().setTransferProtocol(TransferProtocol.HTTP);
     }
 
     public ArrayList<Snippet> getSnippets() {

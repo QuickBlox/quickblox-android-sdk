@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.quickblox.core.Consts;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.FileHelper;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -837,7 +838,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet uploadFile = new Snippet("upload file") {
         @Override
         public void execute() {
-            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
+            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
             QBCustomObjectsFiles.uploadFile(imageFile, qbCustomObject, "image", new QBEntityCallbackImpl<QBCustomObjectFileField>() {
 
@@ -851,6 +852,11 @@ public class SnippetsCustomObjects extends Snippets{
                 public void onError(List<String> errors) {
                        handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -858,11 +864,16 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet uploadFileSynchronous = new AsyncSnippet("upload file synchronous", context) {
         @Override
         public void executeAsync() {
-            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
+            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
             QBCustomObjectFileField uploadFileResult = null;
             try {
-                uploadFileResult = QBCustomObjectsFiles.uploadFile(imageFile, qbCustomObject, "image");
+                uploadFileResult = QBCustomObjectsFiles.uploadFile(imageFile, qbCustomObject, "image", new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -882,7 +893,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet downloadFile = new Snippet("download file") {
         @Override
         public void execute() {
-            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
+            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
             QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", new QBEntityCallbackImpl<InputStream>(){
                 @Override
@@ -895,6 +906,11 @@ public class SnippetsCustomObjects extends Snippets{
                 public void onError(List<String> errors) {
                     handleErrors(errors);
                 }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
             });
         }
     };
@@ -902,12 +918,17 @@ public class SnippetsCustomObjects extends Snippets{
     AsyncSnippet downloadFileSynchronous = new AsyncSnippet("download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
+            QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
             Bundle bundle = new Bundle();
             InputStream inputStream = null;
             try {
-                inputStream = QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", bundle);
+                inputStream = QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", bundle, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
             } catch (QBResponseException e) {
                 setException(e);
             }
