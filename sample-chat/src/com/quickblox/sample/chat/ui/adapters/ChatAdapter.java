@@ -3,7 +3,6 @@ package com.quickblox.sample.chat.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,24 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.quickblox.chat.model.QBChatHistoryMessage;
-import com.quickblox.chat.model.QBMessage;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.users.model.QBUser;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class ChatAdapter extends BaseAdapter {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
-    private final List<QBMessage> chatMessages;
+    private final List<QBChatMessage> chatMessages;
     private Activity context;
 
-    public ChatAdapter(Activity context, List<QBMessage> chatMessages) {
+    public ChatAdapter(Activity context, List<QBChatMessage> chatMessages) {
         this.context = context;
         this.chatMessages = chatMessages;
     }
@@ -45,7 +41,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     @Override
-    public QBMessage getItem(int position) {
+    public QBChatMessage getItem(int position) {
         if (chatMessages != null) {
             return chatMessages.get(position);
         } else {
@@ -61,7 +57,7 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        QBMessage chatMessage = getItem(position);
+        QBChatMessage chatMessage = getItem(position);
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
@@ -85,11 +81,11 @@ public class ChatAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void add(QBMessage message) {
+    public void add(QBChatMessage message) {
         chatMessages.add(message);
     }
 
-    public void add(List<QBMessage> messages) {
+    public void add(List<QBChatMessage> messages) {
         chatMessages.addAll(messages);
     }
 
@@ -142,14 +138,8 @@ public class ChatAdapter extends BaseAdapter {
         return holder;
     }
 
-    private String getTimeText(QBMessage message) {
-        Date date;
-        if (message instanceof QBChatHistoryMessage){
-            date = new Date(((QBChatHistoryMessage) message).getDateSent() * 1000);
-        }else{
-            date = new Date();
-        }
-        return DateFormat.format(DATE_FORMAT, date.getTime()).toString();
+    private String getTimeText(QBChatMessage message) {
+        return TimeUtils.millisToLongDHMS(message.getDateSent()*1000);
     }
 
     private static class ViewHolder {

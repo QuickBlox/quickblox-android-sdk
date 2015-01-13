@@ -1,7 +1,6 @@
 package com.quickblox.sample.chat;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.users.model.QBUser;
