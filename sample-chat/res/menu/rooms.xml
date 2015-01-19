@@ -5,5 +5,4 @@
         android:title="New Chat"
         android:icon="@drawable/ic_action_new"
         chat:showAsAction="ifRoom" />
-
 </menu>

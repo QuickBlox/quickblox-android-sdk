@@ -17,10 +17,8 @@ import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.model.QBChatHistoryMessage;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBMessage;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
@@ -33,6 +31,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChatActivity extends Activity {
@@ -53,7 +52,7 @@ public class ChatActivity extends Activity {
     private ChatAdapter adapter;
     private QBDialog dialog;
 
-    private ArrayList<QBChatHistoryMessage> history;
+    private ArrayList<QBChatMessage> history;
 
     public static void start(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -148,6 +147,7 @@ public class ChatActivity extends Activity {
                 QBChatMessage chatMessage = new QBChatMessage();
                 chatMessage.setBody(messageText);
                 chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+                chatMessage.setDateSent(new Date().getTime()/1000);
 
                 try {
                     chat.sendMessage(chatMessage);
@@ -169,16 +169,18 @@ public class ChatActivity extends Activity {
     private void loadChatHistory(){
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
         customObjectRequestBuilder.setPagesLimit(100);
+        customObjectRequestBuilder.sortDesc("date_sent");
 
-        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBChatHistoryMessage>>() {
+        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
             @Override
-            public void onSuccess(ArrayList<QBChatHistoryMessage> messages, Bundle args) {
+            public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                 history = messages;
 
-                adapter = new ChatAdapter(ChatActivity.this, new ArrayList<QBMessage>());
+                adapter = new ChatAdapter(ChatActivity.this, new ArrayList<QBChatMessage>());
                 messagesContainer.setAdapter(adapter);
 
-                for(QBMessage msg : messages) {
+                for(int i=messages.size()-1; i>=0; --i) {
+                    QBChatMessage msg = messages.get(i);
                     showMessage(msg);
                 }
 
@@ -193,7 +195,7 @@ public class ChatActivity extends Activity {
         });
     }
 
-    public void showMessage(QBMessage message) {
+    public void showMessage(QBChatMessage message) {
         adapter.add(message);
 
         runOnUiThread(new Runnable() {

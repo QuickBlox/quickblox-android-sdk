@@ -4,13 +4,25 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.+'
+        classpath 'com.android.tools.build:gradle:1.0.1'
     }
 }
 
-ext.compileSdkVersion = 19
-ext.buildToolsVersion = "19.1"
+ext.compileSdkVersion = 21
+ext.buildToolsVersion = "21.1.1"
+
+ext.minSdkVersion = 9
+ext.targetSdkVersion = 19
+
+ext.sourceCompatibility = JavaVersion.VERSION_1_7
+ext.targetCompatibility = JavaVersion.VERSION_1_7
+
+ext.lintAbortOnError = false
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.2.1'
+}
+
+def makeJar(variant, project) {
+    //empty
 }

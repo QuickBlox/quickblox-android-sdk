@@ -18,12 +18,12 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.sample.chat.ui.adapters.UsersAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
-import com.quickblox.sample.chat.ui.adapters.UsersAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +135,7 @@ public class UsersFragment extends Fragment implements QBEntityCallback<ArrayLis
 
     @Override
     public void onError(List<String> errors){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(UsersFragment.getInstance().getActivity());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage("get users errors: " + errors).create().show();
     }
 

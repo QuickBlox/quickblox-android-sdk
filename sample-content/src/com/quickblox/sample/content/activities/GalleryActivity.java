@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.quickblox.core.QBProgressCallback;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
@@ -82,6 +83,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             Uri originalUri = data.getData();
             selectedImageImageView.setImageURI(originalUri);
             selectedImageImageView.setVisibility(View.VISIBLE);
+            progressDialog.setProgress(0);
             progressDialog.show();
 
             new GetImageFileTask(this).execute(imageHelper, selectedImageImageView);
@@ -106,6 +108,11 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             @Override
             public void onError(List<String> strings) {
 
+            }
+        }, new QBProgressCallback() {
+            @Override
+            public void onProgressUpdate(int progress) {
+                progressDialog.setProgress(progress);
             }
         });
     }
