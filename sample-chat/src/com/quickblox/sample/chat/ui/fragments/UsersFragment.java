@@ -135,7 +135,7 @@ public class UsersFragment extends Fragment implements QBEntityCallback<ArrayLis
 
     @Override
     public void onError(List<String> errors){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(UsersFragment.getInstance().getActivity());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage("get users errors: " + errors).create().show();
     }
 

@@ -823,7 +823,6 @@ public class SnippetsChat extends Snippets {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            log("msg: " + root.toString());
             chatMessage.setBody(root.toString());
 
 //             String s = "{&quot;content&quot;:&quot;{\&quot;name\&quot;:\&quot;wbyang\&quot;,\&quot;userID\&quot;:2156782,\&quot;userInfo\&quot;:{\&quot;gender\&quot;:\&quot;MALE\&quot;,\&quot;status\&quot;:\&quot;Hi! I&apos;m wbyang. Wanna chat with me?\&quot;}}&quot;,&quot;fromUserID&quot;:2156782,&quot;msgType&quot;:&quot;UPDATE_INFO&quot;,&quot;name&quot;:&quot;wbyang&quot;}"
@@ -1666,7 +1665,9 @@ public class SnippetsChat extends Snippets {
             //
             // Use 'create Dialog' request instead next code and then Join room using dialog's 'roomJid' field as a room jid
 
-            currentChatRoom = groupChatManager.createGroupChat("football53_room", false, false);
+            Random rand = new Random();
+            int randomNum = rand.nextInt(10000);
+            currentChatRoom = groupChatManager.createGroupChat("test_room" + randomNum, false, false);
 
             currentChatRoom.create( new QBEntityCallbackImpl() {
                 @Override

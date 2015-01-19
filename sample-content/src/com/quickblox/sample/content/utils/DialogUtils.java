@@ -39,6 +39,8 @@ public class DialogUtils {
     public static ProgressDialog getProgressDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
+        progressDialog.setMax(100);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMessage(context.getResources().getString(R.string.please_wait));
         return progressDialog;
     }
