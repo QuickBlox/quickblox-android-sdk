@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp">
+
+    <TextView
+        android:layout_width="115dp"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center|center_vertical"
+        android:text="Number"
+        android:id="@+id/numberOfList"
+        android:layout_gravity="left"/>
+
+    <TextView
+        android:layout_width="138dp"
+        android:gravity="center_vertical"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/login_as"
+        android:id="@+id/loginAs"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:gravity="right|center_vertical"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="User Name"
+        android:id="@+id/userName" />
+</LinearLayout>
