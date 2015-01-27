@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.InterlocutorsActivity;
 
 
 /**
  * Created by tereha on 25.01.15.
  */
-public class UsersAdapter extends ArrayAdapter<String> {
+public class UsersAdapter extends ArrayAdapter<String> /*implements View.OnClickListener*/ {
 
 
     private final Context context;
@@ -21,7 +23,7 @@ public class UsersAdapter extends ArrayAdapter<String> {
 
 
     public UsersAdapter(Context context, String[] users) {
-        super(context, R.layout.user_list_item, users);
+        super(context, R.layout.list_item_user, users);
         this.context = context;
         this.users = users;
     }
@@ -31,7 +33,7 @@ public class UsersAdapter extends ArrayAdapter<String> {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View userListItem = inflater.inflate(R.layout.user_list_item, parent, false);
+        View userListItem = inflater.inflate(R.layout.list_item_user, parent, false);
 
         TextView numberOfList = (TextView) userListItem.findViewById(R.id.numberOfList);
         numberOfList.setText(String.valueOf(position +1));
@@ -45,4 +47,6 @@ public class UsersAdapter extends ArrayAdapter<String> {
         return userListItem;
 
     }
+
+
 }

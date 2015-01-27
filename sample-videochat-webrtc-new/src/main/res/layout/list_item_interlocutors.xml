@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="N"
+        android:id="@+id/interlocutorNumber"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="interlocutorName"
+        android:id="@+id/interlocutorName"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:textStyle="bold"/>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/interlocutorCheckBox"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal" />
+</LinearLayout>
