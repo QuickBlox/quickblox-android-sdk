@@ -48,16 +48,4 @@ public class InterlocutorsActivity  extends Activity {
         interlocutorsAdapter = new InterlocutorsAdapter(this, createArrayInterlocutors());
         interlocutorsList.setAdapter(interlocutorsAdapter);
     }
-
-    /*public void onStop(){
-        try {
-            QBAuth.deleteSession();
-        } catch (QBResponseException e) {
-            e.printStackTrace();
-        }
-    }*/
-
-
-
-
 }

@@ -14,21 +14,6 @@ public class Users {
         setPassword(password);
     }
 
-    /*public static ArrayList<Users> createCollection() {
-        ArrayList <Users> users = new ArrayList<>();
-        users.add(new Users("User 1", "user_1", "11111111"));
-        users.add(new Users("User 2", "user_2", "11111111"));
-        users.add(new Users("User 3", "user_3", "11111111"));
-        users.add(new Users("User 4", "user_4", "11111111"));
-        users.add(new Users("User 5", "user_5", "11111111"));
-        users.add(new Users("User 6", "user_6", "11111111"));
-        users.add(new Users("User 7", "user_7", "11111111"));
-        users.add(new Users("User 8", "user_8", "11111111"));
-        users.add(new Users("User 9", "user_9", "11111111"));
-        users.add(new Users("User 10", "user_10", "11111111"));
-        return users;
-    }*/
-
     public String getUserName() {
         return userName;
     }

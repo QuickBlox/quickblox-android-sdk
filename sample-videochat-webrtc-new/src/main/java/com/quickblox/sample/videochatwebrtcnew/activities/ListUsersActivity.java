@@ -15,6 +15,7 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.Users;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
@@ -109,6 +110,7 @@ public class ListUsersActivity extends Activity {
                          password = usr.getPassword();
 
                          createSession(login, password);
+                         Log.d("Track", "Session created");
 
                     }
 
@@ -116,9 +118,6 @@ public class ListUsersActivity extends Activity {
            }
         });
     }
-
-
-
 
     private void createSession(String login, final String password) {
 
@@ -136,13 +135,17 @@ public class ListUsersActivity extends Activity {
 
                 user.setId(session.getUserId());
 
+                Log.d("Track", "Level 1");
+
+                Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
+                startActivity(intent);
+
 
                 chatService.login(user, new QBEntityCallbackImpl() {
                     @Override
                     public void onSuccess() {
+                        Log.d("Track", "Level 2");
 
-                    Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
-                    startActivity(intent);
                     }
 
                     @Override
@@ -159,4 +162,5 @@ public class ListUsersActivity extends Activity {
             }
         });
     }
+
 }
