@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 
+import com.quickblox.auth.QBAuth;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.adapters.InterlocutorsAdapter;
 
@@ -46,6 +48,14 @@ public class InterlocutorsActivity  extends Activity {
         interlocutorsAdapter = new InterlocutorsAdapter(this, createArrayInterlocutors());
         interlocutorsList.setAdapter(interlocutorsAdapter);
     }
+
+    /*public void onStop(){
+        try {
+            QBAuth.deleteSession();
+        } catch (QBResponseException e) {
+            e.printStackTrace();
+        }
+    }*/
 
 
 

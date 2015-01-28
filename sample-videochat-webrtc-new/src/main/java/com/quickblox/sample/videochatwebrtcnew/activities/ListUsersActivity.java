@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,19 +16,18 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.VideoChatApplication;
+import com.quickblox.sample.videochatwebrtcnew.Users;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
+import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.core.QBVideoChatController;
 
-import org.jivesoftware.smack.XMPPException;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by tereha on 25.01.15.
  */
-public class ListUsersActivity extends Activity /*implements View.OnClickListener*/ {
+public class ListUsersActivity extends Activity {
 
     private UsersAdapter usersListAdapter;
     private ListView usersList;
@@ -44,7 +44,8 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
         initUI();
         initUsersList();
 
-        QBSettings.getInstance().fastConfigInit("18846", "64JzC2cuLkSMUq7", "s4VCJZq4uWNer7H");
+
+        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
     }
 
     private void initUI() {
@@ -68,20 +69,56 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
         return users;
     }
 
+    public ArrayList<Users> createCollection() {
+        ArrayList <Users> users = new ArrayList<>();
+        users.add(new Users("User 1", "user_1", "11111111"));
+        users.add(new Users("User 2", "user_2", "11111111"));
+        users.add(new Users("User 3", "user_3", "11111111"));
+        users.add(new Users("User 4", "user_4", "11111111"));
+        users.add(new Users("User 5", "user_5", "11111111"));
+        users.add(new Users("User 6", "user_6", "11111111"));
+        users.add(new Users("User 7", "user_7", "11111111"));
+        users.add(new Users("User 8", "user_8", "11111111"));
+        users.add(new Users("User 9", "user_9", "11111111"));
+        users.add(new Users("User 10", "user_10", "11111111"));
+        return users;
+    }
+
     private void initUsersList() {
 
         usersListAdapter = new UsersAdapter(this, createArrayUsers());
         usersList.setAdapter(usersListAdapter);
         usersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+        final ArrayList<Users> usersCollection = createCollection();
+
 
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                createSession("user_1", "11111111");
+
+
+                String userName = usersListAdapter.getItem(position);
+                String login;
+                String password;
+
+
+                for(Users usr : usersCollection){
+                     if (userName.equals(usr.getUserName())){
+                         login = usr.getLogin();
+                         password = usr.getPassword();
+
+                         createSession(login, password);
+
+                    }
+
+                }
            }
         });
     }
+
+
+
 
     private void createSession(String login, final String password) {
 
@@ -104,8 +141,8 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
                     @Override
                     public void onSuccess() {
 
-                        Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
-                        startActivity(intent);
+                    Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
+                    startActivity(intent);
                     }
 
                     @Override
