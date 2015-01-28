@@ -1,14 +1,28 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.VideoChatApplication;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
+import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.core.QBVideoChatController;
+
+import org.jivesoftware.smack.XMPPException;
+
+import java.util.List;
 
 /**
  * Created by tereha on 25.01.15.
@@ -17,6 +31,8 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
 
     private UsersAdapter usersListAdapter;
     private ListView usersList;
+    Context context;
+    QBChatService chatService;
 
 
 
@@ -27,6 +43,8 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
 
         initUI();
         initUsersList();
+
+        QBSettings.getInstance().fastConfigInit("18846", "64JzC2cuLkSMUq7", "s4VCJZq4uWNer7H");
     }
 
     private void initUI() {
@@ -59,12 +77,48 @@ public class ListUsersActivity extends Activity /*implements View.OnClickListene
 
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //if ();
+
+                createSession("user_1", "11111111");
+           }
+        });
+    }
+
+    private void createSession(String login, final String password) {
+
+        context = ListUsersActivity.this;
+
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(context);
+            chatService = QBChatService.getInstance();
+        }
+
+        final QBUser user = new QBUser(login, password);
+        QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
+            @Override
+            public void onSuccess(QBSession session, Bundle bundle) {
+
+                user.setId(session.getUserId());
 
 
+                chatService.login(user, new QBEntityCallbackImpl() {
+                    @Override
+                    public void onSuccess() {
 
-                Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
-                startActivity(intent);
+                        Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(List errors) {
+                        Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });
     }
