@@ -4,6 +4,7 @@
     <string name="app_name">Sample Videochat Webrtc New</string>
     <string name="action_log_out">Log out</string>
     <string name="login_as">Login as</string>
+    <string name="logged_in_as">Logged In as</string>
 
     <string name="welcoming_message">Login as any user on this devise and another(s) users on other device</string>
     <string name="select_user_to_call">Select Users You Want to Call</string>

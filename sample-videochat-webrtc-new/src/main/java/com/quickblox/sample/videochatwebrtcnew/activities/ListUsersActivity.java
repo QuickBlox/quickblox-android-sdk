@@ -53,7 +53,7 @@ public class ListUsersActivity extends Activity {
 
     }
 
-    public ArrayList<User> createCollection() {
+    public ArrayList<User> createUsersCollection() {
         ArrayList <User> users = new ArrayList<>();
         users.add(new User("User 1", "user_1", "11111111"));
         users.add(new User("User 2", "user_2", "11111111"));
@@ -70,7 +70,7 @@ public class ListUsersActivity extends Activity {
 
     private void initUsersList() {
 
-        final ArrayList<User> usersCollection = createCollection();
+        final ArrayList<User> usersCollection = createUsersCollection();
 
         usersListAdapter = new UsersAdapter(this, usersCollection);
         usersList.setAdapter(usersListAdapter);
@@ -79,15 +79,21 @@ public class ListUsersActivity extends Activity {
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                 String login = usersListAdapter.getItem(position).getLogin();
                 String password = usersListAdapter.getItem(position).getPassword();
 
                 createSession(login, password);
+
+
+
            }
         });
     }
 
-    private void createSession(String login, final String password) {
+
+
+    private void createSession(final String login, final String password) {
 
         context = ListUsersActivity.this;
 
@@ -105,7 +111,8 @@ public class ListUsersActivity extends Activity {
 
                 Log.d("Track", "Level 1");
 
-                Intent intent = new Intent(ListUsersActivity.this, InterlocutorsActivity.class);
+                Intent intent = new Intent(ListUsersActivity.this, OpponentsActivity.class);
+                intent.putExtra("loginedUserLogin", login);
                 startActivity(intent);
 
 

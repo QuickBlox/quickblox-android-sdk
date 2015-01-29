@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:chat="http://schemas.android.com/apk/res-auto">
+    xmlns:chat="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
 
     <item android:id="@+id/exit_to_app"
         android:title="Exit to app"
         android:icon="@drawable/ic_exit_to_app"
-        chat:showAsAction="always" />
+        android:showAsAction="always" />
 </menu>
