@@ -2,30 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="60dp">
-
-    <TextView
-        android:layout_width="115dp"
-        android:layout_height="fill_parent"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center|center_vertical"
-        android:text="Number"
-        android:id="@+id/numberOfList"
-        android:layout_gravity="left"/>
-
-    <TextView
-        android:layout_width="138dp"
-        android:gravity="center_vertical"
-        android:layout_height="fill_parent"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/login_as"
-        android:id="@+id/loginAs"/>
+    android:layout_height="?android:attr/listPreferredItemHeight">
 
     <TextView
         android:layout_width="match_parent"
-        android:gravity="right|center_vertical"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Number"
+        android:id="@+id/numberOfList"
+        android:layout_gravity="left"
+        android:layout_weight="1.2" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/login_as"
+        android:id="@+id/loginAs"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:gravity="center_vertical|center_horizontal"
         android:layout_height="fill_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="User Name"
-        android:id="@+id/userName" />
+        android:id="@+id/userName"
+        android:layout_weight="1" />
 </LinearLayout>

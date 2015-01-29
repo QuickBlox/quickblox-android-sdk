@@ -15,9 +15,8 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.Users;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.users.model.QBUser;
@@ -54,67 +53,36 @@ public class ListUsersActivity extends Activity {
 
     }
 
-    private String [] createArrayUsers(){
-        String [] users = new String[10];
-        users[0] = "User 1";
-        users[1] = "User 2";
-        users[2] = "User 3";
-        users[3] = "User 4";
-        users[4] = "User 5";
-        users[5] = "User 6";
-        users[6] = "User 7";
-        users[7] = "User 8";
-        users[8] = "User 9";
-        users[9] = "User 10";
-
-        return users;
-    }
-
-    public ArrayList<Users> createCollection() {
-        ArrayList <Users> users = new ArrayList<>();
-        users.add(new Users("User 1", "user_1", "11111111"));
-        users.add(new Users("User 2", "user_2", "11111111"));
-        users.add(new Users("User 3", "user_3", "11111111"));
-        users.add(new Users("User 4", "user_4", "11111111"));
-        users.add(new Users("User 5", "user_5", "11111111"));
-        users.add(new Users("User 6", "user_6", "11111111"));
-        users.add(new Users("User 7", "user_7", "11111111"));
-        users.add(new Users("User 8", "user_8", "11111111"));
-        users.add(new Users("User 9", "user_9", "11111111"));
-        users.add(new Users("User 10", "user_10", "11111111"));
+    public ArrayList<User> createCollection() {
+        ArrayList <User> users = new ArrayList<>();
+        users.add(new User("User 1", "user_1", "11111111"));
+        users.add(new User("User 2", "user_2", "11111111"));
+        users.add(new User("User 3", "user_3", "11111111"));
+        users.add(new User("User 4", "user_4", "11111111"));
+        users.add(new User("User 5", "user_5", "11111111"));
+        users.add(new User("User 6", "user_6", "11111111"));
+        users.add(new User("User 7", "user_7", "11111111"));
+        users.add(new User("User 8", "user_8", "11111111"));
+        users.add(new User("User 9", "user_9", "11111111"));
+        users.add(new User("User 10", "user_10", "11111111"));
         return users;
     }
 
     private void initUsersList() {
 
-        usersListAdapter = new UsersAdapter(this, createArrayUsers());
+        final ArrayList<User> usersCollection = createCollection();
+
+        usersListAdapter = new UsersAdapter(this, usersCollection);
         usersList.setAdapter(usersListAdapter);
         usersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        final ArrayList<Users> usersCollection = createCollection();
-
 
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                String login = usersListAdapter.getItem(position).getLogin();
+                String password = usersListAdapter.getItem(position).getPassword();
 
-
-                String userName = usersListAdapter.getItem(position);
-                String login;
-                String password;
-
-
-                for(Users usr : usersCollection){
-                     if (userName.equals(usr.getUserName())){
-                         login = usr.getLogin();
-                         password = usr.getPassword();
-
-                         createSession(login, password);
-                         Log.d("Track", "Session created");
-
-                    }
-
-                }
+                createSession(login, password);
            }
         });
     }

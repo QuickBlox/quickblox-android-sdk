@@ -1,14 +1,12 @@
 package com.quickblox.sample.videochatwebrtcnew;
 
-import java.util.ArrayList;
-
-public class Users {
+public class User {
 
     public  String userName;
     public  String login;
     public  String password;
 
-    public Users (String userName, String login, String password) {
+    public User (String userName, String login, String password) {
         setUserName(userName);
         setLogin(login);
         setPassword(password);
