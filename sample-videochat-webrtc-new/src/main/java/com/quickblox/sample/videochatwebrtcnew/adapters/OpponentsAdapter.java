@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.quickblox.sample.videochatwebrtcnew.Opponent;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 
@@ -19,10 +20,10 @@ import java.util.ArrayList;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private ArrayList<User> opponents;
+    private ArrayList<Opponent> opponents;
     private LayoutInflater inflater;
 
-    public OpponentsAdapter(Context context, ArrayList<User> result) {
+    public OpponentsAdapter(Context context, ArrayList<Opponent> result) {
         opponents = result;
         inflater = LayoutInflater.from(context);
     }
@@ -31,7 +32,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return opponents.size();
     }
 
-    public User getItem(int position) {
+    public Opponent getItem(int position) {
         return opponents.get(position);
     }
 
@@ -53,9 +54,8 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.opponentsNumber.setText(String.valueOf(position));
-        holder.opponentsName.setText(opponents.get(position).getUserName());
-
+        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getOpponentNumber()));
+        holder.opponentsName.setText(opponents.get(position).getOpponentName());
 
         return convertView;
     }

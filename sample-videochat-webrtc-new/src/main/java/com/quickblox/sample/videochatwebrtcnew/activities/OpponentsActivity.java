@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.quickblox.sample.videochatwebrtcnew.Opponent;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
@@ -29,9 +30,8 @@ public class OpponentsActivity  extends Activity {
 
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsList;
-
-    private Intent intent;
     private String login;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,13 +45,12 @@ public class OpponentsActivity  extends Activity {
 
     private void initUI() {
         opponentsList = (ListView) findViewById(R.id.opponentsList);
-        intent = getIntent();
-        login = intent.getStringExtra("loginedUserLogin");
-
-
+        login = getIntent().getStringExtra("login");
     }
 
     private void initActionBar() {
+
+
         ActionBar mActionBar = getActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
@@ -59,54 +58,67 @@ public class OpponentsActivity  extends Activity {
 
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
-        numberOfListAB.setText("N");
+        numberOfListAB.setText(String.valueOf(searchIndexLogginedUser(createOpponentsCollection())+1));
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-        userNameAB.setText("Userlogin: " + login);
+        userNameAB.setText(createOpponentsCollection()
+                .get((searchIndexLogginedUser(createOpponentsCollection()))).getOpponentName());
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
 
     }
 
-    private ArrayList<User> createOpponentsCollection(){
+    private ArrayList<Opponent> createOpponentsCollection(){
 
-        ArrayList<User> opponents = new ArrayList<>();
-        opponents.add(new User("User 1", "user_1", "11111111"));
-        opponents.add(new User("User 2", "user_2", "11111111"));
-        opponents.add(new User("User 3", "user_3", "11111111"));
-        opponents.add(new User("User 4", "user_4", "11111111"));
-        opponents.add(new User("User 5", "user_5", "11111111"));
-        opponents.add(new User("User 6", "user_6", "11111111"));
-        opponents.add(new User("User 7", "user_7", "11111111"));
-        opponents.add(new User("User 8", "user_8", "11111111"));
-        opponents.add(new User("User 9", "user_9", "11111111"));
-        opponents.add(new User("User 10", "user_10", "11111111"));
+        ArrayList<Opponent> opponents = new ArrayList<>();
+        opponents.add(new Opponent(1, "User 1", "user_1", "11111111"));
+        opponents.add(new Opponent(2, "User 2", "user_2", "11111111"));
+        opponents.add(new Opponent(3, "User 3", "user_3", "11111111"));
+        opponents.add(new Opponent(4, "User 4", "user_4", "11111111"));
+        opponents.add(new Opponent(5, "User 5", "user_5", "11111111"));
+        opponents.add(new Opponent(6, "User 6", "user_6", "11111111"));
+        opponents.add(new Opponent(7, "User 7", "user_7", "11111111"));
+        opponents.add(new Opponent(8, "User 8", "user_8", "11111111"));
+        opponents.add(new Opponent(9, "User 9", "user_9", "11111111"));
+        opponents.add(new Opponent(10, "User 10", "user_10", "11111111"));
 
+        return opponents;
+    }
+
+    private int searchIndexLogginedUser(ArrayList<Opponent> opponentsCollection) {
         int indexLogginedUser = -1;
-        for (User usr : opponents) {
 
-            if (usr.getLogin().equals(login)) {
-                indexLogginedUser = opponents.indexOf(usr);
+        for (Opponent usr : opponentsCollection) {
+            if (usr.getOpponentLogin().equals(login)) {
+                indexLogginedUser = opponentsCollection.indexOf(usr);
                 break;
             }
         }
-        if (indexLogginedUser != -1)
-        opponents.remove(indexLogginedUser);
 
-        return opponents;
+        return indexLogginedUser;
     }
 
 
 
     private void initUsersList() {
 
-        ArrayList<User> opponents = createOpponentsCollection();
-        opponentsAdapter = new OpponentsAdapter(this, opponents);
-        opponentsList.setAdapter(opponentsAdapter);
+        ArrayList<Opponent> opponents = createOpponentsCollection();
 
+        int indexLogginedUser = searchIndexLogginedUser(opponents);
 
+        if (indexLogginedUser != -1) {
+            opponentsAdapter = new OpponentsAdapter(this, opponents);
+            opponentsList.setTextFilterEnabled(true);
+            opponentsList.setAdapter(opponentsAdapter);
+            opponentsAdapter.notifyDataSetChanged();
+            opponents.remove(indexLogginedUser);
+            opponentsAdapter.notifyDataSetChanged();
+        } else {
+            opponentsAdapter = new OpponentsAdapter(this, opponents);
+            opponentsList.setAdapter(opponentsAdapter);
+        }
     }
 
     /*@Override

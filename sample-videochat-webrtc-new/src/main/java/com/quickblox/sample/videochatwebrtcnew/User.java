@@ -1,6 +1,9 @@
 package com.quickblox.sample.videochatwebrtcnew;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class User implements Parcelable{
 
     public  String userName;
     public  String login;
@@ -34,12 +37,32 @@ public class User {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "Users{" +
-                "userName='" + userName + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public int describeContents() {
+        return 0;
+    }
+
+    // упаковываем объект в Parcel
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(userName);
+        parcel.writeString(login);
+        parcel.writeString(password);
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        // распаковываем объект из Parcel
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    // конструктор, считывающий данные из Parcel
+    private User(Parcel parcel) {
+        userName = parcel.readString();
+        login = parcel.readString();
+        password = parcel.readString();
     }
 }
