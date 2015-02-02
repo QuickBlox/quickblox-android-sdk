@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/opponentsList"
         android:layout_gravity="center_horizontal"
+        android:choiceMode="multipleChoice"
         android:layout_weight="1" />
 
     <LinearLayout

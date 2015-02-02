@@ -5,11 +5,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,21 +27,28 @@ import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import static java.util.Collections.addAll;
+
 
 /**
  * Created by tereha on 27.01.15.
  */
-public class OpponentsActivity  extends Activity {
+public class OpponentsActivity  extends Activity implements View.OnClickListener {
 
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsList;
     private String login;
+    private Button btnAudioCall;
+    private Button btnVideoCall;
+    private TextView selectUsertextView;
+    private ArrayList<Integer> opponentsListNew;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opponents);
+
 
         initUI();
         initActionBar();
@@ -46,6 +58,14 @@ public class OpponentsActivity  extends Activity {
     private void initUI() {
         opponentsList = (ListView) findViewById(R.id.opponentsList);
         login = getIntent().getStringExtra("login");
+
+        btnAudioCall = (Button)findViewById(R.id.btnAudioCall);
+        btnVideoCall = (Button)findViewById(R.id.btnVideoCall);
+        selectUsertextView = (TextView)findViewById(R.id.selectUsertextView);
+
+        btnAudioCall.setOnClickListener(this);
+        btnVideoCall.setOnClickListener(this);
+
     }
 
     private void initActionBar() {
@@ -104,21 +124,50 @@ public class OpponentsActivity  extends Activity {
 
     private void initUsersList() {
 
-        ArrayList<Opponent> opponents = createOpponentsCollection();
+        final ArrayList<Opponent> opponents = createOpponentsCollection();
 
         int indexLogginedUser = searchIndexLogginedUser(opponents);
 
         if (indexLogginedUser != -1) {
             opponentsAdapter = new OpponentsAdapter(this, opponents);
             opponentsList.setTextFilterEnabled(true);
+            //opponentsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             opponentsList.setAdapter(opponentsAdapter);
             opponentsAdapter.notifyDataSetChanged();
             opponents.remove(indexLogginedUser);
             opponentsAdapter.notifyDataSetChanged();
         } else {
             opponentsAdapter = new OpponentsAdapter(this, opponents);
+            //opponentsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             opponentsList.setAdapter(opponentsAdapter);
+
+
         }
+
+        /*opponentsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                opponentsListNew = new ArrayList<Integer>();
+                CheckBox cb = (CheckBox) view.findViewById(R.id.opponentsCheckBox);
+                cb.performClick();
+                if (cb.isChecked()){
+                    opponentsListNew.add(position);
+                    Log.d("Track", "Check " + position);
+
+
+                } else if (!cb.isChecked()){
+                    opponentsListNew.remove(position);
+                    Log.d("Track", "Csdljfgslfgjhl ghheck " + position);
+
+                }
+
+
+
+            }
+        });*/
+
+
+
     }
 
     /*@Override
@@ -139,5 +188,23 @@ public class OpponentsActivity  extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnAudioCall:
+                //opponentsListNew = addAll(OpponentsAdapter.positions);
+
+
+                //Intent intent = new Intent(OpponentsActivity.this, OpponentsActivity.class);
+               // intent.putExtra("login", login);
+                //startActivity(intent);
+                // actions
+                break;
+            case R.id.btnVideoCall:
+                //
+                break;
+        }
     }
 }

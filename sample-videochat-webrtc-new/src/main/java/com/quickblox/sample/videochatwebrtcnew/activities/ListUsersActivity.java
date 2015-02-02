@@ -85,61 +85,6 @@ public class ListUsersActivity extends Activity {
         });
     }
 
-    /*private Intent prepareDataToNewActivity(int index, String login) {
-        intent = new Intent(ListUsersActivity.this, OpponentsActivity.class);
-        intent.putExtra("index", index);
-        intent.putExtra("login", login);
-        return intent;
-    }*/
-
-
-
-    /*private void createSession(final User logginedUser) {
-
-        context = ListUsersActivity.this;
-
-        if (!QBChatService.isInitialized()) {
-            QBChatService.init(context);
-            chatService = QBChatService.getInstance();
-        }
-
-        final QBUser user = new QBUser(logginedUser.getLogin(), logginedUser.getPassword());
-        QBAuth.createSession(logginedUser.getLogin(), logginedUser.getPassword(), new QBEntityCallbackImpl<QBSession>() {
-            @Override
-            public void onSuccess(QBSession session, Bundle bundle) {
-
-                user.setId(session.getUserId());
-
-                Log.d("Track", "Level 1");
-
-                //Intent intent = new Intent(ListUsersActivity.this, OpponentsActivity.class);
-                //intent.putExtra("logginedUser", logginedUser);
-                //intent.putExtra("loginedUserLogin", login);
-                startActivity(intent);
-
-
-                chatService.login(user, new QBEntityCallbackImpl() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d("Track", "Level 2");
-
-                    }
-
-                    @Override
-                    public void onError(List errors) {
-                        Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
     private void createSession(final String login, final String password) {
 
         context = ListUsersActivity.this;
