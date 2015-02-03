@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -10,6 +10,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/select_user_to_call"
         android:id="@+id/selectUsertextView"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="10dp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
 
     <ListView
@@ -18,12 +23,15 @@
         android:id="@+id/opponentsList"
         android:layout_gravity="center_horizontal"
         android:choiceMode="multipleChoice"
-        android:layout_weight="1" />
+        android:divider="@android:color/transparent"
+        android:layout_below="@+id/selectUsertextView"
+         />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/white">
 
         <Button
@@ -46,4 +54,4 @@
             android:layout_weight="1"
             android:textStyle="bold" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

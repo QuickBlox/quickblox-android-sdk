@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.Opponent;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 
 import java.util.ArrayList;
 
@@ -71,12 +73,22 @@ public class OpponentsAdapter extends BaseAdapter {
                 }
             });
 
+            /*if ((opponents.get(position).getOpponentNumber())==5){
+                holder.opponentsNumber.setBackgroundResource(R.drawable.shape_oval_blue);
+
+            }*/
+            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(opponents.get(position).getOpponentNumber()));
+
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getOpponentNumber()));
         holder.opponentsName.setText(opponents.get(position).getOpponentName());
+
+
+        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getOpponentNumber()));
+
+
 
         return convertView;
     }

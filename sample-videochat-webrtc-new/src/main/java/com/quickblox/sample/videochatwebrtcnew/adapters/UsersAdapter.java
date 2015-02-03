@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
+import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 
 import java.util.ArrayList;
 
@@ -48,7 +49,48 @@ public class UsersAdapter extends BaseAdapter {
             holder.loginAs = (TextView) convertView.findViewById(R.id.loginAs);
             holder.userName = (TextView) convertView.findViewById(R.id.userName);
 
+            holder.numberOfList.setBackgroundResource(ListUsersActivity.resourceSelector((position+1)));
+
             convertView.setTag(holder);
+
+
+
+            /*if (position==1){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_blue);
+
+            } else  if (position==1){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_coral);
+
+            } else  if (position==2){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_blue_green);
+
+            } else  if (position==3){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_gentianaceae_blue);
+
+            } else if (position==4){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_lime);
+
+            } else if (position==5){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_mauveine);
+
+            } else if (position==6){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_may_green);
+
+            } else if (position==7){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_orange);
+
+            } else if (position==8){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_spring_bud);
+
+            } else if (position==9){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_water_bondi_beach);
+
+            } else if (position==10){
+                holder.numberOfList.setBackgroundResource(R.drawable.shape_oval_lime);
+
+            }*/
+
+
         } else {
             holder = (ViewHolder) convertView.getTag();
         }

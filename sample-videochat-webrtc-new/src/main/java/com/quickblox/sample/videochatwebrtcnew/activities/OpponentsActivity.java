@@ -76,6 +76,7 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
 
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
+        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(searchIndexLogginedUser(createOpponentsCollection())+1));
         numberOfListAB.setText(String.valueOf(searchIndexLogginedUser(createOpponentsCollection())+1));
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);

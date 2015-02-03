@@ -51,6 +51,39 @@ public class ListUsersActivity extends Activity {
 
     }
 
+    public static int resourceSelector (int number){
+        int resStr=0;
+        if (number <= 10) {
+            if (number == 0)
+                resStr = R.drawable.shape_oval_spring_bud;
+            else if (number == 1)
+                resStr = R.drawable.shape_oval_orange;
+            else if (number == 2)
+                resStr = R.drawable.shape_oval_water_bondi_beach;
+            else if (number == 3)
+                resStr = R.drawable.shape_oval_blue_green;
+            else if (number == 4)
+                resStr = R.drawable.shape_oval_lime;
+            else if (number == 5)
+                resStr = R.drawable.shape_oval_mauveine;
+            else if (number == 6)
+                resStr = R.drawable.shape_oval_gentianaceae_blue;
+            else if (number == 7)
+                resStr = R.drawable.shape_oval_blue;
+            else if (number == 8)
+                resStr = R.drawable.shape_oval_blue_green;
+            else if (number == 9)
+                resStr = R.drawable.shape_oval_coral;
+            else
+                resStr = R.drawable.shape_oval_spring_bud;
+        } else {
+                number = number/10;
+                resourceSelector(number);
+            }
+
+        return resStr;
+    }
+
     public ArrayList<User> createUsersCollection() {
         ArrayList <User> users = new ArrayList<>();
         users.add(new User("User 1", "user_1", "11111111"));

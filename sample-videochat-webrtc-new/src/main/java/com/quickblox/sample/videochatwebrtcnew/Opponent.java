@@ -23,24 +23,31 @@ public class Opponent {
     public int getOpponentNumber() {
         return opponentNumber;
     }
+
     public String getOpponentName(){
         return opponentName;
     }
+
     public String getOpponentLogin(){
         return opponentLogin;
     }
+
     public String getOpponentPassword() {
         return opponentPassword;
     }
+
     public void setOpponentNumber (int opponentNumber) {
         this.opponentNumber = opponentNumber;
     }
+
     public void setOpponentName(String opponentName){
         this.opponentName = opponentName;
     }
+
     public void setOpponentLogin (String opponentLogin) {
         this.opponentLogin = opponentLogin;
     }
+
     public void setOpponentPassword (String opponentPassword) {
         this.opponentPassword = opponentPassword;
     }
