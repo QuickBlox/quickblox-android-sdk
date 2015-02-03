@@ -40,8 +40,7 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
     private String login;
     private Button btnAudioCall;
     private Button btnVideoCall;
-    private TextView selectUsertextView;
-    private ArrayList<Integer> opponentsListNew;
+    private ArrayList<String> opponentsListToCall;
 
 
     @Override
@@ -61,7 +60,6 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
 
         btnAudioCall = (Button)findViewById(R.id.btnAudioCall);
         btnVideoCall = (Button)findViewById(R.id.btnVideoCall);
-        selectUsertextView = (TextView)findViewById(R.id.selectUsertextView);
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
@@ -131,43 +129,16 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
         if (indexLogginedUser != -1) {
             opponentsAdapter = new OpponentsAdapter(this, opponents);
             opponentsList.setTextFilterEnabled(true);
-            //opponentsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             opponentsList.setAdapter(opponentsAdapter);
             opponentsAdapter.notifyDataSetChanged();
             opponents.remove(indexLogginedUser);
             opponentsAdapter.notifyDataSetChanged();
         } else {
             opponentsAdapter = new OpponentsAdapter(this, opponents);
-            //opponentsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             opponentsList.setAdapter(opponentsAdapter);
 
 
         }
-
-        /*opponentsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                opponentsListNew = new ArrayList<Integer>();
-                CheckBox cb = (CheckBox) view.findViewById(R.id.opponentsCheckBox);
-                cb.performClick();
-                if (cb.isChecked()){
-                    opponentsListNew.add(position);
-                    Log.d("Track", "Check " + position);
-
-
-                } else if (!cb.isChecked()){
-                    opponentsListNew.remove(position);
-                    Log.d("Track", "Csdljfgslfgjhl ghheck " + position);
-
-                }
-
-
-
-            }
-        });*/
-
-
-
     }
 
     /*@Override
@@ -194,14 +165,19 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnAudioCall:
-                //opponentsListNew = addAll(OpponentsAdapter.positions);
+
+                opponentsListToCall = new ArrayList<>();
+                opponentsListToCall.addAll(OpponentsAdapter.positions);
 
 
-                //Intent intent = new Intent(OpponentsActivity.this, OpponentsActivity.class);
-               // intent.putExtra("login", login);
-                //startActivity(intent);
-                // actions
+                for (String s : opponentsListToCall)
+                    Log.d("Track", "Nubers of opponents " + s);
+
+                /*Intent intent = new Intent(OpponentsActivity.this, OpponentsActivity.class);
+                intent.putExtra("login", login);
+                startActivity(intent);*/
                 break;
+
             case R.id.btnVideoCall:
                 //
                 break;
