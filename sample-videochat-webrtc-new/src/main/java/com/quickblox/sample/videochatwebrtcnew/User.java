@@ -3,19 +3,53 @@ package com.quickblox.sample.videochatwebrtcnew;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User implements Parcelable{
+import com.quickblox.users.model.QBUser;
 
-    public  String userName;
-    public  String login;
-    public  String password;
+public class User extends QBUser{
 
-    public User (String userName, String login, String password) {
-        setUserName(userName);
-        setLogin(login);
-        setPassword(password);
+    public int userNumber;
+    //public  String userName;
+    //public  String login;
+    //public  String password;
+
+    public User (int userNumber, String fullName, String login, String password) {
+        super.fullName = fullName;
+        super.login = login;
+        super.password = password;
+        this.userNumber = userNumber;
+
     }
 
-    public String getUserName() {
+    public int getUserNumber(){
+        return userNumber;
+    }
+
+    public void setUserNumber (int userNumber) {
+        this.userNumber = userNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        //if (!super.equals(o)) return false;
+
+        User user = (User) o;
+
+        if (userNumber != user.userNumber) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + userNumber;
+        return result;
+    }
+
+
+    /*public String getUserName() {
         return userName;
     }
 
@@ -64,5 +98,5 @@ public class User implements Parcelable{
         userName = parcel.readString();
         login = parcel.readString();
         password = parcel.readString();
-    }
+    }*/
 }

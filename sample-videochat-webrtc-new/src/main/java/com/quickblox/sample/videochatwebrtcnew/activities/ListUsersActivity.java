@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.quickblox.auth.QBAuth;
@@ -19,6 +20,7 @@ import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
+import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -31,8 +33,10 @@ public class ListUsersActivity extends Activity {
 
     private UsersAdapter usersListAdapter;
     private ListView usersList;
+    private ProgressBar loginPB;
     private Context context;
     private QBChatService chatService;
+    private ArrayList<User> users;
 
 
     @Override
@@ -43,67 +47,66 @@ public class ListUsersActivity extends Activity {
         initUI();
         initUsersList();
 
+
         QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
     }
 
     private void initUI() {
         usersList = (ListView) findViewById(R.id.usersListView);
+        loginPB = (ProgressBar) findViewById(R.id.loginPB);
+        loginPB.setVisibility(View.INVISIBLE);
 
     }
 
     public static int resourceSelector (int number){
         int resStr=0;
-        if (number <= 10) {
-            if (number == 0)
+        if (number < 10) {
+            if (number == 0) {
                 resStr = R.drawable.shape_oval_spring_bud;
-            else if (number == 1)
+                return resStr;
+            } else if (number == 1) {
                 resStr = R.drawable.shape_oval_orange;
-            else if (number == 2)
+                return resStr;
+            } else if (number == 2) {
                 resStr = R.drawable.shape_oval_water_bondi_beach;
-            else if (number == 3)
+                return resStr;
+            } else if (number == 3) {
                 resStr = R.drawable.shape_oval_blue_green;
-            else if (number == 4)
+                return resStr;
+            } else if (number == 4) {
                 resStr = R.drawable.shape_oval_lime;
-            else if (number == 5)
+                return resStr;
+            } else if (number == 5) {
                 resStr = R.drawable.shape_oval_mauveine;
-            else if (number == 6)
+                return resStr;
+            } else if (number == 6) {
                 resStr = R.drawable.shape_oval_gentianaceae_blue;
-            else if (number == 7)
+                return resStr;
+            } else if (number == 7) {
                 resStr = R.drawable.shape_oval_blue;
-            else if (number == 8)
+                return resStr;
+            } else if (number == 8) {
                 resStr = R.drawable.shape_oval_blue_green;
-            else if (number == 9)
+                return resStr;
+            } else if (number == 9){
                 resStr = R.drawable.shape_oval_coral;
-            else
-                resStr = R.drawable.shape_oval_spring_bud;
-        } else {
+                return resStr;
+            }
+        } else
                 number = number/10;
                 resourceSelector(number);
-            }
+                //return number;
+
+
 
         return resStr;
     }
 
-    public ArrayList<User> createUsersCollection() {
-        ArrayList <User> users = new ArrayList<>();
-        users.add(new User("User 1", "user_1", "11111111"));
-        users.add(new User("User 2", "user_2", "11111111"));
-        users.add(new User("User 3", "user_3", "11111111"));
-        users.add(new User("User 4", "user_4", "11111111"));
-        users.add(new User("User 5", "user_5", "11111111"));
-        users.add(new User("User 6", "user_6", "11111111"));
-        users.add(new User("User 7", "user_7", "11111111"));
-        users.add(new User("User 8", "user_8", "11111111"));
-        users.add(new User("User 9", "user_9", "11111111"));
-        users.add(new User("User 10", "user_10", "11111111"));
-        return users;
-    }
-
     private void initUsersList() {
 
-        final ArrayList<User> usersCollection = createUsersCollection();
+        users = DataHolder.createUsersList();
 
-        usersListAdapter = new UsersAdapter(this, usersCollection);
+        usersListAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersListAdapter);
         usersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
@@ -119,6 +122,8 @@ public class ListUsersActivity extends Activity {
     }
 
     private void createSession(final String login, final String password) {
+
+        loginPB.setVisibility(View.VISIBLE);
 
         context = ListUsersActivity.this;
 
@@ -140,12 +145,12 @@ public class ListUsersActivity extends Activity {
                 intent.putExtra("login", login);
                 startActivity(intent);
 
+                loginPB.setVisibility(View.INVISIBLE);
 
                 chatService.login(user, new QBEntityCallbackImpl() {
                     @Override
                     public void onSuccess() {
                         Log.d("Track", "Level 2");
-
                     }
 
                     @Override

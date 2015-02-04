@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.Opponent;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 
 import java.util.ArrayList;
@@ -22,12 +23,12 @@ import java.util.ArrayList;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private ArrayList<Opponent> opponents;
+    private ArrayList<User> opponents;
     private LayoutInflater inflater;
 
     public static ArrayList<String> positions;
 
-    public OpponentsAdapter(Context context, ArrayList<Opponent> result) {
+    public OpponentsAdapter(Context context, ArrayList<User> result) {
         opponents = result;
         inflater = LayoutInflater.from(context);
     }
@@ -36,7 +37,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return opponents.size();
     }
 
-    public Opponent getItem(int position) {
+    public User getItem(int position) {
         return opponents.get(position);
     }
 
@@ -64,31 +65,22 @@ public class OpponentsAdapter extends BaseAdapter {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     if (buttonView.isChecked()) {
-                        Log.d("Track", "Checked " + opponents.get(position).getOpponentNumber());
-                        positions.add(String.valueOf(opponents.get(position).getOpponentNumber()));
+                        Log.d("Track", "Checked " + opponents.get(position).getUserNumber());
+                        positions.add(String.valueOf(opponents.get(position).getUserNumber()));
                     } else if (!buttonView.isChecked()) {
-                        positions.remove(String.valueOf(opponents.get(position).getOpponentNumber()));
-                        Log.d("Track", "Remove " + opponents.get(position).getOpponentNumber());
+                        positions.remove(String.valueOf(opponents.get(position).getUserNumber()));
+                        Log.d("Track", "Remove " + opponents.get(position).getUserNumber());
                     }
                 }
             });
-
-            /*if ((opponents.get(position).getOpponentNumber())==5){
-                holder.opponentsNumber.setBackgroundResource(R.drawable.shape_oval_blue);
-
-            }*/
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(opponents.get(position).getOpponentNumber()));
 
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.opponentsName.setText(opponents.get(position).getOpponentName());
-
-
-        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getOpponentNumber()));
-
-
+        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getUserNumber()));
+        holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(opponents.get(position).getUserNumber()));
+        holder.opponentsName.setText(opponents.get(position).getFullName());
 
         return convertView;
     }

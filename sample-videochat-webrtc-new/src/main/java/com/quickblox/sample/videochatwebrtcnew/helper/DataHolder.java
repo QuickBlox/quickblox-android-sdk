@@ -1,98 +1,56 @@
 package com.quickblox.sample.videochatwebrtcnew.helper;
 
-import com.quickblox.users.model.QBUser;
+import com.quickblox.sample.videochatwebrtcnew.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.quickblox.sample.videochatwebrtcnew.definitions.Consts.EMPTY_STRING;
-
 public class DataHolder {
 
-    private static DataHolder dataHolder;
-    private List<QBUser> qbUsersList = new ArrayList<QBUser>();
-    private QBUser signInQbUser;
+    public static ArrayList<User> usersList;
 
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
-        }
-        return dataHolder;
+
+    public void setUsersList(List<User> UsersList) {
+        this.usersList = usersList;
     }
 
-    public void setQbUsersList(List<QBUser> qbUsersList) {
-        this.qbUsersList = qbUsersList;
+    public int getUserListSize() {
+        return usersList.size();
     }
 
-    public int getQBUserListSize() {
-        return qbUsersList.size();
+    public String getUserName(int index) {
+        return usersList.get(index).getFullName();
     }
 
-    public String getQBUserName(int index) {
-        return qbUsersList.get(index).getFullName();
+    public User getUser(int index) {
+        return usersList.get(index);
     }
 
-    public List<String> getQbUserTags(int index) {
-        return qbUsersList.get(index).getTags();
+    public User getLastQBUser() {
+        return usersList.get(usersList.size() - 1);
     }
 
-    public QBUser getQBUser(int index) {
-        return qbUsersList.get(index);
+    public void addUserToList(User user) {
+        usersList.add(user);
     }
 
-    public QBUser getLastQBUser() {
-        return qbUsersList.get(qbUsersList.size() - 1);
+    public static ArrayList<User> createUsersList (){
+        usersList = new ArrayList<>();
+
+        usersList.add(new User(1, "User 1", "user_1", "11111111"));
+        usersList.add(new User(2, "User 2", "user_2", "11111111"));
+        usersList.add(new User(3, "User 3", "user_3", "11111111"));
+        usersList.add(new User(4, "User 4", "user_4", "11111111"));
+        usersList.add(new User(5, "User 5", "user_5", "11111111"));
+        usersList.add(new User(6, "User 6", "user_6", "11111111"));
+        usersList.add(new User(7, "User 7", "user_7", "11111111"));
+        usersList.add(new User(8, "User 8", "user_8", "11111111"));
+        usersList.add(new User(9, "User 9", "user_9", "11111111"));
+        usersList.add(new User(10, "User 10", "user_10", "11111111"));
+
+        return usersList;
+
     }
 
-    public void addQbUserToList(QBUser qbUser) {
-        qbUsersList.add(qbUser);
-    }
 
-    public QBUser getSignInQbUser() {
-        return signInQbUser;
-    }
-
-    public void setSignInQbUser(QBUser singInQbUser) {
-        this.signInQbUser = singInQbUser;
-    }
-
-    public String getSignInUserOldPassword() {
-        return signInQbUser.getOldPassword();
-    }
-
-    public int getSignInUserId() {
-        return signInQbUser.getId();
-    }
-
-    public void setSignInUserPassword(String singInUserPassword) {
-        signInQbUser.setOldPassword(singInUserPassword);
-    }
-
-    public String getSignInUserLogin() {
-        return signInQbUser.getLogin();
-    }
-
-    public String getSignInUserEmail() {
-        return signInQbUser.getEmail();
-    }
-
-    public String getSignInUserFullName() {
-        return signInQbUser.getFullName();
-    }
-
-    public String getSignInUserPhone() {
-        return signInQbUser.getPhone();
-    }
-
-    public String getSignInUserWebSite() {
-        return signInQbUser.getWebsite();
-    }
-
-    public String getSignInUserTags() {
-        if (signInQbUser.getTags() != null) {
-            return signInQbUser.getTags().getItemsAsString();
-        } else {
-            return EMPTY_STRING;
-        }
-    }
 }

@@ -25,14 +25,15 @@
         android:choiceMode="multipleChoice"
         android:divider="@android:color/transparent"
         android:layout_below="@+id/selectUsertextView"
-         />
+        android:layout_above="@+id/linearLayout" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:id="@+id/linearLayout">
 
         <Button
             android:layout_width="wrap_content"

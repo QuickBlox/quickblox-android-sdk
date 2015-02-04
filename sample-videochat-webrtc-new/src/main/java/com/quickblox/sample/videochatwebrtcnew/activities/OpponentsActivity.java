@@ -23,6 +23,7 @@ import com.quickblox.sample.videochatwebrtcnew.Opponent;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
+import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -41,6 +42,11 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
     private Button btnAudioCall;
     private Button btnVideoCall;
     private ArrayList<String> opponentsListToCall;
+    private ArrayList<User> opponents;
+    private ArrayList<User> usersList;
+
+    public OpponentsActivity() {
+    }
 
 
     @Override
@@ -48,6 +54,7 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opponents);
 
+        usersList = DataHolder.createUsersList();
 
         initUI();
         initActionBar();
@@ -55,6 +62,7 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
     }
 
     private void initUI() {
+
         opponentsList = (ListView) findViewById(R.id.opponentsList);
         login = getIntent().getStringExtra("login");
 
@@ -68,7 +76,6 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
 
     private void initActionBar() {
 
-
         ActionBar mActionBar = getActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
@@ -76,42 +83,35 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
 
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
-        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(searchIndexLogginedUser(createOpponentsCollection())+1));
-        numberOfListAB.setText(String.valueOf(searchIndexLogginedUser(createOpponentsCollection())+1));
+        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(searchIndexLogginedUser(usersList)+1));
+        numberOfListAB.setText(String.valueOf(searchIndexLogginedUser(usersList)+1));
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-        userNameAB.setText(createOpponentsCollection()
-                .get((searchIndexLogginedUser(createOpponentsCollection()))).getOpponentName());
+        userNameAB.setText(usersList
+                .get((searchIndexLogginedUser(usersList))).getFullName());
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
 
     }
 
-    private ArrayList<Opponent> createOpponentsCollection(){
-
-        ArrayList<Opponent> opponents = new ArrayList<>();
-        opponents.add(new Opponent(1, "User 1", "user_1", "11111111"));
-        opponents.add(new Opponent(2, "User 2", "user_2", "11111111"));
-        opponents.add(new Opponent(3, "User 3", "user_3", "11111111"));
-        opponents.add(new Opponent(4, "User 4", "user_4", "11111111"));
-        opponents.add(new Opponent(5, "User 5", "user_5", "11111111"));
-        opponents.add(new Opponent(6, "User 6", "user_6", "11111111"));
-        opponents.add(new Opponent(7, "User 7", "user_7", "11111111"));
-        opponents.add(new Opponent(8, "User 8", "user_8", "11111111"));
-        opponents.add(new Opponent(9, "User 9", "user_9", "11111111"));
-        opponents.add(new Opponent(10, "User 10", "user_10", "11111111"));
+    private ArrayList<User> createOpponentsFromUserList(ArrayList<User> usersList){
+        opponents = new ArrayList<>();
+        opponents.addAll(usersList);
+        opponents.remove(searchIndexLogginedUser(opponents));
 
         return opponents;
+
     }
 
-    private int searchIndexLogginedUser(ArrayList<Opponent> opponentsCollection) {
+    private int searchIndexLogginedUser (ArrayList<User> usersList) {
+
         int indexLogginedUser = -1;
 
-        for (Opponent usr : opponentsCollection) {
-            if (usr.getOpponentLogin().equals(login)) {
-                indexLogginedUser = opponentsCollection.indexOf(usr);
+        for (User usr : usersList) {
+            if (usr.getLogin().equals(login)) {
+                indexLogginedUser = usersList.indexOf(usr);
                 break;
             }
         }
@@ -123,23 +123,9 @@ public class OpponentsActivity  extends Activity implements View.OnClickListener
 
     private void initUsersList() {
 
-        final ArrayList<Opponent> opponents = createOpponentsCollection();
+        opponentsAdapter = new OpponentsAdapter(this, createOpponentsFromUserList(usersList));
+        opponentsList.setAdapter(opponentsAdapter);
 
-        int indexLogginedUser = searchIndexLogginedUser(opponents);
-
-        if (indexLogginedUser != -1) {
-            opponentsAdapter = new OpponentsAdapter(this, opponents);
-            opponentsList.setTextFilterEnabled(true);
-            opponentsList.setAdapter(opponentsAdapter);
-            opponentsAdapter.notifyDataSetChanged();
-            opponents.remove(indexLogginedUser);
-            opponentsAdapter.notifyDataSetChanged();
-        } else {
-            opponentsAdapter = new OpponentsAdapter(this, opponents);
-            opponentsList.setAdapter(opponentsAdapter);
-
-
-        }
     }
 
     /*@Override
