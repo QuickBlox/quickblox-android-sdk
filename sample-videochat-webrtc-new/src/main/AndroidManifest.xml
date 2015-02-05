@@ -24,6 +24,9 @@
         <activity
             android:name=".activities.OpponentsActivity">
         </activity>
+        <activity
+            android:name=".activities.IncAudioCallActivity">
+        </activity>
 
 
     </application>

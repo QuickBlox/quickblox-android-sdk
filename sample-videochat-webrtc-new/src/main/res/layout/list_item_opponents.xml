@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="15dp"
         android:gravity="center_vertical|center_horizontal"
         android:layout_centerVertical="true" />
 
@@ -24,7 +24,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="opponents Name"
         android:id="@+id/opponentsName"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/opponentsNumber"
         android:gravity="center_vertical|center_horizontal"/>
 
@@ -33,7 +33,7 @@
         android:layout_height="65dp"
         android:id="@+id/opponentsCheckBox"
         android:focusable="false"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="15dp"
         android:layout_alignParentRight="true"
         android:gravity="center_vertical|center_horizontal"
 

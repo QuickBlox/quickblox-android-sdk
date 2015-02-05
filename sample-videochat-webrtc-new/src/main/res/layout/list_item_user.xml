@@ -15,7 +15,7 @@
         android:id="@+id/userNumber"
         android:layout_gravity="left"
         android:background="@drawable/shape_oval_blue_green"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="15dp"
         android:layout_centerVertical="true" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="65dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/login_as"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/userNumber"
         android:id="@+id/loginAs"
          />
@@ -36,7 +36,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="User Name"
         android:id="@+id/fullName"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/loginAs"
          />
 </RelativeLayout>

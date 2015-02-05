@@ -15,7 +15,7 @@
         android:id="@+id/numberOfListAB"
         android:layout_gravity="left"
         android:background="@drawable/shape_oval_orange"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="10dp"
         android:layout_centerVertical="true" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="fill_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/logged_in_as"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/numberOfListAB"
         android:id="@+id/loginAsAB"
         android:gravity="center_vertical|center_horizontal"
@@ -32,12 +32,10 @@
 
     <TextView
         android:layout_width="wrap_content"
-
         android:layout_height="fill_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="User Name"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/loginAsAB"
         android:id="@+id/userNameAB"
         android:gravity="center_vertical|center_horizontal"

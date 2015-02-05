@@ -2,7 +2,7 @@ package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
 
-import com.quickblox.sample.videochatwebrtcnew.Opponent;
+
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class OpponentsToCall extends Activity{
 
-    private ArrayList <Opponent> opponentsToCall;
+    //private ArrayList <Opponent> opponentsToCall;
 
 
 }

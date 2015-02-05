@@ -47,7 +47,6 @@ public class ListUsersActivity extends Activity {
         initUI();
         initUsersList();
 
-
         QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
     }
 
@@ -59,47 +58,42 @@ public class ListUsersActivity extends Activity {
     }
 
     public static int resourceSelector (int number){
-        int resStr=0;
-        if (number < 10) {
-            if (number == 0) {
+        int resStr=-1;
+        switch (number) {
+            case 0:
                 resStr = R.drawable.shape_oval_spring_bud;
-                return resStr;
-            } else if (number == 1) {
+                break;
+            case 1:
                 resStr = R.drawable.shape_oval_orange;
-                return resStr;
-            } else if (number == 2) {
+                break;
+            case 2:
                 resStr = R.drawable.shape_oval_water_bondi_beach;
-                return resStr;
-            } else if (number == 3) {
+                break;
+            case 3:
                 resStr = R.drawable.shape_oval_blue_green;
-                return resStr;
-            } else if (number == 4) {
+                break;
+            case 4:
                 resStr = R.drawable.shape_oval_lime;
-                return resStr;
-            } else if (number == 5) {
+                break;
+            case 5:
                 resStr = R.drawable.shape_oval_mauveine;
-                return resStr;
-            } else if (number == 6) {
+                break;
+            case 6:
                 resStr = R.drawable.shape_oval_gentianaceae_blue;
-                return resStr;
-            } else if (number == 7) {
+                break;
+            case 7:
                 resStr = R.drawable.shape_oval_blue;
-                return resStr;
-            } else if (number == 8) {
-                resStr = R.drawable.shape_oval_blue_green;
-                return resStr;
-            } else if (number == 9){
+                break;
+            case 8:
+                resStr = R.drawable.shape_oval_blue_krayola;
+                break;
+            case 9:
                 resStr = R.drawable.shape_oval_coral;
-                return resStr;
-            }
-        } else
-                number = number/10;
-                resourceSelector(number);
-                //return number;
-
-
-
-        return resStr;
+                break;
+            default:
+                resStr= resourceSelector(number%10);
+        }
+        return  resStr;
     }
 
     private void initUsersList() {
