@@ -34,6 +34,8 @@
     <color name="red">#FF0000</color>
     <color name="white_blue">#00BFFF</color>
     <color name="pink">#FF7A7A</color>
+    <color name="green">#45D100</color>
+    <color name="white_green">#A9FF80</color>
 
 
 </resources>

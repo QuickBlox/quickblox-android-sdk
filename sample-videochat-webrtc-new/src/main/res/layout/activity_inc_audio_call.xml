@@ -71,12 +71,13 @@
         android:textOn=""
         android:background="@drawable/ic_toggle_dynamic"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_alignBottom="@+id/callToggle"
-        android:layout_toLeftOf="@+id/callToggle"
-        android:layout_marginRight="20dp"/>
+        android:layout_alignBottom="@+id/callEndBtn"
+        android:layout_toLeftOf="@+id/callEndBtn"
+        android:layout_marginRight="20dp"
+        android:layout_alignTop="@+id/callEndBtn" />
 
     <ImageButton
-        android:id="@+id/callToggle"
+        android:id="@+id/callEndBtn"
         android:layout_width="100dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_call_end"
@@ -95,9 +96,10 @@
         android:textOn=""
         android:background="@drawable/ic_toggle_mic"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_alignBottom="@+id/callToggle"
-        android:layout_toRightOf="@+id/callToggle"
-        android:layout_marginLeft="20dp" />
+        android:layout_alignBottom="@+id/callEndBtn"
+        android:layout_toRightOf="@+id/callEndBtn"
+        android:layout_marginLeft="20dp"
+        android:layout_alignTop="@+id/callEndBtn" />
 
 
 </RelativeLayout>
