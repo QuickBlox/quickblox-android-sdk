@@ -13,8 +13,12 @@ import android.widget.TextView;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by tereha on 27.01.15.
@@ -23,12 +27,16 @@ public class OpponentsAdapter extends BaseAdapter {
 
     private ArrayList<User> opponents;
     private LayoutInflater inflater;
+    public List<User> selected = new ArrayList<>();
 
-    public static ArrayList<String> positions;
-
-    public OpponentsAdapter(Context context, ArrayList<User> result) {
-        opponents = result;
+    public OpponentsAdapter(Context context, ArrayList<User> users) {
+        this.opponents = users;
         inflater = LayoutInflater.from(context);
+
+    }
+
+    public List<User> getSelected() {
+        return selected;
     }
 
     public int getCount() {
@@ -47,8 +55,9 @@ public class OpponentsAdapter extends BaseAdapter {
 
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        positions = new ArrayList<>();
+
         final ViewHolder holder;
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_opponents, null);
             holder = new ViewHolder();
@@ -58,30 +67,32 @@ public class OpponentsAdapter extends BaseAdapter {
 
             convertView.setTag(holder);
 
-            holder.opponentsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    if (buttonView.isChecked()) {
-                        Log.d("Track", "Checked " + opponents.get(position).getUserNumber());
-                        positions.add(String.valueOf(opponents.get(position).getUserNumber()));
-                    } else if (!buttonView.isChecked()) {
-                        positions.remove(String.valueOf(opponents.get(position).getUserNumber()));
-                        Log.d("Track", "Remove " + opponents.get(position).getUserNumber());
-                    }
-                }
-            });
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.opponentsNumber.setText(String.valueOf(opponents.get(position).getUserNumber()));
-        holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(opponents.get(position).getUserNumber()));
-        holder.opponentsName.setText(opponents.get(position).getFullName());
+        final User user = opponents.get(position);
+        if (user != null) {
+            holder.opponentsNumber.setText(String.valueOf(user.getUserNumber()));
+            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(user.getUserNumber()));
+            holder.opponentsName.setText(user.getFullName());
+            holder.opponentsCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((((CheckBox) v).isChecked())) {
+                        selected.add(user);
+                    } else {
+                        selected.remove(user);
+                    }
+                }
+            });
+
+            holder.opponentsCheckBox.setChecked(selected.contains(user));
+        }
 
         return convertView;
     }
+
 
     public static class ViewHolder {
         TextView opponentsNumber;

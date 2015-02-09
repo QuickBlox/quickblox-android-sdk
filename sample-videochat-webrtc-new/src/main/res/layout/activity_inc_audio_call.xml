@@ -14,7 +14,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginLeft="40dp"/>
 
-    <TextView
+    <Chronometer
         android:id="@+id/timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +22,7 @@
         android:textColor="@color/grey"
         android:textStyle="bold"
         android:text="00:00:00"
+        android:format="%s"
         android:layout_toRightOf="@+id/incAudioCall"
         android:layout_marginTop="50dp"
         android:layout_marginLeft="10dp"/>

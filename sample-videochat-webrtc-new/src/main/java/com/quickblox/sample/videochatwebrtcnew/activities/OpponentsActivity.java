@@ -2,6 +2,7 @@ package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -10,8 +11,10 @@ import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -81,6 +84,8 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
         opponentsAdapter = new OpponentsAdapter(this, createOpponentsFromUserList(usersList));
         opponentsList.setAdapter(opponentsAdapter);
 
+
+
     }
 
     @Override
@@ -88,21 +93,40 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
         switch (v.getId()){
             case R.id.btnAudioCall:
 
-                //opponentsListToCall = new ArrayList<>();
-               // opponentsListToCall.addAll(OpponentsAdapter.positions);
+                /*opponentsListToCall = new ArrayList<>();
+                opponentsListToCall.addAll(OpponentsAdapter.positions);
+
+                if (opponentsListToCall.size() == 0)
+                    Log.d("Track", "Opponent list is NULL ");
 
 
-                //for (String s : opponentsListToCall)
-                 //   Log.d("Track", "Nubers of opponents " + s);
+                for (String s : opponentsListToCall) {
+                    Log.d("Track", "Nubers of opponents " + s);
 
-                Intent intent = new Intent(OpponentsActivity.this, IncAudioCallActivity.class);
+                }
+
+                //Intent intent = new Intent(OpponentsActivity.this, IncAudioCallActivity.class);
                 //intent.putExtra("login", login);
-                startActivity(intent);
+                //startActivity(intent);*/
+
+                for (int id : getUserIds(opponentsAdapter.getSelected())){
+                    Log.d("Track", "id = " + String.valueOf(id));
+
+                }
+
                 break;
 
             case R.id.btnVideoCall:
 
                 break;
         }
+    }
+
+    public static ArrayList<Integer> getUserIds(List<User> users){
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        for(User user : users){
+            ids.add(user.getUserNumber());
+        }
+        return ids;
     }
 }

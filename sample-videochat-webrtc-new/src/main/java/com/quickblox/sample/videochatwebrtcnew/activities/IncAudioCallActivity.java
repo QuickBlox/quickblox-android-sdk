@@ -1,8 +1,10 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,7 +17,7 @@ import com.quickblox.sample.videochatwebrtcnew.R;
  */
 public class IncAudioCallActivity extends LogginedUserABActivity {
 
-    private TextView timer;
+    private Chronometer timer;
     private TextView incUserName;
     private TextView otherIncUsers;
     private ImageButton callEndBtn;
@@ -40,9 +42,14 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.d("Track", "Dynamic is on!");
+                    timer.setBase(SystemClock.elapsedRealtime());
+                    timer.start();
 
                 } else {
                     Log.d("Track", "Dynamic is off!");
+                    timer.stop();
+                    Log.d("Track", "Dynamic is off!" + String.valueOf(timer.toString()));
+                    //timer.stop();
                 }
             }
         });
@@ -67,7 +74,7 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
     }
 
     private void initUI() {
-        timer = (TextView) findViewById(R.id.timer);
+        timer = (Chronometer) findViewById(R.id.timer);
         incUserName = (TextView) findViewById(R.id.incUserName);
         otherIncUsers = (TextView) findViewById(R.id.otherIncUsers);
         callEndBtn = (ImageButton) findViewById(R.id.callEndBtn);
