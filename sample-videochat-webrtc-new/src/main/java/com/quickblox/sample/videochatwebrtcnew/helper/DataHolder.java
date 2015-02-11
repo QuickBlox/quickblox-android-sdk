@@ -44,7 +44,7 @@ public class DataHolder {
         usersList.add(new User(5, "User 5", "user_5", "11111111"));
         usersList.add(new User(6, "User 6", "user_6", "11111111"));
         usersList.add(new User(7, "User 7", "user_7", "11111111"));
-        usersList.add(new User(8, "User 8", "user_8", "11111111"));
+        usersList.add(new User(8, "User 8", "@dev8", "x6Bt0VDy5"));
         usersList.add(new User(9, "User 9", "user_9", "11111111"));
         usersList.add(new User(10, "User 10", "user_10", "11111111"));
 

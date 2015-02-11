@@ -25,17 +25,20 @@ import java.util.Set;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private ArrayList<User> opponents;
+    private ArrayList<QBUser> opponents;
     private LayoutInflater inflater;
-    public List<User> selected = new ArrayList<>();
+    private int counter;
+    public List<QBUser> selected = new ArrayList<>();
+    String lologinnedUser;
 
-    public OpponentsAdapter(Context context, ArrayList<User> users) {
+    public OpponentsAdapter(Context context, ArrayList<QBUser> users, String loginnedUser) {
         this.opponents = users;
         inflater = LayoutInflater.from(context);
+        this.lologinnedUser = loginnedUser;
 
     }
 
-    public List<User> getSelected() {
+    public List<QBUser> getSelected() {
         return selected;
     }
 
@@ -43,12 +46,20 @@ public class OpponentsAdapter extends BaseAdapter {
         return opponents.size();
     }
 
-    public User getItem(int position) {
+    public QBUser getItem(int position) {
         return opponents.get(position);
     }
 
     public long getItemId(int position) {
         return position;
+    }
+
+    private int getNumber (ArrayList<QBUser> opponents, QBUser user) {
+        int i;
+        i = opponents.indexOf(user);
+
+        return i;
+
     }
 
 
@@ -71,10 +82,16 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final User user = opponents.get(position);
+        final QBUser user = opponents.get(position);
+
+        counter = getNumber(opponents, user) + 1;
+
         if (user != null) {
-            holder.opponentsNumber.setText(String.valueOf(user.getUserNumber()));
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(user.getUserNumber()));
+
+
+            holder.opponentsNumber.setText(String.valueOf(counter));
+
+            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(counter));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/activityInkCall"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop = "true">
 
     <TextView
         android:id="@+id/incAudioCall"
@@ -64,7 +67,7 @@
         android:layout_below="@+id/alsoOnCall"
         android:layout_centerHorizontal="true" />
 
-    <ToggleButton
+    <!--<ToggleButton
         android:id="@+id/dynamicToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,7 +103,7 @@
         android:layout_alignBottom="@+id/callEndBtn"
         android:layout_toRightOf="@+id/callEndBtn"
         android:layout_marginLeft="20dp"
-        android:layout_alignTop="@+id/callEndBtn" />
+        android:layout_alignTop="@+id/callEndBtn" />-->
 
 
 </RelativeLayout>

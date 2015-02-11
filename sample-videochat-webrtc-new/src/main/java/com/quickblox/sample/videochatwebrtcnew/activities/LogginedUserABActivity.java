@@ -13,7 +13,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
+import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
+import java.util.ArrayList;
+
+import static com.quickblox.sample.videochatwebrtcnew.activities.OpponentsActivity.getQBPagedRequestBuilder;
 
 /**
  * Created by tereha on 26.01.15.
@@ -32,19 +40,29 @@ public class LogginedUserABActivity extends Activity {
 
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
-        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(OpponentsActivity.usersList
-                .get((OpponentsActivity.searchIndexLogginedUser(OpponentsActivity.usersList))).getUserNumber()));
-        numberOfListAB.setText(String.valueOf(OpponentsActivity.usersList
-                .get((OpponentsActivity.searchIndexLogginedUser(OpponentsActivity.usersList))).getUserNumber()));
+        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) +1));
+        numberOfListAB.setText(String.valueOf((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) +1));
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-        userNameAB.setText(OpponentsActivity.usersList
-                .get((OpponentsActivity.searchIndexLogginedUser(OpponentsActivity.usersList))).getFullName());
+        userNameAB.setText(DataHolder.createUsersList().get(((Integer) searchIndexLogginedUser(DataHolder.createUsersList()))).getFullName());
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
 
+    }
+
+    private static Object searchIndexLogginedUser(ArrayList<User> usersList) {
+        int indexLogginedUser = -1;
+
+        for (User usr : usersList) {
+            if (usr.getLogin().equals(OpponentsActivity.login)) {
+                indexLogginedUser = usersList.indexOf(usr);
+                break;
+            }
+        }
+
+        return indexLogginedUser;
     }
 }
 

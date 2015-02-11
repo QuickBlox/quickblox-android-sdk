@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -20,19 +21,25 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
     private Chronometer timer;
     private TextView incUserName;
     private TextView otherIncUsers;
-    private ImageButton callEndBtn;
+    private ImageButton rejectBtn ;
+    private ImageButton handUpBtn;
+    private ImageButton takeBtn;
     private ToggleButton dynamicToggle;
     private ToggleButton micToggle;
-
+    private RelativeLayout incomingCall;
+    private RelativeLayout answeredCall;
+    private RelativeLayout infoAboutCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inc_audio_call);
+        setContentView(R.layout.call_status);
 
         super.initActionBar();
 
         initUI();
+        answeredCall.setVisibility(View.INVISIBLE);
+
         initButtonsListener();
     }
 
@@ -42,14 +49,8 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.d("Track", "Dynamic is on!");
-                    timer.setBase(SystemClock.elapsedRealtime());
-                    timer.start();
-
                 } else {
                     Log.d("Track", "Dynamic is off!");
-                    timer.stop();
-                    Log.d("Track", "Dynamic is off!" + String.valueOf(timer.toString()));
-                    //timer.stop();
                 }
             }
         });
@@ -58,30 +59,60 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.d("Track", "Mic is on!");
-
                 } else {
                     Log.d("Track", "Mic is off!");
                 }
             }
         });
 
-        callEndBtn.setOnClickListener(new View.OnClickListener() {
+        rejectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Track", "Call is rejected");
+            }
+        });
+
+        takeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                incomingCall.setVisibility(View.INVISIBLE);
+                answeredCall.setVisibility(View.VISIBLE);
+
+                timer.setBase(SystemClock.elapsedRealtime());
+                timer.start();
+
+
+                Log.d("Track", "Call is started");
+            }
+        });
+
+        handUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
             }
         });
+
     }
 
     private void initUI() {
         timer = (Chronometer) findViewById(R.id.timer);
         incUserName = (TextView) findViewById(R.id.incUserName);
         otherIncUsers = (TextView) findViewById(R.id.otherIncUsers);
-        callEndBtn = (ImageButton) findViewById(R.id.callEndBtn);
+
+        rejectBtn = (ImageButton) findViewById(R.id.rejectBtn);
+        handUpBtn = (ImageButton) findViewById(R.id.handUpBtn);
+        takeBtn = (ImageButton) findViewById(R.id.takeBtn);
+
         dynamicToggle = (ToggleButton) findViewById(R.id.dynamicToggle);
         micToggle = (ToggleButton) findViewById(R.id.micToggle);
+
+        infoAboutCall = (RelativeLayout) findViewById(R.id.infoAboutCall);
+        incomingCall = (RelativeLayout) findViewById(R.id.incomingCall);
+        answeredCall = (RelativeLayout) findViewById(R.id.answeredCall);
+
+
     }
-
-
 
 }
