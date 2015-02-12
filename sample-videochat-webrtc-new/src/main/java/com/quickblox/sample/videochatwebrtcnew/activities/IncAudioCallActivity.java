@@ -1,5 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -69,6 +70,7 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is rejected");
+
             }
         });
 
@@ -91,6 +93,8 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
+                Intent intent = new Intent(IncAudioCallActivity.this, VideoChatActivity.class);//
+                startActivity(intent);
             }
         });
 

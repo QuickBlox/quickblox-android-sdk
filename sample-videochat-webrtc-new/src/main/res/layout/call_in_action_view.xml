@@ -17,7 +17,7 @@
         android:layout_alignBottom="@+id/callEndBtnInCallAction"
         android:layout_toLeftOf="@+id/callEndBtnInCallAction"
         android:layout_marginRight="20dp"
-        android:layout_alignTop="@+id/callEndBtnInCallAction" />
+        android:layout_alignTop="@+id/callEndBtnInCallAction"/>
 
     <ImageButton
         android:id="@+id/callEndBtnInCallAction"
@@ -28,8 +28,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentBottom ="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        />
+        android:layout_marginBottom="60dp"/>
 
 
     <ToggleButton

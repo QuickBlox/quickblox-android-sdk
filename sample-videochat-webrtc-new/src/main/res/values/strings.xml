@@ -8,6 +8,7 @@
     <string name="outputing_audio_call">Outputing Audio Call - </string>
     <string name="incoming_audio_call">Incoming Audio Call - </string>
     <string name="also_on_call">Also on call:</string>
+    <string name="edit_opponents_list">Edit opponents list</string>
 
 
     <string name="welcoming_message">Login as any user on this devise and another(s) users on other device</string>
