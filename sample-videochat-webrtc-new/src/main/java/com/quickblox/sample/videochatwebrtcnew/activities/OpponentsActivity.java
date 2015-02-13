@@ -7,26 +7,44 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBSignaling;
+import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
+import com.quickblox.chat.QBWebRTCSignaling;
+import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
+import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtcnew.QBRTCClient;
+import com.quickblox.videochat.webrtcnew.QBRTCSession;
+import com.quickblox.videochat.webrtcnew.callbacks.QBRTCChatCallback;
+import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
+import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
+import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
+import com.quickblox.videochat.webrtcnew.view.VideoCallBacks;
+
+import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * Created by tereha on 27.01.15.
  */
-public class OpponentsActivity  extends LogginedUserABActivity implements View.OnClickListener, QBEntityCallback<ArrayList<QBUser>> {
+public class OpponentsActivity  extends LogginedUserABActivity implements View.OnClickListener, QBEntityCallback<ArrayList<QBUser>>, QBRTCChatCallback {
 
     private OpponentsAdapter opponentsAdapter;
     private PullToRefreshListView opponentsList;
@@ -42,6 +60,11 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
     private int listViewIndex;
     private int listViewTop;
     private PullToRefreshListView usersList;
+    private Map<String, QBRTCSession> sessionList = new HashMap<>();
+    private QBRTCVideoTrack localVideoTrack;
+    private String currentSession;
+
+    QBRTCTypes.QBConferenceType qbConferenceType;
 
     public static ArrayList<QBUser> testUsers;
 
@@ -72,6 +95,21 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
         initUI();
         super.initActionBar();
         //initUsersList();
+
+        QBChatService instance = QBChatService.getInstance();
+        QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
+        videoChatWebRTCSignalingManager.addSignalingManagerListener(
+                new QBVideoChatSignalingManagerListener() {
+                    @Override
+                    public void signalingCreated(QBSignaling signaling, boolean createdLocally) {
+                        if (!createdLocally) {
+                            // Init Conversation
+                            QBRTCClient.init(OpponentsActivity.this);
+                            QBRTCClient.getInstance().addCallback(OpponentsActivity.this);
+                            QBRTCClient.getInstance().setQBWebRTCSignaling((QBWebRTCSignaling) signaling);
+                        }
+                    }
+                });
     }
 
     private void initUI() {
@@ -87,14 +125,14 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
 
     }
 
-    private ArrayList<QBUser> createOpponentsFromUserList(ArrayList<QBUser> usersList){
+    /*private ArrayList<QBUser> createOpponentsFromUserList(ArrayList<QBUser> usersList){
         opponents = new ArrayList<>();
         opponents.addAll(usersList);
         opponents.remove(searchIndexLogginedUser(opponents));
 
         return opponents;
 
-    }
+    }*/
 
     public static int searchIndexLogginedUser(ArrayList<QBUser> usersList) {
 
@@ -124,30 +162,24 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
         switch (v.getId()){
             case R.id.btnAudioCall:
 
-                /*opponentsListToCall = new ArrayList<>();
-                opponentsListToCall.addAll(OpponentsAdapter.positions);
 
-                if (opponentsListToCall.size() == 0)
-                    Log.d("Track", "Opponent list is NULL ");
-
-
-                for (String s : opponentsListToCall) {
-                    Log.d("Track", "Nubers of opponents " + s);
-
-                }*/
-
-                Intent intent = new Intent(OpponentsActivity.this, IncAudioCallActivity.class);
-//                intent.putExtra("login", login);
-                startActivity(intent);
-
-//                for (int id : getUserIds(opponentsAdapter.getSelected())){
-//                    Log.d("Track", "id = " + String.valueOf(id));
-
-//                }
+                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
                 break;
 
             case R.id.btnVideoCall:
+
+                // get call type
+                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+
+
+                // prepare custom user data
+                Map<String, String> userInfo =  new HashMap<>();
+                userInfo.put("any_custom_data", "some data");
+                userInfo.put("my_avatar_url", "avatar_reference");
+
+                startVideoChatActivity(getUserIds(opponentsAdapter.getSelected()), qbConferenceType, userInfo);
+                getCurrentSession().startCall(null);
 
                 break;
         }
@@ -196,10 +228,99 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
 
         return pagedRequestBuilder;
     }
+
     private void loadNextPage() {
         ++currentPage;
 
         QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsActivity.this);
+
+    }
+
+    public void startVideoChatActivity(List<Integer> opponents,
+                                                        QBRTCTypes.QBConferenceType qbConferenceType,
+                                                        Map<String, String> userInfo) {
+
+        QBRTCClient.init(this);
+        //QBRTCClient.getInstance().addCallback(this);
+
+        Intent intent = new Intent (this, VideoChatActivity.class);
+        intent.putExtra("opponents", (java.io.Serializable) opponents);
+        intent.putExtra("qbConferenceType", qbConferenceType);
+        intent.putExtra("userInfo", (java.io.Serializable) userInfo);
+
+        for (String key : userInfo.keySet()){
+            intent.putExtra("UserInfo:" + key, userInfo.get(key));
+        }
+
+        startActivity(intent);
+
+    }
+
+    public static ArrayList<Integer> getUserIds(List<QBUser> users){
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        for(QBUser user : users){
+            ids.add(user.getId());
+        }
+        return ids;
+    }
+
+    public QBRTCSession getCurrentSession() {
+        return sessionList.get(currentSession);
+    }
+
+
+    @Override
+    public void onReceiveNewCallWithSession(QBRTCSession session) {
+        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onReceiveDialingWithSession(QBRTCSession session) {
+
+    }
+
+    @Override
+    public void onUserNotAnswer(QBRTCSession session, Integer integer) {
+
+    }
+
+    @Override
+    public void onBeginConnectToUser(QBRTCSession session, Integer integer) {
+
+    }
+
+    @Override
+    public void onCallRejectByUser(QBRTCSession session, Integer integer, Map<String, String> stringStringMap) {
+
+    }
+
+    @Override
+    public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack qbrtcVideoTrack) {
+
+    }
+
+    @Override
+    public void onRemoteVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack qbrtcVideoTrack, Integer integer) {
+
+    }
+
+    @Override
+    public void onSessionEnd(QBRTCSession session) {
+
+    }
+
+    @Override
+    public void onConnectedToUser(QBRTCSession session, Integer integer) {
+
+    }
+
+    @Override
+    public void onUserDisconnected(QBRTCSession session, Integer integer) {
+
+    }
+
+    @Override
+    public void onReceiveHangUpFromUser(QBRTCSession session, Integer integer) {
 
     }
 }
