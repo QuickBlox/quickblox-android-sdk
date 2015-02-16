@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +57,7 @@ public class LogginedUserABActivity extends Activity {
         int indexLogginedUser = -1;
 
         for (User usr : usersList) {
-            if (usr.getLogin().equals(OpponentsActivity.login)) {
+            if (usr.getLogin().equals(NewDialogActivity.login)) {
                 indexLogginedUser = usersList.indexOf(usr);
                 break;
             }

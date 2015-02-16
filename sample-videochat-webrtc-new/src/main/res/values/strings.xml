@@ -6,7 +6,7 @@
     <string name="login_as">Login as</string>
     <string name="logged_in_as">Logged In as</string>
     <string name="outputing_audio_call">Outputing Audio Call - </string>
-    <string name="incoming_audio_call">Incoming Audio Call - </string>
+    <string name="incoming_audio_call">Incoming Audio Call - %s</string>
     <string name="also_on_call">Also on call:</string>
     <string name="edit_opponents_list">Edit opponents list</string>
 

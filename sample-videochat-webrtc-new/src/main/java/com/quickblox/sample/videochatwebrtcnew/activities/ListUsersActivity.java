@@ -135,7 +135,7 @@ public class ListUsersActivity extends Activity {
 
                 Log.d("Track", "Level 1");
 
-                Intent intent = new Intent(ListUsersActivity.this, OpponentsActivity.class);
+                Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
                 intent.putExtra("login", login);
                 startActivity(intent);
 

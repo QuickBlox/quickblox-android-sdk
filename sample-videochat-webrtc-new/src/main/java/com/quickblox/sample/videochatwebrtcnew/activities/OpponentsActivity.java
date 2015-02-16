@@ -202,7 +202,7 @@ public class OpponentsActivity  extends LogginedUserABActivity implements View.O
 
         // Prepare users list for simple adapter.
         //
-        opponentsAdapter = new OpponentsAdapter(OpponentsActivity.this, (ArrayList<QBUser>) users, login);
+        //opponentsAdapter = new OpponentsAdapter(OpponentsActivity.this, (ArrayList<QBUser>) users, login);
         opponentsList.setAdapter(opponentsAdapter);
         opponentsList.onRefreshComplete();
         opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);

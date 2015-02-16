@@ -25,16 +25,16 @@ import java.util.Set;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private ArrayList<QBUser> opponents;
+    private List<QBUser> opponents;
     private LayoutInflater inflater;
     private int counter;
     public List<QBUser> selected = new ArrayList<>();
-    String lologinnedUser;
+//    String lologinnedUser;
 
-    public OpponentsAdapter(Context context, ArrayList<QBUser> users, String loginnedUser) {
+    public OpponentsAdapter(Context context, List<QBUser> users/*, String loginnedUser*/) {
         this.opponents = users;
         inflater = LayoutInflater.from(context);
-        this.lologinnedUser = loginnedUser;
+//        this.lologinnedUser = loginnedUser;
 
     }
 
@@ -54,7 +54,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return position;
     }
 
-    private int getNumber (ArrayList<QBUser> opponents, QBUser user) {
+    private int getNumber (List<QBUser> opponents, QBUser user) {
         int i;
         i = opponents.indexOf(user);
 
