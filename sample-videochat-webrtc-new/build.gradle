@@ -53,6 +53,5 @@ dependencies {
     compile files('../jars/quickblox-android-sdk-videochat-webrtc-2.1.jar')
     compile files('../jars/quickblox-android-sdk-chat-2.1.jar')
     compile 'com.android.support:appcompat-v7:+'
-    //compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':pull-to-refresh')
 }

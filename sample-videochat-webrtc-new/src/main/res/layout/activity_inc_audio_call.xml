@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentTop = "true">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/incAudioCall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:textStyle="bold"
         android:text="@string/incoming_audio_call"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="40dp"/>
+        android:layout_marginLeft="40dp"/>-->
 
     <Chronometer
         android:id="@+id/timer"
@@ -24,11 +24,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/grey"
         android:textStyle="bold"
-        android:text="00:00:00"
-        android:format="%s"
-        android:layout_toRightOf="@+id/incAudioCall"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="10dp"/>
+        android:format="@string/incoming_audio_call"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/incUserName"
@@ -39,7 +38,7 @@
         android:textColor="@color/white"
         android:text="User 5"
         android:background="@drawable/rectangle_rounded_white_blue"
-        android:layout_below="@+id/incAudioCall"
+        android:layout_below="@+id/timer"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:gravity="center_vertical|center_horizontal" />

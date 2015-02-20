@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,10 @@ import java.util.Map;
 /**
  * Created by tereha on 16.02.15.
  */
-public class OpponentsFragment extends Fragment implements QBEntityCallback<ArrayList<QBUser>>, View.OnClickListener {
+public class OpponentsFragment extends Fragment implements QBEntityCallback<ArrayList<QBUser>>, View.OnClickListener, Serializable {
+
+
+
 
     private OpponentsAdapter opponentsAdapter;
     private PullToRefreshListView opponentsList;
@@ -50,6 +55,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private int listViewIndex;
     private int listViewTop;
     private QBRTCTypes.QBConferenceType qbConferenceType;
+    private View view=null;
+
 
 
 
@@ -60,24 +67,38 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
-        initUI(view);
+        ((NewDialogActivity)getActivity()).initActionBar();
 
-        opponentsList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
-            @Override
-            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                // Do work to refresh the list here.
-                loadNextPage();
-                listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
-                View v = opponentsList.getRefreshableView().getChildAt(0);
-                listViewTop = (v == null) ? 0 : v.getTop();
-            }
-        });
+        if (savedInstanceState == null){
+            view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
-        loadNextPage();
+            initUI(view);
 
+            opponentsList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+                @Override
+                public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+                    // Do work to refresh the list here.
+                    loadNextPage();
+                    listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
+                    View v = opponentsList.getRefreshableView().getChildAt(0);
+                    listViewTop = (v == null) ? 0 : v.getTop();
+                }
+            });
+
+            loadNextPage();
+
+        }
+
+        Log.d("Track", "onCreateView() from OpponentsFragment");
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setRetainInstance(true);
+        Log.d("Track", "onCreate() from OpponentsFragment");
+        super.onCreate(savedInstanceState);
     }
 
     private void initUI(View view) {
@@ -131,6 +152,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
                 ((NewDialogActivity)getActivity())
                         .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
                                 qbConferenceType, userInfo);
+//                ((NewDialogActivity) getActivity()).getCurrentSession().startCall(null);
+
 
                 break;
         }
@@ -145,11 +168,10 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
         // Prepare users list for simple adapter.
         //
-        opponentsAdapter = new OpponentsAdapter(getActivity(), users);
+        opponentsAdapter = new OpponentsAdapter((NewDialogActivity)getActivity(), users);
         opponentsList.setAdapter(opponentsAdapter);
         opponentsList.onRefreshComplete();
         opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
-        //progressBar.setVisibility(View.GONE);
     }
 
     @Override

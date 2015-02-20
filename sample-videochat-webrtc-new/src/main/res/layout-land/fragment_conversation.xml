@@ -8,20 +8,44 @@
 
 
 
-    <HorizontalScrollView
-        android:id="@+id/camerasOpponentsList"
-        android:layout_width="fill_parent"
-        android:layout_height="130dp"
+    <ListView
+        android:id="@+id/camerasOpponentsListLand"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
         android:background="@color/white"
-        android:layout_above="@+id/actionButtons"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true">
+
+    </ListView>
+
+
+    <com.quickblox.videochat.webrtcnew.view.QBGLVideoView
+        android:id="@+id/videoView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="7dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignTop="@+id/incUserName"
+        android:layout_toStartOf="@+id/camerasOpponentsListLand"
+        android:layout_toLeftOf="@+id/camerasOpponentsListLand"
+        android:layout_alignBottom="@+id/actionButtons" />
 
 
-    </HorizontalScrollView>
+    <TextView
+        android:id="@+id/incUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="User Name"
+        android:background="@drawable/rectangle_rounded_white_blue"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"/>
 
     <LinearLayout
         android:id="@+id/actionButtons"
@@ -30,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="7dp"
-        android:background="@color/white"
+        android:layout_marginBottom="0dp"
+        android:background="@color/black_transparent_50"
         android:gravity="center_horizontal"
         >
 
@@ -95,33 +119,5 @@
              />
 
     </LinearLayout>
-
-    <com.quickblox.videochat.webrtcnew.view.QBGLVideoView
-        android:id="@+id/videoView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/camerasOpponentsList" />
-
-
-    <TextView
-        android:id="@+id/incUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:text="User Name"
-        android:background="@drawable/rectangle_rounded_white_blue"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

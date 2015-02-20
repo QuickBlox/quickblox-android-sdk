@@ -33,7 +33,7 @@ public class OpponentsAdapter extends BaseAdapter {
 
     public OpponentsAdapter(Context context, List<QBUser> users/*, String loginnedUser*/) {
         this.opponents = users;
-        inflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
 //        this.lologinnedUser = loginnedUser;
 
     }
@@ -61,9 +61,6 @@ public class OpponentsAdapter extends BaseAdapter {
         return i;
 
     }
-
-
-
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -98,8 +95,10 @@ public class OpponentsAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if ((((CheckBox) v).isChecked())) {
                         selected.add(user);
+                        Log.d("Track", "Selected " + user.getFullName());
                     } else {
                         selected.remove(user);
+                        Log.d("Track", "Deselected " + user.getFullName());
                     }
                 }
             });

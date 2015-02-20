@@ -31,7 +31,8 @@
             android:name=".activities.VideoChatActivity">
         </activity>
         <activity
-            android:name=".activities.NewDialogActivity">
+            android:name=".activities.NewDialogActivity"
+            >
         </activity>
 
 

@@ -1,6 +1,9 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
+
 import android.app.Fragment;
+
+
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -32,8 +35,15 @@ import java.util.Map;
  */
 public class NewDialogActivity extends LogginedUserABActivity implements QBRTCChatCallback {
 
+
+    public static final String OPPONENTS_CALL_FRAGMENT = "opponents_call_fragment";
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
+
+    private OpponentsFragment opponentsFragment = null;
+    private IncomeCallFragment incomeCallFragment = null;
+    private ConversationFragment conversationFragment = null;
+
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
     public static final String SESSION_ID = "sessionID";
     private QBRTCSession session;
@@ -51,26 +61,54 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        login = getIntent().getStringExtra("login");
-        super.initActionBar();
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
+            conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
+        } else {
 
-        // Init income videochat messages listener
-        QBChatService instance = QBChatService.getInstance();
-        QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
-        videoChatWebRTCSignalingManager.addSignalingManagerListener(
-                new QBVideoChatSignalingManagerListener() {
-                    @Override
-                    public void signalingCreated(QBSignaling signaling, boolean createdLocally) {
-                        if (!createdLocally) {
-                            // Init Conversation
-                            QBRTCClient.init(NewDialogActivity.this);
-                            QBRTCClient.getInstance().addCallback(NewDialogActivity.this);
-                            QBRTCClient.getInstance().setQBWebRTCSignaling((QBWebRTCSignaling) signaling);
+            // Probably initialize members with default values for a new instance
+            login = getIntent().getStringExtra("login");
+
+            // Init income videochat messages listener
+            QBChatService instance = QBChatService.getInstance();
+            QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
+            videoChatWebRTCSignalingManager.addSignalingManagerListener(
+                    new QBVideoChatSignalingManagerListener() {
+                        @Override
+                        public void signalingCreated(QBSignaling signaling, boolean createdLocally) {
+                            if (!createdLocally) {
+                                // Init Conversation
+                                QBRTCClient.init(NewDialogActivity.this);
+                                QBRTCClient.getInstance().addCallback(NewDialogActivity.this);
+                                QBRTCClient.getInstance().setQBWebRTCSignaling((QBWebRTCSignaling) signaling);
+                            }
                         }
-                    }
-                });
+                    });
+            startOpponentsFragment();
+        }
 
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), CONVERSATION_CALL_FRAGMENT).commit();
+    }
+
+    public void startOpponentsFragment(){
+        opponentsFragment = (OpponentsFragment) getFragmentManager().findFragmentByTag(OPPONENTS_CALL_FRAGMENT);
+        if(opponentsFragment == null){
+            opponentsFragment = new OpponentsFragment();
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, opponentsFragment, OPPONENTS_CALL_FRAGMENT).commit();
+        }
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("opponentsFragment", opponentsFragment);
+        outState.putSerializable("conversationFragment", conversationFragment);
+        super.onSaveInstanceState(outState);
+
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
+        conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
 
     }
 
@@ -146,7 +184,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
         this.localVideoTrack = videoTrack;
         videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(videoView, QBGLVideoView.Endpoint.LOCAL)));
-//        videoView.setVideoTrack(videoTrack);
+//        videoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.LOCAL);
     }
 
     @Override
@@ -192,6 +230,15 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     public void removeIncomeCallFragment() {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(INCOME_CALL_FRAGMENT);
+
+        if (fragment != null){
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    public void removeConversationFragment(){
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
 
         if (fragment != null){
             fragmentManager.beginTransaction().remove(fragment).commit();
@@ -250,10 +297,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         }
         fragment.setArguments(bundle);
 
-        // Start conversation fragment
-//        getCurrentSession().startCall(null);
-
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
 
     }
 
@@ -286,9 +330,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
             fragment.setArguments(bundle);
 
             // Start conversation fragment
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }
     }
-
 }
 

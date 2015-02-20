@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by tereha on 25.01.15.
  */
@@ -37,6 +39,7 @@ public class ListUsersActivity extends Activity {
     private Context context;
     private QBChatService chatService;
     private ArrayList<User> users;
+    private NewDialogActivity newDialogActivity;
 
 
     @Override
@@ -110,6 +113,7 @@ public class ListUsersActivity extends Activity {
                 String login = usersListAdapter.getItem(position).getLogin();
                 String password = usersListAdapter.getItem(position).getPassword();
 
+
                 createSession(login, password);
            }
         });
@@ -138,6 +142,7 @@ public class ListUsersActivity extends Activity {
                 Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
                 intent.putExtra("login", login);
                 startActivity(intent);
+
 
                 loginPB.setVisibility(View.INVISIBLE);
 
