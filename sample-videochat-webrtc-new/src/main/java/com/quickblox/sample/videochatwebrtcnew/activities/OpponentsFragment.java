@@ -33,6 +33,7 @@ import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private Button btnAudioCall;
     private Button btnVideoCall;
     private List<QBUser> users = new ArrayList<QBUser>();
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 100;
     private int currentPage = 0;
     private int listViewIndex;
     private int listViewTop;
@@ -151,7 +152,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
                 ((NewDialogActivity)getActivity())
                         .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                qbConferenceType, userInfo);
+                                qbConferenceType, userInfo, VideoChatActivity.StartConversetionReason.OUTCOME_CALL_MADE);
 //                ((NewDialogActivity) getActivity()).getCurrentSession().startCall(null);
 
 
@@ -181,8 +182,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     @Override
     public void onError(List<String> errors){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(OpponentsFragment.getInstance().getActivity());
-        dialog.setMessage("get users errors: " + errors).create().show();
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(OpponentsFragment.getInstance().getActivity());
+//        dialog.setMessage("get users errors: " + errors).create().show();
     }
 
     public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
@@ -195,8 +196,10 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     private void loadNextPage() {
         ++currentPage;
-
-        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
+        List<String> tags = new LinkedList<>();
+        tags.add("webrtc");
+        QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
+//        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 
     }
 

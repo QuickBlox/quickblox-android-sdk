@@ -71,7 +71,6 @@ public class IncomeCallFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("Track", "Call is rejected");
 
-                QBRTCClient.getInstance().setBusiness(false);
                 ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
                 ((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
@@ -84,7 +83,6 @@ public class IncomeCallFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                QBRTCClient.getInstance().setBusiness(false);
                 ((NewDialogActivity)getActivity())
                         .addCanversationFragmentOnSession(sessionDescription.getSessionId(),
                                 ConversationFragment.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION);

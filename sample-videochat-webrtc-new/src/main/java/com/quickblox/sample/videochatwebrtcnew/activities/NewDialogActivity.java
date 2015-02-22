@@ -281,7 +281,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //  Done
     public void startCanversationFragmentWithParameters(List<Integer> opponents,
                                                         QBRTCTypes.QBConferenceType qbConferenceType,
-                                                        Map<String, String> userInfo) {
+                                                        Map<String, String> userInfo,   VideoChatActivity.StartConversetionReason conversetionReason) {
 
         QBRTCClient.init(this);
         QBRTCClient.getInstance().addCallback(this);
@@ -291,6 +291,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         bundle.putIntegerArrayList(ApplicationSingleton.OPPONENTS,
                 new ArrayList<Integer>(opponents));
         bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, qbConferenceType.getValue());
+        bundle.putInt(START_CONVERSATION_REASON, conversetionReason.ordinal());
 
         for (String key : userInfo.keySet()){
             bundle.putString("UserInfo:" + key, userInfo.get(key));

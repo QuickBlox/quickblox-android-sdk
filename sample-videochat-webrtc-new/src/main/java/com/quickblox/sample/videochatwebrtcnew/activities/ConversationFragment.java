@@ -181,6 +181,8 @@ public class ConversationFragment extends Fragment implements Serializable {
             if(session != null){
                 session.acceptCall(session.getUserInfo());
             }
+        } else {
+            ((NewDialogActivity) getActivity()).getCurrentSession().startCall(new HashMap<String, String>());
         }
     }
 
