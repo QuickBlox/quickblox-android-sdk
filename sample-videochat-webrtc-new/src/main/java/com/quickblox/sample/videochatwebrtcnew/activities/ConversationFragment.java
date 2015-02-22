@@ -166,8 +166,13 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
                 ((NewDialogActivity)getActivity()).removeConversationFragment();
-//                ((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())
-//                        .hangUp(userInfo);
+
+                if (sessionID == null){
+                    ((NewDialogActivity)getActivity()).getCurrentSession().hangUp(userInfo);
+                } else {
+                    ((NewDialogActivity)getActivity()).getSession(sessionID)
+                            .hangUp(userInfo);
+                }
             }
         });
 
