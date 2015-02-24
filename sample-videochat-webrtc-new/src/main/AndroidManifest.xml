@@ -32,6 +32,7 @@
         </activity>
         <activity
             android:name=".activities.NewDialogActivity"
+            android:screenOrientation="portrait"
             >
         </activity>
 

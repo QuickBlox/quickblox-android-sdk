@@ -170,9 +170,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    ((NewDialogActivity)getActivity()).getCurrentSession().setVideoEnabled(true);
                     Log.d("Track", "Camera is on!");
                     switchCameraToggle.setVisibility(View.VISIBLE);
                 } else {
+                    ((NewDialogActivity)getActivity()).getCurrentSession().setVideoEnabled(false);
                     Log.d("Track", "Camera is off!");
                     switchCameraToggle.setVisibility(View.INVISIBLE);
                 }
@@ -193,8 +195,10 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.d("Track", "Mic is on!");
+                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(true);
                 } else {
                     Log.d("Track", "Mic is off!");
+                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(false);
                 }
             }
         });
