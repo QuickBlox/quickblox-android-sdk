@@ -34,7 +34,7 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.call_status);
+//        setContentView(R.layout.call_status);
 
         super.initActionBar();
 
@@ -93,7 +93,7 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
-                Intent intent = new Intent(IncAudioCallActivity.this, VideoChatActivity.class);//
+                Intent intent = new Intent(IncAudioCallActivity.this, NewDialogActivity.class);//
                 startActivity(intent);
             }
         });
@@ -101,20 +101,20 @@ public class IncAudioCallActivity extends LogginedUserABActivity {
     }
 
     private void initUI() {
-        timer = (Chronometer) findViewById(R.id.timer);
+//        timer = (Chronometer) findViewById(R.id.timer);
         incUserName = (TextView) findViewById(R.id.incUserName);
         otherIncUsers = (TextView) findViewById(R.id.otherIncUsers);
 
         rejectBtn = (ImageButton) findViewById(R.id.rejectBtn);
-        handUpBtn = (ImageButton) findViewById(R.id.handUpBtn);
+//        handUpBtn = (ImageButton) findViewById(R.id.handUpBtn);
         takeBtn = (ImageButton) findViewById(R.id.takeBtn);
 
         dynamicToggle = (ToggleButton) findViewById(R.id.dynamicToggle);
         micToggle = (ToggleButton) findViewById(R.id.micToggle);
 
         infoAboutCall = (RelativeLayout) findViewById(R.id.infoAboutCall);
-        incomingCall = (RelativeLayout) findViewById(R.id.incomingCall);
-        answeredCall = (RelativeLayout) findViewById(R.id.answeredCall);
+//        incomingCall = (RelativeLayout) findViewById(R.id.incomingCall);
+//        answeredCall = (RelativeLayout) findViewById(R.id.answeredCall);
 
 
     }

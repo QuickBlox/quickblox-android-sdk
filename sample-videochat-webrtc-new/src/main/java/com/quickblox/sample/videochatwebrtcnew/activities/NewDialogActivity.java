@@ -6,6 +6,7 @@ import android.app.Fragment;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -15,6 +16,9 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
+import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
+import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
 import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.callbacks.QBRTCChatCallback;
@@ -65,6 +69,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
             // Restore value of members from saved state
             opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
             conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
+            incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
+            Log.d("Track", "onCreate() from NewDialogActivity Level 2");
         } else {
 
             // Probably initialize members with default values for a new instance
@@ -86,6 +92,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
                         }
                     });
             startOpponentsFragment();
+            Log.d("Track", "onCreate() from NewDialogActivity Level 1");
         }
 
     }
@@ -94,21 +101,28 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         opponentsFragment = (OpponentsFragment) getFragmentManager().findFragmentByTag(OPPONENTS_CALL_FRAGMENT);
         if(opponentsFragment == null){
             opponentsFragment = new OpponentsFragment();
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, opponentsFragment, OPPONENTS_CALL_FRAGMENT).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, opponentsFragment, OPPONENTS_CALL_FRAGMENT).commit();
         }
     }
 
+
+
     protected void onSaveInstanceState(Bundle outState) {
+
         outState.putSerializable("opponentsFragment", opponentsFragment);
         outState.putSerializable("conversationFragment", conversationFragment);
+        outState.putSerializable("incomeCallFragment", incomeCallFragment);
+        Log.d("Track", "onSaveInstanceState from NewDialogActivity Level 2");
         super.onSaveInstanceState(outState);
 
     }
 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Log.d("Track", "onRestoreInstanceState from NewDialogActivity Level 2");
         opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
         conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
+        incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
 
     }
 
@@ -250,12 +264,13 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         Bundle bundle = new Bundle();
         bundle.putSerializable("sessionDescription", session.getSessionDescription());
         bundle.putIntegerArrayList("opponents", new ArrayList<Integer>(session.getOpponents()));
+        bundle.putBoolean("marker", false);
         fragment.setArguments(bundle);
         getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
     }
 
     public void addCanversationFragmentOnSession(String sessionID,
-                                                 VideoChatActivity.StartConversetionReason conversetionReason) {
+                                                 StartConversetionReason conversetionReason) {
         // init conversation fragment
         QBRTCSession currentSession = sessionList.get(sessionID);
         if (currentSession != null) {
@@ -281,7 +296,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //  Done
     public void startCanversationFragmentWithParameters(List<Integer> opponents,
                                                         QBRTCTypes.QBConferenceType qbConferenceType,
-                                                        Map<String, String> userInfo,   VideoChatActivity.StartConversetionReason conversetionReason) {
+                                                        Map<String, String> userInfo,   StartConversetionReason conversetionReason) {
 
         QBRTCClient.init(this);
         QBRTCClient.getInstance().addCallback(this);
@@ -301,6 +316,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
 
     }
+
+
 
     public QBRTCSession getCurrentSession() {
         return sessionList.get(currentSession);
@@ -333,6 +350,11 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
             // Start conversation fragment
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }
+    }
+
+    public static enum StartConversetionReason {
+        INCOME_CALL_FOR_ACCEPTION,
+        OUTCOME_CALL_MADE;
     }
 }
 

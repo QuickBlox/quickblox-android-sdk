@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="85dp"
+    android:layout_height="130dp">
+
+    <com.quickblox.videochat.webrtcnew.view.QBGLVideoView
+        android:id="@+id/opponentLittleCamera"
+        android:layout_width="85dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="3dp"/>
+
+    <ImageView
+        android:id="@+id/opponentAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/button_material_dark"
+        android:gravity="center_vertical"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/opponentNumber"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:background="@drawable/shape_oval_lime"
+        android:text="N"        
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/connectionStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="connection"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"/>
+
+</RelativeLayout>

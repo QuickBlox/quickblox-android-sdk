@@ -1,8 +1,6 @@
-package com.quickblox.sample.videochatwebrtcnew.activities;
+package com.quickblox.sample.videochatwebrtcnew.fragments;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,21 +12,14 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBSignaling;
-import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
-import com.quickblox.chat.QBWebRTCSignaling;
-import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtcnew.QBRTCClient;
-import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
-import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,7 +42,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private Button btnAudioCall;
     private Button btnVideoCall;
     private List<QBUser> users = new ArrayList<QBUser>();
-    private static final int PAGE_SIZE = 100;
+    private static final int PAGE_SIZE = 10;
     private int currentPage = 0;
     private int listViewIndex;
     private int listViewTop;
@@ -72,6 +63,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         ((NewDialogActivity)getActivity()).initActionBar();
 
         if (savedInstanceState == null){
+            Log.d("Track", "onCreateView() from OpponentsFragment Level 1");
             view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
             initUI(view);
@@ -91,7 +83,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
         }
 
-        Log.d("Track", "onCreateView() from OpponentsFragment");
+        Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
         return view;
     }
 
@@ -137,6 +129,15 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
                 qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
+                Map<String, String> userInfo =  new HashMap<>();
+                userInfo.put("any_custom_data", "some data");
+                userInfo.put("my_avatar_url", "avatar_reference");
+
+                ((NewDialogActivity)getActivity())
+                        .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
+                                qbConferenceType, userInfo, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+
+
                 break;
 
             case R.id.btnVideoCall:
@@ -146,14 +147,14 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
 
                 // prepare custom user data
-                Map<String, String> userInfo =  new HashMap<>();
-                userInfo.put("any_custom_data", "some data");
-                userInfo.put("my_avatar_url", "avatar_reference");
+                Map<String, String> userInfo2 =  new HashMap<>();
+                userInfo2.put("any_custom_data", "some data");
+                userInfo2.put("my_avatar_url", "avatar_reference");
 
                 ((NewDialogActivity)getActivity())
                         .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                qbConferenceType, userInfo, VideoChatActivity.StartConversetionReason.OUTCOME_CALL_MADE);
-//                ((NewDialogActivity) getActivity()).getCurrentSession().startCall(null);
+                                qbConferenceType, userInfo2, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+
 
 
                 break;
@@ -169,7 +170,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
         // Prepare users list for simple adapter.
         //
-        opponentsAdapter = new OpponentsAdapter((NewDialogActivity)getActivity(), users);
+        opponentsAdapter = new OpponentsAdapter(getActivity(), users);
         opponentsList.setAdapter(opponentsAdapter);
         opponentsList.onRefreshComplete();
         opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
@@ -198,8 +199,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         ++currentPage;
         List<String> tags = new LinkedList<>();
         tags.add("webrtc");
-        QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
-//        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
+//        QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
+        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 
     }
 

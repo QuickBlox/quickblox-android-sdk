@@ -28,7 +28,7 @@
         android:layout_alignTop="@+id/incUserName"
         android:layout_toStartOf="@+id/camerasOpponentsListLand"
         android:layout_toLeftOf="@+id/camerasOpponentsListLand"
-        android:layout_alignBottom="@+id/actionButtons" />
+        android:layout_alignBottom="@+id/element_set_audio_buttons" />
 
 
     <TextView
@@ -46,78 +46,23 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"/>
-
-    <LinearLayout
-        android:id="@+id/actionButtons"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/element_set_audio_buttons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        layout="@layout/element_fragment_audio_call"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        android:background="@color/black_transparent_50"
-        android:gravity="center_horizontal"
-        >
+        android:layout_marginBottom="5dp"/>
 
-        <ToggleButton
-            android:id="@+id/cameraToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff=""
-            android:textOn=""
-            android:background="@drawable/ic_toggle_camera"
-            android:layout_marginLeft="15dp"
-            android:layout_alignTop="@+id/handUpVideoCall"
-            android:layout_alignBottom="@+id/handUpVideoCall"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+    <include
+        android:id="@+id/element_set_video_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/element_fragment_video_call"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"/>
 
-            android:layout_gravity="center_vertical"
-            android:checked="true"/>
-
-        <ToggleButton
-            android:id="@+id/dynamicToggleVideoCall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff=""
-            android:textOn=""
-            android:background="@drawable/ic_toggle_dynamic"
-            android:layout_toLeftOf="@+id/micToggleVideoCall"
-            android:layout_marginLeft="10dp"
-            android:layout_alignTop="@+id/handUpVideoCall"
-            android:layout_alignBottom="@+id/handUpVideoCall"
-
-            android:layout_gravity="center_vertical"
-            android:checked="true"/>
-
-        <ToggleButton
-            android:id="@+id/micToggleVideoCall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff=""
-            android:textOn=""
-            android:background="@drawable/ic_toggle_mic"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_alignTop="@+id/handUpVideoCall"
-            android:layout_alignBottom="@+id/handUpVideoCall"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-
-            android:layout_gravity="center_vertical"
-            android:checked="true"/>
-
-        <ImageButton
-            android:id="@+id/handUpVideoCall"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_call_end"
-            android:background="@drawable/btn_background_call_end"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/switchCameraToggle"
-            android:layout_marginRight="15dp"
-             />
-
-    </LinearLayout>
 
 </RelativeLayout>

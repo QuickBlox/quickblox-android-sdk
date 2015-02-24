@@ -39,7 +39,6 @@ public class ListUsersActivity extends Activity {
     private Context context;
     private QBChatService chatService;
     private ArrayList<User> users;
-    private NewDialogActivity newDialogActivity;
 
 
     @Override
@@ -142,6 +141,7 @@ public class ListUsersActivity extends Activity {
                 Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
                 intent.putExtra("login", login);
                 startActivity(intent);
+
 
 
                 loginPB.setVisibility(View.INVISIBLE);

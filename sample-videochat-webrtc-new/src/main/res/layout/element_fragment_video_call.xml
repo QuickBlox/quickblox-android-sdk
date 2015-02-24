@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actionVideoButtons"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="7dp"
+    android:gravity="center_horizontal"
+    >
+
+    <ToggleButton
+        android:id="@+id/cameraToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/ic_toggle_camera"
+        android:layout_gravity="center_vertical"
+        android:checked="true"/>
+
+    <ToggleButton
+        android:id="@+id/dynamicToggleVideoCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/ic_toggle_dynamic"
+        android:layout_gravity="center_vertical"
+        android:checked="true"/>
+
+    <ToggleButton
+        android:id="@+id/micToggleVideoCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/ic_toggle_mic"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center_vertical"
+        android:checked="true"/>
+
+    <ImageButton
+        android:id="@+id/handUpVideoCall"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_call_end"
+        android:background="@drawable/btn_background_call_end"/>
+
+</LinearLayout>
