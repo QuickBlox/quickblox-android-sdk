@@ -86,9 +86,10 @@ public class OpponentsAdapter extends BaseAdapter {
         if (user != null) {
 
 
-            holder.opponentsNumber.setText(String.valueOf(counter));
+            holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
 
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(counter));
+            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
+                    (ListUsersActivity.getUserIndex(user.getId())));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override

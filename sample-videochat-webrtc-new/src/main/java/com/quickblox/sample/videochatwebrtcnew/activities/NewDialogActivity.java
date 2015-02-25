@@ -59,6 +59,11 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //    private List<VideoRenderer.Callbacks> opponentRenderers = new LinkedList<>();
     private QBGLVideoView videoView;
     public static String login;
+    public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +212,9 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //        videoCallBacks.setSize(200, 300);
         VideoRenderer remouteRenderer = new VideoRenderer(videoCallBacks);
         videoTrack.addRenderer(remouteRenderer);
+        videoTrackList.put(userID, videoTrack);
+
+
     }
 
     @Override

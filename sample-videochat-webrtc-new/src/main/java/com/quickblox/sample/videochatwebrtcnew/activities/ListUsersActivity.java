@@ -38,7 +38,7 @@ public class ListUsersActivity extends Activity {
     private ProgressBar loginPB;
     private Context context;
     private QBChatService chatService;
-    private ArrayList<User> users;
+    private static ArrayList<User> users = DataHolder.createUsersList();
 
 
     @Override
@@ -98,9 +98,21 @@ public class ListUsersActivity extends Activity {
         return  resStr;
     }
 
+    public static int getUserIndex(int id){
+        int index = 0;
+
+        for (User usr : users){
+            if (usr.getId().equals(id)){
+                index = (users.indexOf(usr)) + 1;
+                break;
+            }
+        }
+        return index;
+    }
+
     private void initUsersList() {
 
-        users = DataHolder.createUsersList();
+//        users = DataHolder.createUsersList();
 
         usersListAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersListAdapter);

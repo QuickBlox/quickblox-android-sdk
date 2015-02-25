@@ -6,10 +6,11 @@ public class User extends QBUser{
 
     public int userNumber;
 
-    public User (int userNumber, String fullName, String login, String password) {
+    public User (int userNumber, String fullName, String login, String password, int id) {
         super.fullName = fullName;
         super.login = login;
         super.password = password;
+        super.id = id;
         this.userNumber = userNumber;
 
     }
