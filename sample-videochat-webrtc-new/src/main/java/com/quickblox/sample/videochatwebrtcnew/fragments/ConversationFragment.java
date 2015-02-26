@@ -63,7 +63,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private ImageView opponentAvatar;
     //    private HorizontalScrollView camerasOpponentsList;
     private ToggleButton cameraToggle;
-    private ImageButton switchCameraToggle;
+    private ToggleButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
@@ -126,13 +126,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
 
         if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO) {
-            view.findViewById(R.id.element_set_audio_buttons).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.element_set_video_buttons).setVisibility(View.VISIBLE);
+            cameraToggle.setVisibility(View.VISIBLE);
 
         } else {
             videoView.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.element_set_audio_buttons).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.element_set_video_buttons).setVisibility(View.INVISIBLE);
+            cameraToggle.setVisibility(View.GONE);
 
         }
 
@@ -169,7 +167,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         opponentsFromCall = (LinearLayout)view.findViewById(R.id.opponentsFromCall);
 
         cameraToggle = (ToggleButton)view.findViewById(R.id.cameraToggle);
-        switchCameraToggle = (ImageButton) view.findViewById(R.id.switchCameraToggle);
+        switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
         dynamicToggleVideoCall = (ToggleButton)view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton)view.findViewById(R.id.micToggleVideoCall);
 
@@ -235,11 +233,11 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
         });
 
-        micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
+        micToggleVideoCall./*setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-//                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {*/
+                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isAudioEnabled) {
                     Log.d("Track", "Mic is off!");
                     ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(false);

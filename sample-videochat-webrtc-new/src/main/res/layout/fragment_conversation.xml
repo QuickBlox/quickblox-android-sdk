@@ -6,8 +6,6 @@
     android:keepScreenOn="true"
     android:background="@color/white">
 
-
-
     <HorizontalScrollView
         android:id="@+id/camerasOpponentsList"
         android:layout_width="fill_parent"
@@ -27,27 +25,14 @@
             </LinearLayout>
     </HorizontalScrollView>
 
-
-
-    <include
-        android:id="@+id/element_set_audio_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/element_fragment_audio_call"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"/>
-
-    <include
-        android:id="@+id/element_set_video_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/element_fragment_video_call"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"/>
-
-
+    <!--<include-->
+        <!--android:id="@+id/element_set_audio_buttons"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--layout="@layout/element_fragment_audio_call"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="5dp"/>-->
 
     <!--<com.quickblox.videochat.webrtcnew.view.QBGLVideoView-->
         <!--android:id="@+id/videoView"-->
@@ -61,18 +46,27 @@
         <!--android:layout_above="@+id/camerasOpponentsList"-->
         <!--android:layout_marginBottom="3dp"/>-->
 
+    <include
+        android:id="@+id/element_set_video_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/element_fragment_video_call"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"/>
+
+
     <android.opengl.GLSurfaceView
         android:id="@+id/videoView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/camerasOpponentsList"
-        android:layout_marginBottom="3dp"/>
-
+        android:layout_marginBottom="3dp"
+        android:layout_above="@+id/element_set_video_buttons"/>
 
     <TextView
         android:id="@+id/incUserName"
@@ -88,7 +82,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        />
 
     <ToggleButton
         android:id="@+id/switchCameraToggle"
