@@ -5,6 +5,7 @@ import android.app.Fragment;
 
 
 import android.app.FragmentManager;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 import com.quickblox.videochat.webrtcnew.view.VideoCallBacks;
 
 import org.webrtc.VideoRenderer;
+import org.webrtc.VideoRendererGui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     public static final String OPPONENTS_CALL_FRAGMENT = "opponents_call_fragment";
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
+    private static VideoRenderer.Callbacks REMOTE_RENDERER;
+    private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
     private OpponentsFragment opponentsFragment = null;
     private IncomeCallFragment incomeCallFragment = null;
@@ -204,7 +208,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
         this.localVideoTrack = videoTrack;
-        videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(videoView, QBGLVideoView.Endpoint.LOCAL)));
+        videoTrack.addRenderer(new VideoRenderer(LOCAL_RENDERER));
+//        videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(videoView, QBGLVideoView.Endpoint.LOCAL)));
 //        videoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.LOCAL);
     }
 
@@ -212,8 +217,9 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     public void onRemoteVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack, Integer userID) {
         VideoCallBacks videoCallBacks = new VideoCallBacks(videoView, QBGLVideoView.Endpoint.REMOTE);
 //        videoCallBacks.setSize(200, 300);
-        VideoRenderer remouteRenderer = new VideoRenderer(videoCallBacks);
-        videoTrack.addRenderer(remouteRenderer);
+//        VideoRenderer remouteRenderer = new VideoRenderer(videoCallBacks);
+//        videoTrack.addRenderer(remouteRenderer);
+        videoTrack.addRenderer(new VideoRenderer(REMOTE_RENDERER));
         videoTrackList.put(userID, videoTrack);
 
 
@@ -360,6 +366,15 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
             // Start conversation fragment
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }
+    }
+
+    public void setCurrentVideoView(GLSurfaceView videoView) {
+        VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
+
+        REMOTE_RENDERER = VideoRendererGui.create(0,0,100,100,scaleType,true);
+        LOCAL_RENDERER = VideoRendererGui.create(70,0,30,30,scaleType,true);
+
+
     }
 
     public static enum StartConversetionReason {

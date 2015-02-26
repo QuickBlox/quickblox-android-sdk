@@ -28,13 +28,16 @@ import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
+import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tereha on 16.02.15.
@@ -49,6 +52,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private ImageButton takeBtn;
 
     private ArrayList<Integer> opponents;
+    private List<QBUser> opponentsFromCall = new ArrayList<>();
     private QBRTCSessionDescription sessionDescription;
     private MediaPlayer ringtone;
     private Vibrator vibrator;
@@ -146,7 +150,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 //        callerName.setText(getCallerName(((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())));
 
         otherIncUsers = (TextView)view.findViewById(R.id.otherIncUsers);
-//        otherIncUsers.setText(getOtherIncUsersNames(opponents));
+        otherIncUsers.setText(getOtherIncUsersNames(opponents));
 
         rejectBtn = (ImageButton)view.findViewById(R.id.rejectBtn);
         takeBtn = (ImageButton)view.findViewById(R.id.takeBtn);
@@ -178,16 +182,25 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
     private String getOtherIncUsersNames (ArrayList<Integer> opponents){
         StringBuffer s = new StringBuffer("");
+        opponentsFromCall.addAll(DataHolder.createUsersList());
 
 
-        for (Integer i : opponents){
+        for (QBUser usr : opponentsFromCall) {
+            for (Integer i : opponents) {
+//            s.append(i + ", ");
 
-            try {
-                s.append(QBUsers.getUser(i).getFullName() + ", ");
-            } catch (QBResponseException e) {
-                e.printStackTrace();
+                if (usr.getId() == i) {
+
+                    /*if (opponents.indexOf(i) == (opponents.size() - 1)) {
+                        s.append(usr.getFullName() + "");
+                    } else {*/
+                        s.append(usr.getFullName() + ", ");
+                    }
+                }
             }
-        }
+
+        /*if(opponentsFromCall.size() == 10)
+            s.append("one");*/
         return s.toString();
     }
 

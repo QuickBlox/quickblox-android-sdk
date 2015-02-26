@@ -41,7 +41,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     public static String login;
     private Button btnAudioCall;
     private Button btnVideoCall;
-    private List<QBUser> users = new ArrayList<QBUser>();
+    public List<QBUser> users = new ArrayList<QBUser>();
     private static final int PAGE_SIZE = 10;
     private int currentPage = 0;
     private int listViewIndex;

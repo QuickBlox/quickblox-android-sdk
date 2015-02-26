@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -32,6 +33,8 @@ import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
 import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
+import org.webrtc.VideoRendererGui;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +51,8 @@ public class ConversationFragment extends Fragment implements Serializable {
     private int startReason;
     private String sessionID;
     private QBRTCTypes.QBConferenceType conferenceType;
-    private QBGLVideoView videoView;
+//    private QBGLVideoView videoView;
+    private GLSurfaceView videoView;
     private QBRTCSessionDescription sessionDescription;
 
     private QBGLVideoView opponentLittleCamera;
@@ -103,8 +107,16 @@ public class ConversationFragment extends Fragment implements Serializable {
                     qbConferenceType == 1 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO :
                             QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
+            VideoRendererGui.setView(videoView, new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+                    ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
+
             initCall(sessionID);
-            createOpponentsList(opponents, camerasOpponentsList);
+//            createOpponentsList(opponents, camerasOpponentsList);
 
 
 
@@ -143,7 +155,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     private void initViews(View view) {
 
-        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
+//        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
+        videoView = (GLSurfaceView)view.findViewById(R.id.videoView);
 
 //        camerasOpponentsList = (HorizontalScrollView)view.findViewById(R.id.camerasOpponentsList);
 //        ScrollView camerasOpponentsListLand = (ScrollView)view.findViewById(R.id.camerasOpponentsListLand);
@@ -170,21 +183,19 @@ public class ConversationFragment extends Fragment implements Serializable {
         connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
         opponentAvatar = (ImageView)opponentItemView.findViewById(R.id.opponentAvatar);*/
 
-        ((NewDialogActivity)getActivity()).setVideoView(videoView);
     }
 
     private void initButtonsListener() {
 
        switchCameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               ((NewDialogActivity)getActivity()).getCurrentSession().switchCapturePosition();
                if (isChecked) {
-                   Log.d("Track", "Camera is front");
-
-
+                   Log.d("Track", "Camera is on!");
+                   switchCameraToggle.setVisibility(View.VISIBLE);
                } else {
-                   Log.d("Track", "Camera is ");
-
-
+                   Log.d("Track", "Camera is off!");
+                   switchCameraToggle.setVisibility(View.INVISIBLE);
                }
            }
        });
@@ -207,6 +218,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         dynamicToggleVideoCall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ((NewDialogActivity)getActivity()).getCurrentSession().switchAudioOutput();
                 if (isChecked) {
                     Log.d("Track", "Dynamic is on!");
                 } else {
