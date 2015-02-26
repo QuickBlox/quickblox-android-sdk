@@ -22,13 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.OpponentsActivity">
-        </activity>
-        <activity
             android:name=".activities.IncAudioCallActivity">
-        </activity>
-        <activity
-            android:name=".activities.VideoChatActivity">
         </activity>
         <activity
             android:name=".activities.NewDialogActivity"

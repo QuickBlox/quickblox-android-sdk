@@ -294,7 +294,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
             QBGLVideoView opponentLittleCamera = (QBGLVideoView)opponentItemView.findViewById(R.id.opponentLittleCamera);
             TextView opponentNumber = (TextView)opponentItemView.findViewById(R.id.opponentNumber);
-            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+//            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
             ImageView opponentAvatar = (ImageView)opponentItemView.findViewById(R.id.opponentAvatar);
 
             /*try {
@@ -306,16 +306,15 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
 
-            connectionStatus.setText(i.toString());
-            /*QBRTCVideoTrack videoTrack = new QBRTCVideoTrack(NewDialogActivity.videoTrackList.get(i), true);
-            opponentLittleCamera.setVideoTrack(new QBRTCVideoTrack(, i, true), QBGLVideoView.Endpoint.REMOTE);
+//            connectionStatus.setText(i.toString());
+            QBRTCVideoTrack videoTrack = NewDialogActivity.videoTrackList.get(i);
+            opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
+            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
+
             if (videoTrack == null){
-
-                opponentAvatar.setImageResource(R.drawable.ic_noavatar);
-
-
-
-            }*/
+                opponentAvatar.setVisibility(View.VISIBLE);
+            }
+                opponentAvatar.setVisibility(View.INVISIBLE);
 
             opponentsFromCall.addView(opponentItemView);
 

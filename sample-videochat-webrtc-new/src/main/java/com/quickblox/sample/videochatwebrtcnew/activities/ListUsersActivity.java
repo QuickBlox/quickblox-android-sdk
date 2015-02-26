@@ -178,4 +178,41 @@ public class ListUsersActivity extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        logOutFromChat();
+    }
+
+    /*@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logOutFromChat();
+    }*/
+
+
+    private void logOutFromChat() {
+
+        boolean isLoggedIn = chatService.isLoggedIn();
+
+        if(!isLoggedIn){
+            chatService.logout(new QBEntityCallbackImpl() {
+
+                @Override
+                public void onSuccess() {
+                    // success
+
+                    chatService.destroy();
+                    Log.d("Track", "Log out from chat");
+                }
+
+                @Override
+                public void onError(final List list) {
+
+                }
+            });
+        }
+
+    }
 }

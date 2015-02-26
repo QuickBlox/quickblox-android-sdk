@@ -8,10 +8,9 @@
 
     <com.quickblox.videochat.webrtcnew.view.QBGLVideoView
         android:id="@+id/opponentLittleCamera"
-        android:layout_width="85dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="3dp"/>
+        android:layout_alignParentTop="true"/>
 
     <ImageView
         android:id="@+id/opponentAvatar"
@@ -21,7 +20,7 @@
         android:gravity="center_vertical"
         android:scaleType="centerCrop"/>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/connectionStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +28,7 @@
         android:textColor="@color/white"
         android:gravity="center_horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="15dp"/>-->
     <TextView
         android:id="@+id/opponentNumber"
         android:layout_width="30dp"

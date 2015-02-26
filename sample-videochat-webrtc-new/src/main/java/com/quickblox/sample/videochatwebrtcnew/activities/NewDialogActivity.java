@@ -14,6 +14,7 @@ import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
@@ -101,6 +102,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         }
 
     }
+
 
     public void startOpponentsFragment(){
         opponentsFragment = (OpponentsFragment) getFragmentManager().findFragmentByTag(OPPONENTS_CALL_FRAGMENT);
