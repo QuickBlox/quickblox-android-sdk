@@ -63,7 +63,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private ImageView opponentAvatar;
     //    private HorizontalScrollView camerasOpponentsList;
     private ToggleButton cameraToggle;
-    private ToggleButton switchCameraToggle;
+    private ImageButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
@@ -74,6 +74,8 @@ public class ConversationFragment extends Fragment implements Serializable {
     private HorizontalScrollView camerasOpponentsList;
     private LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
+    private boolean isVideoEnabled = true;
+    private boolean isAudioEnabled = true;
 
 
     @Nullable
@@ -167,7 +169,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         opponentsFromCall = (LinearLayout)view.findViewById(R.id.opponentsFromCall);
 
         cameraToggle = (ToggleButton)view.findViewById(R.id.cameraToggle);
-        switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
+        switchCameraToggle = (ImageButton) view.findViewById(R.id.switchCameraToggle);
         dynamicToggleVideoCall = (ToggleButton)view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton)view.findViewById(R.id.micToggleVideoCall);
 
@@ -190,54 +192,62 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     private void initButtonsListener() {
 
-       switchCameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+       switchCameraToggle.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
                ((NewDialogActivity)getActivity()).getCurrentSession().switchCapturePosition();
-               if (isChecked) {
-                   Log.d("Track", "Camera is on!");
-                   switchCameraToggle.setVisibility(View.VISIBLE);
-               } else {
-                   Log.d("Track", "Camera is off!");
-                   switchCameraToggle.setVisibility(View.INVISIBLE);
-               }
+                   Log.d(TAG, "Camera switched!");
            }
        });
 
 
 
-        cameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    ((NewDialogActivity)getActivity()).getCurrentSession().setVideoEnabled(true);
-                    Log.d("Track", "Camera is on!");
-                    switchCameraToggle.setVisibility(View.VISIBLE);
-                } else {
-                    ((NewDialogActivity)getActivity()).getCurrentSession().setVideoEnabled(false);
+        cameraToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isVideoEnabled) {
+                    ((NewDialogActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+                    isVideoEnabled = false;
                     Log.d("Track", "Camera is off!");
+                } else {
+                    ((NewDialogActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                    isVideoEnabled = true;
+                    Log.d("Track", "Camera is on!");
                     switchCameraToggle.setVisibility(View.INVISIBLE);
+                    switchCameraToggle.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        dynamicToggleVideoCall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ((NewDialogActivity)getActivity()).getCurrentSession().switchAudioOutput();
-                if (isChecked) {
-                    Log.d("Track", "Dynamic is on!");
-                } else {
-                    Log.d("Track", "Dynamic is off!");
-                }
+//                if (isChecked) {
+//                    Log.d("Track", "Dynamic is off!");
+//                } else {
+//                    Log.d("Track", "Dynamic is on!");
+//                }
             }
         });
 
-        micToggleVideoCall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.d("Track", "Mic is on!");
-                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(true);
-                } else {
+        micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isAudioEnabled) {
                     Log.d("Track", "Mic is off!");
                     ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(false);
+                    isAudioEnabled = false;
+                } else {
+                    Log.d("Track", "Mic is on!");
+                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(true);
+                    isAudioEnabled = true;
                 }
             }
         });
@@ -246,7 +256,6 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
-
 
                 if (sessionID == null){
                     ((NewDialogActivity)getActivity()).getCurrentSession().hangUp(userInfo);
