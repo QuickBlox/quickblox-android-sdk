@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -42,7 +43,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private Button btnAudioCall;
     private Button btnVideoCall;
     public List<QBUser> users = new ArrayList<QBUser>();
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 100;
     private int currentPage = 0;
     private int listViewIndex;
     private int listViewTop;
@@ -123,41 +124,44 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btnAudioCall:
+        if (opponentsAdapter.getSelected().size() > 0) {
+            switch (v.getId()) {
+                case R.id.btnAudioCall:
 
 
-                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
-                Map<String, String> userInfo =  new HashMap<>();
-                userInfo.put("any_custom_data", "some data");
-                userInfo.put("my_avatar_url", "avatar_reference");
+                    Map<String, String> userInfo = new HashMap<>();
+                    userInfo.put("any_custom_data", "some data");
+                    userInfo.put("my_avatar_url", "avatar_reference");
 
-                ((NewDialogActivity)getActivity())
-                        .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                qbConferenceType, userInfo, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
-
-
-                break;
-
-            case R.id.btnVideoCall:
-
-                // get call type
-                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+                    ((NewDialogActivity) getActivity())
+                            .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
+                                    qbConferenceType, userInfo, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
 
 
-                // prepare custom user data
-                Map<String, String> userInfo2 =  new HashMap<>();
-                userInfo2.put("any_custom_data", "some data");
-                userInfo2.put("my_avatar_url", "avatar_reference");
+                    break;
 
-                ((NewDialogActivity)getActivity())
-                        .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                qbConferenceType, userInfo2, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+                case R.id.btnVideoCall:
+
+                    // get call type
+                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
 
 
+                    // prepare custom user data
+                    Map<String, String> userInfo2 = new HashMap<>();
+                    userInfo2.put("any_custom_data", "some data");
+                    userInfo2.put("my_avatar_url", "avatar_reference");
 
-                break;
+                    ((NewDialogActivity) getActivity())
+                            .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
+                                    qbConferenceType, userInfo2, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+
+
+                    break;
+            }
+        } else {
+            Toast.makeText(getActivity(), "Choose at least one opponent", Toast.LENGTH_LONG).show();
         }
     }
 

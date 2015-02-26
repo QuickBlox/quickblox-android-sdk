@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.quickblox.core.exception.QBResponseException;
@@ -46,20 +47,21 @@ import java.util.Map;
  */
 public class ConversationFragment extends Fragment implements Serializable {
 
+    private String TAG = "ConversationFragment";
     private ArrayList<Integer> opponents;
     private int qbConferenceType;
     private int startReason;
     private String sessionID;
     private QBRTCTypes.QBConferenceType conferenceType;
-//    private QBGLVideoView videoView;
+    //    private QBGLVideoView videoView;
     private GLSurfaceView videoView;
-    private QBRTCSessionDescription sessionDescription;
 
+    private QBRTCSessionDescription sessionDescription;
     private QBGLVideoView opponentLittleCamera;
     private TextView opponentNumber;
     private TextView connectionStatus;
     private ImageView opponentAvatar;
-//    private HorizontalScrollView camerasOpponentsList;
+    //    private HorizontalScrollView camerasOpponentsList;
     private ToggleButton cameraToggle;
     private ToggleButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
@@ -72,8 +74,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     private HorizontalScrollView camerasOpponentsList;
     private LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
-
-
 
 
     @Nullable
@@ -146,11 +146,14 @@ public class ConversationFragment extends Fragment implements Serializable {
     }
 
     private void initCall(String sessionID) {
-        if (sessionID == null){
+        if (sessionID == null ){
             // init RTCChat
-            ((NewDialogActivity) getActivity()).setCurrentSession(QBRTCClient.getInstance()
-                    .createNewSessionWithOpponents(opponents, conferenceType, null));
-        }
+            Log.d(TAG, "Try start call with one opponent");
+                ((NewDialogActivity) getActivity()).setCurrentSession(QBRTCClient.getInstance()
+                        .createNewSessionWithOpponents(opponents, conferenceType, null));
+            } else {
+                Toast.makeText(getActivity(), "Choose at least one opponent", Toast.LENGTH_LONG).show();
+            }
     }
 
     private void initViews(View view) {
@@ -261,14 +264,14 @@ public class ConversationFragment extends Fragment implements Serializable {
     @Override
     public void onResume() {
         super.onResume();
-        if(startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()){
-            QBRTCSession session =((NewDialogActivity)getActivity()).getSession(sessionID);
-            if(session != null){
-                session.acceptCall(session.getUserInfo());
+            if(startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()){
+                QBRTCSession session =((NewDialogActivity)getActivity()).getSession(sessionID);
+                if(session != null){
+                    session.acceptCall(session.getUserInfo());
+                }
+            } else {
+                ((NewDialogActivity) getActivity()).getCurrentSession().startCall(new HashMap<String, String>());
             }
-        } else {
-            ((NewDialogActivity) getActivity()).getCurrentSession().startCall(new HashMap<String, String>());
-        }
     }
 
     public static enum StartConversetionReason {
@@ -329,9 +332,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                 opponentAvatar.setVisibility(View.INVISIBLE);
 
             opponentsFromCall.addView(opponentItemView);
-
-
-
         }
     }
 }

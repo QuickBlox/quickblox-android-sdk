@@ -120,9 +120,9 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
     protected void onSaveInstanceState(Bundle outState) {
 
-        outState.putSerializable("opponentsFragment", opponentsFragment);
-        outState.putSerializable("conversationFragment", conversationFragment);
-        outState.putSerializable("incomeCallFragment", incomeCallFragment);
+//        outState.putSerializable("opponentsFragment", opponentsFragment);
+//        outState.putSerializable("conversationFragment", conversationFragment);
+//        outState.putSerializable("incomeCallFragment", incomeCallFragment);
         Log.d("Track", "onSaveInstanceState from NewDialogActivity Level 2");
         super.onSaveInstanceState(outState);
 
@@ -131,9 +131,9 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d("Track", "onRestoreInstanceState from NewDialogActivity Level 2");
-        opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
-        conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
-        incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
+//        opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
+//        conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
+//        incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
 
     }
 
