@@ -46,6 +46,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     public static final String OPPONENTS_CALL_FRAGMENT = "opponents_call_fragment";
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
+    private static final String TAG = "NewDialogActivity";
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
@@ -55,7 +56,6 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
     public static final String SESSION_ID = "sessionID";
-    private QBRTCSession session;
     private QBRTCVideoTrack localVideoTrack;
     private Map<String, QBRTCSession> sessionList = new HashMap<>();
     private String currentSession;
@@ -87,6 +87,9 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
             login = getIntent().getStringExtra("login");
 
             // Init income videochat messages listener
+            if (!QBChatService.isInitialized()){
+                QBChatService.init(this);
+            }
             QBChatService instance = QBChatService.getInstance();
             QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
             videoChatWebRTCSignalingManager.addSignalingManagerListener(
@@ -95,7 +98,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
                         public void signalingCreated(QBSignaling signaling, boolean createdLocally) {
                             if (!createdLocally) {
                                 // Init Conversation
-                                QBRTCClient.init(NewDialogActivity.this);
+//                                QBRTCClient.init(NewDialogActivity.this);
                                 QBRTCClient.getInstance().addCallback(NewDialogActivity.this);
                                 QBRTCClient.getInstance().setQBWebRTCSignaling((QBWebRTCSignaling) signaling);
                             }
@@ -135,6 +138,10 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //        conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
 //        incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
 
+    }
+
+    public QBRTCSession getCurrentSession() {
+        return sessionList.get(currentSession);
     }
 
     public void setCurrentSession(QBRTCSession session) {
@@ -181,6 +188,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     @Override
     public void onReceiveNewCallWithSession(QBRTCSession session) {
         Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Income call");
         sessionList.put(session.getSessionID(), session);
         startIncomeCallFragment(session);
     }
@@ -246,15 +254,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     }
 
     private void removeUserWithID(Integer userID) {
-//
-//        QBUser user = ConnectionManager.instanceUserWithID(userID);
-//        IndexPath *indexPath = indexPathAtUserID(userID);
-//
-//        List<QBUser> users = new ArrayList<>();
-//        users.remove(user);
-//        users = users.copy;
-//
-//        opponentsCollectionView deleteItemsAtIndexPaths(indexPath);
+        getCurrentSession().removeUser(userID, new HashMap<String, String>());
     }
 
     public void removeIncomeCallFragment() {
@@ -285,44 +285,19 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
         getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
     }
 
-    public void addCanversationFragmentOnSession(String sessionID,
-                                                 StartConversetionReason conversetionReason) {
-        // init conversation fragment
-        QBRTCSession currentSession = sessionList.get(sessionID);
-        if (currentSession != null) {
-            ConversationFragment fragment = new ConversationFragment();
-            Bundle bundle = new Bundle();
-            bundle.putIntegerArrayList(ApplicationSingleton.OPPONENTS,
-                    new ArrayList<Integer>(currentSession.getOpponents()));
-            bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, currentSession.getConferenceType().getValue());
-            bundle.putInt(START_CONVERSATION_REASON, conversetionReason.ordinal());
-            bundle.putString(SESSION_ID, sessionID);
 
-            if(currentSession.getUserInfo() != null) {
-                for (String key : currentSession.getUserInfo().keySet()) {
-                    bundle.putString("UserInfo:" + key, currentSession.getUserInfo().get(key));
-                }
-            }
-            fragment.setArguments(bundle);
-
-            // Start conversation fragment
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
-        }
-    }
-//  Done
-    public void startCanversationFragmentWithParameters(List<Integer> opponents,
-                                                        QBRTCTypes.QBConferenceType qbConferenceType,
-                                                        Map<String, String> userInfo,   StartConversetionReason conversetionReason) {
-
-        QBRTCClient.init(this);
-        QBRTCClient.getInstance().addCallback(this);
+    public void addConversationFragmentStartCall(List<Integer> opponents,
+                                                 QBRTCTypes.QBConferenceType qbConferenceType,
+                                                 Map<String, String> userInfo) {
+        // init session for new call
+        setCurrentSession(QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType, userInfo));
 
         ConversationFragment fragment = new ConversationFragment();
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList(ApplicationSingleton.OPPONENTS,
                 new ArrayList<Integer>(opponents));
         bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, qbConferenceType.getValue());
-        bundle.putInt(START_CONVERSATION_REASON, conversetionReason.ordinal());
+        bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.OUTCOME_CALL_MADE.ordinal());
 
         for (String key : userInfo.keySet()){
             bundle.putString("UserInfo:" + key, userInfo.get(key));
@@ -334,38 +309,34 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     }
 
 
-
-    public QBRTCSession getCurrentSession() {
-        return sessionList.get(currentSession);
-    }
-
     public Map<String,QBRTCSession> getSessions() {
         return sessionList;
     }
 
-    public void addCanversationFragmentOnSession(String sessionID,
-                                                 ConversationFragment.StartConversetionReason conversetionReason) {
+    public void addConversationFragmentReceiveCall(String sessionID) {
+
+        // set current session
+        setCurrentSesionId(sessionID);
+        QBRTCSession session = getCurrentSession();
+
         // init conversation fragment
-        QBRTCSession currentSession = sessionList.get(sessionID);
-        if (currentSession != null) {
             ConversationFragment fragment = new ConversationFragment();
             Bundle bundle = new Bundle();
             bundle.putIntegerArrayList(ApplicationSingleton.OPPONENTS,
-                    new ArrayList<Integer>(currentSession.getOpponents()));
-            bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, currentSession.getConferenceType().getValue());
-            bundle.putInt(START_CONVERSATION_REASON, conversetionReason.ordinal());
+                    new ArrayList<Integer>(session.getOpponents()));
+            bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
+            bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal());
             bundle.putString(SESSION_ID, sessionID);
 
-            if(currentSession.getUserInfo() != null) {
-                for (String key : currentSession.getUserInfo().keySet()) {
-                    bundle.putString("UserInfo:" + key, currentSession.getUserInfo().get(key));
+            if(session.getUserInfo() != null) {
+                for (String key : session.getUserInfo().keySet()) {
+                    bundle.putString("UserInfo:" + key, session.getUserInfo().get(key));
                 }
             }
             fragment.setArguments(bundle);
 
             // Start conversation fragment
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-        }
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
     }
 
     public void setCurrentVideoView(GLSurfaceView videoView) {

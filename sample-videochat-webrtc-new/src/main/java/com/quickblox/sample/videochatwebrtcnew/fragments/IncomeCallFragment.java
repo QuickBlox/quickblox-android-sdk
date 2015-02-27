@@ -2,24 +2,18 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
@@ -27,7 +21,6 @@ import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
-import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -131,8 +124,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
 
                     ((NewDialogActivity) getActivity())
-                            .addCanversationFragmentOnSession(sessionDescription.getSessionId(),
-                                    ConversationFragment.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION);
+                            .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
                     ((NewDialogActivity) getActivity()).removeIncomeCallFragment();
 
                 stopRingtone();

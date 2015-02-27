@@ -88,8 +88,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         Log.d("Track", "onCreateView() from ConversationFragment Level 1");
 
-
-
         if (savedInstanceState == null) {
 
             initViews(view);
@@ -101,7 +99,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                 qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
                 startReason = getArguments().getInt(NewDialogActivity.START_CONVERSATION_REASON);
                 sessionID = getArguments().getString(NewDialogActivity.SESSION_ID);
-
             }
 
             //Conference
@@ -112,15 +109,10 @@ public class ConversationFragment extends Fragment implements Serializable {
             VideoRendererGui.setView(videoView, new Runnable() {
                 @Override
                 public void run() {
-
                 }
             });
-                    ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
 
-            initCall(sessionID);
-//            createOpponentsList(opponents, camerasOpponentsList);
-
-
+            ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
 
             Log.d("Track", "onCreateView() from ConversationFragment Level 2");
         }
@@ -145,35 +137,24 @@ public class ConversationFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
     }
 
-    private void initCall(String sessionID) {
-        if (sessionID == null ){
-            // init RTCChat
-            Log.d(TAG, "Try start call with one opponent");
-                ((NewDialogActivity) getActivity()).setCurrentSession(QBRTCClient.getInstance()
-                        .createNewSessionWithOpponents(opponents, conferenceType, null));
-            } else {
-                Toast.makeText(getActivity(), "Choose at least one opponent", Toast.LENGTH_LONG).show();
-            }
-    }
-
     private void initViews(View view) {
 
 //        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
-        videoView = (GLSurfaceView)view.findViewById(R.id.videoView);
+        videoView = (GLSurfaceView) view.findViewById(R.id.videoView);
 
 //        camerasOpponentsList = (HorizontalScrollView)view.findViewById(R.id.camerasOpponentsList);
 //        ScrollView camerasOpponentsListLand = (ScrollView)view.findViewById(R.id.camerasOpponentsListLand);
 
-        opponentsFromCall = (LinearLayout)view.findViewById(R.id.opponentsFromCall);
+        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
-        cameraToggle = (ToggleButton)view.findViewById(R.id.cameraToggle);
+        cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
         switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
-        dynamicToggleVideoCall = (ToggleButton)view.findViewById(R.id.dynamicToggleVideoCall);
-        micToggleVideoCall = (ToggleButton)view.findViewById(R.id.micToggleVideoCall);
+        dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
+        micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
 
-        handUpVideoCall = (ImageButton)view.findViewById(R.id.handUpVideoCall);
+        handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
 
-        incUserName = (TextView)view.findViewById(R.id.incUserName);
+        incUserName = (TextView) view.findViewById(R.id.incUserName);
 
 //        LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -190,14 +171,13 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     private void initButtonsListener() {
 
-       switchCameraToggle.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               ((NewDialogActivity)getActivity()).getCurrentSession().switchCapturePosition();
-                   Log.d(TAG, "Camera switched!");
-           }
-       });
-
+        switchCameraToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((NewDialogActivity) getActivity()).getCurrentSession().switchCapturePosition();
+                Log.d(TAG, "Camera switched!");
+            }
+        });
 
 
         cameraToggle.setOnClickListener(new View.OnClickListener() {
@@ -224,7 +204,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
 //                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((NewDialogActivity)getActivity()).getCurrentSession().switchAudioOutput();
+                ((NewDialogActivity) getActivity()).getCurrentSession().switchAudioOutput();
 //                if (isChecked) {
 //                    Log.d("Track", "Dynamic is off!");
 //                } else {
@@ -240,11 +220,11 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isAudioEnabled) {
                     Log.d("Track", "Mic is off!");
-                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(false);
+                    ((NewDialogActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
                     isAudioEnabled = false;
                 } else {
                     Log.d("Track", "Mic is on!");
-                    ((NewDialogActivity)getActivity()).getCurrentSession().setAudioEnabled(true);
+                    ((NewDialogActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
                     isAudioEnabled = true;
                 }
             }
@@ -255,14 +235,14 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
 
-                if (sessionID == null){
-                    ((NewDialogActivity)getActivity()).getCurrentSession().hangUp(userInfo);
+                if (sessionID == null) {
+                    ((NewDialogActivity) getActivity()).getCurrentSession().hangUp(userInfo);
                 } else {
-                    ((NewDialogActivity)getActivity()).getSession(sessionID)
+                    ((NewDialogActivity) getActivity()).getSession(sessionID)
                             .hangUp(userInfo);
                 }
 
-                ((NewDialogActivity)getActivity()).removeConversationFragment();
+                ((NewDialogActivity) getActivity()).removeConversationFragment();
             }
         });
 
@@ -271,14 +251,12 @@ public class ConversationFragment extends Fragment implements Serializable {
     @Override
     public void onResume() {
         super.onResume();
-            if(startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()){
-                QBRTCSession session =((NewDialogActivity)getActivity()).getSession(sessionID);
-                if(session != null){
-                    session.acceptCall(session.getUserInfo());
-                }
-            } else {
-                ((NewDialogActivity) getActivity()).getCurrentSession().startCall(new HashMap<String, String>());
-            }
+        QBRTCSession session = ((NewDialogActivity) getActivity()).getCurrentSession();
+        if (startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+            session.acceptCall(session.getUserInfo());
+        } else {
+            session.startCall(session.getUserInfo());
+        }
     }
 
     public static enum StartConversetionReason {
@@ -286,10 +264,10 @@ public class ConversationFragment extends Fragment implements Serializable {
         OUTCOME_CALL_MADE;
     }
 
-    private List<QBUser> getOpponentsFromCall(ArrayList<Integer> opponents){
+    private List<QBUser> getOpponentsFromCall(ArrayList<Integer> opponents) {
         ArrayList<QBUser> opponentsList = new ArrayList<>();
 
-        for (Integer opponentId : opponents){
+        for (Integer opponentId : opponents) {
             try {
                 opponentsList.add(QBUsers.getUser(opponentId));
             } catch (QBResponseException e) {
@@ -299,11 +277,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         return opponentsList;
     }
 
-    private void createOpponentsList(List<Integer> opponents, HorizontalScrollView camerasOpponentsList){
+    private void createOpponentsList(List<Integer> opponents, HorizontalScrollView camerasOpponentsList) {
         QBUser opponent;
 //        View opponentItemView;/* = view.findViewById(R.layout.list_item_opponent_from_call);*/
 
-        for (Integer i : opponents){
+        for (Integer i : opponents) {
 
             View opponentItemView = inflater.inflate(R.layout.list_item_opponent_from_call, opponentsFromCall, false);
 
@@ -314,10 +292,10 @@ public class ConversationFragment extends Fragment implements Serializable {
                 }
             });
 
-            QBGLVideoView opponentLittleCamera = (QBGLVideoView)opponentItemView.findViewById(R.id.opponentLittleCamera);
-            TextView opponentNumber = (TextView)opponentItemView.findViewById(R.id.opponentNumber);
+            QBGLVideoView opponentLittleCamera = (QBGLVideoView) opponentItemView.findViewById(R.id.opponentLittleCamera);
+            TextView opponentNumber = (TextView) opponentItemView.findViewById(R.id.opponentNumber);
 //            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
-            ImageView opponentAvatar = (ImageView)opponentItemView.findViewById(R.id.opponentAvatar);
+            ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
 
             /*try {
                 opponent = QBUsers.getUser(i);
@@ -333,10 +311,10 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
             opponentAvatar.setImageResource(R.drawable.ic_noavatar);
 
-            if (videoTrack == null){
+            if (videoTrack == null) {
                 opponentAvatar.setVisibility(View.VISIBLE);
             }
-                opponentAvatar.setVisibility(View.INVISIBLE);
+            opponentAvatar.setVisibility(View.INVISIBLE);
 
             opponentsFromCall.addView(opponentItemView);
         }
