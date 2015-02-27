@@ -40,12 +40,16 @@
 
         <TextView
             android:id="@+id/callerName"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:text="User 5"
+            android:padding="10dp"
+
+            android:maxLines="1"
+            android:maxLength="12"
             android:background="@drawable/rectangle_rounded_white_blue"
             android:layout_below="@+id/incAudioCall"
             android:layout_centerHorizontal="true"

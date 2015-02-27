@@ -7,7 +7,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.widget.Chronometer;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Inflater;
 
 /**
  * Created by tereha on 16.02.15.
@@ -65,8 +69,6 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     private QBGLVideoView videoView;
     public static String login;
     public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
-
-
 
 
 
@@ -221,8 +223,6 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 //        videoTrack.addRenderer(remouteRenderer);
         videoTrack.addRenderer(new VideoRenderer(REMOTE_RENDERER));
         videoTrackList.put(userID, videoTrack);
-
-
     }
 
     @Override
@@ -232,6 +232,8 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
     @Override
     public void onConnectedToUser(QBRTCSession session, Integer userID) {
+        startTimer();
+
 
     }
 
@@ -365,6 +367,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
             // Start conversation fragment
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+//            LogginedUserABActivity.init
         }
     }
 
@@ -376,6 +379,17 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
 
     }
+
+    public void startTimer () {
+        View mCustomView = getLayoutInflater().inflate(R.layout.actionbar_with_timer, null, false);
+
+        Chronometer timer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);
+
+        timer.setBase(SystemClock.elapsedRealtime());
+        timer.start();
+    }
+
+
 
     public static enum StartConversetionReason {
         INCOME_CALL_FOR_ACCEPTION,

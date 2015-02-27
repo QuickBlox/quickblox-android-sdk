@@ -166,6 +166,7 @@ public class ListUsersActivity extends Activity {
 
                     @Override
                     public void onError(List errors) {
+                        loginPB.setVisibility(View.INVISIBLE);
                         Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -174,16 +175,17 @@ public class ListUsersActivity extends Activity {
 
             @Override
             public void onError(List<String> errors) {
+                loginPB.setVisibility(View.INVISIBLE);
                 Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @Override
+    /*@Override
     protected void onRestart() {
         super.onRestart();
         logOutFromChat();
-    }
+    }*/
 
     /*@Override
     protected void onDestroy() {
@@ -196,7 +198,7 @@ public class ListUsersActivity extends Activity {
 
         boolean isLoggedIn = chatService.isLoggedIn();
 
-        if(!isLoggedIn){
+        if(isLoggedIn){
             chatService.logout(new QBEntityCallbackImpl() {
 
                 @Override

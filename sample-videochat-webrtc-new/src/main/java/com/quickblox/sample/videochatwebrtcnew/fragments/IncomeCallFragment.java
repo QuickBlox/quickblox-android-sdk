@@ -147,7 +147,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         incVideoCall = (TextView)view.findViewById(R.id.incVideoCall);
 
         callerName = (TextView)view.findViewById(R.id.callerName);
-//        callerName.setText(getCallerName(((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())));
+        callerName.setText(getCallerName(((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())));
 
         otherIncUsers = (TextView)view.findViewById(R.id.otherIncUsers);
         otherIncUsers.setText(getOtherIncUsersNames(opponents));
@@ -184,33 +184,31 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         StringBuffer s = new StringBuffer("");
         opponentsFromCall.addAll(DataHolder.createUsersList());
 
-
-        for (QBUser usr : opponentsFromCall) {
-            for (Integer i : opponents) {
-//            s.append(i + ", ");
-
-                if (usr.getId() == i) {
-
-                    /*if (opponents.indexOf(i) == (opponents.size() - 1)) {
-                        s.append(usr.getFullName() + "");
-                    } else {*/
+        for (Integer i : opponents) {
+            for (QBUser usr : opponentsFromCall) {
+                if (usr.getId().equals(i)){
+                    if (opponents.indexOf(i) == (opponents.size() - 1)) {
+                        s.append(usr.getFullName() + " ");
+                        break;
+                    } else {
                         s.append(usr.getFullName() + ", ");
                     }
                 }
             }
-
-        /*if(opponentsFromCall.size() == 10)
-            s.append("one");*/
+        }
         return s.toString();
     }
 
     private String getCallerName (QBRTCSession session){
-        String s = "";
+        String s = new String();
+        int i = session.getCallerID();
 
-        try {
-            s = QBUsers.getUser(session.getCallerID()).getFullName();
-        } catch (QBResponseException e) {
-            e.printStackTrace();
+        opponentsFromCall.addAll(DataHolder.createUsersList());
+
+        for (QBUser usr : opponentsFromCall){
+            if (usr.getId().equals(i)){
+                s = usr.getFullName();
+            }
         }
         return s;
     }
