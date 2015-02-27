@@ -28,6 +28,7 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,10 +111,12 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d("Track", "Call is rejected");
 
-                ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
+                stopRingtone();
+                vibrator.cancel();
+
                 ((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
-                stopRingtone();
+                ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
 
             }
         });
@@ -122,12 +125,12 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
 
-
+                stopRingtone();
+                vibrator.cancel();
                     ((NewDialogActivity) getActivity())
                             .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
                     ((NewDialogActivity) getActivity()).removeIncomeCallFragment();
 
-                stopRingtone();
                 Log.d("Track", "Call is started");
             }
         });
@@ -153,23 +156,30 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
 
-        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        ringtone.setLooping(true);
+//        ringtone.setLooping(true);
         ringtone.start();
 
-        if (ringtone.isPlaying()) {
-            long [] vibrationCycle = {0, 1000, 1000};
-            if (vibrator.hasVibrator()) {
-                vibrator.vibrate(vibrationCycle, 1);
-            }
-        } else {
-            vibrator.cancel();
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] vibrationCycle = {0, 1000, 1000};
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(vibrationCycle, 1);
         }
+
     }
 
     private void stopRingtone(){
-        ringtone.stop();
-        vibrator.cancel();
+        if (ringtone != null) {
+            try {
+                ringtone.stop();
+            } catch (IllegalStateException e){
+                e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            ringtone.release();
+            ringtone = null;
+        }
     }
 
     private String getOtherIncUsersNames (ArrayList<Integer> opponents){
