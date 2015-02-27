@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class ListUsersActivity extends Activity {
 
+    private static final String TAG = "ListUsersActivity";
     private UsersAdapter usersListAdapter;
     private ListView usersList;
     private ProgressBar loginPB;
@@ -150,24 +151,25 @@ public class ListUsersActivity extends Activity {
 
                 Log.d("Track", "Level 1");
 
-                Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
-                intent.putExtra("login", login);
-                startActivity(intent);
-
-
-
                 loginPB.setVisibility(View.INVISIBLE);
 
-                chatService.login(user, new QBEntityCallbackImpl() {
+                chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
+
                     @Override
                     public void onSuccess() {
                         Log.d("Track", "Level 2");
+                        Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
+                        intent.putExtra("login", login);
+                        startActivity(intent);
                     }
 
                     @Override
                     public void onError(List errors) {
                         loginPB.setVisibility(View.INVISIBLE);
                         Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                        for (Object error : errors){
+                            Log.d(TAG, error.toString());
+                        }
                     }
                 });
 
@@ -196,25 +198,26 @@ public class ListUsersActivity extends Activity {
 
     private void logOutFromChat() {
 
-        boolean isLoggedIn = chatService.isLoggedIn();
+        if (QBChatService.isInitialized()) {
+            boolean isLoggedIn = chatService.isLoggedIn();
 
-        if(isLoggedIn){
-            chatService.logout(new QBEntityCallbackImpl() {
+            if (!isLoggedIn) {
+                chatService.logout(new QBEntityCallbackImpl() {
 
-                @Override
-                public void onSuccess() {
-                    // success
+                    @Override
+                    public void onSuccess() {
+                        // success
 
-                    chatService.destroy();
-                    Log.d("Track", "Log out from chat");
-                }
+                        chatService.destroy();
+                        Log.d("Track", "Log out from chat");
+                    }
 
-                @Override
-                public void onError(final List list) {
+                    @Override
+                    public void onError(final List list) {
 
-                }
-            });
+                    }
+                });
+            }
         }
-
     }
 }

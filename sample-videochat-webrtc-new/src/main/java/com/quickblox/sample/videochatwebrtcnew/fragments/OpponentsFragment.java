@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
 import java.io.Serializable;
@@ -49,8 +51,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private int listViewTop;
     private QBRTCTypes.QBConferenceType qbConferenceType;
     private View view=null;
-
-
+    private ProgressDialog progresDialog;
 
 
     public static OpponentsFragment getInstance() {
@@ -73,18 +74,15 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
                 @Override
                 public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                     // Do work to refresh the list here.
-                    loadNextPage();
+                    loadOpponentsPage();
                     listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
                     View v = opponentsList.getRefreshableView().getChildAt(0);
                     listViewTop = (v == null) ? 0 : v.getTop();
                 }
             });
-
-            loadNextPage();
-
         }
 
-        Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
+         Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
         return view;
     }
 
@@ -93,6 +91,22 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         setRetainInstance(true);
         Log.d("Track", "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Show dialog till opponents loading
+        progresDialog = new ProgressDialog(getActivity());
+        progresDialog.setMessage("Load opponents ...");
+        progresDialog.setCanceledOnTouchOutside(false);
+        progresDialog.show();
+        loadOpponentsPage();
+
+        // From hear we start listening income call
+        QBRTCClient.init(getActivity());
+        QBRTCClient.getInstance().addCallback((NewDialogActivity)getActivity());
+
     }
 
     private void initUI(View view) {
@@ -105,7 +119,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
-
     }
 
     public static int searchIndexLogginedUser(ArrayList<QBUser> usersList) {
@@ -136,8 +149,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
                     userInfo.put("my_avatar_url", "avatar_reference");
 
                     ((NewDialogActivity) getActivity())
-                            .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                    qbConferenceType, userInfo, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+                            .addConversationFragmentStartCall(getOpponentsIds(opponentsAdapter.getSelected()),
+                                    qbConferenceType, userInfo);
 
 
                     break;
@@ -154,8 +167,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
                     userInfo2.put("my_avatar_url", "avatar_reference");
 
                     ((NewDialogActivity) getActivity())
-                            .startCanversationFragmentWithParameters(getOpponentsIds(opponentsAdapter.getSelected()),
-                                    qbConferenceType, userInfo2, NewDialogActivity.StartConversetionReason.OUTCOME_CALL_MADE);
+                            .addConversationFragmentStartCall(getOpponentsIds(opponentsAdapter.getSelected()),
+                                    qbConferenceType, userInfo2);
 
 
                     break;
@@ -169,7 +182,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
         users.addAll(qbUsers);
         int i = searchIndexLogginedUser((ArrayList<QBUser>) users);
-        if (i>=0)
+        if (i >= 0)
             users.remove(i);
 
         // Prepare users list for simple adapter.
@@ -178,12 +191,14 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         opponentsList.setAdapter(opponentsAdapter);
         opponentsList.onRefreshComplete();
         opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
+        progresDialog.dismiss();
     }
 
     @Override
     public void onSuccess() {
 
     }
+
 
     @Override
     public void onError(List<String> errors){
@@ -199,7 +214,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         return pagedRequestBuilder;
     }
 
-    private void loadNextPage() {
+    private void loadOpponentsPage() {
         ++currentPage;
         List<String> tags = new LinkedList<>();
         tags.add("webrtc");
@@ -215,5 +230,4 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         }
         return ids;
     }
-
 }

@@ -2,24 +2,18 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
@@ -27,7 +21,6 @@ import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
-import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -35,6 +28,7 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,10 +111,12 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d("Track", "Call is rejected");
 
-                ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
+                stopRingtone();
+                vibrator.cancel();
+
                 ((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
-                stopRingtone();
+                ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
 
             }
         });
@@ -129,13 +125,12 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
 
-
+                stopRingtone();
+                vibrator.cancel();
                     ((NewDialogActivity) getActivity())
-                            .addCanversationFragmentOnSession(sessionDescription.getSessionId(),
-                                    ConversationFragment.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION);
+                            .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
                     ((NewDialogActivity) getActivity()).removeIncomeCallFragment();
 
-                stopRingtone();
                 Log.d("Track", "Call is started");
             }
         });
@@ -161,23 +156,30 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
 
-        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        ringtone.setLooping(true);
+//        ringtone.setLooping(true);
         ringtone.start();
 
-        if (ringtone.isPlaying()) {
-            long [] vibrationCycle = {0, 1000, 1000};
-            if (vibrator.hasVibrator()) {
-                vibrator.vibrate(vibrationCycle, 1);
-            }
-        } else {
-            vibrator.cancel();
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] vibrationCycle = {0, 1000, 1000};
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(vibrationCycle, 1);
         }
+
     }
 
     private void stopRingtone(){
-        ringtone.stop();
-        vibrator.cancel();
+        if (ringtone != null) {
+            try {
+                ringtone.stop();
+            } catch (IllegalStateException e){
+                e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            ringtone.release();
+            ringtone = null;
+        }
     }
 
     private String getOtherIncUsersNames (ArrayList<Integer> opponents){
