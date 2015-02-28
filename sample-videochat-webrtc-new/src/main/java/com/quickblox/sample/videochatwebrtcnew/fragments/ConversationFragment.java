@@ -50,10 +50,9 @@ public class ConversationFragment extends Fragment implements Serializable {
     private int qbConferenceType;
     private int startReason;
     private String sessionID;
-    private QBRTCTypes.QBConferenceType conferenceType;
     //    private QBGLVideoView videoView;
     private GLSurfaceView videoView;
-//    private QBRTCSessionDescription sessionDescription;
+    //    private QBRTCSessionDescription sessionDescription;
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
 
     private QBRTCSessionDescription sessionDescription;
@@ -89,49 +88,27 @@ public class ConversationFragment extends Fragment implements Serializable {
         this.inflater = inflater;
 
         ((NewDialogActivity) getActivity()).initActionBarWithTimer();
+        initViews(view);
+        initButtonsListener();
 
-        Log.d("Track", "onCreateView() from ConversationFragment Level 1");
-
-        if (savedInstanceState == null) {
-
-            initViews(view);
-            initButtonsListener();
-
-
-            if (getArguments() != null) {
-                opponents = getArguments().getIntegerArrayList(ApplicationSingleton.OPPONENTS);
-                qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
-                startReason = getArguments().getInt(NewDialogActivity.START_CONVERSATION_REASON);
-                sessionID = getArguments().getString(NewDialogActivity.SESSION_ID);
+        if (getArguments() != null) {
+            opponents = getArguments().getIntegerArrayList(ApplicationSingleton.OPPONENTS);
+            qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
+            startReason = getArguments().getInt(NewDialogActivity.START_CONVERSATION_REASON);
+            sessionID = getArguments().getString(NewDialogActivity.SESSION_ID);
+        }
+        VideoRendererGui.setView(videoView, new Runnable() {
+            @Override
+            public void run() {
             }
+        });
 
-            //Conference
-            conferenceType =
-                    qbConferenceType == 1 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO :
-                            QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+        ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
+        Log.d("Track", "onCreateView() from ConversationFragment Level 2");
 
-            VideoRendererGui.setView(videoView, new Runnable() {
-                @Override
-                public void run() {
-                }
-            });
-
-
-            ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
-
-            Log.d("Track", "onCreateView() from ConversationFragment Level 2");
-        }
-
-        if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO) {
-            cameraToggle.setVisibility(View.VISIBLE);
-
-        } else {
-            imgMyCameraOff.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.INVISIBLE);
+        if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
             cameraToggle.setVisibility(View.GONE);
-
         }
-
 
         return view;
     }
@@ -154,17 +131,16 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
-        actionVideoButtonsLayout = (LinearLayout)view.findViewById(R.id.element_set_video_buttons);
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
+        actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
         switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
         dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
 
-        setActionVideoButtonsLayoutVisibility(View.INVISIBLE);
 
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         incUserName = (TextView) view.findViewById(R.id.incUserName);
-        imgMyCameraOff = (ImageView)view.findViewById(R.id.imgMyCameraOff);
+        imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
 
 //        LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -179,7 +155,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     }
 
-    public void setActionVideoButtonsLayoutVisibility(int visibility){
+    public void setActionVideoButtonsLayoutVisibility(int visibility) {
 //        actionVideoButtonsLayout.setVisibility(visibility);
 //        cameraToggle.setClickable(isClickable);
 //        cameraToggle.setFocusable(isClickable);
@@ -345,21 +321,21 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
     }
 
-    private String getCallerName (QBRTCSession session){
+    private String getCallerName(QBRTCSession session) {
         String s = new String();
         int i = session.getCallerID();
 
         allUsers.addAll(DataHolder.createUsersList());
 
-        for (QBUser usr : allUsers){
-            if (usr.getId().equals(i)){
+        for (QBUser usr : allUsers) {
+            if (usr.getId().equals(i)) {
                 s = usr.getFullName();
             }
         }
         return s;
     }
 
-    public void startTimer (/*Chronometer timer*/) {
+    public void startTimer(/*Chronometer timer*/) {
         View mCustomView = inflater.inflate(R.layout.actionbar_with_timer, null);
 
         Chronometer timer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);

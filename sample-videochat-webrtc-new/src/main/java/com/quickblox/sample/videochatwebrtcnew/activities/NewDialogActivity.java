@@ -184,7 +184,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
 
     @Override
     public void onReceiveNewCallWithSession(QBRTCSession session) {
-        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Income call");
         sessionList.put(session.getSessionID(), session);
         addIncomeCallFragment(session);
