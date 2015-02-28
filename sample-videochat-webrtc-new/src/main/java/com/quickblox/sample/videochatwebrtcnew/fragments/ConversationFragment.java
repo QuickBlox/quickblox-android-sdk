@@ -7,8 +7,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
@@ -18,16 +16,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
@@ -38,7 +36,6 @@ import org.webrtc.VideoRendererGui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +78,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
+    private LinearLayout actionVideoButtonsLayout;
 //    private Chronometer timer;
 
 
@@ -156,15 +154,16 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
+        actionVideoButtonsLayout = (LinearLayout)view.findViewById(R.id.element_set_video_buttons);
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
         switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
         dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
 
+        setActionVideoButtonsLayoutVisibility(View.INVISIBLE);
+
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
-
         incUserName = (TextView) view.findViewById(R.id.incUserName);
-
         imgMyCameraOff = (ImageView)view.findViewById(R.id.imgMyCameraOff);
 
 //        LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -177,6 +176,20 @@ public class ConversationFragment extends Fragment implements Serializable {
         opponentNumber = (TextView)opponentItemView.findViewById(R.id.opponentNumber);
         connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
         opponentAvatar = (ImageView)opponentItemView.findViewById(R.id.opponentAvatar);*/
+
+    }
+
+    public void setActionVideoButtonsLayoutVisibility(int visibility){
+//        actionVideoButtonsLayout.setVisibility(visibility);
+//        cameraToggle.setClickable(isClickable);
+//        cameraToggle.setFocusable(isClickable);
+//        switchCameraToggle.setClickable(isClickable);
+//        switchCameraToggle.setFocusable(isClickable);
+//        dynamicToggleVideoCall.setClickable(isClickable);
+//        dynamicToggleVideoCall.setFocusable(isClickable);
+//        micToggleVideoCall.setClickable(isClickable);
+//        micToggleVideoCall.setFocusable(isClickable);
+
 
     }
 
@@ -249,9 +262,8 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
-
+                ((NewDialogActivity) getActivity()).addOpponentsFragment();
                 ((NewDialogActivity) getActivity()).getCurrentSession().hangUp(userInfo);
-                ((NewDialogActivity) getActivity()).removeConversationFragment();
             }
         });
 
@@ -260,7 +272,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     @Override
     public void onResume() {
         super.onResume();
-        QBRTCSession session = ((NewDialogActivity) getActivity()).getCurrentSession();
         QBRTCSession session = ((NewDialogActivity) getActivity()).getCurrentSession();
         if (startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
             session.acceptCall(session.getUserInfo());
@@ -285,7 +296,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
         }
         return opponentsList;
-    }*/
+    }
 
     private void createOpponentsList(List<Integer> opponents, HorizontalScrollView camerasOpponentsList) {
         QBUser opponent;
@@ -315,7 +326,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(i)));
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
-
+/*
 //            connectionStatus.setText(i.toString());
             QBRTCVideoTrack videoTrack = NewDialogActivity.videoTrackList.get(i);
             opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
@@ -326,7 +337,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             if (videoTrack == null) {
                 opponentAvatar.setVisibility(View.VISIBLE);
             }
-            opponentAvatar.setVisibility(View.INVISIBLE);
+            opponentAvatar.setVisibility(View.INVISIBLE);*/
 
 //            if (videoTrack.)
 

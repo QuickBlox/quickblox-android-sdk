@@ -103,10 +103,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         progresDialog.show();
         loadOpponentsPage();
 
-        // From hear we start listening income call
-        QBRTCClient.init(getActivity());
-        QBRTCClient.getInstance().addCallback((NewDialogActivity)getActivity());
-
     }
 
     private void initUI(View view) {
@@ -229,5 +225,13 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
             ids.add(user.getId());
         }
         return ids;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(progresDialog.isShowing()) {
+            progresDialog.dismiss();
+        }
     }
 }
