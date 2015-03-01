@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
@@ -51,14 +52,13 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
-    private OpponentsFragment opponentsFragment = null;
-    private IncomeCallFragment incomeCallFragment = null;
-    private ConversationFragment conversationFragment = null;
+//    private OpponentsFragment opponentsFragment = null;
+//    private IncomeCallFragment incomeCallFragment = null;
+//    private ConversationFragment conversationFragment = null;
 
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
     public static final String SESSION_ID = "sessionID";
     private QBRTCVideoTrack localVideoTrack;
-    private Map<String, QBRTCSession> sessionList = new HashMap<>();
     private String currentSession;
 //    private CallManger callManger;
     //    private VideoRenderer.Callbacks localRenderer;
@@ -76,7 +76,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-//            opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
+//            opponentsFragment = (OpponentsFragment) getFragmentManager().getFragment(savedInstanceState, OPPONENTS_CALL_FRAGMENT);
 //            conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
 //            incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
             Log.d("Track", "onCreate() from NewDialogActivity Level 2");
@@ -119,7 +119,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     protected void onSaveInstanceState(Bundle outState) {
 
-//        outState.putSerializable("opponentsFragment", opponentsFragment);
+//        opponentsFragment  = (OpponentsFragment) getFragmentManager().findFragmentByTag(OPPONENTS_CALL_FRAGMENT);
+//        getFragmentManager().putFragment(outState, OPPONENTS_CALL_FRAGMENT, opponentsFragment);
 //        outState.putSerializable("conversationFragment", conversationFragment);
 //        outState.putSerializable("incomeCallFragment", incomeCallFragment);
         Log.d("Track", "onSaveInstanceState from NewDialogActivity Level 2");
@@ -137,18 +138,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     }
 
     public QBRTCSession getCurrentSession() {
-        return sessionList.get(currentSession);
+        return QBRTCClient.getInstance().getSessions().get(currentSession);
     }
 
     public void setCurrentSession(QBRTCSession session) {
-        if(!sessionList.containsKey(session.getSessionID())) {
+        if(!QBRTCClient.getInstance().getSessions().containsKey(session.getSessionID())) {
             addSession(session);
         }
         currentSession = session.getSessionID();
     }
 
     public QBRTCSession getSession(String sessionID) {
-        return sessionList.get(sessionID);
+        return QBRTCClient.getInstance().getSessions().get(sessionID);
     }
 
     public void setVideoViewVisibility(int visibility){
@@ -156,7 +157,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     }
 
     public void addSession(QBRTCSession session){
-        sessionList.put(session.getSessionID(), session);
+        QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
     }
 
     public void setCurrentSesionId(String sesionId){
@@ -185,7 +186,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public void onReceiveNewCallWithSession(QBRTCSession session) {
 //        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Income call");
-        sessionList.put(session.getSessionID(), session);
+        QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
         addIncomeCallFragment(session);
     }
 
@@ -249,7 +250,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
-        removeUserWithID(userID);
+//        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
         addOpponentsFragment();
     }
 
@@ -308,11 +309,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
 
-    }
-
-
-    public Map<String,QBRTCSession> getSessions() {
-        return sessionList;
     }
 
     public void addConversationFragmentReceiveCall(String sessionID) {
