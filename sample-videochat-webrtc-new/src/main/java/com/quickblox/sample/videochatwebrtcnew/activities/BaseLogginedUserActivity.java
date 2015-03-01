@@ -1,10 +1,8 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by tereha on 26.01.15.
  */
-public class LogginedUserABActivity extends Activity {
+public class BaseLogginedUserActivity extends Activity {
 
     static android.app.ActionBar mActionBar;
 
@@ -71,7 +69,7 @@ public class LogginedUserABActivity extends Activity {
         int indexLogginedUser = -1;
 
         for (User usr : usersList) {
-            if (usr.getLogin().equals(NewDialogActivity.login)) {
+            if (usr.getLogin().equals(CallActivity.login)) {
                 indexLogginedUser = usersList.indexOf(usr);
                 break;
             }

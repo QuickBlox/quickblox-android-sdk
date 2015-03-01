@@ -16,19 +16,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.quickblox.core.QBSettings;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +73,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
             view = inflater.inflate(R.layout.fragment_income_call, container, false);
 
-            ((NewDialogActivity) getActivity()).initActionBar();
+            ((CallActivity) getActivity()).initActionBar();
 
             initUI(view);
             setDisplayedTypeCall(conferenceType);
@@ -114,9 +111,10 @@ public class IncomeCallFragment extends Fragment implements Serializable {
                 stopRingtone();
                 vibrator.cancel();
 
-                ((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())
+                ((CallActivity)getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
-                ((NewDialogActivity)getActivity()).removeIncomeCallFragment();
+                ((CallActivity)getActivity()).removeIncomeCallFragment();
+                ((CallActivity)getActivity()).addOpponentsFragment();
 
             }
         });
@@ -127,9 +125,9 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
                 stopRingtone();
                 vibrator.cancel();
-                    ((NewDialogActivity) getActivity())
+                    ((CallActivity) getActivity())
                             .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
-                    ((NewDialogActivity) getActivity()).removeIncomeCallFragment();
+                    ((CallActivity) getActivity()).removeIncomeCallFragment();
 
                 Log.d("Track", "Call is started");
             }
@@ -142,7 +140,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         incVideoCall = (TextView)view.findViewById(R.id.incVideoCall);
 
         callerName = (TextView)view.findViewById(R.id.callerName);
-        callerName.setText(getCallerName(((NewDialogActivity)getActivity()).getSession(sessionDescription.getSessionId())));
+        callerName.setText(getCallerName(((CallActivity)getActivity()).getSession(sessionDescription.getSessionId())));
 
         otherIncUsers = (TextView)view.findViewById(R.id.otherIncUsers);
         otherIncUsers.setText(getOtherIncUsersNames(opponents));

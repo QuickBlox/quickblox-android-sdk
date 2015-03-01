@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -125,7 +124,6 @@ public class ListUsersActivity extends Activity {
                 String login = usersListAdapter.getItem(position).getLogin();
                 String password = usersListAdapter.getItem(position).getPassword();
 
-
                 createSession(login, password);
            }
         });
@@ -134,7 +132,6 @@ public class ListUsersActivity extends Activity {
     private void createSession(final String login, final String password) {
 
         loginPB.setVisibility(View.VISIBLE);
-
         context = ListUsersActivity.this;
 
         if (!QBChatService.isInitialized()) {
@@ -146,19 +143,25 @@ public class ListUsersActivity extends Activity {
         QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession session, Bundle bundle) {
-
+                Log.d(TAG, "onSuccess create session with params");
                 user.setId(session.getUserId());
-
-                Log.d("Track", "Level 1");
 
                 loginPB.setVisibility(View.INVISIBLE);
 
                 chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
                     @Override
+                    public void onSuccess(QBUser result, Bundle params) {
+                        Log.d(TAG, "onSuccess login to chat with params");
+                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
+                        intent.putExtra("login", login);
+                        startActivity(intent);
+                    }
+
+                    @Override
                     public void onSuccess() {
-                        Log.d("Track", "Level 2");
-                        Intent intent = new Intent(ListUsersActivity.this, NewDialogActivity.class);
+                        Log.d(TAG, "onSuccess login to chat");
+                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
                         intent.putExtra("login", login);
                         startActivity(intent);
                     }
@@ -173,6 +176,12 @@ public class ListUsersActivity extends Activity {
                     }
                 });
 
+            }
+
+            @Override
+            public void onSuccess() {
+                super.onSuccess();
+                Log.d(TAG, "onSuccess create session");
             }
 
             @Override

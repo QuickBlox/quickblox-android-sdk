@@ -23,10 +23,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.IncAudioCallActivity">
+            android:name=".activities.IncAudioCallActivityBase">
         </activity>
         <activity
-            android:name=".activities.NewDialogActivity"
+            android:name=".activities.CallActivity"
             android:screenOrientation="portrait"
             >
         </activity>

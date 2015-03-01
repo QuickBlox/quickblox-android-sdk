@@ -17,11 +17,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
 import java.io.Serializable;
@@ -61,7 +60,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ((NewDialogActivity)getActivity()).initActionBar();
+        ((CallActivity)getActivity()).initActionBar();
 
         if (savedInstanceState == null){
             Log.d("Track", "onCreateView() from OpponentsFragment Level 1");
@@ -151,7 +150,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
             userInfo.put("any_custom_data", "some data");
             userInfo.put("my_avatar_url", "avatar_reference");
 
-            ((NewDialogActivity) getActivity())
+            ((CallActivity) getActivity())
                     .addConversationFragmentStartCall(getOpponentsIds(opponentsAdapter.getSelected()),
                             qbConferenceType, userInfo);
         } else {

@@ -21,8 +21,8 @@ import android.widget.ToggleButton;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -87,15 +87,15 @@ public class ConversationFragment extends Fragment implements Serializable {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
 
-        ((NewDialogActivity) getActivity()).initActionBarWithTimer();
+        ((CallActivity) getActivity()).initActionBarWithTimer();
         initViews(view);
         initButtonsListener();
 
         if (getArguments() != null) {
             opponents = getArguments().getIntegerArrayList(ApplicationSingleton.OPPONENTS);
             qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
-            startReason = getArguments().getInt(NewDialogActivity.START_CONVERSATION_REASON);
-            sessionID = getArguments().getString(NewDialogActivity.SESSION_ID);
+            startReason = getArguments().getInt(CallActivity.START_CONVERSATION_REASON);
+            sessionID = getArguments().getString(CallActivity.SESSION_ID);
         }
         VideoRendererGui.setView(videoView, new Runnable() {
             @Override
@@ -103,7 +103,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
         });
 
-        ((NewDialogActivity) getActivity()).setCurrentVideoView(videoView);
+        ((CallActivity) getActivity()).setCurrentVideoView(videoView);
         Log.d("Track", "onCreateView() from ConversationFragment Level 2");
 
         if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
@@ -174,7 +174,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         switchCameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((NewDialogActivity) getActivity()).getCurrentSession().switchCapturePosition();
+                ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
                 Log.d(TAG, "Camera switched!");
             }
         });
@@ -186,13 +186,13 @@ public class ConversationFragment extends Fragment implements Serializable {
 //                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isVideoEnabled) {
-                    ((NewDialogActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
                     isVideoEnabled = false;
                     imgMyCameraOff.setVisibility(View.VISIBLE);
                     switchCameraToggle.setVisibility(View.INVISIBLE);
                     Log.d("Track", "Camera is off!");
                 } else {
-                    ((NewDialogActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
                     isVideoEnabled = true;
                     imgMyCameraOff.setVisibility(View.VISIBLE);
                     Log.d("Track", "Camera is on!");
@@ -208,7 +208,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
 //                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((NewDialogActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
 //                if (isChecked) {
 //                    Log.d("Track", "Dynamic is off!");
 //                } else {
@@ -224,11 +224,11 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isAudioEnabled) {
                     Log.d("Track", "Mic is off!");
-                    ((NewDialogActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
+                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
                     isAudioEnabled = false;
                 } else {
                     Log.d("Track", "Mic is on!");
-                    ((NewDialogActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
+                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
                     isAudioEnabled = true;
                 }
             }
@@ -238,8 +238,8 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d("Track", "Call is stopped");
-                ((NewDialogActivity) getActivity()).addOpponentsFragment();
-                ((NewDialogActivity) getActivity()).getCurrentSession().hangUp(userInfo);
+                ((CallActivity) getActivity()).addOpponentsFragment();
+                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
         });
 
@@ -248,8 +248,8 @@ public class ConversationFragment extends Fragment implements Serializable {
     @Override
     public void onResume() {
         super.onResume();
-        QBRTCSession session = ((NewDialogActivity) getActivity()).getCurrentSession();
-        if (startReason == NewDialogActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+        QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
+        if (startReason == CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
             session.acceptCall(session.getUserInfo());
         } else {
             session.startCall(session.getUserInfo());

@@ -11,7 +11,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
@@ -42,7 +41,7 @@ import java.util.Map;
 /**
  * Created by tereha on 16.02.15.
  */
-public class NewDialogActivity extends LogginedUserABActivity implements QBRTCChatCallback {
+public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatCallback {
 
 
     public static final String OPPONENTS_CALL_FRAGMENT = "opponents_call_fragment";
@@ -251,6 +250,7 @@ public class NewDialogActivity extends LogginedUserABActivity implements QBRTCCh
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
         removeUserWithID(userID);
+        addOpponentsFragment();
     }
 
     private void removeUserWithID(Integer userID) {

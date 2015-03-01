@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.quickblox.sample.videochatwebrtcnew.activities.NewDialogActivity">
+    tools:context="com.quickblox.sample.videochatwebrtcnew.activities.CallActivity">
 
     <FrameLayout
         android:id="@+id/fragment_container"
