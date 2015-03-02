@@ -79,6 +79,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private List<QBUser> allUsers = new ArrayList<>();
     private LinearLayout actionVideoButtonsLayout;
 //    private Chronometer timer;
+    private View actionBar;
 
 
     @Nullable
@@ -91,6 +92,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         initViews(view);
         initButtonsListener();
 
+
         if (getArguments() != null) {
             opponents = getArguments().getIntegerArrayList(ApplicationSingleton.OPPONENTS);
             qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
@@ -102,6 +104,8 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void run() {
             }
         });
+
+        createOpponentsList(opponents);
 
         ((CallActivity) getActivity()).setCurrentVideoView(videoView);
         Log.d("Track", "onCreateView() from ConversationFragment Level 2");
@@ -176,6 +180,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
                 Log.d(TAG, "Camera switched!");
+//                ((CallActivity) getActivity()).startTimer();
             }
         });
 
@@ -274,9 +279,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         return opponentsList;
     }
 
-    private void createOpponentsList(List<Integer> opponents, HorizontalScrollView camerasOpponentsList) {
-        QBUser opponent;
-//        View opponentItemView;/* = view.findViewById(R.layout.list_item_opponent_from_call);*/
+    private void createOpponentsList(List<Integer> opponents) {
 
         for (Integer i : opponents) {
 
@@ -294,16 +297,17 @@ public class ConversationFragment extends Fragment implements Serializable {
 //            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
             ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
 
-            /*try {
-                opponent = QBUsers.getUser(i);
-            } catch (QBResponseException e) {
-                e.printStackTrace();
-            }*/
             opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(i)));
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
+
+            connectionStatus.setText(i.toString()); //
+
+
 /*
-//            connectionStatus.setText(i.toString());
+
+
+      /*    connectionStatus.setText(i.toString());
             QBRTCVideoTrack videoTrack = NewDialogActivity.videoTrackList.get(i);
             opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
             opponentAvatar.setImageResource(R.drawable.ic_noavatar);
@@ -315,7 +319,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
             opponentAvatar.setVisibility(View.INVISIBLE);*/
 
-//            if (videoTrack.)
+//            if (videoTrack.)*/
 
             opponentsFromCall.addView(opponentItemView);
         }
@@ -334,16 +338,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
         return s;
     }
-
-    public void startTimer(/*Chronometer timer*/) {
-        View mCustomView = inflater.inflate(R.layout.actionbar_with_timer, null);
-
-        Chronometer timer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);
-
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
-    }
-
 
 }
 

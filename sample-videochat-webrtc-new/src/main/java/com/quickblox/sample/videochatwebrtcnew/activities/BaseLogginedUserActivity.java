@@ -1,8 +1,10 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 public class BaseLogginedUserActivity extends Activity {
 
     static android.app.ActionBar mActionBar;
+    private Chronometer timerABWithTimer;
 
     public void initActionBar() {
 
@@ -53,7 +56,7 @@ public class BaseLogginedUserActivity extends Activity {
 
         View mCustomView = mInflater.inflate(R.layout.actionbar_with_timer, null);
 
-//        Chronometer timerABWithTimer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);
+        timerABWithTimer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);
 
         TextView loginAsABWithTimer = (TextView) mCustomView.findViewById(R.id.loginAsABWithTimer);
         loginAsABWithTimer.setText(R.string.logged_in_as);
@@ -74,15 +77,13 @@ public class BaseLogginedUserActivity extends Activity {
                 break;
             }
         }
-
         return indexLogginedUser;
     }
 
-   /* public void startTimer (Chronometer timer){
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
-
-    }*/
+    public void startTimer(){
+        timerABWithTimer.setBase(SystemClock.elapsedRealtime());
+        timerABWithTimer.start();
+    }
 }
 
 

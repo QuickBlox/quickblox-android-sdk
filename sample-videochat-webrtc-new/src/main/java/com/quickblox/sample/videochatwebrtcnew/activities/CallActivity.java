@@ -66,6 +66,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     private QBGLVideoView videoView;
     public static String login;
     public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
+//    private Chronometer timer;
 
 
 
@@ -216,6 +217,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         videoTrack.addRenderer(new VideoRenderer(LOCAL_RENDERER));
 //        videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(videoView, QBGLVideoView.Endpoint.LOCAL)));
 //        videoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.LOCAL);
+        Log.d("Track", "onLocalVideoTrackReceive() is raned");
     }
 
     @Override
@@ -226,6 +228,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 //        videoTrack.addRenderer(remouteRenderer);
         videoTrack.addRenderer(new VideoRenderer(REMOTE_RENDERER));
         videoTrackList.put(userID, videoTrack);
+        Log.d("Track", "onRemoteVideoTrackReceive() is raned");
     }
 
     @Override
@@ -241,6 +244,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         if(conversFragment != null){
             conversFragment.setActionVideoButtonsLayoutVisibility(View.VISIBLE);
         }
+        Log.d("Track", "onConnectedToUser() is started");
     }
 
     @Override
@@ -282,7 +286,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         Bundle bundle = new Bundle();
         bundle.putSerializable("sessionDescription", session.getSessionDescription());
         bundle.putIntegerArrayList("opponents", new ArrayList<Integer>(session.getOpponents()));
-        bundle.putBoolean("marker", false);
+        bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
         fragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
     }
@@ -347,12 +351,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     }
 
     public void startTimer () {
-        View mCustomView = getLayoutInflater().inflate(R.layout.actionbar_with_timer, null, false);
-
-        Chronometer timer = (Chronometer) mCustomView.findViewById(R.id.timerABWithTimer);
-
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
+        super.startTimer();
     }
 
 
