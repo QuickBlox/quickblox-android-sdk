@@ -75,6 +75,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
+
         if (savedInstanceState != null) {
             // Restore value of members from saved state
 //            opponentsFragment = (OpponentsFragment) getFragmentManager().getFragment(savedInstanceState, OPPONENTS_CALL_FRAGMENT);
@@ -208,7 +210,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
-        removeUserWithID(userID);
+            removeUserWithID(userID);
     }
 
     @Override
@@ -242,7 +244,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
         ConversationFragment conversFragment = (ConversationFragment)getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if(conversFragment != null){
-            conversFragment.setActionVideoButtonsLayoutVisibility(View.VISIBLE);
+            conversFragment.setActionVideoButtonsLayoutVisibility(true);
         }
         Log.d("Track", "onConnectedToUser() is started");
     }
@@ -255,11 +257,16 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
 //        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
-        addOpponentsFragment();
+        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
+            addOpponentsFragment();
+        }
     }
 
     private void removeUserWithID(Integer userID) {
-        getCurrentSession().removeUser(userID, new HashMap<String, String>());
+        QBRTCSession session = getCurrentSession();
+        if (session != null) {
+            session.removeUser(userID, new HashMap<String, String>());
+        }
     }
 
     public void addIncomeCallFragment() {
@@ -311,7 +318,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         }
         fragment.setArguments(bundle);
 
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment,CONVERSATION_CALL_FRAGMENT).commit();
 
     }
 
@@ -338,7 +345,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
             fragment.setArguments(bundle);
 
             // Start conversation fragment
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment,CONVERSATION_CALL_FRAGMENT).commit();
     }
 
     public void setCurrentVideoView(GLSurfaceView videoView) {
