@@ -86,7 +86,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRetainInstance(true);
+//        setRetainInstance(true);
         Log.d("Track", "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
     }

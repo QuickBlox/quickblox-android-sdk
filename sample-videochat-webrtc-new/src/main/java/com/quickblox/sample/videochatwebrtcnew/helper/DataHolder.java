@@ -49,8 +49,8 @@ public class DataHolder {
 //        usersList.add(new User(10, "User 10", "user_10", "11111111", 2224062));
 //
 //
-        usersList.add(new User(1, "androidUser1", "androidUser1", "x6Bt0VDy5", 2327456));
-        usersList.add(new User(2, "androidUser2", "androidUser2", "x6Bt0VDy5",2344849));
+        usersList.add(new User(1, "androidUser1", "androidUser1", "androidUser1", 2327456));
+        usersList.add(new User(2, "androidUser2", "androidUser2", "androidUser2",2344849));
 //        usersList.add(new User(3, "user1", "@user1", "x6Bt0VDy5"));
 //        usersList.add(new User(4, "user2", "@user2", "x6Bt0VDy5"));
 //        usersList.add(new User(5, "user3", "@user3", "x6Bt0VDy5"));
