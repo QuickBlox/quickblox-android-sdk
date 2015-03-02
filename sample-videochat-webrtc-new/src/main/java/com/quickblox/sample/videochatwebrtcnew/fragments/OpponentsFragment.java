@@ -2,10 +2,14 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +22,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -87,6 +92,7 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        setRetainInstance(true);
+        setHasOptionsMenu(true);
         Log.d("Track", "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
     }
@@ -216,5 +222,27 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         super.onPause();
         if(progresDialog.isShowing()) {
             progresDialog.dismiss();
-        }}
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.log_out:
+                ListUsersActivity.logOutFromChat();
+//                Intent intent = new Intent(getActivity(), ListUsersActivity.class);
+//                startActivity(intent);
+                getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

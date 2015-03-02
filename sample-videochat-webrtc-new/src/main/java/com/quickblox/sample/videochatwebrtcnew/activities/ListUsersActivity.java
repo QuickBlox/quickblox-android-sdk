@@ -37,7 +37,7 @@ public class ListUsersActivity extends Activity {
     private ListView usersList;
     private ProgressBar loginPB;
     private Context context;
-    private QBChatService chatService;
+    private static QBChatService chatService;
     private static ArrayList<User> users = DataHolder.createUsersList();
 
 
@@ -205,12 +205,12 @@ public class ListUsersActivity extends Activity {
     }*/
 
 
-    private void logOutFromChat() {
+    public static void logOutFromChat() {
 
-        if (QBChatService.isInitialized()) {
+
             boolean isLoggedIn = chatService.isLoggedIn();
 
-            if (!isLoggedIn) {
+            if (isLoggedIn) {
                 chatService.logout(new QBEntityCallbackImpl() {
 
                     @Override
@@ -227,6 +227,6 @@ public class ListUsersActivity extends Activity {
                     }
                 });
             }
-        }
+
     }
 }

@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
@@ -129,6 +131,14 @@ public class ConversationFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_video_chat, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+
     private void initViews(View view) {
 
 //        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
@@ -234,7 +244,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isButtonsClickable) {
+                if (isButtonsClickable) {
                     if (isAudioEnabled) {
                         Log.d("Track", "Mic is off!");
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
@@ -300,6 +310,8 @@ public class ConversationFragment extends Fragment implements Serializable {
                 @Override
                 public void onClick(View v) {
                     Log.d("Track", "Main opponent Selected");
+
+
                 }
             });
 
@@ -312,7 +324,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
 
-            connectionStatus.setText(i.toString()); //
+//            connectionStatus.setText(i.toString()); //
 
 
 /*

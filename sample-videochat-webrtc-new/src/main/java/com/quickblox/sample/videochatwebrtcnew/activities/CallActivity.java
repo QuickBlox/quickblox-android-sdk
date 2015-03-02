@@ -363,6 +363,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
 
 
+
+
+
     public static enum StartConversetionReason {
         INCOME_CALL_FOR_ACCEPTION,
         OUTCOME_CALL_MADE;
