@@ -198,10 +198,8 @@ public class ConversationFragment extends Fragment implements Serializable {
         switchCameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isButtonsClickable) {
                     ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
                     Log.d(TAG, "Camera switched!");
-                }
             }
         });
 
@@ -209,7 +207,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isButtonsClickable) {
 //                setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isVideoEnabled) {
@@ -226,7 +223,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                         switchCameraToggle.setVisibility(View.VISIBLE);
                         imgMyCameraOff.setVisibility(View.INVISIBLE);
 //                    switchCameraToggle.setVisibility(View.VISIBLE);
-                    }
                 }
             }
         });
@@ -234,10 +230,8 @@ public class ConversationFragment extends Fragment implements Serializable {
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isButtonsClickable) {
                     ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
                     Log.d("Track", "Dynamic switched!");
-                }
             }
         });
 
@@ -261,11 +255,9 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isButtonsClickable) {
                     Log.d("Track", "Call is stopped");
                     ((CallActivity) getActivity()).addOpponentsFragment();
                     ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
-                }
             }
         });
 

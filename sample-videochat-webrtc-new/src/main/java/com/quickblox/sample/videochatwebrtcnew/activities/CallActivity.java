@@ -210,7 +210,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
-            removeUserWithID(userID);
+        removeUserWithID(userID);
+        addOpponentsFragment();
     }
 
     @Override
@@ -256,10 +257,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
+        IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
+        if(incomeCallFragment != null){
+            incomeCallFragment.startCallNotification();
+        }
+
 //        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
         if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
             addOpponentsFragment();
+        } else {
+            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
         }
+
     }
 
     private void removeUserWithID(Integer userID) {

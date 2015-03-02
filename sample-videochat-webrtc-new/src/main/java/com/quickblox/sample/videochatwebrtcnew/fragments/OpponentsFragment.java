@@ -83,6 +83,15 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
                     listViewTop = (v == null) ? 0 : v.getTop();
                 }
             });
+
+            // Show dialog till opponents loading
+            progresDialog = new ProgressDialog(getActivity());
+            progresDialog.setMessage("Load opponents ...");
+            progresDialog.setCanceledOnTouchOutside(false);
+            progresDialog.show();
+
+            loadOpponentsPage();
+
         }
 
          Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
@@ -95,18 +104,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         setHasOptionsMenu(true);
         Log.d("Track", "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Show dialog till opponents loading
-        progresDialog = new ProgressDialog(getActivity());
-        progresDialog.setMessage("Load opponents ...");
-        progresDialog.setCanceledOnTouchOutside(false);
-        progresDialog.show();
-        loadOpponentsPage();
-
     }
 
     private void initUI(View view) {

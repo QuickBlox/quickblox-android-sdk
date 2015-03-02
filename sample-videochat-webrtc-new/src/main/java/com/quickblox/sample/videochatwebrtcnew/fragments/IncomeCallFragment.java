@@ -78,7 +78,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             initUI(view);
             setDisplayedTypeCall(conferenceType);
             initButtonsListener();
-            startRingtone();
+            startCallNotification();
 
         }
 
@@ -96,7 +96,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     }
 
     public void onDestroy() {
-        stopRingtone();
+        stopCallNotification();
         super.onDestroy();
         Log.d("Track", "onDestroy() from IncomeCallFragment");
     }
@@ -108,8 +108,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d("Track", "Call is rejected");
 
-                stopRingtone();
-                vibrator.cancel();
+                stopCallNotification();
 
                 ((CallActivity)getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
@@ -123,8 +122,8 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
 
-                stopRingtone();
-                vibrator.cancel();
+                stopCallNotification();
+
                     ((CallActivity) getActivity())
                             .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
                     ((CallActivity) getActivity()).removeIncomeCallFragment();
@@ -149,7 +148,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         takeBtn = (ImageButton)view.findViewById(R.id.takeBtn);
     }
 
-    private void startRingtone(){
+    public void startCallNotification(){
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
@@ -166,7 +165,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
     }
 
-    private void stopRingtone(){
+    private void stopCallNotification(){
         if (ringtone != null) {
             try {
                 ringtone.stop();
@@ -177,6 +176,10 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             }
             ringtone.release();
             ringtone = null;
+        }
+
+        if (vibrator != null){
+            vibrator.cancel();
         }
     }
 
@@ -222,5 +225,4 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             incAudioCall.setVisibility(View.VISIBLE);
         }
     }
-
 }
