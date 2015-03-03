@@ -185,7 +185,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private String getOtherIncUsersNames (ArrayList<Integer> opponents){
         StringBuffer s = new StringBuffer("");
         opponentsFromCall.addAll(DataHolder.usersList);
-        opponents.remove(new Integer(QBChatService.getInstance().getUser().getId()));
+        opponents.remove(QBChatService.getInstance().getUser().getId());
 
         for (Integer i : opponents) {
             for (QBUser usr : opponentsFromCall) {
