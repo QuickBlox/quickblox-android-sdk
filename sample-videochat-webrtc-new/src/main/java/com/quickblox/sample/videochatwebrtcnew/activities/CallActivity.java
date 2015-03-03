@@ -108,11 +108,22 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         }
 
         // From hear we start listening income call
-        QBRTCClient.init(this);
-        QBRTCClient.getInstance().addCallback(this);
+        if (!QBRTCClient.isInitiated()) {
+            QBRTCClient.init(this);
+        }
 
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Add activity as callback to RTCClient
+        if (QBRTCClient.isInitiated()) {
+            QBRTCClient.getInstance().addCallback(this);
+        }
+    }
 
     public void addOpponentsFragment(){
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment()).commit();
@@ -257,10 +268,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
-        IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
-        if(incomeCallFragment != null){
-            incomeCallFragment.startCallNotification();
-        }
 
 //        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
         if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
@@ -371,9 +378,15 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-
-
+        // Remove activity as callback to RTCClient
+        if (QBRTCClient.isInitiated()) {
+            QBRTCClient.getInstance().removeCallback(this);
+        }
+    }
 
     public static enum StartConversetionReason {
         INCOME_CALL_FOR_ACCEPTION,

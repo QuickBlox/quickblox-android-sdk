@@ -78,8 +78,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             initUI(view);
             setDisplayedTypeCall(conferenceType);
             initButtonsListener();
-            startCallNotification();
-
         }
 
         return view;
@@ -95,10 +93,10 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
     }
 
-    public void onDestroy() {
-        stopCallNotification();
-        super.onDestroy();
-        Log.d("Track", "onDestroy() from IncomeCallFragment");
+    @Override
+    public void onStart() {
+        super.onStart();
+        startCallNotification();
     }
 
     private void initButtonsListener() {
@@ -225,4 +223,11 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             incAudioCall.setVisibility(View.VISIBLE);
         }
     }
+
+    public void onStop() {
+        stopCallNotification();
+        super.onDestroy();
+        Log.d("Track", "onDestroy() from IncomeCallFragment");
+    }
+
 }
