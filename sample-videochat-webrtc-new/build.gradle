@@ -54,4 +54,5 @@ dependencies {
     compile files('../jars/quickblox-android-sdk-chat-2.1.jar')
     compile 'com.android.support:appcompat-v7:+'
     compile project(':pull-to-refresh')
+    compile files('libs/android-support-v4.jar')
 }

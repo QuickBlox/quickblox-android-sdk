@@ -118,6 +118,8 @@ public class ConversationFragment extends Fragment implements Serializable {
         if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
             cameraToggle.setVisibility(View.GONE);
             switchCameraToggle.setVisibility(View.INVISIBLE);
+            videoView.setVisibility(View.INVISIBLE);
+            imgMyCameraOff.setVisibility(View.INVISIBLE);
         }
 
         return view;
