@@ -87,7 +87,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
 
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+//        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
 
         Log.d("Track", "onCreate() from IncomeCallFragment");
         super.onCreate(savedInstanceState);

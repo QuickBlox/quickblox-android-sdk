@@ -23,6 +23,7 @@ import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
+import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.callbacks.QBRTCChatCallback;
@@ -49,6 +50,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
     private static final String TAG = "NewDialogActivity";
+    public static final String CALLER_NAME = "caller_name";
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
@@ -328,6 +330,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
                 new ArrayList<Integer>(opponents));
         bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, qbConferenceType.getValue());
         bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.OUTCOME_CALL_MADE.ordinal());
+        bundle.putString(CALLER_NAME, DataHolder.getUserNameByID(opponents.get(0)));
 
         for (String key : userInfo.keySet()){
             bundle.putString("UserInfo:" + key, userInfo.get(key));
@@ -343,6 +346,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         // set current session
         setCurrentSesionId(sessionID);
         QBRTCSession session = getCurrentSession();
+        int myId = QBChatService.getInstance().getUser().getId();
 
         // init conversation fragment
             ConversationFragment fragment = new ConversationFragment();
@@ -352,6 +356,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
             bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
             bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal());
             bundle.putString(SESSION_ID, sessionID);
+            bundle.putString(CALLER_NAME, DataHolder.getUserNameByID(session.getCallerID()));
 
             if(session.getUserInfo() != null) {
                 for (String key : session.getUserInfo().keySet()) {

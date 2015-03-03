@@ -1,5 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.helper;
 
+import android.util.Log;
+
 import com.quickblox.sample.videochatwebrtcnew.User;
 
 import java.util.ArrayList;
@@ -37,20 +39,20 @@ public class DataHolder {
     public static ArrayList<User> createUsersList (){
         usersList = new ArrayList<>();
 
-//        usersList.add(new User(1, "User 1", "user_1", "11111111", 2224038));
-//        usersList.add(new User(2, "User 2", "user_2", "11111111", 2224046));
-//        usersList.add(new User(3, "User 3", "user_3", "11111111", 2224047));
-//        usersList.add(new User(4, "User 4", "user_4", "11111111", 2224050));
-//        usersList.add(new User(5, "User 5", "user_5", "11111111", 2224052));
-//        usersList.add(new User(6, "User 6", "user_6", "11111111", 2224054));
-//        usersList.add(new User(7, "User 7", "user_7", "11111111", 2224057));
-//        usersList.add(new User(8, "User 8", "@dev8", "x6Bt0VDy5", 2224058));
-//        usersList.add(new User(9, "User 9", "user_9", "11111111", 2224060));
-//        usersList.add(new User(10, "User 10", "user_10", "11111111", 2224062));
+        usersList.add(new User(1, "User 1", "user_1", "11111111", 2224038));
+        usersList.add(new User(2, "User 2", "user_2", "11111111", 2224046));
+        usersList.add(new User(3, "User 3", "user_3", "11111111", 2224047));
+        usersList.add(new User(4, "User 4", "user_4", "11111111", 2224050));
+        usersList.add(new User(5, "User 5", "user_5", "11111111", 2224052));
+        usersList.add(new User(6, "User 6", "user_6", "11111111", 2224054));
+        usersList.add(new User(7, "User 7", "user_7", "11111111", 2224057));
+        usersList.add(new User(8, "User 8", "@dev8", "x6Bt0VDy5", 2224058));
+        usersList.add(new User(9, "User 9", "user_9", "11111111", 2224060));
+        usersList.add(new User(10, "User 10", "user_10", "11111111", 2224062));
 //
 //
-        usersList.add(new User(1, "androidUser1", "androidUser1", "x6Bt0VDy5", 2327456));
-        usersList.add(new User(2, "androidUser2", "androidUser2", "x6Bt0VDy5",2344849));
+//        usersList.add(new User(1, "androidUser1", "androidUser1", "x6Bt0VDy5", 2327456));
+//        usersList.add(new User(2, "androidUser2", "androidUser2", "x6Bt0VDy5",2344849));
 //        usersList.add(new User(3, "user1", "@user1", "x6Bt0VDy5"));
 //        usersList.add(new User(4, "user2", "@user2", "x6Bt0VDy5"));
 //        usersList.add(new User(5, "user3", "@user3", "x6Bt0VDy5"));
@@ -69,4 +71,14 @@ public class DataHolder {
     }
 
 
+    public static String getUserNameByID(Integer callerID) {
+        Log.d("Track", "callerID " + callerID);
+        for (User user : usersList){
+            Log.d("Track", "getFullName " + user.getId());
+            if (user.getId().equals(callerID)){
+                return user.getFullName();
+            }
+        }
+        return "User_name_unused";
+    }
 }

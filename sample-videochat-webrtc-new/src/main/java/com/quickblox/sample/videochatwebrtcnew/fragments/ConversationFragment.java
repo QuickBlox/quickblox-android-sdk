@@ -83,6 +83,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private boolean isButtonsClickable;
 //    private Chronometer timer;
     private View actionBar;
+    private String callerName;
 
 
     @Nullable
@@ -94,8 +95,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
-        initViews(view);
-        initButtonsListener();
+
 
 
         if (getArguments() != null) {
@@ -103,7 +103,15 @@ public class ConversationFragment extends Fragment implements Serializable {
             qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
             startReason = getArguments().getInt(CallActivity.START_CONVERSATION_REASON);
             sessionID = getArguments().getString(CallActivity.SESSION_ID);
+            callerName = getArguments().getString(CallActivity.CALLER_NAME);
+
+            Log.d("Track", "CALLER_NAME: " + callerName);
+
         }
+
+        initViews(view);
+        initButtonsListener();
+
         VideoRendererGui.setView(videoView, new Runnable() {
             @Override
             public void run() {
@@ -129,16 +137,16 @@ public class ConversationFragment extends Fragment implements Serializable {
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
         Log.d("Track", "onCreate() from ConversationFragment");
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_video_chat, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-    }
+    }*/
 
 
     private void initViews(View view) {
@@ -161,6 +169,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         incUserName = (TextView) view.findViewById(R.id.incUserName);
+        incUserName.setText(callerName);
         imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
 
 //        LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -317,6 +326,10 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(i)));
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
+
+            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
+            opponentAvatar.setVisibility(View.VISIBLE);
+
 
 //            connectionStatus.setText(i.toString()); //
 
