@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
@@ -183,7 +184,8 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
     private String getOtherIncUsersNames (ArrayList<Integer> opponents){
         StringBuffer s = new StringBuffer("");
-        opponentsFromCall.addAll(DataHolder.createUsersList());
+        opponentsFromCall.addAll(DataHolder.usersList);
+        opponents.remove(QBChatService.getInstance().getUser().getId());
 
         for (Integer i : opponents) {
             for (QBUser usr : opponentsFromCall) {

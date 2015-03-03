@@ -32,6 +32,7 @@ import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
 import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 import com.quickblox.videochat.webrtcnew.view.VideoCallBacks;
 
+import org.jivesoftware.smack.SmackException;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
@@ -78,6 +79,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
+
+
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -128,7 +131,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     }
 
     public void addOpponentsFragment(){
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(),OPPONENTS_CALL_FRAGMENT).commit();
     }
 
 
@@ -270,12 +273,22 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
+        Log.d(TAG, "CHECK SESSION STATE");
+        for (String key : QBRTCClient.getInstance().getSessions().keySet()){
+            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
+        }
+
+
 
 //        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
         if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
             addOpponentsFragment();
         } else {
             Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
+        }
+
+        for (String key : QBRTCClient.getInstance().getSessions().keySet()){
+            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
         }
 
     }
@@ -396,6 +409,20 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public static enum StartConversetionReason {
         INCOME_CALL_FOR_ACCEPTION,
         OUTCOME_CALL_MADE;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        // Logout on back btn click
+        if (QBChatService.isInitialized()) {
+            try {
+                QBChatService.getInstance().logout();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

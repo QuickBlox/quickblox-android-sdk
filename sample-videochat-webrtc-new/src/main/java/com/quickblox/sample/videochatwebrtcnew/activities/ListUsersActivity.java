@@ -23,6 +23,8 @@ import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 
+import org.jivesoftware.smack.SmackException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +49,19 @@ public class ListUsersActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         initUI();
-        initUsersList();
 
         QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+
+        if (getActionBar() != null){
+            getActionBar().setTitle(getResources().getString(R.string.opponentsListActionBarTitle));
+        }
+
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(this);
+            chatService = QBChatService.getInstance();
+        }
+        initUsersList();
+
     }
 
     private void initUI() {
@@ -132,12 +144,6 @@ public class ListUsersActivity extends Activity {
     private void createSession(final String login, final String password) {
 
         loginPB.setVisibility(View.VISIBLE);
-        context = ListUsersActivity.this;
-
-        if (!QBChatService.isInitialized()) {
-            QBChatService.init(context);
-            chatService = QBChatService.getInstance();
-        }
 
         final QBUser user = new QBUser(login, password);
         QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
@@ -192,6 +198,19 @@ public class ListUsersActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (chatService.isLoggedIn()){
+            try {
+                chatService.logout();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+        chatService.destroy();
+    }
+
     /*@Override
     protected void onRestart() {
         super.onRestart();
@@ -203,30 +222,4 @@ public class ListUsersActivity extends Activity {
         super.onDestroy();
         logOutFromChat();
     }*/
-
-
-    public static void logOutFromChat() {
-
-
-            boolean isLoggedIn = chatService.isLoggedIn();
-
-            if (isLoggedIn) {
-                chatService.logout(new QBEntityCallbackImpl() {
-
-                    @Override
-                    public void onSuccess() {
-                        // success
-
-                        chatService.destroy();
-                        Log.d("Track", "Log out from chat");
-                    }
-
-                    @Override
-                    public void onError(final List list) {
-
-                    }
-                });
-            }
-
-    }
 }

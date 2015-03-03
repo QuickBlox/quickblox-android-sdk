@@ -1,5 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
@@ -28,8 +30,13 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
+import org.jivesoftware.smack.SmackException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,7 +92,12 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
             });
 
             // Show dialog till opponents loading
-            progresDialog = new ProgressDialog(getActivity());
+            progresDialog = new ProgressDialog(getActivity()) {
+                @Override
+                public void onBackPressed() {
+                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+                }
+            };
             progresDialog.setMessage("Load opponents ...");
             progresDialog.setCanceledOnTouchOutside(false);
             progresDialog.show();
@@ -134,8 +146,9 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     @Override
     public void onClick(View v) {
-        if (opponentsAdapter.getSelected().size() > 0) {
+        if (opponentsAdapter.getSelected().size() == 1) {
             QBRTCTypes.QBConferenceType qbConferenceType = null;
+
 
             //Init conference type
             switch (v.getId()) {
@@ -156,14 +169,17 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
             ((CallActivity) getActivity())
                     .addConversationFragmentStartCall(getOpponentsIds(opponentsAdapter.getSelected()),
                             qbConferenceType, userInfo);
-        } else {
-            Toast.makeText(getActivity(), "Choose at least one opponent", Toast.LENGTH_LONG).show();
+        } else if (opponentsAdapter.getSelected().size() > 1){
+            Toast.makeText(getActivity(), "Only 1-to-1 calls are available", Toast.LENGTH_LONG).show();
+        } else if (opponentsAdapter.getSelected().size() < 1){
+            Toast.makeText(getActivity(), "Choose one opponent", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-        users.addAll(qbUsers);
+        users.addAll(reorderUsersByName(qbUsers));
+
         int i = searchIndexLogginedUser((ArrayList<QBUser>) users);
         if (i >= 0)
             users.remove(i);
@@ -175,6 +191,27 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         opponentsList.onRefreshComplete();
         opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
         progresDialog.dismiss();
+    }
+
+    private Collection<? extends QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
+        // Make clone collection to avoid modify input param qbUsers
+        List<QBUser> resultList = new ArrayList<>(qbUsers.size());
+        resultList.addAll(qbUsers);
+
+        // Rearrange list by user IDs
+        Collections.sort(resultList, new Comparator<QBUser>() {
+            @Override
+            public int compare(QBUser firstUsr, QBUser secondUsr) {
+                if (firstUsr.getId().equals(secondUsr.getId())) {
+                    return 0;
+                } else if (firstUsr.getId() < secondUsr.getId()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        return resultList;
     }
 
     @Override
@@ -200,13 +237,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private void loadOpponentsPage() {
         ++currentPage;
         List<String> tags = new LinkedList<>();
-        tags.add("webrtc");
+        tags.add("webrtcandroid");
         QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
-
-//        List<Integer> ids = new LinkedList<>();
-//        ids.add(2327456);
-//        ids.add(2344849);
-//        QBUsers.getUsersByIDs(ids, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 //        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 
 
@@ -239,13 +271,20 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.log_out:
-                ListUsersActivity.logOutFromChat();
-//                Intent intent = new Intent(getActivity(), ListUsersActivity.class);
-//                startActivity(intent);
+                try {
+                    QBChatService.getInstance().logout();
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                }
                 getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public boolean inProgress(){
+        Log.d("Dialog progress is show", progresDialog.isShowing() + "");
+        return progresDialog.isShowing();
     }
 }
