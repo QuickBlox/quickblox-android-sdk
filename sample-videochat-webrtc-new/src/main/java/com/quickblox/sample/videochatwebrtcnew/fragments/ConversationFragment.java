@@ -359,7 +359,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         String s = new String();
         int i = session.getCallerID();
 
-        allUsers.addAll(DataHolder.createUsersList());
+        allUsers.addAll(DataHolder.usersList);
 
         for (QBUser usr : allUsers) {
             if (usr.getId().equals(i)) {

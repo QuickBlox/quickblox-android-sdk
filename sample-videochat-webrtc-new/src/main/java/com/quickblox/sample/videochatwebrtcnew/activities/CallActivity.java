@@ -346,13 +346,16 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         // set current session
         setCurrentSesionId(sessionID);
         QBRTCSession session = getCurrentSession();
-        int myId = QBChatService.getInstance().getUser().getId();
+        Integer myId = QBChatService.getInstance().getUser().getId();
+        ArrayList<Integer> opponentsWithoutMe = new ArrayList<>(session.getOpponents());
+        opponentsWithoutMe.remove(new Integer(myId));
+        opponentsWithoutMe.add(session.getCallerID());
 
         // init conversation fragment
             ConversationFragment fragment = new ConversationFragment();
             Bundle bundle = new Bundle();
             bundle.putIntegerArrayList(ApplicationSingleton.OPPONENTS,
-                    new ArrayList<Integer>(session.getOpponents()));
+                    opponentsWithoutMe);
             bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
             bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal());
             bundle.putString(SESSION_ID, sessionID);

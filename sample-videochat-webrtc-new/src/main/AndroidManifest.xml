@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.quickblox.sample.videochatwebrtcnew" >
 
-    <!--<uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="19" />-->
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +23,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.IncAudioCallActivityBase">
-        </activity>
-        <activity
             android:name=".activities.CallActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
         </activity>
 
 
