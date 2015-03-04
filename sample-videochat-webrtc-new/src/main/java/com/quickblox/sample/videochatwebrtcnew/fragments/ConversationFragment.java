@@ -32,6 +32,7 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
+import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
@@ -327,8 +328,16 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(i)));
 
-            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
-            opponentAvatar.setVisibility(View.VISIBLE);
+
+            QBRTCVideoTrack videoTrack = CallActivity.videoTrackList.get(i);
+            opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
+
+            if (videoTrack==null){
+//                opponentAvatar.setImageResource(R.drawable.ic_noavatar);
+//                opponentAvatar.setVisibility(View.VISIBLE);
+            }
+//            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
+//            opponentAvatar.setVisibility(View.VISIBLE);
 
 
 //            connectionStatus.setText(i.toString()); //

@@ -237,7 +237,8 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     private void loadOpponentsPage() {
         ++currentPage;
         List<String> tags = new LinkedList<>();
-        tags.add("webrtcandroid");
+//        tags.add("webrtcandroid");
+        tags.add("webrtc");
         QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 //        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
 
