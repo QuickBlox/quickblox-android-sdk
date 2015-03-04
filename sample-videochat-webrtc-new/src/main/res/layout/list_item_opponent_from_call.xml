@@ -4,7 +4,7 @@
     android:layout_width="85dp"
     android:layout_height="100dp"
     android:layout_marginLeft="3dp"
-    >
+    style="@style/Base.V21.Theme.AppCompat.Light">
 
 
     <!--<android.opengl.GLSurfaceView
@@ -27,15 +27,19 @@
         android:gravity="center_vertical"
         android:scaleType="centerCrop"/>
 
-    <!--<TextView-->
-        <!--android:id="@+id/connectionStatus"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="connection"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="15dp"/>-->
+    <TextView
+        android:id="@+id/connectionStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connect..."
+        android:textColor="@color/black_transparent_50"
+        android:maxLines="1"
+        android:maxLength="13"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        android:textStyle="normal|italic" />
+
     <TextView
         android:id="@+id/opponentNumber"
         android:layout_width="30dp"
@@ -48,6 +52,16 @@
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp"
+        />
 
+    <ProgressBar
+        android:id="@+id/connectionStatusPB"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_alignTop="@+id/opponentNumber"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="2dp"/>
 </RelativeLayout>

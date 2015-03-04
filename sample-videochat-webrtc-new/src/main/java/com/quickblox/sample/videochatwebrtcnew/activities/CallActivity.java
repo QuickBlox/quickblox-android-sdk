@@ -9,8 +9,12 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -211,16 +215,25 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onReceiveDialingWithSession(QBRTCSession session) {
-
     }
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
+//        View opponentItemView = (View)findViewById(userID);
+//        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+//        connectionStatus.setText("Not answer");
+//        ProgressBar connectionStatusPB = (ProgressBar)opponentItemView.findViewById(R.id.connectionStatusPB);
+//        connectionStatusPB.setVisibility(View.INVISIBLE);
+
         removeUserWithID(userID);
     }
 
     @Override
     public void onBeginConnectToUser(QBRTCSession session, Integer userID) {
+        View opponentItemView = (View)findViewById(userID);
+        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+        connectionStatus.setText("Checking...");
+
 
     }
 
@@ -259,6 +272,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public void onConnectedToUser(QBRTCSession session, Integer userID) {
         startTimer();
 
+        View opponentItemView = (View)findViewById(userID);
+        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+        connectionStatus.setText("Connected");
+        ProgressBar connectionStatusPB = (ProgressBar)opponentItemView.findViewById(R.id.connectionStatusPB);
+        connectionStatusPB.setVisibility(View.INVISIBLE);
+
         ConversationFragment conversFragment = (ConversationFragment)getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if(conversFragment != null){
             conversFragment.setActionVideoButtonsLayoutVisibility(true);
@@ -268,6 +287,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onUserDisconnected(QBRTCSession session, Integer userID) {
+        View opponentItemView = (View)findViewById(userID);
+        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+        connectionStatus.setText("Disconnected");
 
     }
 
