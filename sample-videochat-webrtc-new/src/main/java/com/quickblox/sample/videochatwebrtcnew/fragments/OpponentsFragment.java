@@ -70,17 +70,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
             initUI(view);
 
-//            opponentsList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
-//                @Override
-//                public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-//                    // Do work to refresh the list here.
-//                    loadOpponentsPage();
-//                    listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
-//                    View v = opponentsList.getRefreshableView().getChildAt(0);
-//                    listViewTop = (v == null) ? 0 : v.getTop();
-//                }
-//            });
-//
             // Show dialog till opponents loading
             progresDialog = new ProgressDialog(getActivity()) {
                 @Override
@@ -91,8 +80,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             progresDialog.setMessage("Load opponents ...");
             progresDialog.setCanceledOnTouchOutside(false);
             progresDialog.show();
-//
-//            loadOpponentsPage();
+
             initOpponentListAdapter();
         }
 
@@ -135,16 +123,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             progresDialog.dismiss();
 
         }
-
-//        opponentsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                long iDselectedOpponent = id;
-//
-//
-//
-//            }
-//        });
-
     }
 
     private void prepareUserList(ListView opponentsList, List<QBUser> users) {
