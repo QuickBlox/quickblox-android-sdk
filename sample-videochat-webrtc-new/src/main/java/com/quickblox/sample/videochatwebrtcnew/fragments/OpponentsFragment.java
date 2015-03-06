@@ -1,9 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,22 +11,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBRequestCanceler;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -58,9 +49,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public static String login;
     private Button btnAudioCall;
     private Button btnVideoCall;
-    private static List<QBUser> users = new ArrayList<QBUser>();
     private View view=null;
     private ProgressDialog progresDialog;
+    private ListView opponentsList;
 
 
     public static OpponentsFragment getInstance() {
@@ -105,36 +96,24 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             initOpponentListAdapter();
         }
 
-
-
          Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
-
         return view;
     }
 
     private void initOpponentListAdapter() {
         final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+        List<QBUser> users = ((CallActivity) getActivity()).getOpponentsList();
 
-        if (users.size() == 0) {
+        if (users == null) {
             List<String> tags = new LinkedList<>();
             tags.add("webrtcusers");
             QBUsers.getUsersByTags(tags, new QBPagedRequestBuilder(), new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                     Log.d("Track", "download users from QickBlox");
-
-                    users.addAll(reorderUsersByName(qbUsers));
-
-                    int i = searchIndexLogginedUser((ArrayList<QBUser>) users);
-                    if (i >= 0)
-                        users.remove(i);
-
-                    // Prepare users list for simple adapter.
-                    //
-                    opponentsAdapter = new OpponentsAdapter(getActivity(), users);
-                    opponentsList.setAdapter(opponentsAdapter);
-//                    opponentsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
+                    ArrayList<QBUser> orderedUsers = reorderUsersByName(qbUsers);
+                    ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
+                    prepareUserList(opponentsList, orderedUsers);
                 }
 
                 @Override
@@ -148,14 +127,12 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
                 }
             });
-        }else {
-            opponentsAdapter = new OpponentsAdapter(getActivity(), users);
-            opponentsList.setAdapter(opponentsAdapter);
-//            opponentsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        } else {
 
-            Log.d("Track", "create list from downloaded users");
+            ArrayList<QBUser> userList = ((CallActivity) getActivity()).getOpponentsList();
+            prepareUserList(opponentsList, userList);
+
         }
-
 
 //        opponentsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -166,6 +143,17 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 //            }
 //        });
 
+    }
+
+    private void prepareUserList(ListView opponentsList, List<QBUser> users) {
+        int i = searchIndexLogginedUser(users);
+        if (i >= 0)
+            users.remove(i);
+
+        // Prepare users list for simple adapter.
+        //
+        opponentsAdapter = new OpponentsAdapter(getActivity(), users);
+        opponentsList.setAdapter(opponentsAdapter);
     }
 
     @Override
@@ -185,6 +173,8 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
+
+        opponentsList = (ListView) view.findViewById(R.id.opponentsList);
     }
 
     @Override
@@ -258,14 +248,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    public boolean inProgress(){
-        Log.d("Dialog progress is show", progresDialog.isShowing() + "");
-        return progresDialog.isShowing();
-    }
-
-    private Collection<? extends QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
+    private ArrayList<QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
         // Make clone collection to avoid modify input param qbUsers
-        List<QBUser> resultList = new ArrayList<>(qbUsers.size());
+        ArrayList<QBUser> resultList = new ArrayList<>(qbUsers.size());
         resultList.addAll(qbUsers);
 
         // Rearrange list by user IDs
