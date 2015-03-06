@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,12 +23,17 @@ import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCClient;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.callbacks.QBRTCChatCallback;
@@ -41,7 +47,11 @@ import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +68,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public static final String CALLER_NAME = "caller_name";
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
+
+    private int selectedOpponentId;
 
 //    private OpponentsFragment opponentsFragment = null;
 //    private IncomeCallFragment incomeCallFragment = null;
@@ -219,11 +231,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
-//        View opponentItemView = (View)findViewById(userID);
-//        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
-//        connectionStatus.setText("Not answer");
-//        ProgressBar connectionStatusPB = (ProgressBar)opponentItemView.findViewById(R.id.connectionStatusPB);
-//        connectionStatusPB.setVisibility(View.INVISIBLE);
+        View opponentItemView = (View)findViewById(userID);
+        TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+        connectionStatus.setText("Not answer");
+        ProgressBar connectionStatusPB = (ProgressBar)opponentItemView.findViewById(R.id.connectionStatusPB);
+        connectionStatusPB.setVisibility(View.INVISIBLE);
 
         removeUserWithID(userID);
     }
@@ -232,7 +244,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public void onBeginConnectToUser(QBRTCSession session, Integer userID) {
         View opponentItemView = (View)findViewById(userID);
         TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
-        connectionStatus.setText("Checking...");
+        connectionStatus.setText(getString(R.string.checking));
 
 
     }
@@ -274,7 +286,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
         View opponentItemView = (View)findViewById(userID);
         TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
-        connectionStatus.setText("Connected");
+        connectionStatus.setText(getString(R.string.connected));
         ProgressBar connectionStatusPB = (ProgressBar)opponentItemView.findViewById(R.id.connectionStatusPB);
         connectionStatusPB.setVisibility(View.INVISIBLE);
 
@@ -289,7 +301,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     public void onUserDisconnected(QBRTCSession session, Integer userID) {
         View opponentItemView = (View)findViewById(userID);
         TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
-        connectionStatus.setText("Disconnected");
+        connectionStatus.setText(getString(R.string.disconnected));
 
     }
 

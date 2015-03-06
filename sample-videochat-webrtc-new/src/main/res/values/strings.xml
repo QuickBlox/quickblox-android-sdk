@@ -11,6 +11,10 @@
     <string name="edit_opponents_list">Edit opponents list</string>
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
+    <string name="connect">Connect...</string>
+    <string name="checking">Checking...</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
 
 
     <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>

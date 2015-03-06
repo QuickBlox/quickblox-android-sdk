@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBRequestCanceler;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
@@ -45,21 +49,16 @@ import java.util.Map;
 /**
  * Created by tereha on 16.02.15.
  */
-public class OpponentsFragment extends Fragment implements QBEntityCallback<ArrayList<QBUser>>, View.OnClickListener, Serializable {
+public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
 
 
 
 
     private OpponentsAdapter opponentsAdapter;
-    private PullToRefreshListView opponentsList;
     public static String login;
     private Button btnAudioCall;
     private Button btnVideoCall;
-    public List<QBUser> users = new ArrayList<QBUser>();
-    private static final int PAGE_SIZE = 100;
-    private int currentPage = 0;
-    private int listViewIndex;
-    private int listViewTop;
+    private static List<QBUser> users = new ArrayList<QBUser>();
     private View view=null;
     private ProgressDialog progresDialog;
 
@@ -80,34 +79,93 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
             initUI(view);
 
-            opponentsList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
-                @Override
-                public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                    // Do work to refresh the list here.
-                    loadOpponentsPage();
-                    listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
-                    View v = opponentsList.getRefreshableView().getChildAt(0);
-                    listViewTop = (v == null) ? 0 : v.getTop();
-                }
-            });
-
-            // Show dialog till opponents loading
-            progresDialog = new ProgressDialog(getActivity()) {
-                @Override
-                public void onBackPressed() {
-                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
-                }
-            };
-            progresDialog.setMessage("Load opponents ...");
-            progresDialog.setCanceledOnTouchOutside(false);
-            progresDialog.show();
-
-            loadOpponentsPage();
-
+//            opponentsList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+//                @Override
+//                public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+//                    // Do work to refresh the list here.
+//                    loadOpponentsPage();
+//                    listViewIndex = opponentsList.getRefreshableView().getFirstVisiblePosition();
+//                    View v = opponentsList.getRefreshableView().getChildAt(0);
+//                    listViewTop = (v == null) ? 0 : v.getTop();
+//                }
+//            });
+//
+//            // Show dialog till opponents loading
+//            progresDialog = new ProgressDialog(getActivity()) {
+//                @Override
+//                public void onBackPressed() {
+//                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+//                }
+//            };
+//            progresDialog.setMessage("Load opponents ...");
+//            progresDialog.setCanceledOnTouchOutside(false);
+//            progresDialog.show();
+//
+//            loadOpponentsPage();
+            initOpponentListAdapter();
         }
 
+
+
          Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
+
         return view;
+    }
+
+    private void initOpponentListAdapter() {
+        final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+
+        if (users.size() == 0) {
+            List<String> tags = new LinkedList<>();
+            tags.add("webrtcusers");
+            QBUsers.getUsersByTags(tags, new QBPagedRequestBuilder(), new QBEntityCallback<ArrayList<QBUser>>() {
+                @Override
+                public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                    Log.d("Track", "download users from QickBlox");
+
+                    users.addAll(reorderUsersByName(qbUsers));
+
+                    int i = searchIndexLogginedUser((ArrayList<QBUser>) users);
+                    if (i >= 0)
+                        users.remove(i);
+
+                    // Prepare users list for simple adapter.
+                    //
+                    opponentsAdapter = new OpponentsAdapter(getActivity(), users);
+                    opponentsList.setAdapter(opponentsAdapter);
+//                    opponentsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+                }
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(List<String> strings) {
+                    Log.d("Track", "onError()");
+
+                }
+            });
+        }else {
+            opponentsAdapter = new OpponentsAdapter(getActivity(), users);
+            opponentsList.setAdapter(opponentsAdapter);
+//            opponentsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+            Log.d("Track", "create list from downloaded users");
+        }
+
+
+//        opponentsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                long iDselectedOpponent = id;
+//
+//
+//
+//            }
+//        });
+
     }
 
     @Override
@@ -120,7 +178,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
     private void initUI(View view) {
 
-        opponentsList = (PullToRefreshListView) view.findViewById(R.id.opponentsList);
         login = getActivity().getIntent().getStringExtra("login");
 
         btnAudioCall = (Button)view.findViewById(R.id.btnAudioCall);
@@ -128,20 +185,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
-    }
-
-    public static int searchIndexLogginedUser(ArrayList<QBUser> usersList) {
-
-        int indexLogginedUser = -1;
-
-        for (QBUser usr : usersList) {
-            if (usr.getLogin().equals(login)) {
-                indexLogginedUser = usersList.indexOf(usr);
-                break;
-            }
-        }
-
-        return indexLogginedUser;
     }
 
     @Override
@@ -176,75 +219,6 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
         }
     }
 
-    @Override
-    public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-        users.addAll(reorderUsersByName(qbUsers));
-
-        int i = searchIndexLogginedUser((ArrayList<QBUser>) users);
-        if (i >= 0)
-            users.remove(i);
-
-        // Prepare users list for simple adapter.
-        //
-        opponentsAdapter = new OpponentsAdapter(getActivity(), users);
-        opponentsList.setAdapter(opponentsAdapter);
-        opponentsList.onRefreshComplete();
-        opponentsList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
-        progresDialog.dismiss();
-    }
-
-    private Collection<? extends QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
-        // Make clone collection to avoid modify input param qbUsers
-        List<QBUser> resultList = new ArrayList<>(qbUsers.size());
-        resultList.addAll(qbUsers);
-
-        // Rearrange list by user IDs
-        Collections.sort(resultList, new Comparator<QBUser>() {
-            @Override
-            public int compare(QBUser firstUsr, QBUser secondUsr) {
-                if (firstUsr.getId().equals(secondUsr.getId())) {
-                    return 0;
-                } else if (firstUsr.getId() < secondUsr.getId()) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-        });
-        return resultList;
-    }
-
-    @Override
-    public void onSuccess() {
-
-    }
-
-
-    @Override
-    public void onError(List<String> errors){
-//        AlertDialog.Builder dialog = new AlertDialog.Builder(OpponentsFragment.getInstance().getActivity());
-//        dialog.setMessage("get users errors: " + errors).create().show();
-    }
-
-    public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
-        QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-        pagedRequestBuilder.setPage(page);
-        pagedRequestBuilder.setPerPage(PAGE_SIZE);
-
-        return pagedRequestBuilder;
-    }
-
-    private void loadOpponentsPage() {
-        ++currentPage;
-        List<String> tags = new LinkedList<>();
-//        tags.add("webrtcandroid");
-        tags.add("webrtcusers");
-        QBUsers.getUsersByTags(tags, getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
-//        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), OpponentsFragment.this);
-
-
-    }
-
     public static ArrayList<Integer> getOpponentsIds(List<QBUser> opponents){
         ArrayList<Integer> ids = new ArrayList<Integer>();
         for(QBUser user : opponents){
@@ -256,9 +230,9 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     @Override
     public void onPause() {
         super.onPause();
-        if(progresDialog.isShowing()) {
-            progresDialog.dismiss();
-        }
+//        if(progresDialog.isShowing()) {
+//            progresDialog.dismiss();
+//        }
     }
 
     @Override
@@ -287,5 +261,39 @@ public class OpponentsFragment extends Fragment implements QBEntityCallback<Arra
     public boolean inProgress(){
         Log.d("Dialog progress is show", progresDialog.isShowing() + "");
         return progresDialog.isShowing();
+    }
+
+    private Collection<? extends QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
+        // Make clone collection to avoid modify input param qbUsers
+        List<QBUser> resultList = new ArrayList<>(qbUsers.size());
+        resultList.addAll(qbUsers);
+
+        // Rearrange list by user IDs
+        Collections.sort(resultList, new Comparator<QBUser>() {
+            @Override
+            public int compare(QBUser firstUsr, QBUser secondUsr) {
+                if (firstUsr.getId().equals(secondUsr.getId())) {
+                    return 0;
+                } else if (firstUsr.getId() < secondUsr.getId()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        return resultList;
+    }
+
+    public static int searchIndexLogginedUser(List<QBUser> usersList) {
+
+        int indexLogginedUser = -1;
+
+        for (QBUser usr : usersList) {
+            if (usr.getLogin().equals(login)) {
+                indexLogginedUser = usersList.indexOf(usr);
+                break;
+            }
+        }
+        return indexLogginedUser;
     }
 }

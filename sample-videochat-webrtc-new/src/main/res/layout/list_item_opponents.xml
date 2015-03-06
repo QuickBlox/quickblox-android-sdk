@@ -28,11 +28,19 @@
         android:layout_toRightOf="@+id/opponentsNumber"
         android:gravity="center_vertical|center_horizontal"/>
 
-    <CheckBox
+    <!--<CheckBox-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="65dp"-->
+        <!--android:id="@+id/opponentsCheckBox"-->
+        <!--android:layout_marginRight="15dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:gravity="center_vertical|center_horizontal"-->
+        <!--android:theme="@style/Base.V21.Theme.AppCompat.Light"/>-->
+
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="65dp"
         android:id="@+id/opponentsCheckBox"
-        android:focusable="false"
         android:layout_marginRight="15dp"
         android:layout_alignParentRight="true"
         android:gravity="center_vertical|center_horizontal"
