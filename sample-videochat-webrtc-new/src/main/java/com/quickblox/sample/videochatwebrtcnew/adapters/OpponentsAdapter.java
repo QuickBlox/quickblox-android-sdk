@@ -82,6 +82,9 @@ public class OpponentsAdapter extends BaseAdapter {
 
         if (user != null) {
 
+            if(i == 0){
+                i = user.getId();
+            }
 
             holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
 
@@ -97,7 +100,7 @@ public class OpponentsAdapter extends BaseAdapter {
                         Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.removeAll(selected);
                         selected.add(user);
-                        Log.d("Track", "Selected " + user.getFullName());
+                        Log.d(TAG, "Selected " + user.getFullName());
                     }else {
 
                         if(i == user.getId()) {
@@ -108,32 +111,14 @@ public class OpponentsAdapter extends BaseAdapter {
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
 //                        selected.removeAll(selected);
-                        Log.d("Track", "Deselected " + user.getFullName());
+                        Log.d(TAG, "Deselected " + user.getFullName());
                     }
                     notifyDataSetChanged();
                 }
             });
 
-
-            /*(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int i;
-
-                    if ((((CheckBox) v).isChecked())) {
-//                        selected.add(user);
-                        i=
-                        Log.d("Track", "Selected " + user.getFullName());
-                    } else {
-                    selected.remove(user);
-                    Log.d("Track", "Deselected " + user.getFullName());
-                    }
-                }
-            });*/
-
-//            holder.opponentsRadioButton.setChecked(selected.contains(user));
-            Log.d("Track", "i = " + i + "");
-            Log.d("Track", "user.getId()" + user.getId()+ "");
+            Log.d(TAG, "Method getView. i = " + i + "");
+            Log.d(TAG, "Method getView. User id" + user.getId()+ "");
             holder.opponentsRadioButton.setChecked(i==user.getId());
 
         }

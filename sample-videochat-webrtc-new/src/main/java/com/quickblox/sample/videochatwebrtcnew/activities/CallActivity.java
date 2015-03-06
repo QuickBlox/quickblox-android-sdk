@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -85,6 +88,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     private QBGLVideoView videoView;
     public static String login;
     public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
+    private ArrayList<QBUser> opponentsList;
 //    private Chronometer timer;
 
 
@@ -303,6 +307,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
         connectionStatus.setText(getString(R.string.disconnected));
 
+        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
+            addOpponentsFragment();
+        } else {
+            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
+        }
+
     }
 
     @Override
@@ -384,7 +394,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         }
         fragment.setArguments(bundle);
 
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment,CONVERSATION_CALL_FRAGMENT).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT).commit();
 
     }
 
@@ -416,8 +426,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
             fragment.setArguments(bundle);
 
             // Start conversation fragment
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment,CONVERSATION_CALL_FRAGMENT).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT).commit();
     }
+
+
+
 
     public void setCurrentVideoView(GLSurfaceView videoView) {
         VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
@@ -439,8 +452,21 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
         // Remove activity as callback to RTCClient
         if (QBRTCClient.isInitiated()) {
+            try {
+                QBChatService.getInstance().logout();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
             QBRTCClient.getInstance().removeCallback(this);
         }
+    }
+
+    public void setOpponentsList(ArrayList<QBUser> qbUsers) {
+        this.opponentsList = qbUsers;
+    }
+
+    public ArrayList<QBUser> getOpponentsList() {
+        return opponentsList;
     }
 
     public static enum StartConversetionReason {
@@ -460,6 +486,13 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
                 e.printStackTrace();
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        opponentsList = null;
     }
 }
 
