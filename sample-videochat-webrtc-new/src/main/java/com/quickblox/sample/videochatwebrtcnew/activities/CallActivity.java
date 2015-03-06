@@ -493,6 +493,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
     protected void onDestroy() {
         super.onDestroy();
         opponentsList = null;
+        OpponentsAdapter.i=0;
     }
 }
 

@@ -25,7 +25,7 @@ public class OpponentsAdapter extends BaseAdapter {
 
     private List<QBUser> opponents;
     private LayoutInflater inflater;
-    public int i;
+    public static int i;
     public List<QBUser> selected = new ArrayList<>();
     private String TAG = "OpponentsAdapte";
 //    String lologinnedUser;
@@ -54,7 +54,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return position;
     }
 
-    private int getNumber (List<QBUser> opponents, QBUser user) {
+    private int getNumber(List<QBUser> opponents, QBUser user) {
         return opponents.indexOf(user);
     }
 
@@ -79,12 +79,11 @@ public class OpponentsAdapter extends BaseAdapter {
         final QBUser user = opponents.get(position);
 
 
-
         if (user != null) {
 
-            if(i == 0){
-                i = user.getId();
-            }
+//            if(i == 0){
+//                i = user.getId();
+//            }
 
             holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
 
@@ -101,8 +100,8 @@ public class OpponentsAdapter extends BaseAdapter {
                         selected.removeAll(selected);
                         selected.add(user);
                         Log.d(TAG, "Selected " + user.getFullName());
-                    }else {
-                        if(i == user.getId()) {
+                    } else {
+                        if (i == user.getId()) {
                             i = 0;
                         }
                         Log.d(TAG, "Button state:" + isChecked + " i:" + i);
@@ -116,8 +115,8 @@ public class OpponentsAdapter extends BaseAdapter {
             });
 
             Log.d(TAG, "Method getView. i = " + i + "");
-            Log.d(TAG, "Method getView. User id" + user.getId()+ "");
-            holder.opponentsRadioButton.setChecked(i==user.getId());
+            Log.d(TAG, "Method getView. User id" + user.getId() + "");
+            holder.opponentsRadioButton.setChecked(i == user.getId());
 
         }
 

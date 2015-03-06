@@ -114,6 +114,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                     ArrayList<QBUser> orderedUsers = reorderUsersByName(qbUsers);
                     ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
                     prepareUserList(opponentsList, orderedUsers);
+                    progresDialog.dismiss();
                 }
 
                 @Override
@@ -131,6 +132,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
             ArrayList<QBUser> userList = ((CallActivity) getActivity()).getOpponentsList();
             prepareUserList(opponentsList, userList);
+            progresDialog.dismiss();
 
         }
 
