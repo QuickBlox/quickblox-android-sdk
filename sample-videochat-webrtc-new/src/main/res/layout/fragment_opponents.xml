@@ -17,16 +17,25 @@
         android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    <!--<com.handmark.pulltorefresh.library.PullToRefreshListView xmlns:ptr="http://schemas.android.com/apk/res-auto"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/opponentsList"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:choiceMode="multipleChoice"-->
+        <!--android:divider="@android:color/transparent"-->
+        <!--android:layout_below="@+id/selectUsertextView"-->
+        <!--android:layout_above="@+id/linearLayout"-->
+        <!--ptr:ptrMode="pullFromEnd"/>-->
+    <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/opponentsList"
         android:layout_gravity="center_horizontal"
-        android:choiceMode="multipleChoice"
+        android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:layout_below="@+id/selectUsertextView"
-        android:layout_above="@+id/linearLayout"
-        ptr:ptrMode="pullFromEnd"/>
+        android:layout_above="@+id/linearLayout"/>
 
     <LinearLayout
         android:orientation="horizontal"

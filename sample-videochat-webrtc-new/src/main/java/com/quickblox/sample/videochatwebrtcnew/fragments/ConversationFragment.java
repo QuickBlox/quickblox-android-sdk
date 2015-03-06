@@ -32,6 +32,7 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
+import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
@@ -74,7 +75,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private Map<String, String> userInfo;
     private View opponentItemView;
     private HorizontalScrollView camerasOpponentsList;
-    private LinearLayout opponentsFromCall;
+    public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
     private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
@@ -318,9 +319,11 @@ public class ConversationFragment extends Fragment implements Serializable {
                 }
             });
 
+            opponentItemView.setId(i);
+
             QBGLVideoView opponentLittleCamera = (QBGLVideoView) opponentItemView.findViewById(R.id.opponentLittleCamera);
             TextView opponentNumber = (TextView) opponentItemView.findViewById(R.id.opponentNumber);
-//            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
+            TextView connectionStatus = (TextView)opponentItemView.findViewById(R.id.connectionStatus);
             ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
 
             opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(i)));
@@ -328,28 +331,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                     (ListUsersActivity.getUserIndex(i)));
 
             opponentAvatar.setImageResource(R.drawable.ic_noavatar);
-            opponentAvatar.setVisibility(View.VISIBLE);
-
-
-//            connectionStatus.setText(i.toString()); //
-
-
-/*
-
-
-      /*    connectionStatus.setText(i.toString());
-            QBRTCVideoTrack videoTrack = NewDialogActivity.videoTrackList.get(i);
-            opponentLittleCamera.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
-            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
-//            opponentAvatar.setImageResource(R.drawable.ic_user_camera_off);
-            opponentAvatar.setVisibility(View.VISIBLE);
-
-            if (videoTrack == null) {
-                opponentAvatar.setVisibility(View.VISIBLE);
-            }
-            opponentAvatar.setVisibility(View.INVISIBLE);*/
-
-//            if (videoTrack.)*/
 
             opponentsFromCall.addView(opponentItemView);
         }
