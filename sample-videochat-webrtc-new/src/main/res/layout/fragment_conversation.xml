@@ -82,7 +82,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:maxLines="1"
-        android:maxLength="10"
+        android:maxLength="25"
         android:padding="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"

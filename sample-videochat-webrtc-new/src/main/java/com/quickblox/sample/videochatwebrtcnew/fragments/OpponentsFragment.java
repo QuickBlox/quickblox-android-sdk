@@ -90,16 +90,16 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 //                }
 //            });
 //
-//            // Show dialog till opponents loading
-//            progresDialog = new ProgressDialog(getActivity()) {
-//                @Override
-//                public void onBackPressed() {
-//                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
-//                }
-//            };
-//            progresDialog.setMessage("Load opponents ...");
-//            progresDialog.setCanceledOnTouchOutside(false);
-//            progresDialog.show();
+            // Show dialog till opponents loading
+            progresDialog = new ProgressDialog(getActivity()) {
+                @Override
+                public void onBackPressed() {
+                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+                }
+            };
+            progresDialog.setMessage("Load opponents ...");
+            progresDialog.setCanceledOnTouchOutside(false);
+            progresDialog.show();
 //
 //            loadOpponentsPage();
             initOpponentListAdapter();
@@ -230,9 +230,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onPause() {
         super.onPause();
-//        if(progresDialog.isShowing()) {
-//            progresDialog.dismiss();
-//        }
+        if(progresDialog.isShowing()) {
+            progresDialog.dismiss();
+        }
     }
 
     @Override

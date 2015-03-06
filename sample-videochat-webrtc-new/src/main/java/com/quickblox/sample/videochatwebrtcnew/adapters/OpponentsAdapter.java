@@ -91,7 +91,7 @@ public class OpponentsAdapter extends BaseAdapter {
             holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                    int i;
+
                     if (isChecked) {
                         i = user.getId();
                         Log.d(TAG, "Button state:" + isChecked + " i:" + i);
@@ -99,11 +99,9 @@ public class OpponentsAdapter extends BaseAdapter {
                         selected.add(user);
                         Log.d("Track", "Selected " + user.getFullName());
                     }else {
-
                         if(i == user.getId()) {
                             i = 0;
                         }
-
                         Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
