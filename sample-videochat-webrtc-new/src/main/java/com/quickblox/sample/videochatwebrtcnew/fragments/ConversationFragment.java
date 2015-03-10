@@ -3,16 +3,11 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 import android.app.Fragment;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
-import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,7 +27,6 @@ import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
-import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
@@ -82,9 +76,10 @@ public class ConversationFragment extends Fragment implements Serializable {
     private List<QBUser> allUsers = new ArrayList<>();
     private LinearLayout actionVideoButtonsLayout;
     private boolean isButtonsClickable;
-//    private Chronometer timer;
+    //    private Chronometer timer;
     private View actionBar;
     private String callerName;
+    private boolean isCallProcessed;
 
 
     @Nullable
@@ -131,8 +126,29 @@ public class ConversationFragment extends Fragment implements Serializable {
             imgMyCameraOff.setVisibility(View.INVISIBLE);
         }
 
-        return view;
+   return view;
+
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+
+       if (!isCallProcessed) {
+
+           Log.d(TAG, "start or accept call");
+           QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
+           if (startReason == CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+               session.acceptCall(session.getUserInfo());
+           } else {
+               session.startCall(session.getUserInfo());
+           }
+
+           isCallProcessed = true;
+       }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -275,16 +291,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
-        if (startReason == CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
-            session.acceptCall(session.getUserInfo());
-        } else {
-            session.startCall(session.getUserInfo());
-        }
-    }
 
     public static enum StartConversetionReason {
         INCOME_CALL_FOR_ACCEPTION,

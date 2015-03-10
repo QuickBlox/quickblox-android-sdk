@@ -113,10 +113,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
             // Probably initialize members with default values for a new instance
             login = getIntent().getStringExtra("login");
 
-            // Init income videochat messages listener
-            if (!QBChatService.isInitialized()){
-                QBChatService.init(this);
-            }
+
             QBChatService instance = QBChatService.getInstance();
             QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
             videoChatWebRTCSignalingManager.addSignalingManagerListener(
@@ -445,22 +442,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         super.startTimer();
     }
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // Remove activity as callback to RTCClient
-        if (QBRTCClient.isInitiated()) {
-            try {
-                QBChatService.getInstance().logout();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-            QBRTCClient.getInstance().removeCallback(this);
-        }
-    }
-
     public void setOpponentsList(ArrayList<QBUser> qbUsers) {
         this.opponentsList = qbUsers;
     }
@@ -494,6 +475,17 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
         super.onDestroy();
         opponentsList = null;
         OpponentsAdapter.i=0;
+
+        // Remove activity as callback to RTCClient
+        if (QBRTCClient.isInitiated()) {
+            try {
+                QBChatService.getInstance().logout();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+            QBRTCClient.getInstance().removeCallback(this);
+//            QBChatService.getInstance().destroy();
+        }
     }
 }
 
