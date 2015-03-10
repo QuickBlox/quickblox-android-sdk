@@ -66,23 +66,39 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         if (savedInstanceState == null){
             Log.d("Track", "onCreateView() from OpponentsFragment Level 1");
-            view = inflater.inflate(R.layout.fragment_opponents, container, false);
+//            view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
-            initUI(view);
+//            initUI(view);
 
-            // Show dialog till opponents loading
-            progresDialog = new ProgressDialog(getActivity()) {
-                @Override
-                public void onBackPressed() {
-                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
-                }
-            };
-            progresDialog.setMessage("Load opponents ...");
-            progresDialog.setCanceledOnTouchOutside(false);
-            progresDialog.show();
+//            // Show dialog till opponents loading
+//            progresDialog = new ProgressDialog(getActivity()) {
+//                @Override
+//                public void onBackPressed() {
+//                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+//                }
+//            };
+//            progresDialog.setMessage("Load opponents ...");
+//            progresDialog.setCanceledOnTouchOutside(false);
+//            progresDialog.show();
 
-            initOpponentListAdapter();
+//            initOpponentListAdapter();
         }
+        view = inflater.inflate(R.layout.fragment_opponents, container, false);
+
+        initUI(view);
+
+        // Show dialog till opponents loading
+        progresDialog = new ProgressDialog(getActivity()) {
+            @Override
+            public void onBackPressed() {
+                Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+            }
+        };
+        progresDialog.setMessage("Load opponents ...");
+        progresDialog.setCanceledOnTouchOutside(false);
+        progresDialog.show();
+
+        initOpponentListAdapter();
 
          Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
         return view;

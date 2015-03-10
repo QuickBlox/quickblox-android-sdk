@@ -83,7 +83,8 @@
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp">
 
     <ImageButton
         android:id="@+id/rejectBtn"
@@ -93,7 +94,7 @@
         android:background="@drawable/btn_background_call_end"
         android:gravity="center_vertical"
         android:layout_marginStart="40dp"
-        android:layout_marginBottom="40dp"
+
         android:layout_alignParentLeft="true"/>
 
     <ImageButton
@@ -104,7 +105,7 @@
         android:background="@drawable/btn_background_call_take"
         android:gravity="center_vertical"
         android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
+
         android:layout_alignParentRight="true"/>
 
     </RelativeLayout>
