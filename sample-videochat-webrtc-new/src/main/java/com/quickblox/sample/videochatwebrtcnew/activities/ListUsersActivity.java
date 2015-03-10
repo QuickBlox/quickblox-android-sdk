@@ -197,21 +197,7 @@ public class ListUsersActivity extends Activity {
             }
         });
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (chatService.isLoggedIn()){
-            try {
-                chatService.logout();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-        chatService.destroy();
-    }
-
-    /*@Override
+   /*@Override
     protected void onRestart() {
         super.onRestart();
         logOutFromChat();

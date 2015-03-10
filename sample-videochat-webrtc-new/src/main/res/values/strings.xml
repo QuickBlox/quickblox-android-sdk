@@ -24,6 +24,7 @@
     <string name="btn_audio_call">AUDIO CALL</string>
     <string name="btn_video_call">VIDEO CALL</string>
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Chat Sample]]></string>
+    <string name="current_version">0.9.1</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>
