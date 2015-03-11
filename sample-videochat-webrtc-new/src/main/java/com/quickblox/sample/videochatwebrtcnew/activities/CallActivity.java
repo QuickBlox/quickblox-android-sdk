@@ -457,7 +457,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCChatC
 
     @Override
     public void onBackPressed() {
-
         super.onBackPressed();
         // Logout on back btn click
         if (QBChatService.isInitialized()) {
