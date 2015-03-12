@@ -25,6 +25,9 @@
     <string name="btn_video_call">VIDEO CALL</string>
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Chat Sample]]></string>
     <string name="current_version">0.9.1</string>
+    <string name="rejected">Rejected</string>
+    <string name="notAnswer">Not answer</string>
+    <string name="hangUp">Hang up</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>

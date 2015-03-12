@@ -40,7 +40,11 @@ public class BaseLogginedUserActivity extends Activity {
         loginAsAB.setText(R.string.logged_in_as);
 
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-                userNameAB.setText(DataHolder.createUsersList().get(((Integer) searchIndexLogginedUser(DataHolder.createUsersList()))).getFullName());
+        Integer index = (Integer) searchIndexLogginedUser(DataHolder.createUsersList());
+
+        if(index >=0) {
+            userNameAB.setText(DataHolder.createUsersList().get(index).getFullName());
+        }
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);

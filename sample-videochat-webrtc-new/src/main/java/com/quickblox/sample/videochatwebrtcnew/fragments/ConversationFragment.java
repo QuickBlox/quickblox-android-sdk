@@ -130,6 +130,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     }
 
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -139,7 +141,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
            Log.d(TAG, "start or accept call");
            QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
-           if (startReason == CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+           if (startReason == StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
                session.acceptCall(session.getUserInfo());
            } else {
                session.startCall(session.getUserInfo());
