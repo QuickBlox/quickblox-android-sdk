@@ -23,6 +23,7 @@ import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtcnew.model.QBRTCConfig;
 import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 
 import org.jivesoftware.smack.SmackException;
@@ -174,6 +175,8 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                     qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
                     break;
             }
+
+            QBRTCConfig.answerTimeInterval = 120;
 
             Map<String, String> userInfo = new HashMap<>();
             userInfo.put("any_custom_data", "some data");

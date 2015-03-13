@@ -229,7 +229,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.notAnswer, View.VISIBLE);
-
+        addOpponentsFragment();
 
        // TODO update view of this user
     }
@@ -243,10 +243,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
 
         // TODO update view of this user
-
+        setStateTitle(userID , R.string.rejected, View.INVISIBLE);
         addOpponentsFragment();
 
-        setStateTitle(userID , R.string.rejected, View.INVISIBLE);
     }
 
     @Override
