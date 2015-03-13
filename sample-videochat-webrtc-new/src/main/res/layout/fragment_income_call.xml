@@ -5,7 +5,6 @@
     android:layout_height="fill_parent"
     android:background="@color/white">
 
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/infoAboutCall"
         android:orientation="vertical"
@@ -47,13 +46,12 @@
             android:textColor="@color/white"
             android:text="User 5"
             android:padding="10dp"
-
             android:maxLines="1"
-            android:maxLength="12"
+            android:maxLength="25"
             android:background="@drawable/rectangle_rounded_white_blue"
             android:layout_below="@+id/incAudioCall"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:gravity="center_vertical|center_horizontal" />
 
         <TextView
@@ -65,7 +63,7 @@
             android:textStyle="bold"
             android:text="@string/also_on_call"
             android:layout_below="@+id/callerName"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -79,8 +77,14 @@
             android:layout_below="@+id/alsoOnCall"
             android:layout_centerHorizontal="true" />
 
-
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp">
 
     <ImageButton
         android:id="@+id/rejectBtn"
@@ -90,8 +94,7 @@
         android:background="@drawable/btn_background_call_end"
         android:gravity="center_vertical"
         android:layout_marginStart="40dp"
-        android:layout_marginBottom="40dp"
-        android:layout_alignParentBottom="true"
+
         android:layout_alignParentLeft="true"/>
 
     <ImageButton
@@ -102,9 +105,9 @@
         android:background="@drawable/btn_background_call_take"
         android:gravity="center_vertical"
         android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
-        android:layout_alignParentBottom="true"
+
         android:layout_alignParentRight="true"/>
 
+    </RelativeLayout>
 
 </RelativeLayout>

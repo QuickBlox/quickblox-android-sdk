@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Sample Videochat Webrtc New</string>
+    <string name="app_name">Video &amp; Audio Chat Sample</string>
     <string name="action_log_out">Log out</string>
     <string name="login_as">Login as</string>
     <string name="logged_in_as">Logged In as</string>
@@ -11,6 +11,10 @@
     <string name="edit_opponents_list">Edit opponents list</string>
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
+    <string name="connect">Connect...</string>
+    <string name="checking">Checking...</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
 
 
     <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
@@ -20,6 +24,7 @@
     <string name="btn_audio_call">AUDIO CALL</string>
     <string name="btn_video_call">VIDEO CALL</string>
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Chat Sample]]></string>
+    <string name="current_version">0.9.1</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>

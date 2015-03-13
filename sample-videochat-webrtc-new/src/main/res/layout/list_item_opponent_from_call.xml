@@ -4,7 +4,7 @@
     android:layout_width="85dp"
     android:layout_height="100dp"
     android:layout_marginLeft="3dp"
-    style="@style/Base.V21.Theme.AppCompat.Light">
+    >
 
 
     <!--<android.opengl.GLSurfaceView
@@ -31,7 +31,7 @@
         android:id="@+id/connectionStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect..."
+        android:text="@string/connect"
         android:textColor="@color/black_transparent_50"
         android:maxLines="1"
         android:maxLength="13"
