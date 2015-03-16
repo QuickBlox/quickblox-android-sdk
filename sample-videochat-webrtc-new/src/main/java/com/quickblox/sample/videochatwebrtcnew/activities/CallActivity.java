@@ -7,27 +7,19 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Chronometer;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBVideoChatWebRTCSignalingManager;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
@@ -35,12 +27,12 @@ import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCClient;
+import com.quickblox.videochat.webrtcnew.QBRTCConfig;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
+import com.quickblox.videochat.webrtcnew.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.callbacks.QBRTCClientCallback;
-import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
 import com.quickblox.videochat.webrtcnew.view.QBRTCVideoTrack;
 import com.quickblox.videochat.webrtcnew.view.VideoCallBacks;
@@ -50,13 +42,10 @@ import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tereha on 16.02.15.
@@ -69,6 +58,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
     private static final String TAG = "NewDialogActivity";
     public static final String CALLER_NAME = "caller_name";
+    private static final java.lang.String ADD_OPPONENTS_FRAGMENT_HANDLER = "opponentHandlerTask";
+    private static final long TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT = 3;
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
@@ -147,9 +138,22 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         }
     }
 
-    public void addOpponentsFragment(){
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(),OPPONENTS_CALL_FRAGMENT).commit();
+    public void addOpponentsFragmentWithDelay(){
+
+        HandlerThread handlerThread = new HandlerThread(ADD_OPPONENTS_FRAGMENT_HANDLER);
+        handlerThread.start();
+        new Handler(handlerThread.getLooper()).postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(),OPPONENTS_CALL_FRAGMENT).commit();
+            }
+        }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT));
     }
+
+    public void addOpponentsFragment(){
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(),OPPONENTS_CALL_FRAGMENT).commit();
+    }
+
 
 
 
@@ -229,7 +233,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.notAnswer, View.VISIBLE);
-        addOpponentsFragment();
+        addOpponentsFragmentWithDelay();
 
        // TODO update view of this user
     }
@@ -244,7 +248,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // TODO update view of this user
         setStateTitle(userID , R.string.rejected, View.INVISIBLE);
-        addOpponentsFragment();
+        addOpponentsFragmentWithDelay();
 
     }
 
@@ -312,7 +316,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
             session.close();
-            addOpponentsFragment();
+            addOpponentsFragmentWithDelay();
         } else {
             Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
         }
@@ -346,7 +350,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 //        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
         if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
-            addOpponentsFragment();
+            addOpponentsFragmentWithDelay();
         } else {
             Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
         }

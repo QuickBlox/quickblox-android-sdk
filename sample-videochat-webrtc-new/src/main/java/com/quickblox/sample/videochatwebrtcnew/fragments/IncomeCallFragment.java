@@ -6,36 +6,40 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
-import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
-import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtcnew.QBRTCConfig;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
-import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
-import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
+import com.quickblox.videochat.webrtcnew.QBRTCSessionDescription;
+import com.quickblox.videochat.webrtcnew.QBRTCTypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tereha on 16.02.15.
  */
 public class IncomeCallFragment extends Fragment implements Serializable {
 
+    private static final java.lang.String INCOME_WINDOW_SHOW = "WINDOW_SHOW_TMER'";
     private TextView incVideoCall;
     private TextView incAudioCall;
     private TextView callerName;
@@ -51,9 +55,11 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private QBRTCTypes.QBConferenceType conferenceType;
     private int qbConferenceType;
     private View view;
+    private Handler showWindowTaskHandler;
+    private HandlerThread showWindowTaskThread;
+    private Runnable showWindowTask;
 
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -79,9 +85,26 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             initUI(view);
             setDisplayedTypeCall(conferenceType);
             initButtonsListener();
+
         }
 
         return view;
+    }
+
+    private void setupTimer() {
+        showWindowTaskThread = new HandlerThread(INCOME_WINDOW_SHOW);
+        showWindowTaskThread.start();
+        showWindowTask = new Runnable() {
+            @Override
+            public void run() {
+                if (!showWindowTaskThread.isInterrupted())
+                Toast.makeText(getActivity(), "User stop calling", Toast.LENGTH_SHORT).show();
+                        ((CallActivity) getActivity()).addOpponentsFragment();
+            }
+        };
+
+        showWindowTaskHandler = new Handler(showWindowTaskThread.getLooper());
+        showWindowTaskHandler.postAtTime(showWindowTask, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.dialingTimeInterval));
     }
 
     @Override
@@ -98,6 +121,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     public void onStart() {
         super.onStart();
         startCallNotification();
+//        setupTimer();
     }
 
     private void initButtonsListener() {
@@ -232,4 +256,11 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         Log.d("Track", "onDestroy() from IncomeCallFragment");
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+//        showWindowTaskHandler.removeCallbacks(showWindowTask);
+//        showWindowTaskThread.quit();
+//        showWindowTaskThread.interrupt();
+    }
 }

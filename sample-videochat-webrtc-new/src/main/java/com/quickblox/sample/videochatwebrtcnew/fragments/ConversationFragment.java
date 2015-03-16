@@ -3,7 +3,6 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 import android.app.Fragment;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +23,7 @@ import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
-import com.quickblox.videochat.webrtcnew.model.QBRTCSessionDescription;
-import com.quickblox.videochat.webrtcnew.model.QBRTCTypes;
+import com.quickblox.videochat.webrtcnew.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
 
 import org.webrtc.VideoRenderer;
@@ -52,7 +50,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     //    private QBRTCSessionDescription sessionDescription;
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
 
-    private QBRTCSessionDescription sessionDescription;
     private QBGLVideoView opponentLittleCamera;
     private TextView opponentNumber;
     private TextView connectionStatus;
@@ -82,7 +79,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     private boolean isCallProcessed;
 
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
