@@ -121,7 +121,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Log.d("Track", "onCreate() from NewDialogActivity Level 1");
         }
 
-        QBRTCConfig.disconnectTime = 60;
+//        QBRTCConfig.disconnectTime = 60;
+//        QBRTCConfig.answerTimeInterval = 15;
 
         // From hear we start listening income call
         if (!QBRTCClient.isInitiated()) {
@@ -308,7 +309,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onSessionStartClose(QBRTCSession session) {
-        Toast.makeText(this, "Session will be disconnected in "+ TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT + " seconds", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Start stopping session", Toast.LENGTH_SHORT).show();
     }
 
     @Override
