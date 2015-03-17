@@ -434,19 +434,20 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             final QBUser user = new QBUser();
-            user.setId(53779);
+            user.setId(1501966);
             user.setFullName("Monro");
-            user.setEmail("test987@te2st.com");
-            user.setExternalId("987");
-            user.setFacebookId("987");
-            user.setTwitterId("987");
-            user.setFullName("galog");
-            user.setPhone("+123123123");
-            user.setCustomData("my new custom data");
-            StringifyArrayList<String> tags = new StringifyArrayList<String>();
-            tags.add("man");
-            user.setTags(tags);
-            user.setWebsite("google.com");
+//            user.setEmail("test987@te2st.com");
+//            user.setExternalId("987");
+//            user.setFacebookId("987");
+//            user.setTwitterId("987");
+//            user.setFullName("galog");
+//            user.setPhone("+123123123");
+//            user.setCustomData("my new custom data");
+//            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+//            tags.add("man");
+//            user.setTags(tags);
+//            user.setWebsite("google.com");
+//            user.setFileId(-1);
 
             QBUsers.updateUser(user, new QBEntityCallbackImpl<QBUser>(){
                 @Override
@@ -613,7 +614,8 @@ public class SnippetsUsers extends Snippets{
                     Log.i(TAG, ">>> Users: " + users.toString());
                     Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                     Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
-                    Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
+                    Log.i(TAG, "totalEntries: " + params.getInt(Consts.TOTAL_ENTRIES));
+                    Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_PAGES));
                 }
 
                 @Override
