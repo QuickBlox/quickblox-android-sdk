@@ -28,6 +28,9 @@
     <string name="rejected">Rejected</string>
     <string name="notAnswer">Not answer</string>
     <string name="hangUp">Hang up</string>
+    <string name="closed">Closed</string>
+    <string name="time_out">Time Out</string>
+    <string name="failed">Failed</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>

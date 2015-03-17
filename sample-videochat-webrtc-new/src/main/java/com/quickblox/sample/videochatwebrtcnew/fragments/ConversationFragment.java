@@ -282,8 +282,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                     Log.d("Track", "Call is stopped");
-                    ((CallActivity) getActivity()).addOpponentsFragment();
-                    ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
+                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
         });
 

@@ -190,7 +190,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                     break;
             }
 
-            QBRTCConfig.answerTimeInterval = 15;
+//            QBRTCConfig.answerTimeInterval = 15;
 
             Map<String, String> userInfo = new HashMap<>();
             userInfo.put("any_custom_data", "some data");

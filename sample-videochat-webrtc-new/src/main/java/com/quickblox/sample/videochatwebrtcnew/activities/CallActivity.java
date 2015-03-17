@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
@@ -119,6 +120,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             addOpponentsFragment();
             Log.d("Track", "onCreate() from NewDialogActivity Level 1");
         }
+
+        QBRTCConfig.disconnectTime = 60;
 
         // From hear we start listening income call
         if (!QBRTCClient.isInitiated()) {
@@ -233,9 +236,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.notAnswer, View.VISIBLE);
-        addOpponentsFragmentWithDelay();
-
-       // TODO update view of this user
+//        addOpponentsFragmentWithDelay();
     }
 
     @Override
@@ -245,11 +246,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
-
-        // TODO update view of this user
         setStateTitle(userID , R.string.rejected, View.INVISIBLE);
-        addOpponentsFragmentWithDelay();
-
     }
 
     @Override
@@ -274,8 +271,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession session, Integer userID) {
-
-    }
+        setStateTitle(userID, R.string.closed, View.INVISIBLE);
+        }
 
     @Override
     public void onConnectedToUser(QBRTCSession session, Integer userID) {
@@ -292,35 +289,31 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onDisconnectedTimeoutFromUser(QBRTCSession session, Integer userID) {
-
+        setStateTitle(userID,R.string.time_out, View.INVISIBLE);
     }
 
     @Override
     public void onConnectionFaildWithUser(QBRTCSession session, Integer userID) {
-
+        setStateTitle(userID,R.string.failed, View.INVISIBLE);
     }
 
     @Override
     public void onSessionClosed(QBRTCSession session) {
-
+        if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
+            addOpponentsFragmentWithDelay();
+        } else {
+            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
+        }
     }
 
     @Override
     public void onSessionStartClose(QBRTCSession session) {
-
+        Toast.makeText(this, "Session will be disconnected in "+ TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT + " seconds", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDisconnectedFromUser(QBRTCSession session, Integer userID) {
         setStateTitle(userID , R.string.disconnected, View.INVISIBLE);
-
-        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
-            session.close();
-            addOpponentsFragmentWithDelay();
-        } else {
-            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
-        }
-
     }
 
     private void setStateTitle(Integer userID, int stringID, int progressBarVisibility) {
@@ -348,12 +341,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
         }
 
-//        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
-        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
-            addOpponentsFragmentWithDelay();
-        } else {
-            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
-        }
+////        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
+//        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
+//            addOpponentsFragmentWithDelay();
+//        } else {
+//            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
+//        }
 
         for (String key : QBRTCClient.getInstance().getSessions().keySet()){
             Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
