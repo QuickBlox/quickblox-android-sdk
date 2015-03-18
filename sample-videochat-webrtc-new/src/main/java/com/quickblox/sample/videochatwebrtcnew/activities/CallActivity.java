@@ -121,7 +121,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Log.d("Track", "onCreate() from NewDialogActivity Level 1");
         }
 
-//        QBRTCConfig.disconnectTime = 60;
+        QBRTCConfig.answerTimeInterval = 360;
 //        QBRTCConfig.answerTimeInterval = 15;
 
         // From hear we start listening income call
