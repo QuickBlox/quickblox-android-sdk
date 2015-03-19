@@ -115,9 +115,13 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                     Log.d("Track", "download users from QickBlox");
                     ArrayList<QBUser> orderedUsers = reorderUsersByName(qbUsers);
-                    ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
-                    prepareUserList(opponentsList, orderedUsers);
-                    progresDialog.dismiss();
+                    if(isAdded()) {
+                        ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
+                        prepareUserList(opponentsList, orderedUsers);
+                        progresDialog.dismiss();
+                    } else {
+                        Log.e("getActivity() error", "get Activity is null, becose adapter wasn't added");
+                    }
                 }
 
                 @Override
