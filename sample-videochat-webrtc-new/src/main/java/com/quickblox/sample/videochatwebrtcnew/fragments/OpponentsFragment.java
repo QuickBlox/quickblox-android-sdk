@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -52,6 +54,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     private View view=null;
     private ProgressDialog progresDialog;
     private ListView opponentsList;
+    private RadioGroup stanServersButtons;
 
 
     public static OpponentsFragment getInstance() {
@@ -174,6 +177,12 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         btnVideoCall.setOnClickListener(this);
 
         opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+
+        // Stan servers buttons
+        stanServersButtons = (RadioGroup) view.findViewById(R.id.stanServersButtons);
+        RadioButton firstStan = (RadioButton) view.findViewById(R.id.firstStanServerFirst);
+        RadioButton secondStan = (RadioButton) view.findViewById(R.id.firstStanServerSecond);
+        RadioButton thirdStan = (RadioButton) view.findViewById(R.id.firstStanServerThird);
     }
 
     @Override
@@ -181,6 +190,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         if (opponentsAdapter.getSelected().size() == 1) {
             QBRTCTypes.QBConferenceType qbConferenceType = null;
 
+            // Because groupButtons start from
+            Log.d("Selected STUN", String.valueOf(QBRTCConfig.serverModeFlag));
+            QBRTCConfig.serverModeFlag = stanServersButtons.getCheckedRadioButtonId() + 1;
 
             //Init conference type
             switch (v.getId()) {

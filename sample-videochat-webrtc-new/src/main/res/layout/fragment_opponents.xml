@@ -10,12 +10,58 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/select_user_to_call"
         android:id="@+id/selectUsertextView"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp"
         android:layout_marginLeft="10dp"
-        android:layout_margin="10dp"
+        android:layout_marginRight="10dp"
         android:textColor="@color/grey"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
+
+    <!--android:layout_alignParentTop="true"-->
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Select STUN server"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal" />
+
+
+    <RadioGroup
+        android:id="@+id/stanServersButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/firstStanServerFirst"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:enabled="true"
+            android:text="First" />
+
+        <RadioButton
+            android:id="@+id/firstStanServerSecond"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="Second" />
+
+        <RadioButton
+            android:id="@+id/firstStanServerThird"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="Third" />
+    </RadioGroup>
 
     <ListView
         android:layout_width="fill_parent"
