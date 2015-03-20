@@ -31,7 +31,6 @@ import org.jivesoftware.smack.SmackException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -180,9 +179,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         // Stan servers buttons
         stanServersButtons = (RadioGroup) view.findViewById(R.id.stanServersButtons);
-        RadioButton firstStan = (RadioButton) view.findViewById(R.id.firstStanServerFirst);
-        RadioButton secondStan = (RadioButton) view.findViewById(R.id.firstStanServerSecond);
-        RadioButton thirdStan = (RadioButton) view.findViewById(R.id.firstStanServerThird);
+        RadioButton firstStan = (RadioButton) view.findViewById(R.id.stanServerFirst);
+        RadioButton secondStan = (RadioButton) view.findViewById(R.id.stanServerSecond);
+        RadioButton thirdStan = (RadioButton) view.findViewById(R.id.stanServerThird);
     }
 
     @Override
@@ -191,8 +190,8 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             QBRTCTypes.QBConferenceType qbConferenceType = null;
 
             // Because groupButtons start from
+            QBRTCConfig.serverModeFlag = setStunSerwerMode(stanServersButtons.getCheckedRadioButtonId());
             Log.d("Selected STUN", String.valueOf(QBRTCConfig.serverModeFlag));
-            QBRTCConfig.serverModeFlag = stanServersButtons.getCheckedRadioButtonId() + 1;
 
             //Init conference type
             switch (v.getId()) {
@@ -219,6 +218,19 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             Toast.makeText(getActivity(), "Only 1-to-1 calls are available", Toast.LENGTH_LONG).show();
         } else if (opponentsAdapter.getSelected().size() < 1){
             Toast.makeText(getActivity(), "Choose one opponent", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private int setStunSerwerMode(int checkedRadioButtonId) {
+        switch (checkedRadioButtonId){
+            case R.id.stanServerFirst:
+                return 1;
+            case R.id.stanServerSecond:
+                return 2;
+            case R.id.stanServerThird:
+                return 3;
+            default:
+                return 1;
         }
     }
 
