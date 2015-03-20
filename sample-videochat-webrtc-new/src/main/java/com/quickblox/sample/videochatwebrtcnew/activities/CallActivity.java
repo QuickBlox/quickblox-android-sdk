@@ -89,39 +89,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
 
-
-
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-//            opponentsFragment = (OpponentsFragment) getFragmentManager().getFragment(savedInstanceState, OPPONENTS_CALL_FRAGMENT);
-//            conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
-//            incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
-            Log.d("Track", "onCreate() from NewDialogActivity Level 2");
-        } else {
-
             // Probably initialize members with default values for a new instance
             login = getIntent().getStringExtra("login");
-
-
-            QBChatService instance = QBChatService.getInstance();
-            QBVideoChatWebRTCSignalingManager videoChatWebRTCSignalingManager = instance.getVideoChatWebRTCSignalingManager();
-            videoChatWebRTCSignalingManager.addSignalingManagerListener(
-                    new QBVideoChatSignalingManagerListener() {
-                        @Override
-                        public void signalingCreated(QBSignaling signaling, boolean createdLocally) {
-                            if (!createdLocally) {
-                                QBRTCClient.getInstance().setQBWebRTCSignaling((QBWebRTCSignaling) signaling);
-                            }
-                        }
-                    });
             addOpponentsFragment();
             Log.d("Track", "onCreate() from NewDialogActivity Level 1");
-        }
 
         // From hear we start listening income call
         if (!QBRTCClient.isInitiated()) {
             QBRTCClient.init(this);
         }
+
+        // Add signalling manager
+        QBRTCClient.getInstance().setSignalingManager(QBChatService.getInstance().getVideoChatWebRTCSignalingManager());
     }
 
 
@@ -297,7 +276,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     @Override
-    public void onConnectionFaildWithUser(QBRTCSession session, Integer userID) {
+    public void onConnectionFailedWithUser(QBRTCSession session, Integer userID) {
         setStateTitle(userID,R.string.failed, View.INVISIBLE);
     }
 
