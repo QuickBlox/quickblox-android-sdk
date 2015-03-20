@@ -30,7 +30,6 @@ import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtcnew.QBRTCClient;
-import com.quickblox.videochat.webrtcnew.QBRTCConfig;
 import com.quickblox.videochat.webrtcnew.QBRTCSession;
 import com.quickblox.videochat.webrtcnew.QBRTCTypes;
 import com.quickblox.videochat.webrtcnew.callbacks.QBRTCClientCallback;
@@ -224,7 +223,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onReceiveNewSession(QBRTCSession session) {
 //        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
 
-        if (getCurrentSession() == null) {
+        if (currentSession == null) {
             Log.d(TAG, "Start new session");
             setCurrentSession(session);
 
@@ -304,7 +303,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onSessionClosed(QBRTCSession session) {
-        if (session.equals(getCurrentSession())) {
+        if (session.getSessionID().equals(currentSession)) {
             Log.d(TAG, "Stop session");
             if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()) {
                 addOpponentsFragmentWithDelay();
@@ -313,6 +312,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             }
             // Remove current session
             Log.d(TAG, "Remove current session");
+            currentSession = null;
         }
     }
 

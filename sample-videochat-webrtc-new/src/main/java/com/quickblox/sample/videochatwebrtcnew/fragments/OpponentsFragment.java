@@ -179,13 +179,11 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         // Stan servers buttons
         stanServersButtons = (RadioGroup) view.findViewById(R.id.stanServersButtons);
-        RadioButton firstStan = (RadioButton) view.findViewById(R.id.stanServerFirst);
-        RadioButton secondStan = (RadioButton) view.findViewById(R.id.stanServerSecond);
-        RadioButton thirdStan = (RadioButton) view.findViewById(R.id.stanServerThird);
     }
 
     @Override
     public void onClick(View v) {
+
         if (opponentsAdapter.getSelected().size() == 1) {
             QBRTCTypes.QBConferenceType qbConferenceType = null;
 
@@ -205,8 +203,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                     break;
             }
 
-//            QBRTCConfig.answerTimeInterval = 15;
-
             Map<String, String> userInfo = new HashMap<>();
             userInfo.put("any_custom_data", "some data");
             userInfo.put("my_avatar_url", "avatar_reference");
@@ -214,6 +210,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             ((CallActivity) getActivity())
                     .addConversationFragmentStartCall(getOpponentsIds(opponentsAdapter.getSelected()),
                             qbConferenceType, userInfo);
+
         } else if (opponentsAdapter.getSelected().size() > 1){
             Toast.makeText(getActivity(), "Only 1-to-1 calls are available", Toast.LENGTH_LONG).show();
         } else if (opponentsAdapter.getSelected().size() < 1){
@@ -295,9 +292,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     }
 
     public static int searchIndexLogginedUser(List<QBUser> usersList) {
-
         int indexLogginedUser = -1;
-
         for (QBUser usr : usersList) {
             if (usr.getLogin().equals(login)) {
                 indexLogginedUser = usersList.indexOf(usr);
