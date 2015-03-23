@@ -303,7 +303,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             }
             // Remove current session
             Log.d(TAG, "Remove current session");
-            currentSession = null;
         }
     }
 
@@ -381,6 +380,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
+                currentSession = null;
             }
         }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT));
     }

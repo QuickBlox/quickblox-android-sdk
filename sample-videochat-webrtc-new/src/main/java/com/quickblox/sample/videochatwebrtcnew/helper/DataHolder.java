@@ -64,6 +64,10 @@ public class DataHolder {
         usersList.add(new User(9, "User 9", "webrtc_user9", PASSWORD,2436266));
         usersList.add(new User(10, "User 10", "webrtc_user10", PASSWORD,2436269));
 
+
+        usersList.add(new User(11, "User 11", "webrtc_user11", PASSWORD,2606089));
+        usersList.add(new User(12, "User 12", "webrtc_user12", PASSWORD,2606103));
+
         return usersList;
     }
 

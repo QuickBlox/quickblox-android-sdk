@@ -53,7 +53,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     private View view=null;
     private ProgressDialog progresDialog;
     private ListView opponentsList;
-    private RadioGroup stanServersButtons;
 
 
     public static OpponentsFragment getInstance() {
@@ -109,10 +108,13 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
         List<QBUser> users = ((CallActivity) getActivity()).getOpponentsList();
 
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
+        requestBuilder.setPerPage(100);
+
         if (users == null) {
             List<String> tags = new LinkedList<>();
             tags.add("webrtcusers");
-            QBUsers.getUsersByTags(tags, new QBPagedRequestBuilder(), new QBEntityCallback<ArrayList<QBUser>>() {
+            QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                     Log.d("Track", "download users from QickBlox");
@@ -122,7 +124,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                         prepareUserList(opponentsList, orderedUsers);
                         progresDialog.dismiss();
                     } else {
-                        Log.e("getActivity() error", "get Activity is null, becose adapter wasn't added");
+                        Log.e("getActivity() error", "get Activity is null, because adapter wasn't added");
                     }
                 }
 
@@ -176,9 +178,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         btnVideoCall.setOnClickListener(this);
 
         opponentsList = (ListView) view.findViewById(R.id.opponentsList);
-
-        // Stan servers buttons
-        stanServersButtons = (RadioGroup) view.findViewById(R.id.stanServersButtons);
     }
 
     @Override
@@ -186,10 +185,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         if (opponentsAdapter.getSelected().size() == 1) {
             QBRTCTypes.QBConferenceType qbConferenceType = null;
-
-            // Because groupButtons start from
-            QBRTCConfig.serverModeFlag = setStunSerwerMode(stanServersButtons.getCheckedRadioButtonId());
-            Log.d("Selected STUN", String.valueOf(QBRTCConfig.serverModeFlag));
 
             //Init conference type
             switch (v.getId()) {
@@ -215,19 +210,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
             Toast.makeText(getActivity(), "Only 1-to-1 calls are available", Toast.LENGTH_LONG).show();
         } else if (opponentsAdapter.getSelected().size() < 1){
             Toast.makeText(getActivity(), "Choose one opponent", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private int setStunSerwerMode(int checkedRadioButtonId) {
-        switch (checkedRadioButtonId){
-            case R.id.stanServerFirst:
-                return 1;
-            case R.id.stanServerSecond:
-                return 2;
-            case R.id.stanServerThird:
-                return 3;
-            default:
-                return 1;
         }
     }
 

@@ -148,11 +148,12 @@ public class ConversationFragment extends Fragment implements Serializable {
     public void onStart() {
         super.onStart();
             QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
-            if (startReason == StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
-                session.acceptCall(session.getUserInfo());
-            } else {
-                session.startCall(session.getUserInfo());
-            }
+
+        if (startReason == StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+            session.acceptCall(session.getUserInfo());
+        } else {
+            session.startCall(session.getUserInfo());
+        }
     }
 
 
@@ -350,7 +351,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
         return s;
     }
-
 }
 
 
