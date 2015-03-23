@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtcnew.view.QBGLVideoView;
+import com.quickblox.videochat.webrtc.view.QBGLVideoView;
 
 import java.util.List;
 

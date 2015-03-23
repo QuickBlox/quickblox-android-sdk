@@ -24,10 +24,10 @@ import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtcnew.QBRTCConfig;
-import com.quickblox.videochat.webrtcnew.QBRTCSession;
-import com.quickblox.videochat.webrtcnew.QBRTCSessionDescription;
-import com.quickblox.videochat.webrtcnew.QBRTCTypes;
+import com.quickblox.videochat.webrtc.QBRTCConfig;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCSessionDescription;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private TextView incAudioCall;
     private TextView callerName;
     private TextView otherIncUsers;
-    private ImageButton rejectBtn ;
+    private ImageButton rejectBtn;
     private ImageButton takeBtn;
 
     private ArrayList<Integer> opponents;
@@ -55,9 +55,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private QBRTCTypes.QBConferenceType conferenceType;
     private int qbConferenceType;
     private View view;
-    private Handler showWindowTaskHandler;
-    private HandlerThread showWindowTaskThread;
-    private Runnable showWindowTask;
 
 
     @Override
@@ -91,22 +88,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         return view;
     }
 
-    private void setupTimer() {
-        showWindowTaskThread = new HandlerThread(INCOME_WINDOW_SHOW);
-        showWindowTaskThread.start();
-        showWindowTask = new Runnable() {
-            @Override
-            public void run() {
-                if (!showWindowTaskThread.isInterrupted())
-                Toast.makeText(getActivity(), "User stop calling", Toast.LENGTH_SHORT).show();
-                        ((CallActivity) getActivity()).addOpponentsFragment();
-            }
-        };
-
-        showWindowTaskHandler = new Handler(showWindowTaskThread.getLooper());
-        showWindowTaskHandler.postAtTime(showWindowTask, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.dialingTimeInterval));
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
@@ -121,7 +102,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     public void onStart() {
         super.onStart();
         startCallNotification();
-//        setupTimer();
     }
 
     private void initButtonsListener() {
@@ -133,10 +113,10 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
                 stopCallNotification();
 
-                ((CallActivity)getActivity()).getSession(sessionDescription.getSessionId())
+                ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())
                         .rejectCall(sessionDescription.getUserInfo());
-                ((CallActivity)getActivity()).removeIncomeCallFragment();
-                ((CallActivity)getActivity()).addOpponentsFragment();
+                ((CallActivity) getActivity()).removeIncomeCallFragment();
+                ((CallActivity) getActivity()).addOpponentsFragment();
 
             }
         });
@@ -147,9 +127,9 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
                 stopCallNotification();
 
-                    ((CallActivity) getActivity())
-                            .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
-                    ((CallActivity) getActivity()).removeIncomeCallFragment();
+                ((CallActivity) getActivity())
+                        .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
+                ((CallActivity) getActivity()).removeIncomeCallFragment();
 
                 Log.d("Track", "Call is started");
             }
@@ -158,20 +138,20 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
     private void initUI(View view) {
 
-        incAudioCall = (TextView)view.findViewById(R.id.incAudioCall);
-        incVideoCall = (TextView)view.findViewById(R.id.incVideoCall);
+        incAudioCall = (TextView) view.findViewById(R.id.incAudioCall);
+        incVideoCall = (TextView) view.findViewById(R.id.incVideoCall);
 
-        callerName = (TextView)view.findViewById(R.id.callerName);
-        callerName.setText(getCallerName(((CallActivity)getActivity()).getSession(sessionDescription.getSessionId())));
+        callerName = (TextView) view.findViewById(R.id.callerName);
+        callerName.setText(getCallerName(((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())));
 
-        otherIncUsers = (TextView)view.findViewById(R.id.otherIncUsers);
+        otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
         otherIncUsers.setText(getOtherIncUsersNames(opponents));
 
-        rejectBtn = (ImageButton)view.findViewById(R.id.rejectBtn);
-        takeBtn = (ImageButton)view.findViewById(R.id.takeBtn);
+        rejectBtn = (ImageButton) view.findViewById(R.id.rejectBtn);
+        takeBtn = (ImageButton) view.findViewById(R.id.takeBtn);
     }
 
-    public void startCallNotification(){
+    public void startCallNotification() {
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
@@ -188,32 +168,32 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
     }
 
-    private void stopCallNotification(){
+    private void stopCallNotification() {
         if (ringtone != null) {
             try {
                 ringtone.stop();
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             ringtone.release();
             ringtone = null;
         }
 
-        if (vibrator != null){
+        if (vibrator != null) {
             vibrator.cancel();
         }
     }
 
-    private String getOtherIncUsersNames (ArrayList<Integer> opponents){
+    private String getOtherIncUsersNames(ArrayList<Integer> opponents) {
         StringBuffer s = new StringBuffer("");
         opponentsFromCall.addAll(DataHolder.usersList);
         opponents.remove(QBChatService.getInstance().getUser().getId());
 
         for (Integer i : opponents) {
             for (QBUser usr : opponentsFromCall) {
-                if (usr.getId().equals(i)){
+                if (usr.getId().equals(i)) {
                     if (opponents.indexOf(i) == (opponents.size() - 1)) {
                         s.append(usr.getFullName() + " ");
                         break;
@@ -226,25 +206,25 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         return s.toString();
     }
 
-    private String getCallerName (QBRTCSession session){
+    private String getCallerName(QBRTCSession session) {
         String s = new String();
         int i = session.getCallerID();
 
         opponentsFromCall.addAll(DataHolder.usersList);
 
-        for (QBUser usr : opponentsFromCall){
-            if (usr.getId().equals(i)){
+        for (QBUser usr : opponentsFromCall) {
+            if (usr.getId().equals(i)) {
                 s = usr.getFullName();
             }
         }
         return s;
     }
 
-    private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType){
+    private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
         if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO) {
             incVideoCall.setVisibility(View.VISIBLE);
             incAudioCall.setVisibility(View.INVISIBLE);
-        } else if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO){
+        } else if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
             incVideoCall.setVisibility(View.INVISIBLE);
             incAudioCall.setVisibility(View.VISIBLE);
         }
