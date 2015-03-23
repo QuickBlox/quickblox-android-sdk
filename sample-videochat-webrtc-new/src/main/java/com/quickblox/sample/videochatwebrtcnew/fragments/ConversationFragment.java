@@ -80,6 +80,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private View actionBar;
     private String callerName;
     private LinearLayout noVideoImageContainer;
+    private boolean isMessageProcessed;
 
 
     @Override
@@ -148,11 +149,13 @@ public class ConversationFragment extends Fragment implements Serializable {
     public void onStart() {
         super.onStart();
             QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
-
-        if (startReason == StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
-            session.acceptCall(session.getUserInfo());
-        } else {
-            session.startCall(session.getUserInfo());
+        if(!isMessageProcessed) {
+            if (startReason == StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+                session.acceptCall(session.getUserInfo());
+            } else {
+                session.startCall(session.getUserInfo());
+            }
+            isMessageProcessed = true;
         }
     }
 
