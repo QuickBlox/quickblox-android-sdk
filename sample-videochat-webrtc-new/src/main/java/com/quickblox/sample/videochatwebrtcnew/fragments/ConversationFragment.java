@@ -187,6 +187,9 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         incUserName = (TextView) view.findViewById(R.id.incUserName);
         incUserName.setText(callerName);
+        incUserName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((
+                DataHolder.getUserIndexByFullName(callerName))+1));
+
         noVideoImageContainer = (LinearLayout)view.findViewById(R.id.noVideoImageContainer);
         imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
 

@@ -18,6 +18,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
+import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
@@ -110,6 +111,45 @@ public class ListUsersActivity extends Activity {
         return  resStr;
     }
 
+    public static int selectBackgrounForOpponent (int number){
+        int resStr=-1;
+        switch (number) {
+            case 0:
+                resStr = R.drawable.rectangle_rounded_spring_bud;
+                break;
+            case 1:
+                resStr = R.drawable.rectangle_rounded_orange;
+                break;
+            case 2:
+                resStr = R.drawable.rectangle_rounded_water_bondi_beach;
+                break;
+            case 3:
+                resStr = R.drawable.rectangle_rounded_blue_green;
+                break;
+            case 4:
+                resStr = R.drawable.rectangle_rounded_lime;
+                break;
+            case 5:
+                resStr = R.drawable.rectangle_rounded_mauveine;
+                break;
+            case 6:
+                resStr = R.drawable.rectangle_rounded_gentianaceae_blue;
+                break;
+            case 7:
+                resStr = R.drawable.rectangle_rounded_blue;
+                break;
+            case 8:
+                resStr = R.drawable.rectangle_rounded_blue_krayola;
+                break;
+            case 9:
+                resStr = R.drawable.rectangle_rounded_coral;
+                break;
+            default:
+                resStr= selectBackgrounForOpponent(number%10);
+        }
+        return  resStr;
+    }
+
     public static int getUserIndex(int id){
         int index = 0;
 
@@ -196,6 +236,15 @@ public class ListUsersActivity extends Activity {
                 Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (CallActivity.opponentsList != null) {
+            CallActivity.opponentsList = null;
+            OpponentsAdapter.i = 0;
+        }
     }
    /*@Override
     protected void onRestart() {

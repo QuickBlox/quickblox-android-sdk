@@ -82,4 +82,37 @@ public class DataHolder {
         }
         return "User_name_unused";
     }
+
+    public static User getUserByID(Integer callerID) {
+        Log.d("Track", "callerID " + callerID);
+        for (User user : usersList){
+            Log.d("Track", "getFullName " + user.getId());
+            if (user.getId().equals(callerID)){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static int getUserIndexByID(Integer callerID) {
+        Log.d("Track", "callerID " + callerID);
+        for (User user : usersList){
+            Log.d("Track", "getFullName " + user.getId());
+            if (user.getId().equals(callerID)){
+                return usersList.indexOf(user);
+            }
+        }
+        return -1;
+    }
+
+    public static int getUserIndexByFullName(String fullName) {
+        Log.d("Track", "callerID " + fullName);
+        for (User user : usersList){
+            Log.d("Track", "getFullName " + user.getFullName());
+            if (user.getFullName().equals(fullName)){
+                return usersList.indexOf(user);
+            }
+        }
+        return -1;
+    }
 }

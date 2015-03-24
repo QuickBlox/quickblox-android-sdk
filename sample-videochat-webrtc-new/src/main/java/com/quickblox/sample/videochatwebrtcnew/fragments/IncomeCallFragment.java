@@ -22,6 +22,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -143,6 +144,8 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
         callerName = (TextView) view.findViewById(R.id.callerName);
         callerName.setText(getCallerName(((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())));
+        callerName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
+                ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId()).getCallerID()))) + 1));
 
         otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
         otherIncUsers.setText(getOtherIncUsersNames(opponents));

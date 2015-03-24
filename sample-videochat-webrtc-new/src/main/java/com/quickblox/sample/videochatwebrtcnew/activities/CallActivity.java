@@ -76,7 +76,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private QBGLVideoView videoView;
     public static String login;
     public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
-    private ArrayList<QBUser> opponentsList;
+    public static ArrayList<QBUser> opponentsList;
     private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
