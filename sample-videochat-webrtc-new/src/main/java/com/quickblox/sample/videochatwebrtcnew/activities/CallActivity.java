@@ -132,6 +132,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         }
     }
 
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//    }
+
     public QBRTCSession getCurrentSession() {
         return QBRTCClient.getInstance().getSessions().get(currentSession);
     }
