@@ -5,6 +5,7 @@ import android.app.Fragment;
 
 
 import android.app.FragmentManager;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -91,7 +92,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // Probably initialize members with default values for a new instance
         login = getIntent().getStringExtra("login");
-        addOpponentsFragment();
+
+        if (savedInstanceState==null) {
+            addOpponentsFragment();
+        }
+
         Log.d("Track", "onCreate() from NewDialogActivity Level 1");
 
         // From hear we start listening income call
@@ -424,7 +429,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // init session for new call
         try {
-            QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType, userInfo);
+            QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType);
             setCurrentSession(newSessionWithOpponents);
 
             ConversationFragment fragment = new ConversationFragment();
@@ -485,9 +490,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
 
         REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
-        LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 30, scaleType, true);
 
-
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 22, scaleType, true);
+        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            LOCAL_RENDERER = VideoRendererGui.create(69, 0, 15, 34, scaleType, true);
     }
 
     public void startTimer() {
@@ -527,8 +534,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        opponentsList = null;
-        OpponentsAdapter.i = 0;
+//        opponentsList = null;
+//        OpponentsAdapter.i = 0;
 
         // Remove activity as callback to RTCClient
 //        if (QBRTCClient.isInitiated()) {

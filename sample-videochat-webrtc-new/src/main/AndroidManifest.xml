@@ -24,8 +24,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.CallActivity"
-            android:screenOrientation="portrait">
+            android:name=".activities.CallActivity">
+            <!--android:screenOrientation="portrait">-->
         </activity>
 
 

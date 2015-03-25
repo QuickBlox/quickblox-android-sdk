@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -235,8 +236,17 @@ public class ConversationFragment extends Fragment implements Serializable {
 
                 ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
 
-                layoutParams.height = ((height / 100) * 30);
-                layoutParams.width = ((width / 100) * 35);
+//                layoutParams.height = ((height / 100) * 30);
+//                layoutParams.width = ((width / 100) * 32);
+
+                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+                    layoutParams.height = ((height / 100) * 21);
+                    layoutParams.width = ((width / 100) * 33);
+                } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    layoutParams.height = ((height / 100) * 31);
+                    layoutParams.width = ((width / 100) * 17);
+                }
+
 
                imgMyCameraOff.setLayoutParams(layoutParams);
 
