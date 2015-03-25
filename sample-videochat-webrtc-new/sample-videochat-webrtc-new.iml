@@ -85,13 +85,17 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="beta-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="android-support-v4" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-core-2.1" level="project" />
+    <orderEntry type="library" exported="" name="fabric-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-chat-2.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-videochat-2.1" level="project" />
+    <orderEntry type="library" exported="" name="crashlytics-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.0.0" level="project" />
+    <orderEntry type="library" exported="" name="answers-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-videochat-webrtc-2.1" level="project" />
     <orderEntry type="module" module-name="pull-to-refresh" exported="" />
   </component>
