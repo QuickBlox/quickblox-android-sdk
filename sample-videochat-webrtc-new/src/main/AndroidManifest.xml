@@ -29,6 +29,9 @@
         </activity>
 
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7aea78439bec41a9005c7488bb6751c5e33fe270" />
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />

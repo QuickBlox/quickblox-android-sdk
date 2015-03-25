@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 /*apply plugin: 'com.android.application'
 
 android {
@@ -19,6 +28,12 @@ android {
     }
 }*/
 apply plugin: 'android'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 /*
 android {
@@ -55,4 +70,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile project(':pull-to-refresh')
     compile files('libs/android-support-v4.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+        transitive = true;
+    }
 }
