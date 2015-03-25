@@ -36,11 +36,13 @@ import com.quickblox.videochat.webrtc.view.QBGLVideoView;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.jivesoftware.smack.SmackException;
+import org.webrtc.PeerConnection;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -89,6 +91,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
 
         // Probably initialize members with default values for a new instance
@@ -107,6 +111,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // Add signalling manager
         QBRTCClient.getInstance().setSignalingManager(QBChatService.getInstance().getVideoChatWebRTCSignalingManager());
+
+        // Set custom ice servers up. Use it in case you want set your own servers instead of defaults
+        List<PeerConnection.IceServer> iceServerList = new LinkedList<>();
+        iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca", "petrbubnov@grr.la", "petrbubnov@grr.la"));
+        iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=udp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
+        iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=tcp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
+        QBRTCConfig.setIceServerList(iceServerList);
+
     }
 
 
@@ -119,40 +131,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             QBRTCClient.getInstance().addCallback(this);
         }
     }
-
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-////        setContentView(R.layout.activity_main);
-//        if (getRequestedOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        } else if (getRequestedOrientation()==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//        }
-//    }
-
-
-
-
-//    protected void onSaveInstanceState(Bundle outState) {
-
-//        opponentsFragment  = (OpponentsFragment) getFragmentManager().findFragmentByTag(OPPONENTS_CALL_FRAGMENT);
-//        getFragmentManager().putFragment(outState, OPPONENTS_CALL_FRAGMENT, opponentsFragment);
-//        outState.putSerializable("conversationFragment", conversationFragment);
-//        outState.putSerializable("incomeCallFragment", incomeCallFragment);
-//        Log.d("Track", "onSaveInstanceState from NewDialogActivity Level 2");
-//        super.onSaveInstanceState(outState);
-
-//    }
-
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        Log.d("Track", "onRestoreInstanceState from NewDialogActivity Level 2");
-//        opponentsFragment = (OpponentsFragment) savedInstanceState.getSerializable("opponentsFragment");
-//        conversationFragment = (ConversationFragment) savedInstanceState.getSerializable("conversationFragment");
-//        incomeCallFragment = (IncomeCallFragment) savedInstanceState.getSerializable("incomeCallFragment");
-
-//    }
 
     public QBRTCSession getCurrentSession() {
         return QBRTCClient.getInstance().getSessions().get(currentSession);
@@ -209,7 +187,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         showIncomingCallWindowTaskHandler = new Handler(showIncomingCallWindowTaskThread.getLooper());
         showIncomingCallWindowTaskHandler
                 .postAtTime(showIncomingCallWindowTask,
-                        SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.dialingTimeInterval));
+                        SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.getAnswerTimeInterval()));
     }
 
     private void stoptIncomingCallTimer() {
@@ -322,15 +300,15 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             }
             // Remove current session
             Log.d(TAG, "Remove current session");
+            currentSession = null;
         }
     }
 
     @Override
     public void onSessionStartClose(QBRTCSession session) {
 
-
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment != null) {
+        if (fragment != null && session.equals(getCurrentSession())) {
             fragment.actionButtonsEnabled(false);
         }
 
