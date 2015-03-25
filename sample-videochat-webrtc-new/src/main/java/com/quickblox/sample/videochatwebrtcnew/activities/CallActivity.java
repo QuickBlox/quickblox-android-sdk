@@ -5,6 +5,7 @@ import android.app.Fragment;
 
 
 import android.app.FragmentManager;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -118,6 +119,19 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             QBRTCClient.getInstance().addCallback(this);
         }
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+////        setContentView(R.layout.activity_main);
+//        if (getRequestedOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        } else if (getRequestedOrientation()==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        }
+//    }
+
+
 
 
 //    protected void onSaveInstanceState(Bundle outState) {
@@ -491,10 +505,25 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 22, scaleType, true);
-        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-            LOCAL_RENDERER = VideoRendererGui.create(69, 0, 15, 34, scaleType, true);
+        //next value in percentage of the available space
+        int marginLeft = 0;
+        int marginTop = 0;
+        int height = 0;
+        int width = 0;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            marginLeft = 70;
+            marginTop = 0;
+            height = 30;
+            width = 22;
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            marginLeft = 69;
+            marginTop = 0;
+            height = 15;
+            width = 34;
+        }
+
+        LOCAL_RENDERER = VideoRendererGui.create(marginLeft, marginTop, height, width, scaleType, true);
     }
 
     public void startTimer() {

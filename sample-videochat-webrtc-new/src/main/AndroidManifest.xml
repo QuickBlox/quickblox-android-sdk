@@ -25,6 +25,8 @@
         </activity>
         <activity
             android:name=".activities.CallActivity">
+            <!--android:configChanges="keyboardHidden|screenSize|orientation">-->
+
             <!--android:screenOrientation="portrait">-->
         </activity>
 

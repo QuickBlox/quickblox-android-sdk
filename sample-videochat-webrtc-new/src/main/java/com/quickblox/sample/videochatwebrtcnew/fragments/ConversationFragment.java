@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private HorizontalScrollView camerasOpponentsList;
     public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
+    private ViewGroup container;
     private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
@@ -88,6 +90,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
+        this.container = container;
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
@@ -168,6 +171,12 @@ public class ConversationFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
     }
 
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        view = inflater.inflate(R.layout.fragment_conversation, container, false);
+//        initViews(view);
+//    }
+
     private void initViews(View view) {
 
 //        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
@@ -241,10 +250,10 @@ public class ConversationFragment extends Fragment implements Serializable {
 
                 if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                     layoutParams.height = ((height / 100) * 21);
-                    layoutParams.width = ((width / 100) * 33);
+                    layoutParams.width = ((width / 100) * 34);
                 } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     layoutParams.height = ((height / 100) * 31);
-                    layoutParams.width = ((width / 100) * 17);
+                    layoutParams.width = ((width / 100) * 18);
                 }
 
 
@@ -325,32 +334,35 @@ public class ConversationFragment extends Fragment implements Serializable {
     private void createOpponentsList(List<Integer> opponents) {
 
         for (Integer i : opponents) {
+            addOpponentPreviewToList(i, opponentsFromCall);
+        }
+    }
+
+    private void addOpponentPreviewToList(Integer userID, LinearLayout opponentsFromCall) {
+
+        if (opponentsFromCall.findViewById(userID)== null) {
 
             View opponentItemView = inflater.inflate(R.layout.list_item_opponent_from_call, opponentsFromCall, false);
-//
+            opponentItemView.setId(userID);
+
             opponentItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("Track", "Main opponent Selected");
-
-
                 }
             });
 
-            opponentItemView.setId(i);
-
-            QBGLVideoView opponentLittleCamera = (QBGLVideoView) opponentItemView.findViewById(R.id.opponentLittleCamera);
             TextView opponentNumber = (TextView) opponentItemView.findViewById(R.id.opponentNumber);
-            TextView connectionStatus = (TextView) opponentItemView.findViewById(R.id.connectionStatus);
-            ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
-
-            opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(i)));
+            opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(userID)));
             opponentNumber.setBackgroundResource(ListUsersActivity.resourceSelector
-                    (ListUsersActivity.getUserIndex(i)));
+                    (ListUsersActivity.getUserIndex(userID)));
 
+            ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
             opponentAvatar.setImageResource(R.drawable.ic_noavatar);
 
             opponentsFromCall.addView(opponentItemView);
+        } else {
+            opponentsFromCall.addView(opponentsFromCall.findViewById(userID));
         }
     }
 

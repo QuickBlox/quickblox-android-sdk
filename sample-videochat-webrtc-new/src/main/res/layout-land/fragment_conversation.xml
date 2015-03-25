@@ -70,7 +70,7 @@
         layout="@layout/element_fragment_video_call"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"/>
+        android:layout_marginBottom="5dp"/>
 
     <ImageView
         android:id="@+id/imgMyCameraOff"
