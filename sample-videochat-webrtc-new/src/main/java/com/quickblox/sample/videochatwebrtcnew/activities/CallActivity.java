@@ -5,7 +5,6 @@ import android.app.Fragment;
 
 
 import android.app.FragmentManager;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
@@ -106,11 +106,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // From hear we start listening income call
         if (!QBRTCClient.isInitiated()) {
-            QBRTCClient.init(this);
+            try {
+                QBRTCClient.init(this);
+            } catch (QBChatException e) {
+                e.printStackTrace();
+            }
         }
-
-        // Add signalling manager
-        QBRTCClient.getInstance().setSignalingManager(QBChatService.getInstance().getVideoChatWebRTCSignalingManager());
 
         // Set custom ice servers up. Use it in case you want set your own servers instead of defaults
         List<PeerConnection.IceServer> iceServerList = new LinkedList<>();
@@ -118,6 +119,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=udp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
         iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=tcp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
         QBRTCConfig.setIceServerList(iceServerList);
+
+        QBRTCConfig.setAnswerTimeInterval(240);
 
     }
 
@@ -136,13 +139,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         return QBRTCClient.getInstance().getSessions().get(currentSession);
     }
 
-    public void setCurrentSession(QBRTCSession session) {
-        if (!QBRTCClient.getInstance().getSessions().containsKey(session.getSessionID())) {
-            addSession(session);
-        }
-        currentSession = session.getSessionID();
-    }
-
     public QBRTCSession getSession(String sessionID) {
         return QBRTCClient.getInstance().getSessions().get(sessionID);
     }
@@ -155,7 +151,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
     }
 
-    public void setCurrentSesionId(String sesionId) {
+    public void setCurrentSessionId(String sesionId) {
         this.currentSession = sesionId;
     }
 
@@ -210,9 +206,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onReceiveNewSession(QBRTCSession session) {
 //        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
 
-        if (currentSession == null) {
+        if (currentSession == null || session.equals(getCurrentSession())) {
             Log.d(TAG, "Start new session");
-            setCurrentSession(session);
 
             Log.d(TAG, "Income call");
             QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
@@ -226,7 +221,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
-        setStateTitle(userID, R.string.notAnswer, View.VISIBLE);
+        setStateTitle(userID, R.string.noAnswer, View.VISIBLE);
 //        addOpponentsFragmentWithDelay();
     }
 
@@ -338,7 +333,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // TODO update view of this user
 
-        setStateTitle(userID, R.string.hangUp, View.INVISIBLE);
+        setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
 
         Log.d(TAG, "CHECK SESSION STATE");
         for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
@@ -422,7 +417,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         // init session for new call
         try {
             QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType);
-            setCurrentSession(newSessionWithOpponents);
+            setCurrentSessionId(newSessionWithOpponents.getSessionID());
 
             ConversationFragment fragment = new ConversationFragment();
             Bundle bundle = new Bundle();
@@ -449,7 +444,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         stoptIncomingCallTimer();
 
         // set current session
-        setCurrentSesionId(sessionID);
+        setCurrentSessionId(sessionID);
         QBRTCSession session = getCurrentSession();
         Integer myId = QBChatService.getInstance().getUser().getId();
         ArrayList<Integer> opponentsWithoutMe = new ArrayList<>(session.getOpponents());
@@ -541,8 +536,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        opponentsList = null;
-//        OpponentsAdapter.i = 0;
+        opponentsList = null;
+        OpponentsAdapter.i = 0;
 
         // Remove activity as callback to RTCClient
 //        if (QBRTCClient.isInitiated()) {

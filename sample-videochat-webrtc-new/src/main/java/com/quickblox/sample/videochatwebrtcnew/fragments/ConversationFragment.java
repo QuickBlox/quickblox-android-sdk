@@ -234,8 +234,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
 
-
-                // TODO temporary insertion remove when GLVideoView will be fix
+                // TODO temporary insertion will be removed when GLVideoView will be fixed
                 DisplayMetrics displaymetrics = new DisplayMetrics();
                 displaymetrics.setToDefaults();
 
@@ -260,7 +259,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                imgMyCameraOff.setLayoutParams(layoutParams);
 
                 Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
-
                 // TODO end
 
                 if (isVideoEnabled) {

@@ -140,7 +140,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                 }
             });
         } else {
-
             ArrayList<QBUser> userList = ((CallActivity) getActivity()).getOpponentsList();
             prepareUserList(opponentsList, userList);
             progresDialog.dismiss();
