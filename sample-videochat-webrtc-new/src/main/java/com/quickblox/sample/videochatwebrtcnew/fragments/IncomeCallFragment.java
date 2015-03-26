@@ -238,12 +238,4 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         super.onDestroy();
         Log.d("Track", "onDestroy() from IncomeCallFragment");
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        showWindowTaskHandler.removeCallbacks(showWindowTask);
-//        showWindowTaskThread.quit();
-//        showWindowTaskThread.interrupt();
-    }
 }

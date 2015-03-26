@@ -120,8 +120,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=tcp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
         QBRTCConfig.setIceServerList(iceServerList);
 
-        QBRTCConfig.setAnswerTimeInterval(240);
-
     }
 
 
@@ -182,7 +180,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                addOpponentsFragment();
+                getCurrentSession().hangUp(null);
             }
         };
 
@@ -192,7 +190,16 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                         SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.getAnswerTimeInterval()));
     }
 
-    private void stoptIncomingCallTimer() {
+    private void refreshIncommingCallTimer(){
+        if (showIncomingCallWindowTask != null) {
+            Log.d(TAG, "Renew income call timer");
+            showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
+            showIncomingCallWindowTaskHandler.postAtTime(showIncomingCallWindowTask,
+                    SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.getDialingTimeInterval()));
+        }
+    }
+
+    private void stopIncomingCallTimer() {
 
         Log.d(TAG, "Stop income call timer");
 
@@ -212,17 +219,17 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onReceiveNewSession(QBRTCSession session) {
 //        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
 
-        if (currentSession == null || session.equals(getCurrentSession())) {
+        if (currentSession == null) {
             Log.d(TAG, "Start new session");
-
             Log.d(TAG, "Income call");
             QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
             addIncomeCallFragment(session);
+        } else if (session.equals(getCurrentSession())) {
+            refreshIncommingCallTimer();
         } else {
             Log.d(TAG, "Stop new session. Device now is busy");
             session.rejectCall(null);
         }
-
     }
 
     @Override
@@ -234,6 +241,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onStartConnectToUser(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.checking, View.VISIBLE);
+
+        stopIncomingCallTimer();
 
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if (fragment != null) {
@@ -273,7 +282,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onConnectedToUser(QBRTCSession session, Integer userID) {
-        startTimer();
+        stopIncomingCallTimer();
+        startCallEstablishTimer();
 
         setStateTitle(userID, R.string.connected, View.INVISIBLE);
 
@@ -294,11 +304,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onSessionClosed(QBRTCSession session) {
         if (session.getSessionID().equals(currentSession)) {
             Log.d(TAG, "Stop session");
-            if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()) {
+//            if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()) {
                 addOpponentsFragmentWithDelay();
-            } else {
-                Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
-            }
+
+            stopIncomingCallTimer();
+            stopCallEstablishTimer();
+//            } else {
+//                Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
+//            }
             // Remove current session
             Log.d(TAG, "Remove current session");
             currentSession = null;
@@ -370,7 +383,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void addOpponentsFragmentWithDelay() {
 
         // stop timer
-        stoptIncomingCallTimer();
+        stopIncomingCallTimer();
 
         HandlerThread handlerThread = new HandlerThread(ADD_OPPONENTS_FRAGMENT_HANDLER);
         handlerThread.start();
@@ -385,8 +398,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     public void addOpponentsFragment() {
         // stop timer
-        stoptIncomingCallTimer();
-
+        stopIncomingCallTimer();
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
     }
 
@@ -418,7 +430,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                                                  Map<String, String> userInfo) {
 
         // stop timer
-        stoptIncomingCallTimer();
+        stopIncomingCallTimer();
 
         // init session for new call
         try {
@@ -447,7 +459,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void addConversationFragmentReceiveCall(String sessionID) {
 
         // stop timer
-        stoptIncomingCallTimer();
+        stopIncomingCallTimer();
 
         // set current session
         setCurrentSessionId(sessionID);
@@ -505,8 +517,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         LOCAL_RENDERER = VideoRendererGui.create(marginLeft, marginTop, height, width, scaleType, true);
     }
 
-    public void startTimer() {
-        super.startTimer();
+    public void startCallEstablishTimer() {
+        super.startCallEstablishTimer();
+    }
+
+    public void stopCallEstablishTimer() {
+        super.stopCallEstablishTimer();
     }
 
     public void setOpponentsList(ArrayList<QBUser> qbUsers) {

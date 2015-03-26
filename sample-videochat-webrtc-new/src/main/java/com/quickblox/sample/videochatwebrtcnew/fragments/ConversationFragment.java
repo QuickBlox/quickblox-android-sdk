@@ -84,7 +84,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private View actionBar;
     private String callerName;
     private LinearLayout noVideoImageContainer;
-    private static boolean isMessageProcessed;
+    private boolean isMessageProcessed;
 
 
     @Override
@@ -305,6 +305,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
@@ -380,12 +381,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
         return s;
     }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        view=null;
-//    }
 }
 
 
