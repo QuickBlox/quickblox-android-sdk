@@ -75,6 +75,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
     private ViewGroup container;
+    private Bundle savedInstanceState;
     private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
@@ -83,7 +84,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private View actionBar;
     private String callerName;
     private LinearLayout noVideoImageContainer;
-    private boolean isMessageProcessed;
+    private static boolean isMessageProcessed;
 
 
     @Override
@@ -91,6 +92,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
         this.container = container;
+        this.savedInstanceState = savedInstanceState;
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
@@ -173,8 +175,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig) {
-//        view = inflater.inflate(R.layout.fragment_conversation, container, false);
-//        initViews(view);
+//        super.onConfigurationChanged(newConfig);
+//        onCreateView(inflater, container, savedInstanceState);
 //    }
 
     private void initViews(View view) {
@@ -330,9 +332,10 @@ public class ConversationFragment extends Fragment implements Serializable {
     }
 
     private void createOpponentsList(List<Integer> opponents) {
-
-        for (Integer i : opponents) {
-            addOpponentPreviewToList(i, opponentsFromCall);
+        if (opponents.size()!=0){
+            for (Integer i : opponents) {
+                addOpponentPreviewToList(i, opponentsFromCall);
+            }
         }
     }
 
@@ -377,6 +380,12 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
         return s;
     }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        view=null;
+//    }
 }
 
 
