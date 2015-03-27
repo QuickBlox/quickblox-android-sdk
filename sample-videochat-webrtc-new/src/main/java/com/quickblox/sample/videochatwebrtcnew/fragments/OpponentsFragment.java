@@ -24,6 +24,7 @@ import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
@@ -241,6 +242,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         switch (item.getItemId()) {
             case R.id.log_out:
                 try {
+                    QBRTCClient.getInstance().close();
                     QBChatService.getInstance().logout();
                 } catch (SmackException.NotConnectedException e) {
                     e.printStackTrace();

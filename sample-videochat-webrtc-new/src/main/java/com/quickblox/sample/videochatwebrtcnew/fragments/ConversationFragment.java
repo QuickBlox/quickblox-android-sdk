@@ -75,6 +75,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
     private ViewGroup container;
+    private Bundle savedInstanceState;
     private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
@@ -87,7 +88,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedStateInstance) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
         this.container = container;
@@ -244,16 +245,16 @@ public class ConversationFragment extends Fragment implements Serializable {
 
                 ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
 
-//                layoutParams.height = ((height / 100) * 30);
-//                layoutParams.width = ((width / 100) * 32);
+                layoutParams.height = ((height / 100) * 31);
+                layoutParams.width = ((width / 100) * 33);
 
-                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                    layoutParams.height = ((height / 100) * 21);
-                    layoutParams.width = ((width / 100) * 34);
-                } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    layoutParams.height = ((height / 100) * 31);
-                    layoutParams.width = ((width / 100) * 18);
-                }
+//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+//                    layoutParams.height = ((height / 100) * 21);
+//                    layoutParams.width = ((width / 100) * 34);
+//                } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                    layoutParams.height = ((height / 100) * 31);
+//                    layoutParams.width = ((width / 100) * 18);
+//                }
 
 
                imgMyCameraOff.setLayoutParams(layoutParams);

@@ -204,7 +204,7 @@ public class ListUsersActivity extends Activity {
                         Log.d(TAG, "onSuccess login to chat with params");
                         Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
                         intent.putExtra("login", login);
-                        startActivity(intent);
+
                     }
 
                     @Override

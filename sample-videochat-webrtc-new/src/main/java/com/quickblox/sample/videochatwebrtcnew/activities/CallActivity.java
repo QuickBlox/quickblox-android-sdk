@@ -104,10 +104,15 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         Log.d("Track", "onCreate() from NewDialogActivity Level 1");
 
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         // From hear we start listening income call
-        if (!QBRTCClient.isInitiated()) {
-            QBRTCClient.init(this);
-        }
+        QBRTCClient.init(this);
 
         // Add signalling manager
         QBRTCClient.getInstance().setSignalingManager(QBChatService.getInstance().getVideoChatWebRTCSignalingManager());
@@ -118,13 +123,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=udp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
         iceServerList.add(new PeerConnection.IceServer("turn:numb.viagenie.ca:3478?transport=tcp", "petrbubnov@grr.la", "petrbubnov@grr.la"));
         QBRTCConfig.setIceServerList(iceServerList);
-
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         // Add activity as callback to RTCClient
         if (QBRTCClient.isInitiated()) {
@@ -185,6 +183,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Log.d(TAG, "Start new session");
             Log.d(TAG, "Income call");
             QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
+            setCurrentSession(session);
             addIncomeCallFragment(session);
         } else {
             Log.d(TAG, "Stop new session. Device now is busy");
@@ -320,10 +319,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 //        } else {
 //            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
 //        }
-
-        for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
-            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
-        }
+//
+//        for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
+//            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
+//        }
 
     }
 
@@ -436,28 +435,28 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     public void setCurrentVideoView(GLSurfaceView videoView) {
         VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
-
+//
         REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
+//
+//        //next value in percentage of the available space
+//        int marginLeft = 0;
+//        int marginTop = 0;
+//        int height = 0;
+//        int width = 0;
+//
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+//            marginLeft = 70;
+//            marginTop = 0;
+//            height = 30;
+//            width = 22;
+//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+//            marginLeft = 69;
+//            marginTop = 0;
+//            height = 15;
+//            width = 34;
+//        }
 
-        //next value in percentage of the available space
-        int marginLeft = 0;
-        int marginTop = 0;
-        int height = 0;
-        int width = 0;
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            marginLeft = 70;
-            marginTop = 0;
-            height = 30;
-            width = 22;
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            marginLeft = 69;
-            marginTop = 0;
-            height = 15;
-            width = 34;
-        }
-
-        LOCAL_RENDERER = VideoRendererGui.create(marginLeft, marginTop, height, width, scaleType, true);
+        LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 30, scaleType, true);
     }
 
     public void startTimer() {
@@ -485,6 +484,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             super.onBackPressed();
             if (QBChatService.isInitialized()) {
                 try {
+                    QBRTCClient.getInstance().close();
                     QBChatService.getInstance().logout();
                 } catch (SmackException.NotConnectedException e) {
                     e.printStackTrace();
@@ -499,7 +499,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         super.onDestroy();
         opponentsList = null;
         OpponentsAdapter.i = 0;
-
         // Remove activity as callback to RTCClient
 //        if (QBRTCClient.isInitiated()) {
 //            try {
