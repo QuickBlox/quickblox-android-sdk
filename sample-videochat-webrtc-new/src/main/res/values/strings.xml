@@ -26,8 +26,8 @@
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Chat Sample]]></string>
     <string name="current_version">0.9.1</string>
     <string name="rejected">Rejected</string>
-    <string name="notAnswer">Not answer</string>
-    <string name="hangUp">Hang up</string>
+    <string name="noAnswer">No answer</string>
+    <string name="hungUp">Hung up</string>
     <string name="closed">Closed</string>
     <string name="time_out">Time Out</string>
     <string name="failed">Failed</string>

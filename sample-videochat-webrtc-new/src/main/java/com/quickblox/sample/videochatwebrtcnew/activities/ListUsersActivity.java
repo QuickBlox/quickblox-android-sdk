@@ -244,10 +244,10 @@ public class ListUsersActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (CallActivity.opponentsList != null) {
-            CallActivity.opponentsList = null;
-            OpponentsAdapter.i = 0;
-        }
+//        if (CallActivity.opponentsList != null) {
+//            CallActivity.opponentsList = null;
+//            OpponentsAdapter.i = 0;
+//        }
     }
    /*@Override
     protected void onRestart() {

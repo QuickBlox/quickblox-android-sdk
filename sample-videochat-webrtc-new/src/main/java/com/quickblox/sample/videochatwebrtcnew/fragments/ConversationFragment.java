@@ -87,7 +87,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedStateInstance) {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
         this.container = container;
@@ -173,8 +173,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig) {
-//        view = inflater.inflate(R.layout.fragment_conversation, container, false);
-//        initViews(view);
+//        super.onConfigurationChanged(newConfig);
+//        onCreateView(inflater, container, savedInstanceState);
 //    }
 
     private void initViews(View view) {
@@ -234,8 +234,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
 
-
-                // TODO temporary insertion remove when GLVideoView will be fix
+                // TODO temporary insertion will be removed when GLVideoView will be fixed
                 DisplayMetrics displaymetrics = new DisplayMetrics();
                 displaymetrics.setToDefaults();
 
@@ -260,7 +259,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                imgMyCameraOff.setLayoutParams(layoutParams);
 
                 Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
-
                 // TODO end
 
                 if (isVideoEnabled) {
@@ -305,6 +303,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
@@ -332,9 +331,10 @@ public class ConversationFragment extends Fragment implements Serializable {
     }
 
     private void createOpponentsList(List<Integer> opponents) {
-
-        for (Integer i : opponents) {
-            addOpponentPreviewToList(i, opponentsFromCall);
+        if (opponents.size()!=0){
+            for (Integer i : opponents) {
+                addOpponentPreviewToList(i, opponentsFromCall);
+            }
         }
     }
 
