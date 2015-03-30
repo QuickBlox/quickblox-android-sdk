@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Video &amp; Audio Chat Sample</string>
+    <string name="action_log_out">Log out</string>
+    <string name="login_as">Login as</string>
+    <string name="logged_in_as">Logged In as</string>
+    <string name="outputing_audio_call">Outputing Audio Call - </string>
+    <string name="incoming_call">Incoming Call</string>
+    <string name="also_on_call">Also on call:</string>
+    <string name="edit_opponents_list">Edit opponents list</string>
+    <string name="incoming_audio_call">Incoming Audio Call</string>
+    <string name="incoming_video_call">Incoming Video Call</string>
+    <string name="connect">Connect...</string>
+    <string name="checking">Checking...</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+
+
+    <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
+    <string name="select_user_to_call">Select Users You Want to Call</string>
+
+    
+    <string name="btn_audio_call">AUDIO CALL</string>
+    <string name="btn_video_call">VIDEO CALL</string>
+    <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Chat Sample]]></string>
+    <string name="current_version">0.9.1</string>
+    <string name="rejected">Rejected</string>
+    <string name="noAnswer">No answer</string>
+    <string name="hungUp">Hung up</string>
+    <string name="closed">Closed</string>
+    <string name="time_out">Time Out</string>
+    <string name="failed">Failed</string>
+
+    <color name="white">#FFFFFF</color>
+    <color name="blue_green">#008080</color>
+    <color name="grey">#606060</color>
+    <color name="gold">#FFD700</color>
+    <color name="spring_bud">#A7FC00</color>
+    <color name="water_bondi_beach">#0095B6</color>
+    <color name="coral">#FF4040</color>
+    <color name="lime">#00FF00</color>
+    <color name="may_green">#4C9141</color>
+    <color name="mauveine">#EF0097</color>
+    <color name="blue">#1FCECB</color>
+    <color name="orange">#FFA500</color>
+    <color name="gentianaceae_blue">#2A6478</color>
+    <color name="blue_krayola">#1F75FE</color>
+    <color name="red">#FF0000</color>
+    <color name="white_blue">#00BFFF</color>
+    <color name="pink">#FF7A7A</color>
+    <color name="green">#45D100</color>
+    <color name="white_green">#A9FF80</color>
+    <color name="black_transparent_30">#30000000</color>
+    <color name="black_transparent_50">#50000000</color>
+    <color name="white_transparent_80">#80FFFFFF</color>
+
+
+</resources>
