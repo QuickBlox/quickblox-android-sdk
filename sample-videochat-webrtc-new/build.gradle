@@ -7,26 +7,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-/*apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
-    defaultConfig {
-        applicationId "com.quickblox.sample.videochatwebrtcnew"
-        minSdkVersion 19
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}*/
 apply plugin: 'android'
 apply plugin: 'io.fabric'
 
@@ -34,21 +15,13 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-
-/*
-android {
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
-}
-*/
-
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.quickblox.sample.videochatwebrtcnew"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -63,10 +36,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('../jars/quickblox-android-sdk-core-2.1.jar')
-    compile files('../jars/quickblox-android-sdk-videochat-2.1.jar')
-    compile files('../jars/quickblox-android-sdk-videochat-webrtc-2.1.jar')
-    compile files('../jars/quickblox-android-sdk-chat-2.1.jar')
+    compile files('../jars/quickblox-android-sdk-core-2.2.jar')
+    compile files('../jars/quickblox-android-sdk-videochat-webrtc-2.2.jar')
+    compile files('../jars/quickblox-android-sdk-chat-2.2.jar')
     compile 'com.android.support:appcompat-v7:+'
     compile project(':pull-to-refresh')
     compile files('libs/android-support-v4.jar')

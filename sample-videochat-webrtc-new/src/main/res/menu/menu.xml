@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:com.quickblox.sample.videochatwebrtcnew="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/log_out"
         android:title="Exit to app"
         android:icon="@drawable/ic_exit_to_app"
-        android:showAsAction="always" />
+        com.quickblox.sample.videochatwebrtcnew:showAsAction="always" />
 </menu>

@@ -20,7 +20,7 @@ ext.targetCompatibility = JavaVersion.VERSION_1_7
 ext.lintAbortOnError = false
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2.1'
+    gradleVersion = '2.3'
 }
 
 def makeJar(variant, project) {

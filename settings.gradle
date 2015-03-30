@@ -7,7 +7,6 @@ include 'sample-custom-objects'
 include 'sample-content'
 include 'sample-chat'
 include 'sample-videochat'
-include 'sample-videochat-webrtc'
 include 'sample-videochat-webrtc-new'
 include 'pull-to-refresh'
 project(':pull-to-refresh').projectDir = new File('sample-chat/libraries/pull-to-refresh')
