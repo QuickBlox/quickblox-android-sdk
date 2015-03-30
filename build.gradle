@@ -11,7 +11,7 @@ buildscript {
 ext.compileSdkVersion = 21
 ext.buildToolsVersion = "21.1.1"
 
-ext.minSdkVersion = 9
+ext.minSdkVersion = 14
 ext.targetSdkVersion = 19
 
 ext.sourceCompatibility = JavaVersion.VERSION_1_7

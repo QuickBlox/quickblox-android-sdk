@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -25,7 +23,6 @@ import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
-import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import org.jivesoftware.smack.SmackException;
@@ -65,25 +62,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         ((CallActivity)getActivity()).initActionBar();
 
-        if (savedInstanceState == null){
-            Log.d("Track", "onCreateView() from OpponentsFragment Level 1");
-//            view = inflater.inflate(R.layout.fragment_opponents, container, false);
-
-//            initUI(view);
-
-//            // Show dialog till opponents loading
-//            progresDialog = new ProgressDialog(getActivity()) {
-//                @Override
-//                public void onBackPressed() {
-//                    Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
-//                }
-//            };
-//            progresDialog.setMessage("Load opponents ...");
-//            progresDialog.setCanceledOnTouchOutside(false);
-//            progresDialog.show();
-
-//            initOpponentListAdapter();
-        }
         view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
         initUI(view);
@@ -131,13 +109,11 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
                 @Override
                 public void onSuccess() {
-
                 }
 
                 @Override
                 public void onError(List<String> strings) {
                     Log.d("Track", "onError()");
-
                 }
             });
         } else {

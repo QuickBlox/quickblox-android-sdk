@@ -2,11 +2,11 @@ package com.quickblox.sample.videochatwebrtcnew;
 
 import com.quickblox.users.model.QBUser;
 
-public class User extends QBUser{
+public class User extends QBUser {
 
     public int userNumber;
 
-    public User (int userNumber, String fullName, String login, String password, int id) {
+    public User(int userNumber, String fullName, String login, String password, int id) {
         super.fullName = fullName;
         super.login = login;
         super.password = password;
@@ -15,11 +15,11 @@ public class User extends QBUser{
 
     }
 
-    public int getUserNumber(){
+    public int getUserNumber() {
         return userNumber;
     }
 
-    public void setUserNumber (int userNumber) {
+    public void setUserNumber(int userNumber) {
         this.userNumber = userNumber;
     }
 
@@ -27,12 +27,10 @@ public class User extends QBUser{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
-        //if (!super.equals(o)) return false;
 
         User user = (User) o;
 
         if (userNumber != user.userNumber) return false;
-
         return true;
     }
 

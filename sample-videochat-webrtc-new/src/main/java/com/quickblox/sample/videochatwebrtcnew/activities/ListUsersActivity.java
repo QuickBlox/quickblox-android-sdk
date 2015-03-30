@@ -19,17 +19,15 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
-import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 
-import io.fabric.sdk.android.Fabric;
-import org.jivesoftware.smack.SmackException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -56,7 +54,7 @@ public class ListUsersActivity extends Activity {
 
         QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
 
-        if (getActionBar() != null){
+        if (getActionBar() != null) {
             getActionBar().setTitle(getResources().getString(R.string.opponentsListActionBarTitle));
         }
 
@@ -75,8 +73,8 @@ public class ListUsersActivity extends Activity {
 
     }
 
-    public static int resourceSelector (int number){
-        int resStr=-1;
+    public static int resourceSelector(int number) {
+        int resStr = -1;
         switch (number) {
             case 0:
                 resStr = R.drawable.shape_oval_spring_bud;
@@ -109,13 +107,13 @@ public class ListUsersActivity extends Activity {
                 resStr = R.drawable.shape_oval_coral;
                 break;
             default:
-                resStr= resourceSelector(number%10);
+                resStr = resourceSelector(number % 10);
         }
-        return  resStr;
+        return resStr;
     }
 
-    public static int selectBackgrounForOpponent (int number){
-        int resStr=-1;
+    public static int selectBackgrounForOpponent(int number) {
+        int resStr = -1;
         switch (number) {
             case 0:
                 resStr = R.drawable.rectangle_rounded_spring_bud;
@@ -148,16 +146,16 @@ public class ListUsersActivity extends Activity {
                 resStr = R.drawable.rectangle_rounded_coral;
                 break;
             default:
-                resStr= selectBackgrounForOpponent(number%10);
+                resStr = selectBackgrounForOpponent(number % 10);
         }
-        return  resStr;
+        return resStr;
     }
 
-    public static int getUserIndex(int id){
+    public static int getUserIndex(int id) {
         int index = 0;
 
-        for (User usr : users){
-            if (usr.getId().equals(id)){
+        for (User usr : users) {
+            if (usr.getId().equals(id)) {
                 index = (users.indexOf(usr)) + 1;
                 break;
             }
@@ -180,7 +178,7 @@ public class ListUsersActivity extends Activity {
                 String password = usersListAdapter.getItem(position).getPassword();
 
                 createSession(login, password);
-           }
+            }
         });
     }
 
@@ -219,7 +217,7 @@ public class ListUsersActivity extends Activity {
                     public void onError(List errors) {
                         loginPB.setVisibility(View.INVISIBLE);
                         Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                        for (Object error : errors){
+                        for (Object error : errors) {
                             Log.d(TAG, error.toString());
                         }
                     }
@@ -244,20 +242,5 @@ public class ListUsersActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-//        if (CallActivity.opponentsList != null) {
-//            CallActivity.opponentsList = null;
-//            OpponentsAdapter.i = 0;
-//        }
     }
-   /*@Override
-    protected void onRestart() {
-        super.onRestart();
-        logOutFromChat();
-    }*/
-
-    /*@Override
-    protected void onDestroy() {
-        super.onDestroy();
-        logOutFromChat();
-    }*/
 }

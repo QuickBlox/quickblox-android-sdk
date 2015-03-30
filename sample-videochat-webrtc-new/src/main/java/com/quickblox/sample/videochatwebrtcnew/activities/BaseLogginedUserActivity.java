@@ -33,8 +33,8 @@ public class BaseLogginedUserActivity extends Activity {
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
 
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
-        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) +1));
-        numberOfListAB.setText(String.valueOf((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) +1));
+        numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) + 1));
+        numberOfListAB.setText(String.valueOf((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) + 1));
 
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);
@@ -42,7 +42,7 @@ public class BaseLogginedUserActivity extends Activity {
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
         Integer index = (Integer) searchIndexLogginedUser(DataHolder.createUsersList());
 
-        if(index >=0) {
+        if (index >= 0) {
             userNameAB.setText(DataHolder.createUsersList().get(index).getFullName());
         }
 
@@ -51,7 +51,7 @@ public class BaseLogginedUserActivity extends Activity {
 
     }
 
-    public void initActionBarWithTimer () {
+    public void initActionBarWithTimer() {
         mActionBar = getActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
@@ -84,7 +84,7 @@ public class BaseLogginedUserActivity extends Activity {
         return indexLogginedUser;
     }
 
-    public void startTimer(){
+    public void startTimer() {
         timerABWithTimer.setBase(SystemClock.elapsedRealtime());
         timerABWithTimer.start();
     }

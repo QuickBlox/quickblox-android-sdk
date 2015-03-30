@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -28,13 +27,11 @@ public class OpponentsAdapter extends BaseAdapter {
     public static int i;
     public List<QBUser> selected = new ArrayList<>();
     private String TAG = "OpponentsAdapte";
-//    String lologinnedUser;
 
-    public OpponentsAdapter(Context context, List<QBUser> users/*, String loginnedUser*/) {
+    public OpponentsAdapter(Context context, List<QBUser> users) {
         Log.d(TAG, "On crate i:" + i);
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
-//        this.lologinnedUser = loginnedUser;
 
     }
 
@@ -80,10 +77,6 @@ public class OpponentsAdapter extends BaseAdapter {
 
 
         if (user != null) {
-
-//            if(i == 0){
-//                i = user.getId();
-//            }
 
             holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
 

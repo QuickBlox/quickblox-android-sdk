@@ -6,9 +6,6 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
@@ -25,7 +21,6 @@ import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCSessionDescription;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -33,7 +28,6 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tereha on 16.02.15.
@@ -92,8 +86,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
-
-//        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
 
         Log.d("Track", "onCreate() from IncomeCallFragment");
         super.onCreate(savedInstanceState);

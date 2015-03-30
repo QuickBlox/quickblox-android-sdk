@@ -2,10 +2,7 @@ package com.quickblox.sample.videochatwebrtcnew.activities;
 
 
 import android.app.Fragment;
-
-
 import android.app.FragmentManager;
-import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
@@ -92,13 +88,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         setContentView(R.layout.activity_main);
 
 
-
         Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
 
         // Probably initialize members with default values for a new instance
         login = getIntent().getStringExtra("login");
 
-        if (savedInstanceState==null) {
+        if (savedInstanceState == null) {
             addOpponentsFragment();
         }
 
@@ -261,7 +256,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         if (session.getSessionID().equals(currentSession)) {
             Log.d(TAG, "Stop session");
 //            if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()) {
-                addOpponentsFragmentWithDelay();
+            addOpponentsFragmentWithDelay();
 
 //            } else {
 //                Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
@@ -340,14 +335,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         new Handler(handlerThread.getLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
-                currentSession = null;
+                if (!CallActivity.this.isDestroyed()) {
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
+                    currentSession = null;
+                }
             }
         }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT));
     }
 
     public void addOpponentsFragment() {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
+        if (!isDestroyed()) {
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
+        }
     }
 
 

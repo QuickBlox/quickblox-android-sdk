@@ -1,12 +1,10 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,8 +27,6 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
     }
-
-
 
 
     @Override
@@ -57,8 +53,6 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.opponentsNumber = (TextView) convertView.findViewById(R.id.opponentsNumber);
 
-
-
             convertView.setTag(holder);
 
         } else {
@@ -66,19 +60,10 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
         }
 
         final QBUser user = opponents.get(position);
-
         if (user != null) {
-
-
             holder.opponentsNumber.setText("");
-
             holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(position));
-
-
-
-
         }
-
         return convertView;
     }
 

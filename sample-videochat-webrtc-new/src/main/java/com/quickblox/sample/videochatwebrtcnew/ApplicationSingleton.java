@@ -36,10 +36,10 @@ public class ApplicationSingleton extends Application {
     }
 
 
-    public Integer getOpponentIDForPrivateDialog(QBDialog dialog){
+    public Integer getOpponentIDForPrivateDialog(QBDialog dialog) {
         Integer opponentID = -1;
-        for(Integer userID : dialog.getOccupants()){
-            if(!userID.equals(getCurrentUser().getId())){
+        for (Integer userID : dialog.getOccupants()) {
+            if (!userID.equals(getCurrentUser().getId())) {
                 opponentID = userID;
                 break;
             }
