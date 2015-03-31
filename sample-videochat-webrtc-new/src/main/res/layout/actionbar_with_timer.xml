@@ -12,7 +12,7 @@
         android:textColor="@color/grey"
         android:gravity="center_vertical|center_horizontal"
         android:layout_marginLeft="10dp"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
         android:id="@+id/loginAsABWithTimer"
         android:gravity="center_vertical|center_horizontal"
         android:textStyle="bold"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/userNameABWithTimer"
@@ -38,5 +38,5 @@
         android:layout_toRightOf="@+id/loginAsABWithTimer"
         android:gravity="center_vertical|center_horizontal"
         android:textStyle="bold"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 </RelativeLayout>
