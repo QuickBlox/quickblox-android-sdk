@@ -19,7 +19,7 @@ import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
-import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCSessionDescription;
