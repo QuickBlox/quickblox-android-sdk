@@ -3,6 +3,7 @@ package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,7 @@ import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
-import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -80,6 +81,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
+//    private MediaPlayer ringtone;
 
 
     @Override
@@ -190,6 +192,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.noAnswer, View.VISIBLE);
 //        addOpponentsFragmentWithDelay();
+        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+        if (fragment!=null) {
+            fragment.stopOutBeep();
+        }
     }
 
     @Override
@@ -199,12 +205,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if (fragment != null) {
             fragment.actionButtonsEnabled(true);
+            fragment.stopOutBeep();
         }
     }
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
         setStateTitle(userID, R.string.rejected, View.INVISIBLE);
+
+        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+        if (fragment!=null) {
+            fragment.stopOutBeep();
+        }
     }
 
     @Override
@@ -239,6 +251,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         setStateTitle(userID, R.string.connected, View.INVISIBLE);
 
         Log.d("Track", "onConnectedToUser() is started");
+
+        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+        if (fragment!=null) {
+            fragment.stopOutBeep();
+        }
     }
 
     @Override

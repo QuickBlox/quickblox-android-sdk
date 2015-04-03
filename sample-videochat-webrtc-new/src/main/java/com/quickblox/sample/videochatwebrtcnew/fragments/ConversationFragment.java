@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,7 +21,7 @@ import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
-import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -79,6 +80,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private String callerName;
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
+    private MediaPlayer ringtone;
 
 
     @Override
@@ -153,8 +155,31 @@ public class ConversationFragment extends Fragment implements Serializable {
                 session.acceptCall(session.getUserInfo());
             } else {
                 session.startCall(session.getUserInfo());
+                startOutBeep();
             }
             isMessageProcessed = true;
+        }
+    }
+
+    private void startOutBeep() {
+        ringtone = MediaPlayer.create(getActivity(), R.raw.beep);
+        ringtone.setLooping(true);
+        ringtone.start();
+
+    }
+
+    public void stopOutBeep() {
+
+        if (ringtone != null) {
+            try {
+                ringtone.stop();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ringtone.release();
+            ringtone = null;
         }
     }
 
@@ -275,6 +300,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopOutBeep();
                 actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);

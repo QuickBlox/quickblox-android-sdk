@@ -1,4 +1,4 @@
-package com.quickblox.sample.videochatwebrtcnew.helper;
+package com.quickblox.sample.videochatwebrtcnew.holder;
 
 import android.util.Log;
 
