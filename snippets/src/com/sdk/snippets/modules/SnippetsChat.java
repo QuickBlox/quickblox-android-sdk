@@ -1595,16 +1595,22 @@ public class SnippetsChat extends Snippets {
         @Override
         public void executeAsync() {
             QBPrivacyList list = new QBPrivacyList();
-            list.setName("public");
+            list.setName("public4");
 
             ArrayList<QBPrivacyListItem> items = new ArrayList<QBPrivacyListItem>();
-
+            //
             QBPrivacyListItem item1 = new QBPrivacyListItem();
             item1.setAllow(false);
             item1.setType(QBPrivacyListItem.Type.USER_ID);
             item1.setValueForType(String.valueOf(ApplicationConfig.getInstance().getTestUserId2()));
             items.add(item1);
-
+            //
+            QBPrivacyListItem item2 = new QBPrivacyListItem();
+            item2.setAllow(false);
+            item2.setType(QBPrivacyListItem.Type.GROUP_USER_ID);
+            item2.setValueForType(String.valueOf(ApplicationConfig.getInstance().getTestUserId2()));
+            items.add(item2);
+            //
             list.setItems(items);
 
             try {
@@ -1625,7 +1631,6 @@ public class SnippetsChat extends Snippets {
         public void executeAsync() {
             try {
                 privacyListsManager.deletePrivacyList("public");
-                log("list deleted");
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
             } catch (XMPPException.XMPPErrorException e) {
@@ -1640,7 +1645,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void executeAsync() {
             try {
-                privacyListsManager.setPrivacyListAsDefault("public");
+                privacyListsManager.setPrivacyListAsDefault("public4");
                 log("list set as default");
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
@@ -1651,6 +1656,7 @@ public class SnippetsChat extends Snippets {
             }
         }
     };
+
 
 
 
