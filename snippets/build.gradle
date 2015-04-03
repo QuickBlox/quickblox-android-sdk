@@ -14,13 +14,13 @@ android {
 }
 
 dependencies {
-    compile files('../jars/quickblox-android-sdk-core-2.2.jar',
-            '../jars/quickblox-android-sdk-chat-2.2.jar',
-            '../jars/quickblox-android-sdk-content-2.2.jar',
-            '../jars/quickblox-android-sdk-customobjects-2.2.jar',
-            '../jars/quickblox-android-sdk-location-2.2.jar',
-            '../jars/quickblox-android-sdk-messages-2.2.jar',
-            '../jars/quickblox-android-sdk-ratings-2.2.jar',)
+    compile files('../jars/quickblox-android-sdk-core-2.2.1.jar',
+            '../jars/quickblox-android-sdk-chat-2.2.1.jar',
+            '../jars/quickblox-android-sdk-content-2.2.1.jar',
+            '../jars/quickblox-android-sdk-customobjects-2.2.1.jar',
+            '../jars/quickblox-android-sdk-location-2.2.1.jar',
+            '../jars/quickblox-android-sdk-messages-2.2.1.jar',
+            '../jars/quickblox-android-sdk-ratings-2.2.1.jar',)
 
 //    // for development purpose
 //    //

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
-import com.quickblox.sample.videochatwebrtcnew.helper.DataHolder;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 
 import java.util.ArrayList;
 

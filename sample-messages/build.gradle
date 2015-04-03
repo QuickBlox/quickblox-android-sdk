@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    compile files('../jars/quickblox-android-sdk-core-2.2.jar', '../jars/quickblox-android-sdk-messages-2.2.jar')
+    compile files('../jars/quickblox-android-sdk-core-2.2.1.jar', '../jars/quickblox-android-sdk-messages-2.2.1.jar')
     compile 'com.google.android.gms:play-services:4.2.+'
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:18.0.+'
