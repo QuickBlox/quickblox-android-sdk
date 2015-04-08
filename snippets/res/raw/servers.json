@@ -7,13 +7,13 @@
             "api_domain": "api.quickblox.com",
             "chat_domain": "chat.quickblox.com",
             "bucket_name": "qbprod",
-            "test_user_id1": 1501966,
-            "test_user_login1": "igorquickblox3",
-            "test_user_password1": "igorquickblox3",
-            "test_user_id2": 1501969,
-            "test_user_login2": "igorquickblox4",
-            "test_user_password2": "igorquickblox4",
-            "dialog_id": "549bde53535c1250be00df57"
+            "test_user_id1": 2728759,
+            "test_user_login1": "igorquickblox333",
+            "test_user_password1": "igorquickblox333",
+            "test_user_id2": 2728764,
+            "test_user_login2": "igorquickblox334",
+            "test_user_password2": "igorquickblox334",
+            "dialog_id": "551eabe3535c1220d9051522"
         },
         "stage": {
             "app_id": "6",
@@ -76,6 +76,6 @@
             "dialog_id": "548b53c1efa3579b46000002"
         }
     },
-    "active": "stage",
-    "use_first_user": true
+    "active": "production",
+    "use_first_user": false
 }
