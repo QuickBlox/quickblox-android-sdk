@@ -6,8 +6,7 @@ android {
 }
 
 dependencies {
-    compile files('../jars/quickblox-android-sdk-core-2.2.1.jar',
-            '../jars/quickblox-android-sdk-videochat-2.2.1.jar', '../jars/quickblox-android-sdk-chat-2.2.1.jar')
+    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_jar_path)
 }
 
 

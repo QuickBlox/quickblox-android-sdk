@@ -12,6 +12,7 @@ import com.quickblox.core.QBProgressCallback;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
+import com.quickblox.sample.content.utils.DialogUtils;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
@@ -107,7 +108,9 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
             @Override
             public void onError(List<String> strings) {
+                progressDialog.hide();
 
+                DialogUtils.show(GalleryActivity.this, strings.toString());
             }
         }, new QBProgressCallback() {
             @Override
