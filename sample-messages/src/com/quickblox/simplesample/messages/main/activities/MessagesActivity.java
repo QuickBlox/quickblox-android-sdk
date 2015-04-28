@@ -1,8 +1,13 @@
 package com.quickblox.simplesample.messages.main.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -16,7 +21,7 @@ import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.main.definitions.Consts;
+import com.quickblox.simplesample.messages.main.Consts;
 import com.quickblox.simplesample.messages.main.helper.PlayServicesHelper;
 import com.quickblox.simplesample.messages.main.utils.DialogUtils;
 
@@ -24,29 +29,38 @@ import java.util.List;
 
 public class MessagesActivity extends Activity {
 
+    private static final String TAG = MessagesActivity.class.getSimpleName();
+
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
     private Button sendMessageButton;
 
-
-    private static MessagesActivity instance;
     private PlayServicesHelper playServicesHelper;
-
-    public static MessagesActivity getInstance() {
-        return instance;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages_layout);
 
-        instance = this;
         playServicesHelper = new PlayServicesHelper(this);
 
         initUI();
         addMessageToList();
+
+        // Register to receive push notifications events
+        //
+        LocalBroadcastManager.getInstance(this).registerReceiver(mPushReceiver,
+                new IntentFilter(Consts.NEW_PUSH_EVENT));
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mPushReceiver);
+
+        super.onDestroy();
     }
 
     private void initUI() {
@@ -123,4 +137,19 @@ public class MessagesActivity extends Activity {
 
         progressBar.setVisibility(View.VISIBLE);
     }
+
+    // Our handler for received Intents.
+    //
+    private BroadcastReceiver mPushReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra(Consts.EXTRA_MESSAGE);
+
+            Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
+
+            retrieveMessage(message);
+        }
+    };
 }

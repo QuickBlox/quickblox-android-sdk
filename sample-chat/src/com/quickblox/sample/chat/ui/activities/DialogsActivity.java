@@ -2,8 +2,13 @@ package com.quickblox.sample.chat.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +23,8 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.sample.chat.pushnotifications.Consts;
+import com.quickblox.sample.chat.pushnotifications.PlayServicesHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.chat.ApplicationSingleton;
@@ -29,16 +36,28 @@ import java.util.List;
 
 public class DialogsActivity extends Activity {
 
+    private static final String TAG = DialogsActivity.class.getSimpleName();
+
     private ListView dialogsListView;
     private ProgressBar progressBar;
+
+    private PlayServicesHelper playServicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogs_activity);
 
+        playServicesHelper = new PlayServicesHelper(this);
+
         dialogsListView = (ListView) findViewById(R.id.roomsList);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+
+        // Register to receive push notifications events
+        //
+        LocalBroadcastManager.getInstance(this).registerReceiver(mPushReceiver,
+                new IntentFilter(Consts.NEW_PUSH_EVENT));
 
 
         // get dialogs
@@ -105,16 +124,16 @@ public class DialogsActivity extends Activity {
         dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog)adapter.getItem(position);
+                QBDialog selectedDialog = (QBDialog) adapter.getItem(position);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ChatActivity.EXTRA_DIALOG, (QBDialog)adapter.getItem(position));
+                bundle.putSerializable(ChatActivity.EXTRA_DIALOG, (QBDialog) adapter.getItem(position));
 
                 // group
-                if(selectedDialog.getType().equals(QBDialogType.GROUP)){
+                if (selectedDialog.getType().equals(QBDialogType.GROUP)) {
                     bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
 
-                // private
+                    // private
                 } else {
                     bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.PRIVATE);
                 }
@@ -124,6 +143,12 @@ public class DialogsActivity extends Activity {
                 ChatActivity.start(DialogsActivity.this, bundle);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playServicesHelper.checkPlayServices();
     }
 
     @Override
@@ -147,4 +172,17 @@ public class DialogsActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // Our handler for received Intents.
+    //
+    private BroadcastReceiver mPushReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra(Consts.EXTRA_MESSAGE);
+
+            Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
+        }
+    };
 }
