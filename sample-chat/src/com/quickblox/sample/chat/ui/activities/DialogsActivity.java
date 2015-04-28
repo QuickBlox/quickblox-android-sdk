@@ -18,16 +18,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
-import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.sample.chat.pushnotifications.Consts;
 import com.quickblox.sample.chat.pushnotifications.PlayServicesHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
-import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapters.DialogsAdapter;
 
@@ -59,53 +53,20 @@ public class DialogsActivity extends Activity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mPushReceiver,
                 new IntentFilter(Consts.NEW_PUSH_EVENT));
 
-
-        // get dialogs
+        // Get dialogs
         //
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
-
-        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+        ChatService.getInstance().getDialogs(new QBEntityCallbackImpl() {
             @Override
-            public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
+            public void onSuccess(Object object, Bundle bundle) {
+                final ArrayList<QBDialog> dialogs = (ArrayList<QBDialog>)object;
 
-                // collect all occupants ids
+                // build list view
                 //
-                List<Integer> usersIDs = new ArrayList<Integer>();
-                for(QBDialog dialog : dialogs){
-                    usersIDs.addAll(dialog.getOccupants());
-                }
-
-                // Get all occupants info
-                //
-                QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
-                requestBuilder.setPage(1);
-                requestBuilder.setPerPage(usersIDs.size());
-                //
-                QBUsers.getUsersByIDs(usersIDs, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
-                    @Override
-                    public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-
-                        // Save users
-                        //
-                        ((ApplicationSingleton)getApplication()).setDialogsUsers(users);
-
-                        // build list view
-                        //
-                        buildListView(dialogs);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
-                        dialog.setMessage("get occupants errors: " + errors).create().show();
-                    }
-
-                });
+                buildListView(dialogs);
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(List errors) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
                 dialog.setMessage("get dialogs errors: " + errors).create().show();
             }
@@ -127,20 +88,13 @@ public class DialogsActivity extends Activity {
                 QBDialog selectedDialog = (QBDialog) adapter.getItem(position);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ChatActivity.EXTRA_DIALOG, (QBDialog) adapter.getItem(position));
-
-                // group
-                if (selectedDialog.getType().equals(QBDialogType.GROUP)) {
-                    bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
-
-                    // private
-                } else {
-                    bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.PRIVATE);
-                }
+                bundle.putSerializable(ChatActivity.EXTRA_DIALOG, selectedDialog);
 
                 // Open chat activity
                 //
                 ChatActivity.start(DialogsActivity.this, bundle);
+
+                finish();
             }
         });
     }

@@ -21,7 +21,7 @@ import org.jivesoftware.smackx.muc.DiscussionHistory;
 import java.util.Arrays;
 import java.util.List;
 
-public class GroupChatManagerImpl extends QBMessageListenerImpl<QBGroupChat> implements ChatManager {
+public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat {
     private static final String TAG = "GroupChatManagerImpl";
 
     private ChatActivity chatActivity;
@@ -29,7 +29,7 @@ public class GroupChatManagerImpl extends QBMessageListenerImpl<QBGroupChat> imp
     private QBGroupChatManager groupChatManager;
     private QBGroupChat groupChat;
 
-    public GroupChatManagerImpl(ChatActivity chatActivity) {
+    public GroupChatImpl(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
 
         groupChatManager = QBChatService.getInstance().getGroupChatManager();
@@ -48,7 +48,7 @@ public class GroupChatManagerImpl extends QBMessageListenerImpl<QBGroupChat> imp
             @Override
             public void onSuccess() {
 
-                groupChat.addMessageListener(GroupChatManagerImpl.this);
+                groupChat.addMessageListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -76,14 +76,20 @@ public class GroupChatManagerImpl extends QBMessageListenerImpl<QBGroupChat> imp
         });
     }
 
+    public void leave(){
+        try {
+            groupChat.leave();
+        } catch (SmackException.NotConnectedException nce) {
+            nce.printStackTrace();
+        } catch (XMPPException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void release() throws XMPPException {
         if (groupChat != null) {
-            try {
-                groupChat.leave();
-            } catch (SmackException.NotConnectedException nce){
-                nce.printStackTrace();
-            }
+            leave();
 
             groupChat.removeMessageListener(this);
         }
@@ -96,12 +102,11 @@ public class GroupChatManagerImpl extends QBMessageListenerImpl<QBGroupChat> imp
                 groupChat.sendMessage(message);
             } catch (SmackException.NotConnectedException nce){
                 nce.printStackTrace();
+                Toast.makeText(chatActivity, "Can't send a message, You are not connected to chat", Toast.LENGTH_SHORT).show();
             } catch (IllegalStateException e){
                 e.printStackTrace();
-
-                Toast.makeText(chatActivity, "You are still joining a group chat, please white a bit", Toast.LENGTH_LONG).show();
+                Toast.makeText(chatActivity, "You are still joining a group chat, please wait a bit", Toast.LENGTH_LONG).show();
             }
-
         } else {
             Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
         }

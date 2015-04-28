@@ -74,6 +74,5 @@ public class NewDialogActivity extends ActionBarActivity {
         Intent i = new Intent(NewDialogActivity.this, DialogsActivity.class);
         startActivity(i);
         finish();
-
     }
 }

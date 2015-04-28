@@ -18,10 +18,10 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.sample.chat.ui.adapters.UsersAdapter;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
 
@@ -55,7 +55,7 @@ public class UsersFragment extends Fragment implements QBEntityCallback<ArrayLis
             @Override
             public void onClick(View v) {
 
-                ((ApplicationSingleton)getActivity().getApplication()).addDialogsUsers(usersAdapter.getSelected());
+                ChatService.getInstance().addDialogsUsers(usersAdapter.getSelected());
 
                 // Create new group dialog
                 //
@@ -151,7 +151,6 @@ public class UsersFragment extends Fragment implements QBEntityCallback<ArrayLis
 
     public void startSingleChat(QBDialog dialog) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.PRIVATE);
         bundle.putSerializable(ChatActivity.EXTRA_DIALOG, dialog);
 
         ChatActivity.start(getActivity(), bundle);
@@ -160,7 +159,6 @@ public class UsersFragment extends Fragment implements QBEntityCallback<ArrayLis
     private void startGroupChat(QBDialog dialog){
         Bundle bundle = new Bundle();
         bundle.putSerializable(ChatActivity.EXTRA_DIALOG, dialog);
-        bundle.putSerializable(ChatActivity.EXTRA_MODE, ChatActivity.Mode.GROUP);
 
         ChatActivity.start(getActivity(), bundle);
     }
