@@ -36,7 +36,9 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
     }
 
     public void joinGroupChat(QBDialog dialog, QBEntityCallback callback){
-        groupChat = groupChatManager.createGroupChat(dialog.getRoomJid());
+        if(groupChat == null) {
+            groupChat = groupChatManager.createGroupChat(dialog.getRoomJid());
+        }
         join(groupChat, callback);
     }
 

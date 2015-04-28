@@ -38,7 +38,6 @@ public class SplashActivity extends Activity {
 
         QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
 
-
         // Login to REST API
         //
         final QBUser user = new QBUser();
