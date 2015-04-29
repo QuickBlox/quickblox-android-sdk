@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat {
-    private static final String TAG = "GroupChatManagerImpl";
+    private static final String TAG = GroupChatImpl.class.getSimpleName();
 
     private ChatActivity chatActivity;
 
@@ -31,15 +31,21 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
     public GroupChatImpl(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
-
-        groupChatManager = QBChatService.getInstance().getGroupChatManager();
     }
 
     public void joinGroupChat(QBDialog dialog, QBEntityCallback callback){
+        initManagerIfNeed();
+
         if(groupChat == null) {
             groupChat = groupChatManager.createGroupChat(dialog.getRoomJid());
         }
         join(groupChat, callback);
+    }
+
+    private void initManagerIfNeed(){
+        if(groupChatManager == null){
+            groupChatManager = QBChatService.getInstance().getGroupChatManager();
+        }
     }
 
     private void join(final QBGroupChat groupChat, final QBEntityCallback callback) {

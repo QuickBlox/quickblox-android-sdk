@@ -26,17 +26,23 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
     public PrivateChatImpl(ChatActivity chatActivity, Integer opponentID) {
         this.chatActivity = chatActivity;
 
-        privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+        initManagerIfNeed();
 
-        privateChatManager.addPrivateChatManagerListener(this);
-
-        // init private chat
+        // initIfNeed private chat
         //
         privateChat = privateChatManager.getChat(opponentID);
         if (privateChat == null) {
             privateChat = privateChatManager.createChat(opponentID, this);
         }else{
             privateChat.addMessageListener(this);
+        }
+    }
+
+    private void initManagerIfNeed(){
+        if(privateChatManager == null){
+            privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+
+            privateChatManager.addPrivateChatManagerListener(this);
         }
     }
 

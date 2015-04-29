@@ -5,11 +5,23 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.quickblox.core.QBSettings;
+
 public class ApplicationSingleton extends Application {
     private static final String TAG = ApplicationSingleton.class.getSimpleName();
 
-    private static ApplicationSingleton instance;
+//    public static final String APP_ID = "92";
+//    public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
+//    public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
 
+    public static final String APP_ID = "13037";
+    public static final String AUTH_KEY = "cE68h4wB4eFNDvW";
+    public static final String AUTH_SECRET = "P5Yt-ZeE9SuePja";
+
+    public static final String USER_LOGIN = "igorquickblox44";
+    public static final String USER_PASSWORD = "igorquickblox44";
+
+    private static ApplicationSingleton instance;
     public static ApplicationSingleton getInstance() {
         return instance;
     }
@@ -17,7 +29,15 @@ public class ApplicationSingleton extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d(TAG, "onCreate");
+
         instance = this;
+
+        // Initialise QuickBlox SDK
+        //
+        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
+
     }
 
     public int getAppVersion() {

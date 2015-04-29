@@ -2,9 +2,12 @@ package com.quickblox.sample.chat.core;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
@@ -12,6 +15,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.ApplicationSingleton;
+import com.quickblox.sample.chat.ui.activities.DialogsActivity;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -42,11 +46,16 @@ public class ChatService {
         return instance;
     }
 
-    public static void init(Context ctx) {
+    public static boolean initIfNeed(Context ctx) {
         if (!QBChatService.isInitialized()) {
-            QBChatService.init(ctx);
             QBChatService.setDebugEnabled(true);
+            QBChatService.init(ctx);
+            Log.d(TAG, "Initialise QBChatService");
+
+            return true;
         }
+
+        return false;
     }
 
     private QBChatService chatService;
@@ -64,7 +73,40 @@ public class ChatService {
         chatService.removeConnectionListener(listener);
     }
 
-    public void loginToChat(final QBUser user, final QBEntityCallback callback){
+    public void login(final QBUser user, final QBEntityCallback callback){
+
+        // Create REST API session
+        //
+        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+            @Override
+            public void onSuccess(QBSession session, Bundle args) {
+
+                user.setId(session.getUserId());
+
+                // login to Chat
+                //
+                ChatService.getInstance().loginToChat(user, new QBEntityCallbackImpl() {
+
+                    @Override
+                    public void onSuccess() {
+                        callback.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(List errors) {
+                        callback.onError(errors);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                callback.onError(errors);
+            }
+        });
+    }
+
+    private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
         chatService.login(user, new QBEntityCallbackImpl() {
             @Override

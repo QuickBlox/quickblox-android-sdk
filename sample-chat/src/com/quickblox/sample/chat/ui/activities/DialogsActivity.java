@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.ui.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -53,11 +52,23 @@ public class DialogsActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mPushReceiver,
                 new IntentFilter(Consts.NEW_PUSH_EVENT));
 
+        // Get dialogs if the session is active
+        //
+        if(isSessionActive()){
+            getDialogs();
+        }
+    }
+
+    private void getDialogs(){
+        progressBar.setVisibility(View.VISIBLE);
+
         // Get dialogs
         //
         ChatService.getInstance().getDialogs(new QBEntityCallbackImpl() {
             @Override
             public void onSuccess(Object object, Bundle bundle) {
+                progressBar.setVisibility(View.GONE);
+
                 final ArrayList<QBDialog> dialogs = (ArrayList<QBDialog>)object;
 
                 // build list view
@@ -67,6 +78,8 @@ public class DialogsActivity extends BaseActivity {
 
             @Override
             public void onError(List errors) {
+                progressBar.setVisibility(View.GONE);
+
                 AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
                 dialog.setMessage("get dialogs errors: " + errors).create().show();
             }
@@ -77,8 +90,6 @@ public class DialogsActivity extends BaseActivity {
     void buildListView(List<QBDialog> dialogs){
         final DialogsAdapter adapter = new DialogsAdapter(dialogs, DialogsActivity.this);
         dialogsListView.setAdapter(adapter);
-
-        progressBar.setVisibility(View.GONE);
 
         // choose dialog
         //
@@ -139,4 +150,29 @@ public class DialogsActivity extends BaseActivity {
             Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
         }
     };
+
+
+    //
+    // ApplicationSessionStateCallback
+    //
+
+    @Override
+    public void onStartSessionRecreation() {
+
+    }
+
+    @Override
+    public void onFinishSessionRecreation(final boolean success) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success) {
+                    getDialogs();
+                } else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
+                    dialog.setMessage("Error in session recreation").create().show();
+                }
+            }
+        });
+    }
 }

@@ -51,7 +51,7 @@ public class DialogsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
-        // init view
+        // initIfNeed view
         //
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_room, null);

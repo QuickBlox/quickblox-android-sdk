@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.ui.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
