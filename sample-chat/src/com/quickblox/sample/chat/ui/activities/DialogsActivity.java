@@ -168,9 +168,6 @@ public class DialogsActivity extends BaseActivity {
             public void run() {
                 if (success) {
                     getDialogs();
-                } else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
-                    dialog.setMessage("Error in session recreation").create().show();
                 }
             }
         });

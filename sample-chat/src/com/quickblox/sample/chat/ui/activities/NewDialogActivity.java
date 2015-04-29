@@ -46,8 +46,8 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
         usersList = (PullToRefreshListView) findViewById(R.id.usersList);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        createChatButton = (Button) findViewById(R.id.createChatButton);
 
+        createChatButton = (Button) findViewById(R.id.createChatButton);
         createChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +95,9 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
             }
         });
 
-        loadNextPage();
+        if(isSessionActive()){
+            loadNextPage();
+        }
     }
 
     @Override
@@ -179,5 +181,26 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
             ids.add(user.getId());
         }
         return ids;
+    }
+
+    //
+    // ApplicationSessionStateCallback
+    //
+
+    @Override
+    public void onStartSessionRecreation() {
+
+    }
+
+    @Override
+    public void onFinishSessionRecreation(final boolean success) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success) {
+                    loadNextPage();
+                }
+            }
+        });
     }
 }

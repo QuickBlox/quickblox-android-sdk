@@ -10,13 +10,9 @@ import com.quickblox.core.QBSettings;
 public class ApplicationSingleton extends Application {
     private static final String TAG = ApplicationSingleton.class.getSimpleName();
 
-//    public static final String APP_ID = "92";
-//    public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
-//    public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
-
-    public static final String APP_ID = "13037";
-    public static final String AUTH_KEY = "cE68h4wB4eFNDvW";
-    public static final String AUTH_SECRET = "P5Yt-ZeE9SuePja";
+    public static final String APP_ID = "92";
+    public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
+    public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
 
     public static final String USER_LOGIN = "igorquickblox44";
     public static final String USER_PASSWORD = "igorquickblox44";

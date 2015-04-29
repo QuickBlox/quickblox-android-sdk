@@ -315,9 +315,6 @@ public class ChatActivity extends BaseActivity {
             public void run() {
                 if (success) {
                     initChat();
-                } else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
-                    dialog.setMessage("Error in session recreation").create().show();
                 }
             }
         });
