@@ -47,9 +47,9 @@ public class ChatActivity extends BaseActivity {
     private ListView messagesContainer;
     private Button sendButton;
     private ProgressBar progressBar;
+    private ChatAdapter adapter;
 
     private Chat chat;
-    private ChatAdapter adapter;
     private QBDialog dialog;
 
     public static void start(Context context, Bundle bundle) {
@@ -62,7 +62,14 @@ public class ChatActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
         initViews();
+
+        // Init chat if the session is active
+        //
+        if(isSessionActive()){
+            initChat();
+        }
 
         ChatService.getInstance().addConnectionListener(chatConnectionListener);
     }
@@ -91,42 +98,26 @@ public class ChatActivity extends BaseActivity {
     private void initViews() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         messageEditText = (EditText) findViewById(R.id.messageEdit);
-        sendButton = (Button) findViewById(R.id.chatSendButton);
-
-        TextView meLabel = (TextView) findViewById(R.id.meLabel);
-        TextView companionLabel = (TextView) findViewById(R.id.companionLabel);
-        RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        TextView companionLabel = (TextView) findViewById(R.id.companionLabel);
 
-        Intent intent = getIntent();
-
-        // Get chat dialog
+        // Setup opponents info
         //
+        Intent intent = getIntent();
         dialog = (QBDialog)intent.getSerializableExtra(EXTRA_DIALOG);
-
         if(dialog.getType() == QBDialogType.GROUP){
-            chat = new GroupChatImpl(this);
+            RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
+            TextView meLabel = (TextView) findViewById(R.id.meLabel);
             container.removeView(meLabel);
             container.removeView(companionLabel);
-
-            // Join group chat
-            //
-            progressBar.setVisibility(View.VISIBLE);
-            //
-            joinGroupChat();
-
         }else if(dialog.getType() == QBDialogType.PRIVATE){
             Integer opponentID = ChatService.getInstance().getOpponentIDForPrivateDialog(dialog);
-
-            chat = new PrivateChatImpl(this, opponentID);
-
             companionLabel.setText(ChatService.getInstance().getDialogsUsers().get(opponentID).getLogin());
-
-            // Load CHat history
-            //
-            loadChatHistory();
         }
 
+        // Send button
+        //
+        sendButton = (Button) findViewById(R.id.chatSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +148,28 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void initChat(){
+
+        if(dialog.getType() == QBDialogType.GROUP){
+            chat = new GroupChatImpl(this);
+
+            // Join group chat
+            //
+            progressBar.setVisibility(View.VISIBLE);
+            //
+            joinGroupChat();
+
+        }else if(dialog.getType() == QBDialogType.PRIVATE){
+            Integer opponentID = ChatService.getInstance().getOpponentIDForPrivateDialog(dialog);
+
+            chat = new PrivateChatImpl(this, opponentID);
+
+            // Load CHat history
+            //
+            loadChatHistory();
+        }
     }
 
     private void joinGroupChat(){
@@ -284,4 +297,29 @@ public class ChatActivity extends BaseActivity {
             Log.i(TAG, "reconnectionFailed: " + error.getLocalizedMessage());
         }
     };
+
+
+    //
+    // ApplicationSessionStateCallback
+    //
+
+    @Override
+    public void onStartSessionRecreation() {
+
+    }
+
+    @Override
+    public void onFinishSessionRecreation(final boolean success) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success) {
+                    initChat();
+                } else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
+                    dialog.setMessage("Error in session recreation").create().show();
+                }
+            }
+        });
+    }
 }

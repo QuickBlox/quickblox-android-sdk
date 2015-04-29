@@ -38,7 +38,6 @@ public class BaseActivity extends Activity implements ApplicationSessionStateCal
         //
         boolean initialised = ChatService.initIfNeed(this);
         if(initialised && savedInstanceState != null){
-            Log.d(TAG, "needToRecreateSession");
             needToRecreateSession = true;
         }else{
             sessionActive = true;
