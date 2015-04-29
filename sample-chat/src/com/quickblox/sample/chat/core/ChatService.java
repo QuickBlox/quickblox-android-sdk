@@ -42,10 +42,10 @@ public class ChatService {
         return instance;
     }
 
-    public static synchronized void init(Context ctx) {
-        QBChatService.setDebugEnabled(true);
+    public static void init(Context ctx) {
         if (!QBChatService.isInitialized()) {
             QBChatService.init(ctx);
+            QBChatService.setDebugEnabled(true);
         }
     }
 

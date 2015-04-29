@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ChatActivity extends Activity {
+public class ChatActivity extends BaseActivity {
 
     private static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -248,7 +248,12 @@ public class ChatActivity extends Activity {
             // leave active room
             //
             if(dialog.getType() == QBDialogType.GROUP){
-                ((GroupChatImpl) chat).leave();
+                ChatActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((GroupChatImpl) chat).leave();
+                    }
+                });
             }
         }
 
@@ -266,7 +271,12 @@ public class ChatActivity extends Activity {
             // Join active room
             //
             if(dialog.getType() == QBDialogType.GROUP){
-                joinGroupChat();
+                ChatActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        joinGroupChat();
+                    }
+                });
             }
         }
 

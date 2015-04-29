@@ -15,7 +15,7 @@ import com.quickblox.sample.chat.R;
 
 import java.util.List;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends BaseActivity {
 
 //    private static final String APP_ID = "92";
 //    private static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
@@ -38,6 +38,7 @@ public class SplashActivity extends Activity {
 
         QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
 
+
         // Login to REST API
         //
         final QBUser user = new QBUser();
@@ -52,7 +53,6 @@ public class SplashActivity extends Activity {
 
                 // login to Chat
                 //
-                ChatService.init(SplashActivity.this);
                 ChatService.getInstance().loginToChat(user, new QBEntityCallbackImpl() {
 
                     @Override

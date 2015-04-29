@@ -28,7 +28,7 @@ import com.quickblox.sample.chat.ui.adapters.DialogsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DialogsActivity extends Activity {
+public class DialogsActivity extends BaseActivity {
 
     private static final String TAG = DialogsActivity.class.getSimpleName();
 

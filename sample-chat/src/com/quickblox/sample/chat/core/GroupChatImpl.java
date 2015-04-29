@@ -46,6 +46,8 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
+        Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_LONG).show();
+
         groupChat.join(history, new QBEntityCallbackImpl() {
             @Override
             public void onSuccess() {
