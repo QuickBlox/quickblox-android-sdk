@@ -14,8 +14,9 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.location_jar_path)
-    compile 'com.android.support:support-v4:19.0.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
-    compile 'com.google.android.gms:play-services:3.2.+'
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    compile "com.google.android.gms:play-services:$rootProject.playServiceVersion"
+    compile "com.android.support:support-v4:$rootProject.androidSupportVersion"
+    compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
 }
