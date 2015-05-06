@@ -1,13 +1,15 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -57,15 +59,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public static final String CALLER_NAME = "caller_name";
     private static final java.lang.String ADD_OPPONENTS_FRAGMENT_HANDLER = "opponentHandlerTask";
     private static final long TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT = 3;
-    private static final java.lang.String INCOME_WINDOW_SHOW_TASK = "INCOME_WINDOW_SHOW";
+    private static final java.lang.String INCOME_WINDOW_SHOW_TASK_THREAD = "INCOME_WINDOW_SHOW";
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
     private static VideoRenderer.Callbacks LOCAL_RENDERER;
 
     private int selectedOpponentId;
 
-//    private OpponentsFragment opponentsFragment = null;
-//    private IncomeCallFragment incomeCallFragment = null;
-//    private ConversationFragment conversationFragment = null;
 
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
     public static final String SESSION_ID = "sessionID";
@@ -81,7 +80,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
-//    private MediaPlayer ringtone;
 
 
     @Override
@@ -100,8 +98,33 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         }
 
         Log.d("Track", "onCreate() from NewDialogActivity Level 1");
+    }
 
+    private void initIncommingCallTask() {
+        showIncomingCallWindowTaskThread = new HandlerThread(INCOME_WINDOW_SHOW_TASK_THREAD);
+        showIncomingCallWindowTaskThread.start();
+        Looper looper = showIncomingCallWindowTaskThread.getLooper();
+        showIncomingCallWindowTaskHandler = new Handler(looper);
+        showIncomingCallWindowTask = new Runnable() {
+            @Override
+            public void run() {
+                addOpponentsFragment();
+            }
+        };
+    }
 
+    private void startIncomeCallTimer() {
+        showIncomingCallWindowTaskHandler.postAtTime(showIncomingCallWindowTask, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(QBRTCConfig.getAnswerTimeInterval()));
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void stopIncomeCallTimer() {
+        showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            showIncomingCallWindowTaskThread.quitSafely();
+        } else {
+            showIncomingCallWindowTaskThread.quit();
+        }
     }
 
 
@@ -182,6 +205,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
             setCurrentSession(session);
             addIncomeCallFragment(session);
+
+            initIncommingCallTask();
+            startIncomeCallTimer();
         } else {
             Log.d(TAG, "Stop new session. Device now is busy");
             session.rejectCall(null);
@@ -200,6 +226,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onStartConnectToUser(QBRTCSession session, Integer userID) {
+
         setStateTitle(userID, R.string.checking, View.VISIBLE);
 
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
@@ -211,6 +238,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
+        stopIncomeCallTimer();
         setStateTitle(userID, R.string.rejected, View.INVISIBLE);
 
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
@@ -246,6 +274,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onConnectedToUser(QBRTCSession session, Integer userID) {
+        stopIncomeCallTimer();
         startTimer();
 
         setStateTitle(userID, R.string.connected, View.INVISIBLE);
@@ -451,27 +480,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     public void setCurrentVideoView(GLSurfaceView videoView) {
         VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
-//
         REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
-//
-//        //next value in percentage of the available space
-//        int marginLeft = 0;
-//        int marginTop = 0;
-//        int height = 0;
-//        int width = 0;
-//
-//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-//            marginLeft = 70;
-//            marginTop = 0;
-//            height = 30;
-//            width = 22;
-//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-//            marginLeft = 69;
-//            marginTop = 0;
-//            height = 15;
-//            width = 34;
-//        }
-
         LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 30, scaleType, true);
     }
 
