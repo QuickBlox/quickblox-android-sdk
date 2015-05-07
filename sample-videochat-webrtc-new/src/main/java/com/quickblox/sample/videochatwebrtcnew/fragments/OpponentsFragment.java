@@ -199,6 +199,16 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        if (OpponentsAdapter.i > 0){
+            opponentsList.setSelection(OpponentsAdapter.i);
+
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if(progresDialog.isShowing()) {

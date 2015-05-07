@@ -98,35 +98,38 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     }
 
     private void initButtonsListener() {
+            rejectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rejectBtn.setClickable(false);
+                    Log.d("Track", "Call is rejected");
 
-        rejectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Track", "Call is rejected");
+                    stopCallNotification();
 
-                stopCallNotification();
+                    ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())
+                            .rejectCall(sessionDescription.getUserInfo());
+                    ((CallActivity) getActivity()).removeIncomeCallFragment();
+                    ((CallActivity) getActivity()).addOpponentsFragment();
 
-                ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())
-                        .rejectCall(sessionDescription.getUserInfo());
-                ((CallActivity) getActivity()).removeIncomeCallFragment();
-                ((CallActivity) getActivity()).addOpponentsFragment();
+                }
+            });
 
-            }
-        });
+            takeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    takeBtn.setClickable(false);
+                    stopCallNotification();
 
-        takeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    Log.d("Crash", "sessionDescription is " + sessionDescription);
+                    Log.d("Crash", "sessionDescription id is " + sessionDescription.getSessionId());
 
-                stopCallNotification();
+                    ((CallActivity) getActivity())
+                            .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
+//                ((CallActivity) getActivity()).removeIncomeCallFragment();
 
-                ((CallActivity) getActivity())
-                        .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
-                ((CallActivity) getActivity()).removeIncomeCallFragment();
-
-                Log.d("Track", "Call is started");
-            }
-        });
+                    Log.d("Track", "Call is started");
+                }
+            });
     }
 
     private void initUI(View view) {

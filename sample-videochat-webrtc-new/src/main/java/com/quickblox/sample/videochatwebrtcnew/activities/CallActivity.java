@@ -156,7 +156,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                addOpponentsFragment();
+                IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
+                if (incomeCallFragment == null){
+                    ConversationFragment conversationFragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                    if(conversationFragment != null){
+                        disableConversationFragmentButtons();
+                        stopConversationFragmentBeeps();
+                        currentSession.hangUp(new HashMap<String, String>());
+                    }
+                } else {
+                    currentSession.rejectCall(new HashMap<String, String>());
+                }
+
             }
         };
     }
@@ -373,13 +384,13 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onSessionStartClose(QBRTCSession session) {
+        Log.d(TAG, "Start stopping session");
 
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if (fragment != null && session.equals(getCurrentSession())) {
             fragment.actionButtonsEnabled(false);
         }
 
-        Log.d(TAG, "Start stopping session");
     }
 
     @Override
@@ -388,7 +399,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     private void setStateTitle(Integer userID, int stringID, int progressBarVisibility) {
-        Log.d(TAG, "Start Change opponent state");
         View opponentItemView = findViewById(userID);
         if (opponentItemView != null) {
             TextView connectionStatus = (TextView) opponentItemView.findViewById(R.id.connectionStatus);
@@ -508,8 +518,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         // set current session
 //        setCurrentSessionId(sessionID);
+        Log.d("Crash", "Session id is " + sessionID);
         QBRTCSession session = getCurrentSession();
         Integer myId = QBChatService.getInstance().getUser().getId();
+
+        Log.d("Crash", "Session is " + session);
         ArrayList<Integer> opponentsWithoutMe = new ArrayList<>(session.getOpponents());
         opponentsWithoutMe.remove(new Integer(myId));
         opponentsWithoutMe.add(session.getCallerID());
