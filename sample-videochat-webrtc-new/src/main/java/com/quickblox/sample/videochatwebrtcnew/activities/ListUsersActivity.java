@@ -202,7 +202,7 @@ public class ListUsersActivity extends Activity {
                         Log.d(TAG, "onSuccess login to chat with params");
                         Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
                         intent.putExtra("login", login);
-
+                        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
                     }
 
                     @Override
@@ -210,7 +210,7 @@ public class ListUsersActivity extends Activity {
                         Log.d(TAG, "onSuccess login to chat");
                         Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
                         intent.putExtra("login", login);
-                        startActivity(intent);
+                        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
                     }
 
                     @Override
@@ -242,5 +242,15 @@ public class ListUsersActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Consts.CALL_ACTIVITY_CLOSE){
+            if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
+                Toast.makeText(this, getString(R.string.WIFI_DISABLED),Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
