@@ -238,8 +238,10 @@ public class ConversationFragment extends Fragment implements Serializable {
         switchCameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
-                Log.d(TAG, "Camera switched!");
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
+                    Log.d(TAG, "Camera switched!");
+                }
             }
         });
 
@@ -265,19 +267,20 @@ public class ConversationFragment extends Fragment implements Serializable {
 
                 Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
                 // TODO end
-
-                if (isVideoEnabled) {
-                    Log.d("Track", "Camera is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
-                    isVideoEnabled = false;
-                    switchCameraToggle.setVisibility(View.INVISIBLE);
-                    imgMyCameraOff.setVisibility(View.VISIBLE);
-                } else {
-                    Log.d("Track", "Camera is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
-                    isVideoEnabled = true;
-                    switchCameraToggle.setVisibility(View.VISIBLE);
-                    imgMyCameraOff.setVisibility(View.INVISIBLE);
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (isVideoEnabled) {
+                        Log.d("Track", "Camera is off!");
+                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+                        isVideoEnabled = false;
+                        switchCameraToggle.setVisibility(View.INVISIBLE);
+                        imgMyCameraOff.setVisibility(View.VISIBLE);
+                    } else {
+                        Log.d("Track", "Camera is on!");
+                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                        isVideoEnabled = true;
+                        switchCameraToggle.setVisibility(View.VISIBLE);
+                        imgMyCameraOff.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
@@ -285,22 +288,26 @@ public class ConversationFragment extends Fragment implements Serializable {
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Track", "Dynamic switched!");
-                ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    Log.d("Track", "Dynamic switched!");
+                    ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                }
             }
         });
 
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAudioEnabled) {
-                    Log.d("Track", "Mic is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
-                    isAudioEnabled = false;
-                } else {
-                    Log.d("Track", "Mic is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
-                    isAudioEnabled = true;
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (isAudioEnabled) {
+                        Log.d("Track", "Mic is off!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
+                        isAudioEnabled = false;
+                    } else {
+                        Log.d("Track", "Mic is on!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
+                        isAudioEnabled = true;
+                    }
                 }
             }
         });
@@ -308,13 +315,14 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
                 stopOutBeep();
                 actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
+            }
         });
-
     }
 
 
