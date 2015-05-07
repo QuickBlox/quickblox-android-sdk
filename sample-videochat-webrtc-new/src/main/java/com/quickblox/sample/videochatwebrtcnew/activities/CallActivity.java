@@ -68,7 +68,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
 
 
-
     private int selectedOpponentId;
     private VideoRenderer.Callbacks REMOTE_RENDERER;
     private VideoRenderer.Callbacks LOCAL_RENDERER;
@@ -116,7 +115,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             public void onReceive(Context context, Intent intent) {
                 WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 if (!wifi.isWifiEnabled()) {
-                    if (closeByWifiStateAllow){
+                    if (closeByWifiStateAllow) {
                         if (currentSession != null) {
                             // Close session safely
                             disableConversationFragmentButtons();
@@ -135,31 +134,28 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     private void stopConversationFragmentBeeps() {
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if(fragment != null){
+        if (fragment != null) {
             fragment.stopOutBeep();
         }
     }
 
     private void disableConversationFragmentButtons() {
         ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if(fragment != null){
+        if (fragment != null) {
             fragment.actionButtonsEnabled(false);
         }
     }
 
 
     private void initIncommingCallTask() {
-        showIncomingCallWindowTaskThread = new HandlerThread(INCOME_WINDOW_SHOW_TASK_THREAD);
-        showIncomingCallWindowTaskThread.start();
-        Looper looper = showIncomingCallWindowTaskThread.getLooper();
-        showIncomingCallWindowTaskHandler = new Handler(looper);
+        showIncomingCallWindowTaskHandler = new Handler(Looper.myLooper());
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
                 IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
-                if (incomeCallFragment == null){
+                if (incomeCallFragment == null) {
                     ConversationFragment conversationFragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-                    if(conversationFragment != null){
+                    if (conversationFragment != null) {
                         disableConversationFragmentButtons();
                         stopConversationFragmentBeeps();
                         currentSession.hangUp(new HashMap<String, String>());
@@ -178,13 +174,13 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void stopIncomeCallTimer() {
-            Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
-            showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
-            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                showIncomingCallWindowTaskThread.quitSafely();
-            } else {
-                showIncomingCallWindowTaskThread.quit();
-            }
+        Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
+        showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
+//        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+//            showIncomingCallWindowTaskThread.quitSafely();
+//        } else {
+//            showIncomingCallWindowTaskThread.quit();
+//        }
     }
 
 
@@ -218,11 +214,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         return currentSession;
     }
 
-    public QBRTCSession getSession(String sessionID) {
-        return QBRTCClient.getInstance().getSessions().get(sessionID);
-    }
-
-    private void forbidenCloseByWifiState(){
+    private void forbidenCloseByWifiState() {
         closeByWifiStateAllow = false;
     }
 
@@ -231,6 +223,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 //    }
 
     public void setCurrentSession(QBRTCSession sesion) {
+        Log.d("Crash", "setCurrentSession. Set session to " + sesion);
         this.currentSession = sesion;
     }
 
@@ -253,36 +246,46 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     // ---------------Chat callback methods implementation  ----------------------//
 
     @Override
-    public void onReceiveNewSession(QBRTCSession session) {
-//        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
+    public void onReceiveNewSession(final QBRTCSession session) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (currentSession == null) {
+                    Log.d(TAG, "Start new session");
+                    Log.d(TAG, "Income call");
 
-        if (currentSession == null) {
-            Log.d(TAG, "Start new session");
-            Log.d(TAG, "Income call");
+                    Log.d("Crash", "onReceiveNewSession. Set session to " + session);
+                    setCurrentSession(session);
+                    Log.d("Crash", "onReceiveNewSession. Set session to " + session);
 
-            QBRTCClient.getInstance().getSessions().put(session.getSessionID(), session);
-            setCurrentSession(session);
+                    addIncomeCallFragment(session);
 
-            addIncomeCallFragment(session);
+                    isInCommingCall = true;
+                    initIncommingCallTask();
+                    startIncomeCallTimer();
+                } else {
+                    Log.d(TAG, "Stop new session. Device now is busy");
+                    session.rejectCall(null);
+                }
 
-            isInCommingCall = true;
-            initIncommingCallTask();
-            startIncomeCallTimer();
-        } else {
-            Log.d(TAG, "Stop new session. Device now is busy");
-            session.rejectCall(null);
-        }
+            }
+        });
     }
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.noAnswer, View.VISIBLE);
 
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment!=null) {
-            fragment.actionButtonsEnabled(false);
-            fragment.stopOutBeep();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                if (fragment != null) {
+                    fragment.actionButtonsEnabled(false);
+                    fragment.stopOutBeep();
+                }
+            }
+        });
     }
 
     @Override
@@ -290,21 +293,31 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
         setStateTitle(userID, R.string.checking, View.VISIBLE);
 
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment != null) {
-            fragment.actionButtonsEnabled(true);
-            fragment.stopOutBeep();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                if (fragment != null) {
+                    fragment.actionButtonsEnabled(true);
+                    fragment.stopOutBeep();
+                }
+            }
+        });
     }
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
         setStateTitle(userID, R.string.rejected, View.INVISIBLE);
 
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment!=null) {
-            fragment.stopOutBeep();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                if (fragment != null) {
+                    fragment.stopOutBeep();
+                }
+            }
+        });
     }
 
     @Override
@@ -331,32 +344,50 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void onConnectionClosedForUser(QBRTCSession session, Integer userID) {
         setStateTitle(userID, R.string.closed, View.INVISIBLE);
 
-        // Close app after session close of network was disabled
-        if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)){
-            Intent returnIntent = new Intent();
-            setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
-            finish();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Close app after session close of network was disabled
+                if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)) {
+                    Intent returnIntent = new Intent();
+                    setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     @Override
-    public void onConnectedToUser(QBRTCSession session, Integer userID) {
+    public void onConnectedToUser(QBRTCSession session, final Integer userID) {
         forbidenCloseByWifiState();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isInCommingCall) {
+                    stopIncomeCallTimer();
+                }
 
-        if (isInCommingCall) {
-            stopIncomeCallTimer();
-        }
+                updateRanderers();
 
-        startTimer();
+                startTimer();
 
-        setStateTitle(userID, R.string.connected, View.INVISIBLE);
+                setStateTitle(userID, R.string.connected, View.INVISIBLE);
 
-        Log.d("Track", "onConnectedToUser() is started");
+                Log.d("Track", "onConnectedToUser() is started");
 
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment!=null) {
-            fragment.stopOutBeep();
-        }
+                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                if (fragment != null) {
+                    fragment.stopOutBeep();
+                }
+            }
+        });
+    }
+
+    private void updateRanderers() {
+        VideoRendererGui.update(REMOTE_RENDERER, 0, 0, 100, 100,
+                VideoRendererGui.ScalingType.SCALE_FILL, false);
+        VideoRendererGui.update(LOCAL_RENDERER,70, 0, 30, 30,
+                VideoRendererGui.ScalingType.SCALE_FILL, true);
     }
 
     @Override
@@ -370,27 +401,38 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     @Override
-    public void onSessionClosed(QBRTCSession session) {
-        if (session.equals(currentSession)) {
+    public void onSessionClosed(final QBRTCSession session) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (session.equals(currentSession)) {
 
-            Log.d(TAG, "Stop session");
-            addOpponentsFragmentWithDelay();
+                    Log.d(TAG, "Stop session");
+                    addOpponentsFragmentWithDelay();
 
-            // Remove current session
-            Log.d(TAG, "Remove current session");
-            currentSession = null;
-        }
-        stopTimer();
+                    // Remove current session
+                    Log.d(TAG, "Remove current session");
+                    Log.d("Crash", "onSessionClosed. Set session to null");
+                    currentSession = null;
+                }
+                stopTimer();
+            }
+        });
     }
 
     @Override
-    public void onSessionStartClose(QBRTCSession session) {
+    public void onSessionStartClose(final QBRTCSession session) {
         Log.d(TAG, "Start stopping session");
 
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment != null && session.equals(getCurrentSession())) {
-            fragment.actionButtonsEnabled(false);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                if (fragment != null && session.equals(getCurrentSession())) {
+                    fragment.actionButtonsEnabled(false);
+                }
+            }
+        });
 
     }
 
@@ -412,16 +454,20 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     @Override
-    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userID) {
+    public void onReceiveHangUpFromUser(QBRTCSession session, final Integer userID) {
 
         // TODO update view of this user
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
 
-        setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
-
-        Log.d(TAG, "CHECK SESSION STATE");
-        for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
-            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
-        }
+                Log.d(TAG, "CHECK SESSION STATE");
+                for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
+                    Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
+                }
+            }
+        });
 
 ////        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
 //        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
@@ -452,6 +498,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             public void run() {
                 if (!CallActivity.this.isDestroyed()) {
                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
+
+                    Log.d("Crash", "addOpponentsFragmentWithDelay. Set session to null");
                     currentSession = null;
                 }
             }
@@ -494,6 +542,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         // init session for new call
         try {
             QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType);
+            Log.d("Crash", "addConversationFragmentStartCall. Set session " + newSessionWithOpponents);
             setCurrentSession(newSessionWithOpponents);
 
             ConversationFragment fragment = new ConversationFragment();
@@ -515,11 +564,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     }
 
-    public void addConversationFragmentReceiveCall(String sessionID) {
+    public void addConversationFragmentReceiveCall() {
 
-        // set current session
-//        setCurrentSessionId(sessionID);
-        Log.d("Crash", "Session id is " + sessionID);
         QBRTCSession session = getCurrentSession();
         Integer myId = QBChatService.getInstance().getUser().getId();
 
@@ -535,7 +581,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 opponentsWithoutMe);
         bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
         bundle.putInt(START_CONVERSATION_REASON, StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal());
-        bundle.putString(SESSION_ID, sessionID);
+        bundle.putString(SESSION_ID, session.getSessionID());
         bundle.putString(CALLER_NAME, DataHolder.getUserNameByID(session.getCallerID()));
 
         if (session.getUserInfo() != null) {
@@ -553,14 +599,16 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public void setCurrentVideoView(GLSurfaceView videoView) {
         VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
         REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
+        REMOTE_RENDERER.canApplyRotation();
         LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 30, scaleType, true);
+        LOCAL_RENDERER.canApplyRotation();
     }
 
     public void startTimer() {
         super.startTimer();
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
         super.stopTimer();
     }
 
@@ -593,8 +641,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             }
         }
     }
-
-
 
 
     @Override
