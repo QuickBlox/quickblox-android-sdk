@@ -92,6 +92,13 @@ public class BaseLogginedUserActivity extends Activity {
             isStarted = true;
         }
     }
+
+    public void stopTimer(){
+        if (timerABWithTimer != null){
+            timerABWithTimer.stop();
+            isStarted = false;
+        }
+    }
 }
 
 

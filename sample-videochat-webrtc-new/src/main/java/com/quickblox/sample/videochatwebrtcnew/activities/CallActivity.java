@@ -380,6 +380,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Log.d(TAG, "Remove current session");
             currentSession = null;
         }
+        stopTimer();
     }
 
     @Override
@@ -557,6 +558,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     public void startTimer() {
         super.startTimer();
+    }
+
+    public void stopTimer(){
+        super.stopTimer();
     }
 
     public void setOpponentsList(ArrayList<QBUser> qbUsers) {
