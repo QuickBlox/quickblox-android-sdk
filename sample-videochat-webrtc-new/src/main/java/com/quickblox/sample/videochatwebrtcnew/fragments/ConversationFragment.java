@@ -187,7 +187,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRetainInstance(true);
+//        setRetainInstance(true);
         Log.d("Track", "onCreate() from ConversationFragment");
         super.onCreate(savedInstanceState);
     }
@@ -225,6 +225,13 @@ public class ConversationFragment extends Fragment implements Serializable {
         imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopOutBeep();
+//        isMessageProcessed = false;
+    }
 
     private void initButtonsListener() {
 

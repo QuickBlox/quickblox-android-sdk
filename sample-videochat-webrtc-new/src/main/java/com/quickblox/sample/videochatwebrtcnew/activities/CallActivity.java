@@ -81,6 +81,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
+    private int currentFragmentHashCode;
 //    private MediaPlayer ringtone;
 
 
@@ -132,10 +133,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     public void setCurrentSession(QBRTCSession session) {
-        if (!QBRTCClient.getInstance().getSessions().containsKey(session.getSessionID())) {
-            addSession(session);
+        if (session != null) {
+            if (!QBRTCClient.getInstance().getSessions().containsKey(session.getSessionID())) {
+                addSession(session);
+            }
+            currentSession = session.getSessionID();
+        } else {
+            currentSession = null;
         }
-        currentSession = session.getSessionID();
     }
 
     public QBRTCSession getSession(String sessionID) {
@@ -175,6 +180,17 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onReceiveNewSession(QBRTCSession session) {
 //        Toast.makeText(this, "IncomeCall", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onReceiveNewSession(), sessionID = " + session.getSessionID());
+
+        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+        if (fragment!=null) {
+            currentFragmentHashCode = fragment.hashCode();
+            Log.d(TAG, "ConversationFragment fragment = " + fragment.hashCode());
+        } else {
+            currentFragmentHashCode = 0;
+            Log.d(TAG, "ConversationFragment fragment = null");
+        }
+
 
         if (currentSession == null) {
             Log.d(TAG, "Start new session");
@@ -217,6 +233,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         if (fragment!=null) {
             fragment.stopOutBeep();
         }
+        currentSession = null;
     }
 
     @Override
@@ -271,17 +288,26 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onSessionClosed(QBRTCSession session) {
         if (session.getSessionID().equals(currentSession)) {
-            Log.d(TAG, "Stop session");
+            Log.d(TAG, "Stop session " + session.getSessionID());
 //            if (session.getState().ordinal() > QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()) {
-            addOpponentsFragmentWithDelay();
+//            addOpponentsFragmentWithDelay();
 
 //            } else {
 //                Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
 //            }
             // Remove current session
             Log.d(TAG, "Remove current session");
-            currentSession = null;
+//            currentSession = null;
         }
+            int i = 0;
+            if (getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT) != null) {
+                i = getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT).hashCode();
+            }
+
+            if (currentFragmentHashCode == i && currentFragmentHashCode != 0) {
+                addOpponentsFragmentWithDelay();
+            }
+
     }
 
     @Override
@@ -291,6 +317,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         if (fragment != null && session.equals(getCurrentSession())) {
             fragment.actionButtonsEnabled(false);
         }
+        currentSession = null;
 
         Log.d(TAG, "Start stopping session");
     }

@@ -21,6 +21,7 @@ public class BaseLogginedUserActivity extends Activity {
 
     static android.app.ActionBar mActionBar;
     private Chronometer timerABWithTimer;
+    private boolean isStarted = false;
 
     public void initActionBar() {
 
@@ -85,8 +86,11 @@ public class BaseLogginedUserActivity extends Activity {
     }
 
     public void startTimer() {
-        timerABWithTimer.setBase(SystemClock.elapsedRealtime());
-        timerABWithTimer.start();
+        if (!isStarted) {
+            timerABWithTimer.setBase(SystemClock.elapsedRealtime());
+            timerABWithTimer.start();
+            isStarted = true;
+        }
     }
 }
 
