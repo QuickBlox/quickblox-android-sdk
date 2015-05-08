@@ -16,12 +16,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "com.quickblox.sample.videochatwebrtcnew"
-        minSdkVersion 17
+        minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
