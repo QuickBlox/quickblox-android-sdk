@@ -85,7 +85,7 @@ public class ChatService {
 
                 // login to Chat
                 //
-                ChatService.getInstance().loginToChat(user, new QBEntityCallbackImpl() {
+                loginToChat(user, new QBEntityCallbackImpl() {
 
                     @Override
                     public void onSuccess() {
@@ -102,6 +102,20 @@ public class ChatService {
             @Override
             public void onError(List<String> errors) {
                 callback.onError(errors);
+            }
+        });
+    }
+
+    public void logout(){
+        chatService.logout(new QBEntityCallbackImpl() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(List list) {
+
             }
         });
     }
