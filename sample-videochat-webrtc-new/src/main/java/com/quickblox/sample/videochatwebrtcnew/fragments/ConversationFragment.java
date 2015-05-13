@@ -1,6 +1,11 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -14,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.quickblox.core.exception.QBResponseException;
@@ -24,6 +30,7 @@ import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
@@ -81,6 +88,8 @@ public class ConversationFragment extends Fragment implements Serializable {
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
     private MediaPlayer ringtone;
+    private IntentFilter intentFilter;
+    private AudioStreamReceiver audioStreamReceiver;
 
 
     @Override
@@ -148,6 +157,9 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onStart() {
+
+        getActivity().registerReceiver(audioStreamReceiver, intentFilter);
+
         super.onStart();
         QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
         if (!isMessageProcessed) {
@@ -186,9 +198,15 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRetainInstance(true);
+//        setRetainInstance(true);
         Log.d("Track", "onCreate() from ConversationFragment");
         super.onCreate(savedInstanceState);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
+        intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+
+        audioStreamReceiver = new AudioStreamReceiver();
     }
 
 //    @Override
@@ -225,13 +243,23 @@ public class ConversationFragment extends Fragment implements Serializable {
     }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopOutBeep();
+//        isMessageProcessed = false;
+        getActivity().unregisterReceiver(audioStreamReceiver);
+    }
+
     private void initButtonsListener() {
 
         switchCameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
-                Log.d(TAG, "Camera switched!");
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
+                    Log.d(TAG, "Camera switched!");
+                }
             }
         });
 
@@ -257,19 +285,20 @@ public class ConversationFragment extends Fragment implements Serializable {
 
                 Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
                 // TODO end
-
-                if (isVideoEnabled) {
-                    Log.d("Track", "Camera is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
-                    isVideoEnabled = false;
-                    switchCameraToggle.setVisibility(View.INVISIBLE);
-                    imgMyCameraOff.setVisibility(View.VISIBLE);
-                } else {
-                    Log.d("Track", "Camera is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
-                    isVideoEnabled = true;
-                    switchCameraToggle.setVisibility(View.VISIBLE);
-                    imgMyCameraOff.setVisibility(View.INVISIBLE);
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (isVideoEnabled) {
+                        Log.d("Track", "Camera is off!");
+                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+                        isVideoEnabled = false;
+                        switchCameraToggle.setVisibility(View.INVISIBLE);
+                        imgMyCameraOff.setVisibility(View.VISIBLE);
+                    } else {
+                        Log.d("Track", "Camera is on!");
+                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                        isVideoEnabled = true;
+                        switchCameraToggle.setVisibility(View.VISIBLE);
+                        imgMyCameraOff.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
@@ -277,22 +306,26 @@ public class ConversationFragment extends Fragment implements Serializable {
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Track", "Dynamic switched!");
-                ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    Log.d("Track", "Dynamic switched!");
+                    ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                }
             }
         });
 
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAudioEnabled) {
-                    Log.d("Track", "Mic is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
-                    isAudioEnabled = false;
-                } else {
-                    Log.d("Track", "Mic is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
-                    isAudioEnabled = true;
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (isAudioEnabled) {
+                        Log.d("Track", "Mic is off!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
+                        isAudioEnabled = false;
+                    } else {
+                        Log.d("Track", "Mic is on!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
+                        isAudioEnabled = true;
+                    }
                 }
             }
         });
@@ -300,13 +333,14 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
                 stopOutBeep();
                 actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
             }
+            }
         });
-
     }
 
 
@@ -376,6 +410,31 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
         }
         return s;
+    }
+
+    private class AudioStreamReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)){
+                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
+            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)){
+                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
+            }
+
+            if (intent.getIntExtra("state", -1) == 0 /*|| intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -1) == 0*/){
+                dynamicToggleVideoCall.setChecked(false);
+            } else if (intent.getIntExtra("state", -1) == 1) {
+                dynamicToggleVideoCall.setChecked(true);
+            } else {
+//                Toast.makeText(context, "Output audio stream is incorrect", Toast.LENGTH_LONG).show();
+            }
+            dynamicToggleVideoCall.invalidate();
+
+
+//            Toast.makeText(context, "Audio stream changed", Toast.LENGTH_LONG).show();
+        }
     }
 }
 

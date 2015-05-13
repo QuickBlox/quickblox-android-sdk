@@ -98,35 +98,34 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     }
 
     private void initButtonsListener() {
+            rejectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rejectBtn.setClickable(false);
+                    Log.d("Track", "Call is rejected");
 
-        rejectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Track", "Call is rejected");
+                    stopCallNotification();
 
-                stopCallNotification();
+                    ((CallActivity) getActivity()).getCurrentSession()
+                            .rejectCall(sessionDescription.getUserInfo());
+                    ((CallActivity) getActivity()).removeIncomeCallFragment();
+                    ((CallActivity) getActivity()).addOpponentsFragment();
 
-                ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())
-                        .rejectCall(sessionDescription.getUserInfo());
-                ((CallActivity) getActivity()).removeIncomeCallFragment();
-                ((CallActivity) getActivity()).addOpponentsFragment();
+                }
+            });
 
-            }
-        });
+            takeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    takeBtn.setClickable(false);
+                    stopCallNotification();
 
-        takeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    ((CallActivity) getActivity())
+                            .addConversationFragmentReceiveCall();
 
-                stopCallNotification();
-
-                ((CallActivity) getActivity())
-                        .addConversationFragmentReceiveCall(sessionDescription.getSessionId());
-                ((CallActivity) getActivity()).removeIncomeCallFragment();
-
-                Log.d("Track", "Call is started");
-            }
-        });
+                    Log.d("Track", "Call is started");
+                }
+            });
     }
 
     private void initUI(View view) {
@@ -135,9 +134,9 @@ public class IncomeCallFragment extends Fragment implements Serializable {
         incVideoCall = (TextView) view.findViewById(R.id.incVideoCall);
 
         callerName = (TextView) view.findViewById(R.id.callerName);
-        callerName.setText(getCallerName(((CallActivity) getActivity()).getSession(sessionDescription.getSessionId())));
+        callerName.setText(getCallerName(((CallActivity) getActivity()).getCurrentSession()));
         callerName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
-                ((CallActivity) getActivity()).getSession(sessionDescription.getSessionId()).getCallerID()))) + 1));
+                ((CallActivity) getActivity()).getCurrentSession().getCallerID()))) + 1));
 
         otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
         otherIncUsers.setText(getOtherIncUsersNames(opponents));
