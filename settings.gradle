@@ -1,6 +1,5 @@
 include 'snippets'
 include 'sample-users'
-include 'sample-ratings'
 include 'sample-messages'
 include 'sample-location'
 include 'sample-custom-objects'

@@ -136,7 +136,7 @@ public class SnippetsMessages extends Snippets{
             QBMessages.deletePushToken(1473068, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> push token successfully deleted");
                 }
 
@@ -252,7 +252,7 @@ public class SnippetsMessages extends Snippets{
             QBMessages.deleteSubscription(1558628, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> subscription successfully deleted");
                 }
 
@@ -532,7 +532,7 @@ public class SnippetsMessages extends Snippets{
             QBMessages.deleteEvent(1454324, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> event successfully deleted");
                 }
 

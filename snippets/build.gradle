@@ -14,12 +14,11 @@ android {
 }
 
 dependencies {
-
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-ratings:$rootProject.qbSdkVersion"
+    compile files(rootProject.core_jar_path,
+            rootProject.chat_jar_path,
+            rootProject.content_jar_path,
+            rootProject.customobjects_jar_path,
+            rootProject.location_jar_path,
+            rootProject.messages_jar_path,
+            rootProject.ratings_jar_path)
 }

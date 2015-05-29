@@ -1,10 +1,12 @@
 package com.sdk.snippets;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.TransferProtocol;
@@ -102,7 +104,7 @@ public class Snippets {
         }
 
         @Override
-        public void onSuccess() {
+        public void onSuccess(Void result, Bundle bundle) {
             Log.i(TAG, successMsg);
         }
 

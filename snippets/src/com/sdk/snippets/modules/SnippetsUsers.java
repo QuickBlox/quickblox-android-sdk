@@ -258,10 +258,10 @@ public class SnippetsUsers extends Snippets{
     Snippet signOut = new Snippet("sign out") {
         @Override
         public void execute() {
-            QBUsers.signOut(new QBEntityCallbackImpl(){
+            QBUsers.signOut(new QBEntityCallbackImpl<Void>(){
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> User was successfully signed out");
                 }
 
@@ -492,10 +492,10 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
 
             int userId = 562;
-            QBUsers.deleteUser(userId, new QBEntityCallbackImpl() {
+            QBUsers.deleteUser(userId, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> User was successfully deleted");
                 }
 
@@ -530,10 +530,10 @@ public class SnippetsUsers extends Snippets{
     Snippet deleteUserByExternalId = new Snippet("delete user", "by external id") {
         @Override
         public void execute() {
-            QBUsers.deleteByExternalId("568965444", new QBEntityCallbackImpl() {
+            QBUsers.deleteByExternalId("568965444", new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> User was successfully deleted");
                 }
 
@@ -566,10 +566,10 @@ public class SnippetsUsers extends Snippets{
     Snippet resetPassword = new Snippet("reset password") {
         @Override
         public void execute() {
-            QBUsers.resetPassword("test987@test.com", new QBEntityCallbackImpl() {
+            QBUsers.resetPassword("test987@test.com", new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> Email was sent");
                 }
 

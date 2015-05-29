@@ -297,9 +297,9 @@ public class SnippetsChat extends Snippets {
 
             log("login with user: " + qbUser);
 
-            chatService.login(qbUser, new QBEntityCallbackImpl() {
+            chatService.login(qbUser, new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
 
                     log("success when login");
 
@@ -378,10 +378,10 @@ public class SnippetsChat extends Snippets {
     Snippet logoutFromChat = new Snippet("Logout from Chat") {
         @Override
         public void execute() {
-            chatService.logout(new QBEntityCallbackImpl() {
+            chatService.logout(new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     log("Logout success");
 
 //                    chatService.destroy();
@@ -427,7 +427,7 @@ public class SnippetsChat extends Snippets {
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean authenticated) {
             log("authenticated");
         }
 
@@ -601,9 +601,7 @@ public class SnippetsChat extends Snippets {
                     privateChat.addIsTypingListener(privateChatIsTypingListener);
                 }
                 privateChat.sendMessage(chatMessage);
-            } catch (XMPPException e) {
-                log("send message error: " + e.getLocalizedMessage());
-            } catch (SmackException.NotConnectedException e) {
+            }  catch (SmackException.NotConnectedException e) {
                 log("send message error: " + e.getClass().getSimpleName());
             }
         }
@@ -630,8 +628,6 @@ public class SnippetsChat extends Snippets {
             }
             try {
                 privateChat.sendIsTypingNotification();
-            } catch (XMPPException e) {
-                log("send typing error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
                 log("send typing error: " + e.getClass().getSimpleName());
             }
@@ -653,9 +649,7 @@ public class SnippetsChat extends Snippets {
             }
             try {
                 privateChat.sendStopTypingNotification();
-            } catch (XMPPException e) {
-                log("send stop typing error: " + e.getLocalizedMessage());
-            } catch (SmackException.NotConnectedException e) {
+            }  catch (SmackException.NotConnectedException e) {
                 log("send stop typing error: " + e.getClass().getSimpleName());
             }
         }
@@ -676,8 +670,6 @@ public class SnippetsChat extends Snippets {
             }
             try {
                 privateChat.readMessage(null);
-            } catch (XMPPException e) {
-                log("read message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
                 log("read message error: " + e.getClass().getSimpleName());
             }
@@ -737,9 +729,9 @@ public class SnippetsChat extends Snippets {
 
             currentChatRoom = groupChatManager.createGroupChat(ApplicationConfig.getInstance().getTestRoomJid());
 
-            QBEntityCallback clbck = new QBEntityCallbackImpl() {
+            QBEntityCallback clbck = new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     log("join Room success");
 
                     // add listeners
@@ -829,8 +821,6 @@ public class SnippetsChat extends Snippets {
 
             try {
                 currentChatRoom.sendMessage(chatMessage);
-            } catch (XMPPException e) {
-                log("Send message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
                 log("Send message error: " + e.getClass().getSimpleName());
             } catch (IllegalStateException e){
@@ -854,9 +844,7 @@ public class SnippetsChat extends Snippets {
 
             try {
                 currentChatRoom.sendMessageWithoutJoin(chatMessage);
-            } catch (XMPPException e) {
-                log("Send message error: " + e.getLocalizedMessage());
-            } catch (SmackException.NotConnectedException e) {
+            }  catch (SmackException.NotConnectedException e) {
                 log("Send message error: " + e.getClass().getSimpleName());
             } catch (IllegalStateException e){
                 log("Send message error: " + e.getLocalizedMessage());
@@ -1133,7 +1121,7 @@ public class SnippetsChat extends Snippets {
 
             groupChatManager.deleteDialog(dialogID, new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "dialog deleted");
                 }
 
@@ -1225,7 +1213,7 @@ public class SnippetsChat extends Snippets {
 
             QBChatService.markMessagesAsRead("53cfc593efa3573ebd000017", null, new QBEntityCallbackImpl<Void>(){
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "read OK" );
                 }
 
@@ -1262,7 +1250,7 @@ public class SnippetsChat extends Snippets {
 
             QBChatService.deleteMessages(messagesIds, new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "deleted OK");
                 }
 
@@ -1675,9 +1663,9 @@ public class SnippetsChat extends Snippets {
             int randomNum = rand.nextInt(10000);
             currentChatRoom = groupChatManager.createGroupChat("test_room" + randomNum, false, false);
 
-            currentChatRoom.create( new QBEntityCallbackImpl() {
+            currentChatRoom.create( new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     log("create room success");
                     currentChatRoom.addMessageListener(groupChatMessageListener);
                 }

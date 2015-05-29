@@ -107,6 +107,10 @@ public class ApplicationConfig {
     public String getAuthSecret(){
         return (String)servers.get(activeServer).get("auth_secret");
     }
+
+    public String getAccountKey(){
+        return (String)servers.get(activeServer).get("account_key");
+    }
     //
     public String getApiDomain(){
         return (String)servers.get(activeServer).get("api_domain");

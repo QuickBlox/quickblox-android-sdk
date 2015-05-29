@@ -36,9 +36,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
+    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
     compile "com.android.support:support-v4:$rootProject.androidSupportVersion"
     compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
     compile project(':pull-to-refresh')

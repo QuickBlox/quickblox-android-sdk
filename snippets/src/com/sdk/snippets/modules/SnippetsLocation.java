@@ -270,7 +270,7 @@ public class SnippetsLocation extends Snippets {
             QBLocations.deleteLocation(location, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "Location was removed");
                 }
 
@@ -410,7 +410,7 @@ public class SnippetsLocation extends Snippets {
             QBLocations.deleteObsoleteLocations(days, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> Delete locations OK ");
                 }
 
@@ -596,7 +596,7 @@ public class SnippetsLocation extends Snippets {
 
             QBLocations.deletePlace(place, new QBEntityCallbackImpl<Void>(){
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">> Place was deleted");
                 }
 

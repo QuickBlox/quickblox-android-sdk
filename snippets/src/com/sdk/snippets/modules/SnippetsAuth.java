@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.BaseService;
@@ -19,6 +20,7 @@ import com.sdk.snippets.Snippets;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by vfite on 22.01.14.
@@ -30,6 +32,8 @@ public class SnippetsAuth extends Snippets{
     public SnippetsAuth(Context context) {
         super(context);
 
+        snippets.add(setAutoUpdateSettings);
+        snippets.add(deleteAutoUpdateSettings);
         snippets.add(createSession);
         snippets.add(createSessionSynchronous);
         //
@@ -50,6 +54,26 @@ public class SnippetsAuth extends Snippets{
     //
     /////////////////////////////////// Create session /////////////////////////////////////////////
     //
+
+    Snippet setAutoUpdateSettings = new Snippet("set auto update settings mode") {
+        @Override
+        public void execute() {
+
+            QBSettings.getInstance().setAccountKey(ApplicationConfig.getInstance().getAccountKey());
+            QBSettings.AutoUpdateMode updateMode = new QBSettings.AutoUpdateMode(context,
+                    ApplicationConfig.getInstance().getAppId());
+            updateMode.setUpdateTimePeriod(TimeUnit.MINUTES.toMillis(30));
+            QBSettings.getInstance().setUpdateMode(updateMode);
+        }
+    };
+
+    Snippet deleteAutoUpdateSettings = new Snippet("delete auto update mode ") {
+        @Override
+        public void execute() {
+
+            QBSettings.getInstance().setUpdateMode(null);
+        }
+    };
 
 
     Snippet createSession = new Snippet("create session") {

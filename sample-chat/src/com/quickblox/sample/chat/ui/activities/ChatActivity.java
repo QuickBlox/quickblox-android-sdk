@@ -173,9 +173,9 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void joinGroupChat(){
-        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl() {
+        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
 
                 // Load Chat history
                 //
@@ -244,7 +244,7 @@ public class ChatActivity extends BaseActivity {
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean authenticated) {
             Log.i(TAG, "authenticated");
         }
 

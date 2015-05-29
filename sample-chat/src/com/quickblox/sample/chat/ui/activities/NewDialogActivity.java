@@ -135,11 +135,6 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     @Override
-    public void onSuccess(){
-
-    }
-
-    @Override
     public void onError(List<String> errors){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("get users errors: " + errors).create().show();

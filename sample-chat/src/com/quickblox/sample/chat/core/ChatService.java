@@ -1,8 +1,6 @@
 package com.quickblox.sample.chat.core;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,8 +12,6 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
-import com.quickblox.sample.chat.ApplicationSingleton;
-import com.quickblox.sample.chat.ui.activities.DialogsActivity;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -85,11 +81,11 @@ public class ChatService {
 
                 // login to Chat
                 //
-                ChatService.getInstance().loginToChat(user, new QBEntityCallbackImpl() {
+                loginToChat(user, new QBEntityCallbackImpl<Void>() {
 
                     @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
+                    public void onSuccess(Void result, Bundle bundle) {
+                        callback.onSuccess(result,bundle);
                     }
 
                     @Override
@@ -106,11 +102,25 @@ public class ChatService {
         });
     }
 
+    public void logout(){
+        chatService.logout(new QBEntityCallbackImpl<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onError(List list) {
+
+            }
+        });
+    }
+
     private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
-        chatService.login(user, new QBEntityCallbackImpl() {
+        chatService.login(user, new QBEntityCallbackImpl<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle b) {
 
                 // Start sending presences
                 //
@@ -120,7 +130,7 @@ public class ChatService {
                     e.printStackTrace();
                 }
 
-                callback.onSuccess();
+                callback.onSuccess(result, b);
             }
 
             @Override
@@ -223,7 +233,7 @@ public class ChatService {
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean authenticated) {
             Log.i(TAG, "authenticated");
         }
 

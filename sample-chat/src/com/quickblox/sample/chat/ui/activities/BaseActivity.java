@@ -75,9 +75,9 @@ public class BaseActivity extends Activity implements ApplicationSessionStateCal
 
         // Restoring Chat session
         //
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl() {
+        ChatService.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
                 Log.d(TAG, "Chat login onSuccess");
 
                 progressDialog.dismiss();

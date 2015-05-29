@@ -28,10 +28,10 @@ public class SplashActivity extends Activity {
 
         ChatService.initIfNeed(this);
 
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl() {
+        ChatService.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
 
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
                 // Go to Dialogs screen
                 //
                 Intent intent = new Intent(SplashActivity.this, DialogsActivity.class);

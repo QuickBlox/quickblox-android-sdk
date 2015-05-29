@@ -46,8 +46,6 @@ public class StartActivity extends TabActivity {
         chat.setIndicator("Chat")
                 .setContent(new Intent(this, ChatActivity.class));
 
-        ratings.setIndicator("Ratings")
-                .setContent(new Intent(this, RatingsActivity.class));
 
         tabHost.addTab(auth);
         tabHost.addTab(chat);
@@ -56,6 +54,5 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(content);
         tabHost.addTab(users);
         tabHost.addTab(locations);
-        tabHost.addTab(ratings);
     }
 }

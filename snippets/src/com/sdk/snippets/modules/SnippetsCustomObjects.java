@@ -550,9 +550,9 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
-            QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a4", new QBEntityCallbackImpl() {
+            QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a4", new QBEntityCallbackImpl<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> custom object deleted OK");
                 }
 
@@ -951,10 +951,10 @@ public class SnippetsCustomObjects extends Snippets{
         public void execute() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
 
-            QBCustomObjectsFiles.deleteFile(qbCustomObject, "image", new QBEntityCallbackImpl() {
+            QBCustomObjectsFiles.deleteFile(qbCustomObject, "image", new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "deleted successfully");
                 }
 

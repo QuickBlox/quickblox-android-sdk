@@ -237,10 +237,10 @@ public class SnippetsContent extends Snippets{
     Snippet deleteFile = new Snippet("delete file") {
         @Override
         public void execute() {
-            QBContent.deleteFile(212949, new QBEntityCallbackImpl() {
+            QBContent.deleteFile(212949, new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> file deleted successfully");
                 }
 
@@ -322,10 +322,10 @@ public class SnippetsContent extends Snippets{
     Snippet declareFileUploaded = new Snippet("declare file uploaded") {
         @Override
         public void execute() {
-            QBContent.declareFileUploaded(212950, (int) file1.length(), new QBEntityCallbackImpl() {
+            QBContent.declareFileUploaded(212950, (int) file1.length(), new QBEntityCallbackImpl<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> declare file uploaded was successful");
                 }
 
