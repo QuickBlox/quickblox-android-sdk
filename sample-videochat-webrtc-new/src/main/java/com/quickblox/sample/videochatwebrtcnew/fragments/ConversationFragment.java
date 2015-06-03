@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.quickblox.core.exception.QBResponseException;
@@ -48,7 +49,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private int startReason;
     private String sessionID;
     //    private QBGLVideoView videoView;
-    private GLSurfaceView videoView;
+//    private GLSurfaceView videoView;
     //    private QBRTCSessionDescription sessionDescription;
     private static VideoRenderer.Callbacks REMOTE_RENDERER;
 
@@ -82,6 +83,8 @@ public class ConversationFragment extends Fragment implements Serializable {
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
     private MediaPlayer ringtone;
+    private View localVideoView;
+    private View remoteVideoView;
 
 
     @Override
@@ -106,14 +109,14 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         initViews(view);
         initButtonsListener();
-        VideoRendererGui.setView(videoView, new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
+//        VideoRendererGui.setView(videoView, new Runnable() {
+//            @Override
+//            public void run() {
+//            }
+//        });
 
         createOpponentsList(opponents);
-        ((CallActivity) getActivity()).setCurrentVideoView(videoView);
+//        ((CallActivity) getActivity()).setCurrentVideoView(videoView);
         setUpUIByCallType(qbConferenceType);
 
         return view;
@@ -124,7 +127,10 @@ public class ConversationFragment extends Fragment implements Serializable {
         if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
             cameraToggle.setVisibility(View.GONE);
             switchCameraToggle.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.INVISIBLE);
+
+            localVideoView.setVisibility(View.INVISIBLE);
+            remoteVideoView.setVisibility(View.INVISIBLE);
+
             imgMyCameraOff.setVisibility(View.INVISIBLE);
         }
     }
@@ -134,7 +140,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         cameraToggle.setEnabled(enability);
         switchCameraToggle.setEnabled(enability);
-        videoView.setEnabled(enability);
         imgMyCameraOff.setEnabled(enability);
         handUpVideoCall.setEnabled(enability);
 
@@ -142,7 +147,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
         switchCameraToggle.setActivated(enability);
-        videoView.setActivated(enability);
         imgMyCameraOff.setActivated(enability);
     }
 
@@ -200,8 +204,11 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     private void initViews(View view) {
 
+
+        localVideoView = view.findViewById(R.id.localVideoVidew);
+        remoteVideoView = view.findViewById(R.id.remoteVideoView);
 //        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
-        videoView = (GLSurfaceView) view.findViewById(R.id.videoView);
+//        videoView = (GLSurfaceView) view.findViewById(R.id.videoView);
 
 //        camerasOpponentsList = (HorizontalScrollView)view.findViewById(R.id.camerasOpponentsList);
 //        ScrollView camerasOpponentsListLand = (ScrollView)view.findViewById(R.id.camerasOpponentsListLand);
@@ -239,7 +246,12 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
-                    ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
+                    ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Error of cam capturing", Toast.LENGTH_LONG).show();
+                        }
+                    });
                     Log.d(TAG, "Camera switched!");
                 }
             }
