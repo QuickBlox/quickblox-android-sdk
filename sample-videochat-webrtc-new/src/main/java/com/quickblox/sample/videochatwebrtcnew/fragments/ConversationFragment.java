@@ -88,13 +88,10 @@ public class ConversationFragment extends Fragment implements Serializable {
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
     private MediaPlayer ringtone;
-<<<<<<< HEAD
     private View localVideoView;
     private View remoteVideoView;
-=======
     private IntentFilter intentFilter;
     private AudioStreamReceiver audioStreamReceiver;
->>>>>>> origin/development_renew_lib
 
 
     @Override
