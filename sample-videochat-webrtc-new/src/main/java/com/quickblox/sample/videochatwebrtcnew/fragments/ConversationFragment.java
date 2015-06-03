@@ -1,6 +1,11 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -83,8 +88,13 @@ public class ConversationFragment extends Fragment implements Serializable {
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
     private MediaPlayer ringtone;
+<<<<<<< HEAD
     private View localVideoView;
     private View remoteVideoView;
+=======
+    private IntentFilter intentFilter;
+    private AudioStreamReceiver audioStreamReceiver;
+>>>>>>> origin/development_renew_lib
 
 
     @Override
@@ -153,6 +163,9 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onStart() {
+
+        getActivity().registerReceiver(audioStreamReceiver, intentFilter);
+
         super.onStart();
         QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
         if (!isMessageProcessed) {
@@ -194,6 +207,12 @@ public class ConversationFragment extends Fragment implements Serializable {
 //        setRetainInstance(true);
         Log.d("Track", "onCreate() from ConversationFragment");
         super.onCreate(savedInstanceState);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
+        intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+
+        audioStreamReceiver = new AudioStreamReceiver();
     }
 
 //    @Override
@@ -238,6 +257,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         super.onStop();
         stopOutBeep();
 //        isMessageProcessed = false;
+        getActivity().unregisterReceiver(audioStreamReceiver);
     }
 
     private void initButtonsListener() {
@@ -404,6 +424,31 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
         }
         return s;
+    }
+
+    private class AudioStreamReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)){
+                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
+            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)){
+                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
+            }
+
+            if (intent.getIntExtra("state", -1) == 0 /*|| intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -1) == 0*/){
+                dynamicToggleVideoCall.setChecked(false);
+            } else if (intent.getIntExtra("state", -1) == 1) {
+                dynamicToggleVideoCall.setChecked(true);
+            } else {
+//                Toast.makeText(context, "Output audio stream is incorrect", Toast.LENGTH_LONG).show();
+            }
+            dynamicToggleVideoCall.invalidate();
+
+
+//            Toast.makeText(context, "Audio stream changed", Toast.LENGTH_LONG).show();
+        }
     }
 }
 
