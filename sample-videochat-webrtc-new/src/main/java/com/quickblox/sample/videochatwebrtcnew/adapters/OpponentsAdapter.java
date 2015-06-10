@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -65,7 +66,10 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.opponentsNumber = (TextView) convertView.findViewById(R.id.opponentsNumber);
             holder.opponentsName = (TextView) convertView.findViewById(R.id.opponentsName);
-            holder.opponentsRadioButton = (RadioButton) convertView.findViewById(R.id.opponentsCheckBox);
+            // REMOVE COMMENT BELOW FOR 1 to 1 calls
+//            holder.opponentsRadioButton = (RadioButton) convertView.findViewById(R.id.opponentsCheckBox);
+            holder.opponentsCheckBoxButton = (CheckBox) convertView.findViewById(R.id.opponentsCheckBox);
+
 
             convertView.setTag(holder);
 
@@ -83,33 +87,47 @@ public class OpponentsAdapter extends BaseAdapter {
             holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (ListUsersActivity.getUserIndex(user.getId())));
             holder.opponentsName.setText(user.getFullName());
-            holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if (isChecked) {
-                        i = user.getId();
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
-                        selected.removeAll(selected);
-                        selected.add(user);
-                        Log.d(TAG, "Selected " + user.getFullName());
-                    } else {
-                        if (i == user.getId()) {
-                            i = 0;
-                        }
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
-                        selected.remove(user);
-                        holder.opponentsRadioButton.setChecked(false);
-//                        selected.removeAll(selected);
-                        Log.d(TAG, "Deselected " + user.getFullName());
-                    }
-                    notifyDataSetChanged();
+            holder.opponentsCheckBoxButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selected.add(user);
                 }
             });
 
+
+            // REMOVE COMMENT BELOW FOR 1 to 1 calls
+//            holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//                    if (isChecked) {
+//                        i = user.getId();
+//                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
+//                        selected.removeAll(selected);
+//                        selected.add(user);
+//                        Log.d(TAG, "Selected " + user.getFullName());
+//                    } else {
+//                        if (i == user.getId()) {
+//                            i = 0;
+//                        }
+//                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
+//                        selected.remove(user);
+//                        holder.opponentsRadioButton.setChecked(false);
+////                        selected.removeAll(selected);
+//                        Log.d(TAG, "Deselected " + user.getFullName());
+//                    }
+//                    notifyDataSetChanged();
+//                }
+//            });
             Log.d(TAG, "Method getView. i = " + i + "");
             Log.d(TAG, "Method getView. User id" + user.getId() + "");
-            holder.opponentsRadioButton.setChecked(i == user.getId());
+            // REMOVE COMMENT BELOW FOR 1 to 1 calls
+//            holder.opponentsRadioButton.setChecked(i == user.getId());
+
+            if (selected.contains(user)){
+                holder.opponentsCheckBoxButton.setSelected(true);
+            }
 
         }
 
@@ -120,6 +138,8 @@ public class OpponentsAdapter extends BaseAdapter {
     public static class ViewHolder {
         TextView opponentsNumber;
         TextView opponentsName;
-        RadioButton opponentsRadioButton;
+        // REMOVE COMMENT BELOW FOR 1 to 1 calls
+//        RadioButton opponentsRadioButton;
+        public CheckBox opponentsCheckBoxButton;
     }
 }

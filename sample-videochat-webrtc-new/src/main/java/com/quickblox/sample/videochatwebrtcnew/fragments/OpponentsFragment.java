@@ -42,8 +42,7 @@ import java.util.Map;
 public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
 
 
-
-
+    private static final String TAG = OpponentsFragment.class.getSimpleName() ;
     private OpponentsAdapter opponentsAdapter;
     public static String login;
     private Button btnAudioCall;
@@ -160,16 +159,18 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
 
-        if (opponentsAdapter.getSelected().size() == 1) {
+        if (opponentsAdapter.getSelected().size() > 0) {
             QBRTCTypes.QBConferenceType qbConferenceType = null;
 
             //Init conference type
             switch (v.getId()) {
                 case R.id.btnAudioCall:
+                    Log.d(TAG, "Audio call started");
                     qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
                     break;
 
                 case R.id.btnVideoCall:
+                    Log.d(TAG, "Audio call started");
                     // get call type
                     qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
                     break;
@@ -185,7 +186,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
 //        } else if (opponentsAdapter.getSelected().size() > 1){
 //            Toast.makeText(getActivity(), "Only 1-to-1 calls are available", Toast.LENGTH_LONG).show();
-        } else if (opponentsAdapter.getSelected().size() < 1){
+        } else {
             Toast.makeText(getActivity(), "Choose one opponent", Toast.LENGTH_LONG).show();
         }
     }

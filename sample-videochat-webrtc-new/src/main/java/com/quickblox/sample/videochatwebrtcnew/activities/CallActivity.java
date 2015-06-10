@@ -47,6 +47,7 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 import com.quickblox.videochat.webrtc.view.VideoCallBacks;
 
 import org.jivesoftware.smack.SmackException;
+import org.webrtc.VideoCapturerAndroid;
 import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
@@ -198,6 +199,16 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifiStateReceiver, intentFilter);
+
+
+//        QBRTCConfig.setAnswerTimeInterval(60);
+//
+//        QBRTCClient.getInstance().setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
+//            @Override
+//            public void onCameraError(String s) {
+//                Toast.makeText(CallActivity.this,"Cammera error appear", Toast.LENGTH_LONG).show();
+//            }
+//        });
 
         // Add signalling manager
         QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
@@ -529,9 +540,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     public void addOpponentsFragment() {
-        if (!isDestroyed()) {
+//        if (!isDestroyed()) {
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
-        }
+//        }
     }
 
 
@@ -564,7 +575,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         // init session for new call
         try {
             QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType);
-            Log.d("Crash", "addConversationFragmentStartCall. Set session " + newSessionWithOpponents);
+            Log.d(TAG, "addConversationFragmentStartCall. Set session " + newSessionWithOpponents);
             setCurrentSession(newSessionWithOpponents);
 
             ConversationFragment fragment = new ConversationFragment();
