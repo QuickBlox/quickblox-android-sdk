@@ -199,6 +199,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifiStateReceiver, intentFilter);
 
+        QBRTCConfig.setAnswerTimeInterval(60);
+
         // Add signalling manager
         QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
             @Override
@@ -518,20 +520,20 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         new Handler(handlerThread.getLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                if (!CallActivity.this.isDestroyed()) {
+//                if (!CallActivity.this.isDestroyed()) {
                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
 
 //                    Log.d("Crash", "addOpponentsFragmentWithDelay. Set session to null");
 //                    currentSession = null;
-                }
+//                }
             }
         }, SystemClock.uptimeMillis() + TimeUnit.SECONDS.toMillis(TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT));
     }
 
     public void addOpponentsFragment() {
-        if (!isDestroyed()) {
+//        if (!isDestroyed()) {
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
-        }
+//        }
     }
 
 

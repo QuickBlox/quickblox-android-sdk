@@ -9,14 +9,16 @@
 
     <com.quickblox.videochat.webrtc.view.QBGLVideoView
         android:id="@+id/remoteVideoView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="230dp"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"/>
 
     <com.quickblox.videochat.webrtc.view.QBGLVideoView
         android:id="@+id/localVideoVidew"
         android:layout_width="115dp"
         android:layout_height="150dp"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentRight="true"/>
 
 
     <include
