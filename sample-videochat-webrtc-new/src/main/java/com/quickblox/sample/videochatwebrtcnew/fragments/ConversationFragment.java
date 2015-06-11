@@ -53,16 +53,10 @@ public class ConversationFragment extends Fragment implements Serializable {
     private int qbConferenceType;
     private int startReason;
     private String sessionID;
-    //    private QBGLVideoView videoView;
-//    private GLSurfaceView videoView;
-    //    private QBRTCSessionDescription sessionDescription;
-    private static VideoRenderer.Callbacks REMOTE_RENDERER;
 
-    //    private QBGLVideoView opponentLittleCamera;
     private TextView opponentNumber;
     private TextView connectionStatus;
     private ImageView opponentAvatar;
-    //    private HorizontalScrollView camerasOpponentsList;
     private ToggleButton cameraToggle;
     private ToggleButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
@@ -82,7 +76,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
     private LinearLayout actionVideoButtonsLayout;
-    //    private Chronometer timer;
     private View actionBar;
     private String callerName;
     private LinearLayout noVideoImageContainer;
@@ -116,14 +109,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         initViews(view);
         initButtonsListener();
-//        VideoRendererGui.setView(videoView, new Runnable() {
-//            @Override
-//            public void run() {
-//            }
-//        });
 
         createOpponentsList(opponents);
-//        ((CallActivity) getActivity()).setCurrentVideoView(videoView);
         setUpUIByCallType(qbConferenceType);
 
         return view;
@@ -201,7 +188,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        setRetainInstance(true);
         Log.d("Track", "onCreate() from ConversationFragment");
         super.onCreate(savedInstanceState);
 
@@ -212,22 +198,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         audioStreamReceiver = new AudioStreamReceiver();
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        onCreateView(inflater, container, savedInstanceState);
-//    }
-
     private void initViews(View view) {
 
 
         localVideoView = view.findViewById(R.id.localVideoVidew);
         remoteVideoView = view.findViewById(R.id.remoteVideoView);
-//        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
-//        videoView = (GLSurfaceView) view.findViewById(R.id.videoView);
-
-//        camerasOpponentsList = (HorizontalScrollView)view.findViewById(R.id.camerasOpponentsList);
-//        ScrollView camerasOpponentsListLand = (ScrollView)view.findViewById(R.id.camerasOpponentsListLand);
 
         opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
@@ -253,7 +228,6 @@ public class ConversationFragment extends Fragment implements Serializable {
     public void onStop() {
         super.onStop();
         stopOutBeep();
-//        isMessageProcessed = false;
         getActivity().unregisterReceiver(audioStreamReceiver);
     }
 
@@ -442,9 +416,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 //                Toast.makeText(context, "Output audio stream is incorrect", Toast.LENGTH_LONG).show();
             }
             dynamicToggleVideoCall.invalidate();
-
-
-//            Toast.makeText(context, "Audio stream changed", Toast.LENGTH_LONG).show();
         }
     }
 }

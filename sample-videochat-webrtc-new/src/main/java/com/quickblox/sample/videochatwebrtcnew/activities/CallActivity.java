@@ -73,20 +73,13 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
 
 
-    private int selectedOpponentId;
-    private VideoRenderer.Callbacks REMOTE_RENDERER;
-    private VideoRenderer.Callbacks LOCAL_RENDERER;
     private QBRTCVideoTrack localVideoTrack;
     private QBRTCSession currentSession;
-    //    private CallManger callManger;
-//    private VideoRenderer.Callbacks localRenderer;
-//    private List<VideoRenderer.Callbacks> opponentRenderers = new LinkedList<>();
     private QBGLVideoView videoView;
     public static String login;
     public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
     public static ArrayList<QBUser> opponentsList;
 
-    // Close incomming call window timer
     private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
@@ -183,11 +176,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private void stopIncomeCallTimer() {
         Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
         showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
-//        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//            showIncomingCallWindowTaskThread.quitSafely();
-//        } else {
-//            showIncomingCallWindowTaskThread.quit();
-//        }
     }
 
 
@@ -233,26 +221,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         closeByWifiStateAllow = false;
     }
 
-//    public void setVideoViewVisibility(int visibility){
-//        videoView.setVisibility(visibility);
-//    }
 
     public void setCurrentSession(QBRTCSession sesion) {
         Log.d("Crash", "setCurrentSession. Set session to " + sesion);
         this.currentSession = sesion;
     }
 
-    /*public void setCallManager(CallManger callManger){
-        this.callManger = callManger;
-    }*/
-
-//    public void setLocalRenderer(VideoRenderer.Callbacks localRenderer){
-//        this.localRenderer = localRenderer;
-//    }
-//
-//    public void setRemouteRenderer(List<VideoRenderer.Callbacks> remouteRenderers){
-//        this.opponentRenderers = remouteRenderers;
-//    }
 
     public void setVideoView(QBGLVideoView videoView) {
         this.videoView = videoView;
@@ -353,8 +327,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         VideoRenderer remouteRenderer = new VideoRenderer(new VideoCallBacks(remoteVideoView, QBGLVideoView.Endpoint.REMOTE));
         videoTrack.addRenderer(remouteRenderer);
         remoteVideoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
-//        videoTrack.addRenderer(new VideoRenderer(REMOTE_RENDERER));
-//        videoTrackList.put(userID, videoTrack);
         Log.d("Track", "onRemoteVideoTrackReceive() is raned");
     }
 
@@ -385,8 +357,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                     stopIncomeCallTimer();
                 }
 
-//                updateRanderers();
-
                 startTimer();
 
                 setStateTitle(userID, R.string.connected, View.INVISIBLE);
@@ -401,13 +371,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         });
     }
 
-//    private void updateRanderers() {
-//        VideoRendererGui.update(REMOTE_RENDERER, 0, 0, 100, 100,
-//                VideoRendererGui.ScalingType.SCALE_FILL, false);
-//
-//        VideoRendererGui.update(LOCAL_RENDERER,70, 0, 30, 30,
-//                VideoRendererGui.ScalingType.SCALE_FILL, true);
-//    }
 
     @Override
     public void onDisconnectedTimeoutFromUser(QBRTCSession session, Integer userID) {
@@ -492,26 +455,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
             }
         });
-
-////        Toast.makeText(this, "User with ID:" + userID + "disconnected", Toast.LENGTH_SHORT).show();
-//        if (session.getState().ordinal() < QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_REJECTED.ordinal()){
-//            addOpponentsFragmentWithDelay();
-//        } else {
-//            Log.d(TAG, "Can't hangup session with status -->" + session.getState().name());
-//        }
-//
-//        for (String key : QBRTCClient.getInstance().getSessions().keySet()) {
-//            Log.d(TAG, QBRTCClient.getInstance().getSessions().get(key).toString());
-//        }
-
     }
-
-//    private void removeUserWithID(Integer userID) {
-//        QBRTCSession session = getCurrentSession();
-//        if (session != null) {
-//            session.removeUser(userID, new HashMap<String, String>());
-//        }
-//    }
 
 
     public void addOpponentsFragmentWithDelay() {
@@ -620,14 +564,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
 
-//    public void setCurrentVideoView(GLSurfaceView videoView) {
-//        VideoRendererGui.ScalingType scaleType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
-//        REMOTE_RENDERER = VideoRendererGui.create(0, 0, 100, 100, scaleType, true);
-//        REMOTE_RENDERER.canApplyRotation();
-//        LOCAL_RENDERER = VideoRendererGui.create(70, 0, 30, 30, scaleType, true);
-//        LOCAL_RENDERER.canApplyRotation();
-//    }
-
     public void startTimer() {
         super.startTimer();
     }
@@ -672,16 +608,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         super.onDestroy();
         opponentsList = null;
         OpponentsAdapter.i = 0;
-        // Remove activity as callback to RTCClient
-//        if (QBRTCClient.isInitiated()) {
-//            try {
-//                QBChatService.getInstance().logout();
-//            } catch (SmackException.NotConnectedException e) {
-//                e.printStackTrace();
-//            }
-//            QBRTCClient.getInstance().removeCallback(this);
-//            QBChatService.getInstance().destroy();
-//        }
     }
 
 }

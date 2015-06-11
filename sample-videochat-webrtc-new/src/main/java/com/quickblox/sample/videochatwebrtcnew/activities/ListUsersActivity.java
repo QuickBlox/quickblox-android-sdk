@@ -165,7 +165,6 @@ public class ListUsersActivity extends Activity {
 
     private void initUsersList() {
 
-//        users = DataHolder.createUsersList();
 
         usersListAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersListAdapter);
