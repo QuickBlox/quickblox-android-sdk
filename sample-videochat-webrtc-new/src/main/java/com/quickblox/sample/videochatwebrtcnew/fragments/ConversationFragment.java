@@ -68,7 +68,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private Map<String, String> userInfo;
     private View opponentItemView;
     private HorizontalScrollView camerasOpponentsList;
-    public static LinearLayout opponentsFromCall;
+//    public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
     private ViewGroup container;
     private Bundle savedInstanceState;
@@ -110,7 +110,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         initViews(view);
         initButtonsListener();
 
-        createOpponentsList(opponents);
+//        createOpponentsList(opponents);
         setUpUIByCallType(qbConferenceType);
 
         return view;
@@ -204,7 +204,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         localVideoView = view.findViewById(R.id.localVideoVidew);
         remoteVideoView = view.findViewById(R.id.remoteVideoView);
 
-        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
+//        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
         switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
@@ -347,13 +347,13 @@ public class ConversationFragment extends Fragment implements Serializable {
         return opponentsList;
     }
 
-    private void createOpponentsList(List<Integer> opponents) {
-        if (opponents.size() != 0) {
-            for (Integer i : opponents) {
-                addOpponentPreviewToList(i, opponentsFromCall);
-            }
-        }
-    }
+//    private void createOpponentsList(List<Integer> opponents) {
+//        if (opponents.size() != 0) {
+//            for (Integer i : opponents) {
+//                addOpponentPreviewToList(i, opponentsFromCall);
+//            }
+//        }
+//    }
 
     private void addOpponentPreviewToList(Integer userID, LinearLayout opponentsFromCall) {
 
