@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,12 +29,8 @@ import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
-
-import org.webrtc.VideoRenderer;
-import org.webrtc.VideoRendererGui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -85,6 +80,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private View remoteVideoView;
     private IntentFilter intentFilter;
     private AudioStreamReceiver audioStreamReceiver;
+    private CameraState cameraState = CameraState.NONE;
 
 
     @Override
@@ -221,8 +217,30 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         noVideoImageContainer = (LinearLayout) view.findViewById(R.id.noVideoImageContainer);
         imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
+
+        actionButtonsEnabled(false);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER
+        // than we turn on cam, else we nothing change
+        if (cameraState == CameraState.ENABLED_FROM_USER) {
+            toggleCamera(true);
+        }
     }
 
+    @Override
+    public void onPause() {
+        // If camera state is CameraState.ENABLED_FROM_USER or CameraState.NONE
+        // than we turn off cam
+        if(cameraState != CameraState.DISABLED_FROM_USER) {
+            toggleCamera(false);
+        }
+
+        super.onPause();
+    }
 
     @Override
     public void onStop() {
@@ -252,39 +270,15 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // TODO temporary insertion will be removed when GLVideoView will be fixed
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                displaymetrics.setToDefaults();
-
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                int height = displaymetrics.heightPixels;
-                int width = displaymetrics.widthPixels;
-
-                ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
-
-                layoutParams.height = ((height / 100) * 31);
-                layoutParams.width = ((width / 100) * 33);
-
-                imgMyCameraOff.setLayoutParams(layoutParams);
-
-                Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
-                // TODO end
-                if (((CallActivity) getActivity()).getCurrentSession() != null) {
-                    if (isVideoEnabled) {
-                        Log.d("Track", "Camera is off!");
-                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
-                        isVideoEnabled = false;
-                        switchCameraToggle.setVisibility(View.INVISIBLE);
-                        imgMyCameraOff.setVisibility(View.VISIBLE);
-                    } else {
-                        Log.d("Track", "Camera is on!");
-                        ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
-                        isVideoEnabled = true;
-                        switchCameraToggle.setVisibility(View.VISIBLE);
-                        imgMyCameraOff.setVisibility(View.INVISIBLE);
-                    }
+                if (cameraState != CameraState.DISABLED_FROM_USER) {
+                    toggleCamera(false);
+                    cameraState = CameraState.DISABLED_FROM_USER;
+                } else {
+                    toggleCamera(true);
+                    cameraState = CameraState.ENABLED_FROM_USER;
                 }
+
+
             }
         });
 
@@ -326,6 +320,42 @@ public class ConversationFragment extends Fragment implements Serializable {
             }
             }
         });
+    }
+
+    private void toggleCamera(boolean isNeedEnableCam) {
+        // TODO temporary insertion will be removed when GLVideoView will be fixed
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        displaymetrics.setToDefaults();
+
+//                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//                int height = displaymetrics.heightPixels;
+//                int width = displaymetrics.widthPixels;
+
+        ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
+
+//                layoutParams.height = ((height / 100) * 31);
+//                layoutParams.width = ((width / 100) * 33);
+        layoutParams.height = localVideoView.getHeight();
+        layoutParams.width = localVideoView.getWidth();
+
+        imgMyCameraOff.setLayoutParams(layoutParams);
+
+        Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
+        // TODO end
+        if (((CallActivity) getActivity()).getCurrentSession() != null) {
+            if (isNeedEnableCam) {
+                Log.d("Track", "Camera is off!");
+                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                switchCameraToggle.setVisibility(View.VISIBLE);
+                imgMyCameraOff.setVisibility(View.INVISIBLE);
+            } else {
+                Log.d("Track", "Camera is on!");
+                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+
+                switchCameraToggle.setVisibility(View.INVISIBLE);
+                imgMyCameraOff.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
@@ -418,6 +448,13 @@ public class ConversationFragment extends Fragment implements Serializable {
             dynamicToggleVideoCall.invalidate();
         }
     }
+
+    private enum CameraState {
+        NONE,
+        DISABLED_FROM_USER,
+        ENABLED_FROM_USER
+    }
+
 }
 
 

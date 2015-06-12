@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
  */
 public class BaseLogginedUserActivity extends Activity {
 
+    private static final String VERSION_NUMBER = "0.9.2.12062015";
+    private static final String APP_VERSION = "App version";
     static android.app.ActionBar mActionBar;
     private Chronometer timerABWithTimer;
     private boolean isStarted = false;
@@ -37,8 +40,19 @@ public class BaseLogginedUserActivity extends Activity {
         numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) + 1));
         numberOfListAB.setText(String.valueOf((Integer) searchIndexLogginedUser(DataHolder.createUsersList()) + 1));
 
+        numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(BaseLogginedUserActivity.this);
+                dialog.setTitle(APP_VERSION);
+                dialog.setMessage(VERSION_NUMBER);
+                dialog.show();
+                return true;
+            }});
+
         TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
         loginAsAB.setText(R.string.logged_in_as);
+
 
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
         Integer index = (Integer) searchIndexLogginedUser(DataHolder.createUsersList());
