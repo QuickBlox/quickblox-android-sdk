@@ -7,6 +7,7 @@
 
     <ImageView
         android:id="@+id/logo_imageview"
+        android:contentDescription="logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,20 +16,8 @@
         android:maxWidth="@dimen/logo_maxwidth"
         android:paddingTop="@dimen/padding_large"
         android:scaleType="fitCenter"
-        android:src="@drawable/logo_quickblox"
+        android:src="@drawable/gtbank_logo"
         android:layout_marginTop="@dimen/margin_large" />
-
-    <TextView
-        android:id="@+id/slogan_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/logo_imageview"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:paddingTop="@dimen/padding_large"
-        android:text="@string/qb_slogan"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/darker_gray" />
 
     <ProgressBar
         style="?android:attr/progressBarStyle"

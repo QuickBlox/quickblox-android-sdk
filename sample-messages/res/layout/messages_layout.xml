@@ -28,6 +28,12 @@
         android:layout_below="@id/message_out_edittext" />
 
     <EditText
+        android:id="@+id/message_receiver"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/send_message_button" />
+
+    <EditText
         android:id="@+id/messages_in_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

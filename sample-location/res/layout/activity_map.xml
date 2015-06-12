@@ -9,12 +9,22 @@
         android:layout_height="match_parent" />
 
     <Button
-        android:id="@+id/check_in_button"
+        android:id="@+id/bank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:onClick="onClickButtons"
         android:padding="@dimen/padding_middle"
-        android:text="@string/btn_check_in"/>
+        android:text="@string/btn_bank"/>
+
+    <Button
+        android:id="@+id/my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClickButtons"
+        android:padding="@dimen/padding_middle"
+        android:text="@string/btn_my_calotion"/>
 </RelativeLayout>
