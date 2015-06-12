@@ -93,9 +93,9 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
                 // Logout
                 //
-                QBUsers.signOut(new QBEntityCallbackImpl() {
+                QBUsers.signOut(new QBEntityCallbackImpl<Void>() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void result, Bundle bundle) {
                         progressDialog.hide();
 
                         DialogUtils.showLong(context, getResources().getString(R.string.user_log_out_msg));

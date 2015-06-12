@@ -8,11 +8,21 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+        mavenCentral()
+    }
+
+}
+
 ext.compileSdkVersion = 21
 ext.buildToolsVersion = "21.1.2"
 
 ext.minSdkVersion = 14
-ext.targetSdkVersion = 19
+ext.targetSdkVersion = 21
 
 ext.qbSdkVersion = '2.3'
 
@@ -24,8 +34,11 @@ ext.targetCompatibility = JavaVersion.VERSION_1_7
 
 ext.lintAbortOnError = false
 
+ext.useOnlineDependency = true
+
 def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
 def qb_sdk_version = '2.3'
+
 ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
 ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
 ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'

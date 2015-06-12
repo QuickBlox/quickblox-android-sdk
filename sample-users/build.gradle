@@ -1,9 +1,15 @@
 apply plugin: 'com.android.application'
 
+def onlineDep = false
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 21
+    }
 
     sourceSets {
         main {
@@ -13,11 +19,14 @@ android {
         }
     }
 
+
 }
 
-
-
 dependencies {
-    compile files(rootProject.core_jar_path)
-    compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
+    //if (onlineDep) {
+    //    compile files(rootProject.core_jar_path)
+    //} else {
+        compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+   // }
+    compile "com.android.support:appcompat-v7:22.1.0"
 }
