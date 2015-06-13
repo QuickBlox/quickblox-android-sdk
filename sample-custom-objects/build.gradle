@@ -4,6 +4,11 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -14,6 +19,7 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.customobjects_jar_path)
-    compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
+    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@jar"
+    compile "com.android.support:appcompat-v7:22.1.0"
 }

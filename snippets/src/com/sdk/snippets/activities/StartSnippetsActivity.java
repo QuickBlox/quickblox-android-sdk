@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.TabHost;
 import com.sdk.snippets.R;
 
-public class StartActivity extends TabActivity {
+public class StartSnippetsActivity extends TabActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

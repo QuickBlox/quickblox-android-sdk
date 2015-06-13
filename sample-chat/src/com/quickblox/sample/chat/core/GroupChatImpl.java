@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListenerImpl;
+import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
@@ -22,7 +24,7 @@ import org.jivesoftware.smackx.muc.DiscussionHistory;
 import java.util.Arrays;
 import java.util.List;
 
-public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat {
+public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat, QBMessageSentListener<QBGroupChat> {
     private static final String TAG = GroupChatImpl.class.getSimpleName();
 
     private ChatActivity chatActivity;
@@ -60,6 +62,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
             public void onSuccess(final Void result, final Bundle bundle) {
 
                 groupChat.addMessageListener(GroupChatImpl.this);
+                groupChat.addMessageSentListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -133,5 +136,15 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
     @Override
     public void processError(QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
 
+    }
+
+    @Override
+    public void processMessageSent(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
+        Toast.makeText(chatActivity, "message was sent to dialogId="+qbChatMessage.getDialogId(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void processMessageFailed(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
+        Toast.makeText(chatActivity, "message sent failed to dialogId="+qbChatMessage.getDialogId(), Toast.LENGTH_LONG).show();
     }
 }

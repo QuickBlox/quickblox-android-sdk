@@ -82,10 +82,10 @@ public class ShowNoteActivity extends BaseActivity {
                 progressDialog.show();
 
                 // Delete note
-                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallbackImpl() {
+                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallbackImpl<Void>() {
 
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void result, Bundle params) {
                         progressDialog.dismiss();
 
                         DataHolder.getDataHolder().removeNoteFromList(position);

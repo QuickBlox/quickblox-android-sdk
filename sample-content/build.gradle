@@ -8,6 +8,11 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -15,10 +20,25 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+    productFlavors {
+        online{
+
+        }
+
+        offline{
+
+        }
+    }
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.content_jar_path)
+
+    offlineCompile files(rootProject.core_jar_path, rootProject.content_jar_path )
+    //} else {
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@jar"
+
     compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
 }

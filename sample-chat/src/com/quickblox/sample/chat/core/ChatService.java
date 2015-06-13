@@ -118,6 +118,7 @@ public class ChatService {
 
     private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
+        chatService.setUseStreamManagement(true);
         chatService.login(user, new QBEntityCallbackImpl<Void>() {
             @Override
             public void onSuccess(Void result, Bundle b) {

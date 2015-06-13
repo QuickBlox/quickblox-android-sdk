@@ -4,6 +4,11 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -11,10 +16,24 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+    productFlavors {
+        online{
+
+        }
+
+        offline{
+
+        }
+    }
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.messages_jar_path)
+    offlineCompile files(rootProject.core_jar_path, rootProject.messages_jar_path )
+    //} else {
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
+    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@jar"
+
     compile "com.google.android.gms:play-services:$rootProject.playServiceVersion"
     compile "com.android.support:support-v4:$rootProject.androidSupportVersion"
     compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"

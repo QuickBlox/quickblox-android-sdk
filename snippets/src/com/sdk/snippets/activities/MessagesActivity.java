@@ -1,20 +1,17 @@
 package com.sdk.snippets.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import com.sdk.snippets.R;
+import com.sdk.snippets.Snippets;
 import com.sdk.snippets.SnippetsList;
 import com.sdk.snippets.modules.SnippetsMessages;
 
-public class MessagesActivity extends Activity {
+public class MessagesActivity extends BaseSnippetsActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.snippets_list);
-
-        SnippetsMessages snippets = new SnippetsMessages(this);
-        SnippetsList list = (SnippetsList) findViewById(R.id.list);
-        list.initialize(snippets);
+    public Snippets onCreateSnippets(Context context) {
+        return new SnippetsMessages(context);
     }
 }

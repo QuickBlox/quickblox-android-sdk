@@ -4,6 +4,12 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 21
+        applicationId "com.sdk.snippets"
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -17,7 +23,11 @@ android {
 dependencies {
 
     compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" /*{
+        exclude module: 'support-annotations'
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }*/
     compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
