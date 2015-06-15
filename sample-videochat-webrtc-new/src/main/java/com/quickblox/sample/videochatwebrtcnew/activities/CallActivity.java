@@ -517,10 +517,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         new Handler(handlerThread.getLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "Add opponentsFragment. Set session to null");
                 if (!CallActivity.this.isFinishing()) {
                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
-
-                    Log.d("Crash", "addOpponentsFragmentWithDelay. Set session to null");
                     currentSession = null;
                 }
             }
@@ -545,14 +544,20 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 
     private void addIncomeCallFragment(QBRTCSession session) {
+
         Log.d(TAG, "QBRTCSession in addIncomeCallFragment is " + session);
-        Fragment fragment = new IncomeCallFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("sessionDescription", session.getSessionDescription());
-        bundle.putIntegerArrayList("opponents", new ArrayList<Integer>(session.getOpponents()));
-        bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
-        fragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
+        if(session != null) {
+            Fragment fragment = new IncomeCallFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("sessionDescription", session.getSessionDescription());
+            bundle.putIntegerArrayList("opponents", new ArrayList<Integer>(session.getOpponents()));
+            bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
+            fragment.setArguments(bundle);
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
+        } else {
+            Log.d(TAG, "SKIP addIncomeCallFragment method");
+        }
+
 
     }
 
