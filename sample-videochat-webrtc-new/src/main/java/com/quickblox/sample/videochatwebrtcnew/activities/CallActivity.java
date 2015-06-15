@@ -430,6 +430,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "Start stop session");
                 if (session.equals(getCurrentSession())) {
 
                     Log.d(TAG, "Stop session");
