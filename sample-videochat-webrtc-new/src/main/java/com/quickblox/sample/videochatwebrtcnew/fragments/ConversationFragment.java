@@ -131,13 +131,16 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setEnabled(enability);
         switchCameraToggle.setEnabled(enability);
         imgMyCameraOff.setEnabled(enability);
-        handUpVideoCall.setEnabled(enability);
+        micToggleVideoCall.setEnabled(enability);
+        dynamicToggleVideoCall.setEnabled(enability);
 
 
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
         switchCameraToggle.setActivated(enability);
         imgMyCameraOff.setActivated(enability);
+        micToggleVideoCall.setActivated(enability);
+        dynamicToggleVideoCall.setActivated(enability);
     }
 
 
@@ -270,14 +273,15 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cameraState != CameraState.DISABLED_FROM_USER) {
-                    toggleCamera(false);
-                    cameraState = CameraState.DISABLED_FROM_USER;
-                } else {
-                    toggleCamera(true);
-                    cameraState = CameraState.ENABLED_FROM_USER;
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (cameraState != CameraState.DISABLED_FROM_USER) {
+                        toggleCamera(false);
+                        cameraState = CameraState.DISABLED_FROM_USER;
+                    } else {
+                        toggleCamera(true);
+                        cameraState = CameraState.ENABLED_FROM_USER;
+                    }
                 }
-
 
             }
         });
@@ -312,12 +316,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CallActivity) getActivity()).getCurrentSession() != null) {
                 stopOutBeep();
                 actionButtonsEnabled(false);
                 Log.d("Track", "Call is stopped");
                 ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
-            }
+
             }
         });
     }

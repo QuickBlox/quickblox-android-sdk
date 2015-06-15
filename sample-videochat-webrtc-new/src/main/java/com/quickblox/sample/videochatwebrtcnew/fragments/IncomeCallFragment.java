@@ -106,8 +106,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
                     stopCallNotification();
 
-                    ((CallActivity) getActivity()).getCurrentSession()
-                            .rejectCall(sessionDescription.getUserInfo());
+                    ((CallActivity) getActivity()).rejectCurrentSession();
                     ((CallActivity) getActivity()).removeIncomeCallFragment();
                     ((CallActivity) getActivity()).addOpponentsFragment();
 
