@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class ConversationFragment extends Fragment implements Serializable {
 
-    private String TAG = "ConversationFragment";
+    private String TAG = ConversationFragment.class.getSimpleName();
     private ArrayList<Integer> opponents;
     private int qbConferenceType;
     private int startReason;
@@ -99,7 +99,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             sessionID = getArguments().getString(CallActivity.SESSION_ID);
             callerName = getArguments().getString(CallActivity.CALLER_NAME);
 
-            Log.d("Track", "CALLER_NAME: " + callerName);
+            Log.d(TAG, "CALLER_NAME: " + callerName);
 
         }
 
@@ -187,7 +187,7 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("Track", "onCreate() from ConversationFragment");
+        Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
 
         intentFilter = new IntentFilter();
@@ -227,9 +227,9 @@ public class ConversationFragment extends Fragment implements Serializable {
     public void onResume() {
         super.onResume();
 
-        // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER
+        // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER // Жень, глянь здесь, смысл в том, что мы здесь включаем камеру, если юзер ее не выключал
         // than we turn on cam, else we nothing change
-        if (cameraState == CameraState.ENABLED_FROM_USER) {
+        if (cameraState != CameraState.DISABLED_FROM_USER) {
             toggleCamera(true);
         }
     }
@@ -273,7 +273,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+//                if (((CallActivity) getActivity()).getCurrentSession() != null) {
                     if (cameraState != CameraState.DISABLED_FROM_USER) {
                         toggleCamera(false);
                         cameraState = CameraState.DISABLED_FROM_USER;
@@ -281,7 +281,7 @@ public class ConversationFragment extends Fragment implements Serializable {
                         toggleCamera(true);
                         cameraState = CameraState.ENABLED_FROM_USER;
                     }
-                }
+//                }
 
             }
         });
@@ -290,7 +290,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
-                    Log.d("Track", "Dynamic switched!");
+                    Log.d(TAG, "Dynamic switched!");
                     ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
                 }
             }
@@ -301,11 +301,11 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
                     if (isAudioEnabled) {
-                        Log.d("Track", "Mic is off!");
+                        Log.d(TAG, "Mic is off!");
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
                         isAudioEnabled = false;
                     } else {
-                        Log.d("Track", "Mic is on!");
+                        Log.d(TAG, "Mic is on!");
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
                         isAudioEnabled = true;
                     }
@@ -318,7 +318,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 stopOutBeep();
                 actionButtonsEnabled(false);
-                Log.d("Track", "Call is stopped");
+                Log.d(TAG, "Call is stopped");
 
 //                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
                 ((CallActivity) getActivity()).hangUpCurrentSession();
@@ -349,18 +349,24 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
         // TODO end
+
         if (((CallActivity) getActivity()).getCurrentSession() != null) {
+            ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(isNeedEnableCam);
+            cameraToggle.setChecked(isNeedEnableCam);
+
             if (isNeedEnableCam) {
-                Log.d("Track", "Camera is off!");
-                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
+                Log.d(TAG, "Camera is on!");
+//                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
                 switchCameraToggle.setVisibility(View.VISIBLE);
                 imgMyCameraOff.setVisibility(View.INVISIBLE);
+//                cameraToggle.setChecked(true);
             } else {
-                Log.d("Track", "Camera is on!");
-                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
+                Log.d(TAG, "Camera is off!");
+//                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
 
                 switchCameraToggle.setVisibility(View.INVISIBLE);
                 imgMyCameraOff.setVisibility(View.VISIBLE);
+//                cameraToggle.setChecked(false);
             }
         }
     }
@@ -402,7 +408,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("Track", "Main opponent Selected");
+                    Log.d(TAG, "Main opponent Selected");
                 }
             });
 
