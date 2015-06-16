@@ -550,7 +550,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Fragment fragment = new IncomeCallFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("sessionDescription", session.getSessionDescription());
-            bundle.putIntegerArrayList("opponents", new ArrayList<Integer>(session.getOpponents()));
+            bundle.putIntegerArrayList("opponents", new ArrayList<>(session.getOpponents()));
             bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
             fragment.setArguments(bundle);
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
@@ -654,13 +654,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         }
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         opponentsList = null;
         OpponentsAdapter.i = 0;
     }
-
 }
 
