@@ -87,6 +87,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private QBGLVideoView localVideoVidew;
     private QBGLVideoView remoteVideoView;
     private boolean isLastConnectionStateEnabled;
+    private boolean isInFront;
 
 
     @Override
@@ -232,6 +233,22 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         QBRTCClient.getInstance().prepareToProcessCalls(this);
     }
 
+    @Override
+    protected void onResume() {
+        isInFront = true;
+
+        if (currentSession == null){
+            addOpponentsFragment();
+        }
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        isInFront = false;
+        super.onPause();
+    }
 
     @Override
     protected void onStop() {
@@ -442,7 +459,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 if (session.equals(getCurrentSession())) {
 
                     Log.d(TAG, "Stop session");
-                    addOpponentsFragmentWithDelay();
+//                    addOpponentsFragmentWithDelay();
+                    addOpponentsFragment();
 
                     // Remove current session
                     Log.d(TAG, "Remove current session");
@@ -523,10 +541,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         HandlerThread handlerThread = new HandlerThread(ADD_OPPONENTS_FRAGMENT_HANDLER);
         handlerThread.start();
         new Handler(handlerThread.getLooper()).postAtTime(new Runnable() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void run() {
-                Log.d(TAG, "Add opponentsFragment. Set session to null");
-                if (!CallActivity.this.isFinishing()) {
+                if (isInFront) {
                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
                     currentSession = null;
                 }
@@ -535,7 +553,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     public void addOpponentsFragment() {
-        if (!isFinishing()) {
+        if (isInFront) {
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, new OpponentsFragment(), OPPONENTS_CALL_FRAGMENT).commit();
         }
     }
