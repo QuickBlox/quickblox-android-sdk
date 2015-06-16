@@ -265,6 +265,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                Log.d(TAG, "Start stop session for session id " + session.getSessionID());
+                Log.d(TAG, "Current session id " + session.getSessionID());
+
                 if (getCurrentSession() == null) {
                     Log.d(TAG, "Start new session");
                     Log.d(TAG, "Income call");
@@ -427,10 +431,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onSessionClosed(final QBRTCSession session) {
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "Start stop session");
+
+                Log.d(TAG, "Start stop session for session id " + session.getSessionID());
+                Log.d(TAG, "Current session id " + session.getSessionID());
+
                 if (session.equals(getCurrentSession())) {
 
                     Log.d(TAG, "Stop session");
