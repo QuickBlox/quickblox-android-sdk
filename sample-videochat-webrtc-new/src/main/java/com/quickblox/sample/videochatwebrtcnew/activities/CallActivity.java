@@ -53,7 +53,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ *
  * Created by tereha on 16.02.15.
+ *
  */
 public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCClientConnectionCallbacks, QBRTCClientVideoTracksCallbacks {
 
@@ -70,14 +72,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
 
 
-    private QBRTCVideoTrack localVideoTrack;
     private QBRTCSession currentSession;
-    private QBGLVideoView videoView;
     public static String login;
-    public static Map<Integer, QBRTCVideoTrack> videoTrackList = new HashMap<>();
     public static ArrayList<QBUser> opponentsList;
 
-    private HandlerThread showIncomingCallWindowTaskThread;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
     private BroadcastReceiver wifiStateReceiver;
@@ -178,7 +176,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 } else {
                     rejectCurrentSession();
                 }
-
             }
         };
     }
@@ -240,7 +237,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         if (currentSession == null){
             addOpponentsFragment();
         }
-
         super.onResume();
     }
 
@@ -270,11 +266,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         this.currentSession = sesion;
     }
 
-
-    public void setVideoView(QBGLVideoView videoView) {
-        this.videoView = videoView;
-    }
-
     // ---------------Chat callback methods implementation  ----------------------//
 
     @Override
@@ -283,8 +274,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
 
-                Log.d(TAG, "Start stop session for session id " + session.getSessionID());
-                Log.d(TAG, "Current session id " + session.getSessionID());
+                Log.d(TAG, "Session "+ session.getSessionID() + " are income");
+                Log.d(TAG, "Session "+ session.getSessionID() + " is current" );
 
                 if (getCurrentSession() == null) {
                     Log.d(TAG, "Start new session");
@@ -358,8 +349,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
-        this.localVideoTrack = videoTrack;
-//        videoTrack.addRenderer(new VideoRenderer(LOCAL_RENDERER));
         localVideoVidew = (QBGLVideoView) findViewById(R.id.localVideoVidew);
         Log.d("Track", "localVideoVidew is " + localVideoVidew);
         if (localVideoVidew != null) {
@@ -411,7 +400,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
                 startTimer();
 
-//                setStateTitle(userID, R.string.connected, View.INVISIBLE);
                 showToast(R.string.connected);
 
                 Log.d("Track", "onConnectedToUser() is started");
@@ -453,8 +441,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
 
-                Log.d(TAG, "Start stop session for session id " + session.getSessionID());
-                Log.d(TAG, "Current session id " + session.getSessionID());
+                Log.d(TAG, "Session "+ session.getSessionID() + " start stop session");
+                Log.d(TAG, "Session "+ session.getSessionID() + " is current" );
 
                 if (session.equals(getCurrentSession())) {
 
@@ -488,7 +476,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 }
             }
         });
-
     }
 
     @Override
@@ -583,8 +570,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         } else {
             Log.d(TAG, "SKIP addIncomeCallFragment method");
         }
-
-
     }
 
 
@@ -609,13 +594,15 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             for (String key : userInfo.keySet()) {
                 bundle.putString("UserInfo:" + key, userInfo.get(key));
             }
+
             fragment.setArguments(bundle);
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT).commit();
+
         } catch (IllegalStateException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
     }
+
 
     public void addConversationFragmentReceiveCall() {
 
@@ -642,6 +629,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                     bundle.putString("UserInfo:" + key, session.getUserInfo().get(key));
                 }
             }
+
             fragment.setArguments(bundle);
 
             // Start conversation fragment

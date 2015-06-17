@@ -107,13 +107,13 @@ public class ConversationFragment extends Fragment implements Serializable {
         initButtonsListener();
 
 //        createOpponentsList(opponents);
-        setUpUIByCallType(qbConferenceType);
+        setUpUiByCallType(qbConferenceType);
 
         return view;
 
     }
 
-    private void setUpUIByCallType(int qbConferenceType) {
+    private void setUpUiByCallType(int qbConferenceType) {
         if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
             cameraToggle.setVisibility(View.GONE);
             switchCameraToggle.setVisibility(View.INVISIBLE);
@@ -229,7 +229,8 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER // Жень, глянь здесь, смысл в том, что мы здесь включаем камеру, если юзер ее не выключал
         // than we turn on cam, else we nothing change
-        if (cameraState != CameraState.DISABLED_FROM_USER) {
+        if (cameraState != CameraState.DISABLED_FROM_USER
+                && qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.getValue()) {
             toggleCamera(true);
         }
     }
@@ -261,7 +262,8 @@ public class ConversationFragment extends Fragment implements Serializable {
                     ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getActivity(), "Error of cam capturing", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getActivity(), "Error of cam capturing", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Cam successfully switched", Toast.LENGTH_LONG).show();
                         }
                     });
                     Log.d(TAG, "Camera switched!");
@@ -336,14 +338,8 @@ public class ConversationFragment extends Fragment implements Serializable {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         displaymetrics.setToDefaults();
 
-//                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-//                int height = displaymetrics.heightPixels;
-//                int width = displaymetrics.widthPixels;
-
         ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
 
-//                layoutParams.height = ((height / 100) * 31);
-//                layoutParams.width = ((width / 100) * 33);
         layoutParams.height = localVideoView.getHeight();
         layoutParams.width = localVideoView.getWidth();
 
@@ -358,17 +354,12 @@ public class ConversationFragment extends Fragment implements Serializable {
 
             if (isNeedEnableCam) {
                 Log.d(TAG, "Camera is on!");
-//                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
                 switchCameraToggle.setVisibility(View.VISIBLE);
                 imgMyCameraOff.setVisibility(View.INVISIBLE);
-//                cameraToggle.setChecked(true);
             } else {
                 Log.d(TAG, "Camera is off!");
-//                ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
-
                 switchCameraToggle.setVisibility(View.INVISIBLE);
                 imgMyCameraOff.setVisibility(View.VISIBLE);
-//                cameraToggle.setChecked(false);
             }
         }
     }
