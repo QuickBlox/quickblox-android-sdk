@@ -92,7 +92,8 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         if (users == null) {
             List<String> tags = new LinkedList<>();
-            tags.add("webrtctest");
+            tags.add("webrtcusers");
+//            tags.add("webrtctest");
             QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
