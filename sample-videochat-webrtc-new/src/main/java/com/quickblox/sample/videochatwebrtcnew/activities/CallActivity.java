@@ -104,7 +104,40 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             addOpponentsFragment();
         }
 
+        initQBRTCClient();
         initWiFiManagerListener();
+    }
+
+    private void initQBRTCClient() {
+        // Add signalling manager
+        QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
+            @Override
+            public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
+                if (!createdLocally) {
+                    QBRTCClient.getInstance().addSignaling((QBWebRTCSignaling) qbSignaling);
+                }
+            }
+        });
+
+        QBRTCClient.getInstance().setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
+            @Override
+            public void onCameraError(final String s) {
+                CallActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(CallActivity.this, s, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
+        // Add activity as callback to RTCClient
+        QBRTCClient.getInstance().addSessionCallbacksListener(this);
+        QBRTCClient.getInstance().addConnectionCallbacksListener(this);
+        QBRTCClient.getInstance().addVideoTrackCallbacksListener(this);
+
+        // Start mange QBRTCSessions according to VideoCall parser's callbacks
+        QBRTCClient.getInstance().prepareToProcessCalls(this);
     }
 
     private void initWiFiManagerListener() {
@@ -213,35 +246,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifiStateReceiver, intentFilter);
 
-        // Add signalling manager
-        QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
-            @Override
-            public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
-                if (!createdLocally) {
-                    QBRTCClient.getInstance().addSignaling((QBWebRTCSignaling) qbSignaling);
-                }
-            }
-        });
 
-        QBRTCClient.getInstance().setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
-            @Override
-            public void onCameraError(final String s) {
-                CallActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(CallActivity.this, s, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
-        // Add activity as callback to RTCClient
-        QBRTCClient.getInstance().addSessionCallbacksListener(this);
-        QBRTCClient.getInstance().addConnectionCallbacksListener(this);
-        QBRTCClient.getInstance().addVideoTrackCallbacksListener(this);
-
-        // Start mange QBRTCSessions according to VideoCall parser's callbacks
-        QBRTCClient.getInstance().prepareToProcessCalls(this);
     }
 
     @Override
