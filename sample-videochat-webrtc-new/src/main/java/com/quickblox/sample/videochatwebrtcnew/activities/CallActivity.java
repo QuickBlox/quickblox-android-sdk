@@ -44,6 +44,7 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 import com.quickblox.videochat.webrtc.view.VideoCallBacks;
 
 import org.jivesoftware.smack.SmackException;
+import org.webrtc.VideoCapturerAndroid;
 import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private boolean isInCommingCall;
     private QBGLVideoView localVideoVidew;
     private QBGLVideoView remoteVideoView;
-    private boolean isLastConnectionStateEnabled;
+//    private boolean isLastConnectionStateEnabled;
     private boolean isInFront;
 
 
@@ -119,7 +120,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private void processCurrentWifiState(Context context) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (!wifi.isWifiEnabled()) {
-            isLastConnectionStateEnabled = false;
+//            isLastConnectionStateEnabled = false;
             Log.d(TAG, "WIFI is turned off");
             if (closeByWifiStateAllow) {
                 if (currentSession != null) {
@@ -140,7 +141,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 showToast(R.string.NETWORK_ABSENT);
             }
         } else {
-            isLastConnectionStateEnabled = true;
+//            isLastConnectionStateEnabled = true;
         }
     }
 
@@ -170,12 +171,12 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                     if (conversationFragment != null) {
                         disableConversationFragmentButtons();
                         stopConversationFragmentBeeps();
-
                         hangUpCurrentSession();
                     }
                 } else {
                     rejectCurrentSession();
                 }
+                Toast.makeText(CallActivity.this, "Close connection by timer", Toast.LENGTH_LONG).show();
             }
         };
     }
@@ -198,7 +199,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void stopIncomeCallTimer() {
-        Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
+        Log.d(TAG, "stopIncomeCallTimer" );
+//        Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
         showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
     }
 
@@ -218,6 +220,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 if (!createdLocally) {
                     QBRTCClient.getInstance().addSignaling((QBWebRTCSignaling) qbSignaling);
                 }
+            }
+        });
+
+        QBRTCClient.getInstance().setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
+            @Override
+            public void onCameraError(final String s) {
+                CallActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(CallActivity.this, s, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -275,7 +289,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             public void run() {
 
                 Log.d(TAG, "Session "+ session.getSessionID() + " are income");
-                Log.d(TAG, "Session "+ session.getSessionID() + " is current" );
+                String curSession = (getCurrentSession() == null) ? null : getCurrentSession().getSessionID();
+                Log.d(TAG, "Session " + curSession + " is current" );
 
                 if (getCurrentSession() == null) {
                     Log.d(TAG, "Start new session");
@@ -350,23 +365,23 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
         localVideoVidew = (QBGLVideoView) findViewById(R.id.localVideoVidew);
-        Log.d("Track", "localVideoVidew is " + localVideoVidew);
+        Log.d(TAG, "localVideoVidew is " + localVideoVidew);
         if (localVideoVidew != null) {
             videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(localVideoVidew, QBGLVideoView.Endpoint.LOCAL)));
             localVideoVidew.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.LOCAL);
-            Log.d("Track", "onLocalVideoTrackReceive() is raned");
+            Log.d(TAG, "onLocalVideoTrackReceive() is raned");
         }
     }
 
     @Override
     public void onRemoteVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack, Integer userID) {
         remoteVideoView = (QBGLVideoView) findViewById(R.id.remoteVideoView);
-        Log.d("Track", "remoteVideoView is " + remoteVideoView);
+        Log.d(TAG, "remoteVideoView is " + remoteVideoView);
         if (remoteVideoView != null) {
             VideoRenderer remouteRenderer = new VideoRenderer(new VideoCallBacks(remoteVideoView, QBGLVideoView.Endpoint.REMOTE));
             videoTrack.addRenderer(remouteRenderer);
             remoteVideoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
-            Log.d("Track", "onRemoteVideoTrackReceive() is raned");
+            Log.d(TAG, "onRemoteVideoTrackReceive() is raned");
         }
     }
 
@@ -402,7 +417,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
                 showToast(R.string.connected);
 
-                Log.d("Track", "onConnectedToUser() is started");
+                Log.d(TAG, "onConnectedToUser() is started");
 
                 ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
                 if (fragment != null) {
@@ -416,11 +431,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onDisconnectedTimeoutFromUser(QBRTCSession session, Integer userID) {
 //        setStateTitle(userID, R.string.time_out, View.INVISIBLE);
-        if (isLastConnectionStateEnabled) {
-            showToast(R.string.NETWORK_ABSENT);
-        } else {
+//        if (isLastConnectionStateEnabled) {
+//            showToast(R.string.NETWORK_ABSENT);
+//        } else {
             showToast(R.string.time_out);
-        }
+//        }
     }
 
     @Override
@@ -441,8 +456,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
 
-                Log.d(TAG, "Session "+ session.getSessionID() + " start stop session");
-                Log.d(TAG, "Session "+ session.getSessionID() + " is current" );
+                Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
+                String curSession = (getCurrentSession() == null) ? null : getCurrentSession().getSessionID();
+                Log.d(TAG, "Session " + curSession + " is current" );
 
                 if (session.equals(getCurrentSession())) {
 

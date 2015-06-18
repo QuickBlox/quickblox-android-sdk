@@ -321,7 +321,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                 stopOutBeep();
                 actionButtonsEnabled(false);
                 handUpVideoCall.setEnabled(false);
-                Log.d("Track", "Call is stopped");
                 Log.d(TAG, "Call is stopped");
 
 //                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);

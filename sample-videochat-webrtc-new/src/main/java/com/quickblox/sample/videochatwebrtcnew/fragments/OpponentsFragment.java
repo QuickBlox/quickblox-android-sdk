@@ -42,8 +42,7 @@ import java.util.Map;
 public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
 
 
-
-
+    private static final String TAG = OpponentsFragment.class.getSimpleName();
     private OpponentsAdapter opponentsAdapter;
     public static String login;
     private Button btnAudioCall;
@@ -79,7 +78,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         initOpponentListAdapter();
 
-         Log.d("Track", "onCreateView() from OpponentsFragment Level 2");
+//         Log.d(TAG, "onCreateView() from OpponentsFragment Level 2");
         return view;
     }
 
@@ -92,12 +91,12 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         if (users == null) {
             List<String> tags = new LinkedList<>();
-            tags.add("webrtcusers");
-//            tags.add("webrtctest");
+//            tags.add("webrtcusers");
+            tags.add("webrtctest");
             QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                    Log.d("Track", "download users from QickBlox");
+//                    Log.d(TAG, "download users from QickBlox");
                     ArrayList<QBUser> orderedUsers = reorderUsersByName(qbUsers);
                     if(isAdded()) {
                         ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
@@ -114,7 +113,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
                 @Override
                 public void onError(List<String> strings) {
-                    Log.d("Track", "onError()");
+                    Log.d(TAG, "onError()");
                 }
             });
         } else {
@@ -141,7 +140,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
 //        setRetainInstance(true);
         setHasOptionsMenu(true);
-        Log.d("Track", "onCreate() from OpponentsFragment");
+        Log.d(TAG, "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
     }
 

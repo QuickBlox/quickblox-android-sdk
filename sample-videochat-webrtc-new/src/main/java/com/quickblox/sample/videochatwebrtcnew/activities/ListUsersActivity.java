@@ -194,33 +194,33 @@ public class ListUsersActivity extends Activity {
 
                 loginPB.setVisibility(View.INVISIBLE);
 
-                chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
+                if (chatService.isLoggedIn()){
+                    startCallActivity(login);
+                } else {
+                    chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
-                    @Override
-                    public void onSuccess(QBUser result, Bundle params) {
-                        Log.d(TAG, "onSuccess login to chat with params");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-                        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "onSuccess login to chat");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-                        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
-                    }
-
-                    @Override
-                    public void onError(List errors) {
-                        loginPB.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                        for (Object error : errors) {
-                            Log.d(TAG, error.toString());
+                        @Override
+                        public void onSuccess(QBUser result, Bundle params) {
+                            Log.d(TAG, "onSuccess login to chat with params");
+                            startCallActivity(login);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess() {
+                            Log.d(TAG, "onSuccess login to chat");
+                            startCallActivity(login);
+                        }
+
+                        @Override
+                        public void onError(List errors) {
+                            loginPB.setVisibility(View.INVISIBLE);
+                            Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                            for (Object error : errors) {
+                                Log.d(TAG, error.toString());
+                            }
+                        }
+                    });
+                }
 
             }
 
@@ -236,6 +236,12 @@ public class ListUsersActivity extends Activity {
                 Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void startCallActivity(String login) {
+        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
+        intent.putExtra("login", login);
+        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
     }
 
     @Override
