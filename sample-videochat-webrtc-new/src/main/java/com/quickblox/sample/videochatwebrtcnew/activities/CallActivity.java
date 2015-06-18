@@ -559,7 +559,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private void addIncomeCallFragment(QBRTCSession session) {
 
         Log.d(TAG, "QBRTCSession in addIncomeCallFragment is " + session);
-        if(session != null) {
+        if(session != null && isInFront) {
             Fragment fragment = new IncomeCallFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("sessionDescription", session.getSessionDescription());
