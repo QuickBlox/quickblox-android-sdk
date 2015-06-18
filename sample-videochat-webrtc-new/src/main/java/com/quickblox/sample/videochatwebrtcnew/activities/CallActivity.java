@@ -528,15 +528,17 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, final Integer userID) {
+        if (session.equals(getCurrentSession())) {
 
-        // TODO update view of this user
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+            // TODO update view of this user
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 //                setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
-                showToast(R.string.hungUp);
-            }
-        });
+                    showToast(R.string.hungUp);
+                }
+            });
+        }
     }
 
 
