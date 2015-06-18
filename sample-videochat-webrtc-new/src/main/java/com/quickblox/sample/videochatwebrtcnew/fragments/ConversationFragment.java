@@ -262,11 +262,10 @@ public class ConversationFragment extends Fragment implements Serializable {
                     ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition(new Runnable() {
                         @Override
                         public void run() {
-//                            Toast.makeText(getActivity(), "Error of cam capturing", Toast.LENGTH_LONG).show();
-                            Toast.makeText(getActivity(), "Cam successfully switched", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getActivity(), "Cam was switched", Toast.LENGTH_LONG).show();
                         }
                     });
-                    Log.d(TAG, "Camera switched!");
+                    Log.d(TAG, "Camera was switched!");
                 }
             }
         });

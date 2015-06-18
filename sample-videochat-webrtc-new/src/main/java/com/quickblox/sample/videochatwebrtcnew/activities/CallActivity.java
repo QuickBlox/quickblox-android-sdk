@@ -209,7 +209,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 } else {
                     rejectCurrentSession();
                 }
-                Toast.makeText(CallActivity.this, "Close connection by timer", Toast.LENGTH_LONG).show();
+                Toast.makeText(CallActivity.this, "Call was stopped by timer", Toast.LENGTH_LONG).show();
             }
         };
     }
@@ -466,6 +466,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 Log.d(TAG, "Session " + curSession + " is current" );
 
                 if (session.equals(getCurrentSession())) {
+
+                    if (isInCommingCall) {
+                        stopIncomeCallTimer();
+                    }
 
                     Log.d(TAG, "Stop session");
 //                    addOpponentsFragmentWithDelay();
