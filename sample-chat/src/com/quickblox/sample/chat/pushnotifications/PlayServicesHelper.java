@@ -1,4 +1,4 @@
-package com.quickblox.simplesample.messages.main.helper;
+package com.quickblox.sample.chat.pushnotifications;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,8 +17,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBSubscription;
-import com.quickblox.simplesample.messages.App;
-import com.quickblox.simplesample.messages.main.Consts;
+import com.quickblox.sample.chat.ApplicationSingleton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class PlayServicesHelper {
         // since the existing regID is not guaranteed to work with the new
         // app version.
         int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = App.getInstance().getAppVersion();
+        int currentVersion = ApplicationSingleton.getInstance().getAppVersion();
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
             return "";
@@ -203,7 +202,7 @@ public class PlayServicesHelper {
      */
     private void storeRegistrationId(String regId) {
         final SharedPreferences prefs = getGCMPreferences();
-        int appVersion = App.getInstance().getAppVersion();
+        int appVersion = ApplicationSingleton.getInstance().getAppVersion();
         Log.i(TAG, "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);

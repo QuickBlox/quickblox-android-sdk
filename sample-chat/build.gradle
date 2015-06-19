@@ -14,7 +14,9 @@ android {
 }
 
 dependencies {
-    compile files('../jars/quickblox-android-sdk-core-2.2.4.jar', '../jars/quickblox-android-sdk-chat-2.2.4.jar')
+    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
+    compile 'com.google.android.gms:play-services:4.2.+'
+    compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile project(':pull-to-refresh')
 }

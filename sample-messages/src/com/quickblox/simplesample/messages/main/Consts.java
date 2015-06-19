@@ -1,4 +1,4 @@
-package com.quickblox.simplesample.messages.main.definitions;
+package com.quickblox.simplesample.messages.main;
 
 public class Consts {
 
@@ -19,4 +19,6 @@ public class Consts {
     public static final String GCM_INTENT_SERVICE = "GcmIntentService";
     public static final String GCM_SEND_ERROR = "Send error: ";
     public static final String GCM_RECEIVED = "Received: ";
+
+    public static final String NEW_PUSH_EVENT = "new-push-event";
 }

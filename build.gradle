@@ -19,6 +19,18 @@ ext.targetCompatibility = JavaVersion.VERSION_1_7
 
 ext.lintAbortOnError = false
 
+def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
+def qb_sdk_version = '2.2.5'
+ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
+ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
+ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
+ext.content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
+ext.customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
+ext.messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
+ext.ratings_jar_path = qb_sdk_jars_template_path + '-ratings-' + qb_sdk_version + '.jar'
+ext.videochat_jar_path = qb_sdk_jars_template_path + '-videochat-' + qb_sdk_version + '.jar'
+ext.videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
 }

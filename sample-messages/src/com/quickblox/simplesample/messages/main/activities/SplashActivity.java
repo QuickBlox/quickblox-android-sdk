@@ -12,7 +12,7 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
 
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.main.definitions.Consts;
+import com.quickblox.simplesample.messages.main.Consts;
 import com.quickblox.simplesample.messages.main.utils.DialogUtils;
 
 import java.util.List;

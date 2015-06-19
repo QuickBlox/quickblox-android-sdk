@@ -2,7 +2,6 @@ package com.quickblox.sample.chat.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.users.model.QBUser;
 
-import java.util.Date;
 import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
@@ -68,7 +66,7 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QBUser currentUser = ((ApplicationSingleton)context.getApplication()).getCurrentUser();
+        QBUser currentUser = ChatService.getInstance().getCurrentUser();
         boolean isOutgoing = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
         setAlignment(holder, isOutgoing);
         holder.txtMessage.setText(chatMessage.getBody());

@@ -14,7 +14,7 @@ import com.quickblox.sample.chat.ui.activities.ChatActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
-public class PrivateChatManagerImpl extends QBMessageListenerImpl<QBPrivateChat> implements ChatManager, QBPrivateChatManagerListener {
+public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implements Chat, QBPrivateChatManagerListener {
 
     private static final String TAG = "PrivateChatManagerImpl";
 
@@ -23,20 +23,26 @@ public class PrivateChatManagerImpl extends QBMessageListenerImpl<QBPrivateChat>
     private QBPrivateChatManager privateChatManager;
     private QBPrivateChat privateChat;
 
-    public PrivateChatManagerImpl(ChatActivity chatActivity, Integer opponentID) {
+    public PrivateChatImpl(ChatActivity chatActivity, Integer opponentID) {
         this.chatActivity = chatActivity;
 
-        privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+        initManagerIfNeed();
 
-        privateChatManager.addPrivateChatManagerListener(this);
-
-        // init private chat
+        // initIfNeed private chat
         //
         privateChat = privateChatManager.getChat(opponentID);
         if (privateChat == null) {
             privateChat = privateChatManager.createChat(opponentID, this);
         }else{
             privateChat.addMessageListener(this);
+        }
+    }
+
+    private void initManagerIfNeed(){
+        if(privateChatManager == null){
+            privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+
+            privateChatManager.addPrivateChatManagerListener(this);
         }
     }
 
@@ -67,7 +73,7 @@ public class PrivateChatManagerImpl extends QBMessageListenerImpl<QBPrivateChat>
     public void chatCreated(QBPrivateChat incomingPrivateChat, boolean createdLocally) {
         if(!createdLocally){
             privateChat = incomingPrivateChat;
-            privateChat.addMessageListener(PrivateChatManagerImpl.this);
+            privateChat.addMessageListener(PrivateChatImpl.this);
         }
 
         Log.w(TAG, "private chat created: " + incomingPrivateChat.getParticipant() + ", createdLocally:" + createdLocally);

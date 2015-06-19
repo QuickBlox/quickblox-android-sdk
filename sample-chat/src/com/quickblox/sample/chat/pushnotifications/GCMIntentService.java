@@ -1,4 +1,4 @@
-package com.quickblox.simplesample.messages;
+package com.quickblox.sample.chat.pushnotifications;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -11,8 +11,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.quickblox.simplesample.messages.main.activities.MessagesActivity;
-import com.quickblox.simplesample.messages.main.Consts;
+import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.ui.activities.DialogsActivity;
 
 public class GCMIntentService extends IntentService {
 
@@ -67,25 +67,23 @@ public class GCMIntentService extends IntentService {
     private void processNotification(String type, Bundle extras) {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        final String messageValue = extras.getString(Consts.EXTRA_MESSAGE);
+        final String messageValue = extras.getString("message");
 
-        Intent intent = new Intent(this, MessagesActivity.class);
+        Intent intent = new Intent(this, DialogsActivity.class);
         intent.putExtra(Consts.EXTRA_MESSAGE, messageValue);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.app_icon)
-                        .setContentTitle(Consts.GCM_NOTIFICATION)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(messageValue))
-                        .setContentText(messageValue);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(
+                R.drawable.app_icon).setContentTitle(Consts.GCM_NOTIFICATION).setStyle(
+                new NotificationCompat.BigTextStyle().bigText(messageValue)).setContentText(messageValue);
 
         mBuilder.setContentIntent(contentIntent);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
-        // notify activity
+
+        // notify about new push
+        //
         Intent intentNewPush = new Intent(Consts.NEW_PUSH_EVENT);
         intentNewPush.putExtra(Consts.EXTRA_MESSAGE, messageValue);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentNewPush);

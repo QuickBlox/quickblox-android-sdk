@@ -199,6 +199,7 @@ public class SnippetsCustomObjects extends Snippets{
         public void execute() {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setPagesLimit(10);
+            requestBuilder.all("tags", "a", "b");
 //            requestBuilder.gt("rating", 1);
 //            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
 

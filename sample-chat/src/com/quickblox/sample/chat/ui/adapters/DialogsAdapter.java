@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.R;
 
 import java.util.List;
@@ -22,12 +22,10 @@ import java.util.List;
 public class DialogsAdapter extends BaseAdapter {
     private List<QBDialog> dataSource;
     private LayoutInflater inflater;
-    private Activity ctx;
 
     public DialogsAdapter(List<QBDialog> dataSource, Activity ctx) {
         this.dataSource = dataSource;
         this.inflater = LayoutInflater.from(ctx);
-        this.ctx = ctx;
     }
 
     public List<QBDialog> getDataSource() {
@@ -53,7 +51,7 @@ public class DialogsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
-        // init view
+        // initIfNeed view
         //
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_room, null);
@@ -74,8 +72,8 @@ public class DialogsAdapter extends BaseAdapter {
         }else{
             // get opponent name for private dialog
             //
-            Integer opponentID = ((ApplicationSingleton)ctx.getApplication()).getOpponentIDForPrivateDialog(dialog);
-            QBUser user = ((ApplicationSingleton)ctx.getApplication()).getDialogsUsers().get(opponentID);
+            Integer opponentID = ChatService.getInstance().getOpponentIDForPrivateDialog(dialog);
+            QBUser user = ChatService.getInstance().getDialogsUsers().get(opponentID);
             if(user != null){
                 holder.name.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());
             }

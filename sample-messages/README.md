@@ -7,12 +7,12 @@ It allows to send and receive Push Notifications.
 
 It shows how to:
 <ul>
-<li> Subscribe User to receive Push Notifications (from other Users and from Admin panel)</li>
-<li> Send push notification to particular User </li>
+<li> Subscribe a User to receive Push Notifications</li>
+<li> Send push notification</li>
 </ul>
 
 Go to project page on QuickBlox Developers Section -- <http://quickblox.com/developers/SimpleSample-messages_users-android>
 
 Or clone project here and start to work with the code.
 
-<img src="http://files.quickblox.com/QuickBloxAndroid_Messages2.png" width=200 />&nbsp;<img src="http://files.quickblox.com/SimpleSample-messages-android2.png" width=200 />
+<img src="http://files.quickblox.com/Sample_Messages_1.png" width=200 />&nbsp;<img src="http://files.quickblox.com/android_messages_1.png" width=200 />
