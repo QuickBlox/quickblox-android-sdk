@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.1'
+        classpath 'com.android.tools.build:gradle:1.2.+'
     }
 }
 
@@ -20,7 +20,7 @@ ext.targetCompatibility = JavaVersion.VERSION_1_7
 ext.lintAbortOnError = false
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = '2.4'
 }
 
 def makeJar(variant, project) {
