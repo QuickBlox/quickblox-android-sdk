@@ -1,17 +1,9 @@
 package com.sdk.snippets.modules;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.quickblox.chat.QBChat;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
@@ -178,6 +170,8 @@ public class SnippetsChat extends Snippets {
         //
         snippets.add(getDialogs);
         snippets.add(getDialogsSynchronous);
+        snippets.add(getDialogsCount);
+        snippets.add(getDialogsCountSynchronous);
         snippets.add(createDialog);
         snippets.add(createDialogSynchronous);
         snippets.add(updateDialog);
@@ -957,6 +951,49 @@ public class SnippetsChat extends Snippets {
             }
         }
     };
+
+
+    Snippet getDialogsCount = new Snippet("Get Dialogs count") {
+        @Override
+        public void execute() {
+            //
+            QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
+//            requestBuilder.all("occupants_ids", "76,58");
+            //
+            QBChatService.getChatDialogsCount(requestBuilder, new QBEntityCallback<Integer>() {
+                @Override
+                public void onSuccess(Integer integer, Bundle bundle) {
+                    Log.i(TAG, "dialogsCount: " + integer);
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    handleErrors(errors);
+                }
+            });
+        }
+    };
+
+    Snippet getDialogsCountSynchronous = new AsyncSnippet("Get Dialogs count (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            Bundle bundle = new Bundle();
+            //
+            QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
+//            requestBuilder.all("occupants_ids", "76,58");
+            //
+            int dialogsCount = -1;
+
+            try {
+                dialogsCount = QBChatService.getChatDialogsCount(requestBuilder, bundle);
+            }catch (QBResponseException e){
+                setException(e);
+            }
+
+            Log.i(TAG, "dialogsCount: " + dialogsCount);
+        }
+    };
+
 
     Snippet createDialog = new Snippet("Create Dialog") {
         @Override
