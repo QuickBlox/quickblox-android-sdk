@@ -83,8 +83,6 @@ public class Snippets {
         QBSettings.getInstance().setServerApiDomain(ApplicationConfig.getInstance().getApiDomain());
         QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
         QBSettings.getInstance().setContentBucketName(ApplicationConfig.getInstance().getBucketName());
-
-        QBSettings.getInstance().setTransferProtocol(TransferProtocol.HTTP);
     }
 
     public ArrayList<Snippet> getSnippets() {

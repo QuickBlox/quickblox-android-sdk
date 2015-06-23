@@ -5,7 +5,7 @@
             "auth_key": "wJHdOcQSxXQGWx5",
             "auth_secret": "BTFsj7Rtt27DAmT",
             "account_key": "rz2sXxBt5xgSxGjALDW6",
-            "api_domain": "api.quickblox.com",
+            "api_domain": "https://api.quickblox.com",
             "chat_domain": "chat.quickblox.com",
             "bucket_name": "qbprod",
             "test_user_id1": 1501966,
