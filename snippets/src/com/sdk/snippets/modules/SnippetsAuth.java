@@ -4,10 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.account.model.QBAccountSettings;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.executor.QBExecutor;
 import com.quickblox.core.server.BaseService;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
@@ -34,6 +37,8 @@ public class SnippetsAuth extends Snippets{
 
         snippets.add(setAutoUpdateSettings);
         snippets.add(deleteAutoUpdateSettings);
+        snippets.add(forceRequestSettings);
+
         snippets.add(createSession);
         snippets.add(createSessionSynchronous);
         //
@@ -60,9 +65,10 @@ public class SnippetsAuth extends Snippets{
         public void execute() {
 
             QBSettings.getInstance().setAccountKey(ApplicationConfig.getInstance().getAccountKey());
+
             QBSettings.AutoUpdateMode updateMode = new QBSettings.AutoUpdateMode(context,
                     ApplicationConfig.getInstance().getAppId());
-            updateMode.setUpdateTimePeriod(TimeUnit.MINUTES.toMillis(30));
+            updateMode.setUpdateTimePeriod(TimeUnit.MINUTES.toMillis(1));
             QBSettings.getInstance().setUpdateMode(updateMode);
         }
     };
@@ -70,8 +76,26 @@ public class SnippetsAuth extends Snippets{
     Snippet deleteAutoUpdateSettings = new Snippet("delete auto update mode ") {
         @Override
         public void execute() {
-
             QBSettings.getInstance().setUpdateMode(null);
+        }
+    };
+
+    Snippet forceRequestSettings = new Snippet("force request settings ") {
+        @Override
+        public void execute() {
+            QBExecutor<QBAccountSettings> as = QBSettings.synchronizeFromAccount(ApplicationConfig.getInstance().getAccountKey());
+            Bundle b = new Bundle();
+            as.makeAsync(new QBEntityCallback<QBAccountSettings>() {
+                @Override
+                public void onSuccess(QBAccountSettings qbAccountSettings, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onError(List<String> list) {
+
+                }
+            }, b);
         }
     };
 
