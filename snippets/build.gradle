@@ -5,8 +5,8 @@ android {
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 21
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         applicationId "com.sdk.snippets"
     }
 
@@ -18,23 +18,32 @@ android {
         }
     }
 
+    productFlavors {
+        online{
+
+        }
+
+        offline{
+
+        }
+    }
+
 }
 
 dependencies {
 
-//    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-//    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" /*{
-//        exclude module: 'support-annotations'
-//        exclude group: 'de.measite.minidns'
-//        exclude group: 'org.jxmpp'
-//    }*/
-//    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-//    compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
-//    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-//    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    onlineСompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineСompile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" {
+        exclude module: 'support-annotations'
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }
+    onlineСompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    onlineСompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+    onlineСompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+    onlineСompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
 
-
-    compile files(rootProject.core_jar_path,
+    offlineСompile files(rootProject.core_jar_path,
             rootProject.chat_jar_path,
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,
