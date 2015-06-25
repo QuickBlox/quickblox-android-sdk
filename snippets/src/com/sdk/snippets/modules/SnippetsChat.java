@@ -160,14 +160,6 @@ public class SnippetsChat extends Snippets {
         snippets.add(leaveRoom);
         //
         //
-        snippets.add(createRoom);
-        snippets.add(addUsersToRoom);
-        snippets.add(removeUsersFromRoom);
-        snippets.add(getRoomUsers);
-        snippets.add(getRoomInfo);
-        snippets.add(getRooms);
-        //
-        //
         snippets.add(getDialogs);
         snippets.add(getDialogsSynchronous);
         snippets.add(getDialogsCount);
@@ -1673,149 +1665,9 @@ public class SnippetsChat extends Snippets {
     };
 
 
-
-
     //
-    /////////////////////////////////// Group Chat (old methods) ///////////////////////////////////
+    ////////////////////////////////////// Stream management ///////////////////////////////////////
     //
-
-
-    Snippet createRoom = new Snippet("create room") {
-        @Override
-        public void execute() {
-            //
-            // Use 'create Dialog' request instead next code and then Join room using dialog's 'roomJid' field as a room jid
-
-            Random rand = new Random();
-            int randomNum = rand.nextInt(10000);
-            currentChatRoom = groupChatManager.createGroupChat("test_room" + randomNum, false, false);
-
-            currentChatRoom.create( new QBEntityCallbackImpl<Void>() {
-                @Override
-                public void onSuccess(Void result, Bundle bundle) {
-                    log("create room success");
-                    currentChatRoom.addMessageListener(groupChatMessageListener);
-                }
-
-                @Override
-                public void onError(List list) {
-                    log("create room errors: " + list);
-                }
-            });
-        }
-    };
-
-    Snippet addUsersToRoom = new Snippet("add users to Room") {
-        @Override
-        public void execute() {
-
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.addRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet removeUsersFromRoom = new Snippet("remove users from Room") {
-        @Override
-        public void execute() {
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.removeRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet getRoomUsers = new AsyncSnippet("get room users (synchronous)", context) {
-        Collection<Integer> roomUsers = null;
-
-        @Override
-        public void executeAsync() {
-            try {
-                roomUsers = currentChatRoom.getRoomUserIds();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-                setException(e);
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-                setException(e);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-                setException(e);
-            }
-        }
-
-        @Override
-        protected void postExecute() {
-            super.postExecute();
-            final Exception exc = getException();
-
-            if (exc == null) {
-                log("Room users: " + roomUsers);
-            }else{
-                log("Room users error: " + exc.getLocalizedMessage());
-            }
-        }
-    };
-
-    Snippet getRoomInfo = new Snippet("get Room info") {
-        @Override
-        public void execute() {
-            RoomInfo roomInfo = null;
-            try {
-                roomInfo = currentChatRoom.getInfo();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (XMPPException.XMPPErrorException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            if(roomInfo != null) {
-                log("roomInfo: " + roomInfo.getRoom() + ", " + roomInfo.isMembersOnly() + ", "  + roomInfo.isPersistent());
-            }
-        }
-    };
-
-    Snippet getRooms = new Snippet("get list of rooms") {
-        @Override
-        public void execute() {
-            Collection<String> rooms = null;
-            try {
-                rooms = groupChatManager.getHostedRooms();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            String roomList = "room list: ";
-            for (String roomJID : rooms) {
-                roomList += roomJID;
-                roomList += ", ";
-            }
-            log(roomList);
-        }
-    };
 
     Snippet useStreamMnagemt = new Snippet("setenable/disable Stream managemnt") {
         public void execute() {

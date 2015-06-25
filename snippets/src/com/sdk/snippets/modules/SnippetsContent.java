@@ -3,6 +3,8 @@ package com.sdk.snippets.modules;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -63,6 +65,9 @@ public class SnippetsContent extends Snippets{
         //
         snippets.add(downloadFileWithUID);
         snippets.add(downloadFileWithUIDSynchronous);
+        //
+        snippets.add(downloadFileWithID);
+        snippets.add(downloadFileWithIDSynchronous);
         //
         snippets.add(getFiles);
         snippets.add(getFilesSynchronous);
@@ -447,6 +452,57 @@ public class SnippetsContent extends Snippets{
         }
     };
 
+    Snippet downloadFileWithID = new Snippet("download file with ID") {
+        @Override
+        public void execute() {
+            QBContent.downloadFileById(1458764, new QBEntityCallback<InputStream>() {
+                @Override
+                public void onSuccess(InputStream inputStream, Bundle params) {
+                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
+                    //
+                    InputStream is = inputStream;
+                    String contentFromFile = Utils.getContentFromFile(inputStream);
+                    Log.i(TAG, "file downloaded");
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    handleErrors(errors);
+                }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
+            });
+        }
+    };
+
+    Snippet downloadFileWithIDSynchronous = new AsyncSnippet("download file with ID (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            InputStream inputStream = null;
+            Bundle params = new Bundle();
+            try {
+                inputStream = QBContent.downloadFileById(1458764, params, new QBProgressCallback() {
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        Log.i(TAG, "progress: " + progress);
+                    }
+                });
+            } catch (QBResponseException e) {
+                setException(e);
+            }
+
+            if(inputStream != null){
+                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
+                //
+                String contentFromFile = Utils.getContentFromFile(inputStream);
+                Log.i(TAG, "file downloaded");
+            }
+        }
+    };
+
 
     //
     ///////////////////////////////////////////// Get files /////////////////////////////////////////////
@@ -550,12 +606,18 @@ public class SnippetsContent extends Snippets{
         @Override
         public void execute() {
 
-            Boolean fileIsPublic = false;
+            Boolean fileIsPublic = true;
             QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {
                     Log.i(TAG, ">>> QBFile:" + qbFile.toString());
+
+                    Log.i(TAG, "public url:" + qbFile.getPublicUrl());
+                    Log.i(TAG, "private url:" + qbFile.getPrivateUrl());
+                    //
+                    Log.i(TAG, "public url static:" + QBFile.getPublicUrlForId(qbFile.getId()));
+                    Log.i(TAG, "private url static:" + QBFile.getPrivateUrlForId(qbFile.getId()));
                 }
 
                 @Override
