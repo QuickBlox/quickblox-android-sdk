@@ -1,9 +1,9 @@
 package com.quickblox.sample.chat.ui.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by igorkhomenko on 4/29/15.
  */
-public class BaseActivity extends Activity implements ApplicationSessionStateCallback {
+public class BaseActivity extends AppCompatActivity implements ApplicationSessionStateCallback {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
     private static final String USER_LOGIN_KEY = "USER_LOGIN_KEY";
