@@ -46,7 +46,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
-import org.jivesoftware.smackx.muc.RoomInfo;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -100,9 +99,6 @@ public class SnippetsChat extends Snippets {
     private QBPrivacyListsManager privacyListsManager;
     private QBPrivacyListListener privacyListListener;
 
-    //Stream management
-    private boolean useStreamManagement;
-
     public SnippetsChat(final Context context) {
         super(context);
 
@@ -125,6 +121,7 @@ public class SnippetsChat extends Snippets {
 
 
         snippets.add(useStreamMnagemt);
+
         snippets.add(loginInChat);
         snippets.add(loginInChatSynchronous);
         //
@@ -195,8 +192,6 @@ public class SnippetsChat extends Snippets {
         snippets.add(setPrivacyList);
         snippets.add(deletePrivacyList);
         snippets.add(setDefaultPrivacyList);
-        //
-        //stream managemnt
 }
 
     private void initChatService(){
@@ -1230,7 +1225,9 @@ public class SnippetsChat extends Snippets {
             messagesIDs.add("53cfc62ee4b05ed6d7cf17d3");
             messagesIDs.add("53cfc62fe4b05ed6d7cf17d5");
 
-            QBChatService.markMessagesAsRead("53cfc593efa3573ebd000017", null, new QBEntityCallbackImpl<Void>(){
+            String dialogId = "53cfc593efa3573ebd000017";
+
+            QBChatService.markMessagesAsRead(dialogId, messagesIDs, new QBEntityCallbackImpl<Void>(){
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "read OK" );
@@ -1669,10 +1666,12 @@ public class SnippetsChat extends Snippets {
     ////////////////////////////////////// Stream management ///////////////////////////////////////
     //
 
-    Snippet useStreamMnagemt = new Snippet("setenable/disable Stream managemnt") {
+    Snippet useStreamMnagemt = new Snippet("enable/disable Stream Managemnt") {
         public void execute() {
-            useStreamManagement=!useStreamManagement;
-            chatService.setUseStreamManagement(useStreamManagement);
+            chatService.setUseStreamManagement(!chatService.isStreamManagementEnabled());
+            log("SM enabled: " + chatService.isStreamManagementEnabled());
+
+            chatService.setUseStreamManagementResumption(true);
         }
     };
 

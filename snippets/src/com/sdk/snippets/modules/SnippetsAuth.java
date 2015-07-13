@@ -109,6 +109,9 @@ public class SnippetsAuth extends Snippets{
                 @Override
                 public void onSuccess(QBSession session, Bundle params) {
                     super.onSuccess(session, params);
+
+                    String token = session.getToken();
+
                     Log.i(TAG, "session created, token = " + session.getToken());
                 }
 

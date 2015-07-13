@@ -32,18 +32,17 @@ android {
 
 dependencies {
 
-    onlineСompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-    onlineСompile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" {
-        exclude module: 'support-annotations'
-        exclude group: 'de.measite.minidns'
-        exclude group: 'org.jxmpp'
-    }
-    onlineСompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-    onlineСompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
-    onlineСompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-    onlineСompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
-
-    offlineСompile files(rootProject.core_jar_path,
+//    onlineСompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+//    onlineСompile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" {
+//        exclude module: 'support-annotations'
+//        exclude group: 'de.measite.minidns'
+//        exclude group: 'org.jxmpp'
+//    }
+//    onlineСompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+//    onlineСompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+//    onlineСompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+//    onlineСompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    offlineCompile files(rootProject.core_jar_path,
             rootProject.chat_jar_path,
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,

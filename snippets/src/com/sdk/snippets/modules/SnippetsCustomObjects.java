@@ -429,6 +429,7 @@ public class SnippetsCustomObjects extends Snippets{
 
             QBRequestUpdateBuilder rb = new QBRequestUpdateBuilder();
             rb.updateArrayValue("tags", 1, "44");
+            rb.inc("likes", 1);
 
             QBCustomObjects.updateObject(record, rb, new QBEntityCallbackImpl<QBCustomObject>() {
                 @Override

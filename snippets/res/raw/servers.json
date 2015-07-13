@@ -1,7 +1,7 @@
 {
     "servers":{
         "production": {
-            "app_id": "92",
+            "app_id": 92,
             "auth_key": "wJHdOcQSxXQGWx5",
             "auth_secret": "BTFsj7Rtt27DAmT",
             "account_key": "rz2sXxBt5xgSxGjALDW6",
@@ -14,7 +14,7 @@
             "test_user_id2": 1501969,
             "test_user_login2": "igorquickblox4",
             "test_user_password2": "igorquickblox4",
-            "dialog_id": "549bde53535c1250be00df57"
+            "dialog_id": "558d18bc535c126322042dae"
         }
     },
     "active": "production",
