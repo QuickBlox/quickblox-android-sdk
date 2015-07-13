@@ -20,7 +20,7 @@ ext.targetCompatibility = JavaVersion.VERSION_1_7
 ext.lintAbortOnError = false
 
 def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
-def qb_sdk_version = '2.2.5'
+def qb_sdk_version = '2.2.6'
 ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
 ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
 ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
