@@ -133,7 +133,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                        handleErrors(errors);
                 }
             });
@@ -179,7 +179,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -222,7 +222,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -266,7 +266,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -302,7 +302,7 @@ public class SnippetsUsers extends Snippets{
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             user.setCustomData("my custom data");
-            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            StringifyArrayList tags = new StringifyArrayList();
             tags.add("firstTag");
             tags.add("secondTag");
             tags.add("thirdTag");
@@ -317,7 +317,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -336,7 +336,7 @@ public class SnippetsUsers extends Snippets{
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             user.setCustomData("my custom data");
-            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            StringifyArrayList tags = new StringifyArrayList();
             tags.add("firstTag");
             tags.add("secondTag");
             tags.add("thirdTag");
@@ -372,7 +372,7 @@ public class SnippetsUsers extends Snippets{
 //            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
-            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            StringifyArrayList tags = new StringifyArrayList();
             tags.add("firstTag");
             tags.add("secondTag");
             tags.add("thirdTag");
@@ -387,7 +387,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -406,7 +406,7 @@ public class SnippetsUsers extends Snippets{
 //            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
-            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+            StringifyArrayList tags = new StringifyArrayList();
             tags.add("firstTag");
             tags.add("secondTag");
             tags.add("thirdTag");
@@ -443,7 +443,7 @@ public class SnippetsUsers extends Snippets{
 //            user.setFullName("galog");
 //            user.setPhone("+123123123");
 //            user.setCustomData("my new custom data");
-//            StringifyArrayList<String> tags = new StringifyArrayList<String>();
+//            StringifyArrayQBResponseException tags = new StringifyArrayQBResponseException();
 //            tags.add("man");
 //            user.setTags(tags);
 //            user.setWebsite("google.com");
@@ -456,7 +456,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -500,7 +500,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -538,7 +538,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -574,7 +574,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -619,7 +619,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                    handleErrors(errors);
                 }
             });
@@ -681,7 +681,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -732,7 +732,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersLogins = new ArrayList<String>();
+            StringifyArrayList usersLogins = new StringifyArrayList();
             usersLogins.add("igorquickblox2");
             usersLogins.add("john");
 
@@ -746,7 +746,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -761,7 +761,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersLogins = new ArrayList<String>();
+            StringifyArrayList usersLogins = new StringifyArrayList();
             usersLogins.add("igorquickblox2");
             usersLogins.add("john");
 
@@ -796,7 +796,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersEmails = new ArrayList<String>();
+            StringifyArrayList usersEmails = new StringifyArrayList();
             usersEmails.add("asd@ffg.fgg");
             usersEmails.add("ghh@ggh.vbb");
 
@@ -810,7 +810,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -825,7 +825,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersEmails = new ArrayList<String>();
+            StringifyArrayList usersEmails = new StringifyArrayList();
             usersEmails.add("asd@ffg.fgg");
             usersEmails.add("ghh@ggh.vbb");
 
@@ -860,7 +860,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersPhones = new ArrayList<String>();
+            StringifyArrayList usersPhones = new StringifyArrayList();
             usersPhones.add("980028312");
             usersPhones.add("765172323");
 
@@ -874,7 +874,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -889,7 +889,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            ArrayList<String> usersPhones = new ArrayList<String>();
+            StringifyArrayList usersPhones = new StringifyArrayList();
             usersPhones.add("980028312");
             usersPhones.add("765172323");;
 
@@ -920,7 +920,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithFacebookIDs = new Snippet("get users", "with facebook IDs") {
         @Override
         public void execute() {
-            ArrayList<String> facebookIDs = new ArrayList<String>();
+            StringifyArrayList facebookIDs = new StringifyArrayList();
             facebookIDs.add("11020002022222");
             facebookIDs.add("10000045345444");
 
@@ -938,7 +938,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -948,7 +948,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithFacebookIDsSynchronous = new AsyncSnippet("get users (synchronous)", "with facebook IDs", context) {
         @Override
         public void executeAsync() {
-            ArrayList<String> facebookIDs = new ArrayList<String>();
+            StringifyArrayList facebookIDs = new StringifyArrayList();
             facebookIDs.add("11020002022222");
             facebookIDs.add("10000045345444");
 
@@ -983,7 +983,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithTwitterIDs = new Snippet("get users", "with twitter IDs") {
         @Override
         public void execute() {
-            ArrayList<String> twitterIDs = new ArrayList<String>();
+            StringifyArrayList twitterIDs = new StringifyArrayList();
             twitterIDs.add("11020002022222");
             twitterIDs.add("10000045345444");
 
@@ -1001,7 +1001,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1011,7 +1011,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithTwitterIDsSynchronous = new AsyncSnippet("get users (synchronous)", "with twitter IDs", context) {
         @Override
         public void executeAsync() {
-            ArrayList<String> twitterIDs = new ArrayList<String>();
+            StringifyArrayList twitterIDs = new StringifyArrayList();
             twitterIDs.add("11020002022222");
             twitterIDs.add("10000045345444");
 
@@ -1046,7 +1046,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithTags = new Snippet("get users", "with tags") {
         @Override
         public void execute() {
-            ArrayList<String> userTags = new ArrayList<String>();
+            StringifyArrayList userTags = new StringifyArrayList();
             userTags.add("man");
 //            userTags.add("car");
 
@@ -1064,7 +1064,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1074,7 +1074,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUsersWithTagsSynchronous = new AsyncSnippet("get users (synchronous)", "with tags", context) {
         @Override
         public void executeAsync() {
-            ArrayList<String> userTags = new ArrayList<String>();
+            StringifyArrayList userTags = new StringifyArrayList();
             userTags.add("man");
             userTags.add("car");
 
@@ -1120,7 +1120,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1170,7 +1170,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -1211,7 +1211,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -1254,7 +1254,7 @@ public class SnippetsUsers extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -1296,7 +1296,7 @@ public class SnippetsUsers extends Snippets{
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -1338,7 +1338,7 @@ public class SnippetsUsers extends Snippets{
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });
@@ -1384,7 +1384,7 @@ public class SnippetsUsers extends Snippets{
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     super.onError(errors);
                 }
             });

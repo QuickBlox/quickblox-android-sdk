@@ -92,7 +92,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -141,7 +141,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -177,7 +177,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -218,7 +218,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -257,7 +257,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -325,7 +325,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -398,7 +398,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -444,7 +444,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -493,7 +493,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
 
@@ -537,7 +537,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -580,7 +580,7 @@ public class SnippetsMessages extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });

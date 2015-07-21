@@ -118,7 +118,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -151,7 +151,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet getCustomObjectsByIDs = new Snippet("get objects by IDs") {
         @Override
         public void execute() {
-            StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
+            StringifyArrayList coIDs = new StringifyArrayList();
             coIDs.add("53f323ab535c12567903ba43");
             coIDs.add("53f32498535c12a57a03f434");
 
@@ -162,7 +162,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -172,7 +172,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet getCustomObjectsByIDsSynchronous = new AsyncSnippet("get objects by IDs (synchronous)", context) {
         @Override
         public void executeAsync() {
-            StringifyArrayList<String> coIDs = new StringifyArrayList<String>();
+            StringifyArrayList coIDs = new StringifyArrayList();
             coIDs.add("53f323ab535c12567903ba43");
             coIDs.add("53f32498535c12a57a03f434");
 
@@ -214,7 +214,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -265,7 +265,7 @@ public class SnippetsCustomObjects extends Snippets{
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         handleErrors(errors);
                     }
                 }
@@ -313,7 +313,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -374,7 +374,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -438,7 +438,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -500,7 +500,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -558,7 +558,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -586,7 +586,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet deleteCustomObjects = new Snippet("delete objects") {
         @Override
         public void execute() {
-            StringifyArrayList<String> deleteIds = new StringifyArrayList<String>();
+            StringifyArrayList deleteIds = new StringifyArrayList();
             deleteIds.add("53f36e796fd1dfa9c43ce5a6");
             deleteIds.add("53f36e796fd1dfa9c43ce5a7");
 
@@ -595,14 +595,14 @@ public class SnippetsCustomObjects extends Snippets{
                 @Override
                 public void onSuccess(ArrayList<String> deletedObjects, Bundle params) {
                     Log.i(TAG, ">>> deleted: " + deletedObjects.toString());
-                    ArrayList<String> notFound = params.getStringArrayList(com.quickblox.customobjects.Consts.NOT_FOUND_IDS);
-                    ArrayList<String> wrongPermissions = params.getStringArrayList(com.quickblox.customobjects.Consts.WRONG_PERMISSIONS_IDS);
+                    ArrayList<String>  notFound = params.getStringArrayList(com.quickblox.customobjects.Consts.NOT_FOUND_IDS);
+                    ArrayList<String>  wrongPermissions = params.getStringArrayList(com.quickblox.customobjects.Consts.WRONG_PERMISSIONS_IDS);
                     Log.i(TAG, ">>> notFound: " + notFound.toString());
                     Log.i(TAG, ">>> wrongPermissions: " + wrongPermissions.toString());
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -612,7 +612,7 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet deleteCustomObjectsSynchronous = new AsyncSnippet("delete objects synchronous", context) {
         @Override
         public void executeAsync() {
-            StringifyArrayList<String> deleteIds = new StringifyArrayList<String>();
+            StringifyArrayList deleteIds = new StringifyArrayList();
             deleteIds.add("53f36e7b6fd1dfa9c43ce5a8");
             deleteIds.add("53f36e7b6fd1dfa9c43ce5a9");
 
@@ -651,7 +651,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -690,13 +690,13 @@ public class SnippetsCustomObjects extends Snippets{
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
             //
             // UPDATE
-            ArrayList<String> openPermissionsForGroups = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForGroups = new  StringifyArrayList();
             openPermissionsForGroups.add("man");
             openPermissionsForGroups.add("car");
             permissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, openPermissionsForGroups);
@@ -709,7 +709,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -728,13 +728,13 @@ public class SnippetsCustomObjects extends Snippets{
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
             //
             // UPDATE
-            ArrayList<String> openPermissionsForGroups = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForGroups = new  StringifyArrayList();
             openPermissionsForGroups.add("man");
             openPermissionsForGroups.add("car");
             permissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, openPermissionsForGroups);
@@ -772,7 +772,7 @@ public class SnippetsCustomObjects extends Snippets{
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
@@ -788,7 +788,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -810,7 +810,7 @@ public class SnippetsCustomObjects extends Snippets{
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            ArrayList<String> openPermissionsForUserIDS = new  ArrayList<String>();
+            StringifyArrayList openPermissionsForUserIDS = new StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
@@ -851,7 +851,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                        handleErrors(errors);
                 }
             }, new QBProgressCallback() {
@@ -905,7 +905,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             }, new QBProgressCallback() {
@@ -960,7 +960,7 @@ public class SnippetsCustomObjects extends Snippets{
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                      handleErrors(errors);
                 }
             });

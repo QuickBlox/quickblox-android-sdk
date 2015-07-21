@@ -15,8 +15,20 @@
             "test_user_login2": "igorquickblox4",
             "test_user_password2": "igorquickblox4",
             "dialog_id": "558d18bc535c126322042dae"
+        },"seniorsome": {
+            "app_id": 3,
+            "auth_key": "VH3Q9GZVPHEKMjH",
+            "auth_secret": "p3Kq6mva3WaBfXk",
+            "api_domain": "https://apiseniorsome.quickblox.com",
+            "chat_domain": "chatseniorsome.quickblox.com",
+            "test_user_id1": 3574246,
+            "test_user_login1": "igorquickblox4441",
+            "test_user_password1": "igorquickblox4441",
+            "test_user_id2": 3574247,
+            "test_user_login2": "igorquickblox55",
+            "test_user_password2": "igorquickblox55"
         }
     },
-    "active": "production",
+    "active": "seniorsome",
     "use_first_user": true
 }

@@ -88,7 +88,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -139,7 +139,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             }, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
@@ -186,7 +186,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -230,7 +230,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -275,7 +275,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -343,7 +343,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -415,7 +415,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -460,7 +460,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -509,7 +509,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -556,7 +556,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -601,7 +601,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -642,7 +642,7 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });

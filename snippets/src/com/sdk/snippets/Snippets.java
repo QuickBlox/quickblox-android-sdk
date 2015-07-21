@@ -1,25 +1,17 @@
 package com.sdk.snippets;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
-import com.quickblox.core.TransferProtocol;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.result.Result;
 
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * User: Oleg Soroka
- * Date: 02.10.12
- * Time: 11:02
- */
 public class Snippets {
 
     private static final String TAG = Snippet.class.getSimpleName();
@@ -52,16 +44,7 @@ public class Snippets {
         Log.i(TAG, data);
     }
 
-    public void handleErrors(Result result) {
-        String message = String.format("[ERROR %s] Request has been completed with errors: %s",
-                result.getStatusCode(), result.getErrors());
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-        // print
-        Log.i(TAG,message);
-    }
-
-    public void handleErrors(List<String> errors) {
+    public void handleErrors(QBResponseException errors) {
         String message = String.format("[ERROR] Request has been completed with errors: %s", errors);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
@@ -82,7 +65,6 @@ public class Snippets {
         // specify custom domains
         QBSettings.getInstance().setServerApiDomain(ApplicationConfig.getInstance().getApiDomain());
         QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
-        QBSettings.getInstance().setContentBucketName(ApplicationConfig.getInstance().getBucketName());
     }
 
     public ArrayList<Snippet> getSnippets() {
@@ -91,24 +73,5 @@ public class Snippets {
 
     public void setSnippets(ArrayList<Snippet> snippets) {
         this.snippets = snippets;
-    }
-
-    public class QBEmptyCallback extends QBEntityCallbackImpl<Void>{
-
-        private String successMsg;
-
-        public QBEmptyCallback(String successMsg){
-            this.successMsg = successMsg;
-        }
-
-        @Override
-        public void onSuccess(Void result, Bundle bundle) {
-            Log.i(TAG, successMsg);
-        }
-
-        @Override
-        public void onError(List<String> errors) {
-            handleErrors(errors);
-        }
     }
 }

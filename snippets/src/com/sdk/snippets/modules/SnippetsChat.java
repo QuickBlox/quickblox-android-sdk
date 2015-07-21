@@ -284,7 +284,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List errors) {
+                public void onError(QBResponseException errors) {
                     log("error when login: " + errors);
                 }
             });
@@ -357,7 +357,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(final List list) {
+                public void onError(final QBResponseException list) {
                     log("Logout error:" + list);
                 }
             });
@@ -711,7 +711,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(final List list) {
+                public void onError(final QBResponseException list) {
                     log("join Room error: " + list);
                 }
             };
@@ -906,7 +906,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -954,7 +954,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1011,7 +1011,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1081,7 +1081,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1140,7 +1140,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1185,7 +1185,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1234,7 +1234,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1271,7 +1271,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -1320,7 +1320,7 @@ public class SnippetsChat extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });

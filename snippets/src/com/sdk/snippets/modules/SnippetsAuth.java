@@ -92,8 +92,8 @@ public class SnippetsAuth extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> list) {
-
+                public void onError(QBResponseException e) {
+                    handleErrors(e);
                 }
             }, b);
         }
@@ -116,8 +116,8 @@ public class SnippetsAuth extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
+                public void onError(QBResponseException e) {
+                    handleErrors(e);
                 }
             });
 
@@ -164,7 +164,7 @@ public class SnippetsAuth extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
@@ -214,7 +214,7 @@ public class SnippetsAuth extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> eroors) {
+                public void onError(QBResponseException eroors) {
                     handleErrors(eroors);
                 }
             });
@@ -247,7 +247,17 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySession = new Snippet("destroy session") {
         @Override
         public void execute() {
-            QBAuth.deleteSession(new QBEmptyCallback(">>> Session Destroy OK"));
+            QBAuth.deleteSession(new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    Log.i(TAG, "success");
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    handleErrors(e);
+                }
+            });
         }
     };
 
@@ -281,7 +291,7 @@ public class SnippetsAuth extends Snippets{
                 }
 
                 @Override
-                public void onError(List<String> strings) {
+                public void onError(QBResponseException strings) {
 
                 }
             });
