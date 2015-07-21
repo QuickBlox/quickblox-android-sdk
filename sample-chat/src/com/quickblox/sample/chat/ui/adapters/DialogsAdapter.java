@@ -80,7 +80,7 @@ public class DialogsAdapter extends BaseAdapter {
                 holder.name.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());
             }
         }
-        if (StickersManager.isSticker(dialog.getLastMessage())) {
+        if (dialog.getLastMessage() != null && StickersManager.isSticker(dialog.getLastMessage())) {
             holder.lastMessage.setText("Sticker");
         } else {
             holder.lastMessage.setText(dialog.getLastMessage());

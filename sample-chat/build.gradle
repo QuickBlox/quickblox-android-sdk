@@ -24,7 +24,7 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile project(':pull-to-refresh')
-    compile('vc908.stickers:stickerfactory:0.2.1@aar') {
+    compile('vc908.stickers:stickerfactory:0.1.5@aar') {
         transitive = true;
     }
 }
