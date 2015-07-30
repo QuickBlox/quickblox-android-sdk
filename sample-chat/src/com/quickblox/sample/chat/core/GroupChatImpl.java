@@ -15,6 +15,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
@@ -76,7 +77,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
             }
 
             @Override
-            public void onError(final List list) {
+            public void onError(final QBResponseException list) {
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -85,7 +86,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
                 });
 
 
-                Log.w("Could not join chat:", Arrays.toString(list.toArray()));
+                Log.w("Could not join chat:", list.getErrors().toString());
             }
         });
     }

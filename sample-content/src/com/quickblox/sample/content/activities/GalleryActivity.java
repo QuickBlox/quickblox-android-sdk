@@ -9,6 +9,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.quickblox.core.QBProgressCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
@@ -107,7 +108,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
                 progressDialog.hide();
 
                 DialogUtils.show(GalleryActivity.this, strings.toString());

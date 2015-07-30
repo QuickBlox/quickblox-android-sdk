@@ -15,6 +15,7 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.ChatService;
@@ -76,7 +77,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(NewDialogActivity.this);
                         dialog.setMessage("dialog creation errors: " + errors).create().show();
                     }
@@ -135,7 +136,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     @Override
-    public void onError(List<String> errors){
+    public void onError(QBResponseException errors){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("get users errors: " + errors).create().show();
     }

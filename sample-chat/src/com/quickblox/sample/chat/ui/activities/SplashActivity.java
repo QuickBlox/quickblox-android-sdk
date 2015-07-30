@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
@@ -40,7 +41,7 @@ public class SplashActivity extends Activity {
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(SplashActivity.this);
                 dialog.setMessage("chat login errors: " + errors).create().show();
             }

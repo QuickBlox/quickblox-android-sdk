@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.sample.chat.pushnotifications.Consts;
 import com.quickblox.sample.chat.pushnotifications.PlayServicesHelper;
@@ -77,7 +78,7 @@ public class DialogsActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 progressBar.setVisibility(View.GONE);
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);

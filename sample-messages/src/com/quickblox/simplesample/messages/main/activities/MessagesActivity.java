@@ -14,7 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
@@ -110,7 +112,7 @@ public class MessagesActivity extends Activity {
         qbEvent.setUserIds(userIds);
 
 
-        QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
+        QBMessages.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -122,7 +124,7 @@ public class MessagesActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
                 // errors
                 DialogUtils.showLong(MessagesActivity.this, strings.toString());
 

@@ -9,11 +9,13 @@ import android.view.View;
 import android.widget.Toast;
 import java.util.List;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.videochat.core.QBVideoChatController;
 import com.quickblox.videochatsample.R;
 import com.quickblox.videochatsample.VideoChatApplication;
@@ -55,7 +57,7 @@ public class ActivityLogin extends Activity {
     }
 
     private void createSession(String login, final String password) {
-        QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(login, password, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
 
@@ -66,9 +68,9 @@ public class ActivityLogin extends Activity {
 
                 // Login to Chat
                 //
-                QBChatService.getInstance().login(app.getCurrentUser(), new QBEntityCallbackImpl() {
+                QBChatService.getInstance().login(app.getCurrentUser(), new QBEntityCallback<Void>() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void var1, Bundle var2) {
                         try {
                             QBVideoChatController.getInstance().initQBVideoChatMessageListener();
                         } catch (XMPPException e) {
@@ -79,7 +81,7 @@ public class ActivityLogin extends Activity {
                     }
 
                     @Override
-                    public void onError(List errors) {
+                    public void onError(QBResponseException errors) {
                         Toast.makeText(ActivityLogin.this, "Error when login", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -87,7 +89,7 @@ public class ActivityLogin extends Activity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 progressDialog.dismiss();
                 Toast.makeText(ActivityLogin.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }

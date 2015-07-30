@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.core.ApplicationSessionStateCallback;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
@@ -88,7 +89,7 @@ public class BaseActivity extends Activity implements ApplicationSessionStateCal
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
 
                 Log.d(TAG, "Chat login onError: " + errors);
 

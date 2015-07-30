@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Constants;
@@ -60,7 +61,7 @@ public class SplashActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -83,7 +84,7 @@ public class SplashActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
 
             }
         });

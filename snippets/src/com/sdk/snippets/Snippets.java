@@ -44,8 +44,9 @@ public class Snippets {
         Log.i(TAG, data);
     }
 
-    public void handleErrors(QBResponseException errors) {
-        String message = String.format("[ERROR] Request has been completed with errors: %s", errors);
+    public void handleErrors(QBResponseException exc) {
+        String message = String.format("[ERROR] Request has been completed with errors: %s", exc.getErrors()
+                + ", code: " + exc.getHttpStatusCode());
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
         // print

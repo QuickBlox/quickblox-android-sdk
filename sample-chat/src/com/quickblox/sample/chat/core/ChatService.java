@@ -10,6 +10,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.QBUsers;
@@ -89,14 +90,14 @@ public class ChatService {
                     }
 
                     @Override
-                    public void onError(List errors) {
+                    public void onError(QBResponseException errors) {
                         callback.onError(errors);
                     }
                 });
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });
@@ -110,7 +111,7 @@ public class ChatService {
             }
 
             @Override
-            public void onError(List list) {
+            public void onError(QBResponseException list) {
 
             }
         });
@@ -135,7 +136,7 @@ public class ChatService {
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });
@@ -176,7 +177,7 @@ public class ChatService {
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         callback.onError(errors);
                     }
 
@@ -184,7 +185,7 @@ public class ChatService {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });

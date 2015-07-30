@@ -16,10 +16,24 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+    productFlavors {
+        online{
+
+        }
+
+        offline{
+
+        }
+    }
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
-    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@jar"
+
+    offlineCompile files(rootProject.core_jar_path, rootProject.customobjects_jar_path)
+    //} else {
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
+    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@jar"
+
     compile "com.android.support:appcompat-v7:22.1.0"
 }

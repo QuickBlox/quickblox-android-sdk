@@ -19,6 +19,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.Chat;
@@ -183,7 +184,7 @@ public class ChatActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List list) {
+            public void onError(QBResponseException list) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
                 dialog.setMessage("error when join group chat: " + list.toString()).create().show();
             }
@@ -211,7 +212,7 @@ public class ChatActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 if (!ChatActivity.this.isFinishing()) {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
                     dialog.setMessage("load chat history errors: " + errors).create().show();

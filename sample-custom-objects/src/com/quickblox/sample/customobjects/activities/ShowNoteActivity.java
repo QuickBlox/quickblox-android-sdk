@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Note;
@@ -95,8 +96,8 @@ public class ShowNoteActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List list) {
-                        DialogUtils.showLong(baseActivity, list.get(0).toString());
+                    public void onError(QBResponseException list) {
+                        DialogUtils.showLong(baseActivity, list.toString());
 
                         progressDialog.dismiss();
                     }
@@ -179,10 +180,10 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
                 progressDialog.dismiss();
 
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                DialogUtils.showLong(baseActivity, strings.toString());
             }
         });
     }
@@ -206,10 +207,10 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException strings) {
                 progressDialog.dismiss();
 
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                DialogUtils.showLong(baseActivity, strings.toString());
             }
         });
     }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.utils.DialogUtils;
@@ -80,9 +81,9 @@ public class AddNewNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 progressDialog.dismiss();
-                DialogUtils.showLong(baseActivity, errors.get(0));
+                DialogUtils.showLong(baseActivity, errors.toString());
             }
         });
     }

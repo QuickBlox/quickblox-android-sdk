@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.user.R;
@@ -43,16 +45,16 @@ public class SplashActivity extends Activity{
 
         // Create QuickBlox session
         //
-        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 getAllUser();
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 // print errors that came from server
-                DialogUtils.showLong(context, errors.get(0));
+                DialogUtils.showLong(context, errors.toString());
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -65,7 +67,7 @@ public class SplashActivity extends Activity{
 
     private void getAllUser() {
 
-        QBUsers.getUsers(null, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsers(null, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 DataHolder.getDataHolder().setQbUsersList(qbUsers);
@@ -73,8 +75,8 @@ public class SplashActivity extends Activity{
             }
 
             @Override
-            public void onError(List<String> errors) {
-                DialogUtils.showLong(context, errors.get(0));
+            public void onError(QBResponseException errors) {
+                DialogUtils.showLong(context, errors.toString());
             }
         });
     }

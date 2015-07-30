@@ -7,7 +7,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
@@ -93,7 +95,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
                 // Logout
                 //
-                QBUsers.signOut(new QBEntityCallbackImpl<Void>() {
+                QBUsers.signOut(new QBEntityCallback<Void>() {
                     @Override
                     public void onSuccess(Void result, Bundle bundle) {
                         progressDialog.hide();
@@ -103,10 +105,10 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                     }
 
                     @Override
-                    public void onError(List list) {
+                    public void onError(QBResponseException list) {
                         progressDialog.hide();
 
-                        DialogUtils.showLong(context, list.get(0).toString());
+                        DialogUtils.showLong(context, list.toString());
                     }
                 });
 

@@ -22,7 +22,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.request.QBLocationRequestBuilder;
@@ -85,7 +87,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
         getLocationsBuilder.setPerPage(Constants.LOCATION_PER_PAGE);
         getLocationsBuilder.setLastOnly();
 
-        QBLocations.getLocations(getLocationsBuilder, new QBEntityCallbackImpl<ArrayList<QBLocation>>() {
+        QBLocations.getLocations(getLocationsBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
             @Override
             public void onSuccess(ArrayList<QBLocation> qbLocations, Bundle bundle) {
 
@@ -102,7 +104,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 DialogUtils.showLong(context, resources.getString(R.string.dlg_location_error) + errors);
             }
         });
@@ -202,14 +204,14 @@ public class MapActivity extends FragmentActivity implements LocationListener {
                 // ================= QuickBlox ====================
                 // Share own location
                 QBLocation location = new QBLocation(lat, lng, input.getText().toString());
-                QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+                QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
                     @Override
                     public void onSuccess(QBLocation qbLocation, Bundle bundle) {
                         DialogUtils.showLong(context, resources.getString(R.string.dlg_check_in_success));
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         DialogUtils.showLong(context, resources.getString(R.string.dlg_location_error) + errors);
                     }
                 });
