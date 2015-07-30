@@ -15,8 +15,10 @@ import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
@@ -165,7 +167,6 @@ public class ListUsersActivity extends Activity {
 
     private void initUsersList() {
 
-//        users = DataHolder.createUsersList();
 
         usersListAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersListAdapter);
@@ -187,7 +188,7 @@ public class ListUsersActivity extends Activity {
         loginPB.setVisibility(View.VISIBLE);
 
         final QBUser user = new QBUser(login, password);
-        QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(login, password, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession session, Bundle bundle) {
                 Log.d(TAG, "onSuccess create session with params");
@@ -195,52 +196,55 @@ public class ListUsersActivity extends Activity {
 
                 loginPB.setVisibility(View.INVISIBLE);
 
-                chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
+                if (chatService.isLoggedIn()){
+                    startCallActivity(login);
+                } else {
+                    chatService.login(user, new QBEntityCallback<QBUser>() {
 
-                    @Override
-                    public void onSuccess(QBUser result, Bundle params) {
-                        Log.d(TAG, "onSuccess login to chat with params");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "onSuccess login to chat");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(List errors) {
-                        loginPB.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                        for (Object error : errors) {
-                            Log.d(TAG, error.toString());
+                        @Override
+                        public void onSuccess(QBUser result, Bundle params) {
+                            Log.d(TAG, "onSuccess login to chat with params");
+                            startCallActivity(login);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onError(QBResponseException errors) {
+                            loginPB.setVisibility(View.INVISIBLE);
+                            Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+
+                                Log.d(TAG, errors.toString());
+                        }
+                    });
+                }
 
             }
 
             @Override
-            public void onSuccess() {
-                super.onSuccess();
-                Log.d(TAG, "onSuccess create session");
-            }
-
-            @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 loginPB.setVisibility(View.INVISIBLE);
                 Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void startCallActivity(String login) {
+        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
+        intent.putExtra("login", login);
+        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Consts.CALL_ACTIVITY_CLOSE){
+            if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
+                Toast.makeText(this, getString(R.string.WIFI_DISABLED),Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

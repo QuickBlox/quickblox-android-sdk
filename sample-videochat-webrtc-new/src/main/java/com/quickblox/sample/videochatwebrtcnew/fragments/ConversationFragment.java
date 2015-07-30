@@ -1,8 +1,12 @@
 package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.quickblox.core.exception.QBResponseException;
@@ -27,9 +32,6 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
-import org.webrtc.VideoRenderer;
-import org.webrtc.VideoRendererGui;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,21 +43,15 @@ import java.util.Map;
  */
 public class ConversationFragment extends Fragment implements Serializable {
 
-    private String TAG = "ConversationFragment";
+    private String TAG = ConversationFragment.class.getSimpleName();
     private ArrayList<Integer> opponents;
     private int qbConferenceType;
     private int startReason;
     private String sessionID;
-    //    private QBGLVideoView videoView;
-    private GLSurfaceView videoView;
-    //    private QBRTCSessionDescription sessionDescription;
-    private static VideoRenderer.Callbacks REMOTE_RENDERER;
 
-    //    private QBGLVideoView opponentLittleCamera;
     private TextView opponentNumber;
     private TextView connectionStatus;
     private ImageView opponentAvatar;
-    //    private HorizontalScrollView camerasOpponentsList;
     private ToggleButton cameraToggle;
     private ToggleButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
@@ -67,7 +63,7 @@ public class ConversationFragment extends Fragment implements Serializable {
     private Map<String, String> userInfo;
     private View opponentItemView;
     private HorizontalScrollView camerasOpponentsList;
-    public static LinearLayout opponentsFromCall;
+//    public static LinearLayout opponentsFromCall;
     private LayoutInflater inflater;
     private ViewGroup container;
     private Bundle savedInstanceState;
@@ -75,12 +71,16 @@ public class ConversationFragment extends Fragment implements Serializable {
     private boolean isAudioEnabled = true;
     private List<QBUser> allUsers = new ArrayList<>();
     private LinearLayout actionVideoButtonsLayout;
-    //    private Chronometer timer;
     private View actionBar;
     private String callerName;
     private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
     private MediaPlayer ringtone;
+    private View localVideoView;
+    private View remoteVideoView;
+    private IntentFilter intentFilter;
+    private AudioStreamReceiver audioStreamReceiver;
+    private CameraState cameraState = CameraState.NONE;
 
 
     @Override
@@ -99,31 +99,28 @@ public class ConversationFragment extends Fragment implements Serializable {
             sessionID = getArguments().getString(CallActivity.SESSION_ID);
             callerName = getArguments().getString(CallActivity.CALLER_NAME);
 
-            Log.d("Track", "CALLER_NAME: " + callerName);
+            Log.d(TAG, "CALLER_NAME: " + callerName);
 
         }
 
         initViews(view);
         initButtonsListener();
-        VideoRendererGui.setView(videoView, new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
 
-        createOpponentsList(opponents);
-        ((CallActivity) getActivity()).setCurrentVideoView(videoView);
-        setUpUIByCallType(qbConferenceType);
+//        createOpponentsList(opponents);
+        setUpUiByCallType(qbConferenceType);
 
         return view;
 
     }
 
-    private void setUpUIByCallType(int qbConferenceType) {
+    private void setUpUiByCallType(int qbConferenceType) {
         if (qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO.getValue()) {
             cameraToggle.setVisibility(View.GONE);
             switchCameraToggle.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.INVISIBLE);
+
+            localVideoView.setVisibility(View.INVISIBLE);
+            remoteVideoView.setVisibility(View.INVISIBLE);
+
             imgMyCameraOff.setVisibility(View.INVISIBLE);
         }
     }
@@ -133,21 +130,25 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         cameraToggle.setEnabled(enability);
         switchCameraToggle.setEnabled(enability);
-        videoView.setEnabled(enability);
         imgMyCameraOff.setEnabled(enability);
-        handUpVideoCall.setEnabled(enability);
+        micToggleVideoCall.setEnabled(enability);
+        dynamicToggleVideoCall.setEnabled(enability);
 
 
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
         switchCameraToggle.setActivated(enability);
-        videoView.setActivated(enability);
         imgMyCameraOff.setActivated(enability);
+        micToggleVideoCall.setActivated(enability);
+        dynamicToggleVideoCall.setActivated(enability);
     }
 
 
     @Override
     public void onStart() {
+
+        getActivity().registerReceiver(audioStreamReceiver, intentFilter);
+
         super.onStart();
         QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
         if (!isMessageProcessed) {
@@ -186,26 +187,23 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRetainInstance(true);
-        Log.d("Track", "onCreate() from ConversationFragment");
+        Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
-    }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        onCreateView(inflater, container, savedInstanceState);
-//    }
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
+        intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+
+        audioStreamReceiver = new AudioStreamReceiver();
+    }
 
     private void initViews(View view) {
 
-//        videoView = (QBGLVideoView)view.findViewById(R.id.videoView);
-        videoView = (GLSurfaceView) view.findViewById(R.id.videoView);
 
-//        camerasOpponentsList = (HorizontalScrollView)view.findViewById(R.id.camerasOpponentsList);
-//        ScrollView camerasOpponentsListLand = (ScrollView)view.findViewById(R.id.camerasOpponentsListLand);
+        localVideoView = view.findViewById(R.id.localVideoVidew);
+        remoteVideoView = view.findViewById(R.id.remoteVideoView);
 
-        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
+//        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
 
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
         switchCameraToggle = (ToggleButton) view.findViewById(R.id.switchCameraToggle);
@@ -222,16 +220,53 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         noVideoImageContainer = (LinearLayout) view.findViewById(R.id.noVideoImageContainer);
         imgMyCameraOff = (ImageView) view.findViewById(R.id.imgMyCameraOff);
+
+        actionButtonsEnabled(false);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER // Жень, глянь здесь, смысл в том, что мы здесь включаем камеру, если юзер ее не выключал
+        // than we turn on cam, else we nothing change
+        if (cameraState != CameraState.DISABLED_FROM_USER
+                && qbConferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.getValue()) {
+            toggleCamera(true);
+        }
     }
 
+    @Override
+    public void onPause() {
+        // If camera state is CameraState.ENABLED_FROM_USER or CameraState.NONE
+        // than we turn off cam
+        if(cameraState != CameraState.DISABLED_FROM_USER) {
+            toggleCamera(false);
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopOutBeep();
+        getActivity().unregisterReceiver(audioStreamReceiver);
+    }
 
     private void initButtonsListener() {
 
         switchCameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition();
-                Log.d(TAG, "Camera switched!");
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    ((CallActivity) getActivity()).getCurrentSession().switchCapturePosition(new Runnable() {
+                        @Override
+                        public void run() {
+//                            Toast.makeText(getActivity(), "Cam was switched", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    Log.d(TAG, "Camera was switched!");
+                }
             }
         });
 
@@ -239,60 +274,42 @@ public class ConversationFragment extends Fragment implements Serializable {
         cameraToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (cameraState != CameraState.DISABLED_FROM_USER) {
+                        toggleCamera(false);
+                        cameraState = CameraState.DISABLED_FROM_USER;
+                    } else {
+                        toggleCamera(true);
+                        cameraState = CameraState.ENABLED_FROM_USER;
+                    }
+//                }
 
-                // TODO temporary insertion will be removed when GLVideoView will be fixed
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                displaymetrics.setToDefaults();
-
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                int height = displaymetrics.heightPixels;
-                int width = displaymetrics.widthPixels;
-
-                ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
-
-                layoutParams.height = ((height / 100) * 31);
-                layoutParams.width = ((width / 100) * 33);
-
-                imgMyCameraOff.setLayoutParams(layoutParams);
-
-                Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
-                // TODO end
-
-                if (isVideoEnabled) {
-                    Log.d("Track", "Camera is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(false);
-                    isVideoEnabled = false;
-                    switchCameraToggle.setVisibility(View.INVISIBLE);
-                    imgMyCameraOff.setVisibility(View.VISIBLE);
-                } else {
-                    Log.d("Track", "Camera is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(true);
-                    isVideoEnabled = true;
-                    switchCameraToggle.setVisibility(View.VISIBLE);
-                    imgMyCameraOff.setVisibility(View.INVISIBLE);
-                }
             }
         });
 
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Track", "Dynamic switched!");
-                ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    Log.d(TAG, "Dynamic switched!");
+                    ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                }
             }
         });
 
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAudioEnabled) {
-                    Log.d("Track", "Mic is off!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
-                    isAudioEnabled = false;
-                } else {
-                    Log.d("Track", "Mic is on!");
-                    ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
-                    isAudioEnabled = true;
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    if (isAudioEnabled) {
+                        Log.d(TAG, "Mic is off!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
+                        isAudioEnabled = false;
+                    } else {
+                        Log.d(TAG, "Mic is on!");
+                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
+                        isAudioEnabled = true;
+                    }
                 }
             }
         });
@@ -302,11 +319,47 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 stopOutBeep();
                 actionButtonsEnabled(false);
-                Log.d("Track", "Call is stopped");
-                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
+                handUpVideoCall.setEnabled(false);
+                Log.d(TAG, "Call is stopped");
+
+//                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
+                ((CallActivity) getActivity()).hangUpCurrentSession();
+                handUpVideoCall.setEnabled(false);
+                handUpVideoCall.setActivated(false);
+
             }
         });
+    }
 
+    private void toggleCamera(boolean isNeedEnableCam) {
+        // TODO temporary insertion will be removed when GLVideoView will be fixed
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        displaymetrics.setToDefaults();
+
+        ViewGroup.LayoutParams layoutParams = imgMyCameraOff.getLayoutParams();
+
+        layoutParams.height = localVideoView.getHeight();
+        layoutParams.width = localVideoView.getWidth();
+
+        imgMyCameraOff.setLayoutParams(layoutParams);
+
+        Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
+        // TODO end
+
+        if (((CallActivity) getActivity()).getCurrentSession() != null) {
+            ((CallActivity) getActivity()).getCurrentSession().setVideoEnabled(isNeedEnableCam);
+            cameraToggle.setChecked(isNeedEnableCam);
+
+            if (isNeedEnableCam) {
+                Log.d(TAG, "Camera is on!");
+                switchCameraToggle.setVisibility(View.VISIBLE);
+                imgMyCameraOff.setVisibility(View.INVISIBLE);
+            } else {
+                Log.d(TAG, "Camera is off!");
+                switchCameraToggle.setVisibility(View.INVISIBLE);
+                imgMyCameraOff.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
@@ -328,13 +381,13 @@ public class ConversationFragment extends Fragment implements Serializable {
         return opponentsList;
     }
 
-    private void createOpponentsList(List<Integer> opponents) {
-        if (opponents.size() != 0) {
-            for (Integer i : opponents) {
-                addOpponentPreviewToList(i, opponentsFromCall);
-            }
-        }
-    }
+//    private void createOpponentsList(List<Integer> opponents) {
+//        if (opponents.size() != 0) {
+//            for (Integer i : opponents) {
+//                addOpponentPreviewToList(i, opponentsFromCall);
+//            }
+//        }
+//    }
 
     private void addOpponentPreviewToList(Integer userID, LinearLayout opponentsFromCall) {
 
@@ -346,7 +399,7 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("Track", "Main opponent Selected");
+                    Log.d(TAG, "Main opponent Selected");
                 }
             });
 
@@ -377,6 +430,35 @@ public class ConversationFragment extends Fragment implements Serializable {
         }
         return s;
     }
+
+    private class AudioStreamReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)){
+                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
+            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)){
+                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
+            }
+
+            if (intent.getIntExtra("state", -1) == 0 /*|| intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -1) == 0*/){
+                dynamicToggleVideoCall.setChecked(false);
+            } else if (intent.getIntExtra("state", -1) == 1) {
+                dynamicToggleVideoCall.setChecked(true);
+            } else {
+//                Toast.makeText(context, "Output audio stream is incorrect", Toast.LENGTH_LONG).show();
+            }
+            dynamicToggleVideoCall.invalidate();
+        }
+    }
+
+    private enum CameraState {
+        NONE,
+        DISABLED_FROM_USER,
+        ENABLED_FROM_USER
+    }
+
 }
 
 

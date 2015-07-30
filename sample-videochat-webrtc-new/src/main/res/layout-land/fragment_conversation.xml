@@ -27,24 +27,24 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"/>
 
-    <ScrollView
-        android:id="@+id/camerasOpponentsListLand"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp">
+    <!--<ScrollView-->
+        <!--android:id="@+id/camerasOpponentsListLand"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:layout_marginTop="3dp"-->
+        <!--android:layout_marginBottom="3dp">-->
 
-        <LinearLayout
-            android:id="@+id/opponentsFromCall"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/opponentsFromCall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
+        <!--</LinearLayout>-->
 
-    </ScrollView>
+    <!--</ScrollView>-->
 
 
     <TextView

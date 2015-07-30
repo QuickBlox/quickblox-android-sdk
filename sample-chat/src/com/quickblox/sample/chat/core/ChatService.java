@@ -82,7 +82,7 @@ public class ChatService {
 
                 // login to Chat
                 //
-                loginToChat(user, new QBEntityCallbackImpl<Void>() {
+                loginToChat(user, new QBEntityCallback<Void>() {
 
                     @Override
                     public void onSuccess(Void result, Bundle bundle) {
@@ -104,7 +104,7 @@ public class ChatService {
     }
 
     public void logout(){
-        chatService.logout(new QBEntityCallbackImpl<Void>() {
+        chatService.logout(new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
 

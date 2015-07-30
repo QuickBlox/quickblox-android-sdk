@@ -606,8 +606,13 @@ public class SnippetsContent extends Snippets{
         @Override
         public void execute() {
 
+<<<<<<< HEAD
             Boolean fileIsPublic = true;
             QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
+=======
+            Boolean fileIsPublic = false;
+            QBContent.uploadFileTask(file2, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
+>>>>>>> development
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {
@@ -660,17 +665,16 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 231153;
+            final int fileId = 1257561;
 
             QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
                     byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                    InputStream is = inputStream;
                     String contentFromFile = Utils.getContentFromFile(inputStream);
-                    Log.i(TAG, "file downloaded: "+contentFromFile);
-                    Log.i(TAG, "params: " + params);
+                    Log.i(TAG, "file content: " + contentFromFile);
+                    Log.i(TAG, "content.length: " + content.length);
                 }
 
                 @Override
