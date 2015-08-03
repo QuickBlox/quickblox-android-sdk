@@ -606,13 +606,8 @@ public class SnippetsContent extends Snippets{
         @Override
         public void execute() {
 
-<<<<<<< HEAD
-            Boolean fileIsPublic = true;
-            QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
-=======
             Boolean fileIsPublic = false;
             QBContent.uploadFileTask(file2, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
->>>>>>> development
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {

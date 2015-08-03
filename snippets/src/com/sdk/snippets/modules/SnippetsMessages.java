@@ -170,7 +170,17 @@ public class SnippetsMessages extends Snippets{
     Snippet createSubscription = new Snippet("create subscription") {
         @Override
         public void execute() {
+
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
+            subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+            if(deviceId == null){
+                deviceId = "UniversalDeviceId";
+            }
+            subscription.setDeviceUdid(deviceId);
+            String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
+            subscription.setRegistrationID(registrationID);
+
             QBMessages.createSubscription(subscription, new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
 
                 @Override
@@ -190,6 +200,15 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void executeAsync() {
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
+            subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+            if(deviceId == null){
+                deviceId = "UniversalDeviceId";
+            }
+            subscription.setDeviceUdid(deviceId);
+            String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
+            subscription.setRegistrationID(registrationID);
+
 
             ArrayList<QBSubscription> createdSubscriptions = null;
             try {

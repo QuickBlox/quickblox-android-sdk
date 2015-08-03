@@ -36,7 +36,7 @@ public class SnippetsCustomObjects extends Snippets{
     // Define custom object model in QB Admin Panel
     // http://quickblox.com/developers/Custom_Objects
     //
-    private final String MOVIE_CLASS = "Movie";
+    private final String MOVIE_CLASS = "Post";
 
     private File imageFile;
 
@@ -421,15 +421,14 @@ public class SnippetsCustomObjects extends Snippets{
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "546c757f535c1287db0adb4d");
+            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "55ba3a5d535c12b66a00015e");
             //
             HashMap<String, Object> fields = new HashMap<String, Object>();
-            fields.put("rating", 10);
-            record.setFields(fields);
+//            fields.put("rating", 10);
+//            record.setFields(fields);
 
             QBRequestUpdateBuilder rb = new QBRequestUpdateBuilder();
-            rb.updateArrayValue("tags", 1, "44");
-            rb.inc("likes", 1);
+            rb.pullAll("tags", "car1", "car2");
 
             QBCustomObjects.updateObject(record, rb, new QBEntityCallbackImpl<QBCustomObject>() {
                 @Override
