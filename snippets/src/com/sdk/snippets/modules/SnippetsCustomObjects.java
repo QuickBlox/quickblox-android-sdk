@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.core.Consts;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -14,10 +15,12 @@ import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.QBCustomObjectsFiles;
+import com.quickblox.customobjects.model.QBAggregationItem;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.customobjects.model.QBCustomObjectFileField;
 import com.quickblox.customobjects.model.QBPermissions;
 import com.quickblox.customobjects.model.QBPermissionsLevel;
+import com.quickblox.customobjects.request.QBAggregationRequestBuilder;
 import com.sdk.snippets.*;
 
 import java.io.File;
@@ -98,6 +101,10 @@ public class SnippetsCustomObjects extends Snippets{
         //
         snippets.add(deleteFile);
         snippets.add(deleteFileSynchronous);
+        //
+        //
+        snippets.add(aggregateCustomObjects);
+        snippets.add(aggregateCustomObjectsSynchronous);
     }
 
 
@@ -973,6 +980,54 @@ public class SnippetsCustomObjects extends Snippets{
 
             try {
                  QBCustomObjectsFiles.deleteFile(qbCustomObject, "image");
+            } catch (QBResponseException e) {
+                setException(e);
+            }
+        }
+    };
+
+
+
+    Snippet aggregateCustomObjects = new Snippet("aggregate objects") {
+        @Override
+        public void execute() {
+            QBAggregationRequestBuilder aggregationRequestBuilder = new QBAggregationRequestBuilder();
+            aggregationRequestBuilder.sum("rating").groupBy("rating");
+
+            QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
+            requestGetBuilder.in("name", "The Dark Knight", "The Godfather");
+
+            QBCustomObjects.getAggregationObjects("SuperSample",
+                    aggregationRequestBuilder, requestGetBuilder, new QBEntityCallback<ArrayList<QBAggregationItem>>() {
+                        @Override
+                        public void onSuccess(ArrayList<QBAggregationItem> qbAggregationItems, Bundle bundle) {
+                            Log.i(TAG, "aggregationObjects: " + qbAggregationItems);
+                        }
+
+                        @Override
+                        public void onError(QBResponseException e) {
+                            handleErrors(e);
+                        }
+                    });
+        }
+    };
+
+    Snippet aggregateCustomObjectsSynchronous = new AsyncSnippet("aggregate objects (synchronous)", context) {
+
+        @Override
+        public void executeAsync() {
+
+            QBAggregationRequestBuilder aggregationRequestBuilder = new QBAggregationRequestBuilder();
+            aggregationRequestBuilder.sum("rating").groupBy("rating");
+
+            QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
+            requestGetBuilder.in("name", "The Dark Knight", "The Godfather");
+            try {
+                ArrayList<QBAggregationItem> aggregationObjects = QBCustomObjects.getAggregationObjects("SuperSample",
+                        aggregationRequestBuilder, requestGetBuilder);
+
+                Log.i(TAG, "aggregationObjects: " + aggregationObjects);
+
             } catch (QBResponseException e) {
                 setException(e);
             }

@@ -19,6 +19,7 @@ import com.sdk.snippets.Snippets;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -322,25 +323,25 @@ public class SnippetsMessages extends Snippets{
             //
 //            event.setMessage("Gonna send Push Notification!");
 
-            // generic push with custom parameters
-            //
-            JSONObject json = new JSONObject();
-            try {
-                json.put("message", "hello to all");
-                json.put("param1", "value1");
-                json.put("ios_badge", "4");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            event.setMessage(json.toString());
+//            // generic push with custom parameters
+//            //
+//            JSONObject json = new JSONObject();
+//            try {
+//                json.put("message", "hello to all");
+//                json.put("param1", "value1");
+//                json.put("ios_badge", "4");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            event.setMessage(json.toString());
 
             // Android based push
             //
-//            event.setPushType(QBPushType.GCM);
-//            HashMap<String, String> data = new HashMap<String, String>();
-//            data.put("data.message", "Hello");
-//            data.put("data.type", "welcome message");
-//            event.setMessage(data);
+            event.setPushType(QBPushType.GCM);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("data.message", "Hello");
+            data.put("data.type", "welcome message");
+            event.setMessage(data);
 
             QBMessages.createEvent(event, new QBEntityCallbackImpl<QBEvent>() {
                 @Override
