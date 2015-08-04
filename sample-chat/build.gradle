@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    mavenCentral()
+    maven { url 'http://maven.stickerpipe.com/artifactory/stickerfactory' }
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -15,8 +20,11 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
-    compile 'com.google.android.gms:play-services:4.2.+'
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile project(':pull-to-refresh')
+    compile('vc908.stickers:stickerfactory:0.2.2@aar') {
+        transitive = true;
+    }
 }

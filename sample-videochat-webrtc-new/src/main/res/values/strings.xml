@@ -31,6 +31,8 @@
     <string name="closed">Closed</string>
     <string name="time_out">Time Out</string>
     <string name="failed">Failed</string>
+    <string name="WIFI_DISABLED">Call was stoped because connection was lost</string>
+    <string name="NETWORK_ABSENT">Connection lost</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>

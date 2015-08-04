@@ -10,21 +10,3 @@ include 'sample-videochat'
 include 'sample-videochat-webrtc-new'
 include 'pull-to-refresh'
 project(':pull-to-refresh').projectDir = new File('sample-chat/libraries/pull-to-refresh')
-
-
-////// for development purpose
-//////
-//include ':quickblox-android-sdk-core'
-//project(':quickblox-android-sdk-core').projectDir = new File('../SDK-android/quickblox-android-sdk-core')
-//include ':quickblox-android-sdk-chat'
-//project(':quickblox-android-sdk-chat').projectDir = new File('../SDK-android/quickblox-android-sdk-chat')
-//include ':quickblox-android-sdk-ratings'
-//project(':quickblox-android-sdk-ratings').projectDir = new File('../SDK-android/quickblox-android-sdk-ratings')
-//include ':quickblox-android-sdk-content'
-//project(':quickblox-android-sdk-content').projectDir = new File('../SDK-android/quickblox-android-sdk-content')
-//include ':quickblox-android-sdk-messages'
-//project(':quickblox-android-sdk-messages').projectDir = new File('../SDK-android/quickblox-android-sdk-messages')
-//include ':quickblox-android-sdk-location'
-//project(':quickblox-android-sdk-location').projectDir = new File('../SDK-android/quickblox-android-sdk-location')
-//include ':quickblox-android-sdk-customobjects'
-//project(':quickblox-android-sdk-customobjects').projectDir = new File('../SDK-android/quickblox-android-sdk-customobjects')

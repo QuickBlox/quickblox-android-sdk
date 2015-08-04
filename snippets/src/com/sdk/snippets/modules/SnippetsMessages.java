@@ -16,6 +16,8 @@ import com.sdk.snippets.AsyncSnippet;
 import com.sdk.snippets.Snippet;
 import com.sdk.snippets.Snippets;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -287,7 +289,9 @@ public class SnippetsMessages extends Snippets{
         public void execute() {
             // recipient
             StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
+//            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
+            userIds.add(2792282);
+//            userIds.add(2792283);
 
             QBEvent event = new QBEvent();
             event.setUserIds(userIds);
@@ -297,18 +301,19 @@ public class SnippetsMessages extends Snippets{
 
             // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
             //
-            event.setMessage("Gonna send Push Notification!");
+//            event.setMessage("Gonna send Push Notification!");
 
             // generic push with custom parameters
             //
-//            JSONObject json = new JSONObject();
-//            try {
-//                json.put("message", "hello");
-//                json.put("param1", "value1");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            event.setMessage(json.toString());
+            JSONObject json = new JSONObject();
+            try {
+                json.put("message", "hello to all");
+                json.put("param1", "value1");
+                json.put("ios_badge", "4");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            event.setMessage(json.toString());
 
             // Android based push
             //

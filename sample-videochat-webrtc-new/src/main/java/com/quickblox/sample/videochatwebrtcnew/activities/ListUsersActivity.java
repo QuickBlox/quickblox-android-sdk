@@ -165,7 +165,6 @@ public class ListUsersActivity extends Activity {
 
     private void initUsersList() {
 
-//        users = DataHolder.createUsersList();
 
         usersListAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersListAdapter);
@@ -195,33 +194,33 @@ public class ListUsersActivity extends Activity {
 
                 loginPB.setVisibility(View.INVISIBLE);
 
-                chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
+                if (chatService.isLoggedIn()){
+                    startCallActivity(login);
+                } else {
+                    chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
-                    @Override
-                    public void onSuccess(QBUser result, Bundle params) {
-                        Log.d(TAG, "onSuccess login to chat with params");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "onSuccess login to chat");
-                        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-                        intent.putExtra("login", login);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(List errors) {
-                        loginPB.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                        for (Object error : errors) {
-                            Log.d(TAG, error.toString());
+                        @Override
+                        public void onSuccess(QBUser result, Bundle params) {
+                            Log.d(TAG, "onSuccess login to chat with params");
+                            startCallActivity(login);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess() {
+                            Log.d(TAG, "onSuccess login to chat");
+                            startCallActivity(login);
+                        }
+
+                        @Override
+                        public void onError(List errors) {
+                            loginPB.setVisibility(View.INVISIBLE);
+                            Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                            for (Object error : errors) {
+                                Log.d(TAG, error.toString());
+                            }
+                        }
+                    });
+                }
 
             }
 
@@ -239,8 +238,24 @@ public class ListUsersActivity extends Activity {
         });
     }
 
+    private void startCallActivity(String login) {
+        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
+        intent.putExtra("login", login);
+        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Consts.CALL_ACTIVITY_CLOSE){
+            if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
+                Toast.makeText(this, getString(R.string.WIFI_DISABLED),Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

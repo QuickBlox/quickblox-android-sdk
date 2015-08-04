@@ -107,8 +107,8 @@ public class OpponentsAdapter extends BaseAdapter {
                 }
             });
 
-            Log.d(TAG, "Method getView. i = " + i + "");
-            Log.d(TAG, "Method getView. User id" + user.getId() + "");
+//            Log.d(TAG, "Method getView. i = " + i + "");
+//            Log.d(TAG, "Method getView. User id" + user.getId() + "");
             holder.opponentsRadioButton.setChecked(i == user.getId());
 
         }
