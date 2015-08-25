@@ -34,7 +34,6 @@ import java.util.List;
  */
 public class IncomeCallFragment extends Fragment implements Serializable {
 
-    private static final String TAG = IncomeCallFragment.class.getSimpleName();
     private static final java.lang.String INCOME_WINDOW_SHOW = "WINDOW_SHOW_TMER'";
     private TextView incVideoCall;
     private TextView incAudioCall;
@@ -66,7 +65,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
                     qbConferenceType == 1 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO :
                             QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
-            Log.d(TAG, conferenceType.toString() + "From onCreateView()");
         }
 
         if (savedInstanceState == null) {
@@ -88,7 +86,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
 
-        Log.d(TAG, "onCreate() from IncomeCallFragment");
         super.onCreate(savedInstanceState);
     }
 
@@ -103,7 +100,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
                 @Override
                 public void onClick(View v) {
                     rejectBtn.setClickable(false);
-                    Log.d(TAG, "Call is rejected");
 
                     stopCallNotification();
 
@@ -123,7 +119,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
                     ((CallActivity) getActivity())
                             .addConversationFragmentReceiveCall();
 
-                    Log.d(TAG, "Call is started");
                 }
             });
     }
@@ -227,6 +222,5 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     public void onStop() {
         stopCallNotification();
         super.onDestroy();
-        Log.d(TAG, "onDestroy() from IncomeCallFragment");
     }
 }

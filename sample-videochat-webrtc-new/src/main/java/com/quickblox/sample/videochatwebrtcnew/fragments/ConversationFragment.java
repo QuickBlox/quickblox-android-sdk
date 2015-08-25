@@ -43,7 +43,6 @@ import java.util.Map;
  */
 public class ConversationFragment extends Fragment implements Serializable {
 
-    private String TAG = ConversationFragment.class.getSimpleName();
     private ArrayList<Integer> opponents;
     private int qbConferenceType;
     private int startReason;
@@ -88,7 +87,6 @@ public class ConversationFragment extends Fragment implements Serializable {
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         this.inflater = inflater;
         this.container = container;
-        Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
 
@@ -99,7 +97,6 @@ public class ConversationFragment extends Fragment implements Serializable {
             sessionID = getArguments().getString(CallActivity.SESSION_ID);
             callerName = getArguments().getString(CallActivity.CALLER_NAME);
 
-            Log.d(TAG, "CALLER_NAME: " + callerName);
 
         }
 
@@ -187,7 +184,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
 
         intentFilter = new IntentFilter();
@@ -265,7 +261,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 //                            Toast.makeText(getActivity(), "Cam was switched", Toast.LENGTH_LONG).show();
                         }
                     });
-                    Log.d(TAG, "Camera was switched!");
                 }
             }
         });
@@ -291,7 +286,6 @@ public class ConversationFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
-                    Log.d(TAG, "Dynamic switched!");
                     ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
                 }
             }
@@ -302,11 +296,9 @@ public class ConversationFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
                     if (isAudioEnabled) {
-                        Log.d(TAG, "Mic is off!");
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
                         isAudioEnabled = false;
                     } else {
-                        Log.d(TAG, "Mic is on!");
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
                         isAudioEnabled = true;
                     }
@@ -320,7 +312,6 @@ public class ConversationFragment extends Fragment implements Serializable {
                 stopOutBeep();
                 actionButtonsEnabled(false);
                 handUpVideoCall.setEnabled(false);
-                Log.d(TAG, "Call is stopped");
 
 //                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
                 ((CallActivity) getActivity()).hangUpCurrentSession();
@@ -343,7 +334,6 @@ public class ConversationFragment extends Fragment implements Serializable {
 
         imgMyCameraOff.setLayoutParams(layoutParams);
 
-        Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
         // TODO end
 
         if (((CallActivity) getActivity()).getCurrentSession() != null) {
@@ -351,11 +341,9 @@ public class ConversationFragment extends Fragment implements Serializable {
             cameraToggle.setChecked(isNeedEnableCam);
 
             if (isNeedEnableCam) {
-                Log.d(TAG, "Camera is on!");
                 switchCameraToggle.setVisibility(View.VISIBLE);
                 imgMyCameraOff.setVisibility(View.INVISIBLE);
             } else {
-                Log.d(TAG, "Camera is off!");
                 switchCameraToggle.setVisibility(View.INVISIBLE);
                 imgMyCameraOff.setVisibility(View.VISIBLE);
             }
@@ -399,7 +387,6 @@ public class ConversationFragment extends Fragment implements Serializable {
             opponentItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Main opponent Selected");
                 }
             });
 
@@ -436,11 +423,11 @@ public class ConversationFragment extends Fragment implements Serializable {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)){
-                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
-            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)){
-                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
-            }
+//            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)){
+//                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
+//            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)){
+//                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
+//            }
 
             if (intent.getIntExtra("state", -1) == 0 /*|| intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -1) == 0*/){
                 dynamicToggleVideoCall.setChecked(false);

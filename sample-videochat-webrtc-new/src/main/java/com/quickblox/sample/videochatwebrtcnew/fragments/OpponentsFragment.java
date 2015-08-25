@@ -41,8 +41,6 @@ import java.util.Map;
  */
 public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
 
-
-    private static final String TAG = OpponentsFragment.class.getSimpleName();
     private OpponentsAdapter opponentsAdapter;
     public static String login;
     private Button btnAudioCall;
@@ -102,8 +100,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
                         ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
                         prepareUserList(opponentsList, orderedUsers);
                         progresDialog.dismiss();
-                    } else {
-                        Log.e("getActivity() error", "get Activity is null, because adapter wasn't added");
                     }
                 }
 
@@ -113,7 +109,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
                 @Override
                 public void onError(List<String> strings) {
-                    Log.d(TAG, "onError()");
                 }
             });
         } else {
@@ -140,7 +135,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
 //        setRetainInstance(true);
         setHasOptionsMenu(true);
-        Log.d(TAG, "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
     }
 

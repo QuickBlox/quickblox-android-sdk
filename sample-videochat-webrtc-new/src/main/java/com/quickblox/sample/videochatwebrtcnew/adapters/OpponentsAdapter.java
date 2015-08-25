@@ -26,10 +26,8 @@ public class OpponentsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     public static int i;
     public List<QBUser> selected = new ArrayList<>();
-    private String TAG = "OpponentsAdapte";
 
     public OpponentsAdapter(Context context, List<QBUser> users) {
-        Log.d(TAG, "On crate i:" + i);
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
 
@@ -89,19 +87,15 @@ public class OpponentsAdapter extends BaseAdapter {
 
                     if (isChecked) {
                         i = user.getId();
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.removeAll(selected);
                         selected.add(user);
-                        Log.d(TAG, "Selected " + user.getFullName());
                     } else {
                         if (i == user.getId()) {
                             i = 0;
                         }
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
 //                        selected.removeAll(selected);
-                        Log.d(TAG, "Deselected " + user.getFullName());
                     }
                     notifyDataSetChanged();
                 }

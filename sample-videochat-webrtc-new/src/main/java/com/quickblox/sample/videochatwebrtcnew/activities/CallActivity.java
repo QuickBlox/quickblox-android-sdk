@@ -60,8 +60,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCClientConnectionCallbacks, QBRTCClientVideoTracksCallbacks {
 
-
-    private static final String TAG = CallActivity.class.getSimpleName();
     private static final String ADD_OPPONENTS_FRAGMENT_HANDLER = "opponentHandlerTask";
     private static final long TIME_BEGORE_CLOSE_CONVERSATION_FRAGMENT = 3;
     private static final String INCOME_WINDOW_SHOW_TASK_THREAD = "INCOME_WINDOW_SHOW";
@@ -85,7 +83,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private boolean isInCommingCall;
     private QBGLVideoView localVideoVidew;
     private QBGLVideoView remoteVideoView;
-//    private boolean isLastConnectionStateEnabled;
     private boolean isInFront;
 
 
@@ -93,9 +90,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
 
         // Probably initialize members with default values for a new instance
         login = getIntent().getStringExtra("login");
@@ -144,7 +138,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         wifiStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "WIFI was changed");
                 processCurrentWifiState(context);
             }
         };
@@ -153,11 +146,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private void processCurrentWifiState(Context context) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (!wifi.isWifiEnabled()) {
-//            isLastConnectionStateEnabled = false;
-            Log.d(TAG, "WIFI is turned off");
             if (closeByWifiStateAllow) {
                 if (currentSession != null) {
-                    Log.d(TAG, "currentSession NOT null");
                     // Close session safely
                     disableConversationFragmentButtons();
                     stopConversationFragmentBeeps();
@@ -166,15 +156,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
                     hangUpReason = Consts.WIFI_DISABLED;
                 } else {
-                    Log.d(TAG, "Call finish() on activity");
                     finish();
                 }
             } else {
-                Log.d(TAG, "WIFI is turned on");
                 showToast(R.string.NETWORK_ABSENT);
             }
-        } else {
-//            isLastConnectionStateEnabled = true;
         }
     }
 
@@ -215,6 +201,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     public void rejectCurrentSession() {
+
         if (getCurrentSession() != null) {
             getCurrentSession().rejectCall(new HashMap<String, String>());
         }
@@ -232,8 +219,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void stopIncomeCallTimer() {
-        Log.d(TAG, "stopIncomeCallTimer" );
-//        Log.d(TAG, "showIncomingCallWindowTaskHandler is " + showIncomingCallWindowTaskHandler);
         showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
     }
 
@@ -293,17 +278,10 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
 
-                Log.d(TAG, "Session "+ session.getSessionID() + " are income");
-                String curSession = (getCurrentSession() == null) ? null : getCurrentSession().getSessionID();
-                Log.d(TAG, "Session " + curSession + " is current" );
 
                 if (getCurrentSession() == null) {
-                    Log.d(TAG, "Start new session");
-                    Log.d(TAG, "Income call");
 
-                    Log.d("Crash", "onReceiveNewSession. Set session to " + session);
                     setCurrentSession(session);
-                    Log.d("Crash", "onReceiveNewSession. Set session to " + session);
 
                     addIncomeCallFragment(session);
 
@@ -311,7 +289,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                     initIncommingCallTask();
                     startIncomeCallTimer();
                 } else {
-                    Log.d(TAG, "Stop new session. Device now is busy");
                     session.rejectCall(null);
                 }
 
@@ -370,23 +347,19 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
         localVideoVidew = (QBGLVideoView) findViewById(R.id.localVideoVidew);
-        Log.d(TAG, "localVideoVidew is " + localVideoVidew);
         if (localVideoVidew != null) {
             videoTrack.addRenderer(new VideoRenderer(new VideoCallBacks(localVideoVidew, QBGLVideoView.Endpoint.LOCAL)));
             localVideoVidew.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.LOCAL);
-            Log.d(TAG, "onLocalVideoTrackReceive() is raned");
         }
     }
 
     @Override
     public void onRemoteVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack, Integer userID) {
         remoteVideoView = (QBGLVideoView) findViewById(R.id.remoteVideoView);
-        Log.d(TAG, "remoteVideoView is " + remoteVideoView);
         if (remoteVideoView != null) {
             VideoRenderer remouteRenderer = new VideoRenderer(new VideoCallBacks(remoteVideoView, QBGLVideoView.Endpoint.REMOTE));
             videoTrack.addRenderer(remouteRenderer);
             remoteVideoView.setVideoTrack(videoTrack, QBGLVideoView.Endpoint.REMOTE);
-            Log.d(TAG, "onRemoteVideoTrackReceive() is raned");
         }
     }
 
@@ -398,7 +371,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
                 // Close app after session close of network was disabled
-                Log.d(TAG, "onConnectionClosedForUser()");
                 if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)) {
                     Intent returnIntent = new Intent();
                     setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
@@ -422,7 +394,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
                 showToast(R.string.connected);
 
-                Log.d(TAG, "onConnectedToUser() is started");
 
                 ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
                 if (fragment != null) {
@@ -461,9 +432,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void run() {
 
-                Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
                 String curSession = (getCurrentSession() == null) ? null : getCurrentSession().getSessionID();
-                Log.d(TAG, "Session " + curSession + " is current" );
 
                 if (session.equals(getCurrentSession())) {
 
@@ -471,13 +440,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                         stopIncomeCallTimer();
                     }
 
-                    Log.d(TAG, "Stop session");
-//                    addOpponentsFragmentWithDelay();
                     addOpponentsFragment();
 
                     // Remove current session
-                    Log.d(TAG, "Remove current session");
-                    Log.d("Crash", "onSessionClosed. Set session to null");
                     currentSession = null;
 
                     stopTimer();
@@ -490,7 +455,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     public void onSessionStartClose(final QBRTCSession session) {
-        Log.d(TAG, "Start stopping session");
 
         runOnUiThread(new Runnable() {
             @Override
@@ -585,7 +549,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     private void addIncomeCallFragment(QBRTCSession session) {
 
-        Log.d(TAG, "QBRTCSession in addIncomeCallFragment is " + session);
         if(session != null && isInFront) {
             Fragment fragment = new IncomeCallFragment();
             Bundle bundle = new Bundle();
@@ -594,8 +557,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
             fragment.setArguments(bundle);
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT).commit();
-        } else {
-            Log.d(TAG, "SKIP addIncomeCallFragment method");
         }
     }
 
