@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
-import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +21,18 @@ import java.util.List;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private List<QBUser> opponents;
+    private List<User> opponents;
     private LayoutInflater inflater;
     public static int i;
-    public List<QBUser> selected = new ArrayList<>();
+    public List<User> selected = new ArrayList<>();
 
-    public OpponentsAdapter(Context context, List<QBUser> users) {
+    public OpponentsAdapter(Context context, List<User> users) {
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
 
     }
 
-    public List<QBUser> getSelected() {
+    public List<User> getSelected() {
         return selected;
     }
 
@@ -41,7 +40,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return opponents.size();
     }
 
-    public QBUser getItem(int position) {
+    public User getItem(int position) {
         return opponents.get(position);
     }
 
@@ -49,7 +48,7 @@ public class OpponentsAdapter extends BaseAdapter {
         return position;
     }
 
-    private int getNumber(List<QBUser> opponents, QBUser user) {
+    private int getNumber(List<User> opponents, User user) {
         return opponents.indexOf(user);
     }
 
@@ -71,7 +70,7 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final QBUser user = opponents.get(position);
+        final User user = opponents.get(position);
 
 
         if (user != null) {

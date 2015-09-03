@@ -24,13 +24,13 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.videochatwebrtcnew.ApplicationSingleton;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.fragments.ConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.OpponentsFragment;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCException;
@@ -73,7 +73,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     private QBRTCSession currentSession;
     public static String login;
-    public static ArrayList<QBUser> opponentsList;
+    public static ArrayList<User> opponentsList;
 
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
@@ -90,6 +90,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setOpponentsList(DataHolder.getUsersList());
 
         // Probably initialize members with default values for a new instance
         login = getIntent().getStringExtra("login");
@@ -626,11 +628,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
 
-    public void setOpponentsList(ArrayList<QBUser> qbUsers) {
+    public void setOpponentsList(ArrayList<User> qbUsers) {
         this.opponentsList = qbUsers;
     }
 
-    public ArrayList<QBUser> getOpponentsList() {
+    public ArrayList<User> getOpponentsList() {
         return opponentsList;
     }
 

@@ -52,6 +52,9 @@ public class DataHolder {
         return usersList;
     }
 
+    public static ArrayList<User> getUsersList() {
+        return usersList;
+    }
 
     public static String getUserNameByID(Integer callerID) {
         for (User user : usersList) {
