@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
 import com.quickblox.core.QBEntityCallback;
@@ -169,21 +170,10 @@ public class SnippetsChat extends Snippets {
         //
         snippets.add(joinRoom);
         snippets.add(joinRoomSynchronous);
-        //
         snippets.add(sendMessageToRoomExtended);
         snippets.add(sendMessageToRoomWithoutJoin);
-        //
         snippets.add(getOnlineRoomUsersSynchronous);
-        //
         snippets.add(leaveRoom);
-        //
-        //
-        snippets.add(createRoom);
-        snippets.add(addUsersToRoom);
-        snippets.add(removeUsersFromRoom);
-        snippets.add(getRoomUsers);
-        snippets.add(getRoomInfo);
-        snippets.add(getRooms);
         //
         //
         snippets.add(getDialogs);
@@ -219,6 +209,15 @@ public class SnippetsChat extends Snippets {
         snippets.add(setPrivacyList);
         snippets.add(deletePrivacyList);
         snippets.add(setDefaultPrivacyList);
+        //
+        //
+        snippets.add(enterInactiveState);
+        snippets.add(enterActiveState);
+        //
+        //
+        snippets.add(pingServer);
+        snippets.add(pingServerSynchronous);
+
 }
 
     private void registerReceiver(Activity activity) {
@@ -1658,147 +1657,67 @@ public class SnippetsChat extends Snippets {
     };
 
 
-
-
     //
-    /////////////////////////////////// Group Chat (old methods) ///////////////////////////////////
+    ///////////////////////////////////// Mobile optimisation //////////////////////////////////////
     //
 
 
-    Snippet createRoom = new Snippet("create room") {
+    Snippet enterInactiveState = new Snippet("enter inactive state") {
         @Override
         public void execute() {
-            //
-            // Use 'create Dialog' request instead next code and then Join room using dialog's 'roomJid' field as a room jid
+            try {
+                chatService.enterInactiveState();
+            } catch (SmackException.NotConnectedException e) {
+                log("error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
 
-            Random rand = new Random();
-            int randomNum = rand.nextInt(10000);
-            currentChatRoom = groupChatManager.createGroupChat("test_room" + randomNum, false, false);
+    Snippet enterActiveState = new Snippet("enter active state") {
+        @Override
+        public void execute() {
+            try {
+                chatService.enterActiveState();
+            } catch (SmackException.NotConnectedException e) {
+                log("error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
 
-            currentChatRoom.create( new QBEntityCallbackImpl() {
+
+    //
+    //////////////////////////////////////// Ping manager //////////////////////////////////////////
+    //
+
+    Snippet pingServer = new Snippet("ping server") {
+        @Override
+        public void execute() {
+            final QBPingManager pingManager = chatService.getPingManager();
+            pingManager.pingServer(new QBEntityCallbackImpl<Void>() {
+
                 @Override
                 public void onSuccess() {
-                    log("create room success");
-                    currentChatRoom.addMessageListener(groupChatMessageListener);
+                    log("ping success");
                 }
 
                 @Override
-                public void onError(List list) {
-                    log("create room errors: " + list);
+                public void onError(List<String> list) {
+                    log("ping error: " + list);
                 }
             });
         }
     };
 
-    Snippet addUsersToRoom = new Snippet("add users to Room") {
-        @Override
-        public void execute() {
-
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.addRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet removeUsersFromRoom = new Snippet("remove users from Room") {
-        @Override
-        public void execute() {
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.removeRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet getRoomUsers = new AsyncSnippet("get room users (synchronous)", context) {
-        Collection<Integer> roomUsers = null;
-
+    Snippet pingServerSynchronous = new AsyncSnippet("ping server (synchronous)", context) {
         @Override
         public void executeAsync() {
+            final QBPingManager pingManager = chatService.getPingManager();
             try {
-                roomUsers = currentChatRoom.getRoomUserIds();
+                boolean ping = pingManager.pingServer();
+                log("ping success: " + ping);
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
-                setException(e);
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-                setException(e);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-                setException(e);
             }
-        }
-
-        @Override
-        protected void postExecute() {
-            super.postExecute();
-            final Exception exc = getException();
-
-            if (exc == null) {
-                log("Room users: " + roomUsers);
-            }else{
-                log("Room users error: " + exc.getLocalizedMessage());
-            }
-        }
-    };
-
-    Snippet getRoomInfo = new Snippet("get Room info") {
-        @Override
-        public void execute() {
-            RoomInfo roomInfo = null;
-            try {
-                roomInfo = currentChatRoom.getInfo();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (XMPPException.XMPPErrorException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            if(roomInfo != null) {
-                log("roomInfo: " + roomInfo.getRoom() + ", " + roomInfo.isMembersOnly() + ", "  + roomInfo.isPersistent());
-            }
-        }
-    };
-
-    Snippet getRooms = new Snippet("get list of rooms") {
-        @Override
-        public void execute() {
-            Collection<String> rooms = null;
-            try {
-                rooms = groupChatManager.getHostedRooms();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            String roomList = "room list: ";
-            for (String roomJID : rooms) {
-                roomList += roomJID;
-                roomList += ", ";
-            }
-            log(roomList);
         }
     };
 }
