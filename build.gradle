@@ -27,7 +27,6 @@ ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.ja
 ext.content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
 ext.customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
 ext.messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
-ext.ratings_jar_path = qb_sdk_jars_template_path + '-ratings-' + qb_sdk_version + '.jar'
 ext.videochat_jar_path = qb_sdk_jars_template_path + '-videochat-' + qb_sdk_version + '.jar'
 ext.videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
 

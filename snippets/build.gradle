@@ -19,6 +19,5 @@ dependencies {
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
-            rootProject.messages_jar_path,
-            rootProject.ratings_jar_path)
+            rootProject.messages_jar_path)
 }
