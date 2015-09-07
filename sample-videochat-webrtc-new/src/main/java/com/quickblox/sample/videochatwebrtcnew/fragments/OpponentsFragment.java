@@ -70,7 +70,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         progresDialog.show();
 
         initOpponentListAdapter();
-        
+
         return view;
     }
 
