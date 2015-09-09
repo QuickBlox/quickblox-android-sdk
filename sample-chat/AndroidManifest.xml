@@ -63,6 +63,11 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <provider
+            android:name="vc908.stickerfactory.provider.StickersProvider"
+            android:authorities="com.quickblox.sample.chat.stickersProvider"
+            android:exported="false"/>
+
     </application>
 
     <!-- 4. Declare and use a custom permission so only this application can receive GCM messages.

@@ -8,15 +8,15 @@
             "api_domain": "https://api.quickblox.com",
             "chat_domain": "chat.quickblox.com",
             "bucket_name": "qbprod",
-            "test_user_id1": 1501966,
-            "test_user_login1": "igorquickblox3",
-            "test_user_password1": "igorquickblox3",
-            "test_user_id2": 1501969,
-            "test_user_login2": "igorquickblox4",
-            "test_user_password2": "igorquickblox4",
-            "dialog_id": "558d18bc535c126322042dae"
+            "test_user_id1": 5179218,
+            "test_user_login1": "igorquickblox711",
+            "test_user_password1": "igorquickblox711",
+            "test_user_id2": 5179221,
+            "test_user_login2": "igorquickblox712",
+            "test_user_password2": "igorquickblox712",
+            "dialog_id": "55e9a924a0eb47794900027f"
         }
     },
     "active": "production",
-    "use_first_user": true
+    "use_first_user": false
 }

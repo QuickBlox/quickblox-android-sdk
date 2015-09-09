@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.sdk.snippets.R;
 import com.sdk.snippets.Snippets;
 import com.sdk.snippets.SnippetsList;
-import com.sdk.snippets.modules.SnippetsAuth;
 
 /**
  * Created by Вадим on 13.06.2015.

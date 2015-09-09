@@ -3,7 +3,6 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +14,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
@@ -33,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +36,6 @@ import java.util.Map;
  */
 public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
 
-
-    private static final String TAG = OpponentsFragment.class.getSimpleName();
     private OpponentsAdapter opponentsAdapter;
     public static String login;
     private Button btnAudioCall;
@@ -79,50 +71,18 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         initOpponentListAdapter();
 
-//         Log.d(TAG, "onCreateView() from OpponentsFragment Level 2");
         return view;
     }
 
     private void initOpponentListAdapter() {
         final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
-        List<QBUser> users = ((CallActivity) getActivity()).getOpponentsList();
 
-        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
-        requestBuilder.setPerPage(100);
-
-        if (users == null) {
-            List<String> tags = new LinkedList<>();
-            tags.add("webrtcusers");
-//            tags.add("webrtctest");
-            QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
-                @Override
-                public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-//                    Log.d(TAG, "download users from QickBlox");
-                    ArrayList<QBUser> orderedUsers = reorderUsersByName(qbUsers);
-                    if(isAdded()) {
-                        ((CallActivity) getActivity()).setOpponentsList(orderedUsers);
-                        prepareUserList(opponentsList, orderedUsers);
-                        progresDialog.dismiss();
-                    } else {
-                        Log.e("getActivity() error", "get Activity is null, because adapter wasn't added");
-                    }
-                }
-
-                @Override
-                public void onError(QBResponseException strings) {
-                    Log.d(TAG, "onError()");
-                }
-            });
-        } else {
-
-            ArrayList<QBUser> userList = ((CallActivity) getActivity()).getOpponentsList();
-            prepareUserList(opponentsList, userList);
-            progresDialog.dismiss();
-
-        }
+        ArrayList<User> userList = ((CallActivity) getActivity()).getOpponentsList();
+        prepareUserList(opponentsList, userList);
+        progresDialog.dismiss();
     }
 
-    private void prepareUserList(ListView opponentsList, List<QBUser> users) {
+    private void prepareUserList(ListView opponentsList, List<User> users) {
         int i = searchIndexLogginedUser(users);
         if (i >= 0)
             users.remove(i);
@@ -137,7 +97,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
 //        setRetainInstance(true);
         setHasOptionsMenu(true);
-        Log.d(TAG, "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);
     }
 
@@ -187,9 +146,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    public static ArrayList<Integer> getOpponentsIds(List<QBUser> opponents){
+    public static ArrayList<Integer> getOpponentsIds(List<User> opponents){
         ArrayList<Integer> ids = new ArrayList<Integer>();
-        for(QBUser user : opponents){
+        for(User user : opponents){
             ids.add(user.getId());
         }
         return ids;
@@ -237,15 +196,15 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private ArrayList<QBUser> reorderUsersByName(ArrayList<QBUser> qbUsers) {
+    private ArrayList<User> reorderUsersByName(ArrayList<User> qbUsers) {
         // Make clone collection to avoid modify input param qbUsers
-        ArrayList<QBUser> resultList = new ArrayList<>(qbUsers.size());
+        ArrayList<User> resultList = new ArrayList<>(qbUsers.size());
         resultList.addAll(qbUsers);
 
         // Rearrange list by user IDs
-        Collections.sort(resultList, new Comparator<QBUser>() {
+        Collections.sort(resultList, new Comparator<User>() {
             @Override
-            public int compare(QBUser firstUsr, QBUser secondUsr) {
+            public int compare(User firstUsr, User secondUsr) {
                 if (firstUsr.getId().equals(secondUsr.getId())) {
                     return 0;
                 } else if (firstUsr.getId() < secondUsr.getId()) {
@@ -258,9 +217,9 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         return resultList;
     }
 
-    public static int searchIndexLogginedUser(List<QBUser> usersList) {
+    public static int searchIndexLogginedUser(List<User> usersList) {
         int indexLogginedUser = -1;
-        for (QBUser usr : usersList) {
+        for (User usr : usersList) {
             if (usr.getLogin().equals(login)) {
                 indexLogginedUser = usersList.indexOf(usr);
                 break;

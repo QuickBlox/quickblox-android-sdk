@@ -19,6 +19,8 @@ import com.quickblox.sample.chat.R;
 
 import java.util.List;
 
+import vc908.stickerfactory.StickersManager;
+
 public class DialogsAdapter extends BaseAdapter {
     private List<QBDialog> dataSource;
     private LayoutInflater inflater;
@@ -78,8 +80,11 @@ public class DialogsAdapter extends BaseAdapter {
                 holder.name.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());
             }
         }
-
-        holder.lastMessage.setText(dialog.getLastMessage());
+        if (dialog.getLastMessage() != null && StickersManager.isSticker(dialog.getLastMessage())) {
+            holder.lastMessage.setText("Sticker");
+        } else {
+            holder.lastMessage.setText(dialog.getLastMessage());
+        }
         holder.groupType.setText(dialog.getType().toString());
 
         return convertView;
