@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.chat.QBChat;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
@@ -503,15 +504,6 @@ public class SnippetsChat extends Snippets {
                 log("processError: " + error.getLocalizedMessage());
             }
 
-            @Override
-            public void processMessageDelivered(QBPrivateChat privateChat, String messageID){
-                log("message delivered: " + messageID);
-            }
-
-            @Override
-            public void processMessageRead(QBPrivateChat privateChat, String messageID){
-                log("message read: " + messageID);
-            }
         };
     }
 
@@ -521,12 +513,12 @@ public class SnippetsChat extends Snippets {
         //
         privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
             @Override
-            public void processUserIsTyping(QBPrivateChat qbPrivateChat) {
+            public void processUserIsTyping(QBPrivateChat qbPrivateChat, Integer userId) {
                 log("user " + qbPrivateChat.getParticipant() + " is typing");
             }
 
             @Override
-            public void processUserStopTyping(QBPrivateChat qbPrivateChat) {
+            public void processUserStopTyping(QBPrivateChat qbPrivateChat, Integer userId) {
                 log("user " + qbPrivateChat.getParticipant() + " stop typing");
             }
         };
@@ -600,6 +592,8 @@ public class SnippetsChat extends Snippets {
                 privateChat.sendIsTypingNotification();
             } catch (SmackException.NotConnectedException e) {
                 log("send typing error: " + e.getClass().getSimpleName());
+            } catch (XMPPException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -621,6 +615,8 @@ public class SnippetsChat extends Snippets {
                 privateChat.sendStopTypingNotification();
             }  catch (SmackException.NotConnectedException e) {
                 log("send stop typing error: " + e.getClass().getSimpleName());
+            } catch (XMPPException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -639,9 +635,11 @@ public class SnippetsChat extends Snippets {
                 privateChat.addIsTypingListener(privateChatIsTypingListener);
             }
             try {
-                privateChat.readMessage(null);
+                privateChat.readMessage((QBChatMessage)null);
             } catch (SmackException.NotConnectedException e) {
                 log("read message error: " + e.getClass().getSimpleName());
+            } catch (XMPPException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -662,16 +660,6 @@ public class SnippetsChat extends Snippets {
             @Override
             public void processError(final QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
                 log("Group chat: " + groupChat.getJid() + ", Error: " + error.getCondition().toString());
-            }
-
-            @Override
-            public void processMessageDelivered(QBGroupChat groupChat, String messageID){
-                // never be called, works only for 1-1 chat
-            }
-
-            @Override
-            public void processMessageRead(QBGroupChat groupChat, String messageID){
-                // never be called, works only for 1-1 chat
             }
         };
     }
