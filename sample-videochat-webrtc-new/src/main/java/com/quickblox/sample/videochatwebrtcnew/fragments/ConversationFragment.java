@@ -31,6 +31,7 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.view.QBGLVideoView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -294,6 +295,7 @@ public class ConversationFragment extends Fragment implements Serializable {
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (((CallActivity) getActivity()).getCurrentSession() != null) {
                     if (isAudioEnabled) {
                         ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
