@@ -108,14 +108,13 @@ public class ListUsersActivity extends BaseLogginedUserActivity {
     }
 
     @Override
-    void processCurrentWifiState(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled()) {
+    void processCurrentConnectionState(boolean isConnected) {
+        if (!isConnected) {
             isWifiConnected = false;
-            Log.d(TAG, "WIFI is turned off");
+            Log.d(TAG, "Internet is turned off");
         } else {
             isWifiConnected = true;
-            Log.d(TAG, "WIFI is turned on");
+            Log.d(TAG, "Internet is turned on");
         }
     }
 

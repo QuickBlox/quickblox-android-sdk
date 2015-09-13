@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +24,6 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
-import com.quickblox.chat.listeners.QBVideoChatSignalingListener;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
@@ -42,7 +43,6 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientConnectionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.Message;
 import org.webrtc.VideoCapturerAndroid;
 
 import java.io.Serializable;
@@ -61,14 +61,15 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
     private String password;
     private PendingIntent pendingIntent;
     private int startServiceVariant;
-    private BroadcastReceiver wifiStateReceiver;
+    private BroadcastReceiver connectionStateReceiver;
     private boolean needMaintainConnectivity;
+    private boolean isConnectivityExists;
 
     @Override
     public void onCreate() {
         super.onCreate();
         QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
-        initWiFiManagerListener();
+        initConnectionManagerListener();
     }
 
     @Override
@@ -282,8 +283,8 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
         QBRTCClient.getInstance().removeConnectionCallbacksListener(this);
         SessionManager.setCurrentSession(null);
 
-        if (wifiStateReceiver != null){
-            unregisterReceiver(wifiStateReceiver);
+        if (connectionStateReceiver != null){
+            unregisterReceiver(connectionStateReceiver);
         }
         super.onDestroy();
     }
@@ -299,39 +300,69 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
     }
 
 
-    private void initWiFiManagerListener() {
-        wifiStateReceiver = new BroadcastReceiver() {
+    private void initConnectionManagerListener() {
+        connectionStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "WIFI was changed");
-                processCurrentWifiState(context);
+                Log.d(TAG, "Connection state was changed");
+                boolean isConnected = processConnectivityState(intent);
+                updateStateIfNeed(isConnected);
             }
+
+            private boolean processConnectivityState(Intent intent) {
+                int connectivityType = intent.getIntExtra(ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
+                // Check does connectivity equal mobile or wifi types
+                boolean connectivityState = false;
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+                if (networkInfo != null){
+                    if (connectivityType == ConnectivityManager.TYPE_MOBILE
+                            || connectivityType == ConnectivityManager.TYPE_WIFI
+                            || networkInfo.getTypeName().equals("WIFI")
+                            || networkInfo.getTypeName().equals("MOBILE")) {
+                        //should check null because in air plan mode it will be null
+                        if (networkInfo.isConnected()) {
+                            // Check does connectivity EXISTS for connectivity type wifi or mobile internet
+                            // Pay attention on "!" symbol  in line below
+                            connectivityState = true;
+                        }
+                    }
+                }
+                return connectivityState;
+            }
+
+            private void updateStateIfNeed(boolean connectionState) {
+                if (isConnectivityExists != connectionState) {
+                    processCurrentConnectionState(connectionState);
+                }
+            }
+
+            private void processCurrentConnectionState(boolean isConnected) {
+                if (!isConnected) {
+                    Log.d(TAG, "Connection is turned off");
+                } else {
+                    if (needMaintainConnectivity) {
+                        Log.d(TAG, "Connection is turned on");
+                        if (!QBChatService.isInitialized()) {
+                            QBChatService.init(getApplicationContext());
+                        }
+                        chatService = QBChatService.getInstance();
+                        if (!QBChatService.getInstance().isLoggedIn()) {
+                            SharedPreferences sharedPreferences = getSharedPreferences(Consts.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+                            String login = sharedPreferences.getString(Consts.USER_LOGIN, null);
+                            String password = sharedPreferences.getString(Consts.USER_PASSWORD, null);
+                            reloginToChat(login, password);
+                        }
+                    }
+                }
+            }
+
         };
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(wifiStateReceiver, intentFilter);
-    }
-
-    private void processCurrentWifiState(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled()) {
-            Log.d(TAG, "WIFI is turned off");
-        } else {
-            if (needMaintainConnectivity) {
-                Log.d(TAG, "WIFI is turned on");
-                if (!QBChatService.isInitialized()) {
-                    QBChatService.init(getApplicationContext());
-                }
-                chatService = QBChatService.getInstance();
-                if (!QBChatService.getInstance().isLoggedIn()) {
-                    SharedPreferences sharedPreferences = getSharedPreferences(Consts.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-                    String login = sharedPreferences.getString(Consts.USER_LOGIN, null);
-                    String password = sharedPreferences.getString(Consts.USER_PASSWORD, null);
-                    reloginToChat(login, password);
-                }
-            }
-        }
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectionStateReceiver, intentFilter);
     }
 
     private void reloginToChat(String login, String password) {

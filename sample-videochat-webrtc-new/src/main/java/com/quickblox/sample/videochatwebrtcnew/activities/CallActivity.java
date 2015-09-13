@@ -108,11 +108,10 @@ public class CallActivity extends BaseLogginedUserActivity{
     }
 
     @Override
-    void processCurrentWifiState(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled()) {
+    void processCurrentConnectionState(boolean isConnected) {
+        if (!isConnected) {
             isWifiConnected = false;
-            Log.d(TAG, "WIFI is turned off");
+            Log.d(TAG, "Internet is turned off");
             if (closeByWifiStateAllow) {
                 if (SessionManager.getCurrentSession() != null) {
                     Log.d(TAG, "currentSession NOT null");
@@ -129,7 +128,7 @@ public class CallActivity extends BaseLogginedUserActivity{
                 }
             }
         } else {
-            Log.d(TAG, "WIFI is turned on");
+            Log.d(TAG, "Internet is turned on");
             isWifiConnected = true;
         }
     }
@@ -328,11 +327,7 @@ public class CallActivity extends BaseLogginedUserActivity{
 
                     stopTimer();
                     closeByWifiStateAllow = true;
-//                if (!isWifiConnected) {
-//                    processCurrentWifiState(CallActivity.this);
-//                } else {
                     finish();
-//                }
             }
         });
     }

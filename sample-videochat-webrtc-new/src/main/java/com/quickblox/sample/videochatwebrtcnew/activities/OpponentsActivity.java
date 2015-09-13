@@ -19,6 +19,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
@@ -127,9 +128,22 @@ public class OpponentsActivity extends BaseLogginedUserActivity implements View.
     }
 
     private void prepareUserList(ListView opponentsList, List<QBUser> users) {
-        int i = DataHolder.getUserIndexByID(QBChatService.getInstance().getUser().getId());
-        if (i >= 0)
-            users.remove(i);
+        QBUser currentUser = QBChatService.getInstance().getUser();
+
+        ArrayList <QBUser> nonAppUsers = new ArrayList<>();
+        for (QBUser nonAppUser : users){
+            if (!DataHolder.getIdsAiiUsers().contains(nonAppUser.getId())){
+                nonAppUsers.add(nonAppUser);
+            }
+        }
+
+        if (users.contains(currentUser)) {
+            users.remove(currentUser);
+        }
+
+        if (users.containsAll(nonAppUsers)) {
+            users.removeAll(nonAppUsers);
+        }
 
         // Prepare users list for simple adapter.
         opponentsAdapter = new OpponentsAdapter(this, users);
@@ -299,14 +313,13 @@ public class OpponentsActivity extends BaseLogginedUserActivity implements View.
     }
 
     @Override
-    void processCurrentWifiState(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled()) {
-            Log.d(TAG, "WIFI is turned off");
+    void processCurrentConnectionState(boolean isConncted) {
+        if (!isConncted) {
+            Log.d(TAG, "Internet is turned off");
             isWifiConnected = false;
 //            initConnectionErrorDialog();
         } else {
-            Log.d(TAG, "WIFI is turned on");
+            Log.d(TAG, "Internet is turned on");
             isWifiConnected = true;
         }
     }

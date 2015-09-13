@@ -10,8 +10,6 @@ public class DataHolder {
     private static final String TAG = DataHolder.class.getSimpleName();
     public static ArrayList<User> usersList;
     public static final String PASSWORD = "x6Bt0VDy5";
-//    public static final String PASSWORD = "88888888";
-
 
     public void setUsersList(List<User> UsersList) {
         this.usersList = usersList;
@@ -42,10 +40,6 @@ public class DataHolder {
         if (usersList == null) {
             usersList = new ArrayList<>();
 
-//            usersList.add(new User(1, "User 1", "user_1", PASSWORD, 2224038));
-//            usersList.add(new User(2, "User 2", "user_2", PASSWORD, 2224046));
-//            usersList.add(new User(3, "User 3", "user_3", PASSWORD, 2224047));
-//            usersList.add(new User(4, "User 4", "user_4", PASSWORD, 2224050));
             usersList.add(new User(1, "User 1", "webrtc_user1", PASSWORD, 2436251));
             usersList.add(new User(2, "User 2", "webrtc_user2", PASSWORD, 2436254));
             usersList.add(new User(3, "User 3", "webrtc_user3", PASSWORD, 2436257));
@@ -106,5 +100,13 @@ public class DataHolder {
             }
         }
         return -1;
+    }
+
+    public static ArrayList<Integer> getIdsAiiUsers (){
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (User user : getUsersList()){
+            ids.add(user.getId());
+        }
+        return ids;
     }
 }
