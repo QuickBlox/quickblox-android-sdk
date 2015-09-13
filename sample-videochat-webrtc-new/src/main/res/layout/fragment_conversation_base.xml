@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id = "@+id/fragmentOpponents"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true"
+    android:background="@color/white">
+
+
+    <com.quickblox.videochat.webrtc.view.QBGLVideoView
+        android:id="@+id/remoteVideoView"
+        android:layout_width="230dp"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:visibility="invisible"/>
+
+    <com.quickblox.videochat.webrtc.view.QBGLVideoView
+        android:id="@+id/localVideoVidew"
+        android:layout_width="115dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"/>
+
+
+    <include
+        android:id="@+id/element_set_video_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/element_fragment_video_call"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"/>
+
+
+
+    <!--<HorizontalScrollView-->
+        <!--android:id="@+id/camerasOpponentsList"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="150dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:layout_above="@+id/element_set_video_buttons"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_marginBottom="3dp">-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/opponentsFromCall"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+        <!--</LinearLayout>-->
+
+    <!--</HorizontalScrollView>-->
+
+    <TextView
+        android:id="@+id/incUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="User Name"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:maxLines="1"
+        android:maxLength="25"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+
+        />
+
+<LinearLayout
+    android:id="@+id/noVideoImageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="end">
+
+    <ImageView
+        android:id="@+id/imgMyCameraOff"
+        android:layout_width="115dp"
+        android:layout_height="150dp"
+        android:background="@color/button_material_dark"
+        android:gravity="center_vertical"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        android:src="@drawable/ic_user_camera_off"/>
+</LinearLayout>
+
+    <ToggleButton
+        android:id="@+id/switchCameraToggle"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:textOn=""
+        android:textOff=""
+        android:background="@drawable/ic_switch_camera_sm"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignLeft="@id/localVideoVidew"
+        android:layout_alignTop="@id/localVideoVidew"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
