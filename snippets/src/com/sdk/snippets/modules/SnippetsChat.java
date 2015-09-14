@@ -551,6 +551,7 @@ public class SnippetsChat extends Snippets {
             @Override
             public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
                 log("received message: " + chatMessage + " from user: " + privateChat.getParticipant() + ", dialogId: " + privateChat.getDialogId());
+                log("delayed: " + chatMessage.isDelayed());
             }
 
             @Override
