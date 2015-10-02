@@ -17,6 +17,7 @@ import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
+import com.quickblox.chat.listeners.QBSystemMessageListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
@@ -230,6 +231,10 @@ public class SnippetsChat extends Snippets {
         //
         snippets.add(pingServer);
         snippets.add(pingServerSynchronous);
+        //
+        //
+        snippets.add(sendSystemMessage);
+
 
 }
 
@@ -336,6 +341,7 @@ public class SnippetsChat extends Snippets {
                     initPrivacyListsListener();
 
                     initMessageStatusManagerAndListener();
+                    initSystemMessagesListener();
                 }
 
                 @Override
@@ -384,6 +390,7 @@ public class SnippetsChat extends Snippets {
                 initPrivacyListsListener();
 
                 initMessageStatusManagerAndListener();
+                initSystemMessagesListener();
             }else{
                 log("error when login: " + exc.getClass().getSimpleName());
             }
@@ -590,6 +597,20 @@ public class SnippetsChat extends Snippets {
                 }
             }
         };
+    }
+
+    private void initSystemMessagesListener() {
+        chatService.addSystemMessageListener(new QBSystemMessageListener() {
+            @Override
+            public void processMessage(QBChatMessage qbChatMessage) {
+                log("process System Message: " + qbChatMessage);
+            }
+
+            @Override
+            public void processError(QBChatException e, QBChatMessage qbChatMessage) {
+                log("process System Message error: " + e);
+            }
+        });
     }
 
     Snippet sendPrivateMessageExtended = new Snippet("send private message") {
@@ -1853,6 +1874,33 @@ public class SnippetsChat extends Snippets {
                 log("ping success: " + ping);
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
+            }
+        }
+    };
+
+
+    //
+    //////// System Message /////
+    //
+
+    Snippet sendSystemMessage = new Snippet("send system message") {
+        @Override
+        public void execute() {
+            try {
+                // create a message
+                QBChatMessage chatMessage = new QBChatMessage();
+                chatMessage.setProperty("param1", "value1");
+                chatMessage.setProperty("param2", "value2");
+
+                int userID = ApplicationConfig.getInstance().getTestUserId2();
+                chatMessage.setRecipientId(userID);
+
+                chatService.sendSystemMessage(chatMessage);
+
+            } catch (SmackException.NotConnectedException e) {
+                log("send system message error: " + e.getMessage());
+            } catch (IllegalStateException ee){
+                log("send system message error: " + ee.getMessage());
             }
         }
     };
