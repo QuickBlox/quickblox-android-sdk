@@ -2,22 +2,23 @@ package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.Lo;
 import com.quickblox.core.server.BaseService;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,19 +63,16 @@ public class SnippetsAuth extends Snippets{
                 public void onSuccess(QBSession session, Bundle params) {
                     super.onSuccess(session, params);
                     Log.i(TAG, "session created, token = " + session.getToken());
+
+                    Lo.g("Main thread (callback ok): " + (Looper.myLooper() == Looper.getMainLooper()));
                 }
 
                 @Override
                 public void onError(List<String> errors) {
+                    Lo.g("Main thread (callback error): " + (Looper.myLooper() == Looper.getMainLooper()));
                     handleErrors(errors);
                 }
             });
-
-            try {
-                Date expirationDate =  BaseService.getBaseService().getTokenExpirationDate();
-            }catch (BaseServiceException e) {
-                e.printStackTrace();
-            }
         }
     };
 
@@ -196,7 +194,18 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySession = new Snippet("destroy session") {
         @Override
         public void execute() {
-            QBAuth.deleteSession(new QBEmptyCallback(">>> Session Destroy OK"));
+            QBAuth.deleteSession(new QBEntityCallbackImpl<Void>() {
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(List<String> list) {
+
+                }
+            });
         }
     };
 
@@ -249,4 +258,5 @@ public class SnippetsAuth extends Snippets{
             }
         }
     };
+
 }

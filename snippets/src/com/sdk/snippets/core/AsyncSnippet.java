@@ -1,13 +1,10 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-/**
- * Created by vfite on 16.01.14.
- */
 public abstract class AsyncSnippet extends Snippet {
     private static final String TAG = AsyncSnippet.class.getSimpleName();
     Exception exception;

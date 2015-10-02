@@ -11,10 +11,10 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.*;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import org.json.JSONObject;
 

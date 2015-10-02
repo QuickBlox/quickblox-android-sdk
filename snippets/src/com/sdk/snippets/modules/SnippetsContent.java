@@ -15,10 +15,10 @@ import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
 import com.quickblox.content.model.amazon.PostResponse;
 import com.sdk.snippets.R;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
-import com.sdk.snippets.Utils;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
+import com.sdk.snippets.core.Utils;
 
 import java.io.File;
 import java.io.InputStream;

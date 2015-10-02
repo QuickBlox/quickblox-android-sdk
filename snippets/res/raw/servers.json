@@ -17,5 +17,5 @@
         }
     },
     "active": "production",
-    "use_first_user": false
+    "use_first_user": true
 }

@@ -46,10 +46,10 @@ import com.quickblox.chat.model.QBRosterEntry;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.users.model.QBUser;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -551,7 +551,11 @@ public class SnippetsChat extends Snippets {
             @Override
             public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
                 log("received message: " + chatMessage + " from user: " + privateChat.getParticipant() + ", dialogId: " + privateChat.getDialogId());
-                log("delayed: " + chatMessage.isDelayed());
+
+                if(chatMessage.getSenderId().equals(chatService.getUser().getId())){
+                    log("Message comes here from carbons");
+                }
+
             }
 
             @Override

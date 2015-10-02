@@ -19,18 +19,20 @@ import com.quickblox.customobjects.model.QBCustomObjectFileField;
 import com.quickblox.customobjects.model.QBPermissions;
 import com.quickblox.customobjects.model.QBPermissionsLevel;
 import com.sdk.snippets.*;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by QuickBlox on 22.01.14.
  */
-public class SnippetsCustomObjects extends Snippets{
+public class SnippetsCustomObjects extends Snippets {
 
     private static final String TAG = SnippetsCustomObjects.class.getSimpleName();
     // Define custom object model in QB Admin Panel
@@ -202,6 +204,7 @@ public class SnippetsCustomObjects extends Snippets{
             requestBuilder.all("tags", "a", "b");
 //            requestBuilder.gt("rating", 1);
 //            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
+            
 
             QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
 

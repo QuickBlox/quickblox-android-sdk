@@ -11,9 +11,9 @@ import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 import java.util.List;

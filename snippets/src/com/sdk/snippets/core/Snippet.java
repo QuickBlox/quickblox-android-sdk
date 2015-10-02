@@ -1,10 +1,5 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
-/**
- * User: Oleg Soroka
- * Date: 02.10.12
- * Time: 10:55
- */
 public abstract class Snippet {
 
     String title;
@@ -24,6 +19,7 @@ public abstract class Snippet {
     public final void performExecution() {
         String stitle = subtitle != null ? String.format(" (%s)", subtitle) : "";
         System.out.println(String.format("Start snippet: %s%s", title, stitle));
+
         execute();
     }
 

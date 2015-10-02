@@ -1,4 +1,4 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
 import android.content.Context;
 
@@ -6,12 +6,8 @@ import com.quickblox.core.helper.FileHelper;
 
 import java.io.*;
 
-/**
- * Created by vfite on 23.01.14.
- */
 public class Utils {
-
-
+    
     public static String getContentFromFile(InputStream is) {
         char[] buffer = new char[1024];
         StringBuilder stringBuilder = new StringBuilder();

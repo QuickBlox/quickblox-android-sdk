@@ -1,4 +1,4 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,11 +6,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-/**
- * User: Oleg Soroka
- * Date: 02.10.12
- * Time: 11:40
- */
 public class SnippetsList extends ListView {
 
     public void initialize(Snippets snippets) {
