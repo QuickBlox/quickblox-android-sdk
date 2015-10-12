@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBMessageStatusesManager;
 import com.quickblox.chat.QBPingManager;
+import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
@@ -78,6 +79,7 @@ public class SnippetsChat extends Snippets {
     //
     private QBChatService chatService;
 
+
     // 1-1 Chat
     //
     private QBPrivateChatManager privateChatManager;
@@ -93,6 +95,11 @@ public class SnippetsChat extends Snippets {
     private QBMessageStatusListener messageStatusListener;
 
 
+    // System messages manager
+    private QBSystemMessagesManager systemMessagesManager;
+    private QBSystemMessageListener systemMessageListener;
+
+
     // Group Chat
     //
     private QBGroupChatManager groupChatManager;
@@ -103,11 +110,13 @@ public class SnippetsChat extends Snippets {
     //
     private QBGroupChat currentChatRoom;
 
+
     // Roster
     //
     private QBRoster сhatRoster;
     private QBRosterListener rosterListener;
     private QBSubscriptionListener subscriptionListener;
+
 
     // Privacy lists
     //
@@ -151,7 +160,6 @@ public class SnippetsChat extends Snippets {
         // Init Roster and its listeners
         initRosterListener();
         initSubscriptionListener();
-
 
         snippets.add(loginInChat);
         snippets.add(loginInChatSynchronous);
@@ -341,7 +349,7 @@ public class SnippetsChat extends Snippets {
                     initPrivacyListsListener();
 
                     initMessageStatusManagerAndListener();
-                    initSystemMessagesListener();
+                    initSystemMessagesManagerAndListener();
                 }
 
                 @Override
@@ -390,7 +398,7 @@ public class SnippetsChat extends Snippets {
                 initPrivacyListsListener();
 
                 initMessageStatusManagerAndListener();
-                initSystemMessagesListener();
+                initSystemMessagesManagerAndListener();
             }else{
                 log("error when login: " + exc.getClass().getSimpleName());
             }
@@ -599,8 +607,9 @@ public class SnippetsChat extends Snippets {
         };
     }
 
-    private void initSystemMessagesListener() {
-        chatService.addSystemMessageListener(new QBSystemMessageListener() {
+    private void initSystemMessagesManagerAndListener() {
+        systemMessagesManager = chatService.getSystemMessagesManager();
+        systemMessageListener = new QBSystemMessageListener() {
             @Override
             public void processMessage(QBChatMessage qbChatMessage) {
                 log("process System Message: " + qbChatMessage);
@@ -610,7 +619,8 @@ public class SnippetsChat extends Snippets {
             public void processError(QBChatException e, QBChatMessage qbChatMessage) {
                 log("process System Message error: " + e);
             }
-        });
+        };
+        systemMessagesManager.addSystemMessageListener(systemMessageListener);
     }
 
     Snippet sendPrivateMessageExtended = new Snippet("send private message") {
@@ -767,7 +777,11 @@ public class SnippetsChat extends Snippets {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
             }
             try {
-                privateChat.readMessage((QBChatMessage)null);
+                QBChatMessage status = new QBChatMessage();
+                status.setId("267477ab5612312312414124");
+                status.setDialogId("267477ab5612312312414124");
+
+                privateChat.readMessage(status);
             } catch (XMPPException e) {
                 log("read message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
@@ -789,7 +803,11 @@ public class SnippetsChat extends Snippets {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
             }
             try {
-                privateChat.deliverMessage((QBChatMessage) null);
+                QBChatMessage status = new QBChatMessage();
+                status.setId("267477ab5612312312414124");
+                status.setDialogId("267477ab5612312312414124");
+
+                privateChat.deliverMessage(status);
             } catch (XMPPException e) {
                 log("deliver message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
@@ -807,7 +825,12 @@ public class SnippetsChat extends Snippets {
             }
 
             try {
-                currentChatRoom.readMessage((QBChatMessage) null);
+                QBChatMessage status = new QBChatMessage();
+                status.setId("267477ab5612312312414124");
+                status.setSenderId(567);
+                status.setDialogId("267477ab5612312312414124");
+
+                currentChatRoom.readMessage(status);
             } catch (XMPPException e) {
                 log("read message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
@@ -825,7 +848,12 @@ public class SnippetsChat extends Snippets {
             }
 
             try {
-                currentChatRoom.deliverMessage((QBChatMessage) null);
+                QBChatMessage status = new QBChatMessage();
+                status.setId("267477ab5612312312414124");
+                status.setSenderId(567);
+                status.setDialogId("267477ab5612312312414124");
+
+                currentChatRoom.deliverMessage(status);
             } catch (XMPPException e) {
                 log("deliver message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
@@ -1891,11 +1919,12 @@ public class SnippetsChat extends Snippets {
                 QBChatMessage chatMessage = new QBChatMessage();
                 chatMessage.setProperty("param1", "value1");
                 chatMessage.setProperty("param2", "value2");
+                chatMessage.setBody("system body");
 
-                int userID = ApplicationConfig.getInstance().getTestUserId2();
+                int userID = ApplicationConfig.getInstance().getTestUserId1();
                 chatMessage.setRecipientId(userID);
 
-                chatService.sendSystemMessage(chatMessage);
+                systemMessagesManager.sendSystemMessage(chatMessage);
 
             } catch (SmackException.NotConnectedException e) {
                 log("send system message error: " + e.getMessage());

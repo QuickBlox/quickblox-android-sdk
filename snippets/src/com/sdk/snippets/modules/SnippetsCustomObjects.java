@@ -553,7 +553,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
-            QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a4", new QBEntityCallbackImpl() {
+            QBCustomObjects.deleteObject(MOVIE_CLASS, "561b9af2a28f9a382c008d01", new QBEntityCallbackImpl() {
                 @Override
                 public void onSuccess() {
                     Log.i(TAG, ">>> custom object deleted OK");
@@ -571,7 +571,7 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void executeAsync() {
             try {
-                QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a5");
+                QBCustomObjects.deleteObject(MOVIE_CLASS, "561b9af7a0eb47fc1e000718");
                 Log.i(TAG, ">>> custom object deleted OK");
             } catch (QBResponseException e) {
                 setException(e);
@@ -589,8 +589,8 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
             StringifyArrayList<String> deleteIds = new StringifyArrayList<String>();
-            deleteIds.add("53f36e796fd1dfa9c43ce5a6");
-            deleteIds.add("53f36e796fd1dfa9c43ce5a7");
+            deleteIds.add("561b9b3ea0eb473496000a2f");
+            deleteIds.add("561b9b7f05244fbde8e75d8f");
 
             QBCustomObjects.deleteObjects(MOVIE_CLASS, deleteIds, new QBEntityCallbackImpl<ArrayList<String>>() {
 
@@ -615,8 +615,8 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void executeAsync() {
             StringifyArrayList<String> deleteIds = new StringifyArrayList<String>();
-            deleteIds.add("53f36e7b6fd1dfa9c43ce5a8");
-            deleteIds.add("53f36e7b6fd1dfa9c43ce5a9");
+            deleteIds.add("561b9b7505244fbde8e75d8d");
+//            deleteIds.add("53f36e7b6fd1dfa9c43ce5a9");
 
             Bundle params = new Bundle();
             ArrayList<String> deleted = null;
