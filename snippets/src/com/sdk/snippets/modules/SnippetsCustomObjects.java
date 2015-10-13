@@ -111,12 +111,18 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet getCustomObjectByID = new Snippet("get object by ID") {
         @Override
         public void execute() {
-            QBCustomObject object = new QBCustomObject(MOVIE_CLASS, "53f323ab535c12567903ba43");
+            QBCustomObject object = new QBCustomObject("JSON", "561cbde9a28f9a520c001c35");
 
             QBCustomObjects.getObject(object, new QBEntityCallbackImpl<QBCustomObject>(){
                 @Override
                 public void onSuccess(QBCustomObject customObject, Bundle params) {
                     Log.i(TAG, ">>> custom object: " + customObject);
+
+                    ArrayList<Object> arr = (ArrayList<Object>)customObject.getFields().get("arrint");
+
+                    for(Object o : arr){
+                        Log.i(TAG, o.getClass().getCanonicalName());
+                    }
                 }
 
                 @Override
