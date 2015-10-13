@@ -12,13 +12,15 @@
         android:layout_width="230dp"
         android:layout_height="300dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"/>
+        android:layout_marginBottom="100dp"
+        android:visibility="invisible"/>
 
     <com.quickblox.videochat.webrtc.view.QBGLVideoView
         android:id="@+id/localVideoVidew"
         android:layout_width="115dp"
         android:layout_height="150dp"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"/>
 
 
     <include
@@ -98,6 +100,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_alignLeft="@id/localVideoVidew"
-        android:layout_alignTop="@id/localVideoVidew"/>
+        android:layout_alignTop="@id/localVideoVidew"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

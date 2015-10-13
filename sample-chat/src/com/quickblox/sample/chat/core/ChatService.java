@@ -1,8 +1,6 @@
 package com.quickblox.sample.chat.core;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,8 +12,6 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
-import com.quickblox.sample.chat.ApplicationSingleton;
-import com.quickblox.sample.chat.ui.activities.DialogsActivity;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 

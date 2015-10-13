@@ -11,7 +11,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -78,10 +80,11 @@ public class OpponentsAdapter extends BaseAdapter {
 
         if (user != null) {
 
-            holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
+            holder.opponentsNumber.setText(String.valueOf(
+                    DataHolder.getUserIndexByID(user.getId()) + 1));
 
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
-                    (ListUsersActivity.getUserIndex(user.getId())));
+            holder.opponentsNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector(
+                    DataHolder.getUserIndexByID(user.getId()) + 1));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -107,8 +110,6 @@ public class OpponentsAdapter extends BaseAdapter {
                 }
             });
 
-//            Log.d(TAG, "Method getView. i = " + i + "");
-//            Log.d(TAG, "Method getView. User id" + user.getId() + "");
             holder.opponentsRadioButton.setChecked(i == user.getId());
 
         }

@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.quickblox.chat.QBChat;
+import com.quickblox.chat.QBMessageStatusesManager;
+import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
+import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
@@ -52,8 +56,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
-import org.jivesoftware.smackx.muc.RoomInfo;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +83,13 @@ public class SnippetsChat extends Snippets {
     private QBPrivateChatManagerListener privateChatManagerListener;
     //
     private QBMessageListener<QBPrivateChat> privateChatMessageListener;
-    private QBIsTypingListener<QBPrivateChat> privateChatIsTypingListener;
+    //
+    private QBIsTypingListener<QBChat> isTypingListener;
+
+
+    // Message status manager & listener
+    private QBMessageStatusesManager messageStatusesManager;
+    private QBMessageStatusListener messageStatusListener;
 
 
     // Group Chat
@@ -130,9 +138,10 @@ public class SnippetsChat extends Snippets {
         // Init Chat service
         initChatService();
 
+
         // Init 1-1 listeners
         initPrivateChatMessageListener();
-        initPrivateChatIsTypingListener();
+        initIsTypingListener();
 
         // Init Group listeners
         initGroupChatMessageListener();
@@ -160,30 +169,24 @@ public class SnippetsChat extends Snippets {
         snippets.add(sendPrivateMessageExtended);
         //
         //
-        snippets.add(sendIsTyping);
-        snippets.add(sendStopTyping);
+        snippets.add(sendIsTypingInPrivateChat);
+        snippets.add(sendStopTypingInPrivateChat);
+        snippets.add(sendIsTypingInGroupChat);
+        snippets.add(sendStopTypingInGroupChat);
         //
         //
-        snippets.add(readMessage);
+        snippets.add(readMessagePrivateChat);
+        snippets.add(deliverMessagePrivateChat);
+        snippets.add(readMessageGroupChat);
+        snippets.add(deliverMessageGroupChat);
         //
         //
         snippets.add(joinRoom);
         snippets.add(joinRoomSynchronous);
-        //
         snippets.add(sendMessageToRoomExtended);
         snippets.add(sendMessageToRoomWithoutJoin);
-        //
         snippets.add(getOnlineRoomUsersSynchronous);
-        //
         snippets.add(leaveRoom);
-        //
-        //
-        snippets.add(createRoom);
-        snippets.add(addUsersToRoom);
-        snippets.add(removeUsersFromRoom);
-        snippets.add(getRoomUsers);
-        snippets.add(getRoomInfo);
-        snippets.add(getRooms);
         //
         //
         snippets.add(getDialogs);
@@ -219,6 +222,15 @@ public class SnippetsChat extends Snippets {
         snippets.add(setPrivacyList);
         snippets.add(deletePrivacyList);
         snippets.add(setDefaultPrivacyList);
+        //
+        //
+        snippets.add(enterInactiveState);
+        snippets.add(enterActiveState);
+        //
+        //
+        snippets.add(pingServer);
+        snippets.add(pingServerSynchronous);
+
 }
 
     private void registerReceiver(Activity activity) {
@@ -239,6 +251,26 @@ public class SnippetsChat extends Snippets {
         }
     }
 
+    private void initMessageStatusManagerAndListener(){
+        messageStatusesManager = chatService.getMessageStatusesManager();
+
+        messageStatusListener = new QBMessageStatusListener() {
+            @Override
+            public void processMessageDelivered(String messageId, String dialogId, Integer userId) {
+                log("message delivered: " + messageId + " to user " + userId
+                        + ". DialogId: " + dialogId);
+            }
+
+            @Override
+            public void processMessageRead(String messageId, String dialogId, Integer userId) {
+                log("message read: " + messageId + " to user " + userId
+                        + ". DialogId: " + dialogId);
+            }
+        };
+
+        messageStatusesManager.addMessageStatusListener(messageStatusListener);
+    }
+
     private void initChatPrivateAndGroupManagers(){
         // Get 1-1 chat manager and listener
         //
@@ -250,7 +282,7 @@ public class SnippetsChat extends Snippets {
                 if(!createdLocally){
                     Log.i(TAG, "adding message listener to new chat");
                     privateChat.addMessageListener(privateChatMessageListener);
-                    privateChat.addIsTypingListener(privateChatIsTypingListener);
+                    privateChat.addIsTypingListener(isTypingListener);
                 }
 
                 log("Private chat created: " + privateChat + ", createdLocally: " + createdLocally);
@@ -272,14 +304,6 @@ public class SnippetsChat extends Snippets {
             }
         };
         groupChatManager.addGroupChatManagerListener(groupChatManagerListener);
-    }
-
-    private void sendPresencesPeriodically(){
-        try {
-            chatService.startAutoSendPresence(30);
-        } catch (SmackException.NotLoggedInException e) {
-            e.printStackTrace();
-        }
     }
 
     //
@@ -311,7 +335,7 @@ public class SnippetsChat extends Snippets {
                     initPrivacyListsManager();
                     initPrivacyListsListener();
 
-                    sendPresencesPeriodically();
+                    initMessageStatusManagerAndListener();
                 }
 
                 @Override
@@ -359,7 +383,7 @@ public class SnippetsChat extends Snippets {
                 initPrivacyListsManager();
                 initPrivacyListsListener();
 
-                sendPresencesPeriodically();
+                initMessageStatusManagerAndListener();
             }else{
                 log("error when login: " + exc.getClass().getSimpleName());
             }
@@ -526,39 +550,40 @@ public class SnippetsChat extends Snippets {
         privateChatMessageListener = new QBMessageListener<QBPrivateChat>() {
             @Override
             public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
-                log("received message: " + chatMessage);
+                log("received message: " + chatMessage + " from user: " + privateChat.getParticipant() + ", dialogId: " + privateChat.getDialogId());
+                log("delayed: " + chatMessage.isDelayed());
             }
 
             @Override
             public void processError(QBPrivateChat privateChat, QBChatException error, QBChatMessage originMessage){
                 log("processError: " + error.getLocalizedMessage());
             }
-
-            @Override
-            public void processMessageDelivered(QBPrivateChat privateChat, String messageID){
-                log("message delivered: " + messageID);
-            }
-
-            @Override
-            public void processMessageRead(QBPrivateChat privateChat, String messageID){
-                log("message read: " + messageID);
-            }
         };
     }
 
-    private void initPrivateChatIsTypingListener(){
+    private void initIsTypingListener(){
 
-        // Create 1-1 chat is typing listener
+        // Create 'is typing' listener
         //
-        privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
+        isTypingListener = new QBIsTypingListener<QBChat>() {
             @Override
-            public void processUserIsTyping(QBPrivateChat qbPrivateChat) {
-                log("user " + qbPrivateChat.getParticipant() + " is typing");
+            public void processUserIsTyping(QBChat chat, Integer userId) {
+                if(chat instanceof QBGroupChat) {
+                    String roomJid =  ((QBGroupChat)chat).getJid();
+                    log("user " + userId + " is typing. Room Jid: " + roomJid);
+                }else{
+                    log("user " + userId + " is typing");
+                }
             }
 
             @Override
-            public void processUserStopTyping(QBPrivateChat qbPrivateChat) {
-                log("user " + qbPrivateChat.getParticipant() + " stop typing");
+            public void processUserStopTyping(QBChat chat, Integer userId) {
+                if(chat instanceof QBGroupChat) {
+                    String roomJid =  ((QBGroupChat)chat).getJid();
+                    log("user " + userId + " stop typing. Room Jid: " + roomJid);
+                }else{
+                    log("user " + userId + " stop typing");
+                }
             }
         };
     }
@@ -572,7 +597,6 @@ public class SnippetsChat extends Snippets {
             }
 
             try {
-
                 // create a message
                 QBChatMessage chatMessage = new QBChatMessage();
                 chatMessage.setBody("Hey man! " + new Random().nextInt());
@@ -598,9 +622,11 @@ public class SnippetsChat extends Snippets {
                 QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
                 if (privateChat == null) {
                     privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                    privateChat.addIsTypingListener(privateChatIsTypingListener);
+                    privateChat.addIsTypingListener(isTypingListener);
                 }
                 privateChat.sendMessage(chatMessage);
+
+                log("dialog id: " + privateChat.getDialogId());
             } catch (XMPPException e) {
                 log("send message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
@@ -615,7 +641,7 @@ public class SnippetsChat extends Snippets {
     //
 
 
-    Snippet sendIsTyping = new Snippet("send is typing") {
+    Snippet sendIsTypingInPrivateChat = new Snippet("send is typing (private chat)") {
         @Override
         public void execute() {
             if(privateChatManager == null){
@@ -626,7 +652,7 @@ public class SnippetsChat extends Snippets {
             QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
             if (privateChat == null) {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                privateChat.addIsTypingListener(privateChatIsTypingListener);
+                privateChat.addIsTypingListener(isTypingListener);
             }
             try {
                 privateChat.sendIsTypingNotification();
@@ -638,7 +664,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet sendStopTyping = new Snippet("send stop typing") {
+    Snippet sendStopTypingInPrivateChat = new Snippet("send stop typing (private chat)") {
         @Override
         public void execute() {
             if(privateChatManager == null){
@@ -649,7 +675,7 @@ public class SnippetsChat extends Snippets {
             QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
             if (privateChat == null) {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                privateChat.addIsTypingListener(privateChatIsTypingListener);
+                privateChat.addIsTypingListener(isTypingListener);
             }
             try {
                 privateChat.sendStopTypingNotification();
@@ -661,7 +687,49 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet readMessage = new Snippet("read message") {
+    Snippet sendIsTypingInGroupChat = new Snippet("send is typing (group chat)") {
+        @Override
+        public void execute() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            try {
+                currentChatRoom.sendIsTypingNotification();
+            } catch (XMPPException e) {
+                log("send typing error: " + e.getLocalizedMessage());
+            } catch (SmackException.NotConnectedException e) {
+                log("send typing error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
+
+    Snippet sendStopTypingInGroupChat = new Snippet("send stop typing (group chat)") {
+        @Override
+        public void execute() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            try {
+                currentChatRoom.sendStopTypingNotification();
+            } catch (XMPPException e) {
+                log("send typing error: " + e.getLocalizedMessage());
+            } catch (SmackException.NotConnectedException e) {
+                log("send typing error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
+
+
+    //
+    /////////////////////////////////////// Read/Delivered //////////////////////////////////////////
+    //
+
+
+    Snippet readMessagePrivateChat = new Snippet("read message (private chat)") {
         @Override
         public void execute() {
             if(privateChatManager == null){
@@ -672,14 +740,71 @@ public class SnippetsChat extends Snippets {
             QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
             if (privateChat == null) {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                privateChat.addIsTypingListener(privateChatIsTypingListener);
             }
             try {
-                privateChat.readMessage(null);
+                privateChat.readMessage((QBChatMessage)null);
             } catch (XMPPException e) {
                 log("read message error: " + e.getLocalizedMessage());
             } catch (SmackException.NotConnectedException e) {
                 log("read message error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
+
+    Snippet deliverMessagePrivateChat = new Snippet("deliver message (private chat)") {
+        @Override
+        public void execute() {
+            if(privateChatManager == null){
+                log("Please login first");
+                return;
+            }
+
+            QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
+            if (privateChat == null) {
+                privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
+            }
+            try {
+                privateChat.deliverMessage((QBChatMessage) null);
+            } catch (XMPPException e) {
+                log("deliver message error: " + e.getLocalizedMessage());
+            } catch (SmackException.NotConnectedException e) {
+                log("deliver message error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
+
+    Snippet readMessageGroupChat = new Snippet("deliver message (group chat)") {
+        @Override
+        public void execute() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            try {
+                currentChatRoom.readMessage((QBChatMessage) null);
+            } catch (XMPPException e) {
+                log("read message error: " + e.getLocalizedMessage());
+            } catch (SmackException.NotConnectedException e) {
+                log("read message error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
+
+    Snippet deliverMessageGroupChat = new Snippet("deliver message (group chat)") {
+        @Override
+        public void execute() {
+            if(currentChatRoom == null){
+                log("Please join room first");
+                return;
+            }
+
+            try {
+                currentChatRoom.deliverMessage((QBChatMessage) null);
+            } catch (XMPPException e) {
+                log("deliver message error: " + e.getLocalizedMessage());
+            } catch (SmackException.NotConnectedException e) {
+                log("deliver message error: " + e.getClass().getSimpleName());
             }
         }
     };
@@ -694,22 +819,12 @@ public class SnippetsChat extends Snippets {
         groupChatMessageListener = new QBMessageListener<QBGroupChat>() {
             @Override
             public void processMessage(final QBGroupChat groupChat, final QBChatMessage chatMessage) {
-                log("group chat: " + groupChat.getJid() + ", processMessage: " + chatMessage.getBody());
+                log("group chat: " + groupChat.getDialogId() + ", processMessage: " + chatMessage.getBody());
             }
 
             @Override
             public void processError(final QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
-                log("Group chat: " + groupChat.getJid() + ", Error: " + error.getCondition().toString());
-            }
-
-            @Override
-            public void processMessageDelivered(QBGroupChat groupChat, String messageID){
-                // never be called, works only for 1-1 chat
-            }
-
-            @Override
-            public void processMessageRead(QBGroupChat groupChat, String messageID){
-                // never be called, works only for 1-1 chat
+                log("Group chat: " + groupChat.getDialogId() + ", Error: " + error.getCondition().toString());
             }
         };
     }
@@ -736,6 +851,7 @@ public class SnippetsChat extends Snippets {
             history.setMaxStanzas(0);
 
             currentChatRoom = groupChatManager.createGroupChat(ApplicationConfig.getInstance().getTestRoomJid());
+            log("dialog ID: " + currentChatRoom.getDialogId());
 
             QBEntityCallback clbck = new QBEntityCallbackImpl() {
                 @Override
@@ -745,6 +861,7 @@ public class SnippetsChat extends Snippets {
                     // add listeners
                     currentChatRoom.addMessageListener(groupChatMessageListener);
                     currentChatRoom.addParticipantListener(participantListener);
+                    currentChatRoom.addIsTypingListener(isTypingListener);
                 }
 
                 @Override
@@ -777,6 +894,8 @@ public class SnippetsChat extends Snippets {
                 // add listeners
                 currentChatRoom.addMessageListener(groupChatMessageListener);
                 currentChatRoom.addParticipantListener(participantListener);
+                currentChatRoom.addIsTypingListener(isTypingListener);
+
             } catch (XMPPException e) {
                 setException(e);
             } catch (SmackException e) {
@@ -812,20 +931,9 @@ public class SnippetsChat extends Snippets {
 
             // create a message
             QBChatMessage chatMessage = new QBChatMessage();
-//            chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
-
-            JSONObject root = new JSONObject();
-            try {
-                root.put("content", "hahaha");
-                root.put("fromUserID", 2118026);
-                root.put("msgType", "TEXT");
-                root.put("name", "nenemalo");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            chatMessage.setBody(root.toString());
-
-//             String s = "{&quot;content&quot;:&quot;{\&quot;name\&quot;:\&quot;wbyang\&quot;,\&quot;userID\&quot;:2156782,\&quot;userInfo\&quot;:{\&quot;gender\&quot;:\&quot;MALE\&quot;,\&quot;status\&quot;:\&quot;Hi! I&apos;m wbyang. Wanna chat with me?\&quot;}}&quot;,&quot;fromUserID&quot;:2156782,&quot;msgType&quot;:&quot;UPDATE_INFO&quot;,&quot;name&quot;:&quot;wbyang&quot;}"
+            chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
+            chatMessage.setBody("Testing qb awesome");
+            chatMessage.setMarkable(true);
 
             try {
                 currentChatRoom.sendMessage(chatMessage);
@@ -849,8 +957,9 @@ public class SnippetsChat extends Snippets {
 
             // create a message
             QBChatMessage chatMessage = new QBChatMessage();
-            chatMessage.setBody("[USRXXKLFTY9P]");
+            chatMessage.setBody("Testing qb awesome");
             chatMessage.setProperty("save_to_history", "1"); // Save to Chat 2.0 history
+            chatMessage.setMarkable(true);
 
             try {
                 currentChatRoom.sendMessageWithoutJoin(chatMessage);
@@ -1179,6 +1288,28 @@ public class SnippetsChat extends Snippets {
                 public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                     for(QBChatMessage msg : messages) {
                         Log.i(TAG, "message\n: " + msg);
+
+// Deliver messages (group)
+//                        try {
+//                            currentChatRoom.deliverMessagePrivateChat(msg);
+//                        } catch (XMPPException e) {
+//                            e.printStackTrace();
+//                        } catch (SmackException.NotConnectedException e) {
+//                            e.printStackTrace();
+//                        }
+
+// Deliver messages (private)
+//                        QBPrivateChat privateChat = privateChatManager.getChat(msg.getRecipientId());
+//                        if (privateChat == null) {
+//                            privateChat = privateChatManager.createChat(msg.getRecipientId(), privateChatMessageListener);
+//                        }
+//                        try {
+//                            privateChat.deliverMessage(msg);
+//                        } catch (XMPPException e) {
+//                            log("deliver message error: " + e.getLocalizedMessage());
+//                        } catch (SmackException.NotConnectedException e) {
+//                            log("deliver message error: " + e.getClass().getSimpleName());
+//                        }
                     }
                 }
 
@@ -1658,147 +1789,67 @@ public class SnippetsChat extends Snippets {
     };
 
 
-
-
     //
-    /////////////////////////////////// Group Chat (old methods) ///////////////////////////////////
+    ///////////////////////////////////// Mobile optimisation //////////////////////////////////////
     //
 
 
-    Snippet createRoom = new Snippet("create room") {
+    Snippet enterInactiveState = new Snippet("enter inactive state") {
         @Override
         public void execute() {
-            //
-            // Use 'create Dialog' request instead next code and then Join room using dialog's 'roomJid' field as a room jid
+            try {
+                chatService.enterInactiveState();
+            } catch (SmackException.NotConnectedException e) {
+                log("error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
 
-            Random rand = new Random();
-            int randomNum = rand.nextInt(10000);
-            currentChatRoom = groupChatManager.createGroupChat("test_room" + randomNum, false, false);
+    Snippet enterActiveState = new Snippet("enter active state") {
+        @Override
+        public void execute() {
+            try {
+                chatService.enterActiveState();
+            } catch (SmackException.NotConnectedException e) {
+                log("error: " + e.getClass().getSimpleName());
+            }
+        }
+    };
 
-            currentChatRoom.create( new QBEntityCallbackImpl() {
+
+    //
+    //////////////////////////////////////// Ping manager //////////////////////////////////////////
+    //
+
+    Snippet pingServer = new Snippet("ping server") {
+        @Override
+        public void execute() {
+            final QBPingManager pingManager = chatService.getPingManager();
+            pingManager.pingServer(new QBEntityCallbackImpl<Void>() {
+
                 @Override
                 public void onSuccess() {
-                    log("create room success");
-                    currentChatRoom.addMessageListener(groupChatMessageListener);
+                    log("ping success");
                 }
 
                 @Override
-                public void onError(List list) {
-                    log("create room errors: " + list);
+                public void onError(List<String> list) {
+                    log("ping error: " + list);
                 }
             });
         }
     };
 
-    Snippet addUsersToRoom = new Snippet("add users to Room") {
-        @Override
-        public void execute() {
-
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.addRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet removeUsersFromRoom = new Snippet("remove users from Room") {
-        @Override
-        public void execute() {
-            List<Integer> users = new ArrayList<Integer>();
-            users.add(958); // user ced
-
-            try {
-                currentChatRoom.removeRoomUsers(users);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    Snippet getRoomUsers = new AsyncSnippet("get room users (synchronous)", context) {
-        Collection<Integer> roomUsers = null;
-
+    Snippet pingServerSynchronous = new AsyncSnippet("ping server (synchronous)", context) {
         @Override
         public void executeAsync() {
+            final QBPingManager pingManager = chatService.getPingManager();
             try {
-                roomUsers = currentChatRoom.getRoomUserIds();
+                boolean ping = pingManager.pingServer();
+                log("ping success: " + ping);
             } catch (SmackException.NotConnectedException e) {
                 e.printStackTrace();
-                setException(e);
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-                setException(e);
-            } catch (XMPPException e) {
-                e.printStackTrace();
-                setException(e);
             }
-        }
-
-        @Override
-        protected void postExecute() {
-            super.postExecute();
-            final Exception exc = getException();
-
-            if (exc == null) {
-                log("Room users: " + roomUsers);
-            }else{
-                log("Room users error: " + exc.getLocalizedMessage());
-            }
-        }
-    };
-
-    Snippet getRoomInfo = new Snippet("get Room info") {
-        @Override
-        public void execute() {
-            RoomInfo roomInfo = null;
-            try {
-                roomInfo = currentChatRoom.getInfo();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (XMPPException.XMPPErrorException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            if(roomInfo != null) {
-                log("roomInfo: " + roomInfo.getRoom() + ", " + roomInfo.isMembersOnly() + ", "  + roomInfo.isPersistent());
-            }
-        }
-    };
-
-    Snippet getRooms = new Snippet("get list of rooms") {
-        @Override
-        public void execute() {
-            Collection<String> rooms = null;
-            try {
-                rooms = groupChatManager.getHostedRooms();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            } catch (SmackException.NoResponseException e) {
-                e.printStackTrace();
-            }
-            String roomList = "room list: ";
-            for (String roomJID : rooms) {
-                roomList += roomJID;
-                roomList += ", ";
-            }
-            log(roomList);
         }
     };
 }

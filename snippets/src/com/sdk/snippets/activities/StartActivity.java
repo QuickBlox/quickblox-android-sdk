@@ -22,7 +22,6 @@ public class StartActivity extends TabActivity {
         TabHost.TabSpec messages = tabHost.newTabSpec("tab5");
         TabHost.TabSpec customObjects = tabHost.newTabSpec("tab6");
         TabHost.TabSpec chat = tabHost.newTabSpec("tab8");
-        TabHost.TabSpec ratings = tabHost.newTabSpec("tab9");
 
         auth.setIndicator("Auth")
                 .setContent(new Intent(this, AuthActivity.class));
@@ -42,12 +41,8 @@ public class StartActivity extends TabActivity {
         customObjects.setIndicator("Custom Objects")
                 .setContent(new Intent(this, CustomObjectsActivity.class));
 
-
         chat.setIndicator("Chat")
                 .setContent(new Intent(this, ChatActivity.class));
-
-        ratings.setIndicator("Ratings")
-                .setContent(new Intent(this, RatingsActivity.class));
 
         tabHost.addTab(auth);
         tabHost.addTab(chat);
@@ -56,6 +51,5 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(content);
         tabHost.addTab(users);
         tabHost.addTab(locations);
-        tabHost.addTab(ratings);
     }
 }

@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.User;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 
 import java.util.ArrayList;
 
@@ -55,8 +57,10 @@ public class UsersAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.userNumber.setText(String.valueOf(user.get(position).getUserNumber()));
-        holder.userNumber.setBackgroundResource(ListUsersActivity.resourceSelector(user.get(position).getUserNumber()));
+        holder.userNumber.setText(String.valueOf(
+                DataHolder.getUserIndexByID(user.get(position).getId()) + 1));
+        holder.userNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector(
+                DataHolder.getUserIndexByID(user.get(position).getId()) + 1));
         holder.loginAs.setText(R.string.login_as);
         holder.fullName.setText(user.get(position).getFullName());
 

@@ -15,10 +15,26 @@
     <string name="checking">Checking...</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
+    <string name="hung_up_processing">Hang up call command are processing ...</string>
 
 
     <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
     <string name="select_user_to_call">Select Users You Want to Call</string>
+    <string name="choose_one_opponent">Choose one opponent</string>
+    <string name="service_launched">Service for listening to calls launched</string>
+    <string name="service_stopped">Service for listening to calls stopped</string>
+
+    
+    //temporary values
+    <string name="only_peer_to_peer_calls">Only 1-to-1 calls are available</string>
+
+    //Progress Dialog
+    <string name="load_opponents">Load opponents ...</string>
+    <string name="wait_until_loading_finish">Wait until loading finish</string>
+
+    <string name="processes_login">Login ...</string>
+    <string name="wait_until_login_finish">Wait until login finish</string>
+    <string name="processes_relogin">Relogin ...</string>
 
     
     <string name="btn_audio_call">AUDIO CALL</string>
@@ -33,7 +49,20 @@
     <string name="failed">Failed</string>
     <string name="WIFI_DISABLED">Call was stoped because connection was lost</string>
     <string name="NETWORK_ABSENT">Connection lost</string>
+    <string name="internet_not_connected">Please check your Internet connection</string>
+    <string name="initializing_in_chat">Initializing in chat, please wait...</string>
+    <string name="ok_button">OK</string>
+    
+    <string name="quit_dialog_title">Exit</string>
+    <string name="quit_dialog_message">Press \"Minimize\" to minimize the application or the \"Exit with log out\" to log out and exit from the app</string>
+    <string name="positive_response">Exit with log out</string>
+    <string name="negative_response">Minimize</string>
+    <string name="log_out_dialog_title">Log out</string>
+    <string name="log_out_dialog_message">Are you sure?</string>
+    <string name="positive_button">Log out</string>
+    <string name="negative_button">Cancel</string>
 
+    //Colors
     <color name="white">#FFFFFF</color>
     <color name="blue_green">#008080</color>
     <color name="grey">#606060</color>

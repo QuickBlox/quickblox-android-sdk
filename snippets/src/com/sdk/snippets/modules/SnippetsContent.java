@@ -34,7 +34,6 @@ public class SnippetsContent extends Snippets{
     private static final String FILE_UID = "72bf17cf1c6b47118485b527435b5fd500";
 
     File file1 = null;
-    File file2 = null;
     QBFileObjectAccess fileObjectAccess;
 
     public SnippetsContent(Context context) {
@@ -84,11 +83,6 @@ public class SnippetsContent extends Snippets{
         int fileId = R.raw.kharkov;
         InputStream is = context.getResources().openRawResource(fileId);
         file1 = FileHelper.getFileInputStream(is, "kharkov.jpg", "qb_kharkiv");
-
-        // get file1
-        int fileId2 = R.raw.sample_file2;
-        InputStream is2 = context.getResources().openRawResource(fileId2);
-        file2 = FileHelper.getFileInputStream(is2, "sample_file2.txt", "qb_snippets12");
     }
 
 
@@ -551,7 +545,7 @@ public class SnippetsContent extends Snippets{
         public void execute() {
 
             Boolean fileIsPublic = false;
-            QBContent.uploadFileTask(file2, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
+            QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {
@@ -658,7 +652,7 @@ public class SnippetsContent extends Snippets{
         final int fileId = 231089;
         @Override
         public void execute() {
-            QBContent.updateFileTask(file2, fileId, null, new QBEntityCallbackImpl<QBFile>(){
+            QBContent.updateFileTask(file1, fileId, null, new QBEntityCallbackImpl<QBFile>(){
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {
@@ -687,7 +681,7 @@ public class SnippetsContent extends Snippets{
 
             QBFile qbFile = null;
             try {
-                qbFile = QBContent.updateFileTask(file2, fileId, (String)null, new QBProgressCallback() {
+                qbFile = QBContent.updateFileTask(file1, fileId, (String)null, new QBProgressCallback() {
                     @Override
                     public void onProgressUpdate(int progress) {
                         Log.i(TAG, "progress: " + progress);

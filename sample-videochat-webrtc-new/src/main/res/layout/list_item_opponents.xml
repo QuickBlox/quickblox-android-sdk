@@ -43,6 +43,6 @@
         android:id="@+id/opponentsCheckBox"
         android:layout_marginRight="15dp"
         android:layout_alignParentRight="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:theme="@style/Base.V21.Theme.AppCompat.Light"/>
+        android:gravity="center_vertical|center_horizontal">
+    </RadioButton>
 </RelativeLayout>

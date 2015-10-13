@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.view.QBGLVideoView;
@@ -62,7 +63,7 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
         final QBUser user = opponents.get(position);
         if (user != null) {
             holder.opponentsNumber.setText("");
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector(position));
+            holder.opponentsNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector(position));
         }
         return convertView;
     }
