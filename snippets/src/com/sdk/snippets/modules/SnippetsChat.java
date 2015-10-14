@@ -872,7 +872,7 @@ public class SnippetsChat extends Snippets {
         groupChatMessageListener = new QBMessageListener<QBGroupChat>() {
             @Override
             public void processMessage(final QBGroupChat groupChat, final QBChatMessage chatMessage) {
-                log("group chat: " + groupChat.getDialogId() + ", processMessage: " + chatMessage.getBody());
+                log("group chat: " + groupChat.getDialogId() + ", processMessage: " + chatMessage);
             }
 
             @Override
