@@ -57,6 +57,8 @@ public abstract class BaseLogginedUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initWiFiManagerListener();
 
+        QBChatService.setDebugEnabled(true);
+
         if (QBChatService.isInitialized()) {
             if (QBChatService.getInstance().isLoggedIn()) {
                 loginedUser = QBChatService.getInstance().getUser();

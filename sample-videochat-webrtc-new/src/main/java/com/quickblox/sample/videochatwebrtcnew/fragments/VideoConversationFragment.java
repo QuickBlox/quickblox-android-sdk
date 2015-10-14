@@ -20,6 +20,9 @@ import com.quickblox.videochat.webrtc.view.VideoCallBacks;
 
 import org.webrtc.VideoRenderer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by tereha on 15.07.15.
  */
@@ -107,6 +110,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void toggleCamera(boolean isNeedEnableCam) {
+
         // TODO temporary insertion will be removed when GLVideoView will be fixed
         DisplayMetrics displaymetrics = new DisplayMetrics();
         displaymetrics.setToDefaults();

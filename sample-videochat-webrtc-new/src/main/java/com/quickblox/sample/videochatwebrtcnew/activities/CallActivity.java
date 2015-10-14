@@ -164,7 +164,9 @@ public class CallActivity extends BaseLogginedUserActivity{
 
     public void rejectCurrentSession() {
         if (SessionManager.getCurrentSession() != null) {
-            SessionManager.getCurrentSession().rejectCall(new HashMap<String, String>());
+            Map<String, String> params = new HashMap<>();
+            params.put("reason", "manual");
+            SessionManager.getCurrentSession().rejectCall(params);
         }
     }
 
@@ -205,6 +207,7 @@ public class CallActivity extends BaseLogginedUserActivity{
     protected void onStop() {
         super.onStop();
         stopOutBeep();
+
     }
 
     private void forbidenCloseByWifiState() {
