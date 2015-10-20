@@ -592,7 +592,7 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 1257561;
+            final int fileId = 2640464;
 
             QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
@@ -600,7 +600,7 @@ public class SnippetsContent extends Snippets{
                 public void onSuccess(InputStream inputStream, Bundle params) {
                     byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
                     String contentFromFile = Utils.getContentFromFile(inputStream);
-                    Log.i(TAG, "file content: " + contentFromFile);
+//                    Log.i(TAG, "file content: " + contentFromFile);
                     Log.i(TAG, "content.length: " + content.length);
                 }
 
@@ -620,7 +620,7 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTaskSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 231153;
+            final int fileId = 2640464;
 
             InputStream inputStream = null;
             Bundle params = null;
@@ -637,10 +637,9 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-//                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                InputStream is = inputStream;
-                String contentFromFile = Utils.getContentFromFile(inputStream);
-                Log.i(TAG, "file downloaded: "+contentFromFile);
+//                InputStream is = inputStream;
+//                String contentFromFile = Utils.getContentFromFile(inputStream);
+//                Log.i(TAG, "file downloaded: "+contentFromFile);
                 Log.i(TAG, "params: " + params);
             }
         }
