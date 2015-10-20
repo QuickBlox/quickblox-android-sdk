@@ -6,16 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -25,11 +21,9 @@ import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivi
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,50 +36,26 @@ public abstract class BaseConversationFragment extends Fragment implements View.
     protected List<Integer> opponents;
     protected QBRTCTypes.QBConferenceType qbConferenceType;
     protected int startReason;
-    protected String sessionID;
     protected String callerName;
 
-    private TextView opponentNumber;
-    private TextView connectionStatus;
-    private ImageView opponentAvatar;
     private ToggleButton dynamicToggleVideoCall;
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
     private TextView opponentNameView;
-    private View opponentItemView;
-    private HorizontalScrollView camerasOpponentsList;
-    //    public static LinearLayout opponentsFromCall;
-    private LayoutInflater inflater;
-    private ViewGroup container;
-    private Bundle savedInstanceState;
-    private boolean isVideoEnabled = true;
     private boolean isAudioEnabled = true;
-    private List<QBUser> allUsers = new ArrayList<>();
-    private LinearLayout actionVideoButtonsLayout;
-    private View actionBar;
-
-    private LinearLayout noVideoImageContainer;
     private boolean isMessageProcessed;
-    private MediaPlayer ringtone;
     private IntentFilter intentFilter;
     private AudioStreamReceiver audioStreamReceiver;
     private Integer callerID;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
         View view = inflater.inflate(getContentView(), container, false);
-        this.inflater = inflater;
-        this.container = container;
-        Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
 
         if (getArguments() != null) {
             startReason = getArguments().getInt(Consts.CALL_DIRECTION_TYPE_EXTRAS);
-            Log.d(TAG, "startReason: " + startReason);
-
         }
         initCallData();
         initViews(view);
@@ -144,8 +114,6 @@ public abstract class BaseConversationFragment extends Fragment implements View.
     }
 
     protected void initViews(View view) {
-//        opponentsFromCall = (LinearLayout) view.findViewById(R.id.opponentsFromCall);
-
         dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
         dynamicToggleVideoCall.setOnClickListener(this);
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
@@ -164,8 +132,6 @@ public abstract class BaseConversationFragment extends Fragment implements View.
 
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         handUpVideoCall.setOnClickListener(this);
-
-        noVideoImageContainer = (LinearLayout) view.findViewById(R.id.noVideoImageContainer);
     }
 
     @Override
@@ -179,18 +145,18 @@ public abstract class BaseConversationFragment extends Fragment implements View.
         switch (v.getId()){
             case R.id.dynamicToggleVideoCall:
                 if (SessionManager.getCurrentSession() != null) {
-                    Log.d(TAG, "Dynamic switched!");
+                    Log.d(TAG, "Dynamic switched");
                     SessionManager.getCurrentSession().switchAudioOutput();
                 }
                 break;
             case R.id.micToggleVideoCall:
                 if (SessionManager.getCurrentSession() != null) {
                     if (isAudioEnabled) {
-                        Log.d(TAG, "Mic is off!");
+                        Log.d(TAG, "Mic is off");
                         SessionManager.getCurrentSession().setAudioEnabled(false);
                         isAudioEnabled = false;
                     } else {
-                        Log.d(TAG, "Mic is on!");
+                        Log.d(TAG, "Mic is on");
                         SessionManager.getCurrentSession().setAudioEnabled(true);
                         isAudioEnabled = true;
                     }
@@ -201,7 +167,6 @@ public abstract class BaseConversationFragment extends Fragment implements View.
                 handUpVideoCall.setEnabled(false);
                 Log.d(TAG, "Call is stopped");
 
-//                ((CallActivity) getActivity()).delayedHungUpCurrentSession();
                 ((CallActivity) getActivity()).hangUpCurrentSession();
                 handUpVideoCall.setEnabled(false);
                 handUpVideoCall.setActivated(false);
@@ -210,55 +175,6 @@ public abstract class BaseConversationFragment extends Fragment implements View.
                 break;
         }
     }
-
-//    private List<QBUser> getOpponentsFromCall(ArrayList<Integer> opponents) {
-//        ArrayList<QBUser> opponentsList = new ArrayList<>();
-//
-//        for (Integer opponentId : opponents) {
-//            try {
-//                opponentsList.add(QBUsers.getUser(opponentId));
-//            } catch (QBResponseException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return opponentsList;
-//    }
-
-//    private void createOpponentsList(List<Integer> opponents) {
-//        if (opponents.size() != 0) {
-//            for (Integer i : opponents) {
-//                addOpponentPreviewToList(i, opponentsFromCall);
-//            }
-//        }
-//    }
-//
-//    private void addOpponentPreviewToList(Integer userID, LinearLayout opponentsFromCall) {
-//
-//        if (opponentsFromCall.findViewById(userID) == null) {
-//
-//            View opponentItemView = inflater.inflate(R.layout.list_item_opponent_from_call, opponentsFromCall, false);
-//            opponentItemView.setId(userID);
-//
-//            opponentItemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.d(TAG, "Main opponent Selected");
-//                }
-//            });
-//
-//            TextView opponentNumber = (TextView) opponentItemView.findViewById(R.id.opponentNumber);
-//            opponentNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(userID)));
-//            opponentNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector
-//                    (ListUsersActivity.getUserIndex(userID)));
-//
-//            ImageView opponentAvatar = (ImageView) opponentItemView.findViewById(R.id.opponentAvatar);
-//            opponentAvatar.setImageResource(R.drawable.ic_noavatar);
-//
-//            opponentsFromCall.addView(opponentItemView);
-//        } else {
-//            opponentsFromCall.addView(opponentsFromCall.findViewById(userID));
-//        }
-//    }
 
     @Override
     public void onDestroy() {
@@ -280,8 +196,6 @@ public abstract class BaseConversationFragment extends Fragment implements View.
                 dynamicToggleVideoCall.setChecked(false);
             } else if (intent.getIntExtra("state", -1) == 1) {
                 dynamicToggleVideoCall.setChecked(true);
-            } else {
-//                Toast.makeText(context, "Output audio stream is incorrect", Toast.LENGTH_LONG).show();
             }
             dynamicToggleVideoCall.invalidate();
         }

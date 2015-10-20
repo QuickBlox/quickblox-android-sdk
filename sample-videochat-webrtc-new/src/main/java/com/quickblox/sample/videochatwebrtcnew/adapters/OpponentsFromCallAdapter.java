@@ -5,14 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.view.QBGLVideoView;
 
 import java.util.List;
 
@@ -28,7 +25,6 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
     }
-
 
     @Override
     public int getCount() {
@@ -71,10 +67,5 @@ public class OpponentsFromCallAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         TextView opponentsNumber;
-        TextView connectionStatus;
-        QBGLVideoView opponentLittleCamera;
-        ImageView opponentAvatar;
-
-
     }
 }

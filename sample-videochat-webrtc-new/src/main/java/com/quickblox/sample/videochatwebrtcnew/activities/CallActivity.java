@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
-
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +23,6 @@ import com.quickblox.sample.videochatwebrtcnew.fragments.AudioConversationFragme
 import com.quickblox.sample.videochatwebrtcnew.fragments.BaseConversationFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.VideoConversationFragment;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCException;
@@ -33,7 +30,6 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,21 +47,16 @@ public class CallActivity extends BaseLogginedUserActivity{
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
 
-    public static ArrayList<QBUser> qbOpponentsList;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
-    private BroadcastReceiver wifiStateReceiver;
     private boolean closeByWifiStateAllow = true;
     private String hangUpReason;
     private boolean isInCommingCall;
-    private boolean isInFront;
     private Consts.CALL_DIRECTION_TYPE call_direction_type;
     private QBRTCTypes.QBConferenceType call_type;
     private List<Integer> opponentsList;
     private MediaPlayer ringtone;
-    private long startUpTime;
     private BroadcastReceiver callBroadcastReceiver;
-    private boolean isWifiConnected;
 
     public static void start(Context context, QBRTCTypes.QBConferenceType qbConferenceType,
                              List<Integer> opponentsIds, Map<String, String> userInfo,
@@ -110,7 +101,6 @@ public class CallActivity extends BaseLogginedUserActivity{
     @Override
     void processCurrentConnectionState(boolean isConnected) {
         if (!isConnected) {
-            isWifiConnected = false;
             Log.d(TAG, "Internet is turned off");
             if (closeByWifiStateAllow) {
                 if (SessionManager.getCurrentSession() != null) {
@@ -129,7 +119,6 @@ public class CallActivity extends BaseLogginedUserActivity{
             }
         } else {
             Log.d(TAG, "Internet is turned on");
-            isWifiConnected = true;
         }
     }
 
@@ -157,7 +146,6 @@ public class CallActivity extends BaseLogginedUserActivity{
                     rejectCurrentSession();
                     finish();
                 }
-//                Toast.makeText(CallActivity.this, "Call was stopped by timer", Toast.LENGTH_LONG).show();
             }
         };
     }
@@ -287,12 +275,6 @@ public class CallActivity extends BaseLogginedUserActivity{
     }
 
     public void onDisconnectedTimeoutFromUser(Integer userID) {
-//        setStateTitle(userID, R.string.time_out, View.INVISIBLE);
-//        if (isLastConnectionStateEnabled) {
-//            showToast(R.string.NETWORK_ABSENT);
-//        } else {
-//            showToast(R.string.time_out);
-//        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -303,7 +285,6 @@ public class CallActivity extends BaseLogginedUserActivity{
     }
 
     public void onConnectionFailedWithUser(Integer userID) {
-//        setStateTitle(userID, R.string.failed, View.INVISIBLE);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -347,7 +328,6 @@ public class CallActivity extends BaseLogginedUserActivity{
     }
 
     public void onDisconnectedFromUser(Integer userID) {
-//        setStateTitle(userID, R.string.disconnected, View.INVISIBLE);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -356,29 +336,11 @@ public class CallActivity extends BaseLogginedUserActivity{
         });
     }
 
-//    private void setStateTitle(final Integer userID, final int stringID, final int progressBarVisibility) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                View opponentItemView = findViewById(userID);
-//                if (opponentItemView != null) {
-//                    TextView connectionStatus = (TextView) opponentItemView.findViewById(R.id.connectionStatus);
-//                    connectionStatus.setText(getString(stringID));
-//
-//                    ProgressBar connectionStatusPB = (ProgressBar) opponentItemView.findViewById(R.id.connectionStatusPB);
-//                    connectionStatusPB.setVisibility(progressBarVisibility);
-//                    Log.d(TAG, "Opponent state changed to " + getString(stringID));
-//                }
-//            }
-//        });
-//    }
-
     public void onReceiveHangUpFromUser(final Integer userID) {
             // TODO update view of this user
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    setStateTitle(userID, R.string.hungUp, View.INVISIBLE);
                     showToast(R.string.hungUp);
                 }
             });

@@ -2,7 +2,6 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -143,8 +142,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
-
-//        ringtone.setLooping(true);
         ringtone.start();
 
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);

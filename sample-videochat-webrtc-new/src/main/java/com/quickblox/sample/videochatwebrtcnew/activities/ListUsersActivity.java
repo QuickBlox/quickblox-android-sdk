@@ -1,9 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +12,10 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 
@@ -32,7 +30,7 @@ public class ListUsersActivity extends BaseLogginedUserActivity {
     private static final String TAG = ListUsersActivity.class.getSimpleName();
     private UsersAdapter usersListAdapter;
     private ListView usersList;
-    private static ArrayList<User> users = DataHolder.getUsersList();
+    private static ArrayList<QBUser> users = DataHolder.getUsersList();
     private ProgressDialog progressDialog;
     private boolean isWifiConnected;
 

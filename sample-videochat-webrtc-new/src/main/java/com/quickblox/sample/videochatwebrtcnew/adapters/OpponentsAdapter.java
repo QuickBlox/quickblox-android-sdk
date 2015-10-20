@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
@@ -28,13 +27,10 @@ public class OpponentsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     public static int i;
     public List<QBUser> selected = new ArrayList<>();
-    private String TAG = "OpponentsAdapte";
 
     public OpponentsAdapter(Context context, List<QBUser> users) {
-        Log.d(TAG, "On crate i:" + i);
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
-
     }
 
     public List<QBUser> getSelected() {
@@ -52,11 +48,6 @@ public class OpponentsAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
-    private int getNumber(List<QBUser> opponents, QBUser user) {
-        return opponents.indexOf(user);
-    }
-
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -92,19 +83,14 @@ public class OpponentsAdapter extends BaseAdapter {
 
                     if (isChecked) {
                         i = user.getId();
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.removeAll(selected);
                         selected.add(user);
-                        Log.d(TAG, "Selected " + user.getFullName());
                     } else {
                         if (i == user.getId()) {
                             i = 0;
                         }
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
-//                        selected.removeAll(selected);
-                        Log.d(TAG, "Deselected " + user.getFullName());
                     }
                     notifyDataSetChanged();
                 }
