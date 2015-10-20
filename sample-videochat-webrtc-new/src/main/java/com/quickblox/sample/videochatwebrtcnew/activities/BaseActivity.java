@@ -37,9 +37,9 @@ import com.quickblox.users.model.QBUser;
 /**
  * Created by tereha on 26.01.15.
  */
-public abstract class BaseLogginedUserActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
-    private static final String TAG = BaseLogginedUserActivity.class.getSimpleName();
+    private static final String TAG = BaseActivity.class.getSimpleName();
     private static final String VERSION_NUMBER = "0.9.4.18062015";
     private static final String APP_VERSION = "App version";
     static ActionBar mActionBar;
@@ -95,7 +95,7 @@ public abstract class BaseLogginedUserActivity extends AppCompatActivity {
             numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(BaseLogginedUserActivity.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(BaseActivity.this);
                     dialog.setTitle(APP_VERSION);
                     dialog.setMessage(VERSION_NUMBER);
                     dialog.show();
@@ -249,7 +249,7 @@ public abstract class BaseLogginedUserActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected void sendNotificationConnectionLost() {
         Context context = getApplicationContext();
-        Intent notificationIntent = new Intent(context, ListUsersActivity.class);
+        Intent notificationIntent = new Intent(context, LoginActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent contentIntent = PendingIntent.getActivity(context,
@@ -271,7 +271,7 @@ public abstract class BaseLogginedUserActivity extends AppCompatActivity {
     }
 
     protected void startListUsersActivity(){
-        Intent intent = new Intent(this, ListUsersActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }

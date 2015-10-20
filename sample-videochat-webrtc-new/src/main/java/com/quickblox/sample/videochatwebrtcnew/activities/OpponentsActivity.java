@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class OpponentsActivity extends BaseLogginedUserActivity implements View.OnClickListener {
+public class OpponentsActivity extends BaseActivity implements View.OnClickListener {
 
 
     private static final String TAG = OpponentsActivity.class.getSimpleName();

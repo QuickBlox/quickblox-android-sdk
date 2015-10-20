@@ -17,7 +17,7 @@ import android.widget.ToggleButton;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.SessionManager;
-import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
@@ -122,11 +122,11 @@ public abstract class BaseConversationFragment extends Fragment implements View.
         opponentNameView = (TextView) view.findViewById(R.id.incUserName);
         if (startReason == Consts.CALL_DIRECTION_TYPE.OUTGOING.ordinal()) {
             opponentNameView.setText(DataHolder.getUserNameByID(opponents.get(0)));
-            opponentNameView.setBackgroundResource(BaseLogginedUserActivity.selectBackgrounForOpponent((
+            opponentNameView.setBackgroundResource(BaseActivity.selectBackgrounForOpponent((
                     DataHolder.getUserIndexByID(opponents.get(0))) + 1));
         } else if (startReason == Consts.CALL_DIRECTION_TYPE.INCOMING.ordinal())  {
             opponentNameView.setText(DataHolder.getUserNameByID(callerID));
-            opponentNameView.setBackgroundResource(BaseLogginedUserActivity.selectBackgrounForOpponent((
+            opponentNameView.setBackgroundResource(BaseActivity.selectBackgrounForOpponent((
                     DataHolder.getUserIndexByID(callerID)) + 1));
         }
 

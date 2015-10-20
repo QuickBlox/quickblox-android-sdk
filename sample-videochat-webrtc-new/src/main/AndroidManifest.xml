@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.ListUsersActivity"
+            android:name=".activities.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:finishOnTaskLaunch="true"
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.BaseLogginedUserActivity">
+            android:name=".activities.BaseActivity">
         </activity>
         <activity
             android:name=".activities.OpponentsActivity"

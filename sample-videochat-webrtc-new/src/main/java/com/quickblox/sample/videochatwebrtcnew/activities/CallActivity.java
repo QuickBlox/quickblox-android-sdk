@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * Created by tereha on 16.02.15.
  *
  */
-public class CallActivity extends BaseLogginedUserActivity{
+public class CallActivity extends BaseActivity {
 
 
     private static final String TAG = CallActivity.class.getSimpleName();

@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseActivity;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
@@ -74,7 +73,7 @@ public class OpponentsAdapter extends BaseAdapter {
             holder.opponentsNumber.setText(String.valueOf(
                     DataHolder.getUserIndexByID(user.getId()) + 1));
 
-            holder.opponentsNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector(
+            holder.opponentsNumber.setBackgroundResource(BaseActivity.resourceSelector(
                     DataHolder.getUserIndexByID(user.getId()) + 1));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
