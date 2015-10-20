@@ -186,12 +186,6 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
                         chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
                             @Override
-                            public void onSuccess(QBUser result, Bundle params) {
-                                Log.d(TAG, "onSuccess login to chat with params");
-                                startActionsOnSuccessLogin(login, password);
-                            }
-
-                            @Override
                             public void onSuccess() {
                                 Log.d(TAG, "onSuccess login to chat");
                                 startActionsOnSuccessLogin(login, password);
@@ -207,12 +201,6 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
                             }
                         });
                     }
-                }
-
-                @Override
-                public void onSuccess() {
-                    super.onSuccess();
-                    Log.d(TAG, "onSuccess create session");
                 }
 
                 @Override

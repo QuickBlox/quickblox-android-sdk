@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.SessionManager;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
@@ -28,6 +30,8 @@ import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCException;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+
+import org.jivesoftware.smack.SmackException;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -270,6 +274,26 @@ public class CallActivity extends BaseActivity {
                 if (fragment != null) {
                     fragment.actionButtonsEnabled(true);
                 }
+
+                // test code
+                //
+                try {
+                    // create a message
+                    QBChatMessage chatMessage = new QBChatMessage();
+                    chatMessage.setProperty("param1", "value1");
+                    chatMessage.setProperty("param2", "value2");
+                    chatMessage.setBody("system body");
+
+                    chatMessage.setRecipientId(QBChatService.getInstance().getUser().getId());
+
+                    QBChatService.getInstance().getSystemMessagesManager().sendSystemMessage(chatMessage);
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                } catch (IllegalStateException ee){
+                    ee.printStackTrace();
+                }
+                //
+                //
             }
         });
     }
