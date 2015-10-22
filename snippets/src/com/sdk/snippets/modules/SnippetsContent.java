@@ -8,7 +8,6 @@ import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.ContentType;
 import com.quickblox.core.helper.FileHelper;
-import com.quickblox.core.io.ByteStreams;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
 import com.quickblox.content.QBContent;
@@ -600,30 +599,30 @@ public class SnippetsContent extends Snippets{
                     long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                     Log.i(TAG, "content.length: " + length);
 
-                        Thread thread = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    while(true) {
-                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
-                                        File file = new File(filePath);
-                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
-                                        int bufferSize = 1024;
-                                        byte[] buffer = new byte[bufferSize];
-                                        int len;
-                                        while ((len = inputStream.read(buffer)) != -1) {
-                                            stream.write(buffer, 0, len);
-                                        }
-                                        if(stream != null) {
-                                            stream.close();
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        };
-                        thread.start();
+//                        Thread thread = new Thread() {
+//                            @Override
+//                            public void run() {
+//                                try {
+//                                    while(true) {
+//                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
+//                                        File file = new File(filePath);
+//                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+//                                        int bufferSize = 1024;
+//                                        byte[] buffer = new byte[bufferSize];
+//                                        int len;
+//                                        while ((len = inputStream.read(buffer)) != -1) {
+//                                            stream.write(buffer, 0, len);
+//                                        }
+//                                        if(stream != null) {
+//                                            stream.close();
+//                                        }
+//                                    }
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        };
+//                        thread.start();
                 }
 
                 @Override
@@ -661,23 +660,6 @@ public class SnippetsContent extends Snippets{
             if(inputStream != null){
                 long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                 Log.i(TAG, "content.length  : " + length);
-
-                try {
-                    String filePath = context.getFilesDir().getPath().toString() + "/bigFile2.pkg";
-                    File file = new File(filePath);
-                    OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
-                    int bufferSize = 1024;
-                    byte[] buffer = new byte[bufferSize];
-                    int len;
-                    while ((len = inputStream.read(buffer)) != -1) {
-                        stream.write(buffer, 0, len);
-                    }
-                    if (stream != null) {
-                        stream.close();
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
             }
         }
     };
