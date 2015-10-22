@@ -908,7 +908,6 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", new QBEntityCallbackImpl<InputStream>(){
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
                     Log.i(TAG, "file downloaded");
                 }
 
@@ -943,7 +942,6 @@ public class SnippetsCustomObjects extends Snippets {
                 setException(e);
             }
             if(inputStream != null){
-                byte[] content = bundle.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
                 Log.i(TAG, "file downloaded");
             }
         }

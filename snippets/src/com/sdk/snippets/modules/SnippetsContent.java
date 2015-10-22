@@ -8,6 +8,7 @@ import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.ContentType;
 import com.quickblox.core.helper.FileHelper;
+import com.quickblox.core.io.ByteStreams;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
 import com.quickblox.content.QBContent;
@@ -18,10 +19,13 @@ import com.sdk.snippets.R;
 import com.sdk.snippets.core.AsyncSnippet;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
-import com.sdk.snippets.core.Utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -396,11 +400,8 @@ public class SnippetsContent extends Snippets{
 
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                    //
-                    InputStream is = inputStream;
-                    String contentFromFile = Utils.getContentFromFile(inputStream);
-                    Log.i(TAG, "file downloaded: " + contentFromFile);
+                    long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                    Log.i(TAG, "content.length: " + length);;
                 }
 
                 @Override
@@ -433,10 +434,8 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                //
-                String contentFromFile = Utils.getContentFromFile(inputStream);
-                Log.i(TAG, "file downloaded: "+ contentFromFile);
+                long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                Log.i(TAG, "content.length: " + length);
             }
         }
     };
@@ -592,16 +591,39 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 2640464;
+            final int fileId = 2641910;
 
             QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
                 @Override
-                public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                    String contentFromFile = Utils.getContentFromFile(inputStream);
-//                    Log.i(TAG, "file content: " + contentFromFile);
-                    Log.i(TAG, "content.length: " + content.length);
+                public void onSuccess(final InputStream inputStream, Bundle params) {
+                    long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                    Log.i(TAG, "content.length: " + length);
+
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    while(true) {
+                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
+                                        File file = new File(filePath);
+                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+                                        int bufferSize = 1024;
+                                        byte[] buffer = new byte[bufferSize];
+                                        int len;
+                                        while ((len = inputStream.read(buffer)) != -1) {
+                                            stream.write(buffer, 0, len);
+                                        }
+                                        if(stream != null) {
+                                            stream.close();
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        thread.start();
                 }
 
                 @Override
@@ -620,10 +642,10 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTaskSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 2640464;
+            final int fileId = 2641910;
 
             InputStream inputStream = null;
-            Bundle params = null;
+            Bundle params = new Bundle();
 
             try {
                 inputStream = QBContent.downloadFileTask(fileId, params, new QBProgressCallback() {
@@ -637,10 +659,25 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-//                InputStream is = inputStream;
-//                String contentFromFile = Utils.getContentFromFile(inputStream);
-//                Log.i(TAG, "file downloaded: "+contentFromFile);
-                Log.i(TAG, "params: " + params);
+                long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                Log.i(TAG, "content.length  : " + length);
+
+                try {
+                    String filePath = context.getFilesDir().getPath().toString() + "/bigFile2.pkg";
+                    File file = new File(filePath);
+                    OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+                    int bufferSize = 1024;
+                    byte[] buffer = new byte[bufferSize];
+                    int len;
+                    while ((len = inputStream.read(buffer)) != -1) {
+                        stream.write(buffer, 0, len);
+                    }
+                    if (stream != null) {
+                        stream.close();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
     };
