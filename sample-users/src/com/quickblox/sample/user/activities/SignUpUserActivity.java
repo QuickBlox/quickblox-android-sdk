@@ -56,6 +56,7 @@ public class SignUpUserActivity extends BaseActivity {
                     @Override
                     public void onError(List<String> strings) {
                         progressDialog.hide();
+
                         DialogUtils.showLong(context, strings.get(0));
                     }
                 });

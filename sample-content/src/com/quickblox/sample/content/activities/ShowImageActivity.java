@@ -14,7 +14,6 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.Constants;
 import com.quickblox.sample.content.utils.DialogUtils;
 
 public class ShowImageActivity extends BaseActivity {
@@ -50,8 +49,9 @@ public class ShowImageActivity extends BaseActivity {
     }
 
     private void showSelectedImage() {
-        ImageLoader.getInstance().displayImage(Constants.URL_S3 + DataHolder.getDataHolder().getPublicUrl(
-                        currentPosition), imageView, displayImageOptions, new SimpleImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(
+                DataHolder.getDataHolder().getUrl(currentPosition),
+                imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         progressBar.setVisibility(View.VISIBLE);
