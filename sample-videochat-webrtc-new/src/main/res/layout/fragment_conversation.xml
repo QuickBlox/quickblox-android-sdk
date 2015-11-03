@@ -23,7 +23,7 @@
 
     <include
         android:id="@+id/element_set_video_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         layout="@layout/element_fragment_video_call"
         android:layout_alignParentBottom="true"

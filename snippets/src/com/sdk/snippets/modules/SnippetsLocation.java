@@ -3,7 +3,8 @@ package com.sdk.snippets.modules;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import com.quickblox.core.QBEntityCallbackImpl;
+
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.Consts;
 import com.quickblox.location.QBLocations;
@@ -11,12 +12,11 @@ import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vfite on 10.02.14.
@@ -80,7 +80,7 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -131,7 +131,7 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -177,7 +177,7 @@ public class SnippetsLocation extends Snippets {
         @Override
         public void execute() {
             QBLocation location = new QBLocation(11308);
-            QBLocations.getLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.getLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -223,7 +223,7 @@ public class SnippetsLocation extends Snippets {
             qbLocation.setId(1141748);
             qbLocation.setStatus("I'am at Pizza");
 
-            QBLocations.updateLocation(qbLocation, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.updateLocation(qbLocation, new QBEntityCallback<QBLocation>() {
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
                     Log.i(TAG, "Location is: " + qbLocation);
@@ -267,7 +267,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             QBLocation location = new QBLocation(1141748);
 
-            QBLocations.deleteLocation(location, new QBEntityCallbackImpl<Void>() {
+            QBLocations.deleteLocation(location, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -332,7 +332,7 @@ public class SnippetsLocation extends Snippets {
             locationRequestBuilder.setPage(1);
             locationRequestBuilder.setPerPage(10);
 
-            QBLocations.getLocations(locationRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBLocation>>() {
+            QBLocations.getLocations(locationRequestBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBLocation> locations, Bundle params) {
@@ -407,7 +407,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             int days = 2;
 
-            QBLocations.deleteObsoleteLocations(days, new QBEntityCallbackImpl<Void>() {
+            QBLocations.deleteObsoleteLocations(days, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -452,7 +452,7 @@ public class SnippetsLocation extends Snippets {
             place.setTitle("the best place on the planet");
             place.setPhotoId(212247);
 
-            QBLocations.createPlace(place, new QBEntityCallbackImpl<QBPlace>() {
+            QBLocations.createPlace(place, new QBEntityCallback<QBPlace>() {
 
                 @Override
                 public void onSuccess(QBPlace qbPlace, Bundle params) {
@@ -501,7 +501,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             QBPlace place = new QBPlace(33261);
 
-            QBLocations.getPlace(place, new QBEntityCallbackImpl<QBPlace>() {
+            QBLocations.getPlace(place, new QBEntityCallback<QBPlace>() {
 
                 @Override
                 public void onSuccess(QBPlace qbPlace, Bundle params) {
@@ -548,7 +548,7 @@ public class SnippetsLocation extends Snippets {
             place.setId(33261);
             place.setTitle("Great title");
 
-            QBLocations.updatePlace(place, new QBEntityCallbackImpl<QBPlace>() {
+            QBLocations.updatePlace(place, new QBEntityCallback<QBPlace>() {
 
                 @Override
                 public void onSuccess(QBPlace qbPlace, Bundle params) {
@@ -594,7 +594,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             QBPlace place = new QBPlace(33261);
 
-            QBLocations.deletePlace(place, new QBEntityCallbackImpl<Void>(){
+            QBLocations.deletePlace(place, new QBEntityCallback<Void>(){
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">> Place was deleted");
@@ -631,7 +631,7 @@ public class SnippetsLocation extends Snippets {
     Snippet getPlaces = new Snippet("get places") {
         @Override
         public void execute() {
-            QBLocations.getPlaces(new QBEntityCallbackImpl<ArrayList<QBPlace>>() {
+            QBLocations.getPlaces(new QBEntityCallback<ArrayList<QBPlace>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBPlace> qbPlaces, Bundle args) {

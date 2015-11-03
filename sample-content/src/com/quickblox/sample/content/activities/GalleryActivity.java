@@ -3,6 +3,7 @@ package com.quickblox.sample.content.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -24,9 +25,7 @@ import com.quickblox.content.model.QBFile;
 import java.io.File;
 import java.util.List;
 
-public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
-
-    private final boolean PUBLIC_ACCESS_TRUE = true;
+public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener{
 
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
@@ -97,7 +96,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
         // Upload new file
         //
-        QBContent.uploadFileTask(imageFile, PUBLIC_ACCESS_TRUE, null, new QBEntityCallbackImpl<QBFile>() {
+        QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getDataHolder().addQbFile(qbFile);
@@ -116,6 +115,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
+                Log.d("GalleryActivity", "progress: " + progress);
                 progressDialog.setProgress(progress);
             }
         });

@@ -4,23 +4,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.quickblox.core.QBEntityCallbackImpl;
+
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.*;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
-
-import org.json.JSONObject;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by vfite on 10.02.14.
@@ -87,7 +85,7 @@ public class SnippetsMessages extends Snippets{
             qbPushToken.setDeviceUdid(deviceId);
             qbPushToken.setCis("APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o");
 
-            QBMessages.createPushToken(qbPushToken, new QBEntityCallbackImpl<QBPushToken>() {
+            QBMessages.createPushToken(qbPushToken, new QBEntityCallback<QBPushToken>() {
 
                 @Override
                 public void onSuccess(QBPushToken pushToken, Bundle args) {
@@ -136,7 +134,7 @@ public class SnippetsMessages extends Snippets{
     Snippet deletePushToken = new Snippet("delete push token") {
         @Override
         public void execute() {
-            QBMessages.deletePushToken(1473068, new QBEntityCallbackImpl<Void>() {
+            QBMessages.deletePushToken(1473068, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -182,7 +180,7 @@ public class SnippetsMessages extends Snippets{
             String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
             subscription.setRegistrationID(registrationID);
 
-            QBMessages.createSubscription(subscription, new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
+            QBMessages.createSubscription(subscription, new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {
@@ -232,7 +230,7 @@ public class SnippetsMessages extends Snippets{
     Snippet getSubscriptions = new Snippet("get subscriptions") {
         @Override
         public void execute() {
-            QBMessages.getSubscriptions(new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
+            QBMessages.getSubscriptions(new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {
@@ -271,7 +269,7 @@ public class SnippetsMessages extends Snippets{
     Snippet deleteSubscription = new Snippet("delete subscription") {
         @Override
         public void execute() {
-            QBMessages.deleteSubscription(1558628, new QBEntityCallbackImpl<Void>() {
+            QBMessages.deleteSubscription(1558628, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -343,7 +341,7 @@ public class SnippetsMessages extends Snippets{
             data.put("data.type", "welcome message");
             event.setMessage(data);
 
-            QBMessages.createEvent(event, new QBEntityCallbackImpl<QBEvent>() {
+            QBMessages.createEvent(event, new QBEntityCallback<QBEvent>() {
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
                     Log.i(TAG, ">>> new event: " + qbEvent.toString());
@@ -415,7 +413,7 @@ public class SnippetsMessages extends Snippets{
     Snippet getEventWithId = new Snippet("get event", "with id") {
         @Override
         public void execute() {
-            QBMessages.getEvent(1454324, new QBEntityCallbackImpl<QBEvent>() {
+            QBMessages.getEvent(1454324, new QBEntityCallback<QBEvent>() {
 
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
@@ -458,7 +456,7 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
-            QBMessages.getEvents(requestBuilder, new QBEntityCallbackImpl<ArrayList<QBEvent>>() {
+            QBMessages.getEvents(requestBuilder, new QBEntityCallback<ArrayList<QBEvent>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBEvent> events, Bundle args) {
@@ -510,7 +508,7 @@ public class SnippetsMessages extends Snippets{
             event.setId(1470629);
             event.setActive(true); // send it again
 
-            QBMessages.updateEvent(event, new QBEntityCallbackImpl<QBEvent>() {
+            QBMessages.updateEvent(event, new QBEntityCallback<QBEvent>() {
 
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
@@ -554,7 +552,7 @@ public class SnippetsMessages extends Snippets{
     Snippet deleteEvent = new Snippet("delete event") {
         @Override
         public void execute() {
-            QBMessages.deleteEvent(1454324, new QBEntityCallbackImpl<Void>() {
+            QBMessages.deleteEvent(1454324, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -597,7 +595,8 @@ public class SnippetsMessages extends Snippets{
                 deviceId = "UniversalDeviceId";
             }
 
-            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT, new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
+            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT,
+                    new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.account.model.QBAccountSettings;
 import com.quickblox.core.exception.BaseServiceException;
@@ -16,13 +15,11 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -83,7 +80,7 @@ public class SnippetsAuth extends Snippets{
     Snippet forceRequestSettings = new Snippet("force request settings ") {
         @Override
         public void execute() {
-            QBExecutor<QBAccountSettings> as = QBSettings.synchronizeFromAccount(ApplicationConfig.getInstance().getAccountKey());
+            QBExecutor <QBAccountSettings> as = QBSettings.synchronizeFromAccount(ApplicationConfig.getInstance().getAccountKey());
             Bundle b = new Bundle();
             as.makeAsync(new QBEntityCallback<QBAccountSettings>() {
                 @Override
@@ -104,14 +101,10 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void execute() {
 
-            QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+            QBAuth.createSession(new QBEntityCallback<QBSession>() {
 
                 @Override
                 public void onSuccess(QBSession session, Bundle params) {
-                    super.onSuccess(session, params);
-
-                    String token = session.getToken();
-
                     Log.i(TAG, "session created, token = " + session.getToken());
                 }
 
@@ -120,12 +113,6 @@ public class SnippetsAuth extends Snippets{
                     handleErrors(e);
                 }
             });
-
-            try {
-                Date expirationDate =  BaseService.getBaseService().getTokenExpirationDate();
-            }catch (BaseServiceException e) {
-                e.printStackTrace();
-            }
         }
     };
 
@@ -156,10 +143,9 @@ public class SnippetsAuth extends Snippets{
         public void execute() {
 
             QBAuth.createSession(new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
-                    ApplicationConfig.getInstance().getTestUserPassword1()), new QBEntityCallbackImpl<QBSession>() {
+                    ApplicationConfig.getInstance().getTestUserPassword1()), new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession session, Bundle args) {
-                    super.onSuccess(session, args);
                     Log.i(TAG, "session created, token = " + session.getToken());
                 }
 
@@ -206,7 +192,7 @@ public class SnippetsAuth extends Snippets{
 
             String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBEntityCallbackImpl<QBSession>() {
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBEntityCallback<QBSession>() {
 
                 @Override
                 public void onSuccess(QBSession session,  Bundle args) {
@@ -284,7 +270,7 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void execute() {
 
-            QBAuth.getSession(new QBEntityCallbackImpl<QBSession>() {
+            QBAuth.getSession(new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession qbSession, Bundle bundle) {
                     Log.i(TAG, "session: " + qbSession);
@@ -310,4 +296,5 @@ public class SnippetsAuth extends Snippets{
             }
         }
     };
+
 }

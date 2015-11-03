@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.content.model.amazon.PostResponse;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.ContentType;
@@ -15,22 +15,20 @@ import com.quickblox.core.Consts;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
-import com.quickblox.content.model.amazon.PostResponse;
-import com.sdk.snippets.AsyncSnippet;
 import com.sdk.snippets.R;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
 import com.sdk.snippets.Utils;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vfite on 04.02.14.
  */
-public class SnippetsContent extends Snippets{
+public class SnippetsContent extends Snippets {
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
     private static final String FILE_UID = "72bf17cf1c6b47118485b527435b5fd500";
@@ -71,9 +69,6 @@ public class SnippetsContent extends Snippets{
         snippets.add(getFiles);
         snippets.add(getFilesSynchronous);
         //
-        snippets.add(getTaggedList);
-        snippets.add(getTaggedListSynchronous);
-        //
         //
         snippets.add(uploadFileTask);
         snippets.add(uploadFileTaskSynchronous);
@@ -105,7 +100,7 @@ public class SnippetsContent extends Snippets{
             qbfile.setPublic(false);
             qbfile.setContentType(ContentType.getContentType(file1));
             //
-            QBContent.createFile(qbfile, new QBEntityCallbackImpl<QBFile>() {
+            QBContent.createFile(qbfile, new QBEntityCallback<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile file, Bundle params) {
@@ -115,7 +110,7 @@ public class SnippetsContent extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                      handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -154,7 +149,7 @@ public class SnippetsContent extends Snippets{
             QBFile qbfile = new QBFile();
             qbfile.setId(212949);
             qbfile.setName("my Car1");
-            QBContent.updateFile(qbfile, new QBEntityCallbackImpl<QBFile>(){
+            QBContent.updateFile(qbfile, new QBEntityCallback<QBFile>(){
 
                 @Override
                 public void onSuccess(QBFile updatedFile, Bundle params) {
@@ -197,7 +192,7 @@ public class SnippetsContent extends Snippets{
     Snippet getFileWithId = new Snippet("get file", "with id") {
         @Override
         public void execute() {
-            QBContent.getFile(212949, new QBEntityCallbackImpl<QBFile>(){
+            QBContent.getFile(212949, new QBEntityCallback<QBFile>(){
 
                 @Override
                 public void onSuccess(QBFile file, Bundle params) {
@@ -236,7 +231,7 @@ public class SnippetsContent extends Snippets{
     Snippet deleteFile = new Snippet("delete file") {
         @Override
         public void execute() {
-            QBContent.deleteFile(212949, new QBEntityCallbackImpl<Void>() {
+            QBContent.deleteFile(212949, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -272,7 +267,7 @@ public class SnippetsContent extends Snippets{
         @Override
         public void execute() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
-            QBContent.uploadFile(file1, params, new QBEntityCallbackImpl<PostResponse>(){
+            QBContent.uploadFile(file1, params, new QBEntityCallback<PostResponse>(){
                 @Override
                 public void onSuccess(PostResponse amazonS3Response, Bundle params) {
                     Log.i(TAG, ">>> AmazonS3Response: " + amazonS3Response);
@@ -321,7 +316,7 @@ public class SnippetsContent extends Snippets{
     Snippet declareFileUploaded = new Snippet("declare file uploaded") {
         @Override
         public void execute() {
-            QBContent.declareFileUploaded(212950, (int) file1.length(), new QBEntityCallbackImpl<Void>() {
+            QBContent.declareFileUploaded(212950, (int) file1.length(), new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -357,7 +352,7 @@ public class SnippetsContent extends Snippets{
     Snippet getFileObjectAccess = new Snippet("get file object access") {
         @Override
         public void execute() {
-            QBContent.getFileObjectAccess(212951, new QBEntityCallbackImpl<QBFileObjectAccess>() {
+            QBContent.getFileObjectAccess(212951, new QBEntityCallback<QBFileObjectAccess>() {
 
                 @Override
                 public void onSuccess(QBFileObjectAccess fileObjectAccess, Bundle params) {
@@ -397,15 +392,12 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileWithUID = new Snippet("download file with UID") {
         @Override
         public void execute() {
-            QBContent.downloadFile(FILE_UID, new QBEntityCallbackImpl<InputStream>() {
+            QBContent.downloadFile(FILE_UID, new QBEntityCallback<InputStream>() {
 
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                    //
-                    InputStream is = inputStream;
-                    String contentFromFile = Utils.getContentFromFile(inputStream);
-                    Log.i(TAG, "file downloaded: " + contentFromFile);
+                    long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                    Log.i(TAG, "content.length: " + length);;
                 }
 
                 @Override
@@ -438,10 +430,8 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                //
-                String contentFromFile = Utils.getContentFromFile(inputStream);
-                Log.i(TAG, "file downloaded: "+ contentFromFile);
+                long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                Log.i(TAG, "content.length: " + length);
             }
         }
     };
@@ -452,7 +442,7 @@ public class SnippetsContent extends Snippets{
             QBContent.downloadFileById(1458764, new QBEntityCallback<InputStream>() {
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
+                    byte[] content = params.getByteArray(Consts.CONTENT_LENGTH_TAG);
                     //
                     InputStream is = inputStream;
                     String contentFromFile = Utils.getContentFromFile(inputStream);
@@ -489,7 +479,7 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
+                byte[] content = params.getByteArray(Consts.CONTENT_LENGTH_TAG);
                 //
                 String contentFromFile = Utils.getContentFromFile(inputStream);
                 Log.i(TAG, "file downloaded");
@@ -508,7 +498,7 @@ public class SnippetsContent extends Snippets{
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(5, 2);
 
-            QBContent.getFiles(requestBuilder, new QBEntityCallbackImpl<ArrayList<QBFile>>() {
+            QBContent.getFiles(requestBuilder, new QBEntityCallback<ArrayList<QBFile>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBFile> files, Bundle params) {
@@ -517,7 +507,7 @@ public class SnippetsContent extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                      handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -546,52 +536,6 @@ public class SnippetsContent extends Snippets{
 
 
     //
-    /////////////////////////////////// Get tagged files ///////////////////////////////////////////
-    //
-
-
-    Snippet getTaggedList = new Snippet("get tagged files") {
-        @Override
-        public void execute() {
-            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
-
-            QBContent.getTaggedList(requestBuilder, new QBEntityCallbackImpl<ArrayList<QBFile>>() {
-                @Override
-                public void onSuccess(ArrayList<QBFile> files, Bundle params) {
-                    Log.i(TAG, ">>> File list:" + files.toString());
-                }
-
-                @Override
-                public void onError(QBResponseException errors) {
-                           handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet getTaggedListSynchronous = new AsyncSnippet("get tagged files (synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            Bundle params = new Bundle();
-            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(10, 1);
-            ArrayList<QBFile> files = null;
-            try {
-                files = QBContent.getTaggedList(requestBuilder, params);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-
-            if(files != null){
-                Log.i(TAG, "files: "+ files);
-                Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
-                Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
-                Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
-            }
-        }
-    };
-
-
-    //
     ///////////////////////////////////////////// Tasks /////////////////////////////////////////////
     //
 
@@ -601,7 +545,7 @@ public class SnippetsContent extends Snippets{
         public void execute() {
 
             Boolean fileIsPublic = false;
-            QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallbackImpl<QBFile>() {
+            QBContent.uploadFileTask(file1, fileIsPublic, null, new QBEntityCallback<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {
@@ -654,16 +598,39 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 1257561;
+            final int fileId = 2641910;
 
-            QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
+            QBContent.downloadFileTask(fileId, new QBEntityCallback<InputStream>(){
 
                 @Override
-                public void onSuccess(InputStream inputStream, Bundle params) {
-                    byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                    String contentFromFile = Utils.getContentFromFile(inputStream);
-                    Log.i(TAG, "file content: " + contentFromFile);
-                    Log.i(TAG, "content.length: " + content.length);
+                public void onSuccess(final InputStream inputStream, Bundle params) {
+                    long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                    Log.i(TAG, "content.length: " + length);
+
+//                        Thread thread = new Thread() {
+//                            @Override
+//                            public void run() {
+//                                try {
+//                                    while(true) {
+//                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
+//                                        File file = new File(filePath);
+//                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+//                                        int bufferSize = 1024;
+//                                        byte[] buffer = new byte[bufferSize];
+//                                        int len;
+//                                        while ((len = inputStream.read(buffer)) != -1) {
+//                                            stream.write(buffer, 0, len);
+//                                        }
+//                                        if(stream != null) {
+//                                            stream.close();
+//                                        }
+//                                    }
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        };
+//                        thread.start();
                 }
 
                 @Override
@@ -682,10 +649,10 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTaskSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 231153;
+            final int fileId = 2641910;
 
             InputStream inputStream = null;
-            Bundle params = null;
+            Bundle params = new Bundle();
 
             try {
                 inputStream = QBContent.downloadFileTask(fileId, params, new QBProgressCallback() {
@@ -699,11 +666,8 @@ public class SnippetsContent extends Snippets{
             }
 
             if(inputStream != null){
-//                byte[] content = params.getByteArray(com.quickblox.core.Consts.CONTENT_TAG);
-                InputStream is = inputStream;
-                String contentFromFile = Utils.getContentFromFile(inputStream);
-                Log.i(TAG, "file downloaded: "+contentFromFile);
-                Log.i(TAG, "params: " + params);
+                long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
+                Log.i(TAG, "content.length  : " + length);
             }
         }
     };
@@ -714,7 +678,7 @@ public class SnippetsContent extends Snippets{
         final int fileId = 231089;
         @Override
         public void execute() {
-            QBContent.updateFileTask(file1, fileId, null, new QBEntityCallbackImpl<QBFile>(){
+            QBContent.updateFileTask(file1, fileId, null, new QBEntityCallback<QBFile>(){
 
                 @Override
                 public void onSuccess(QBFile qbFile, Bundle params) {

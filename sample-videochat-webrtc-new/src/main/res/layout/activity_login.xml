@@ -24,12 +24,12 @@
         android:divider="@android:color/transparent"
         android:id="@+id/usersListView"/>
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/loginPB"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+    <!--<ProgressBar-->
+        <!--style="?android:attr/progressBarStyleLarge"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/loginPB"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_centerHorizontal="true"/>-->
 
 </RelativeLayout>

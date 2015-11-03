@@ -3,7 +3,8 @@ package com.sdk.snippets.modules;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import com.quickblox.core.QBEntityCallbackImpl;
+
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -12,10 +13,10 @@ import com.quickblox.core.Consts;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-import com.sdk.snippets.ApplicationConfig;
-import com.sdk.snippets.AsyncSnippet;
-import com.sdk.snippets.Snippet;
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.ApplicationConfig;
+import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +126,7 @@ public class SnippetsUsers extends Snippets{
             final QBUser user = new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
                     ApplicationConfig.getInstance().getTestUserPassword1());
 
-            final QBRequestCanceler canceler = QBUsers.signIn(user, new QBEntityCallbackImpl<QBUser>() {
+            final QBRequestCanceler canceler = QBUsers.signIn(user, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle params) {
@@ -172,7 +173,7 @@ public class SnippetsUsers extends Snippets{
             user.setEmail("test987@test.com");
             user.setPassword("testpassword");
 
-            QBUsers.signIn(user, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.signIn(user, new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User was successfully signed in, " + user);
@@ -215,7 +216,7 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
             String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-            QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.signInUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User was successfully signed in, " + user);
@@ -258,7 +259,7 @@ public class SnippetsUsers extends Snippets{
     Snippet signOut = new Snippet("sign out") {
         @Override
         public void execute() {
-            QBUsers.signOut(new QBEntityCallbackImpl<Void>(){
+            QBUsers.signOut(new QBEntityCallback<Void>(){
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -310,7 +311,7 @@ public class SnippetsUsers extends Snippets{
             user.setTags(tags);
             user.setWebsite("website.com");
 
-            QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.signUp(user, new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User was successfully signed up, " + user);
@@ -380,7 +381,7 @@ public class SnippetsUsers extends Snippets{
             user.setTags(tags);
             user.setWebsite("website.com");
 
-            QBUsers.signUpSignInTask(user, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.signUpSignInTask(user, new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User was successfully signed up and signed in, " + user);
@@ -388,7 +389,6 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
 
@@ -449,7 +449,7 @@ public class SnippetsUsers extends Snippets{
 //            user.setWebsite("google.com");
 //            user.setFileId(-1);
 
-            QBUsers.updateUser(user, new QBEntityCallbackImpl<QBUser>(){
+            QBUsers.updateUser(user, new QBEntityCallback<QBUser>(){
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User: " + user);
@@ -492,7 +492,7 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
 
             int userId = 562;
-            QBUsers.deleteUser(userId, new QBEntityCallbackImpl<Void>() {
+            QBUsers.deleteUser(userId, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -530,7 +530,7 @@ public class SnippetsUsers extends Snippets{
     Snippet deleteUserByExternalId = new Snippet("delete user", "by external id") {
         @Override
         public void execute() {
-            QBUsers.deleteByExternalId("568965444", new QBEntityCallbackImpl<Void>() {
+            QBUsers.deleteByExternalId("568965444", new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -566,7 +566,7 @@ public class SnippetsUsers extends Snippets{
     Snippet resetPassword = new Snippet("reset password") {
         @Override
         public void execute() {
-            QBUsers.resetPassword("test987@test.com", new QBEntityCallbackImpl<Void>() {
+            QBUsers.resetPassword("test987@test.com", new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -607,7 +607,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(5);
 
-            QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
@@ -666,12 +666,12 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            List<Integer> usersIds = new ArrayList<Integer>();
+            List<Integer> usersIds = new ArrayList<>();
             usersIds.add(378);
             usersIds.add(379);
             usersIds.add(380);
 
-            QBUsers.getUsersByIDs(usersIds, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByIDs(usersIds, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -697,7 +697,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            List<Integer> usersIds = new ArrayList<Integer>();
+            List<Integer> usersIds = new ArrayList<>();
             usersIds.add(378);
             usersIds.add(379);
             usersIds.add(380);
@@ -736,7 +736,7 @@ public class SnippetsUsers extends Snippets{
             usersLogins.add("igorquickblox2");
             usersLogins.add("john");
 
-            QBUsers.getUsersByLogins(usersLogins, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByLogins(usersLogins, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -800,7 +800,7 @@ public class SnippetsUsers extends Snippets{
             usersEmails.add("asd@ffg.fgg");
             usersEmails.add("ghh@ggh.vbb");
 
-            QBUsers.getUsersByEmails(usersEmails, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByEmails(usersEmails, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -864,7 +864,7 @@ public class SnippetsUsers extends Snippets{
             usersPhones.add("980028312");
             usersPhones.add("765172323");
 
-            QBUsers.getUsersByPhoneNumbers(usersPhones, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByPhoneNumbers(usersPhones, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -928,7 +928,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            QBUsers.getUsersByFacebookId(facebookIDs, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByFacebookId(facebookIDs, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -991,7 +991,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            QBUsers.getUsersByTwitterId(twitterIDs, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByTwitterId(twitterIDs, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -1054,7 +1054,7 @@ public class SnippetsUsers extends Snippets{
             pagedRequestBuilder.setPage(1);
             pagedRequestBuilder.setPerPage(10);
 
-            QBUsers.getUsersByTags(userTags, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByTags(userTags, pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -1110,7 +1110,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String fullName = "bob";
-            QBUsers.getUsersByFullName(fullName, null,  new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            QBUsers.getUsersByFullName(fullName, null,  new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                     Log.i(TAG, ">>> Users: " + users.toString());
@@ -1162,7 +1162,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUserById = new Snippet("get user", "by id") {
         @Override
         public void execute() {
-            QBUsers.getUser(53779, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUser(53779, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1171,7 +1171,6 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }
@@ -1203,7 +1202,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String login = "testuser";
-            QBUsers.getUserByLogin(login, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUserByLogin(login, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1212,7 +1211,6 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }
@@ -1246,7 +1244,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String twitterId = "56802037340";
-            QBUsers.getUserByTwitterId(twitterId, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUserByTwitterId(twitterId, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1255,7 +1253,6 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }
@@ -1289,7 +1286,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String facebookId = "100003123141430";
-            QBUsers.getUserByFacebookId(facebookId, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUserByFacebookId(facebookId, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1297,7 +1294,6 @@ public class SnippetsUsers extends Snippets{
                 }
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }
@@ -1331,7 +1327,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String email = "test123@test.com";
-            QBUsers.getUserByEmail(email, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUserByEmail(email, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1339,7 +1335,6 @@ public class SnippetsUsers extends Snippets{
                 }
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }
@@ -1377,7 +1372,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void execute() {
             String externalId = "123145235";
-            QBUsers.getUserByExternalId(externalId, new QBEntityCallbackImpl<QBUser>() {
+            QBUsers.getUserByExternalId(externalId, new QBEntityCallback<QBUser>() {
 
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
@@ -1385,7 +1380,6 @@ public class SnippetsUsers extends Snippets{
                 }
                 @Override
                 public void onError(QBResponseException errors) {
-                    super.onError(errors);
                 }
             });
         }

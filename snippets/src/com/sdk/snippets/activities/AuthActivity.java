@@ -2,7 +2,7 @@ package com.sdk.snippets.activities;
 
 import android.content.Context;
 
-import com.sdk.snippets.Snippets;
+import com.sdk.snippets.core.Snippets;
 import com.sdk.snippets.modules.SnippetsAuth;
 
 /**
@@ -11,7 +11,6 @@ import com.sdk.snippets.modules.SnippetsAuth;
  * Time: 09:38
  */
 public class AuthActivity extends BaseSnippetsActivity {
-
     @Override
     public Snippets onCreateSnippets(Context context) {
         return new SnippetsAuth(this);

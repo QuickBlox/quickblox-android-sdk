@@ -15,7 +15,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.Constants;
 
 public class GalleryAdapter extends BaseAdapter {
 
@@ -65,7 +64,7 @@ public class GalleryAdapter extends BaseAdapter {
         }
 
         ImageLoader.getInstance().displayImage(
-                Constants.URL_S3 + DataHolder.getDataHolder().getPublicUrl(position),
+                DataHolder.getDataHolder().getUrl(position),
                 holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {

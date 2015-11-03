@@ -13,19 +13,7 @@
         android:layout_alignParentTop = "true">
 
         <TextView
-            android:id="@+id/incVideoCall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/grey"
-            android:textStyle="bold"
-            android:text="@string/incoming_video_call"
-            android:gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="46dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-        <TextView
-            android:id="@+id/incAudioCall"
+            android:id="@+id/typeIncCallView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -49,7 +37,7 @@
             android:maxLines="1"
             android:maxLength="25"
             android:background="@drawable/rectangle_rounded_white_blue"
-            android:layout_below="@+id/incAudioCall"
+            android:layout_below="@+id/typeIncCallView"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:gravity="center_vertical|center_horizontal" />

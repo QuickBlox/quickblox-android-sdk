@@ -10,8 +10,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.User;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseActivity;
+import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +22,17 @@ import java.util.List;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private List<User> opponents;
+    private List<QBUser> opponents;
     private LayoutInflater inflater;
     public static int i;
-    public List<User> selected = new ArrayList<>();
+    public List<QBUser> selected = new ArrayList<>();
 
-    public OpponentsAdapter(Context context, List<User> users) {
+    public OpponentsAdapter(Context context, List<QBUser> users) {
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
-
     }
 
-    public List<User> getSelected() {
+    public List<QBUser> getSelected() {
         return selected;
     }
 
@@ -40,18 +40,13 @@ public class OpponentsAdapter extends BaseAdapter {
         return opponents.size();
     }
 
-    public User getItem(int position) {
+    public QBUser getItem(int position) {
         return opponents.get(position);
     }
 
     public long getItemId(int position) {
         return position;
     }
-
-    private int getNumber(List<User> opponents, User user) {
-        return opponents.indexOf(user);
-    }
-
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -70,15 +65,16 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final User user = opponents.get(position);
+        final QBUser user = opponents.get(position);
 
 
         if (user != null) {
 
-            holder.opponentsNumber.setText(String.valueOf(ListUsersActivity.getUserIndex(user.getId())));
+            holder.opponentsNumber.setText(String.valueOf(
+                    DataHolder.getUserIndexByID(user.getId()) + 1));
 
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
-                    (ListUsersActivity.getUserIndex(user.getId())));
+            holder.opponentsNumber.setBackgroundResource(BaseActivity.resourceSelector(
+                    DataHolder.getUserIndexByID(user.getId()) + 1));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -94,14 +90,11 @@ public class OpponentsAdapter extends BaseAdapter {
                         }
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
-//                        selected.removeAll(selected);
                     }
                     notifyDataSetChanged();
                 }
             });
 
-//            Log.d(TAG, "Method getView. i = " + i + "");
-//            Log.d(TAG, "Method getView. User id" + user.getId() + "");
             holder.opponentsRadioButton.setChecked(i == user.getId());
 
         }
