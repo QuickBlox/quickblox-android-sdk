@@ -103,6 +103,8 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
                 galleryAdapter.notifyDataSetChanged();
 
                 progressDialog.hide();
+
+                Log.d("GalleryActivity", "url: " + qbFile.getPublicUrl());
             }
 
             @Override

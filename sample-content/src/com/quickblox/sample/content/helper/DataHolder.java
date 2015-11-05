@@ -37,7 +37,7 @@ public class DataHolder {
 
     public String getUrl(int position) {
         // URL formation documentation
-        // http://quickblox.com/developers/Content#Download_File_by_ID_.28get_file_as_a_redirect_to_the_S3_object.29
+        // http://quickblox.com/developers/Content#API_Content_Get_File_As_A_Redirect_To_The_S3_Object
 
         String sessionToken = null;
         try {
@@ -46,8 +46,8 @@ public class DataHolder {
             e.printStackTrace();
         }
 
-        return "https://api.quickblox.com/blobs/" + qbFileList.get(position).getId() +
-                "/download.xml?token=" + sessionToken;
+        return BaseService.getServiceEndpointURL() + "/blobs/" + qbFileList.get(position).getUid() +
+                "?token=" + sessionToken;
     }
 
     public void addQbFile(QBFile qbFile) {
