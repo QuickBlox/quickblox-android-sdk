@@ -83,13 +83,18 @@ public class SnippetsChat extends Snippets {
     //
     private QBIsTypingListener<QBChat> isTypingListener;
 
-    // Message status manager & listener
+
+    // Message statuses
+    //
     private QBMessageStatusesManager messageStatusesManager;
     private QBMessageStatusListener messageStatusListener;
 
-    // System messages manager
+
+    // System messages
+    //
     private QBSystemMessagesManager systemMessagesManager;
     private QBSystemMessageListener systemMessageListener;
+
 
     // Group Chat
     //
@@ -115,6 +120,7 @@ public class SnippetsChat extends Snippets {
     private QBPrivacyListsManager privacyListsManager;
     private QBPrivacyListListener privacyListListener;
 
+
     public SnippetsChat(final Context context) {
         super(context);
 
@@ -136,9 +142,6 @@ public class SnippetsChat extends Snippets {
         initRosterListener();
         initSubscriptionListener();
 
-
-        //
-        snippets.add(useStreamMnagemt);
         //
         snippets.add(loginInChat);
         snippets.add(loginInChatSynchronous);
@@ -236,7 +239,39 @@ public class SnippetsChat extends Snippets {
             QBChatService.init(context);
             chatService = QBChatService.getInstance();
             chatService.addConnectionListener(chatConnectionListener);
+
+            // stream management
+            chatService.setUseStreamManagement(true);
+            chatService.setUseStreamManagementResumption(true);
+//            chatService.setPreferredResumptionTime(10);
         }
+    }
+
+
+    private void initMessageSentListener(){
+        privateChatMessageSentListener = new QBMessageSentListener<QBPrivateChat>() {
+            @Override
+            public void processMessageSent(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
+                log("message sent to "+qbChat.getParticipant());
+            }
+
+            @Override
+            public void processMessageFailed(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
+                log("message sent failed to "+qbChat.getParticipant());
+            }
+        };
+
+        groupChatMessageSentListener = new QBMessageSentListener<QBGroupChat>() {
+            @Override
+            public void processMessageSent(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
+                log("message sent to group "+qbChat.getJid());
+            }
+
+            @Override
+            public void processMessageFailed(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
+                log("message sent failed to group "+qbChat.getJid());
+            }
+        };
     }
 
     private void initMessageStatusManagerAndListener(){
@@ -451,6 +486,8 @@ public class SnippetsChat extends Snippets {
         @Override
         public void connectionClosedOnError(final Exception e) {
             log("connectionClosedOnError: " + e.getLocalizedMessage());
+            log("isLoggedIn: " + chatService.isLoggedIn());
+
         }
 
         @Override
@@ -1819,44 +1856,6 @@ public class SnippetsChat extends Snippets {
 
 
     //
-    ////////////////////////////////////// Stream management ///////////////////////////////////////
-    //
-
-    Snippet useStreamMnagemt = new Snippet("enable/disable Stream Managemnt") {
-        public void execute() {
-            chatService.setUseStreamManagement(!chatService.isStreamManagementEnabled());
-            log("SM enabled: " + chatService.isStreamManagementEnabled());
-
-            chatService.setUseStreamManagementResumption(true);
-        }
-    };
-
-    private void initMessageSentListener(){
-        privateChatMessageSentListener = new QBMessageSentListener<QBPrivateChat>() {
-            @Override
-            public void processMessageSent(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent to "+qbChat.getParticipant());
-            }
-
-            @Override
-            public void processMessageFailed(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent failed to "+qbChat.getParticipant());
-            }
-        };
-
-        groupChatMessageSentListener = new QBMessageSentListener<QBGroupChat>() {
-            @Override
-            public void processMessageSent(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent to group "+qbChat.getJid());
-            }
-
-            @Override
-            public void processMessageFailed(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent failed to group "+qbChat.getJid());
-            }
-        };
-    }
-
     ///////////////////////////////////// Mobile optimisation //////////////////////////////////////
     //
 
