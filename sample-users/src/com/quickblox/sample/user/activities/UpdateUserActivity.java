@@ -99,8 +99,9 @@ public class UpdateUserActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List<String> strings) {
-
+                    public void onError(List<String> errors) {
+                        progressDialog.hide();
+                        DialogUtils.showLong(context, errors.get(0));
                     }
                 });
 

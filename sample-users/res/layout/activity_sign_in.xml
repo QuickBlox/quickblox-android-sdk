@@ -38,4 +38,12 @@
         android:layout_centerHorizontal="true"
         android:onClick="onClick"
         android:text="@string/sign_in" />
+
+    <com.digits.sdk.android.DigitsAuthButton
+        android:id="@+id/auth_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_in_button"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
