@@ -242,8 +242,7 @@ public class SnippetsChat extends Snippets {
 
             // stream management
             chatService.setUseStreamManagement(true);
-            chatService.setUseStreamManagementResumption(true);
-            chatService.setPreferredResumptionTime(10);
+//            chatService.setUseStreamManagementResumption(true);
         }
     }
 
