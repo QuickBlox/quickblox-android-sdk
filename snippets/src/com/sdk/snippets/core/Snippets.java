@@ -50,8 +50,8 @@ public class Snippets {
                 ApplicationConfig.getInstance().getAuthKey(), ApplicationConfig.getInstance().getAuthSecret());
 //
         // specify custom domains
-        QBSettings.getInstance().setServerApiDomain(ApplicationConfig.getInstance().getApiDomain());
-        QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
+//        QBSettings.getInstance().setServerApiDomain(ApplicationConfig.getInstance().getApiDomain());
+//        QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
     }
 
     public ArrayList<Snippet> getSnippets() {

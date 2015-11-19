@@ -32,10 +32,6 @@ public class SnippetsAuth extends Snippets{
     public SnippetsAuth(Context context) {
         super(context);
 
-        snippets.add(setAutoUpdateSettings);
-        snippets.add(deleteAutoUpdateSettings);
-        snippets.add(forceRequestSettings);
-
         snippets.add(createSession);
         snippets.add(createSessionSynchronous);
         //
@@ -56,46 +52,6 @@ public class SnippetsAuth extends Snippets{
     //
     /////////////////////////////////// Create session /////////////////////////////////////////////
     //
-
-    Snippet setAutoUpdateSettings = new Snippet("set auto update settings mode") {
-        @Override
-        public void execute() {
-
-            QBSettings.getInstance().setAccountKey(ApplicationConfig.getInstance().getAccountKey());
-
-            QBSettings.AutoUpdateMode updateMode = new QBSettings.AutoUpdateMode(context,
-                    ApplicationConfig.getInstance().getAppId());
-            updateMode.setUpdateTimePeriod(TimeUnit.MINUTES.toMillis(1));
-            QBSettings.getInstance().setUpdateMode(updateMode);
-        }
-    };
-
-    Snippet deleteAutoUpdateSettings = new Snippet("delete auto update mode ") {
-        @Override
-        public void execute() {
-            QBSettings.getInstance().setUpdateMode(null);
-        }
-    };
-
-    Snippet forceRequestSettings = new Snippet("force request settings ") {
-        @Override
-        public void execute() {
-            QBExecutor <QBAccountSettings> as = QBSettings.synchronizeFromAccount(ApplicationConfig.getInstance().getAccountKey());
-            Bundle b = new Bundle();
-            as.makeAsync(new QBEntityCallback<QBAccountSettings>() {
-                @Override
-                public void onSuccess(QBAccountSettings qbAccountSettings, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                    handleErrors(e);
-                }
-            }, b);
-        }
-    };
-
 
     Snippet createSession = new Snippet("create session") {
         @Override
