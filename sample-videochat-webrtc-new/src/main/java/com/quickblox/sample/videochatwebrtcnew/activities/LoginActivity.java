@@ -1,9 +1,7 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +12,10 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.User;
-import com.quickblox.sample.videochatwebrtcnew.adapters.UsersAdapter;
+import com.quickblox.sample.videochatwebrtcnew.adapters.UsersToLoginAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 
@@ -27,12 +25,12 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by tereha on 25.01.15.
  */
-public class ListUsersActivity extends BaseLogginedUserActivity {
+public class LoginActivity extends BaseActivity {
 
-    private static final String TAG = ListUsersActivity.class.getSimpleName();
-    private UsersAdapter usersListAdapter;
+    private static final String TAG = LoginActivity.class.getSimpleName();
+    private UsersToLoginAdapter usersListAdapter;
     private ListView usersList;
-    private static ArrayList<User> users = DataHolder.getUsersList();
+    private static ArrayList<QBUser> users = DataHolder.getUsersList();
     private ProgressDialog progressDialog;
     private boolean isWifiConnected;
 
@@ -57,7 +55,7 @@ public class ListUsersActivity extends BaseLogginedUserActivity {
     }
 
     private void initUsersList() {
-        usersListAdapter = new UsersAdapter(this, users);
+        usersListAdapter = new UsersToLoginAdapter(this, users);
         usersList.setAdapter(usersListAdapter);
         usersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
@@ -80,7 +78,7 @@ public class ListUsersActivity extends BaseLogginedUserActivity {
         progressDialog = new ProgressDialog(this) {
             @Override
             public void onBackPressed() {
-                Toast.makeText(ListUsersActivity.this, getString(R.string.wait_until_login_finish), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.wait_until_login_finish), Toast.LENGTH_SHORT).show();
             }
         };
         progressDialog.setMessage(getString(R.string.processes_login));
@@ -98,7 +96,7 @@ public class ListUsersActivity extends BaseLogginedUserActivity {
     }
 
     private void startOpponentsActivity(){
-        Intent intent = new Intent(ListUsersActivity.this, OpponentsActivity.class);
+        Intent intent = new Intent(LoginActivity.this, OpponentsActivity.class);
         startActivity(intent);
     }
 

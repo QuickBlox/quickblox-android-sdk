@@ -1,10 +1,8 @@
 package com.quickblox.sample.videochatwebrtcnew.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.util.Log;
@@ -19,7 +17,6 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.User;
 import com.quickblox.sample.videochatwebrtcnew.adapters.OpponentsAdapter;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
@@ -36,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class OpponentsActivity extends BaseLogginedUserActivity implements View.OnClickListener {
+public class OpponentsActivity extends BaseActivity implements View.OnClickListener {
 
 
     private static final String TAG = OpponentsActivity.class.getSimpleName();
@@ -81,7 +78,6 @@ public class OpponentsActivity extends BaseLogginedUserActivity implements View.
         if (users == null) {
             List<String> tags = new LinkedList<>();
             tags.add("webrtcusers");
-//            tags.add("webrtc");
             QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
@@ -317,7 +313,6 @@ public class OpponentsActivity extends BaseLogginedUserActivity implements View.
         if (!isConncted) {
             Log.d(TAG, "Internet is turned off");
             isWifiConnected = false;
-//            initConnectionErrorDialog();
         } else {
             Log.d(TAG, "Internet is turned on");
             isWifiConnected = true;

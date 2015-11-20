@@ -1,7 +1,9 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.sdk.snippets.R;
 
 import org.json.JSONObject;
 

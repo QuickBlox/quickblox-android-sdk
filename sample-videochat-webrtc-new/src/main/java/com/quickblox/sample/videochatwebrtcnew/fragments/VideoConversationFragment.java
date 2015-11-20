@@ -20,6 +20,9 @@ import com.quickblox.videochat.webrtc.view.VideoCallBacks;
 
 import org.webrtc.VideoRenderer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by tereha on 15.07.15.
  */
@@ -107,6 +110,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void toggleCamera(boolean isNeedEnableCam) {
+
         // TODO temporary insertion will be removed when GLVideoView will be fixed
         DisplayMetrics displaymetrics = new DisplayMetrics();
         displaymetrics.setToDefaults();
@@ -119,18 +123,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         imgMyCameraOff.setLayoutParams(layoutParams);
 
         Log.d(TAG, "Width is: " + imgMyCameraOff.getLayoutParams().width + " height is:" + imgMyCameraOff.getLayoutParams().height);
-        // TODO end
 
         if (SessionManager.getCurrentSession() != null) {
             SessionManager.getCurrentSession().setVideoEnabled(isNeedEnableCam);
             cameraToggle.setChecked(isNeedEnableCam);
 
             if (isNeedEnableCam) {
-                Log.d(TAG, "Camera is on!");
+                Log.d(TAG, "Camera is on");
                 switchCameraToggle.setVisibility(View.VISIBLE);
                 imgMyCameraOff.setVisibility(View.INVISIBLE);
             } else {
-                Log.d(TAG, "Camera is off!");
+                Log.d(TAG, "Camera is off");
                 switchCameraToggle.setVisibility(View.INVISIBLE);
                 imgMyCameraOff.setVisibility(View.VISIBLE);
             }

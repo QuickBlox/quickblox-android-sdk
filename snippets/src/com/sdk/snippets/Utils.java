@@ -4,14 +4,16 @@ import android.content.Context;
 
 import com.quickblox.core.helper.FileHelper;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
- * Created by vfite on 23.01.14.
+ * Created by igorkhomenko on 10/22/15.
  */
 public class Utils {
-
-
     public static String getContentFromFile(InputStream is) {
         char[] buffer = new char[1024];
         StringBuilder stringBuilder = new StringBuilder();

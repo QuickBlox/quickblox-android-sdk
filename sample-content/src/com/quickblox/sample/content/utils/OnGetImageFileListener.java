@@ -4,5 +4,5 @@ import java.io.File;
 
 public interface OnGetImageFileListener {
 
-    public void onGotImageFile(File imageFile);
+    void onGotImageFile(File imageFile);
 }

@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -30,7 +29,7 @@ import com.quickblox.core.QBSettings;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.SessionManager;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.LoginActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.OpponentsActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
@@ -102,7 +101,7 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private Notification createNotification() {
         Context context = getApplicationContext();
-        Intent notificationIntent = new Intent(context, ListUsersActivity.class);
+        Intent notificationIntent = new Intent(context, LoginActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent contentIntent = PendingIntent.getActivity(context,
@@ -187,12 +186,6 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
                         chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
                             @Override
-                            public void onSuccess(QBUser result, Bundle params) {
-                                Log.d(TAG, "onSuccess login to chat with params");
-                                startActionsOnSuccessLogin(login, password);
-                            }
-
-                            @Override
                             public void onSuccess() {
                                 Log.d(TAG, "onSuccess login to chat");
                                 startActionsOnSuccessLogin(login, password);
@@ -208,12 +201,6 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
                             }
                         });
                     }
-                }
-
-                @Override
-                public void onSuccess() {
-                    super.onSuccess();
-                    Log.d(TAG, "onSuccess create session");
                 }
 
                 @Override
@@ -273,7 +260,6 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
 
     @Override
     public void onDestroy() {
-//        QBRTCClient.getInstance().close(true);
         try {
             QBChatService.getInstance().logout();
         } catch (SmackException.NotConnectedException e) {

@@ -2,7 +2,6 @@ package com.quickblox.sample.videochatwebrtcnew.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochatwebrtcnew.R;
 import com.quickblox.sample.videochatwebrtcnew.SessionManager;
-import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseActivity;
 import com.quickblox.sample.videochatwebrtcnew.activities.CallActivity;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
@@ -101,7 +100,7 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
         callerName = (TextView) view.findViewById(R.id.callerName);
         callerName.setText(DataHolder.getUserNameByID(SessionManager.getCurrentSession().getCallerID()));
-        callerName.setBackgroundResource(BaseLogginedUserActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
+        callerName.setBackgroundResource(BaseActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
                 SessionManager.getCurrentSession().getCallerID()))) + 1));
 
         otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
@@ -143,8 +142,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         ringtone = MediaPlayer.create(getActivity(), notification);
-
-//        ringtone.setLooping(true);
         ringtone.start();
 
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);

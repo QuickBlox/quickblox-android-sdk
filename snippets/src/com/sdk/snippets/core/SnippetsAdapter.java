@@ -1,4 +1,4 @@
-package com.sdk.snippets;
+package com.sdk.snippets.core;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,11 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-/**
- * User: Oleg Soroka
- * Date: 02.10.12
- * Time: 11:02
- */
 public class SnippetsAdapter extends BaseAdapter {
 
     Context context;

@@ -3,6 +3,7 @@ package com.quickblox.sample.content.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -84,7 +85,7 @@ public class SplashActivity extends Activity {
 
             @Override
             public void onError(List<String> strings) {
-
+                Log.d("SplashActivity", "onError: " + strings);
             }
         });
     }

@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatwebrtcnew.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.quickblox.sample.videochatwebrtcnew.R;
-import com.quickblox.sample.videochatwebrtcnew.activities.BaseLogginedUserActivity;
-import com.quickblox.sample.videochatwebrtcnew.activities.ListUsersActivity;
+import com.quickblox.sample.videochatwebrtcnew.activities.BaseActivity;
 import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
@@ -28,13 +26,10 @@ public class OpponentsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     public static int i;
     public List<QBUser> selected = new ArrayList<>();
-    private String TAG = "OpponentsAdapte";
 
     public OpponentsAdapter(Context context, List<QBUser> users) {
-        Log.d(TAG, "On crate i:" + i);
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
-
     }
 
     public List<QBUser> getSelected() {
@@ -52,11 +47,6 @@ public class OpponentsAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
-    private int getNumber(List<QBUser> opponents, QBUser user) {
-        return opponents.indexOf(user);
-    }
-
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -83,7 +73,7 @@ public class OpponentsAdapter extends BaseAdapter {
             holder.opponentsNumber.setText(String.valueOf(
                     DataHolder.getUserIndexByID(user.getId()) + 1));
 
-            holder.opponentsNumber.setBackgroundResource(BaseLogginedUserActivity.resourceSelector(
+            holder.opponentsNumber.setBackgroundResource(BaseActivity.resourceSelector(
                     DataHolder.getUserIndexByID(user.getId()) + 1));
             holder.opponentsName.setText(user.getFullName());
             holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -92,19 +82,14 @@ public class OpponentsAdapter extends BaseAdapter {
 
                     if (isChecked) {
                         i = user.getId();
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.removeAll(selected);
                         selected.add(user);
-                        Log.d(TAG, "Selected " + user.getFullName());
                     } else {
                         if (i == user.getId()) {
                             i = 0;
                         }
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.remove(user);
                         holder.opponentsRadioButton.setChecked(false);
-//                        selected.removeAll(selected);
-                        Log.d(TAG, "Deselected " + user.getFullName());
                     }
                     notifyDataSetChanged();
                 }
