@@ -226,24 +226,17 @@ public class SnippetsChat extends Snippets {
         //
         //
         snippets.add(sendSystemMessage);
-
-
 }
 
     private void initChatService(){
         QBChatService.setDebugEnabled(true);
-//        QBChatService.setAllowListenNetworkStateChanges(true);
 
-        if (!QBChatService.isInitialized()) {
-            log("Initializing chat");
-            QBChatService.init(context);
-            chatService = QBChatService.getInstance();
-            chatService.addConnectionListener(chatConnectionListener);
+        chatService = QBChatService.getInstance();
+        chatService.addConnectionListener(chatConnectionListener);
 
-            // stream management
-            chatService.setUseStreamManagement(true);
+        // stream management
+        chatService.setUseStreamManagement(true);
 //            chatService.setUseStreamManagementResumption(true);
-        }
     }
 
 
