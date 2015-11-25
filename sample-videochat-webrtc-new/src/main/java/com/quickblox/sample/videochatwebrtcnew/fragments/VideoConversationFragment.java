@@ -40,7 +40,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        QBRTCClient.getInstance().addVideoTrackCallbacksListener(this);
+        QBRTCClient.getInstance(getActivity()).addVideoTrackCallbacksListener(this);
     }
 
     @Override
@@ -199,6 +199,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        QBRTCClient.getInstance().removeVideoTrackCallbacksListener(this);
+        QBRTCClient.getInstance(getActivity()).removeVideoTrackCallbacksListener(this);
     }
 }

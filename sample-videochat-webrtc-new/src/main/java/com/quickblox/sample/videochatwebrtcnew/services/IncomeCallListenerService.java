@@ -36,9 +36,9 @@ import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
-import com.quickblox.videochat.webrtc.QBRTCException;
+import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.QBRTCSession;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 
 import org.jivesoftware.smack.SmackException;
@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * Created by tereha on 08.07.15.
  */
-public class IncomeCallListenerService extends Service implements QBRTCClientSessionCallbacks, QBRTCClientConnectionCallbacks {
+public class IncomeCallListenerService extends Service implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks {
 
     private static final String TAG = IncomeCallListenerService.class.getSimpleName();
     private QBChatService chatService;
@@ -135,12 +135,14 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
             @Override
             public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
                 if (!createdLocally) {
-                    QBRTCClient.getInstance().addSignaling((QBWebRTCSignaling) qbSignaling);
+                    QBRTCClient.getInstance(IncomeCallListenerService.this).addSignaling((QBWebRTCSignaling) qbSignaling);
                 }
             }
         });
 
-        QBRTCClient.getInstance().setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
+        QBRTCClient rtcClient = QBRTCClient.getInstance(this);
+
+        rtcClient.setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
             @Override
             public void onCameraError(final String s) {
                 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
@@ -150,11 +152,11 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
         QBRTCConfig.setAnswerTimeInterval(Consts.ANSWER_TIME_INTERVAL);
 
         // Add activity as callback to RTCClient
-        QBRTCClient.getInstance().addSessionCallbacksListener(this);
-        QBRTCClient.getInstance().addConnectionCallbacksListener(this);
+        rtcClient.addSessionCallbacksListener(this);
+        rtcClient.addConnectionCallbacksListener(this);
 
         // Start mange QBRTCSessions according to VideoCall parser's callbacks
-        QBRTCClient.getInstance().prepareToProcessCalls(getApplicationContext());
+        rtcClient.prepareToProcessCalls(getApplicationContext());
     }
 
     private void parseIntentExtras(Intent intent) {
@@ -265,8 +267,8 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
-        QBRTCClient.getInstance().removeSessionsCallbacksListener(this);
-        QBRTCClient.getInstance().removeConnectionCallbacksListener(this);
+        QBRTCClient.getInstance(this).removeSessionsCallbacksListener(this);
+        QBRTCClient.getInstance(this).removeConnectionCallbacksListener(this);
         SessionManager.setCurrentSession(null);
 
         if (connectionStateReceiver != null){
@@ -434,10 +436,20 @@ public class IncomeCallListenerService extends Service implements QBRTCClientSes
     }
 
     @Override
+    public void onCallAcceptByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+
+    }
+
+    @Override
     public void onReceiveHangUpFromUser(QBRTCSession qbrtcSession, Integer integer) {
         if (qbrtcSession.equals(SessionManager.getCurrentSession())) {
             sendBroadcastMessages(Consts.RECEIVE_HANG_UP_FROM_USER, integer, null, null);
         }
+    }
+
+    @Override
+    public void onUserNoActions(QBRTCSession qbrtcSession, Integer integer) {
+
     }
 
     @Override

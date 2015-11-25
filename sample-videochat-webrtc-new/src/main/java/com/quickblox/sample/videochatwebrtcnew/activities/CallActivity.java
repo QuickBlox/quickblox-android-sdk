@@ -27,7 +27,7 @@ import com.quickblox.sample.videochatwebrtcnew.fragments.IncomeCallFragment;
 import com.quickblox.sample.videochatwebrtcnew.fragments.VideoConversationFragment;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
-import com.quickblox.videochat.webrtc.QBRTCException;
+import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
@@ -390,7 +390,7 @@ public class CallActivity extends BaseActivity {
         if (SessionManager.getCurrentSession() == null && callDirectionType == Consts.CALL_DIRECTION_TYPE.OUTGOING){
             startOutBeep();
             try {
-                QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance().createNewSessionWithOpponents(opponents, qbConferenceType);
+                QBRTCSession newSessionWithOpponents = QBRTCClient.getInstance(this).createNewSessionWithOpponents(opponents, qbConferenceType);
                 SessionManager.setCurrentSession(newSessionWithOpponents);
                 Log.d(TAG, "addConversationFragmentStartCall. Set session " + newSessionWithOpponents);
 

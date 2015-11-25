@@ -278,6 +278,7 @@ public class OpponentsActivity extends BaseActivity implements View.OnClickListe
         });
         return resultList;
     }
+
     @Override
     public void onBackPressed() {
         minimizeApp();
