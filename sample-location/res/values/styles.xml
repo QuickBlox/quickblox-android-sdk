@@ -137,36 +137,4 @@
         <item name="android:background">@drawable/apptheme_btn_cab_done</item>
     </style>
 
-    <style name="TextView" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/orange</item>
-    </style>
-
-    <style name="Big.TextView" parent="TextView">
-        <item name="android:textSize">@dimen/text_size_ex_large</item>
-    </style>
-
-    <style name="GrayTextView">
-        <item name="android:textColor">@color/gray_bank</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="Big.GrayTextView" parent="TextView">
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="SmImageView">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
-
-    <style name="MediumImageView">
-        <item name="android:layout_height">24dp</item>
-        <item name="android:layout_width">24dp</item>
-    </style>
-
-
-    <style name="ListItem">
-        <item name="android:layout_marginTop">16dp</item>
-    </style>
-
 </resources>

@@ -27,7 +27,7 @@ public class SplashActivity extends Activity {
 
     private void startMapActivity() {
         finish();
-        Intent intent = new Intent(this, LandingActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 

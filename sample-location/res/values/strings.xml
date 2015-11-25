@@ -3,8 +3,6 @@
     <string name="app_name">Sample Location</string>
     <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
     <string name="btn_check_in">Check In</string>
-    <string name="btn_bank">Bank</string>
-    <string name="btn_my_calotion">My location</string>
     <string name="dlg_location_error">Error(s) occurred. Look into DDMS log for details, please. Errors: </string>
     <string name="dlg_ok">OK</string>
     <string name="dlg_cancel">Cancel</string>
@@ -16,18 +14,4 @@
     <string name="dlg_status">\nStatus: </string>
     <string name="map">Map</string>
     <string name="empty">empty</string>
-    <string name="title_activity_landing">LandingActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
-
-    <!--Landing-->
-    <string name="land_title">Mobile banking</string>
-    <string name="atm_near">An ATM Near Me</string>
-    <string name="branch_near">A Branch Near Me</string>
-    <string name="atm_branch_addr">ATM/Branch by Address</string>
-    <string name="recently">Recently Viewed</string>
-    <string name="favorite">Favourite branches</string>
-    <string name="more">More</string>
 </resources>
