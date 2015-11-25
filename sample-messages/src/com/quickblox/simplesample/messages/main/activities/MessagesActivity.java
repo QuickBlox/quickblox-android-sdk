@@ -25,9 +25,6 @@ import com.quickblox.simplesample.messages.main.Consts;
 import com.quickblox.simplesample.messages.main.helper.PlayServicesHelper;
 import com.quickblox.simplesample.messages.main.utils.DialogUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 public class MessagesActivity extends Activity {
@@ -106,14 +103,12 @@ public class MessagesActivity extends Activity {
         qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
 
         // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-        qbEvent.setMessage(formatJson(messageOutEditText.getText().toString(),
-                "sender", "phone", 2203860));
+        qbEvent.setMessage(messageOutEditText.getText().toString());
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        String receiver = ((EditText)findViewById(R.id.message_receiver)).getText().toString();
-        int receiverId = Integer.parseInt(receiver);
-        userIds.add(receiverId);
+        userIds.add(1243440);
         qbEvent.setUserIds(userIds);
+
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
             @Override
@@ -141,23 +136,6 @@ public class MessagesActivity extends Activity {
         });
 
         progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private String formatJson(String messgae, String sender, String phone, int senderId){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("message", messgae);
-            jsonObject.put("sender", sender);
-            jsonObject.put("phone", phone);
-            jsonObject.put("message_size", "1");
-            //jsonObject.put("senderName", "name");
-            jsonObject.put("senderId", senderId);
-            jsonObject.put("dialogId", "12a78689790sd");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.d("cuurent json delivered", jsonObject.toString());
-        return jsonObject.toString();
     }
 
     // Our handler for received Intents.
