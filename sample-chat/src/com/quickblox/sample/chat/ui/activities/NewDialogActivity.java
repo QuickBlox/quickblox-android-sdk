@@ -32,7 +32,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     private int listViewIndex;
     private int listViewTop;
     private int currentPage = 0;
-    private List<QBUser> users = new ArrayList<QBUser>();
+    private List<QBUser> users = new ArrayList<>();
 
     private PullToRefreshListView usersList;
     private Button createChatButton;

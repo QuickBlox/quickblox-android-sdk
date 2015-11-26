@@ -16,6 +16,6 @@ android {
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.location_jar_path)
     compile 'com.android.support:support-v4:19.0.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.google.android.gms:play-services:3.2.+'
 }
