@@ -20,11 +20,8 @@ import com.quickblox.videochat.webrtc.view.VideoCallBacks;
 
 import org.webrtc.VideoRenderer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Created by tereha on 15.07.15.
+ * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements View.OnClickListener, QBRTCClientVideoTracksCallbacks {
 

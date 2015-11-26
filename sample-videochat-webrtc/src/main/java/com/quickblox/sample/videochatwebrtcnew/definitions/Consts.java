@@ -1,5 +1,8 @@
 package com.quickblox.sample.videochatwebrtcnew.definitions;
 
+/**
+ * QuickBlox team
+ */
 public class Consts {
     public static final String APP_ID = "92";
     public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";

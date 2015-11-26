@@ -15,9 +15,8 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 
 /**
- * Created by tereha on 25.01.15.
+ * QuickBlox team
  */
-
 public class UsersToLoginAdapter extends BaseAdapter {
     private ArrayList<QBUser> user;
 

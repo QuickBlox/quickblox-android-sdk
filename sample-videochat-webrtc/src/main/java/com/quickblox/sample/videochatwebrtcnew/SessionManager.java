@@ -3,7 +3,7 @@ package com.quickblox.sample.videochatwebrtcnew;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 
 /**
- * Created by tereha on 10.07.15.
+ * QuickBlox team
  */
 public class SessionManager {
 

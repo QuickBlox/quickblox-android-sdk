@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.quickblox.sample.videochatwebrtcnew.definitions.Consts;
 
 /**
- * Created by tereha on 13.07.15.
+ * QuickBlox team
  */
 public class AutoStartServiceBroadcastReceiver extends BroadcastReceiver {
 

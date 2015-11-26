@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tereha on 08.07.15.
+ * QuickBlox team
  */
 public class IncomeCallListenerService extends Service implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks {
 

@@ -4,6 +4,9 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 
+/**
+ * QuickBlox team
+ */
 public class DataHolder {
 
     public static ArrayList<QBUser> usersList;

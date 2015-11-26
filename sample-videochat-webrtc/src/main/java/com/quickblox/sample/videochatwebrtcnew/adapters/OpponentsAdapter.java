@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tereha on 27.01.15.
+ * QuickBlox team
  */
 public class OpponentsAdapter extends BaseAdapter {
 

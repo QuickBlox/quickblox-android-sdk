@@ -27,7 +27,7 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import java.util.List;
 
 /**
- * Created by tereha on 15.07.15.
+ * QuickBlox team
  */
 public abstract class BaseConversationFragment extends Fragment implements View.OnClickListener{
 

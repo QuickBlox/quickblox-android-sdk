@@ -21,9 +21,8 @@ import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
 
-
 /**
- * Created by tereha on 25.01.15.
+ * QuickBlox team
  */
 public class LoginActivity extends BaseActivity {
 

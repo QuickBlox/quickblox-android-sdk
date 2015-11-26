@@ -40,13 +40,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- * Created by tereha on 16.02.15.
- *
+ * QuickBlox team
  */
 public class CallActivity extends BaseActivity {
-
-
     private static final String TAG = CallActivity.class.getSimpleName();
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final String CONVERSATION_CALL_FRAGMENT = "conversation_call_fragment";
@@ -420,8 +416,6 @@ public class CallActivity extends BaseActivity {
             try {
                 ringtone.stop();
             } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
                 e.printStackTrace();
             }
             ringtone.release();

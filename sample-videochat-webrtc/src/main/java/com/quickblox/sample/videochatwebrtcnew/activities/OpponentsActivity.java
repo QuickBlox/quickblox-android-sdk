@@ -32,10 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * QuickBlox team
+ */
 public class OpponentsActivity extends BaseActivity implements View.OnClickListener {
-
-
     private static final String TAG = OpponentsActivity.class.getSimpleName();
     private OpponentsAdapter opponentsAdapter;
     private Button btnAudioCall;

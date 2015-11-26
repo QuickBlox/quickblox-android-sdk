@@ -33,9 +33,8 @@ import com.quickblox.sample.videochatwebrtcnew.holder.DataHolder;
 import com.quickblox.sample.videochatwebrtcnew.services.IncomeCallListenerService;
 import com.quickblox.users.model.QBUser;
 
-
 /**
- * Created by tereha on 26.01.15.
+ * QuickBlox team
  */
 public abstract class BaseActivity extends AppCompatActivity {
 

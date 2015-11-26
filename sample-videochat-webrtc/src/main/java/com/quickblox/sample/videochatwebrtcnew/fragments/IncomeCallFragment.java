@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tereha on 16.02.15.
+ * QuickBlox team
  */
 public class IncomeCallFragment extends Fragment implements Serializable {
 
@@ -50,7 +50,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
     private View view;
     private boolean isVideoCall;
     private Map<String, String> userInfo;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -158,8 +157,6 @@ public class IncomeCallFragment extends Fragment implements Serializable {
             try {
                 ringtone.stop();
             } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
                 e.printStackTrace();
             }
             ringtone.release();
