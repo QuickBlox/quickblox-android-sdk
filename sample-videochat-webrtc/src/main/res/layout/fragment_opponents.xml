@@ -51,15 +51,37 @@
             android:textStyle="bold" />
 
         <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_video_call"
+        android:id="@+id/btnVideoCall"
+        style="?android:attr/buttonBarButtonStyle"
+        android:background="@android:color/transparent"
+        android:textColor="@color/blue_green"
+        android:layout_weight="1"
+        android:textStyle="bold" />
+
+        <!--<Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_video_call"
-            android:id="@+id/btnVideoCall"
+            android:text="@string/btn_screen_capture"
+            android:id="@+id/screenCapturer"
             style="?android:attr/buttonBarButtonStyle"
             android:background="@android:color/transparent"
             android:textColor="@color/blue_green"
             android:layout_weight="1"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
+        <!--
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="close channles"
+            android:id="@+id/closeChnnal"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:textColor="@color/blue_green"
+            android:layout_weight="1"
+            android:textStyle="bold" />-->
     </LinearLayout>
 
 </RelativeLayout>
