@@ -3,21 +3,24 @@ package com.quickblox.sample.groupchatwebrtc.util;
 import android.hardware.Camera;
 import android.util.Log;
 
+/**
+ * QuickBlox team
+ */
 public class CameraUtils {
 
     private static final String TAG = CameraUtils.class.getSimpleName();
 
     public static Camera.CameraInfo getCameraInfo(int deviceId){
 
-            Camera.CameraInfo info = null;
+        Camera.CameraInfo info = null;
 
-            try {
-                info = new Camera.CameraInfo();
-                Camera.getCameraInfo(deviceId, info);
-            } catch (Exception var3) {
-                info = null;
-                Log.e(TAG, "getCameraInfo failed on device " + deviceId);
-            }
+        try {
+            info = new Camera.CameraInfo();
+            Camera.getCameraInfo(deviceId, info);
+        } catch (Exception var3) {
+            info = null;
+            Log.e(TAG, "getCameraInfo failed on device " + deviceId);
+        }
         return info;
     }
 
@@ -25,6 +28,5 @@ public class CameraUtils {
         Camera.CameraInfo cameraInfo = getCameraInfo(deviceId);
 
         return (cameraInfo != null && cameraInfo.facing == 1);
-
     }
 }

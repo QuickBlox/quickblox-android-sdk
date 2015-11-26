@@ -54,7 +54,7 @@ import java.util.Map;
 
 
 /**
- * Created by tereha on 16.02.15.
+ * QuickBlox team
  */
 public class ConversationFragment extends Fragment implements Serializable, QBRTCClientVideoTracksCallbacks, QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
@@ -375,7 +375,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 handUpVideoCall.setEnabled(false);
                 Log.d(TAG, "Call is stopped");
 
-//                ((CallActivity) getActivity()).getCurrentSession().hangUp(userInfo);
                 ((CallActivity) getActivity()).hangUpCurrentSession();
                 handUpVideoCall.setEnabled(false);
                 handUpVideoCall.setActivated(false);
@@ -652,8 +651,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 Log.d(TAG, "Fragment under destroying");
             }
         }
-
-
     }
 
     class DividerItemDecoration extends RecyclerView.ItemDecoration {

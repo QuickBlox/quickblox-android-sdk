@@ -34,9 +34,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.fabric.sdk.android.Fabric;
 
-
 /**
- * Created by tereha on 25.01.15.
+ * QuickBlox team
  */
 public class ListUsersActivity extends Activity {
 
@@ -73,7 +72,6 @@ public class ListUsersActivity extends Activity {
             chatService = QBChatService.getInstance();
         }
         createAppSession();
-
     }
 
     private void createAppSession() {

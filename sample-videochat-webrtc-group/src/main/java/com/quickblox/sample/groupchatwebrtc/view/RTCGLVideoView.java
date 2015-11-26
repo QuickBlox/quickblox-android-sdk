@@ -37,7 +37,6 @@ import org.webrtc.VideoRendererGui;
  */
 public class RTCGLVideoView extends GLSurfaceView{
 
-
     private static final String TAG = RTCGLVideoView.class.getSimpleName();
     private static final int NUMBER_COORDINATES = 4;
     private VideoRenderer.Callbacks mainRendererCallback;

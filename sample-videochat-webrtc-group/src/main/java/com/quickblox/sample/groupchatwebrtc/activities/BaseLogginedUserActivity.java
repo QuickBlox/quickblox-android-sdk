@@ -15,7 +15,7 @@ import com.quickblox.users.model.QBUser;
 
 
 /**
- * Created by tereha on 26.01.15.
+ * QuickBlox team
  */
 public class BaseLogginedUserActivity extends Activity {
 

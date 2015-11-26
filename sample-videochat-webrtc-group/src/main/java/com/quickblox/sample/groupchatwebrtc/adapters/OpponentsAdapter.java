@@ -1,7 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tereha on 27.01.15.
+ * QuickBlox team
  */
 public class OpponentsAdapter extends BaseAdapter {
 
@@ -52,7 +51,6 @@ public class OpponentsAdapter extends BaseAdapter {
     private int getNumber(List<QBUser> opponents, QBUser user) {
         return opponents.indexOf(user);
     }
-
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
@@ -102,13 +100,10 @@ public class OpponentsAdapter extends BaseAdapter {
                     }
                 }
             });
-
-
         }
 
         return convertView;
     }
-
 
     public static class ViewHolder {
         TextView opponentsNumber;

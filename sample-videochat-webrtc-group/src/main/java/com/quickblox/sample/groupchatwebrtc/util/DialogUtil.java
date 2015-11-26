@@ -1,9 +1,11 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
-
 import android.content.Context;
 import android.widget.Toast;
 
+/**
+ * QuickBlox team
+ */
 public class DialogUtil {
 
     public static void showToast(Context context, String message) {

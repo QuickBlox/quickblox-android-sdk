@@ -30,12 +30,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by tereha on 16.02.15.
+ * QuickBlox team
  */
 public class IncomeCallFragment extends Fragment implements Serializable, View.OnClickListener {
 
     private static final String TAG = IncomeCallFragment.class.getSimpleName();
-    private static final java.lang.String INCOME_WINDOW_SHOW = "WINDOW_SHOW_TMER'";
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
     private TextView incVideoCall;
     private TextView incAudioCall;

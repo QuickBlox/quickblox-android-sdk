@@ -104,15 +104,6 @@ public class DataHolder {
         return callerID.toString();
     }
 
-    public static String getUserNameByLogin(String login) {
-        for (QBUser user : getUsersList()) {
-            if (user.getLogin().equals(login)) {
-                return user.getFullName();
-            }
-        }
-        return "User_name_unused";
-    }
-
     public static int getUserIndexByID(Integer callerID) {
         for (QBUser user : getUsersList()) {
             if (user.getId().equals(callerID)) {
@@ -120,14 +111,6 @@ public class DataHolder {
             }
         }
         return -1;
-    }
-
-    public static ArrayList<Integer> getIdsAiiUsers (){
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (QBUser user : getUsersList()){
-            ids.add(user.getId());
-        }
-        return ids;
     }
 
     public static List<QBUser> getUsers(){

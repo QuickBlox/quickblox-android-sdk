@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,9 @@ import android.widget.Toast;
 import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
 import com.quickblox.sample.groupchatwebrtc.R;
 
+/**
+ * QuickBlox team
+ */
 public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 

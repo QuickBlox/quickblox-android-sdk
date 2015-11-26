@@ -16,7 +16,7 @@ import com.quickblox.users.model.QBUser;
 import java.util.List;
 
 /**
- * Created by tereha on 24.02.15.
+ * QuickBlox team
  */
 public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder> {
 
@@ -138,7 +138,5 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         public void showOpponentView(boolean show) {
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-
     }
-
 }

@@ -7,10 +7,9 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- * Created by vadim on 10/27/15.
+ * QuickBlox team
  */
 public class RingtonePlayer {
-
 
     private static final String TAG = RingtonePlayer.class.getSimpleName();
     private MediaPlayer mediaPlayer;
@@ -54,7 +53,6 @@ public class RingtonePlayer {
         }
         mediaPlayer.setLooping(looping);
         mediaPlayer.start();
-
     }
 
     public synchronized void stop() {

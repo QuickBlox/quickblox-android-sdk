@@ -32,10 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tereha on 16.02.15.
+ * QuickBlox team
  */
 public class OpponentsFragment extends Fragment implements View.OnClickListener, Serializable {
-
 
     private static final String TAG = OpponentsFragment.class.getSimpleName();
     private OpponentsAdapter opponentsAdapter;
@@ -45,7 +44,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     private View view=null;
     private ProgressDialog progresDialog;
     private ListView opponentsList;
-
 
     public static OpponentsFragment getInstance() {
         return new OpponentsFragment();
@@ -72,8 +70,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         progresDialog.show();
 
         initOpponentListAdapter();
-        // Get setting keys.
-//         Log.d(TAG, "onCreateView() from OpponentsFragment Level 2");
+
         return view;
     }
 
@@ -100,7 +97,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        setRetainInstance(true);
         setHasOptionsMenu(true);
         Log.d(TAG, "onCreate() from OpponentsFragment");
         super.onCreate(savedInstanceState);

@@ -53,10 +53,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tereha on 16.02.15.
+ * QuickBlox team
  */
 public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback {
-
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -126,10 +125,15 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             }
         });
 
+
+        // Configure
+        //
         QBRTCConfig.setMaxOpponentsCount(6);
-        QBRTCConfig.setDisconnectTime(40);
+        QBRTCConfig.setDisconnectTime(30);
         QBRTCConfig.setAnswerTimeInterval(30l);
         QBRTCConfig.setDebugEnabled(true);
+
+
         // Add activity as callback to RTCClient
         rtcClient.addSessionCallbacksListener(this);
         // Start mange QBRTCSessions according to VideoCall parser's callbacks
@@ -212,8 +216,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifiStateReceiver, intentFilter);
-
-
     }
 
     @Override

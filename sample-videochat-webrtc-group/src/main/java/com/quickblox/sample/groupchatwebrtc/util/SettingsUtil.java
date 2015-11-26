@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -11,6 +10,9 @@ import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
 
 import java.util.List;
 
+/**
+ * QuickBlox team
+ */
 public class SettingsUtil {
 
     private static final String TAG = SettingsUtil.class.getSimpleName();
@@ -38,7 +40,6 @@ public class SettingsUtil {
             setSettingsForMultiCall(users);
         }
     }
-
 
     private static void setSettingsFromPreferences(SharedPreferences sharedPref, Context context) {
 
@@ -80,7 +81,6 @@ public class SettingsUtil {
                 QBRTCMediaConfig.AudioCodec.ISAC : QBRTCMediaConfig.AudioCodec.OPUS;
         Log.e(TAG, "audioCodec =: " + audioCodec.getDescription());
         QBRTCMediaConfig.setAudioCodec(audioCodec);
-
     }
 
     private static void setVideoQuality(int resolutionItem) {
