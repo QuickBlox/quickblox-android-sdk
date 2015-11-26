@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -22,9 +21,7 @@ import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.ApplicationSingleton;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
@@ -72,7 +69,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 
     private QBRTCSession currentSession;
-    public  List<User> opponentsList;
+    public  List<QBUser> opponentsList;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
     private BroadcastReceiver wifiStateReceiver;
@@ -475,9 +472,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 sessionUserCallback.onReceiveHangUpFromUser(session, userID);
             }
 
-            User participant = DataHolder.getUserByID(userID);
-
-            final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
+            final String participantName = DataHolder.getUserNameByID(userID);
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -513,7 +508,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             Bundle bundle = new Bundle();
             bundle.putSerializable("sessionDescription", session.getSessionDescription());
             bundle.putIntegerArrayList("opponents", new ArrayList<>(session.getOpponents()));
-            bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, session.getConferenceType().getValue());
+            bundle.putInt(Consts.CONFERENCE_TYPE, session.getConferenceType().getValue());
             fragment.setArguments(bundle);
             FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT);
         } else {
@@ -521,7 +516,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         }
     }
 
-    public void addConversationFragmentStartCall(List<User> opponents,
+    public void addConversationFragmentStartCall(List<QBUser> opponents,
                                                  QBRTCTypes.QBConferenceType qbConferenceType,
                                                  Map<String, String> userInfo) {
         QBRTCSession newSessionWithOpponents = rtcClient.createNewSessionWithOpponents(
@@ -539,7 +534,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
 
-    public static ArrayList<Integer> getOpponentsIds(List<User> opponents) {
+    public static ArrayList<Integer> getOpponentsIds(List<QBUser> opponents) {
         ArrayList<Integer> ids = new ArrayList<Integer>();
         for (QBUser user : opponents) {
             ids.add(user.getId());
@@ -558,7 +553,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             opponentsWithoutMe.remove(new Integer(myId));
             opponentsWithoutMe.add(session.getCallerID());
 
-            ArrayList<User> opponents = DataHolder.getUsersByIDs(opponentsWithoutMe.toArray(new Integer[opponentsWithoutMe.size()]));
+            ArrayList<QBUser> opponents = DataHolder.getUsersByIDs(opponentsWithoutMe.toArray(new Integer[opponentsWithoutMe.size()]));
             SettingsUtil.setSettingsStrategy(opponents, getDefaultSharedPrefs(), this);
             ConversationFragment fragment = ConversationFragment.newInstance(opponents,
                     DataHolder.getUserNameByID(session.getCallerID()),
@@ -570,11 +565,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
 
-    public void setOpponentsList(List<User> qbUsers) {
+    public void setOpponentsList(List<QBUser> qbUsers) {
         this.opponentsList = qbUsers;
     }
 
-    public List<User> getOpponentsList() {
+    public List<QBUser> getOpponentsList() {
         return opponentsList;
     }
 

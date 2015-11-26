@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
-
 import android.hardware.Camera;
 import android.util.Log;
 

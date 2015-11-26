@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
+import com.quickblox.users.model.QBUser;
 
 
 /**
@@ -35,10 +35,17 @@ public class BaseLogginedUserActivity extends Activity {
         View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
 
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
-        User loggedUser = DataHolder.getLoggedUser();
+        QBUser loggedUser = DataHolder.getLoggedUser();
         if (loggedUser != null ) {
-            numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(loggedUser.getUserNumber()));
-            numberOfListAB.setText(String.valueOf(loggedUser.getUserNumber()));
+            int number = DataHolder.getUserIndexByID(loggedUser.getId());
+            numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(number));
+            numberOfListAB.setText(String.valueOf(number+1));
+
+            TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
+            loginAsAB.setText(R.string.logged_in_as);
+            //
+            TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
+            userNameAB.setText(String.valueOf(number+1));
         }
 
         numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
@@ -51,15 +58,6 @@ public class BaseLogginedUserActivity extends Activity {
                 return true;
             }});
 
-        TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
-        loginAsAB.setText(R.string.logged_in_as);
-
-
-        TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-
-        if (loggedUser != null ) {
-            userNameAB.setText(loggedUser.getFullName());
-        }
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
@@ -81,7 +79,7 @@ public class BaseLogginedUserActivity extends Activity {
         loginAsABWithTimer.setText(R.string.logged_in_as);
 
         TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameABWithTimer);
-        User user = DataHolder.getLoggedUser();
+        QBUser user = DataHolder.getLoggedUser();
         if (user != null) {
             userNameAB.setText(user.getFullName());
         }

@@ -18,11 +18,9 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
-import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import org.jivesoftware.smack.SmackException;
@@ -82,14 +80,14 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     private void initOpponentListAdapter() {
         final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
 
-        List<User> userList = new ArrayList<>(((CallActivity) getActivity()).getOpponentsList());
+        List<QBUser> userList = new ArrayList<>(((CallActivity) getActivity()).getOpponentsList());
         prepareUserList(opponentsList, userList);
         progresDialog.dismiss();
 
 
     }
 
-    private void prepareUserList(ListView opponentsList, List<User> users) {
+    private void prepareUserList(ListView opponentsList, List<QBUser> users) {
         int i = searchIndexLogginedUser(users);
         if (i >= 0)
             users.remove(i);
@@ -192,7 +190,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    public static int searchIndexLogginedUser(List<User> usersList) {
+    public static int searchIndexLogginedUser(List<QBUser> usersList) {
         int indexLogginedUser = -1;
         for (QBUser usr : usersList) {
             if (usr.getLogin().equals(login)) {

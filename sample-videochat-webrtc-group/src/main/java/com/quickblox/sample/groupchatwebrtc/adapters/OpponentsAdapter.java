@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
+import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -23,20 +23,17 @@ import java.util.List;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-    private List<User> opponents;
+    private List<QBUser> opponents;
     private LayoutInflater inflater;
     public static int i;
-    public List<User> selected = new ArrayList<>();
-    private String TAG = "OpponentsAdapte";
+    public List<QBUser> selected = new ArrayList<>();
 
-    public OpponentsAdapter(Context context, List<User> users) {
-        Log.d(TAG, "On crate i:" + i);
+    public OpponentsAdapter(Context context, List<QBUser> users) {
         this.opponents = users;
         this.inflater = LayoutInflater.from(context);
-
     }
 
-    public List<User> getSelected() {
+    public List<QBUser> getSelected() {
         return selected;
     }
 
@@ -74,15 +71,17 @@ public class OpponentsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final User user = opponents.get(position);
+        final QBUser user = opponents.get(position);
 
 
         if (user != null) {
 
-            holder.opponentsNumber.setText(String.valueOf(user.getUserNumber()));
+            int number = DataHolder.getUserIndexByID(user.getId());
+
+            holder.opponentsNumber.setText(String.valueOf(number+1));
 
             holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
-                    (user.getUserNumber()));
+                    (number));
             holder.opponentsName.setText(user.getFullName());
 
             holder.opponentsRadioButton.setOnCheckedChangeListener(null);
@@ -94,16 +93,12 @@ public class OpponentsAdapter extends BaseAdapter {
 
                     if (isChecked) {
                         i = user.getId();
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.add(user);
-                        Log.d(TAG, "Selected " + user.getFullName());
                     } else {
                         if (i == user.getId()) {
                             i = 0;
                         }
-                        Log.d(TAG, "Button state:" + isChecked + " i:" + i);
                         selected.remove(user);
-                        Log.d(TAG, "Deselected " + user.getFullName());
                     }
                 }
             });

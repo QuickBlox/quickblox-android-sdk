@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,10 +21,8 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.sample.groupchatwebrtc.adapters.UsersAdapter;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.fragments.dialogs.ChooserDialog;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -53,7 +49,7 @@ public class ListUsersActivity extends Activity {
     private ProgressBar progressBar;
     private Context context;
     private static QBChatService chatService;
-    private static ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<QBUser> users = new ArrayList<>();
     private volatile boolean resultReceived = true;
 
 
@@ -190,7 +186,7 @@ public class ListUsersActivity extends Activity {
     public static int getUserIndex(int id) {
         int index = 0;
 
-        for (User usr : users) {
+        for (QBUser usr : users) {
             if (usr.getId().equals(id)) {
                 index = (users.indexOf(usr)) + 1;
                 break;
@@ -245,7 +241,7 @@ public class ListUsersActivity extends Activity {
 
     private long upTime = 0l;
 
-    private User currentUser;
+    private QBUser currentUser;
     AdapterView.OnItemClickListener clicklistener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (!resultReceived || (SystemClock.uptimeMillis() - upTime) < ON_ITEM_CLICK_DELAY){

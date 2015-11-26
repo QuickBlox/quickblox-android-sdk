@@ -30,9 +30,8 @@ import android.widget.ToggleButton;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
-import com.quickblox.sample.groupchatwebrtc.ApplicationSingleton;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
+import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.util.CameraUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
@@ -69,7 +68,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
 
     private String TAG = ConversationFragment.class.getSimpleName();
-    private ArrayList<User> opponents;
+    private ArrayList<QBUser> opponents;
     private int qbConferenceType;
     private int startReason;
     private String sessionID;
@@ -99,16 +98,16 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private QBRTCVideoTrack localVideoTrack;
     private Handler mainHandler;
 
-    public static ConversationFragment newInstance(List<User> opponents, String callerName,
+    public static ConversationFragment newInstance(List<QBUser> opponents, String callerName,
                                                    QBRTCTypes.QBConferenceType qbConferenceType,
                                                    Map<String, String> userInfo, CallActivity.StartConversetionReason reason,
                                                    String sesionnId) {
 
         ConversationFragment fragment = new ConversationFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ApplicationSingleton.CONFERENCE_TYPE, qbConferenceType.getValue());
+        bundle.putInt(Consts.CONFERENCE_TYPE, qbConferenceType.getValue());
         bundle.putString(CALLER_NAME, callerName);
-        bundle.putSerializable(ApplicationSingleton.OPPONENTS, (Serializable) opponents);
+        bundle.putSerializable(Consts.OPPONENTS, (Serializable) opponents);
         if (userInfo != null) {
             for (String key : userInfo.keySet()) {
                 bundle.putString("UserInfo:" + key, userInfo.get(key));
@@ -130,8 +129,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         ((CallActivity) getActivity()).initActionBarWithTimer();
 
         if (getArguments() != null) {
-            opponents = (ArrayList<User>) getArguments().getSerializable(ApplicationSingleton.OPPONENTS);
-            qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
+            opponents = (ArrayList<QBUser>) getArguments().getSerializable(Consts.OPPONENTS);
+            qbConferenceType = getArguments().getInt(Consts.CONFERENCE_TYPE);
             startReason = getArguments().getInt(CallActivity.START_CONVERSATION_REASON);
             sessionID = getArguments().getString(CallActivity.SESSION_ID);
             callerName = getArguments().getString(CallActivity.CALLER_NAME);

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
+import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class SettingsUtil {
 
     private static final String TAG = SettingsUtil.class.getSimpleName();
 
-    private static void setSettingsForMultiCall(List<User> users) {
+    private static void setSettingsForMultiCall(List<QBUser> users) {
         if (users.size() <= 2) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
@@ -31,7 +31,7 @@ public class SettingsUtil {
         }
     }
 
-    public static void setSettingsStrategy(List<User> users, SharedPreferences sharedPref, Context context) {
+    public static void setSettingsStrategy(List<QBUser> users, SharedPreferences sharedPref, Context context) {
         if (users.size() == 1) {
             setSettingsFromPreferences(sharedPref, context);
         } else {

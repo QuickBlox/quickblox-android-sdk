@@ -15,10 +15,9 @@ import android.widget.TextView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
+import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
-import com.quickblox.sample.groupchatwebrtc.ApplicationSingleton;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -46,7 +45,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private ImageButton takeBtn;
 
     private ArrayList<Integer> opponents;
-    private List<User> opponentsFromCall = new ArrayList<>();
+    private List<QBUser> opponentsFromCall = new ArrayList<>();
     private QBRTCSessionDescription sessionDescription;
     private Vibrator vibrator;
     private QBRTCTypes.QBConferenceType conferenceType;
@@ -61,7 +60,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         if (getArguments() != null) {
             opponents = getArguments().getIntegerArrayList("opponents");
             sessionDescription = (QBRTCSessionDescription) getArguments().getSerializable("sessionDescription");
-            qbConferenceType = getArguments().getInt(ApplicationSingleton.CONFERENCE_TYPE);
+            qbConferenceType = getArguments().getInt(Consts.CONFERENCE_TYPE);
 
 
             conferenceType =
@@ -176,7 +175,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
         opponentsFromCall.addAll(DataHolder.getUsers());
 
-        for (User usr : opponentsFromCall) {
+        for (QBUser usr : opponentsFromCall) {
             if (usr.getId().equals(i)) {
                 s = usr.getFullName();
             }

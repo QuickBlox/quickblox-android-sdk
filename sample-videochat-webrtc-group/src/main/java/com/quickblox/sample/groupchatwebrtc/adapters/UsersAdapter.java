@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 
@@ -19,11 +19,11 @@ import java.util.ArrayList;
  */
 
 public class UsersAdapter extends BaseAdapter {
-    private ArrayList<User> user;
+    private ArrayList<QBUser> user;
 
     private LayoutInflater inflater;
 
-    public UsersAdapter(Context context, ArrayList<User> results) {
+    public UsersAdapter(Context context, ArrayList<QBUser> results) {
         user = results;
         inflater = LayoutInflater.from(context);
     }
@@ -32,7 +32,7 @@ public class UsersAdapter extends BaseAdapter {
         return user.size();
     }
 
-    public User getItem(int position) {
+    public QBUser getItem(int position) {
         return user.get(position);
     }
 
@@ -55,8 +55,8 @@ public class UsersAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.userNumber.setText(String.valueOf(user.get(position).getUserNumber()));
-        holder.userNumber.setBackgroundResource(ListUsersActivity.resourceSelector(user.get(position).getUserNumber()));
+        holder.userNumber.setText(String.valueOf(position+1));
+        holder.userNumber.setBackgroundResource(ListUsersActivity.resourceSelector(position));
         holder.loginAs.setText(R.string.login_as);
         holder.fullName.setText(user.get(position).getFullName());
 

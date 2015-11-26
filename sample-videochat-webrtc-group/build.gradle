@@ -53,8 +53,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.0.1'
-    compile 'com.android.support:support-annotations:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
     compile files('libs/android-support-v4.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {

@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.User;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
+import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private int paddingLeft = 0;
 
     private Context context;
-    private List<User> opponents;
+    private List<QBUser> opponents;
     private int gridWidth;
     private boolean showVideoView;
     private LayoutInflater inflater;
@@ -38,7 +38,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private OnAdapterEventListener adapterListener;
 
 
-    public OpponentsFromCallAdapter(Context context, List<User> users, int width, int height,
+    public OpponentsFromCallAdapter(Context context, List<QBUser> users, int width, int height,
                                     int gridWidth, int columns, int itemMargin,
                                     boolean showVideoView) {
         this.context = context;
@@ -87,7 +87,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final User user = opponents.get(position);
+        final QBUser user = opponents.get(position);
 
         holder.opponentsName.setText(user.getFullName());
         holder.setUserId(user.getId());
