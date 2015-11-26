@@ -207,26 +207,25 @@ public class ListUsersActivity extends Activity {
 
     private void loadUsers(String tag){
         showProgress(true);
+
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
         requestBuilder.setPerPage(getResources().getInteger(R.integer.users_count));
         List<String> tags = new LinkedList<>();
         tags.add(tag);
-        QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 showProgress(false);
+
                 users.clear();
                 users.addAll(DataHolder.createUsersList(qbUsers));
                 initUsersList();
             }
 
             @Override
-            public void onSuccess() {
-            }
-
-            @Override
             public void onError(List<String> strings) {
                 showProgress(false);
+
                 Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onError()");
             }
@@ -256,7 +255,7 @@ public class ListUsersActivity extends Activity {
 
     private void createSession(final String login, final String password) {
 
-        progressBar.setVisibility(View.VISIBLE);
+        showProgress(true);
 
         final QBUser user = new QBUser(login, password);
         QBAuth.createSession(login, password, new QBEntityCallbackImpl<QBSession>() {
@@ -265,7 +264,6 @@ public class ListUsersActivity extends Activity {
                 Log.d(TAG, "onSuccess create session with params");
                 user.setId(session.getUserId());
 
-                progressBar.setVisibility(View.INVISIBLE);
                 DataHolder.setLoggedUser(currentUser);
                 if (chatService.isLoggedIn()){
                     resultReceived = true;
@@ -274,23 +272,26 @@ public class ListUsersActivity extends Activity {
                     chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
 
                         @Override
-                        public void onSuccess(QBUser result, Bundle params) {
-                            Log.d(TAG, "onSuccess login to chat with params");
-                            resultReceived = true;
-                            startCallActivity(login);
-                        }
-
-                        @Override
                         public void onSuccess() {
                             Log.d(TAG, "onSuccess login to chat");
                             resultReceived = true;
+
+                            ListUsersActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showProgress(false);
+                                }
+                            });
+
                             startCallActivity(login);
                         }
 
                         @Override
                         public void onError(List errors) {
                             resultReceived = true;
-                            progressBar.setVisibility(View.INVISIBLE);
+
+                            showProgress(false);
+
                             Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
                             for (Object error : errors) {
                                 Log.d(TAG, error.toString());
@@ -302,15 +303,11 @@ public class ListUsersActivity extends Activity {
             }
 
             @Override
-            public void onSuccess() {
-                super.onSuccess();
-                Log.d(TAG, "onSuccess create session");
-            }
-
-            @Override
             public void onError(List<String> errors) {
                 resultReceived = true;
+
                 progressBar.setVisibility(View.INVISIBLE);
+
                 Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
             }
         });

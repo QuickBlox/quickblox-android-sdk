@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Video &amp; Audio Group Chat Sample</string>
+    <string name="app_name">Video chat sample</string>
     <string name="action_log_out">Log out</string>
     <string name="login_as">Login as</string>
     <string name="logged_in_as">Logged In as</string>
