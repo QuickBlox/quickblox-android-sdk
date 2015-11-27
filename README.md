@@ -6,13 +6,12 @@ This project contains QuickBlox Android SDK, that includes
 * [snippets](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets) (shows main use cases of using this one)
 * samples (separated samples for each QuickBlox module)
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
+  * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
   * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
   * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-messages)
   * [Location Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-location)
   * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-objects)
   * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
-  * [Video Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat)
-  * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
 
 ## How to start
 
@@ -27,7 +26,7 @@ Latest jar-packed framework file you can clone from [jars  folder](https://githu
 
 ## Oh, please, please show me the code
 
-Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome functions to store, pass and represent your data. 
+Android SDK is really simple to use. Just in few minutes you can power your mobile app with huge amount of awesome functions to store, pass and represent your data.
 
 ### 1. Get app credentials
 
@@ -42,7 +41,7 @@ Eclipse users: If you got 'Unable to execute dex: Java heap size' - try to upgra
 
 ### 4. Declare internet permission for Android application
 
-* Go to AndroidManifest.xml and add 
+* Go to AndroidManifest.xml and add
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -165,10 +164,8 @@ Java Framework provides following jars/services to interact with QuickBlox funct
 * quickblox-android-sdk-chat.jar (contains chat class)
 * quickblox-android-sdk-customobjects.jar (contains custom objects class)
 * quickblox-android-sdk-location.jar (contains location class)
-* quickblox-android-sdk-content.jar (contains content class) 
+* quickblox-android-sdk-content.jar (contains content class)
 * quickblox-android-sdk-messages.jar (contains messages class) 
-* quickblox-android-sdk-ratings.jar (contains ratings class) 
-* quickblox-android-sdk-videochat.jar (contains video chat classes)  
 * quickblox-android-sdk-videochat-webrtc.jar (contains video chat webrtc classes)
 
 ## See also
