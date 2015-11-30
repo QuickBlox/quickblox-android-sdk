@@ -4,18 +4,28 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
+    defaultConfig {
+        applicationId "com.quickblox.simplesample.messages"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    productFlavors {
+        speedDev {
+            minSdkVersion 21
+        }
+        dev {
+            minSdkVersion rootProject.minSdkVersion
         }
     }
 }
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.messages_jar_path)
-    compile 'com.google.android.gms:play-services:4.2.+'
-    compile 'com.android.support:support-v4:19.0.+'
-    compile 'com.android.support:appcompat-v7:23.1.1'
+
+    compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
+    compile "com.android.support:support-v4:${rootProject.supportV4Version}"
+    compile "com.android.support:appcompat-v7:${rootProject.appcompatV7Version}"
 }

@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.20.1'
     }
 }
 
@@ -12,7 +12,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
-    mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -21,12 +20,13 @@ android {
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.quickblox.sample.videogroupchat"
-        minSdkVersion 14
-        targetSdkVersion 23
+        applicationId "com.quickblox.sample.groupchatwebrtc"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
+    
     buildTypes {
         release {
             minifyEnabled false
@@ -41,10 +41,6 @@ android {
         dev {
             minSdkVersion rootProject.minSdkVersion
         }
-
-        ios {
-
-        }
     }
 
 }
@@ -52,12 +48,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:support-annotations:23.1.1'
-    compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
-    compile files('libs/android-support-v4.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+
+    compile "com.android.support:appcompat-v7:${rootProject.appcompatV7Version}"
+    compile "com.android.support:recyclerview-v7:${rootProject.recyclerviewV7Version}"
+    compile "com.android.support:support-annotations:${rootProject.supportAnnotationsVersion}"
+    compile "com.android.support:support-v4:${rootProject.supportV4Version}"
+
+    compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
+    compile("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
         transitive = true;
     }
 }

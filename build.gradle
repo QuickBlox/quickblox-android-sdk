@@ -1,33 +1,56 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 
-ext.compileSdkVersion = 23
-ext.buildToolsVersion = "23.0.2"
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
 
-ext.minSdkVersion = 14
-ext.targetSdkVersion = 19
+ext {
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.2"
 
-ext.sourceCompatibility = JavaVersion.VERSION_1_7
-ext.targetCompatibility = JavaVersion.VERSION_1_7
+    minSdkVersion = 14
+    // FIXME Change to 23 after fixing up runtime permissions (at least in Location sample)
+    targetSdkVersion = 22
 
-ext.lintAbortOnError = false
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
 
-def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
-def qb_sdk_version = '2.4'
-ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
-ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
-ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
-ext.content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
-ext.customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
-ext.messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
-ext.videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
+    lintAbortOnError = false
+
+    // QB dependencies
+    def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
+    def qb_sdk_version = '2.4'
+    core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
+    location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
+    chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
+    content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
+    customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
+    messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
+    videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
+
+
+    // Dependency versions
+    playServicesVersion = '7.5.0'
+    supportV4Version = '23.1.1'
+    appcompatV7Version = '23.1.1'
+    recyclerviewV7Version = '23.1.1'
+    supportAnnotationsVersion = '23.1.1'
+
+    uilVersion = '1.9.0'
+    pullToRefreshVersion = '3.2.3'
+    stickersVersion = '0.2.2'
+    crashlyticsVersion = '2.2.2'
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
