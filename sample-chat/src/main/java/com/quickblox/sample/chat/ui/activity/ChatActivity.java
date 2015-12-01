@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.ui.activities;
+package com.quickblox.sample.chat.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,15 +25,15 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.core.Chat;
-import com.quickblox.sample.chat.core.ChatService;
-import com.quickblox.sample.chat.core.GroupChatImpl;
-import com.quickblox.sample.chat.core.PrivateChatImpl;
-import com.quickblox.sample.chat.ui.adapters.ChatAdapter;
+import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.utils.chat.Chat;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
+import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
+import com.quickblox.sample.chat.utils.chat.VerboseQbChatConnectionListener;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 import java.util.ArrayList;
@@ -45,31 +45,33 @@ import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
 import vc908.stickerfactory.ui.OnStickerSelectedListener;
 import vc908.stickerfactory.ui.fragment.StickersFragment;
 import vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout;
+import vc908.stickerfactory.utils.KeyboardUtils;
 
 public class ChatActivity extends BaseActivity implements KeyboardHandleRelativeLayout.KeyboardSizeChangeListener {
 
     private static final String TAG = ChatActivity.class.getSimpleName();
 
-    public static final String EXTRA_DIALOG = "dialog";
-    private final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
+    private static final String EXTRA_DIALOG = "dialog";
+    private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
     private EditText messageEditText;
     private ListView messagesContainer;
-    private Button sendButton;
     private ProgressBar progressBar;
+    private KeyboardHandleRelativeLayout keyboardHandleLayout;
+    private View stickersFrame;
+    private ImageView stickerButton;
+    private RelativeLayout container;
+
     private ChatAdapter adapter;
 
     private Chat chat;
     private QBDialog dialog;
-    private KeyboardHandleRelativeLayout keyboardHandleLayout;
-    private View stickersFrame;
-    private boolean isStickersFrameVisible;
-    private ImageView stickerButton;
-    private RelativeLayout container;
 
-    public static void start(Context context, Bundle bundle) {
+    private boolean isStickersFrameVisible;
+
+    public static void start(Context context, QBDialog dialog) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtras(bundle);
+        intent.putExtra(ChatActivity.EXTRA_DIALOG, dialog);
         context.startActivity(intent);
     }
 
@@ -81,19 +83,18 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         initViews();
 
         // Init chat if the session is active
-        //
         if (isSessionActive()) {
             initChat();
         }
 
-        ChatService.getInstance().addConnectionListener(chatConnectionListener);
+        ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        ChatService.getInstance().removeConnectionListener(chatConnectionListener);
+        ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             try {
                 chat.release();
             } catch (XMPPException e) {
-                Log.e(TAG, "failed to release chat", e);
+                Log.e(TAG, "Failed to release chat", e);
             }
             super.onBackPressed();
 
@@ -118,7 +119,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private void initViews() {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         messageEditText = (EditText) findViewById(R.id.messageEdit);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
         TextView companionLabel = (TextView) findViewById(R.id.companionLabel);
 
         // Setup opponents info
@@ -131,13 +132,12 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             container.removeView(meLabel);
             container.removeView(companionLabel);
         } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentID = ChatService.getInstance().getOpponentIDForPrivateDialog(dialog);
-            companionLabel.setText(ChatService.getInstance().getDialogsUsers().get(opponentID).getLogin());
+            Integer opponentID = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
+            companionLabel.setText(ChatHelper.getInstance().getDialogsUsersMap().get(opponentID).getLogin());
         }
 
         // Send button
-        //
-        sendButton = (Button) findViewById(R.id.chatSendButton);
+        Button sendButton = (Button) findViewById(R.id.chatSendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,7 +185,10 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             stickersFragment = new StickersFragment.Builder()
                     .setStickerPlaceholderColorFilterRes(android.R.color.darker_gray)
                     .build();
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, stickersFragment).commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame, stickersFragment)
+                    .commit();
         }
         stickersFragment.setOnStickerSelectedListener(stickerSelectedListener);
         stickersFragment.setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
@@ -200,7 +203,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void showKeyboard() {
-        ((InputMethodManager) messageEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void sendChatMessage(String messageText) {
@@ -211,10 +214,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         try {
             chat.sendMessage(chatMessage);
-        } catch (XMPPException e) {
-            Log.e(TAG, "failed to send a message", e);
-        } catch (SmackException sme) {
-            Log.e(TAG, "failed to send a message", sme);
+        } catch (XMPPException | SmackException e) {
+            Log.e(TAG, "Failed to send a message", e);
         }
 
         messageEditText.setText("");
@@ -254,10 +255,10 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private void setStickersFrameVisible(final boolean isVisible) {
         stickersFrame.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         isStickersFrameVisible = isVisible;
-        if (stickersFrame.getHeight() != vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight()) {
+        if (stickersFrame.getHeight() != KeyboardUtils.getKeyboardHeight()) {
             updateStickersFrameParams();
         }
-        final int padding = isVisible ? vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight() : 0;
+        final int padding = isVisible ? KeyboardUtils.getKeyboardHeight() : 0;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             keyboardHandleLayout.post(new Runnable() {
                 @Override
@@ -281,39 +282,27 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void initChat() {
-
         if (dialog.getType() == QBDialogType.GROUP) {
             chat = new GroupChatImpl(this);
 
-            // Join group chat
-            //
             progressBar.setVisibility(View.VISIBLE);
-            //
             joinGroupChat();
-
         } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentID = ChatService.getInstance().getOpponentIDForPrivateDialog(dialog);
-
+            Integer opponentID = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
             chat = new PrivateChatImpl(this, opponentID);
-
-            // Load CHat history
-            //
             loadChatHistory();
         }
     }
 
     private void joinGroupChat() {
-        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl() {
+        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-
-                // Load Chat history
-                //
                 loadChatHistory();
             }
 
             @Override
-            public void onError(List list) {
+            public void onError(List<String> list) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
                 dialog.setMessage("error when join group chat: " + list.toString()).create().show();
             }
@@ -367,21 +356,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
 
-    ConnectionListener chatConnectionListener = new ConnectionListener() {
-        @Override
-        public void connected(XMPPConnection connection) {
-            Log.i(TAG, "connected");
-        }
-
-        @Override
-        public void authenticated(XMPPConnection connection) {
-            Log.i(TAG, "authenticated");
-        }
-
-        @Override
-        public void connectionClosed() {
-            Log.i(TAG, "connectionClosed");
-        }
+    ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
 
         @Override
         public void connectionClosedOnError(final Exception e) {
@@ -400,13 +375,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
 
         @Override
-        public void reconnectingIn(final int seconds) {
-            if (seconds % 5 == 0) {
-                Log.i(TAG, "reconnectingIn: " + seconds);
-            }
-        }
-
-        @Override
         public void reconnectionSuccessful() {
             Log.i(TAG, "reconnectionSuccessful");
 
@@ -421,11 +389,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
                 });
             }
         }
-
-        @Override
-        public void reconnectionFailed(final Exception error) {
-            Log.i(TAG, "reconnectionFailed: " + error.getLocalizedMessage());
-        }
     };
 
 
@@ -434,12 +397,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     //
 
     @Override
-    public void onStartSessionRecreation() {
-
-    }
-
-    @Override
-    public void onFinishSessionRecreation(final boolean success) {
+    public void onSessionRecreationFinish(final boolean success) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

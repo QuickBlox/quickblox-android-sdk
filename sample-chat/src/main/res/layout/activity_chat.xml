@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout
-        android:id="@+id/sizeNotifierLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sizeNotifierLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,8 +22,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:src="@drawable/ic_action_insert_emoticon"
-                android:padding="8dp"/>
+                android:padding="8dp"
+                android:src="@drawable/ic_action_insert_emoticon" />
 
             <EditText
                 android:id="@+id/messageEdit"
@@ -33,7 +33,7 @@
                 android:layout_toLeftOf="@+id/chatSendButton"
                 android:layout_toRightOf="@id/stickers_button"
                 android:autoText="true"
-                android:hint="message text"/>
+                android:hint="message text" />
 
             <Button
                 android:id="@+id/chatSendButton"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:text="Send"/>
+                android:text="Send" />
 
             <ListView
                 android:id="@+id/messagesContainer"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="10dp"
                 android:divider="@null"
                 android:listSelector="@android:color/transparent"
-                android:transcriptMode="alwaysScroll"/>
+                android:transcriptMode="alwaysScroll" />
 
             <TextView
                 android:id="@+id/meLabel"
@@ -64,7 +64,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:singleLine="false"
                 android:text="Me"
-                android:textSize="20dp"/>
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/companionLabel"
@@ -72,15 +72,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:text="Friend"
-                android:textSize="20dp"/>
+                android:textSize="20dp" />
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progress_dialogs"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 
@@ -88,6 +88,6 @@
             android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true" />
     </vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout>
 </LinearLayout>

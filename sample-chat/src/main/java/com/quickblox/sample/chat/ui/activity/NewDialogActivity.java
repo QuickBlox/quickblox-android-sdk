@@ -1,6 +1,7 @@
-package com.quickblox.sample.chat.ui.activities;
+package com.quickblox.sample.chat.ui.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,8 +18,8 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.core.ChatService;
-import com.quickblox.sample.chat.ui.adapters.UsersAdapter;
+import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -31,63 +32,37 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
     private int listViewIndex;
     private int listViewTop;
-    private int currentPage = 0;
+    private int currentPage;
     private List<QBUser> users = new ArrayList<>();
 
     private PullToRefreshListView usersList;
-    private Button createChatButton;
     private ProgressBar progressBar;
     private UsersAdapter usersAdapter;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, NewDialogActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_new);
+        setContentView(R.layout.activity_dialog_new);
 
-        usersList = (PullToRefreshListView) findViewById(R.id.usersList);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        usersList = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
+        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
 
-        createChatButton = (Button) findViewById(R.id.createChatButton);
+        Button createChatButton = (Button) findViewById(R.id.button_dialog_create_chat);
         createChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ChatService.getInstance().addDialogsUsers(usersAdapter.getSelected());
-
-                // Create new group dialog
-                //
-                QBDialog dialogToCreate = new QBDialog();
-                dialogToCreate.setName(usersListToChatName());
-                if (usersAdapter.getSelected().size() == 1) {
-                    dialogToCreate.setType(QBDialogType.PRIVATE);
-                } else {
-                    dialogToCreate.setType(QBDialogType.GROUP);
-                }
-                dialogToCreate.setOccupantsIds(getUserIds(usersAdapter.getSelected()));
-
-                QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate, new QBEntityCallbackImpl<QBDialog>() {
-                    @Override
-                    public void onSuccess(QBDialog dialog, Bundle args) {
-                        if (usersAdapter.getSelected().size() == 1) {
-                            startSingleChat(dialog);
-                        } else {
-                            startGroupChat(dialog);
-                        }
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(NewDialogActivity.this);
-                        dialog.setMessage("dialog creation errors: " + errors).create().show();
-                    }
-                });
+                createDialogWithSelectedUsers();
             }
         });
 
         usersList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                // Do work to refresh the list here.
                 loadNextPage();
                 listViewIndex = usersList.getRefreshableView().getFirstVisiblePosition();
                 View v = usersList.getRefreshableView().getChildAt(0);
@@ -95,18 +70,39 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
             }
         });
 
-        if(isSessionActive()){
+        if (isSessionActive()) {
             loadNextPage();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(NewDialogActivity.this, DialogsActivity.class);
-        startActivity(i);
-        finish();
-    }
+    private void createDialogWithSelectedUsers() {
+        ChatHelper.getInstance().addDialogsUsers(usersAdapter.getSelectedUsers());
 
+        // Create new group dialog
+        QBDialog dialogToCreate = new QBDialog();
+        dialogToCreate.setName(createChatNameFromUserList());
+        if (usersAdapter.getSelectedUsers().size() == 1) {
+            dialogToCreate.setType(QBDialogType.PRIVATE);
+        } else {
+            dialogToCreate.setType(QBDialogType.GROUP);
+        }
+        dialogToCreate.setOccupantsIds(getUserIds(usersAdapter.getSelectedUsers()));
+
+        QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate,
+                new QBEntityCallbackImpl<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog dialog, Bundle args) {
+                        ChatActivity.start(NewDialogActivity.this, dialog);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(NewDialogActivity.this);
+                        dialog.setMessage("dialog creation errors: " + errors).create().show();
+                    }
+                }
+        );
+    }
 
     public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
         QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -118,7 +114,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
 
     @Override
-    public void onSuccess(ArrayList<QBUser> newUsers, Bundle bundle){
+    public void onSuccess(ArrayList<QBUser> newUsers, Bundle bundle) {
 
         // save users
         //
@@ -126,7 +122,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
         // Prepare users list for simple adapter.
         //
-        usersAdapter = new UsersAdapter(users, this);
+        usersAdapter = new UsersAdapter(this, users);
         usersList.setAdapter(usersAdapter);
         usersList.onRefreshComplete();
         usersList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
@@ -135,49 +131,34 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     @Override
-    public void onSuccess(){
+    public void onSuccess() {
 
     }
 
     @Override
-    public void onError(List<String> errors){
+    public void onError(List<String> errors) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("get users errors: " + errors).create().show();
     }
 
 
-    private String usersListToChatName(){
+    private String createChatNameFromUserList() {
         String chatName = "";
-        for(QBUser user : usersAdapter.getSelected()){
+        for (QBUser user : usersAdapter.getSelectedUsers()) {
             String prefix = chatName.equals("") ? "" : ", ";
             chatName = chatName + prefix + user.getLogin();
         }
         return chatName;
     }
 
-    public void startSingleChat(QBDialog dialog) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatActivity.EXTRA_DIALOG, dialog);
-
-        ChatActivity.start(this, bundle);
-    }
-
-    private void startGroupChat(QBDialog dialog){
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatActivity.EXTRA_DIALOG, dialog);
-
-        ChatActivity.start(this, bundle);
-    }
-
     private void loadNextPage() {
-        ++currentPage;
-
+        currentPage++;
         QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), this);
     }
 
-    public static ArrayList<Integer> getUserIds(List<QBUser> users){
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for(QBUser user : users){
+    public static ArrayList<Integer> getUserIds(List<QBUser> users) {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (QBUser user : users) {
             ids.add(user.getId());
         }
         return ids;
@@ -188,12 +169,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     //
 
     @Override
-    public void onStartSessionRecreation() {
-
-    }
-
-    @Override
-    public void onFinishSessionRecreation(final boolean success) {
+    public void onSessionRecreationFinish(final boolean success) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

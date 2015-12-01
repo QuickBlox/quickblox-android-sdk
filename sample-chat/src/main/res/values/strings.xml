@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QuickBlox Sample Chat</string>
+
+    <string name="menu_new_chat">New Chat</string>
+
+    <string name="splash_chat">Chat</string>
+
+    <string name="dlg_loading">Loading</string>
+    <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+
+    <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
+
+    <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>
+
+    <string name="dialog_new_select_users_to_chat">Select users to chat</string>
+    <string name="dialog_new_create_chat">Create Chat</string>
+    <string name="chat_sticker">Sticker</string>
 </resources>

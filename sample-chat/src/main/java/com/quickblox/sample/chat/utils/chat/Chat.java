@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.core;
+package com.quickblox.sample.chat.utils.chat;
 
 import com.quickblox.chat.model.QBChatMessage;
 

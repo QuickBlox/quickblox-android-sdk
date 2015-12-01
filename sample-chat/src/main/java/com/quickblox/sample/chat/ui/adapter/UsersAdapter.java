@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.ui.adapters;
+package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,38 +8,36 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.chat.R;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by igorkhomenko on 9/12/14.
- */
 public class UsersAdapter extends BaseAdapter {
 
-    private List<QBUser> dataSource;
+    private List<QBUser> users;
     private LayoutInflater inflater;
-    private List<QBUser> selected = new ArrayList<QBUser>();
+    private List<QBUser> selectedUsers;
 
-    public UsersAdapter(List<QBUser> dataSource, Context ctx) {
-        this.dataSource = dataSource;
+    public UsersAdapter(Context ctx, List<QBUser> users) {
+        this.users = users;
+        this.selectedUsers = new ArrayList<>();
         this.inflater = LayoutInflater.from(ctx);
     }
 
-    public List<QBUser> getSelected() {
-        return selected;
+    public List<QBUser> getSelectedUsers() {
+        return selectedUsers;
     }
 
     @Override
     public int getCount() {
-        return dataSource.size();
+        return users.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return dataSource.get(position);
+        return users.get(position);
     }
 
     @Override
@@ -51,34 +49,35 @@ public class UsersAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_user, null);
+            convertView = inflater.inflate(R.layout.list_item_user, parent, false);
             holder = new ViewHolder();
-            holder.login = (TextView) convertView.findViewById(R.id.userLogin);
-            holder.add = (CheckBox) convertView.findViewById(R.id.addCheckBox);
+            holder.loginTextView = (TextView) convertView.findViewById(R.id.userLogin);
+            holder.userCheckBox = (CheckBox) convertView.findViewById(R.id.addCheckBox);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final QBUser user = dataSource.get(position);
+
+        final QBUser user = users.get(position);
         if (user != null) {
-            holder.login.setText(user.getLogin());
-            holder.add.setOnClickListener(new View.OnClickListener() {
+            holder.loginTextView.setText(user.getLogin());
+            holder.userCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if ((((CheckBox) v).isChecked())) {
-                        selected.add(user);
+                        selectedUsers.add(user);
                     } else {
-                        selected.remove(user);
+                        selectedUsers.remove(user);
                     }
                 }
             });
-            holder.add.setChecked(selected.contains(user));
+            holder.userCheckBox.setChecked(selectedUsers.contains(user));
         }
         return convertView;
     }
 
     private static class ViewHolder {
-        TextView login;
-        CheckBox add;
+        TextView loginTextView;
+        CheckBox userCheckBox;
     }
 }

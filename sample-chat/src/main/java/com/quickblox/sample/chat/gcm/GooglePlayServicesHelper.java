@@ -1,11 +1,13 @@
-package com.quickblox.sample.chat.pushnotifications;
+package com.quickblox.sample.chat.gcm;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -17,36 +19,31 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBSubscription;
-import com.quickblox.sample.chat.ApplicationSingleton;
+import com.quickblox.sample.chat.App;
+import com.quickblox.sample.chat.utils.Consts;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayServicesHelper {
+public class GooglePlayServicesHelper {
+    private static final String TAG = GooglePlayServicesHelper.class.getSimpleName();
 
-    private static final String PROPERTY_APP_VERSION = "appVersion";
-    private static final String PROPERTY_REG_ID = "registration_id";
-    private static final String TAG = "PlayServicesHelper";
+    private static final String PREF_APP_VERSION = "appVersion";
+    private static final String PREF_GCM_REG_ID = "registration_id";
+
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private GoogleCloudMessaging googleCloudMessaging;
-    private Activity activity;
-    private String regId;
+    private GoogleCloudMessaging gcm;
+    private String gcmRegId;
 
-    public PlayServicesHelper(Activity activity) {
-        this.activity = activity;
-        checkPlayService();
-    }
+    public void registerForGcmIfPossible(Activity activity) {
+        // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
+        if (checkGooglePlayServices(activity)) {
+            gcm = GoogleCloudMessaging.getInstance(App.getInstance());
+            gcmRegId = getGcmRegistrationId();
 
-    private void checkPlayService() {
-        // Check device for Play Services APK. If check succeeds, proceed with
-        // GCM registration.
-        if (checkPlayServices()) {
-            googleCloudMessaging = GoogleCloudMessaging.getInstance(activity);
-            regId = getRegistrationId();
-
-            if (regId.isEmpty()) {
+            if (gcmRegId.isEmpty()) {
                 registerInBackground();
             }
         } else {
@@ -58,9 +55,10 @@ public class PlayServicesHelper {
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
+     * @param activity
      */
-    public boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+    public boolean checkGooglePlayServices(Activity activity) {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(App.getInstance());
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST)
@@ -82,9 +80,9 @@ public class PlayServicesHelper {
      * @return registration ID, or empty string if there is no existing
      * registration ID.
      */
-    private String getRegistrationId() {
-        final SharedPreferences prefs = getGCMPreferences();
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+    private String getGcmRegistrationId() {
+        SharedPreferences prefs = getGcmPreferences();
+        String registrationId = prefs.getString(PREF_GCM_REG_ID, "");
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
             return "";
@@ -92,8 +90,8 @@ public class PlayServicesHelper {
         // Check if app was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
         // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = ApplicationSingleton.getInstance().getAppVersion();
+        int registeredVersion = prefs.getInt(PREF_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = App.getInstance().getAppVersion();
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
             return "";
@@ -111,21 +109,21 @@ public class PlayServicesHelper {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
-                String msg = "";
+                String msg;
                 try {
-                    if (googleCloudMessaging == null) {
-                        googleCloudMessaging = GoogleCloudMessaging.getInstance(activity);
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(App.getInstance());
                     }
-                    regId = googleCloudMessaging.register(Consts.PROJECT_NUMBER);
-                    msg = "Device registered, registration ID=" + regId;
+                    gcmRegId = gcm.register(Consts.GCM_SENDER_ID);
+                    msg = "Device registered, registration ID=" + gcmRegId;
 
                     // You should send the registration ID to your server over HTTP, so it
                     // can use GCM/HTTP or CCS to send messages to your app.
-                    Handler h = new Handler(activity.getMainLooper());
+                    Handler h = new Handler(Looper.getMainLooper());
                     h.post(new Runnable() {
                         @Override
                         public void run() {
-                            subscribeToPushNotifications(regId);
+                            subscribeToPushNotifications(gcmRegId);
                         }
                     });
 
@@ -134,7 +132,7 @@ public class PlayServicesHelper {
                     // 'from' address in the message.
 
                     // Persist the regID - no need to register again.
-                    storeRegistrationId(regId);
+                    storeRegistrationId(gcmRegId);
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                     // If there is an error, don't just keep trying to register.
@@ -148,50 +146,46 @@ public class PlayServicesHelper {
             protected void onPostExecute(String msg) {
                 Log.i(TAG, msg + "\n");
             }
-        }.execute(null, null, null);
+        }.execute();
     }
 
     /**
      * @return Application's {@code SharedPreferences}.
      */
-    private SharedPreferences getGCMPreferences() {
+    private SharedPreferences getGcmPreferences() {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
-        return activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);
+        Context ctx = App.getInstance();
+        return ctx.getSharedPreferences(ctx.getPackageName(), Context.MODE_PRIVATE);
     }
 
     /**
      * Subscribe to Push Notifications
      *
-     * @param regId registration ID
+     * @param gcmRegId registration ID
      */
-    private void subscribeToPushNotifications(String regId) {
-        //Create push token with  Registration Id for Android
-        //
-        Log.d(TAG, "subscribing...");
-
+    private void subscribeToPushNotifications(String gcmRegId) {
         String deviceId;
-
-        final TelephonyManager mTelephony = (TelephonyManager) activity.getSystemService(
-                Context.TELEPHONY_SERVICE);
-        if (mTelephony.getDeviceId() != null) {
-            deviceId = mTelephony.getDeviceId(); //*** use for mobiles
+        TelephonyManager telephonyManager = (TelephonyManager) App.getInstance()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager.getDeviceId() != null) {
+            deviceId = telephonyManager.getDeviceId(); // for phones
         } else {
-            deviceId = Settings.Secure.getString(activity.getContentResolver(),
-                    Settings.Secure.ANDROID_ID); //*** use for tablets
+            ContentResolver cr = App.getInstance().getContentResolver();
+            deviceId = Settings.Secure.getString(cr, Settings.Secure.ANDROID_ID); // for tablets
         }
 
-        QBMessages.subscribeToPushNotificationsTask(regId, deviceId, QBEnvironment.DEVELOPMENT, new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
-            @Override
-            public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {
-                Log.d(TAG, "subscribed");
-            }
+        QBMessages.subscribeToPushNotificationsTask(gcmRegId, deviceId, QBEnvironment.DEVELOPMENT,
+                new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
+                    @Override
+                    public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {
+                        Log.d(TAG, "subscribed");
+                    }
 
-            @Override
-            public void onError(List<String> strings) {
-
-            }
-        });
+                    @Override
+                    public void onError(List<String> strings) {
+                    }
+                });
     }
 
     /**
@@ -201,12 +195,13 @@ public class PlayServicesHelper {
      * @param regId registration ID
      */
     private void storeRegistrationId(String regId) {
-        final SharedPreferences prefs = getGCMPreferences();
-        int appVersion = ApplicationSingleton.getInstance().getAppVersion();
-        Log.i(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.commit();
+        int appVersion = App.getInstance().getAppVersion();
+        Log.i(TAG, "Saving gcmRegId on app version " + appVersion);
+
+        SharedPreferences preferences = getGcmPreferences();
+        preferences.edit()
+                .putString(PREF_GCM_REG_ID, regId)
+                .putInt(PREF_APP_VERSION, appVersion)
+                .apply();
     }
 }

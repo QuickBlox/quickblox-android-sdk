@@ -1,10 +1,8 @@
-package com.quickblox.sample.chat.core;
+package com.quickblox.sample.chat.utils.chat;
 
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
@@ -12,7 +10,9 @@ import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListenerImpl;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.sample.chat.ui.activities.ChatActivity;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.sample.chat.ui.activity.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -33,17 +33,17 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
         this.chatActivity = chatActivity;
     }
 
-    public void joinGroupChat(QBDialog dialog, QBEntityCallback callback){
+    public void joinGroupChat(QBDialog dialog, QBEntityCallback callback) {
         initManagerIfNeed();
 
-        if(groupChat == null) {
+        if (groupChat == null) {
             groupChat = groupChatManager.createGroupChat(dialog.getRoomJid());
         }
         join(groupChat, callback);
     }
 
-    private void initManagerIfNeed(){
-        if(groupChatManager == null){
+    private void initManagerIfNeed() {
+        if (groupChatManager == null) {
             groupChatManager = QBChatService.getInstance().getGroupChatManager();
         }
     }
@@ -54,7 +54,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
         Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_LONG).show();
 
-        groupChat.join(history, new QBEntityCallbackImpl() {
+        groupChat.join(history, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
 
@@ -72,7 +72,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
             }
 
             @Override
-            public void onError(final List list) {
+            public void onError(final List<String> list) {
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -81,17 +81,15 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
                 });
 
 
-                Log.w("Could not join chat, errors:", Arrays.toString(list.toArray()));
+                Log.w(TAG, "Could not join chat, errors:" + Arrays.toString(list.toArray()));
             }
         });
     }
 
-    public void leave(){
+    public void leave() {
         try {
             groupChat.leave();
-        } catch (SmackException.NotConnectedException nce) {
-            nce.printStackTrace();
-        } catch (XMPPException e) {
+        } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
         }
     }
@@ -110,10 +108,10 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
         if (groupChat != null) {
             try {
                 groupChat.sendMessage(message);
-            } catch (SmackException.NotConnectedException nce){
+            } catch (SmackException.NotConnectedException nce) {
                 nce.printStackTrace();
                 Toast.makeText(chatActivity, "Can't send a message, You are not connected to chat", Toast.LENGTH_SHORT).show();
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
                 Toast.makeText(chatActivity, "You are still joining a group chat, please wait a bit", Toast.LENGTH_LONG).show();
             }
@@ -130,7 +128,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
     }
 
     @Override
-    public void processError(QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
+    public void processError(QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage) {
 
     }
 }

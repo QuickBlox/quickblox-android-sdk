@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.pushnotifications;
+package com.quickblox.sample.chat.gcm;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,9 +9,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Explicitly specify that GcmIntentService will handle the intent.
-        ComponentName comp = new ComponentName(context.getPackageName(), GCMIntentService.class.getName());
-        // Start the service, keeping the device awake while it is launching.
+        ComponentName comp = new ComponentName(context.getPackageName(), GcmIntentService.class.getName());
         startWakefulService(context, (intent.setComponent(comp)));
     }
 }

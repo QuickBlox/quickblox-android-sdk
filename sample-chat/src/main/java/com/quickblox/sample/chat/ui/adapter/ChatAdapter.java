@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.ui.adapters;
+package com.quickblox.sample.chat.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.core.ChatService;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -90,7 +90,7 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QBUser currentUser = ChatService.getInstance().getCurrentUser();
+        QBUser currentUser = ChatHelper.getInstance().getCurrentUser();
         boolean isOutgoing = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
         setAlignment(holder, isOutgoing);
         if (StickersManager.isSticker(chatMessage.getBody())) {
@@ -98,8 +98,8 @@ public class ChatAdapter extends BaseAdapter {
                     .loadSticker(chatMessage.getBody())
                     .setPlaceholderColorFilterRes(android.R.color.darker_gray)
                     .into(holder.stickerView);
-        } else if (holder.txtMessage != null) {
-            holder.txtMessage.setText(chatMessage.getBody());
+        } else if (holder.messageTextView != null) {
+            holder.messageTextView.setText(chatMessage.getBody());
         }
         if (chatMessage.getSenderId() != null) {
             holder.txtInfo.setText(chatMessage.getSenderId() + ": " + getTimeText(chatMessage));
@@ -131,11 +131,11 @@ public class ChatAdapter extends BaseAdapter {
             layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
             layoutParams.gravity = Gravity.RIGHT;
             holder.txtInfo.setLayoutParams(layoutParams);
-            if (holder.txtMessage != null) {
+            if (holder.messageTextView != null) {
                 holder.contentWithBG.setBackgroundResource(R.drawable.incoming_message_bg);
-                layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+                layoutParams = (LinearLayout.LayoutParams) holder.messageTextView.getLayoutParams();
                 layoutParams.gravity = Gravity.RIGHT;
-                holder.txtMessage.setLayoutParams(layoutParams);
+                holder.messageTextView.setLayoutParams(layoutParams);
             } else {
                 holder.contentWithBG.setBackgroundResource(android.R.color.transparent);
             }
@@ -153,11 +153,11 @@ public class ChatAdapter extends BaseAdapter {
             layoutParams.gravity = Gravity.LEFT;
             holder.txtInfo.setLayoutParams(layoutParams);
 
-            if (holder.txtMessage != null) {
+            if (holder.messageTextView != null) {
                 holder.contentWithBG.setBackgroundResource(R.drawable.outgoing_message_bg);
-                layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+                layoutParams = (LinearLayout.LayoutParams) holder.messageTextView.getLayoutParams();
                 layoutParams.gravity = Gravity.LEFT;
-                holder.txtMessage.setLayoutParams(layoutParams);
+                holder.messageTextView.setLayoutParams(layoutParams);
             } else {
                 holder.contentWithBG.setBackgroundResource(android.R.color.transparent);
             }
@@ -166,7 +166,7 @@ public class ChatAdapter extends BaseAdapter {
 
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder = new ViewHolder();
-        holder.txtMessage = (TextView) v.findViewById(R.id.txtMessage);
+        holder.messageTextView = (TextView) v.findViewById(R.id.txtMessage);
         holder.content = (LinearLayout) v.findViewById(R.id.content);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
         holder.txtInfo = (TextView) v.findViewById(R.id.txtInfo);
@@ -179,7 +179,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        public TextView txtMessage;
+        public TextView messageTextView;
         public TextView txtInfo;
         public LinearLayout content;
         public LinearLayout contentWithBG;
