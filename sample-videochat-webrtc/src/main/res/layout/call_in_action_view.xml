@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/callActionWiev"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_alignParentBottom="true">
+
+    <ToggleButton
+        android:id="@+id/dynamicToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/ic_toggle_dynamic"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignBottom="@+id/callEndBtnInCallAction"
+        android:layout_toLeftOf="@+id/callEndBtnInCallAction"
+        android:layout_marginRight="20dp"
+        android:layout_alignTop="@+id/callEndBtnInCallAction"/>
+
+    <ImageButton
+        android:id="@+id/callEndBtnInCallAction"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_call_end"
+        android:background="@drawable/btn_background_call_end"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentBottom ="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"/>
+
+
+    <ToggleButton
+        android:id="@+id/micToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/ic_toggle_mic"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignBottom="@+id/callEndBtnInCallAction"
+        android:layout_toRightOf="@+id/callEndBtnInCallAction"
+        android:layout_marginLeft="20dp"
+        android:layout_alignTop="@+id/callEndBtnInCallAction" />
+
+</RelativeLayout>

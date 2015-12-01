@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id = "@+id/fragmentOpponents"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/select_user_to_call"
+        android:id="@+id/selectUsertextView"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+    <!--android:layout_alignParentTop="true"-->
+
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/opponentsList"
+        android:layout_gravity="center_horizontal"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:layout_below="@+id/selectUsertextView"
+        android:layout_above="@+id/linearLayout"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:id="@+id/linearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_audio_call"
+            android:id="@+id/btnAudioCall"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:textColor="@color/blue_green"
+            android:layout_weight="1"
+            android:textStyle="bold" />
+
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_video_call"
+        android:id="@+id/btnVideoCall"
+        style="?android:attr/buttonBarButtonStyle"
+        android:background="@android:color/transparent"
+        android:textColor="@color/blue_green"
+        android:layout_weight="1"
+        android:textStyle="bold" />
+
+        <!--<Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_screen_capture"
+            android:id="@+id/screenCapturer"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:textColor="@color/blue_green"
+            android:layout_weight="1"
+            android:textStyle="bold" />-->
+        <!--
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="close channles"
+            android:id="@+id/closeChnnal"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:textColor="@color/blue_green"
+            android:layout_weight="1"
+            android:textStyle="bold" />-->
+    </LinearLayout>
+
+</RelativeLayout>

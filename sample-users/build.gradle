@@ -38,5 +38,5 @@ dependencies {
     //} else {
     onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
    // }
-    compile "com.android.support:appcompat-v7:22.1.0"
+    compile 'com.android.support:appcompat-v7:23.1.1'
 }

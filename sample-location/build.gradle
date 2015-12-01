@@ -35,7 +35,7 @@ dependencies {
     onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
     onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@jar"
 
-    compile "com.google.android.gms:play-services:$rootProject.playServiceVersion"
-    compile "com.android.support:support-v4:$rootProject.androidSupportVersion"
-    compile "com.android.support:appcompat-v7:$rootProject.androidSupportVersion"
+    compile 'com.android.support:support-v4:19.0.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.google.android.gms:play-services:3.2.+'
 }

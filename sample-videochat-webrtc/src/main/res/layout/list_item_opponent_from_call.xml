@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/innerLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/black_transparent_50">
+
+        <com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView
+            android:id="@+id/opponentView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            custom:secondCoords="@array/localViewCoordinatesOnRemote"
+            custom:secondMirror="true" />
+
+        <ToggleButton
+            android:visibility="invisible"
+            android:id="@+id/switchCameraToggle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_switch_camera_sm"
+            android:textOff=""
+            android:textOn="" />
+
+        <LinearLayout  android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="0.7"
+                android:layout_height="match_parent">
+
+                <View
+                    android:layout_weight="0.3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <View android:id="@+id/cameraOff"
+                    android:visibility="invisible"
+                    android:layout_weight="0.7"
+                    android:layout_width="match_parent"
+                    android:background="@color/black"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/connectionStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="3dp"
+            android:gravity="center_horizontal"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic" />
+
+
+        <TextView
+            android:id="@+id/opponentName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</FrameLayout>
