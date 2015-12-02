@@ -80,7 +80,6 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
                     }
                 });
 
-
                 Log.w(TAG, "Could not join chat, errors:" + Arrays.toString(list.toArray()));
             }
         });

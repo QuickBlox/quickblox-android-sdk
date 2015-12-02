@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/content"
+        android:id="@+id/container_chat_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtInfo"
+            android:id="@+id/text_chat_info"
             android:layout_width="wrap_content"
             android:layout_height="20sp"
             android:layout_gravity="right"
             android:textColor="@android:color/secondary_text_dark"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            tools:text="Author 10:50" />
 
         <LinearLayout
-            android:id="@+id/contentWithBackground"
+            android:id="@+id/container_chat_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -28,11 +30,13 @@
             android:paddingBottom="10dp"
             android:paddingLeft="10dp">
 
-            <ImageView
-                android:id="@+id/sticker_image"
-                android:layout_width="160dp"
-                android:layout_height="160dp" />
+            <TextView
+                android:id="@+id/text_chat_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp"
+                android:textColor="@android:color/black"
+                tools:text="Test message" />
         </LinearLayout>
-
     </LinearLayout>
 </RelativeLayout>

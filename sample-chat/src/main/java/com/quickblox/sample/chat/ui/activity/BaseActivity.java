@@ -1,16 +1,17 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.chat.ChatSessionStateCallback;
+import com.quickblox.sample.chat.ui.fragment.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.chat.ChatSessionStateCallback;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -18,29 +19,28 @@ import java.util.List;
 public abstract class BaseActivity extends AppCompatActivity implements ChatSessionStateCallback {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
-    private static final int RECREATE_SESSION_DELAY_MILLIS = 3000;
+    private static final int RECREATE_SESSION_AFTER_ERROR_DELAY = 3000;
 
     private static final String BUNDLE_USER_LOGIN = "USER_LOGIN";
     private static final String BUNDLE_USER_PASSWORD = "USER_PASSWORD";
 
-    private final Handler handler = new Handler();
+    private static final Handler handler = new Handler(Looper.getMainLooper());
 
-    private boolean sessionActive = false;
-    private boolean needToRecreateSession = false;
-
-    private ProgressDialog progressDialog;
+    private boolean isSessionActive;
+    private boolean needToRecreateSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 'isChatServiceInitialised' will be true if it's the 1st start of the app
+        // 'isChatServiceInitialisedJustNow' will be true if it's the 1st start of the app
         // or if the app's process was restarted after background death
-        boolean isChatServiceInitialised = ChatHelper.initIfNeed(this);
-        if (isChatServiceInitialised && savedInstanceState != null) {
+        boolean isChatServiceInitialisedJustNow = ChatHelper.initIfNeed(this);
+        if (isChatServiceInitialisedJustNow && savedInstanceState != null) {
             needToRecreateSession = true;
+            isSessionActive = false;
         } else {
-            sessionActive = true;
+            isSessionActive = true;
         }
     }
 
@@ -76,19 +76,16 @@ public abstract class BaseActivity extends AppCompatActivity implements ChatSess
     }
 
     private void recreateChatSession(final QBUser user) {
-        sessionActive = false;
-
-        showProgressDialog();
+        ProgressDialogFragment.show(getSupportFragmentManager());
 
         ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "Chat login onSuccess");
 
-                progressDialog.dismiss();
-                progressDialog = null;
+                ProgressDialogFragment.hide(getSupportFragmentManager());
 
-                sessionActive = true;
+                isSessionActive = true;
                 onSessionRecreationFinish(true);
             }
 
@@ -98,31 +95,18 @@ public abstract class BaseActivity extends AppCompatActivity implements ChatSess
 
                 Toast.makeText(BaseActivity.this, R.string.error_recreate_session, Toast.LENGTH_SHORT).show();
 
-                // try again
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         recreateChatSession(user);
                     }
-                }, RECREATE_SESSION_DELAY_MILLIS);
+                }, RECREATE_SESSION_AFTER_ERROR_DELAY);
 
                 onSessionRecreationFinish(false);
             }
         });
     }
-
-    private void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle(R.string.dlg_loading);
-            progressDialog.setMessage(getString(R.string.dlg_restoring_chat_session));
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        }
-        progressDialog.show();
-    }
-
-
     public boolean isSessionActive() {
-        return sessionActive;
+        return isSessionActive;
     }
 }

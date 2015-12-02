@@ -48,7 +48,7 @@ public class DialogsActivity extends BaseActivity {
         googlePlayServicesHelper.registerForGcmIfPossible(this);
 
         dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
-        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
+        progressBar = (ProgressBar) findViewById(R.id.progress_chat_messages);
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(gcmBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
@@ -77,7 +77,6 @@ public class DialogsActivity extends BaseActivity {
             }
         });
     }
-
 
     public void buildListView(List<QBDialog> dialogs) {
         final DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
@@ -125,7 +124,6 @@ public class DialogsActivity extends BaseActivity {
             Log.i(TAG, "Received event " + intent.getAction() + " with data: " + message);
         }
     };
-
 
     //
     // ApplicationSessionStateCallback

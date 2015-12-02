@@ -33,13 +33,13 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
         privateChat = privateChatManager.getChat(opponentID);
         if (privateChat == null) {
             privateChat = privateChatManager.createChat(opponentID, this);
-        }else{
+        } else {
             privateChat.addMessageListener(this);
         }
     }
 
-    private void initManagerIfNeed(){
-        if(privateChatManager == null){
+    private void initManagerIfNeed() {
+        if (privateChatManager == null) {
             privateChatManager = QBChatService.getInstance().getPrivateChatManager();
 
             privateChatManager.addPrivateChatManagerListener(this);
@@ -65,13 +65,13 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
     }
 
     @Override
-    public void processError(QBPrivateChat chat, QBChatException error, QBChatMessage originChatMessage){
+    public void processError(QBPrivateChat chat, QBChatException error, QBChatMessage originChatMessage) {
 
     }
 
     @Override
     public void chatCreated(QBPrivateChat incomingPrivateChat, boolean createdLocally) {
-        if(!createdLocally){
+        if (!createdLocally) {
             privateChat = incomingPrivateChat;
             privateChat.addMessageListener(PrivateChatImpl.this);
         }

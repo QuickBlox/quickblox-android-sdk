@@ -53,9 +53,9 @@ public class DialogsAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_item_room, parent, false);
 
             holder = new ViewHolder();
-            holder.nameTextView = (TextView) convertView.findViewById(R.id.roomName);
-            holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.lastMessage);
-            holder.dialogTypeTextView = (TextView) convertView.findViewById(R.id.textViewGroupType);
+            holder.nameTextView = (TextView) convertView.findViewById(R.id.text_room_name);
+            holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.text_room_last_message);
+            holder.dialogTypeTextView = (TextView) convertView.findViewById(R.id.text_room_group_type);
 
             convertView.setTag(holder);
         } else {

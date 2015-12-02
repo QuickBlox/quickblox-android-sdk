@@ -38,7 +38,7 @@
         <!-- GCM (Push Notifications) setup: http://developer.android.com/google/gcm/gs.html#android-app -->
 
         <!-- 1. Add the following broadcast receiver.
-  Notice that android:name in the category tag must be replaced by your application's package name -->
+        Notice that android:name in the category tag must be replaced by your application's package name -->
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -46,7 +46,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.quickblox.simplesample.messages" />
+                <category android:name="com.quickblox.sample.chat" />
             </intent-filter>
         </receiver>
 
@@ -64,14 +64,14 @@
 
     </application>
 
-    <!-- 4. Declare and use a custom permission so only this application can receive GCM messages.
+    <!-- 4. Declare and use a custom permission so only this application can receive GCM s.
   This permission must be called my_app_package.permission.C2D_MESSAGE
   (where my_app_package is the package name of your app as defined by the manifest tag),
   otherwise it will not work. -->
     <permission
-        android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE"
+        android:name="com.quickblox.sample.chat.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.quickblox.simplesample.messages.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.quickblox.sample.chat.permission.C2D_MESSAGE" />
 
     <!-- 5. Add the following permissions: -->
     <!-- App receives GCM messages. -->

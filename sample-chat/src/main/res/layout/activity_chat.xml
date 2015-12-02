@@ -5,8 +5,7 @@
     android:orientation="vertical">
 
     <vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/sizeNotifierLayout"
+        android:id="@+id/layout_keyboard_notifier"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,37 +16,38 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/stickers_button"
+            <ImageButton
+                android:id="@+id/button_chat_stickers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:padding="8dp"
+                android:background="@null"
                 android:src="@drawable/ic_action_insert_emoticon" />
 
             <EditText
-                android:id="@+id/messageEdit"
+                android:id="@+id/edit_chat_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_toLeftOf="@+id/chatSendButton"
-                android:layout_toRightOf="@id/stickers_button"
+                android:layout_toLeftOf="@+id/button_chat_send"
+                android:layout_toRightOf="@+id/button_chat_stickers"
                 android:autoText="true"
-                android:hint="message text" />
+                android:hint="@string/chat_hint_message_text" />
 
             <Button
-                android:id="@+id/chatSendButton"
+                android:id="@+id/button_chat_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:text="Send" />
+                android:text="@string/chat_send" />
 
             <ListView
-                android:id="@+id/messagesContainer"
+                android:id="@+id/list_chat_messages"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/messageEdit"
+                android:layout_above="@+id/edit_chat_message"
                 android:layout_alignParentLeft="false"
                 android:layout_alignParentTop="false"
                 android:layout_below="@+id/meLabel"
@@ -63,25 +63,24 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:singleLine="false"
-                android:text="Me"
-                android:textSize="20dp" />
+                android:text="@string/chat_me"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/companionLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Friend"
-                android:textSize="20dp" />
+                android:text="@string/chat_friend"
+                android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progress_dialogs"
-                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/progress_chat_messages"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true" />
-
         </RelativeLayout>
 
         <FrameLayout

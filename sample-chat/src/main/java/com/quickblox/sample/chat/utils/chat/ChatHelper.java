@@ -41,6 +41,12 @@ public class ChatHelper {
         return instance;
     }
 
+    /**
+     * Starts QBChatService initialization
+     *
+     * @param ctx any Context instance
+     * @return true if service wasn't initialized before call
+     */
     public static boolean initIfNeed(Context ctx) {
         if (!QBChatService.isInitialized()) {
             QBChatService.setDebugEnabled(true);
@@ -69,7 +75,7 @@ public class ChatHelper {
     }
 
     public void login(final QBUser user, final QBEntityCallback callback) {
-        // Create REST API session
+        // Create REST API session on QuickBlox
         QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession session, Bundle args) {

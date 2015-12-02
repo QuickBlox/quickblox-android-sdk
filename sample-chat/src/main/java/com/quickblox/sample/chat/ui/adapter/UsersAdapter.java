@@ -51,8 +51,8 @@ public class UsersAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_user, parent, false);
             holder = new ViewHolder();
-            holder.loginTextView = (TextView) convertView.findViewById(R.id.userLogin);
-            holder.userCheckBox = (CheckBox) convertView.findViewById(R.id.addCheckBox);
+            holder.loginTextView = (TextView) convertView.findViewById(R.id.text_user_login);
+            holder.userCheckBox = (CheckBox) convertView.findViewById(R.id.checkbox_user);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

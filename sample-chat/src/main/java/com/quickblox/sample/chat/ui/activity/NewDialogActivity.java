@@ -50,7 +50,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         setContentView(R.layout.activity_dialog_new);
 
         usersList = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
-        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
+        progressBar = (ProgressBar) findViewById(R.id.progress_chat_messages);
 
         Button createChatButton = (Button) findViewById(R.id.button_dialog_create_chat);
         createChatButton.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +112,6 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         return pagedRequestBuilder;
     }
 
-
     @Override
     public void onSuccess(ArrayList<QBUser> newUsers, Bundle bundle) {
 
@@ -140,7 +139,6 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("get users errors: " + errors).create().show();
     }
-
 
     private String createChatNameFromUserList() {
         String chatName = "";

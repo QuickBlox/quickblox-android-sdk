@@ -15,5 +15,10 @@
 
     <string name="dialog_new_select_users_to_chat">Select users to chat</string>
     <string name="dialog_new_create_chat">Create Chat</string>
+
     <string name="chat_sticker">Sticker</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_hint_message_text">message text</string>
+    <string name="chat_me">Me</string>
+    <string name="chat_friend">Friend</string>
 </resources>

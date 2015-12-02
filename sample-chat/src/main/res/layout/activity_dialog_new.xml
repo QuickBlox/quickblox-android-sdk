@@ -34,7 +34,7 @@
         app:ptrMode="pullFromEnd" />
 
     <ProgressBar
-        android:id="@+id/progress_dialogs"
+        android:id="@+id/progress_chat_messages"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

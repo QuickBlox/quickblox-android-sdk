@@ -1,6 +1,6 @@
 package com.quickblox.sample.chat.ui.adapter;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.TimeUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -25,34 +25,23 @@ import vc908.stickerfactory.StickersManager;
 public class ChatAdapter extends BaseAdapter {
 
     private final List<QBChatMessage> chatMessages;
-    private Activity context;
+    private Context context;
+    private LayoutInflater inflater;
 
-    private enum ChatItemType {
-        Message,
-        Sticker
-    }
-
-    public ChatAdapter(Activity context, List<QBChatMessage> chatMessages) {
-        this.context = context;
+    public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
         this.chatMessages = chatMessages;
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        if (chatMessages != null) {
-            return chatMessages.size();
-        } else {
-            return 0;
-        }
+        return chatMessages.size();
     }
 
     @Override
     public QBChatMessage getItem(int position) {
-        if (chatMessages != null) {
-            return chatMessages.get(position);
-        } else {
-            return null;
-        }
+        return chatMessages.get(position);
     }
 
     @Override
@@ -62,9 +51,10 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return StickersManager.isSticker(getItem(position).getBody())
-                ? ChatItemType.Sticker.ordinal()
-                : ChatItemType.Message.ordinal();
+        String messageBody = getItem(position).getBody();
+        return StickersManager.isSticker(messageBody)
+                ? ChatItemType.STICKER.ordinal()
+                : ChatItemType.MESSAGE.ordinal();
     }
 
     @Override
@@ -72,17 +62,19 @@ public class ChatAdapter extends BaseAdapter {
         return position;
     }
 
+    public void add(QBChatMessage message) {
+        chatMessages.add(message);
+        notifyDataSetChanged();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        QBChatMessage chatMessage = getItem(position);
-        LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         if (convertView == null) {
-            if (getItemViewType(position) == ChatItemType.Sticker.ordinal()) {
-                convertView = vi.inflate(R.layout.list_item_sticker, parent, false);
+            if (getItemViewType(position) == ChatItemType.STICKER.ordinal()) {
+                convertView = inflater.inflate(R.layout.list_item_message_sticker, parent, false);
             } else {
-                convertView = vi.inflate(R.layout.list_item_message, parent, false);
+                convertView = inflater.inflate(R.layout.list_item_message_text, parent, false);
             }
             holder = createViewHolder(convertView);
             convertView.setTag(holder);
@@ -90,99 +82,104 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        QBChatMessage chatMessage = getItem(position);
         QBUser currentUser = ChatHelper.getInstance().getCurrentUser();
-        boolean isOutgoing = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
-        setAlignment(holder, isOutgoing);
-        if (StickersManager.isSticker(chatMessage.getBody())) {
-            StickersManager.with(convertView.getContext())
-                    .loadSticker(chatMessage.getBody())
-                    .setPlaceholderColorFilterRes(android.R.color.darker_gray)
-                    .into(holder.stickerView);
-        } else if (holder.messageTextView != null) {
-            holder.messageTextView.setText(chatMessage.getBody());
-        }
-        if (chatMessage.getSenderId() != null) {
-            holder.txtInfo.setText(chatMessage.getSenderId() + ": " + getTimeText(chatMessage));
-        } else {
-            holder.txtInfo.setText(getTimeText(chatMessage));
-        }
+        boolean isOutgoingMessage = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
+        String messageBody = chatMessage.getBody();
+
+        setMessageBubbleAlignment(holder, isOutgoingMessage);
+        setMessageBody(holder, messageBody);
+        setMessageInfo(chatMessage, holder);
+
         return convertView;
     }
 
-    public void add(QBChatMessage message) {
-        chatMessages.add(message);
+    private void setMessageInfo(QBChatMessage chatMessage, ViewHolder holder) {
+        String messageDate = TimeUtils.millisToLongDHMS(chatMessage.getDateSent() * 1000);
+        if (chatMessage.getSenderId() != null) {
+            holder.messageInfoTextView.setText(String.format("%s: %s", chatMessage.getSenderId(), messageDate));
+        } else {
+            holder.messageInfoTextView.setText(messageDate);
+        }
     }
 
-    public void add(List<QBChatMessage> messages) {
-        chatMessages.addAll(messages);
+    private void setMessageBody(ViewHolder holder, String messageBody) {
+        if (StickersManager.isSticker(messageBody)) {
+            StickersManager.with(context)
+                    .loadSticker(messageBody)
+                    .setPlaceholderColorFilterRes(android.R.color.darker_gray)
+                    .into(holder.stickerImageView);
+        } else if (holder.messageTextView != null) {
+            holder.messageTextView.setText(messageBody);
+        }
     }
 
-    private void setAlignment(ViewHolder holder, boolean isOutgoing) {
-        if (!isOutgoing) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.contentWithBG.setLayoutParams(layoutParams);
+    @SuppressLint("RtlHardcoded")
+    private void setMessageBubbleAlignment(ViewHolder holder, boolean isOutgoing) {
+        LinearLayout.LayoutParams messageContainerLp = (LinearLayout.LayoutParams) holder.messageContainerLayout.getLayoutParams();
+        RelativeLayout.LayoutParams mainContainerLp = (RelativeLayout.LayoutParams) holder.mainContainerLayout.getLayoutParams();
+        LinearLayout.LayoutParams infoLayoutParams = (LinearLayout.LayoutParams) holder.messageInfoTextView.getLayoutParams();
+        int messageContainerBgResource = 0;
+        int messageGravity = 0;
 
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
-            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            holder.content.setLayoutParams(lp);
+        if (isOutgoing) {
+            messageContainerLp.gravity = Gravity.LEFT;
 
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.txtInfo.setLayoutParams(layoutParams);
+            mainContainerLp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            mainContainerLp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+            infoLayoutParams.gravity = Gravity.LEFT;
             if (holder.messageTextView != null) {
-                holder.contentWithBG.setBackgroundResource(R.drawable.incoming_message_bg);
-                layoutParams = (LinearLayout.LayoutParams) holder.messageTextView.getLayoutParams();
-                layoutParams.gravity = Gravity.RIGHT;
-                holder.messageTextView.setLayoutParams(layoutParams);
-            } else {
-                holder.contentWithBG.setBackgroundResource(android.R.color.transparent);
+                messageContainerBgResource = R.drawable.outgoing_message_bg;
+                messageGravity = Gravity.LEFT;
             }
         } else {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            holder.contentWithBG.setLayoutParams(layoutParams);
+            messageContainerLp.gravity = Gravity.RIGHT;
 
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            holder.content.setLayoutParams(lp);
+            mainContainerLp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            mainContainerLp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            holder.txtInfo.setLayoutParams(layoutParams);
-
+            infoLayoutParams.gravity = Gravity.RIGHT;
             if (holder.messageTextView != null) {
-                holder.contentWithBG.setBackgroundResource(R.drawable.outgoing_message_bg);
-                layoutParams = (LinearLayout.LayoutParams) holder.messageTextView.getLayoutParams();
-                layoutParams.gravity = Gravity.LEFT;
-                holder.messageTextView.setLayoutParams(layoutParams);
-            } else {
-                holder.contentWithBG.setBackgroundResource(android.R.color.transparent);
+                messageContainerBgResource = R.drawable.incoming_message_bg;
+                messageGravity = Gravity.RIGHT;
             }
         }
+
+        holder.messageContainerLayout.setLayoutParams(messageContainerLp);
+        holder.mainContainerLayout.setLayoutParams(mainContainerLp);
+        holder.messageInfoTextView.setLayoutParams(infoLayoutParams);
+
+        if (holder.messageTextView != null) {
+            LinearLayout.LayoutParams messageLp = (LinearLayout.LayoutParams) holder.messageTextView.getLayoutParams();
+            messageLp.gravity = messageGravity;
+            holder.messageTextView.setLayoutParams(messageLp);
+        }
+        holder.messageContainerLayout.setBackgroundResource(messageContainerBgResource);
     }
 
     private ViewHolder createViewHolder(View v) {
         ViewHolder holder = new ViewHolder();
-        holder.messageTextView = (TextView) v.findViewById(R.id.txtMessage);
-        holder.content = (LinearLayout) v.findViewById(R.id.content);
-        holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
-        holder.txtInfo = (TextView) v.findViewById(R.id.txtInfo);
-        holder.stickerView = (ImageView) v.findViewById(R.id.sticker_image);
+
+        holder.messageTextView = (TextView) v.findViewById(R.id.text_chat_message);
+        holder.mainContainerLayout = (LinearLayout) v.findViewById(R.id.container_chat_content);
+        holder.messageContainerLayout = (LinearLayout) v.findViewById(R.id.container_chat_bubble);
+        holder.messageInfoTextView = (TextView) v.findViewById(R.id.text_chat_info);
+        holder.stickerImageView = (ImageView) v.findViewById(R.id.image_chat_sticker);
+
         return holder;
     }
 
-    private String getTimeText(QBChatMessage message) {
-        return TimeUtils.millisToLongDHMS(message.getDateSent() * 1000);
+    private enum ChatItemType {
+        MESSAGE,
+        STICKER
     }
 
     private static class ViewHolder {
         public TextView messageTextView;
-        public TextView txtInfo;
-        public LinearLayout content;
-        public LinearLayout contentWithBG;
-        public ImageView stickerView;
+        public TextView messageInfoTextView;
+        public LinearLayout mainContainerLayout;
+        public LinearLayout messageContainerLayout;
+        public ImageView stickerImageView;
     }
 }
