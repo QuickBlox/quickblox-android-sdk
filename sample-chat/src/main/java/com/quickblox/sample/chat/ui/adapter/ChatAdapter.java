@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import vc908.stickerfactory.StickersManager;
 
 public class ChatAdapter extends BaseAdapter {
 
-    private final List<QBChatMessage> chatMessages;
+    private List<QBChatMessage> chatMessages;
     private Context context;
     private LayoutInflater inflater;
 
@@ -85,6 +86,7 @@ public class ChatAdapter extends BaseAdapter {
         QBChatMessage chatMessage = getItem(position);
         QBUser currentUser = ChatHelper.getInstance().getCurrentUser();
         boolean isOutgoingMessage = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
+        Log.i("OUTGOING", "Message is outgoing " + isOutgoingMessage);
         String messageBody = chatMessage.getBody();
 
         setMessageBubbleAlignment(holder, isOutgoingMessage);

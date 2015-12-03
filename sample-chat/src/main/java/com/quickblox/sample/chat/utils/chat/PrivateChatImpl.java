@@ -28,8 +28,6 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
 
         initManagerIfNeed();
 
-        // initIfNeed private chat
-        //
         privateChat = privateChatManager.getChat(opponentID);
         if (privateChat == null) {
             privateChat = privateChatManager.createChat(opponentID, this);
@@ -41,7 +39,6 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
     private void initManagerIfNeed() {
         if (privateChatManager == null) {
             privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-
             privateChatManager.addPrivateChatManagerListener(this);
         }
     }
@@ -59,9 +56,14 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
     }
 
     @Override
-    public void processMessage(QBPrivateChat chat, QBChatMessage message) {
+    public void processMessage(QBPrivateChat chat, final QBChatMessage message) {
         Log.w(TAG, "new incoming message: " + message);
-        chatActivity.showMessage(message);
+        chatActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chatActivity.showMessage(message);
+            }
+        });
     }
 
     @Override

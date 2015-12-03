@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +20,7 @@ import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
+import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 
 import java.util.ArrayList;
@@ -31,6 +31,8 @@ public class DialogsActivity extends BaseActivity {
 
     private ListView dialogsListView;
     private ProgressBar progressBar;
+
+    private BroadcastReceiver pushBroadcastReceiver;
 
     private GooglePlayServicesHelper googlePlayServicesHelper;
 
@@ -47,53 +49,33 @@ public class DialogsActivity extends BaseActivity {
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         googlePlayServicesHelper.registerForGcmIfPossible(this);
 
-        dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat_messages);
+        pushBroadcastReceiver = new PushBroadcastReceiver();
 
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(gcmBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
+        dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
+        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
 
         if (isSessionActive()) {
             getDialogs();
         }
     }
 
-    private void getDialogs() {
-        progressBar.setVisibility(View.VISIBLE);
-
-        ChatHelper.getInstance().getDialogs(new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
-            @Override
-            public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
-                progressBar.setVisibility(View.GONE);
-                buildListView(dialogs);
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                progressBar.setVisibility(View.GONE);
-
-                AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);
-                dialog.setMessage("get dialogs errors: " + errors).create().show();
-            }
-        });
-    }
-
-    public void buildListView(List<QBDialog> dialogs) {
-        final DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
-        dialogsListView.setAdapter(adapter);
-        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) adapter.getItem(position);
-                ChatActivity.start(DialogsActivity.this, selectedDialog);
-            }
-        });
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         googlePlayServicesHelper.checkGooglePlayServices(this);
+
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.registerReceiver(pushBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.unregisterReceiver(pushBroadcastReceiver);
     }
 
     @Override
@@ -115,29 +97,49 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    private BroadcastReceiver gcmBroadcastReceiver = new BroadcastReceiver() {
+    private void getDialogs() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        ChatHelper.getInstance().getDialogs(new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+            @Override
+            public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
+                progressBar.setVisibility(View.GONE);
+                fillListView(dialogs);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                progressBar.setVisibility(View.GONE);
+                ErrorUtils.showErrorDialog(DialogsActivity.this, "Get dialogs errors: ", errors);
+            }
+        });
+    }
+
+    private void fillListView(List<QBDialog> dialogs) {
+        final DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
+        dialogsListView.setAdapter(adapter);
+        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                QBDialog selectedDialog = (QBDialog) adapter.getItem(position);
+                ChatActivity.start(DialogsActivity.this, selectedDialog);
+            }
+        });
+    }
+
+    @Override
+    public void onSessionCreated(boolean success) {
+        if (success) {
+            getDialogs();
+        }
+    }
+
+    private static class PushBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-
-            Log.i(TAG, "Received event " + intent.getAction() + " with data: " + message);
+            Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
         }
-    };
-
-    //
-    // ApplicationSessionStateCallback
-    //
-
-    @Override
-    public void onSessionRecreationFinish(final boolean success) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (success) {
-                    getDialogs();
-                }
-            }
-        });
     }
 }

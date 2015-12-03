@@ -6,6 +6,7 @@
 
     <string name="splash_chat">Chat</string>
 
+    <string name="dlg_error">Error</string>
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
 

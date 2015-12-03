@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -50,7 +50,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         setContentView(R.layout.activity_dialog_new);
 
         usersList = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat_messages);
+        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
 
         Button createChatButton = (Button) findViewById(R.id.button_dialog_create_chat);
         createChatButton.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +63,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         usersList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                loadNextPage();
+                loadNextPageWithUsers();
                 listViewIndex = usersList.getRefreshableView().getFirstVisiblePosition();
                 View v = usersList.getRefreshableView().getChildAt(0);
                 listViewTop = (v == null) ? 0 : v.getTop();
@@ -71,12 +71,13 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         });
 
         if (isSessionActive()) {
-            loadNextPage();
+            loadNextPageWithUsers();
         }
     }
 
     private void createDialogWithSelectedUsers() {
-        ChatHelper.getInstance().addDialogsUsers(usersAdapter.getSelectedUsers());
+        ChatHelper chatHelper = ChatHelper.getInstance();
+        chatHelper.addDialogsUsers(usersAdapter.getSelectedUsers());
 
         // Create new group dialog
         QBDialog dialogToCreate = new QBDialog();
@@ -97,8 +98,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
                     @Override
                     public void onError(List<String> errors) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(NewDialogActivity.this);
-                        dialog.setMessage("dialog creation errors: " + errors).create().show();
+                        ErrorUtils.showErrorDialog(NewDialogActivity.this, "Dialog creation errors: ", errors);
                     }
                 }
         );
@@ -136,8 +136,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
 
     @Override
     public void onError(List<String> errors) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("get users errors: " + errors).create().show();
+        ErrorUtils.showErrorDialog(this, "Get users errors: ", errors);
     }
 
     private String createChatNameFromUserList() {
@@ -149,7 +148,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         return chatName;
     }
 
-    private void loadNextPage() {
+    private void loadNextPageWithUsers() {
         currentPage++;
         QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), this);
     }
@@ -167,14 +166,9 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     //
 
     @Override
-    public void onSessionRecreationFinish(final boolean success) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (success) {
-                    loadNextPage();
-                }
-            }
-        });
+    public void onSessionCreated(final boolean success) {
+        if (success) {
+            loadNextPageWithUsers();
+        }
     }
 }

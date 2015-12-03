@@ -22,13 +22,9 @@ public class DialogsAdapter extends BaseAdapter {
     private List<QBDialog> dialogs;
     private LayoutInflater inflater;
 
-    public DialogsAdapter(Context ctx, List<QBDialog> dialogs) {
+    public DialogsAdapter(Context context, List<QBDialog> dialogs) {
         this.dialogs = dialogs;
-        this.inflater = LayoutInflater.from(ctx);
-    }
-
-    public List<QBDialog> getDialogs() {
-        return dialogs;
+        this.inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -63,13 +59,11 @@ public class DialogsAdapter extends BaseAdapter {
         }
 
         // set data
-        //
         QBDialog dialog = dialogs.get(position);
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             holder.nameTextView.setText(dialog.getName());
         } else {
-            // get opponent name for private dialog
-            //
+            // It's a private dialog, let's use opponent's name as chat name
             Integer opponentId = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
             QBUser user = ChatHelper.getInstance().getDialogsUsersMap().get(opponentId);
             if (user != null) {

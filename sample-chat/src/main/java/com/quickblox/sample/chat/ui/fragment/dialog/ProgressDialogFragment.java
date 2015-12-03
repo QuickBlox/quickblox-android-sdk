@@ -17,7 +17,7 @@ public class ProgressDialogFragment extends DialogFragment {
     private static final String ARG_MESSAGE_ID = "message_id";
 
     public static void show(FragmentManager fm) {
-        // We're not using show() method because we may call this DialogFragment
+        // We're not using dialogFragment.show() method because we may call this DialogFragment
         // in onActivityResult() method and there will be a state loss exception
         if (fm.findFragmentByTag(TAG) == null) {
             fm.beginTransaction().add(newInstance(), TAG).commitAllowingStateLoss();

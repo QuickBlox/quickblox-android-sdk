@@ -52,23 +52,21 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_LONG).show();
+        Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_SHORT).show();
 
         groupChat.join(history, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-
                 groupChat.addMessageListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         callback.onSuccess();
-
-                        Toast.makeText(chatActivity, "Join successful", Toast.LENGTH_LONG).show();
+                        Toast.makeText(chatActivity, "Join successful", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Log.w("Chat", "Join successful");
+                Log.w(TAG, "Join successful");
             }
 
             @Override
@@ -120,10 +118,15 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
     }
 
     @Override
-    public void processMessage(QBGroupChat groupChat, QBChatMessage chatMessage) {
+    public void processMessage(QBGroupChat groupChat, final QBChatMessage chatMessage) {
         // Show message
         Log.w(TAG, "new incoming message: " + chatMessage);
-        chatActivity.showMessage(chatMessage);
+        chatActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chatActivity.showMessage(chatMessage);
+            }
+        });
     }
 
     @Override
