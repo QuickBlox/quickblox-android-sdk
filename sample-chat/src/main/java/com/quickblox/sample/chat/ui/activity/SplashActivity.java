@@ -24,10 +24,10 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        boolean isChatInitializedJustNow = ChatHelper.initIfNeed(this);
         // If QBChatService is already running that means that
         // we already have created session from the last app launch
         // so we just proceeding to the next activity
-        boolean isChatInitializedJustNow = ChatHelper.initIfNeed(this);
         if (!isChatInitializedJustNow) {
             proceedToTheNextActivityWithDelay();
             return;

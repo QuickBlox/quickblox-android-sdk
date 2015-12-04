@@ -40,7 +40,7 @@ ext {
 
 
     // Dependency versions
-    playServicesVersion = '7.5.0'
+    playServicesVersion = '7.8.0'
     supportV4Version = '23.1.1'
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.1.1'
@@ -48,7 +48,7 @@ ext {
 
     uilVersion = '1.9.0'
     pullToRefreshVersion = '3.2.3'
-    stickersVersion = '0.2.2'
+    stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'
 }
 

@@ -4,18 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
@@ -25,12 +27,14 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.VerboseQbChatConnectionListener;
+import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -54,13 +58,14 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
-    private EditText messageEditText;
-    private ListView messagesListView;
-    private ProgressBar progressBar;
     private KeyboardHandleRelativeLayout keyboardHandleLayout;
-    private View stickersContainer;
+    private RelativeLayout containerLayout;
+    private FrameLayout stickersContainerLayout;
+
+    private ProgressBar progressBar;
+    private ListView messagesListView;
+    private EditText messageEditText;
     private ImageButton stickerImageButton;
-    private RelativeLayout container;
 
     private ChatAdapter adapter;
 
@@ -79,6 +84,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         setContentView(R.layout.activity_chat);
 
         dialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
+        initActionBar();
         initViews();
 
         if (isSessionActive()) {
@@ -100,135 +106,21 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     @Override
     public void onBackPressed() {
-        if (isStickersFrameVisible()) {
+        if (isStickersContainerVisible()) {
             setStickersContainerVisible(false);
             stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
         } else {
-            try {
-                chat.release();
-            } catch (XMPPException e) {
-                Log.e(TAG, "Failed to release chat", e);
-            }
+            releaseChat();
             super.onBackPressed();
         }
     }
 
-    private void initViews() {
-        TextView companionLabel = (TextView) findViewById(R.id.text_chat_companion);
-        messagesListView = (ListView) findViewById(R.id.list_chat_messages);
-        messageEditText = (EditText) findViewById(R.id.edit_chat_message);
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
-        container = (RelativeLayout) findViewById(R.id.container);
-
-        if (dialog.getType() == QBDialogType.GROUP) {
-            TextView meLabel = (TextView) findViewById(R.id.text_chat_me);
-            container.removeView(meLabel);
-            container.removeView(companionLabel);
-        } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentID = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
-            companionLabel.setText(ChatHelper.getInstance().getDialogsUsersMap().get(opponentID).getLogin());
-        }
-
-        // Send button
-        Button sendButton = (Button) findViewById(R.id.button_chat_send);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String messageText = messageEditText.getText().toString();
-                if (!TextUtils.isEmpty(messageText)) {
-                    sendChatMessage(messageText);
-                }
-            }
-        });
-
-        keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_keyboard_notifier);
-        keyboardHandleLayout.listener = this;
-        stickersContainer = findViewById(R.id.layout_chat_stickers_container);
-        stickerImageButton = (ImageButton) findViewById(R.id.button_chat_stickers);
-        stickerImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isStickersFrameVisible()) {
-                    showKeyboard();
-                    stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
-                } else {
-                    if (keyboardHandleLayout.isKeyboardVisible()) {
-                        keyboardHandleLayout.hideKeyboard(ChatActivity.this, new KeyboardHandleRelativeLayout.OnKeyboardHideCallback() {
-                            @Override
-                            public void onKeyboardHide() {
-                                stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-                                setStickersContainerVisible(true);
-                            }
-                        });
-                    } else {
-                        stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-                        setStickersContainerVisible(true);
-                    }
-                }
-            }
-        });
-
-        updateStickersContainerParams();
-
-        String stickerFragmentTag = StickersFragment.class.getSimpleName();
-        StickersFragment stickersFragment = (StickersFragment) getSupportFragmentManager()
-                .findFragmentByTag(stickerFragmentTag);
-        if (stickersFragment == null) {
-            stickersFragment = new StickersFragment.Builder()
-                    .setStickerPlaceholderColorFilterRes(android.R.color.darker_gray)
-                    .build();
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.layout_chat_stickers_container, stickersFragment, stickerFragmentTag)
-                    .commit();
-        }
-        stickersFragment.setOnStickerSelectedListener(stickerSelectedListener);
-        stickersFragment.setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
-            @Override
-            public void onEmojiBackspaceClicked() {
-                KeyEvent event = new KeyEvent(
-                        0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
-                messageEditText.dispatchKeyEvent(event);
-            }
-        });
-        setStickersContainerVisible(isStickersFrameVisible());
-    }
-
-    private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
-    }
-
-    private void sendChatMessage(String messageText) {
-        QBChatMessage chatMessage = new QBChatMessage();
-        chatMessage.setBody(messageText);
-        chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
-        chatMessage.setDateSent(System.currentTimeMillis() / 1000);
-
-        try {
-            chat.sendMessage(chatMessage);
-        } catch (XMPPException | SmackException e) {
-            Log.e(TAG, "Failed to send a message", e);
-        }
-
-        messageEditText.setText("");
-
-        if (dialog.getType() == QBDialogType.PRIVATE) {
-            showMessage(chatMessage);
+    @Override
+    public void onSessionCreated(boolean success) {
+        if (success) {
+            initChat();
         }
     }
-
-    private OnStickerSelectedListener stickerSelectedListener = new OnStickerSelectedListener() {
-        @Override
-        public void onStickerSelected(String code) {
-            if (StickersManager.isSticker(code)) {
-                sendChatMessage(code);
-            } else {
-                messageEditText.append(code);
-            }
-        }
-    };
 
     @Override
     public void onKeyboardVisibilityChanged(boolean isVisible) {
@@ -236,7 +128,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             setStickersContainerVisible(false);
             stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
         } else {
-            if (isStickersFrameVisible()) {
+            if (isStickersContainerVisible()) {
                 stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
             } else {
                 stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
@@ -244,9 +136,114 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
+    public void onSendChatClick(View view) {
+        String text = messageEditText.getText().toString();
+        if (!TextUtils.isEmpty(text)) {
+            sendChatMessage(text);
+        }
+    }
+
+    public void onStickersClick(View view) {
+        if (isStickersContainerVisible()) {
+            showKeyboard();
+            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
+        } else if (keyboardHandleLayout.isKeyboardVisible()) {
+            keyboardHandleLayout.hideKeyboard(this, new KeyboardHandleRelativeLayout.KeyboardHideCallback() {
+                @Override
+                public void onKeyboardHide() {
+                    stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
+                    setStickersContainerVisible(true);
+                }
+            });
+        } else {
+            stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
+            setStickersContainerVisible(true);
+        }
+    }
+
+    private void initActionBar() {
+        List<QBUser> chatUsers = ChatHelper.getInstance().getUsersByIds(dialog.getOccupants());
+        String chatName = ChatUtils.createChatNameFromUserList(chatUsers);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setTitle(chatName);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
+    }
+
+    private void initViews() {
+        messagesListView = (ListView) findViewById(R.id.list_chat_messages);
+        messageEditText = (EditText) findViewById(R.id.edit_chat_message);
+        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
+        containerLayout = (RelativeLayout) findViewById(R.id.layout_container);
+        keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_keyboard_notifier);
+        stickersContainerLayout = (FrameLayout) findViewById(R.id.layout_chat_stickers_container);
+        stickerImageButton = (ImageButton) findViewById(R.id.button_chat_stickers);
+        TextView opponentLabelTextView = (TextView) findViewById(R.id.text_chat_opponent);
+
+        if (dialog.getType() == QBDialogType.GROUP) {
+            TextView meLabelTextView = (TextView) findViewById(R.id.text_chat_me);
+            containerLayout.removeView(meLabelTextView);
+            containerLayout.removeView(opponentLabelTextView);
+        } else if (dialog.getType() == QBDialogType.PRIVATE) {
+            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
+            QBUser opponent = ChatHelper.getInstance().getDialogsUsersMap().get(opponentId);
+            opponentLabelTextView.setText(opponent.getLogin());
+        }
+
+        keyboardHandleLayout.setKeyboardSizeChangeListener(this);
+
+        String fragmentTag = StickersFragment.class.getSimpleName();
+        StickersFragment stickersFragment = (StickersFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag);
+        if (stickersFragment == null) {
+            stickersFragment = new StickersFragment();
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.layout_chat_stickers_container, stickersFragment, fragmentTag)
+                    .commit();
+        }
+
+        stickersFragment.setOnStickerSelectedListener(stickerSelectedListener);
+        stickersFragment.setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
+            @Override
+            public void onEmojiBackspaceClicked() {
+                KeyEvent event = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
+                messageEditText.dispatchKeyEvent(event);
+            }
+        });
+
+        setStickersContainerVisible(isStickersContainerVisible());
+        updateStickersContainerParams();
+    }
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    private void sendChatMessage(String text) {
+        QBChatMessage chatMessage = new QBChatMessage();
+        chatMessage.setBody(text);
+        chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+        chatMessage.setDateSent(System.currentTimeMillis() / 1000);
+
+        try {
+            chat.sendMessage(chatMessage);
+            messageEditText.setText("");
+            if (dialog.getType() == QBDialogType.PRIVATE) {
+                showMessage(chatMessage);
+            }
+        } catch (XMPPException | SmackException e) {
+            Log.e(TAG, "Failed to send a message", e);
+            Toast.makeText(this, "Failed to send a message", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setStickersContainerVisible(boolean isVisible) {
-        stickersContainer.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (stickersContainer.getHeight() != KeyboardUtils.getKeyboardHeight()) {
+        stickersContainerLayout.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (stickersContainerLayout.getHeight() != KeyboardUtils.getKeyboardHeight()) {
             updateStickersContainerParams();
         }
 
@@ -265,48 +262,63 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         scrollMessageListDown();
     }
 
-    private boolean isStickersFrameVisible() {
-        return stickersContainer.getVisibility() == View.VISIBLE;
+    private boolean isStickersContainerVisible() {
+        return stickersContainerLayout.getVisibility() == View.VISIBLE;
     }
 
     private void updateStickersContainerParams() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) stickersContainer.getLayoutParams();
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) stickersContainerLayout.getLayoutParams();
         lp.height = KeyboardUtils.getKeyboardHeight();
-        stickersContainer.setLayoutParams(lp);
+        stickersContainerLayout.setLayoutParams(lp);
     }
 
     public void setContentBottomPadding(int padding) {
-        int leftPadding = container.getPaddingLeft();
-        int topPadding = container.getPaddingTop();
-        int rightPadding = container.getPaddingRight();
-        container.setPadding(leftPadding, topPadding, rightPadding, padding);
+        int leftPadding = containerLayout.getPaddingLeft();
+        int topPadding = containerLayout.getPaddingTop();
+        int rightPadding = containerLayout.getPaddingRight();
+        containerLayout.setPadding(leftPadding, topPadding, rightPadding, padding);
     }
 
     private void initChat() {
         if (dialog.getType() == QBDialogType.GROUP) {
             chat = new GroupChatImpl(this);
-
-            progressBar.setVisibility(View.VISIBLE);
             joinGroupChat();
         } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentId = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
+            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
             chat = new PrivateChatImpl(this, opponentId);
             loadChatHistory();
         }
     }
 
     private void joinGroupChat() {
+        Toast.makeText(this, "Joining room...", Toast.LENGTH_SHORT).show();
+        progressBar.setVisibility(View.VISIBLE);
+
         ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
+                Toast.makeText(ChatActivity.this, "Join successful", Toast.LENGTH_SHORT).show();
                 loadChatHistory();
             }
 
             @Override
             public void onError(List<String> errors) {
+                progressBar.setVisibility(View.GONE);
                 ErrorUtils.showErrorDialog(ChatActivity.this, "Error join group chat: ", errors);
             }
         });
+    }
+
+    private void leaveGroupChat() {
+        ((GroupChatImpl) chat).leave();
+    }
+
+    private void releaseChat() {
+        try {
+            chat.release();
+        } catch (XMPPException e) {
+            Log.e(TAG, "Failed to release chat", e);
+        }
     }
 
     private void loadChatHistory() {
@@ -331,7 +343,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
                     @Override
                     public void onError(List<String> errors) {
-                        if (!ChatActivity.this.isFinishing()) {
+                        progressBar.setVisibility(View.GONE);
+                        if (!isFinishing()) {
                             ErrorUtils.showErrorDialog(ChatActivity.this, "Load chat history errors: ", errors);
                         }
                     }
@@ -347,18 +360,28 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         messagesListView.setSelection(messagesListView.getCount() - 1);
     }
 
-    private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
+    private OnStickerSelectedListener stickerSelectedListener = new OnStickerSelectedListener() {
+        @Override
+        public void onStickerSelected(String code) {
+            if (StickersManager.isSticker(code)) {
+                sendChatMessage(code);
+            } else {
+                messageEditText.append(code);
+            }
+        }
+    };
 
+    private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
         @Override
         public void connectionClosedOnError(final Exception e) {
             super.connectionClosedOnError(e);
 
-            // leave active room
+            // Leave active room if we're in Group Chat
             if (dialog.getType() == QBDialogType.GROUP) {
-                ChatActivity.this.runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((GroupChatImpl) chat).leave();
+                        leaveGroupChat();
                     }
                 });
             }
@@ -368,9 +391,9 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         public void reconnectionSuccessful() {
             super.reconnectionSuccessful();
 
-            // Join active room
+            // Join active room if we're in Group Chat
             if (dialog.getType() == QBDialogType.GROUP) {
-                ChatActivity.this.runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         joinGroupChat();
@@ -379,11 +402,4 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             }
         }
     };
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            initChat();
-        }
-    }
 }

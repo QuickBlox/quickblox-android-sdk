@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout android:id="@+id/layout_keyboard_notifier"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_keyboard_notifier"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/container"
+        android:id="@+id/layout_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -19,7 +19,8 @@
             android:layout_alignParentBottom="true"
             android:background="@null"
             android:padding="8dp"
-            android:src="@drawable/ic_action_insert_emoticon" />
+            android:src="@drawable/ic_action_insert_emoticon"
+            android:onClick="onStickersClick"/>
 
         <EditText
             android:id="@+id/edit_chat_message"
@@ -28,7 +29,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/button_chat_send"
             android:layout_toRightOf="@+id/button_chat_stickers"
-            android:hint="@string/chat_hint_message_text" />
+            android:hint="@string/chat_hint_message_text"
+            android:onClick="onSendChatClick" />
 
         <Button
             android:id="@+id/button_chat_send"
@@ -58,7 +60,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/text_chat_companion"
+            android:id="@+id/text_chat_opponent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

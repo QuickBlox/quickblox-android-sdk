@@ -8,9 +8,7 @@
         android:id="@+id/text_dialogs_select_a_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="10dp"
         android:text="@string/dialog_new_select_users_to_chat"
         android:textSize="20sp" />
 
@@ -19,11 +17,11 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:onClick="onCreateChatClick"
         android:text="@string/dialog_new_create_chat" />
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView

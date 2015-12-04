@@ -1,72 +1,61 @@
 package com.quickblox.sample.chat.utils.chat;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
-import com.quickblox.chat.exception.QBChatException;
-import com.quickblox.chat.listeners.QBMessageListenerImpl;
-import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
+import com.quickblox.sample.chat.utils.ErrorUtils;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat {
+public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
     private static final String TAG = GroupChatImpl.class.getSimpleName();
 
-    private ChatActivity chatActivity;
-
-    private QBGroupChatManager groupChatManager;
-    private QBGroupChat groupChat;
+    private QBGroupChatManager qbGroupChatManager;
 
     public GroupChatImpl(ChatActivity chatActivity) {
-        this.chatActivity = chatActivity;
+        super(chatActivity);
+    }
+
+    @Override
+    protected void initManagerIfNeed() {
+        if (qbGroupChatManager == null) {
+            qbGroupChatManager = QBChatService.getInstance().getGroupChatManager();
+        }
     }
 
     public void joinGroupChat(QBDialog dialog, QBEntityCallback callback) {
-        initManagerIfNeed();
-
-        if (groupChat == null) {
-            groupChat = groupChatManager.createGroupChat(dialog.getRoomJid());
+        if (qbChat == null) {
+            qbChat = qbGroupChatManager.createGroupChat(dialog.getRoomJid());
         }
-        join(groupChat, callback);
+        join(callback);
     }
 
-    private void initManagerIfNeed() {
-        if (groupChatManager == null) {
-            groupChatManager = QBChatService.getInstance().getGroupChatManager();
-        }
-    }
-
-    private void join(final QBGroupChat groupChat, final QBEntityCallback callback) {
+    private void join(final QBEntityCallback callback) {
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_SHORT).show();
-
-        groupChat.join(history, new QBEntityCallbackImpl<String>() {
+        qbChat.join(history, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-                groupChat.addMessageListener(GroupChatImpl.this);
+                qbChat.addMessageListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         callback.onSuccess();
-                        Toast.makeText(chatActivity, "Join successful", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Log.w(TAG, "Join successful");
+                Log.i(TAG, "Join successful");
             }
 
             @Override
@@ -75,17 +64,16 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
                     @Override
                     public void run() {
                         callback.onError(list);
+                        ErrorUtils.showErrorDialog(chatActivity, "Could not join chat, errors:", list);
                     }
                 });
-
-                Log.w(TAG, "Could not join chat, errors:" + Arrays.toString(list.toArray()));
             }
         });
     }
 
     public void leave() {
         try {
-            groupChat.leave();
+            qbChat.leave();
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
         }
@@ -93,44 +81,9 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
     @Override
     public void release() throws XMPPException {
-        if (groupChat != null) {
+        if (qbChat != null) {
             leave();
-
-            groupChat.removeMessageListener(this);
+            qbChat.removeMessageListener(this);
         }
-    }
-
-    @Override
-    public void sendMessage(QBChatMessage message) throws XMPPException, SmackException.NotConnectedException {
-        if (groupChat != null) {
-            try {
-                groupChat.sendMessage(message);
-            } catch (SmackException.NotConnectedException nce) {
-                nce.printStackTrace();
-                Toast.makeText(chatActivity, "Can't send a message, You are not connected to chat", Toast.LENGTH_SHORT).show();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-                Toast.makeText(chatActivity, "You are still joining a group chat, please wait a bit", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void processMessage(QBGroupChat groupChat, final QBChatMessage chatMessage) {
-        // Show message
-        Log.w(TAG, "new incoming message: " + chatMessage);
-        chatActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                chatActivity.showMessage(chatMessage);
-            }
-        });
-    }
-
-    @Override
-    public void processError(QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage) {
-
     }
 }

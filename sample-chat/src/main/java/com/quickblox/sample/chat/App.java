@@ -3,7 +3,6 @@ package com.quickblox.sample.chat;
 import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.chat.utils.Consts;
@@ -22,13 +21,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate()");
-
         instance = this;
 
-        // Initialise QuickBlox SDK
+        // Initialise QuickBlox SDK and Stickers SDK
         QBSettings.getInstance().fastConfigInit(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET);
-
         StickersManager.initialize(Consts.STICKER_API_KEY, this);
     }
 

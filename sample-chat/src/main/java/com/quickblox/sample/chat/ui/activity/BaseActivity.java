@@ -5,11 +5,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.fragment.dialog.ProgressDialogFragment;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.QbSessionStateCallback;
 import com.quickblox.users.model.QBUser;
@@ -44,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
         super.onRestoreInstanceState(savedInstanceState);
 
         if (!isSessionActive) {
-            Log.d(TAG, "Need to recreate chat session");
+            Log.w(TAG, "Need to recreate chat session");
 
             QBUser user = new QBUser();
             user.setLogin(savedInstanceState.getString(BUNDLE_USER_LOGIN));
@@ -56,13 +58,25 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        QBUser currentUser = ChatHelper.getInstance().getCurrentUser();
+        QBUser currentUser = ChatUtils.getCurrentUser();
         if (currentUser != null) {
             outState.putString(BUNDLE_USER_LOGIN, currentUser.getLogin());
             outState.putString(BUNDLE_USER_PASSWORD, currentUser.getPassword());
         }
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            onBackPressed();
+            return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void recreateQbSession(final QBUser user) {
@@ -112,6 +126,7 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
             }
         });
     }
+
     public boolean isSessionActive() {
         return isSessionActive;
     }

@@ -62,7 +62,7 @@ public class GooglePlayServicesHelper {
         if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
             GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
         } else {
-            Log.i(TAG, "This device is not supported.");
+            Log.w(TAG, "This device is not supported.");
             activity.finish();
         }
         return false;

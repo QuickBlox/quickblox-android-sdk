@@ -2,7 +2,6 @@ package com.quickblox.sample.chat.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,8 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.TimeUtils;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.List;
 import vc908.stickerfactory.StickersManager;
 
 public class ChatAdapter extends BaseAdapter {
-
     private List<QBChatMessage> chatMessages;
     private Context context;
     private LayoutInflater inflater;
@@ -84,9 +82,8 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         QBChatMessage chatMessage = getItem(position);
-        QBUser currentUser = ChatHelper.getInstance().getCurrentUser();
+        QBUser currentUser = ChatUtils.getCurrentUser();
         boolean isOutgoingMessage = chatMessage.getSenderId() == null || chatMessage.getSenderId().equals(currentUser.getId());
-        Log.i("OUTGOING", "Message is outgoing " + isOutgoingMessage);
         String messageBody = chatMessage.getBody();
 
         setMessageBubbleAlignment(holder, isOutgoingMessage);
@@ -109,7 +106,6 @@ public class ChatAdapter extends BaseAdapter {
         if (StickersManager.isSticker(messageBody)) {
             StickersManager.with(context)
                     .loadSticker(messageBody)
-                    .setPlaceholderColorFilterRes(android.R.color.darker_gray)
                     .into(holder.stickerImageView);
         } else if (holder.messageTextView != null) {
             holder.messageTextView.setText(messageBody);

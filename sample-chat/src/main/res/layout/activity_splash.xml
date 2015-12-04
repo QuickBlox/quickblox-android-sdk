@@ -40,9 +40,8 @@
         android:id="@+id/image_splash_qb_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:scaleType="fitCenter"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/qb_splash_link" />
 
     <TextView

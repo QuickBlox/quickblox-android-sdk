@@ -101,18 +101,6 @@ public class ChatHelper {
         });
     }
 
-    public void logout() {
-        qbChatService.logout(new QBEntityCallbackImpl<String>() {
-            @Override
-            public void onSuccess() {
-            }
-
-            @Override
-            public void onError(List<String> list) {
-            }
-        });
-    }
-
     private void loginToChat(final QBUser user, final QBEntityCallback callback) {
         qbChatService.login(user, new QBEntityCallbackImpl<String>() {
             @Override
@@ -133,6 +121,14 @@ public class ChatHelper {
         });
     }
 
+    public void logout() {
+        try {
+            qbChatService.logout();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
         customObjectRequestBuilder.setPagesLimit(QB_REQUEST_PAGE_LIMIT);
@@ -140,7 +136,7 @@ public class ChatHelper {
         QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
             @Override
             public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
-                getUsersInDialogs(dialogs, callback);
+                getUsersFromDialogs(dialogs, callback);
             }
 
             @Override
@@ -150,18 +146,13 @@ public class ChatHelper {
         });
     }
 
-    private void getUsersInDialogs(final ArrayList<QBDialog> dialogs, final QBEntityCallback<ArrayList<QBDialog>> callback) {
-        // collect all occupants ids
+    private void getUsersFromDialogs(final ArrayList<QBDialog> dialogs, final QBEntityCallback<ArrayList<QBDialog>> callback) {
         List<Integer> userIds = new ArrayList<>();
         for (QBDialog dialog : dialogs) {
             userIds.addAll(dialog.getOccupants());
         }
 
-        // Get all occupants info
-        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
-        requestBuilder.setPage(1);
-        requestBuilder.setPerPage(userIds.size());
-
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
         QBUsers.getUsersByIDs(userIds, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> users, Bundle params) {
@@ -180,6 +171,18 @@ public class ChatHelper {
         return dialogsUsersMap;
     }
 
+    public List<QBUser> getUsersByIds(List<Integer> ids) {
+        List<QBUser> users = new ArrayList<>();
+        for (Integer id : ids) {
+            QBUser user = dialogsUsersMap.get(id);
+            if (user != null) {
+                users.add(user);
+            }
+        }
+
+        return users;
+    }
+
     public void setDialogsUsers(List<QBUser> users) {
         dialogsUsersMap.clear();
 
@@ -192,20 +195,5 @@ public class ChatHelper {
         for (QBUser user : users) {
             dialogsUsersMap.put(user.getId(), user);
         }
-    }
-
-    public QBUser getCurrentUser() {
-        return QBChatService.getInstance().getUser();
-    }
-
-    public Integer getOpponentIdForPrivateDialog(QBDialog dialog) {
-        Integer opponentId = -1;
-        for (Integer userId : dialog.getOccupants()) {
-            if (!userId.equals(getCurrentUser().getId())) {
-                opponentId = userId;
-                break;
-            }
-        }
-        return opponentId;
     }
 }

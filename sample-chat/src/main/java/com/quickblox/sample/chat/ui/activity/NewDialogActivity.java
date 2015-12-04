@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -13,11 +12,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
-import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.QBUsers;
@@ -26,14 +25,13 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewDialogActivity extends BaseActivity implements QBEntityCallback<ArrayList<QBUser>> {
+public class NewDialogActivity extends BaseActivity {
 
     private static final int PAGE_SIZE = 10;
 
-    private int listViewIndex;
-    private int listViewTop;
-    private int currentPage;
-    private List<QBUser> users = new ArrayList<>();
+    private int firstVisibleListItemPosition;
+    private int firstVisibleListItemOffset;
+    private int currentUsersQbPage;
 
     private PullToRefreshListView usersList;
     private ProgressBar progressBar;
@@ -49,24 +47,17 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog_new);
 
-        usersList = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);
-
-        Button createChatButton = (Button) findViewById(R.id.button_dialog_create_chat);
-        createChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createDialogWithSelectedUsers();
-            }
-        });
+        usersList = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
 
         usersList.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                 loadNextPageWithUsers();
-                listViewIndex = usersList.getRefreshableView().getFirstVisiblePosition();
+
                 View v = usersList.getRefreshableView().getChildAt(0);
-                listViewTop = (v == null) ? 0 : v.getTop();
+                firstVisibleListItemPosition = usersList.getRefreshableView().getFirstVisiblePosition();
+                firstVisibleListItemOffset = (v == null) ? 0 : v.getTop();
             }
         });
 
@@ -75,19 +66,32 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         }
     }
 
-    private void createDialogWithSelectedUsers() {
-        ChatHelper chatHelper = ChatHelper.getInstance();
-        chatHelper.addDialogsUsers(usersAdapter.getSelectedUsers());
+    @Override
+    public void onSessionCreated(final boolean success) {
+        if (success) {
+            loadNextPageWithUsers();
+        }
+    }
 
-        // Create new group dialog
+    public void onCreateChatClick(View view) {
+        createDialogWithSelectedUsers();
+    }
+
+    private void createDialogWithSelectedUsers() {
+        List<QBUser> selectedUsers = usersAdapter.getSelectedUsers();
+
+        ChatHelper chatHelper = ChatHelper.getInstance();
+        chatHelper.addDialogsUsers(selectedUsers);
+
+        // Create new dialog to start a chat
         QBDialog dialogToCreate = new QBDialog();
-        dialogToCreate.setName(createChatNameFromUserList());
-        if (usersAdapter.getSelectedUsers().size() == 1) {
+        dialogToCreate.setName(ChatUtils.createChatNameFromUserList(selectedUsers));
+        if (selectedUsers.size() == 1) {
             dialogToCreate.setType(QBDialogType.PRIVATE);
         } else {
             dialogToCreate.setType(QBDialogType.GROUP);
         }
-        dialogToCreate.setOccupantsIds(getUserIds(usersAdapter.getSelectedUsers()));
+        dialogToCreate.setOccupantsIds(ChatUtils.getUserIds(selectedUsers));
 
         QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate,
                 new QBEntityCallbackImpl<QBDialog>() {
@@ -104,71 +108,38 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
         );
     }
 
-    public static QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
+    private void loadNextPageWithUsers() {
+        currentUsersQbPage++;
+        QBUsers.getUsers(getQBPagedRequestBuilder(currentUsersQbPage), new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                List<QBUser> users = new ArrayList<>();
+                if (usersAdapter != null) {
+                    users.addAll(usersAdapter.getUsers());
+                }
+                users.addAll(qbUsers);
+
+                usersAdapter = new UsersAdapter(NewDialogActivity.this, users);
+                usersList.setAdapter(usersAdapter);
+                usersList.onRefreshComplete();
+                usersList.getRefreshableView().setSelectionFromTop(firstVisibleListItemPosition, firstVisibleListItemOffset);
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                ErrorUtils.showErrorDialog(NewDialogActivity.this, "Get users errors: ", errors);
+            }
+        });
+    }
+
+
+    private QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
         QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
         pagedRequestBuilder.setPage(page);
         pagedRequestBuilder.setPerPage(PAGE_SIZE);
 
         return pagedRequestBuilder;
-    }
-
-    @Override
-    public void onSuccess(ArrayList<QBUser> newUsers, Bundle bundle) {
-
-        // save users
-        //
-        users.addAll(newUsers);
-
-        // Prepare users list for simple adapter.
-        //
-        usersAdapter = new UsersAdapter(this, users);
-        usersList.setAdapter(usersAdapter);
-        usersList.onRefreshComplete();
-        usersList.getRefreshableView().setSelectionFromTop(listViewIndex, listViewTop);
-
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onSuccess() {
-
-    }
-
-    @Override
-    public void onError(List<String> errors) {
-        ErrorUtils.showErrorDialog(this, "Get users errors: ", errors);
-    }
-
-    private String createChatNameFromUserList() {
-        String chatName = "";
-        for (QBUser user : usersAdapter.getSelectedUsers()) {
-            String prefix = chatName.equals("") ? "" : ", ";
-            chatName = chatName + prefix + user.getLogin();
-        }
-        return chatName;
-    }
-
-    private void loadNextPageWithUsers() {
-        currentPage++;
-        QBUsers.getUsers(getQBPagedRequestBuilder(currentPage), this);
-    }
-
-    public static ArrayList<Integer> getUserIds(List<QBUser> users) {
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (QBUser user : users) {
-            ids.add(user.getId());
-        }
-        return ids;
-    }
-
-    //
-    // ApplicationSessionStateCallback
-    //
-
-    @Override
-    public void onSessionCreated(final boolean success) {
-        if (success) {
-            loadNextPageWithUsers();
-        }
     }
 }

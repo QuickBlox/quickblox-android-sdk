@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
@@ -64,7 +65,7 @@ public class DialogsAdapter extends BaseAdapter {
             holder.nameTextView.setText(dialog.getName());
         } else {
             // It's a private dialog, let's use opponent's name as chat name
-            Integer opponentId = ChatHelper.getInstance().getOpponentIdForPrivateDialog(dialog);
+            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
             QBUser user = ChatHelper.getInstance().getDialogsUsersMap().get(opponentId);
             if (user != null) {
                 holder.nameTextView.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());

@@ -55,7 +55,7 @@ public class DialogsActivity extends BaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);
 
         if (isSessionActive()) {
-            getDialogs();
+            loadDialogsFromQb();
         }
     }
 
@@ -97,7 +97,7 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    private void getDialogs() {
+    private void loadDialogsFromQb() {
         progressBar.setVisibility(View.VISIBLE);
 
         ChatHelper.getInstance().getDialogs(new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
@@ -130,7 +130,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
-            getDialogs();
+            loadDialogsFromQb();
         }
     }
 
