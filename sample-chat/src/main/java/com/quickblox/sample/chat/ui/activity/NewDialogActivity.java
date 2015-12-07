@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewDialogActivity extends BaseActivity {
+    private static final int USERS_ITEMS_PER_PAGE = 10;
 
-    private static final int PAGE_SIZE = 10;
-
-    private int firstVisibleListItemPosition;
-    private int firstVisibleListItemOffset;
+    private int firstVisibleItemPosition;
+    private int firstVisibleItemOffset;
     private int currentUsersQbPage;
 
     private PullToRefreshListView usersList;
@@ -56,8 +55,8 @@ public class NewDialogActivity extends BaseActivity {
                 loadNextPageWithUsers();
 
                 View v = usersList.getRefreshableView().getChildAt(0);
-                firstVisibleListItemPosition = usersList.getRefreshableView().getFirstVisiblePosition();
-                firstVisibleListItemOffset = (v == null) ? 0 : v.getTop();
+                firstVisibleItemPosition = usersList.getRefreshableView().getFirstVisiblePosition();
+                firstVisibleItemOffset = (v == null) ? 0 : v.getTop();
             }
         });
 
@@ -102,7 +101,7 @@ public class NewDialogActivity extends BaseActivity {
 
                     @Override
                     public void onError(List<String> errors) {
-                        ErrorUtils.showErrorDialog(NewDialogActivity.this, "Dialog creation errors: ", errors);
+                        ErrorUtils.showErrorDialog(NewDialogActivity.this, getString(R.string.new_dialog_creation_error), errors);
                     }
                 }
         );
@@ -122,23 +121,28 @@ public class NewDialogActivity extends BaseActivity {
                 usersAdapter = new UsersAdapter(NewDialogActivity.this, users);
                 usersList.setAdapter(usersAdapter);
                 usersList.onRefreshComplete();
-                usersList.getRefreshableView().setSelectionFromTop(firstVisibleListItemPosition, firstVisibleListItemOffset);
+                usersList.getRefreshableView().setSelectionFromTop(firstVisibleItemPosition, firstVisibleItemOffset);
 
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(NewDialogActivity.this, "Get users errors: ", errors);
+                // If it's not the first page requested — we need to decrease currentUsersQbPage value in onError()
+                // since if we're are there it means we didn't request users successfully and the next time
+                // we need to request the same page to receive all users
+                if (currentUsersQbPage != 0) {
+                    currentUsersQbPage--;
+                }
+                ErrorUtils.showErrorDialog(NewDialogActivity.this, getString(R.string.new_dialog_get_users_error), errors);
             }
         });
     }
 
-
     private QBPagedRequestBuilder getQBPagedRequestBuilder(int page) {
         QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
         pagedRequestBuilder.setPage(page);
-        pagedRequestBuilder.setPerPage(PAGE_SIZE);
+        pagedRequestBuilder.setPerPage(USERS_ITEMS_PER_PAGE);
 
         return pagedRequestBuilder;
     }

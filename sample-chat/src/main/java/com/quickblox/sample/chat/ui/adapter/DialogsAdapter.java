@@ -66,7 +66,7 @@ public class DialogsAdapter extends BaseAdapter {
         } else {
             // It's a private dialog, let's use opponent's name as chat name
             Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
-            QBUser user = ChatHelper.getInstance().getDialogsUsersMap().get(opponentId);
+            QBUser user = ChatHelper.getInstance().getQbUserById(opponentId);
             if (user != null) {
                 holder.nameTextView.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());
             }

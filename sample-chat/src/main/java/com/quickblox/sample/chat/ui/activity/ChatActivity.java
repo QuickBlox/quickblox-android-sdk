@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
@@ -57,6 +56,9 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
+
+    private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
+    private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
     private KeyboardHandleRelativeLayout keyboardHandleLayout;
     private RelativeLayout containerLayout;
@@ -123,16 +125,14 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     @Override
-    public void onKeyboardVisibilityChanged(boolean isVisible) {
-        if (isVisible) {
+    public void onKeyboardVisibilityChanged(boolean isKeyboardVisible) {
+        if (isKeyboardVisible) {
             setStickersContainerVisible(false);
             stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
+        } else if (isStickersContainerVisible()) {
+            stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
         } else {
-            if (isStickersContainerVisible()) {
-                stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-            } else {
-                stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
-            }
+            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
         }
     }
 
@@ -180,17 +180,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_keyboard_notifier);
         stickersContainerLayout = (FrameLayout) findViewById(R.id.layout_chat_stickers_container);
         stickerImageButton = (ImageButton) findViewById(R.id.button_chat_stickers);
-        TextView opponentLabelTextView = (TextView) findViewById(R.id.text_chat_opponent);
-
-        if (dialog.getType() == QBDialogType.GROUP) {
-            TextView meLabelTextView = (TextView) findViewById(R.id.text_chat_me);
-            containerLayout.removeView(meLabelTextView);
-            containerLayout.removeView(opponentLabelTextView);
-        } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
-            QBUser opponent = ChatHelper.getInstance().getDialogsUsersMap().get(opponentId);
-            opponentLabelTextView.setText(opponent.getLogin());
-        }
 
         keyboardHandleLayout.setKeyboardSizeChangeListener(this);
 
@@ -237,17 +226,18 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             }
         } catch (XMPPException | SmackException e) {
             Log.e(TAG, "Failed to send a message", e);
-            Toast.makeText(this, "Failed to send a message", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.chat_send_message_error, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void setStickersContainerVisible(boolean isVisible) {
         stickersContainerLayout.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (stickersContainerLayout.getHeight() != KeyboardUtils.getKeyboardHeight()) {
+        int keyboardHeight = KeyboardUtils.getKeyboardHeight();
+        if (stickersContainerLayout.getHeight() != keyboardHeight) {
             updateStickersContainerParams();
         }
 
-        final int bottomPadding = isVisible ? KeyboardUtils.getKeyboardHeight() : 0;
+        final int bottomPadding = isVisible ? keyboardHeight : 0;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             keyboardHandleLayout.post(new Runnable() {
                 @Override
@@ -258,8 +248,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             });
         } else {
             setContentBottomPadding(bottomPadding);
+            scrollMessageListDown();
         }
-        scrollMessageListDown();
     }
 
     private boolean isStickersContainerVisible() {
@@ -280,31 +270,34 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void initChat() {
-        if (dialog.getType() == QBDialogType.GROUP) {
+        switch (dialog.getType()) {
+        case GROUP:
             chat = new GroupChatImpl(this);
             joinGroupChat();
-        } else if (dialog.getType() == QBDialogType.PRIVATE) {
-            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
-            chat = new PrivateChatImpl(this, opponentId);
+            break;
+
+        case PRIVATE:
+            chat = new PrivateChatImpl(this, ChatUtils.getOpponentIdForPrivateDialog(dialog));
             loadChatHistory();
+            break;
         }
     }
 
     private void joinGroupChat() {
-        Toast.makeText(this, "Joining room...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.chat_joining_room, Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.VISIBLE);
 
         ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-                Toast.makeText(ChatActivity.this, "Join successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, R.string.chat_join_successful, Toast.LENGTH_SHORT).show();
                 loadChatHistory();
             }
 
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(ChatActivity.this, "Error join group chat: ", errors);
+                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_join_error), errors);
             }
         });
     }
@@ -323,8 +316,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private void loadChatHistory() {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
-        customObjectRequestBuilder.sortDesc("date_sent");
+        customObjectRequestBuilder.setPagesLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
+        customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
 
         QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
                 new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
@@ -345,7 +338,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
                     public void onError(List<String> errors) {
                         progressBar.setVisibility(View.GONE);
                         if (!isFinishing()) {
-                            ErrorUtils.showErrorDialog(ChatActivity.this, "Load chat history errors: ", errors);
+                            ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_history_error), errors);
                         }
                     }
                 });

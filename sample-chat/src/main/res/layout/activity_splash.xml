@@ -9,7 +9,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:scaleType="fitXY"
         android:src="@drawable/qb_splash_bg" />
 
@@ -17,42 +16,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/image_splash_qb_logo"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="false"
         android:layout_below="@+id/text_splash_app_title"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:focusableInTouchMode="false"
-        android:scaleType="fitCenter"
-        android:src="@drawable/qb_splash_hero"
-        android:visibility="visible" />
+        android:scaleType="centerInside"
+        android:src="@drawable/qb_splash_hero" />
 
     <ProgressBar
         android:id="@+id/progress_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp" />
 
     <ImageView
         android:id="@+id/image_splash_qb_logo"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/qb_splash_link" />
+        android:src="@drawable/qb_splash_logo" />
 
     <TextView
         android:id="@+id/text_splash_app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:text="@string/splash_chat"
-        android:textColor="@android:color/white"
+        android:textColor="@color/text_color_white"
         android:textSize="80sp" />
 
 </RelativeLayout>

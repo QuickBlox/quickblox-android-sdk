@@ -59,7 +59,6 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -110,7 +109,7 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(DialogsActivity.this, "Get dialogs errors: ", errors);
+                ErrorUtils.showErrorDialog(DialogsActivity.this, getString(R.string.dialogs_get_error), errors);
             }
         });
     }

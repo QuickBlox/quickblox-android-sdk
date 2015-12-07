@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout android:id="@+id/layout_keyboard_notifier"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_keyboard_notifier"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="RtlHardcoded">
@@ -17,10 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:background="@null"
+            android:onClick="onStickersClick"
             android:padding="8dp"
-            android:src="@drawable/ic_action_insert_emoticon"
-            android:onClick="onStickersClick"/>
+            android:src="@drawable/ic_action_insert_emoticon" />
 
         <EditText
             android:id="@+id/edit_chat_message"
@@ -29,8 +30,7 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/button_chat_send"
             android:layout_toRightOf="@+id/button_chat_stickers"
-            android:hint="@string/chat_hint_message_text"
-            android:onClick="onSendChatClick" />
+            android:hint="@string/chat_hint_message_text" />
 
         <Button
             android:id="@+id/button_chat_send"
@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:onClick="onSendChatClick"
             android:text="@string/chat_send" />
 
         <ListView
@@ -45,28 +46,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/edit_chat_message"
-            android:layout_below="@+id/text_chat_me"
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll" />
-
-        <TextView
-            android:id="@+id/text_chat_me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:padding="10dp"
-            android:text="@string/chat_me"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/text_chat_opponent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="10dp"
-            android:text="@string/chat_friend"
-            android:textSize="20sp" />
 
         <ProgressBar
             android:id="@+id/progress_chat"

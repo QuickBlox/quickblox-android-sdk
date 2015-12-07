@@ -48,6 +48,5 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat> implements QBPr
             qbChat = incomingPrivateChat;
             qbChat.addMessageListener(this);
         }
-
     }
 }

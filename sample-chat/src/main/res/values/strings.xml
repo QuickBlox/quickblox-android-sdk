@@ -4,22 +4,31 @@
 
     <string name="menu_new_chat">New Chat</string>
 
-    <string name="splash_chat">Chat</string>
-
     <string name="dlg_error">Error</string>
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
 
     <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
 
-    <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>
+    <string name="splash_chat">Chat</string>
+    <string name="splash_chat_login_error">"Chat login errors: "</string>
 
-    <string name="dialog_new_select_users_to_chat">Select users to chat</string>
-    <string name="dialog_new_create_chat">Create Chat</string>
+    <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>
+    <string name="dialogs_new_select_users_to_chat">Select users to chat</string>
+    <string name="dialogs_new_create_chat">Create Chat</string>
+    <string name="dialogs_get_error">"Get dialogs errors: "</string>
+
+    <string name="new_dialog_get_users_error">"Get users errors: "</string>
+    <string name="new_dialog_creation_error">"Dialog creation errors: "</string>
 
     <string name="chat_sticker">Sticker</string>
     <string name="chat_send">Send</string>
     <string name="chat_hint_message_text">message text</string>
     <string name="chat_me">Me</string>
     <string name="chat_friend">Friend</string>
+    <string name="chat_joining_room">Joining room…</string>
+    <string name="chat_join_successful">Join successful</string>
+    <string name="chat_join_error">"Error join group chat: "</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+    <string name="chat_load_history_error">"Load chat history errors: "</string>
 </resources>

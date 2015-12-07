@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    tools:ignore="RtlHardcoded">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:padding="8dp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_user" />
 
     <TextView
         android:id="@+id/text_user_login"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkbox_user"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
         android:clickable="false"
-        android:gravity="right" />
+        android:gravity="right"
+        android:padding="8dp" />
 
 </LinearLayout>

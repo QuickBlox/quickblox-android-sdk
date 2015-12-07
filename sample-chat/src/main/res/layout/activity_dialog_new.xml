@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/dialog_new_select_users_to_chat"
+        android:text="@string/dialogs_new_select_users_to_chat"
         android:textSize="20sp" />
 
     <Button
@@ -22,7 +22,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:onClick="onCreateChatClick"
-        android:text="@string/dialog_new_create_chat" />
+        android:text="@string/dialogs_new_create_chat" />
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/list_dialog_users"

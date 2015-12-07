@@ -3,22 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal">
+    tools:ignore="RtlHardcoded">
 
     <ImageView
         android:id="@+id/image_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:padding="5dp"
-        android:scaleType="centerCrop"
+        android:padding="8dp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_room" />
 
     <TextView
         android:id="@+id/text_room_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_toRightOf="@+id/image_room"
         android:textSize="16sp"
         tools:text="Room name" />
@@ -28,18 +27,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_room_name"
-        android:layout_gravity="center_vertical"
         android:layout_toRightOf="@+id/image_room"
         android:textSize="16sp"
         tools:text="Last message" />
 
     <TextView
         android:id="@+id/text_room_group_type"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_room_last_message"
         android:layout_toRightOf="@+id/image_room"
         android:textSize="12sp"
         tools:text="Group chat" />
-
 </RelativeLayout>

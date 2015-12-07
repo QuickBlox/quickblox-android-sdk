@@ -167,8 +167,8 @@ public class ChatHelper {
         });
     }
 
-    public Map<Integer, QBUser> getDialogsUsersMap() {
-        return dialogsUsersMap;
+    public QBUser getQbUserById(Integer id) {
+        return dialogsUsersMap.get(id);
     }
 
     public List<QBUser> getUsersByIds(List<Integer> ids) {
@@ -184,6 +184,8 @@ public class ChatHelper {
     }
 
     public void setDialogsUsers(List<QBUser> users) {
+        // Basically in your app you should store users in database
+        // We're using runtime field only to simplify app logic
         dialogsUsersMap.clear();
 
         for (QBUser user : users) {

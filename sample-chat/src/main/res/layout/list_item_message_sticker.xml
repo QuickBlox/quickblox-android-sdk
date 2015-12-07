@@ -1,41 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:id="@+id/layout_chat_message_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
-    <LinearLayout
-        android:id="@+id/container_chat_content"
+    <TextView
+        android:id="@+id/text_chat_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        tools:ignore="UselessParent">
+        android:textColor="@color/text_color_grey"
+        android:textSize="12sp"
+        tools:text="Author 10:50" />
 
-        <TextView
-            android:id="@+id/text_chat_info"
-            android:layout_width="wrap_content"
-            android:layout_height="20sp"
-            android:layout_gravity="right"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textSize="10sp"
-            tools:text="Author 10:50" />
+    <LinearLayout
+        android:id="@+id/layout_chat_text_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/outgoing_message_bg">
 
-        <LinearLayout
-            android:id="@+id/container_chat_bubble"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="@drawable/incoming_message_bg"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp">
-
-            <ImageView
-                android:id="@+id/image_chat_sticker"
-                android:layout_width="160dp"
-                android:layout_height="160dp" />
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/image_chat_sticker"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
