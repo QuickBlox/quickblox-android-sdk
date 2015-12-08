@@ -6,7 +6,7 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -61,13 +61,12 @@
             android:name="vc908.stickerfactory.provider.StickersProvider"
             android:authorities="com.quickblox.sample.chat.stickersProvider"
             android:exported="false" />
-
     </application>
 
     <!-- 4. Declare and use a custom permission so only this application can receive GCM s.
-  This permission must be called my_app_package.permission.C2D_MESSAGE
-  (where my_app_package is the package name of your app as defined by the manifest tag),
-  otherwise it will not work. -->
+    This permission must be called my_app_package.permission.C2D_MESSAGE
+    (where my_app_package is the package name of your app as defined by the manifest tag),
+    otherwise it will not work. -->
     <permission
         android:name="com.quickblox.sample.chat.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
