@@ -48,6 +48,7 @@ ext {
 
     uilVersion = '1.9.0'
     pullToRefreshVersion = '3.2.3'
+    robotoTextViewVersion = '2.4.3'
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'
 }

@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.ui.activity;
+package com.quickblox.sample.chat.ui.activity.base;
 
 import android.os.Bundle;
 import android.os.Handler;

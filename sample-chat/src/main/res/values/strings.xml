@@ -10,7 +10,8 @@
 
     <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
 
-    <string name="splash_chat">Chat</string>
+    <string name="splash_chat_sample">Chat Sample</string>
+    <string name="splash_chat_version">v 1.02</string>
     <string name="splash_chat_login_error">"Chat login errors: "</string>
 
     <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>
@@ -23,7 +24,7 @@
 
     <string name="chat_sticker">Sticker</string>
     <string name="chat_send">Send</string>
-    <string name="chat_hint_message_text">message text</string>
+    <string name="chat_edit_text_hint">Message</string>
     <string name="chat_me">Me</string>
     <string name="chat_friend">Friend</string>
     <string name="chat_joining_room">Joining room…</string>

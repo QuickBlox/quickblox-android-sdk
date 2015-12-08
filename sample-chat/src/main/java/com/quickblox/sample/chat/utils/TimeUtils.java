@@ -2,6 +2,9 @@ package com.quickblox.sample.chat.utils;
 
 import android.text.TextUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TimeUtils {
     public final static long MILLISECS_IN_SECOND = 1000;
     public final static long SECONDS_IN_MINUTE = 60;
@@ -13,6 +16,11 @@ public class TimeUtils {
     public final static long ONE_DAY = ONE_HOUR * HOURS_IN_DAY;
 
     private TimeUtils() {
+    }
+
+    public static String getTime(long milliseconds) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        return dateFormat.format(new Date(milliseconds));
     }
 
     /**

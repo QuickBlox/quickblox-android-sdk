@@ -30,6 +30,7 @@ dependencies {
     compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
 
     compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
+    compile "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
     compile("vc908.stickers:stickerfactory:${rootProject.stickersVersion}@aar") {
         transitive = true;
     }

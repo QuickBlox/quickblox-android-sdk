@@ -1,67 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_keyboard_notifier"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="RtlHardcoded">
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/layout_container"
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout
+        android:id="@+id/layout_keyboard_notifier"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:ignore="RtlHardcoded">
 
-        <ImageButton
-            android:id="@+id/button_chat_stickers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:background="@null"
-            android:onClick="onStickersClick"
-            android:padding="8dp"
-            android:src="@drawable/ic_action_insert_emoticon" />
-
-        <EditText
-            android:id="@+id/edit_chat_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/button_chat_send"
-            android:layout_toRightOf="@+id/button_chat_stickers"
-            android:hint="@string/chat_hint_message_text" />
-
-        <Button
-            android:id="@+id/button_chat_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:onClick="onSendChatClick"
-            android:text="@string/chat_send" />
-
-        <ListView
-            android:id="@+id/list_chat_messages"
+        <RelativeLayout
+            android:id="@+id/layout_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/edit_chat_message"
-            android:divider="@null"
-            android:listSelector="@android:color/transparent"
-            android:transcriptMode="alwaysScroll" />
+            android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/progress_chat"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/button_chat_stickers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@null"
+                android:onClick="onStickersClick"
+                android:padding="8dp"
+                android:src="@drawable/ic_action_insert_emoticon" />
 
-    <FrameLayout
-        android:id="@+id/layout_chat_stickers_container"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
-</vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout>
+            <EditText
+                android:id="@+id/edit_chat_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/button_chat_send"
+                android:layout_toRightOf="@+id/button_chat_stickers"
+                android:hint="@string/chat_edit_text_hint" />
+
+            <ImageButton
+                android:id="@+id/button_chat_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/ic_send"
+                android:background="@null"
+                android:layout_alignParentRight="true"
+                android:onClick="onSendChatClick"
+                android:padding="8dp"
+                android:text="@string/chat_send" />
+
+            <ListView
+                android:id="@+id/list_chat_messages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/edit_chat_message"
+                android:divider="@null"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="alwaysScroll" />
+
+            <ProgressBar
+                android:id="@+id/progress_chat"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_chat_stickers_container"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone" />
+    </vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout>
+</android.support.design.widget.AppBarLayout>

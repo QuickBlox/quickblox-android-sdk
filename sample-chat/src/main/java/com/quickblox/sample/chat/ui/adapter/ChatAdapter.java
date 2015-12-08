@@ -44,19 +44,6 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getViewTypeCount() {
-        return ChatItemType.values().length;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        String messageBody = getItem(position).getBody();
-        return StickersManager.isSticker(messageBody)
-                ? ChatItemType.STICKER.ordinal()
-                : ChatItemType.MESSAGE.ordinal();
-    }
-
-    @Override
     public long getItemId(int position) {
         return position;
     }
@@ -68,14 +55,18 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
-            if (getItemViewType(position) == ChatItemType.STICKER.ordinal()) {
-                convertView = inflater.inflate(R.layout.list_item_message_sticker, parent, false);
-            } else {
-                convertView = inflater.inflate(R.layout.list_item_message_text, parent, false);
-            }
-            holder = createViewHolder(convertView);
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.list_item_message_text, parent, false);
+
+            holder.messageBodyTextView = (TextView) convertView.findViewById(R.id.text_chat_message);
+            holder.messageAuthorTextView = (TextView) convertView.findViewById(R.id.text_chat_author);
+            holder.messageContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_message_container);
+            holder.textContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_text_container);
+            holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_chat_info);
+            holder.stickerImageView = (ImageView) convertView.findViewById(R.id.image_chat_sticker);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -84,23 +75,23 @@ public class ChatAdapter extends BaseAdapter {
         QBChatMessage chatMessage = getItem(position);
         String messageBody = chatMessage.getBody();
         QBUser currentUser = ChatUtils.getCurrentUser();
-        boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
+        final boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
 
         setMessageAlignmentAndBackground(holder, isIncomingMessage);
         setMessageBody(holder, messageBody);
         setMessageInfo(chatMessage, holder);
+        setMessageAuthor(holder, chatMessage, isIncomingMessage);
+
+        holder.messageContainerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isMessageInfoVisible = holder.messageInfoTextView.getVisibility() == View.VISIBLE;
+                holder.messageInfoTextView.setVisibility(isMessageInfoVisible ? View.GONE : View.VISIBLE);
+            }
+        });
+        holder.messageInfoTextView.setVisibility(View.GONE);
 
         return convertView;
-    }
-
-    private void setMessageInfo(QBChatMessage chatMessage, ViewHolder holder) {
-        String messageDate = TimeUtils.millisToLongDHMS(chatMessage.getDateSent() * 1000);
-        if (chatMessage.getSenderId() != null) {
-            QBUser sender = ChatHelper.getInstance().getQbUserById(chatMessage.getSenderId());
-            holder.messageInfoTextView.setText(String.format("%s\n%s", sender.getLogin(), messageDate));
-        } else {
-            holder.messageInfoTextView.setText(messageDate);
-        }
     }
 
     private void setMessageBody(ViewHolder holder, String messageBody) {
@@ -108,9 +99,27 @@ public class ChatAdapter extends BaseAdapter {
             StickersManager.with(context)
                     .loadSticker(messageBody)
                     .into(holder.stickerImageView);
-        } else if (holder.messageBodyTextView != null) {
+            holder.stickerImageView.setVisibility(View.VISIBLE);
+            holder.messageBodyTextView.setVisibility(View.GONE);
+        } else {
             holder.messageBodyTextView.setText(messageBody);
+            holder.messageBodyTextView.setVisibility(View.VISIBLE);
+            holder.stickerImageView.setVisibility(View.GONE);
         }
+    }
+
+    private void setMessageAuthor(ViewHolder holder, QBChatMessage chatMessage, boolean isIncomingMessage) {
+        if (isIncomingMessage) {
+            QBUser sender = ChatHelper.getInstance().getQbUserById(chatMessage.getSenderId());
+            holder.messageAuthorTextView.setText(sender.getLogin());
+            holder.messageAuthorTextView.setVisibility(View.VISIBLE);
+        } else {
+            holder.messageAuthorTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setMessageInfo(QBChatMessage chatMessage, ViewHolder holder) {
+        holder.messageInfoTextView.setText(TimeUtils.getTime(chatMessage.getDateSent() * 1000));
     }
 
     @SuppressLint("RtlHardcoded")
@@ -118,11 +127,10 @@ public class ChatAdapter extends BaseAdapter {
         int gravity = isIncoming ? Gravity.LEFT : Gravity.RIGHT;
         holder.messageContainerLayout.setGravity(gravity);
         holder.messageInfoTextView.setGravity(gravity);
-        if (holder.messageBodyTextView != null) {
-            LinearLayout.LayoutParams messageLp = (LinearLayout.LayoutParams) holder.messageBodyTextView.getLayoutParams();
-            messageLp.gravity = gravity;
-            holder.messageBodyTextView.setLayoutParams(messageLp);
-        }
+
+        LinearLayout.LayoutParams messageLp = (LinearLayout.LayoutParams) holder.messageBodyTextView.getLayoutParams();
+        messageLp.gravity = gravity | Gravity.CENTER_VERTICAL;
+        holder.messageBodyTextView.setLayoutParams(messageLp);
 
         int textContainerBgResource = isIncoming
                 ? R.drawable.incoming_message_bg
@@ -130,25 +138,9 @@ public class ChatAdapter extends BaseAdapter {
         holder.textContainerLayout.setBackgroundResource(textContainerBgResource);
     }
 
-    private ViewHolder createViewHolder(View v) {
-        ViewHolder holder = new ViewHolder();
-
-        holder.messageBodyTextView = (TextView) v.findViewById(R.id.text_chat_message);
-        holder.messageContainerLayout = (LinearLayout) v.findViewById(R.id.layout_chat_message_container);
-        holder.textContainerLayout = (LinearLayout) v.findViewById(R.id.layout_chat_text_container);
-        holder.messageInfoTextView = (TextView) v.findViewById(R.id.text_chat_info);
-        holder.stickerImageView = (ImageView) v.findViewById(R.id.image_chat_sticker);
-
-        return holder;
-    }
-
-    private enum ChatItemType {
-        MESSAGE,
-        STICKER
-    }
-
     private static class ViewHolder {
         public TextView messageBodyTextView;
+        public TextView messageAuthorTextView;
         public TextView messageInfoTextView;
         public LinearLayout messageContainerLayout;
         public LinearLayout textContainerLayout;
