@@ -9,14 +9,11 @@ import android.widget.ProgressBar;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
-import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.QBUsers;
@@ -78,21 +75,7 @@ public class NewDialogActivity extends BaseActivity {
 
     private void createDialogWithSelectedUsers() {
         List<QBUser> selectedUsers = usersAdapter.getSelectedUsers();
-
-        ChatHelper chatHelper = ChatHelper.getInstance();
-        chatHelper.addDialogsUsers(selectedUsers);
-
-        // Create new dialog to start a chat
-        QBDialog dialogToCreate = new QBDialog();
-        dialogToCreate.setName(ChatUtils.createChatNameFromUserList(selectedUsers));
-        if (selectedUsers.size() == 1) {
-            dialogToCreate.setType(QBDialogType.PRIVATE);
-        } else {
-            dialogToCreate.setType(QBDialogType.GROUP);
-        }
-        dialogToCreate.setOccupantsIds(ChatUtils.getUserIds(selectedUsers));
-
-        QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate,
+        ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
                 new QBEntityCallbackImpl<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
@@ -130,10 +113,11 @@ public class NewDialogActivity extends BaseActivity {
             public void onError(List<String> errors) {
                 // If it's not the first page requested — we need to decrease currentUsersQbPage value in onError()
                 // since if we're are there it means we didn't request users successfully and the next time
-                // we need to request the same page to receive all users
+                // we need to request the same page to receive all users without missing anyone
                 if (currentUsersQbPage != 0) {
                     currentUsersQbPage--;
                 }
+                progressBar.setVisibility(View.GONE);
                 ErrorUtils.showErrorDialog(NewDialogActivity.this, getString(R.string.new_dialog_get_users_error), errors);
             }
         });

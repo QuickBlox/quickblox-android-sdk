@@ -7,11 +7,14 @@ import android.util.Log;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -27,7 +30,10 @@ public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
     private static final int AUTO_PRESENCE_INTERVAL_IN_SECONDS = 30;
-    private static final int QB_REQUEST_PAGE_LIMIT = 100;
+
+    private static final int DIALOG_ITEMS_PER_PAGE = 100;
+    private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
+    private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
     private static ChatHelper instance;
 
@@ -129,19 +135,95 @@ public class ChatHelper {
         }
     }
 
+    public void createDialogWithSelectedUsers(final List<QBUser> users, final QBEntityCallbackImpl<QBDialog> callback) {
+        QBDialog dialogToCreate = new QBDialog();
+        dialogToCreate.setName(ChatUtils.createChatNameFromUserList(users));
+        if (users.size() == 1) {
+            dialogToCreate.setType(QBDialogType.PRIVATE);
+        } else {
+            dialogToCreate.setType(QBDialogType.GROUP);
+        }
+        dialogToCreate.setOccupantsIds(ChatUtils.getUserIds(users));
+
+        QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate,
+                new QBEntityCallbackImpl<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog dialog, Bundle args) {
+                        addDialogsUsers(users);
+                        callback.onSuccess(dialog, args);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        callback.onError(errors);
+                    }
+                }
+        );
+    }
+
+    public void loadChatHistory(QBDialog dialog, final QBEntityCallbackImpl<ArrayList<QBChatMessage>> callback) {
+        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
+        customObjectRequestBuilder.setPagesLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
+        customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+
+        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
+                new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
+                    @Override
+                    public void onSuccess(ArrayList<QBChatMessage> result, Bundle params) {
+                        callback.onSuccess(result, params);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        callback.onError(errors);
+                    }
+                });
+    }
+
     public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(QB_REQUEST_PAGE_LIMIT);
+        customObjectRequestBuilder.setPagesLimit(DIALOG_ITEMS_PER_PAGE);
 
-        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+        QBChatService.getChatDialogs(null, customObjectRequestBuilder,
+                new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+                    @Override
+                    public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
+                        getUsersFromDialogs(dialogs, callback);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        callback.onError(errors);
+                    }
+                });
+    }
+
+    public void getUsersFromDialog(QBDialog dialog, final QBEntityCallback<List<QBUser>> callback) {
+        ArrayList<Integer> userIds = dialog.getOccupants();
+
+        List<QBUser> users = new ArrayList<>(userIds.size());
+        for (Integer id : userIds) {
+            users.add(dialogsUsersMap.get(id));
+        }
+
+        // If we already have all users in memory
+        // there is no need to make REST request to QB
+        if (userIds.size() == users.size()) {
+            callback.onSuccess(users, null);
+            return;
+        }
+
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
+        QBUsers.getUsersByIDs(userIds, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
-            public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
-                getUsersFromDialogs(dialogs, callback);
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                addDialogsUsers(qbUsers);
+                callback.onSuccess(qbUsers, bundle);
             }
 
             @Override
-            public void onError(List<String> errors) {
-                callback.onError(errors);
+            public void onError(List<String> list) {
+                callback.onError(list);
             }
         });
     }
@@ -156,7 +238,7 @@ public class ChatHelper {
         QBUsers.getUsersByIDs(userIds, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-                setDialogsUsers(users);
+                addDialogsUsers(users);
                 callback.onSuccess(dialogs, null);
             }
 
@@ -183,17 +265,10 @@ public class ChatHelper {
         return users;
     }
 
-    public void setDialogsUsers(List<QBUser> users) {
-        // Basically in your app you should store users in database
-        // We're using runtime field only to simplify app logic
-        dialogsUsersMap.clear();
-
-        for (QBUser user : users) {
-            dialogsUsersMap.put(user.getId(), user);
-        }
-    }
-
     public void addDialogsUsers(List<QBUser> users) {
+        // Basically in your app you should store users in database
+        // And load users to memory on demand
+        // We're using runtime map only to simplify app logic
         for (QBUser user : users) {
             dialogsUsersMap.put(user.getId(), user);
         }

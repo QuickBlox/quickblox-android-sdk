@@ -18,12 +18,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.utils.ChatUtils;
@@ -57,9 +55,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
-    private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
-    private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
-
     private KeyboardHandleRelativeLayout keyboardHandleLayout;
     private RelativeLayout containerLayout;
     private FrameLayout stickersContainerLayout;
@@ -86,7 +81,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         setContentView(R.layout.activity_chat);
 
         dialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
-        initActionBar();
         initViews();
 
         if (isSessionActive()) {
@@ -161,7 +155,12 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
-    private void initActionBar() {
+    public void showMessage(QBChatMessage message) {
+        adapter.add(message);
+        scrollMessageListDown();
+    }
+
+    private void setChatNameToActionBar() {
         List<QBUser> chatUsers = ChatHelper.getInstance().getUsersByIds(dialog.getOccupants());
         String chatName = ChatUtils.createChatNameFromUserList(chatUsers);
         ActionBar ab = getSupportActionBar();
@@ -278,7 +277,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         case PRIVATE:
             chat = new PrivateChatImpl(this, ChatUtils.getOpponentIdForPrivateDialog(dialog));
-            loadChatHistory();
+            loadDialogUsers();
             break;
         }
     }
@@ -291,7 +290,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             @Override
             public void onSuccess() {
                 Toast.makeText(ChatActivity.this, R.string.chat_join_successful, Toast.LENGTH_SHORT).show();
-                loadChatHistory();
+                loadDialogUsers();
             }
 
             @Override
@@ -314,39 +313,42 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
-    private void loadChatHistory() {
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
-        customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+    private void loadDialogUsers() {
+        ChatHelper.getInstance().getUsersFromDialog(dialog, new QBEntityCallbackImpl<List<QBUser>>() {
+            @Override
+            public void onSuccess(List<QBUser> users, Bundle bundle) {
+                setChatNameToActionBar();
+                loadChatHistory();
+            }
 
-        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
-                new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
-                    @Override
-                    public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
-                        // The newest messages should be in the end of list,
-                        // so we need to reverse list to show messages in the right order
-                        Collections.reverse(messages);
-
-                        adapter = new ChatAdapter(ChatActivity.this, messages);
-                        messagesListView.setAdapter(adapter);
-                        scrollMessageListDown();
-
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        progressBar.setVisibility(View.GONE);
-                        if (!isFinishing()) {
-                            ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_history_error), errors);
-                        }
-                    }
-                });
+            @Override
+            public void onError(List<String> errors) {
+                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_users_error), errors);
+            }
+        });
     }
 
-    public void showMessage(QBChatMessage message) {
-        adapter.add(message);
-        scrollMessageListDown();
+    private void loadChatHistory() {
+        ChatHelper.getInstance().loadChatHistory(dialog, new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
+            @Override
+            public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
+                // The newest messages should be in the end of list,
+                // so we need to reverse list to show messages in the right order
+                Collections.reverse(messages);
+
+                adapter = new ChatAdapter(ChatActivity.this, messages);
+                messagesListView.setAdapter(adapter);
+                scrollMessageListDown();
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                progressBar.setVisibility(View.GONE);
+                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_history_error), errors);
+            }
+        });
     }
 
     private void scrollMessageListDown() {

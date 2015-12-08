@@ -31,4 +31,5 @@
     <string name="chat_join_error">"Error join group chat: "</string>
     <string name="chat_send_message_error">Failed to send a message</string>
     <string name="chat_load_history_error">"Load chat history errors: "</string>
+    <string name="chat_load_users_error">"Load chat users errors: "</string>
 </resources>
