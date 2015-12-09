@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.utils.chat;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
@@ -12,6 +13,7 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.utils.ChatUtils;
@@ -22,6 +24,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +54,7 @@ public class ChatHelper {
      * Starts QBChatService initialization
      *
      * @param ctx any Context instance
-     * @return true if service wasn't initialized before call
+     * @return true if QuickBlox session needs to be created
      */
     public static boolean initIfNeed(Context ctx) {
         if (!QBChatService.isInitialized()) {
@@ -61,6 +64,16 @@ public class ChatHelper {
             return true;
         }
 
+        try {
+            String token = QBAuth.getBaseService().getToken();
+            Date tokenExpireDate = QBAuth.getBaseService().getTokenExpirationDate();
+            boolean isTokenExpired = tokenExpireDate != null && System.currentTimeMillis() >= tokenExpireDate.getTime();
+            if (TextUtils.isEmpty(token) || isTokenExpired) {
+                Log.d(TAG, "Token is either empty or expired");
+                return true;
+            }
+        } catch (BaseServiceException e) {
+            Log.w(TAG, e);
             return true;
         }
 
