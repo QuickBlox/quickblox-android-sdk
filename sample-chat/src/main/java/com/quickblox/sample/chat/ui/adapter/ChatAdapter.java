@@ -128,10 +128,6 @@ public class ChatAdapter extends BaseAdapter {
         holder.messageContainerLayout.setGravity(gravity);
         holder.messageInfoTextView.setGravity(gravity);
 
-        LinearLayout.LayoutParams messageLp = (LinearLayout.LayoutParams) holder.messageBodyTextView.getLayoutParams();
-        messageLp.gravity = gravity | Gravity.CENTER_VERTICAL;
-        holder.messageBodyTextView.setLayoutParams(messageLp);
-
         int textContainerBgResource = isIncoming
                 ? R.drawable.incoming_message_bg
                 : R.drawable.outgoing_message_bg;

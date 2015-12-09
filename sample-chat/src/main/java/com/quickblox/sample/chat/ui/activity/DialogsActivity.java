@@ -18,7 +18,6 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
-import com.quickblox.sample.chat.ui.activity.base.BaseToolbarActivity;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.ErrorUtils;
@@ -27,7 +26,7 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DialogsActivity extends BaseToolbarActivity {
+public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
 
     private ListView dialogsListView;

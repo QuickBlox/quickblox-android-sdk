@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBSettings;
 import com.quickblox.sample.chat.utils.Consts;
 
@@ -26,6 +28,14 @@ public class App extends Application {
         // Initialise QuickBlox SDK and Stickers SDK
         QBSettings.getInstance().fastConfigInit(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET);
         StickersManager.initialize(Consts.STICKER_API_KEY, this);
+
+        if (BuildConfig.DEBUG) {
+            QBChatService.setDebugEnabled(true);
+            QBSettings.getInstance().setLogLevel(LogLevel.DEBUG);
+        } else {
+            QBChatService.setDebugEnabled(false);
+            QBSettings.getInstance().setLogLevel(LogLevel.NOTHING);
+        }
     }
 
     public int getAppVersion() {

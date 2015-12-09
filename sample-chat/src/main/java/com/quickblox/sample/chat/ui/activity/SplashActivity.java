@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.sample.chat.BuildConfig;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.ErrorUtils;
@@ -23,6 +25,9 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        TextView versionTextView = (TextView) findViewById(R.id.text_splash_app_version);
+        versionTextView.setText(getString(R.string.splash_chat_version, BuildConfig.VERSION_NAME));
 
         boolean isChatInitializedJustNow = ChatHelper.initIfNeed(this);
         // If QBChatService is already running that means that

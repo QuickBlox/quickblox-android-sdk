@@ -11,7 +11,7 @@
     <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
 
     <string name="splash_chat_sample">Chat Sample</string>
-    <string name="splash_chat_version">v 1.02</string>
+    <string name="splash_chat_version">v %s</string>
     <string name="splash_chat_login_error">"Chat login errors: "</string>
 
     <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>

@@ -7,34 +7,39 @@
     android:orientation="vertical"
     tools:ignore="ContentDescription">
 
-    <com.devspark.robototextview.widget.RobotoTextView
-        android:id="@+id/text_splash_app_title"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/splash_chat_sample"
-        android:textColor="@color/text_color_black"
-        android:textSize="@dimen/splash_main_text_size"
-        app:typeface="roboto_light" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <com.devspark.robototextview.widget.RobotoTextView
-        android:id="@+id/text_splash_app_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_splash_app_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="@string/splash_chat_sample"
-        android:textColor="@color/text_color_light_grey"
-        android:textSize="@dimen/splash_version_text_size"
-        app:typeface="roboto_light" />
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/text_splash_app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/splash_chat_sample"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/splash_main_text_size"
+            app:typeface="roboto_light" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/text_splash_app_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/text_color_light_grey"
+            android:textSize="@dimen/splash_version_text_size"
+            app:typeface="roboto_light"
+            tools:text="@string/splash_chat_version" />
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
-        android:src="@drawable/qb_logo"/>
+        android:src="@drawable/qb_logo" />
 
 </RelativeLayout>

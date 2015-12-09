@@ -55,9 +55,11 @@ public class ChatHelper {
      */
     public static boolean initIfNeed(Context ctx) {
         if (!QBChatService.isInitialized()) {
-            QBChatService.setDebugEnabled(true);
-            QBChatService.init(ctx);
             Log.d(TAG, "Initialise QBChatService");
+            QBChatService.init(ctx);
+
+            return true;
+        }
 
             return true;
         }

@@ -13,7 +13,6 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.ui.activity.base.BaseToolbarActivity;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
 import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
@@ -23,7 +22,7 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewDialogActivity extends BaseToolbarActivity {
+public class NewDialogActivity extends BaseActivity {
     private static final int USERS_ITEMS_PER_PAGE = 10;
 
     private int firstVisibleItemPosition;

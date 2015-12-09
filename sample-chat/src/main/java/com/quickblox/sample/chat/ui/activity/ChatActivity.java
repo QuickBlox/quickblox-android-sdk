@@ -23,7 +23,6 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.ui.activity.base.BaseToolbarActivity;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.ErrorUtils;
@@ -49,7 +48,7 @@ import vc908.stickerfactory.ui.fragment.StickersFragment;
 import vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout;
 import vc908.stickerfactory.utils.KeyboardUtils;
 
-public class ChatActivity extends BaseToolbarActivity implements KeyboardHandleRelativeLayout.KeyboardSizeChangeListener {
+public class ChatActivity extends BaseActivity implements KeyboardHandleRelativeLayout.KeyboardSizeChangeListener {
 
     private static final String TAG = ChatActivity.class.getSimpleName();
 
