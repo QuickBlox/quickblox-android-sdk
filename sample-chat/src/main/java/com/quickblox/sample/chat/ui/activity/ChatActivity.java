@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -127,6 +129,25 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
         } else {
             stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_chat, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+        case R.id.menu_action_info:
+            // TODO Open chat info activity
+            return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 

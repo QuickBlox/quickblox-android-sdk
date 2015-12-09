@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Fix for wrong FAB margin on v21+-->
+    <dimen name="fab_margin_right">16dp</dimen>
+    <dimen name="fab_margin_bottom">16dp</dimen>
+</resources>

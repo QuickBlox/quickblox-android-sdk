@@ -3,9 +3,12 @@
     <color name="color_primary">#ffffff</color>
     <color name="color_primary_dark">#d0d0d0</color>
     <color name="color_accent">#4ad24d</color>
-    <color name="window_background">#ffffff</color>
 
-    <color name="chat_background_color">#f5f6f5</color>
+    <color name="color_blue_qb">#046ad0</color>
+    <color name="color_grey">#d3d3d3</color>
+
+    <color name="background_app_color">#ffffff</color>
+    <color name="background_chat_color">#f5f6f5</color>
 
     <color name="text_color_primary">#212121</color>
     <color name="text_color_white">#ffffff</color>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/image_dialog_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/list_item_side_margin"
+        android:layout_marginRight="@dimen/list_item_side_margin"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_chat_group"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/text_unread_message_count"
+        android:layout_toRightOf="@+id/image_dialog_icon"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_dialog_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_primary"
+            android:textSize="16sp"
+            tools:text="Room name" />
+
+        <TextView
+            android:id="@+id/text_room_last_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_dark_grey"
+            android:textSize="14sp"
+            tools:text="Last message" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_unread_message_count"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/list_item_side_margin"
+        android:background="@drawable/shape_rectangle"
+        android:gravity="center"
+        android:textColor="@color/text_color_white"
+        tools:text="4" />
+</RelativeLayout>

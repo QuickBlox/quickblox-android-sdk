@@ -3,6 +3,7 @@
     <string name="app_name">QuickBlox Sample Chat</string>
 
     <string name="menu_new_chat">New Chat</string>
+    <string name="menu_chat_info">Chat info</string>
 
     <string name="dlg_error">Error</string>
     <string name="dlg_loading">Loading</string>
@@ -14,7 +15,7 @@
     <string name="splash_chat_version">v %s</string>
     <string name="splash_chat_login_error">"Chat login errors: "</string>
 
-    <string name="dialogs_select_a_dialog_to_chat">Select a dialog to chat</string>
+    <string name="dialogs_select_a_dialog_to_chat">Select a Dialog to Chat</string>
     <string name="dialogs_new_select_users_to_chat">Select users to chat</string>
     <string name="dialogs_new_create_chat">Create Chat</string>
     <string name="dialogs_get_error">"Get dialogs errors: "</string>

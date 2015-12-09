@@ -1,24 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/text_dialogs_select_a_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|center_vertical"
-        android:layout_marginBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="20dp"
-        android:text="@string/dialogs_select_a_dialog_to_chat"
-        android:textSize="20sp" />
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <ListView
         android:id="@+id/list_dialogs_chats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/text_dialogs_select_a_dialog"
+        android:divider="@null"
         android:orientation="vertical" />
 
     <ProgressBar
@@ -28,4 +20,17 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:layout_marginRight="@dimen/fab_margin_right"
+        android:onClick="onStartChatClick"
+        android:src="@drawable/ic_action_start_chat"
+        app:borderWidth="0dp"
+        app:fabSize="normal" />
 </RelativeLayout>

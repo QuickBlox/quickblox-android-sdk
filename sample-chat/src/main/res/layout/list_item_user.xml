@@ -7,12 +7,13 @@
     tools:ignore="RtlHardcoded">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
+        android:id="@+id/image_user"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/list_item_side_margin"
+        android:layout_marginRight="@dimen/list_item_side_margin"
         android:padding="8dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_user" />
+        android:scaleType="centerInside" />
 
     <TextView
         android:id="@+id/text_user_login"
@@ -25,8 +26,8 @@
         android:id="@+id/checkbox_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/list_item_side_margin"
         android:clickable="false"
-        android:gravity="right"
-        android:padding="8dp" />
+        android:gravity="right" />
 
 </LinearLayout>

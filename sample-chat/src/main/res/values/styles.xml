@@ -8,7 +8,7 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
 
-        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:windowBackground">@color/background_app_color</item>
     </style>
 
     <style name="SplashActivityTheme" parent="AppTheme">
@@ -17,6 +17,6 @@
     </style>
 
     <style name="ChatActivityTheme" parent="AppTheme">
-        <item name="android:windowBackground">@color/chat_background_color</item>
+        <item name="android:windowBackground">@color/background_chat_color</item>
     </style>
 </resources>

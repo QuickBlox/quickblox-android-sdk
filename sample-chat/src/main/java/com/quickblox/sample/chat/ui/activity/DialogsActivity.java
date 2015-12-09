@@ -7,8 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -54,6 +53,9 @@ public class DialogsActivity extends BaseActivity {
         dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);
 
+        View listHeader = LayoutInflater.from(this).inflate(R.layout.include_chat_list_header, dialogsListView, false);
+        dialogsListView.addHeaderView(listHeader);
+
         if (isSessionActive()) {
             loadDialogsFromQb();
         }
@@ -78,22 +80,14 @@ public class DialogsActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_dialogs, menu);
-        return true;
+    public void onSessionCreated(boolean success) {
+        if (success) {
+            loadDialogsFromQb();
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-        case R.id.menu_action_add:
-            NewDialogActivity.start(this);
-            return true;
-
-        default:
-            return super.onOptionsItemSelected(item);
-        }
+    public void onStartChatClick(View view) {
+        NewDialogActivity.start(this);
     }
 
     private void loadDialogsFromQb() {
@@ -115,22 +109,15 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void fillListView(List<QBDialog> dialogs) {
-        final DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
+        DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
         dialogsListView.setAdapter(adapter);
         dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) adapter.getItem(position);
+                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
                 ChatActivity.start(DialogsActivity.this, selectedDialog);
             }
         });
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            loadDialogsFromQb();
-        }
     }
 
     private static class PushBroadcastReceiver extends BroadcastReceiver {

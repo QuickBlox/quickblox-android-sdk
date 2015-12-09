@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class UsersAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_user, parent, false);
             holder = new ViewHolder();
+            holder.userImageView = (ImageView) convertView.findViewById(R.id.image_user);
             holder.loginTextView = (TextView) convertView.findViewById(R.id.text_user_login);
             holder.userCheckBox = (CheckBox) convertView.findViewById(R.id.checkbox_user);
 
@@ -75,12 +78,14 @@ public class UsersAdapter extends BaseAdapter {
             }
         });
 
+        holder.userImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
         holder.loginTextView.setText(user.getLogin());
         holder.userCheckBox.setChecked(selectedUsers.contains(user));
         return convertView;
     }
 
     private static class ViewHolder {
+        ImageView userImageView;
         TextView loginTextView;
         CheckBox userCheckBox;
     }
