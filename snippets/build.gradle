@@ -23,6 +23,10 @@ android {
 
         }
 
+        onlineAar{
+
+        }
+
         offline{
 
         }
@@ -36,7 +40,7 @@ android {
 
 dependencies {
 
-    // online dependencies, from remote repository
+    // online dependencies, from remote repository, jar files
     //
     def sdkVersion = rootProject.qbSdkVersion;
     onlineCompile "com.quickblox:quickblox-android-sdk-core:$sdkVersion"
@@ -49,6 +53,17 @@ dependencies {
     onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$sdkVersion"
     onlineCompile "com.quickblox:quickblox-android-sdk-location:$sdkVersion"
 
+
+    // online dependencies, from remote repository, aar files
+    //
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-core:$sdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-chat:$sdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-content:$sdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-messages:$sdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-customobjects:$sdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-location:$sdkVersion@aar"
+
+
     // offline dependencies, from 'jars' dir
     //
     offlineCompile files(rootProject.core_jar_path,
@@ -57,6 +72,7 @@ dependencies {
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
             rootProject.messages_jar_path)
+
 
     // offline dependencies, from 'SDK-android' dir, for debug
     //
