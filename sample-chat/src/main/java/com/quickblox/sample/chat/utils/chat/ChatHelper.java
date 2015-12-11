@@ -77,6 +77,10 @@ public class ChatHelper {
             return true;
         }
 
+        if (ChatUtils.getCurrentUser() == null) {
+            return true;
+        }
+
         return false;
     }
 
