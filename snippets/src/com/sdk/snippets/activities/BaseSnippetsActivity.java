@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.sdk.snippets.R;
 import com.sdk.snippets.core.Snippets;
-import com.sdk.snippets.core.SnippetsList;
+import com.sdk.snippets.core.SnippetsListView;
 
 /**
  * Created by Вадим on 13.06.2015.
@@ -19,7 +19,7 @@ public abstract class BaseSnippetsActivity extends Activity {
         setContentView(R.layout.snippets_list);
 
         Snippets snippets = onCreateSnippets(this);
-        SnippetsList list = (SnippetsList) findViewById(R.id.list);
+        SnippetsListView list = (SnippetsListView) findViewById(R.id.list);
         list.initialize(snippets);
     }
 

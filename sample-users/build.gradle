@@ -33,10 +33,7 @@ android {
 }
 
 dependencies {
-    //if (onlineDep) {
     offlineCompile files(rootProject.core_jar_path)
-    //} else {
-    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-   // }
+
     compile 'com.android.support:appcompat-v7:23.1.1'
 }

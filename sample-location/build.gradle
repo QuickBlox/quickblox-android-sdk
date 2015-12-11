@@ -31,9 +31,6 @@ android {
 dependencies {
 
     offlineCompile files(rootProject.core_jar_path, rootProject.location_jar_path )
-    //} else {
-    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@jar"
-    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@jar"
 
     compile 'com.android.support:support-v4:19.0.0'
     compile 'com.android.support:appcompat-v7:23.1.1'

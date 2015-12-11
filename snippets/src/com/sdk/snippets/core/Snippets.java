@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 
 import java.util.ArrayList;

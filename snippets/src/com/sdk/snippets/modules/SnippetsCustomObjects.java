@@ -21,7 +21,7 @@ import com.quickblox.customobjects.model.QBPermissions;
 import com.quickblox.customobjects.model.QBPermissionsLevel;
 import com.quickblox.customobjects.request.QBAggregationRequestBuilder;
 import com.sdk.snippets.*;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -139,7 +139,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCustomObjectByIDSynchronous = new AsyncSnippet("get object by ID (synchronous)", context) {
+    Snippet getCustomObjectByIDSynchronous = new SnippetAsync("get object by ID (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBCustomObject object = new QBCustomObject(MOVIE_CLASS, "53f323ab535c12567903ba43");
@@ -183,7 +183,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCustomObjectsByIDsSynchronous = new AsyncSnippet("get objects by IDs (synchronous)", context) {
+    Snippet getCustomObjectsByIDsSynchronous = new SnippetAsync("get objects by IDs (synchronous)", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList coIDs = new StringifyArrayList();
@@ -236,7 +236,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCustomObjectsSynchronous = new AsyncSnippet("get objects (synchronous)", context) {
+    Snippet getCustomObjectsSynchronous = new SnippetAsync("get objects (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -288,7 +288,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCountCustomsObjectsSynchronous = new AsyncSnippet("get count (synchronous)", context) {
+    Snippet getCountCustomsObjectsSynchronous = new SnippetAsync("get count (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -335,7 +335,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet createCustomObjectSynchronous = new AsyncSnippet("create object (synchronous)", context) {
+    Snippet createCustomObjectSynchronous = new SnippetAsync("create object (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -395,7 +395,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet createCustomObjectsSynchronous = new AsyncSnippet("create objects (synchronous)", context) {
+    Snippet createCustomObjectsSynchronous = new SnippetAsync("create objects (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -458,7 +458,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet updateCustomObjectSynchronous = new AsyncSnippet("update object (synchronous)", context) {
+    Snippet updateCustomObjectSynchronous = new SnippetAsync("update object (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -520,7 +520,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet updateCustomObjectsSynchronous = new AsyncSnippet("update objects (synchronous)", context) {
+    Snippet updateCustomObjectsSynchronous = new SnippetAsync("update objects (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -578,7 +578,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet deleteCustomObjectSynchronous = new AsyncSnippet("delete object synchronous", context) {
+    Snippet deleteCustomObjectSynchronous = new SnippetAsync("delete object synchronous", context) {
         @Override
         public void executeAsync() {
             try {
@@ -622,7 +622,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet deleteCustomObjectsSynchronous = new AsyncSnippet("delete objects synchronous", context) {
+    Snippet deleteCustomObjectsSynchronous = new SnippetAsync("delete objects synchronous", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList deleteIds = new StringifyArrayList();
@@ -671,7 +671,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet getCustomObjectPermissionsSynchronous = new AsyncSnippet("delete objects synchronous", context) {
+    Snippet getCustomObjectPermissionsSynchronous = new SnippetAsync("delete objects synchronous", context) {
         @Override
         public void executeAsync() {
             QBPermissions permissions = null;
@@ -729,7 +729,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet updateCustomObjectPermissionsSynchronous = new AsyncSnippet("update permissions (synchronous)", context) {
+    Snippet updateCustomObjectPermissionsSynchronous = new SnippetAsync("update permissions (synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -808,7 +808,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet createCustomObjectWithPermissionsSynchronous = new AsyncSnippet("create object with permissions(synchronous)", context) {
+    Snippet createCustomObjectWithPermissionsSynchronous = new SnippetAsync("create object with permissions(synchronous)", context) {
 
         @Override
         public void executeAsync() {
@@ -876,7 +876,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet uploadFileSynchronous = new AsyncSnippet("upload file synchronous", context) {
+    Snippet uploadFileSynchronous = new SnippetAsync("upload file synchronous", context) {
         @Override
         public void executeAsync() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
@@ -929,7 +929,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    AsyncSnippet downloadFileSynchronous = new AsyncSnippet("download file (synchronous)", context) {
+    SnippetAsync downloadFileSynchronous = new SnippetAsync("download file (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
@@ -978,7 +978,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    AsyncSnippet deleteFileSynchronous = new AsyncSnippet("delete file (synchronous)", context) {
+    SnippetAsync deleteFileSynchronous = new SnippetAsync("delete file (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
@@ -1017,7 +1017,7 @@ public class SnippetsCustomObjects extends Snippets {
         }
     };
 
-    Snippet aggregateCustomObjectsSynchronous = new AsyncSnippet("aggregate objects (synchronous)", context) {
+    Snippet aggregateCustomObjectsSynchronous = new SnippetAsync("aggregate objects (synchronous)", context) {
 
         @Override
         public void executeAsync() {

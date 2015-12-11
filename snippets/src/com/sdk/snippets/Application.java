@@ -20,10 +20,13 @@ public class Application extends android.app.Application {
         QBSettings.getInstance().init(getApplicationContext(), CONFIG.getAppId(),
                 CONFIG.getAuthKey(), CONFIG.getAuthSecret());
 
-        QBSettings.getInstance().setAccountKey(CONFIG.getAccountKey());
-//
-        // specify custom domains
-//        QBSettings.getInstance().setEndpoints(CONFIG.getApiDomain(), CONFIG.getChatDomain(), ServiceZone.PRODUCTION);
-//        QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
+
+        if(CONFIG.getApiDomain().equals("https://api.quickblox.com")){
+            QBSettings.getInstance().setAccountKey(CONFIG.getAccountKey());
+        }else{
+            // specify custom domains
+            QBSettings.getInstance().setEndpoints(CONFIG.getApiDomain(), CONFIG.getChatDomain(), ServiceZone.PRODUCTION);
+            QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
+        }
     }
 }

@@ -13,7 +13,7 @@ import com.quickblox.core.Consts;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.*;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -100,7 +100,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet createPushTokenSynchronous = new AsyncSnippet("create push token (synchronous)", context) {
+    Snippet createPushTokenSynchronous = new SnippetAsync("create push token (synchronous)", context) {
         @Override
         public void executeAsync() {
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
@@ -149,7 +149,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet deletePushTokenSynchronous = new AsyncSnippet("delete push token (synchronous)", context) {
+    Snippet deletePushTokenSynchronous = new SnippetAsync("delete push token (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -195,7 +195,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet createSubscriptionSynchronous = new AsyncSnippet("create subscription (synchronous)", context) {
+    Snippet createSubscriptionSynchronous = new SnippetAsync("create subscription (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
@@ -245,7 +245,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet getSubscriptionsSynchronous = new AsyncSnippet("get subscriptions (synchronous)", context) {
+    Snippet getSubscriptionsSynchronous = new SnippetAsync("get subscriptions (synchronous)", context) {
         @Override
         public void executeAsync() {
             ArrayList<QBSubscription> subscriptions = null;
@@ -284,7 +284,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet deleteSubscriptionSynchronous = new AsyncSnippet("delete subscriptions (synchronous)", context) {
+    Snippet deleteSubscriptionSynchronous = new SnippetAsync("delete subscriptions (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -355,7 +355,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet createEventSynchronous = new AsyncSnippet("create event (send push) (synchronous)", context) {
+    Snippet createEventSynchronous = new SnippetAsync("create event (send push) (synchronous)", context) {
         @Override
         public void executeAsync() {
             // recipient
@@ -429,7 +429,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet getEventWithIdSynchronous = new AsyncSnippet("get event (synchronous)", "with id", context) {
+    Snippet getEventWithIdSynchronous = new SnippetAsync("get event (synchronous)", "with id", context) {
         public QBEvent event;
 
         @Override
@@ -475,7 +475,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet getEventsSynchronous = new AsyncSnippet("get events (synchronous)", context) {
+    Snippet getEventsSynchronous = new SnippetAsync("get events (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
@@ -524,7 +524,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet updateEventSynchronous = new AsyncSnippet("update events (synchronous)", context) {
+    Snippet updateEventSynchronous = new SnippetAsync("update events (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBEvent event = new QBEvent();
@@ -567,7 +567,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet deleteEventSynchronous = new AsyncSnippet("delete events (synchronous)", context) {
+    Snippet deleteEventSynchronous = new SnippetAsync("delete events (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -612,7 +612,7 @@ public class SnippetsMessages extends Snippets{
         }
     };
 
-    Snippet subscribeToPushNotificationsTaskSynchronous = new AsyncSnippet("TASK: subscribe to push notifications (synchronous)", context) {
+    Snippet subscribeToPushNotificationsTaskSynchronous = new SnippetAsync("TASK: subscribe to push notifications (synchronous)", context) {
         @Override
         public void executeAsync() {
             String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";

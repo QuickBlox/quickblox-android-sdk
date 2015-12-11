@@ -5,22 +5,17 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBSettings;
-import com.quickblox.core.account.model.QBAccountSettings;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.executor.QBExecutor;
 import com.quickblox.core.server.BaseService;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by vfite on 22.01.14.
@@ -72,7 +67,7 @@ public class SnippetsAuth extends Snippets{
         }
     };
 
-    Snippet createSessionSynchronous = new AsyncSnippet("create session (synchronous)", context) {
+    Snippet createSessionSynchronous = new SnippetAsync("create session (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBSession session = null;
@@ -119,7 +114,7 @@ public class SnippetsAuth extends Snippets{
         }
     };
 
-    Snippet createSessionWithUserSynchronous = new AsyncSnippet("create session (synchronous)", "with user", context) {
+    Snippet createSessionWithUserSynchronous = new SnippetAsync("create session (synchronous)", "with user", context) {
         @Override
         public void executeAsync() {
             QBSession session = null;
@@ -163,7 +158,7 @@ public class SnippetsAuth extends Snippets{
         }
     };
 
-    Snippet createSessionWithSocialProviderSynchronous = new AsyncSnippet("create session (synchronous)", "with social provider", context) {
+    Snippet createSessionWithSocialProviderSynchronous = new SnippetAsync("create session (synchronous)", "with social provider", context) {
         @Override
         public void executeAsync() {
             QBSession session = null;
@@ -203,7 +198,7 @@ public class SnippetsAuth extends Snippets{
         }
     };
 
-    Snippet destroySessionSynchronous = new AsyncSnippet("delete session (synchronous)", context) {
+    Snippet destroySessionSynchronous = new SnippetAsync("delete session (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -240,7 +235,7 @@ public class SnippetsAuth extends Snippets{
         }
     };
 
-    Snippet getSessionSynchronous = new AsyncSnippet("get session (synchronous)", context) {
+    Snippet getSessionSynchronous = new SnippetAsync("get session (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {

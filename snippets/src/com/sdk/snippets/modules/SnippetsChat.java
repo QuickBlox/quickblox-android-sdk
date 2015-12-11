@@ -42,7 +42,7 @@ import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -236,7 +236,7 @@ public class SnippetsChat extends Snippets {
 
         // stream management
         chatService.setUseStreamManagement(true);
-//            chatService.setUseStreamManagementResumption(true);
+//        chatService.setUseStreamManagementResumption(true);
     }
 
 
@@ -364,7 +364,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet loginInChatSynchronous = new AsyncSnippet("login to Chat (synchronous)", context) {
+    Snippet loginInChatSynchronous = new SnippetAsync("login to Chat (synchronous)", context) {
         @Override
         public void executeAsync() {
             // init test user
@@ -434,7 +434,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet logoutFromChatSynchronous = new AsyncSnippet("Logout from Chat (synchronous)", context) {
+    Snippet logoutFromChatSynchronous = new SnippetAsync("Logout from Chat (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -924,7 +924,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet joinRoomSynchronous = new AsyncSnippet("join Room (synchronous)", context) {
+    Snippet joinRoomSynchronous = new SnippetAsync("join Room (synchronous)", context) {
         @Override
         public void executeAsync() {
             if(groupChatManager == null){
@@ -1043,7 +1043,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet leaveRoom = new AsyncSnippet("leave room", context) {
+    Snippet leaveRoom = new SnippetAsync("leave room", context) {
         @Override
         public void executeAsync() {
             if(currentChatRoom == null){
@@ -1105,7 +1105,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet getDialogsSynchronous = new AsyncSnippet("Get Dialogs (synchronous)", context) {
+    Snippet getDialogsSynchronous = new SnippetAsync("Get Dialogs (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -1153,7 +1153,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet getDialogsCountSynchronous = new AsyncSnippet("Get Dialogs count (synchronous)", context) {
+    Snippet getDialogsCountSynchronous = new SnippetAsync("Get Dialogs count (synchronous)", context) {
         @Override
         public void executeAsync() {
             Bundle bundle = new Bundle();
@@ -1210,7 +1210,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet createDialogSynchronous = new AsyncSnippet("Create Dialog (synchronous)", context) {
+    Snippet createDialogSynchronous = new SnippetAsync("Create Dialog (synchronous)", context) {
         @Override
         public void executeAsync() {
             if(groupChatManager == null){
@@ -1280,7 +1280,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet updateDialogSynchronous = new AsyncSnippet("Update Dialog (synchronous)", context) {
+    Snippet updateDialogSynchronous = new SnippetAsync("Update Dialog (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -1339,7 +1339,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet deleteDialogSynchronous = new AsyncSnippet("Delete Dialog (synchronous)", context) {
+    Snippet deleteDialogSynchronous = new SnippetAsync("Delete Dialog (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -1406,7 +1406,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet getMessagesSynchronous = new AsyncSnippet("Get Messages (synchronous)", "with dialog id", context) {
+    Snippet getMessagesSynchronous = new SnippetAsync("Get Messages (synchronous)", "with dialog id", context) {
         @Override
         public void executeAsync() {
             Bundle bundle = new Bundle();
@@ -1455,7 +1455,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet markMessagesAsReadSynchronous = new AsyncSnippet("Mark Messages as read (synchronous)", context) {
+    Snippet markMessagesAsReadSynchronous = new SnippetAsync("Mark Messages as read (synchronous)", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList<String> messagesIDs = new StringifyArrayList<>();
@@ -1492,7 +1492,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet deleteMessagesSynchronous = new AsyncSnippet("Delete Messages (synchronous)", context) {
+    Snippet deleteMessagesSynchronous = new SnippetAsync("Delete Messages (synchronous)", context) {
         @Override
         public void executeAsync() {
             Set<String> messagesIds = new HashSet<String>() {{
@@ -1541,7 +1541,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet createMessageSynchronous = new AsyncSnippet("Create Message (synchronous)", context) {
+    Snippet createMessageSynchronous = new SnippetAsync("Create Message (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBChatMessage msg = new QBChatMessage();
@@ -1758,7 +1758,7 @@ public class SnippetsChat extends Snippets {
     }
 
 
-    Snippet getPrivacyLists = new AsyncSnippet("get privacy lists (synchronous)", context) {
+    Snippet getPrivacyLists = new SnippetAsync("get privacy lists (synchronous)", context) {
         @Override
         public void executeAsync() {
             List<QBPrivacyList> lists = null;
@@ -1775,7 +1775,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet getPrivacyList = new AsyncSnippet("get privacy list (synchronous)", context) {
+    Snippet getPrivacyList = new SnippetAsync("get privacy list (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPrivacyList list = null;
@@ -1793,7 +1793,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet setPrivacyList = new AsyncSnippet("set privacy list (synchronous)", context) {
+    Snippet setPrivacyList = new SnippetAsync("set privacy list (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPrivacyList list = new QBPrivacyList();
@@ -1823,7 +1823,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet deletePrivacyList = new AsyncSnippet("delete privacy list (synchronous)", context) {
+    Snippet deletePrivacyList = new SnippetAsync("delete privacy list (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -1834,7 +1834,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet setDefaultPrivacyList = new AsyncSnippet("set default privacy list (synchronous)", context) {
+    Snippet setDefaultPrivacyList = new SnippetAsync("set default privacy list (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -1898,7 +1898,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet pingServerSynchronous = new AsyncSnippet("ping server (synchronous)", context) {
+    Snippet pingServerSynchronous = new SnippetAsync("ping server (synchronous)", context) {
         @Override
         public void executeAsync() {
             final QBPingManager pingManager = chatService.getPingManager();

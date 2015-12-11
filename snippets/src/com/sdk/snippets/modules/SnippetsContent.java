@@ -16,7 +16,7 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
 import com.sdk.snippets.R;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -112,7 +112,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet createFileSynchronous = new AsyncSnippet("create file (synchronous)", context) {
+    Snippet createFileSynchronous = new SnippetAsync("create file (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBFile qbfile = new QBFile();
@@ -160,7 +160,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet updateFileSynchronous = new AsyncSnippet("update file (synchronous)", context) {
+    Snippet updateFileSynchronous = new SnippetAsync("update file (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBFile qbfile = new QBFile();
@@ -204,7 +204,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet getFileWithIdSynchronous = new AsyncSnippet("get file (synchronous)", "with id", context) {
+    Snippet getFileWithIdSynchronous = new SnippetAsync("get file (synchronous)", "with id", context) {
         @Override
         public void executeAsync() {
             QBFile getFile = null;
@@ -242,7 +242,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet deleteFileSynchronous = new AsyncSnippet("delete file (synchronous)", context) {
+    Snippet deleteFileSynchronous = new SnippetAsync("delete file (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -282,7 +282,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet uploadFileSynchronous = new AsyncSnippet("upload file (synchronous)", context) {
+    Snippet uploadFileSynchronous = new SnippetAsync("upload file (synchronous)", context) {
         @Override
         public void executeAsync() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
@@ -327,7 +327,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet declareFileUploadedSynchronous = new AsyncSnippet("declare file uploaded (synchronous)", context) {
+    Snippet declareFileUploadedSynchronous = new SnippetAsync("declare file uploaded (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -363,7 +363,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet getFileObjectAccessSynchronous = new AsyncSnippet("get file object access (synchronous)", context) {
+    Snippet getFileObjectAccessSynchronous = new SnippetAsync("get file object access (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBFileObjectAccess fileObjectAccess = null;
@@ -409,7 +409,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet downloadFileWithUIDSynchronous = new AsyncSnippet("download file with UID (synchronous)", context) {
+    Snippet downloadFileWithUIDSynchronous = new SnippetAsync("download file with UID (synchronous)", context) {
         @Override
         public void executeAsync() {
             InputStream inputStream = null;
@@ -483,7 +483,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet downloadFileWithIDSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
+    Snippet downloadFileWithIDSynchronous = new SnippetAsync("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
             final int fileId = 2641910;
@@ -535,7 +535,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet getFilesSynchronous = new AsyncSnippet("get files (synchronous)", context) {
+    Snippet getFilesSynchronous = new SnippetAsync("get files (synchronous)", context) {
         @Override
         public void executeAsync() {
             Bundle params = new Bundle();
@@ -593,7 +593,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet uploadFileTaskSynchronous = new AsyncSnippet("TASK: upload file (synchronous)", context) {
+    Snippet uploadFileTaskSynchronous = new SnippetAsync("TASK: upload file (synchronous)", context) {
         @Override
         public void executeAsync() {
             Boolean fileIsPublic = false;
@@ -641,7 +641,7 @@ public class SnippetsContent extends Snippets {
         }
     };
 
-    Snippet updateFileTaskSynchronous = new AsyncSnippet("TASK: update file (synchronous)", context) {
+    Snippet updateFileTaskSynchronous = new SnippetAsync("TASK: update file (synchronous)", context) {
 
         @Override
         public void executeAsync() {

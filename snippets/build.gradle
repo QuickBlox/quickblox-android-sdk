@@ -26,26 +26,44 @@ android {
         offline{
 
         }
+
+        offlineDev{
+
+        }
     }
 
 }
 
 dependencies {
 
-//    onlineСompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-//    onlineСompile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@jar" {
-//        exclude module: 'support-annotations'
-//        exclude group: 'de.measite.minidns'
-//        exclude group: 'org.jxmpp'
-//    }
-//    onlineСompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-//    onlineСompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
-//    onlineСompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-//    onlineСompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    // online dependencies, from remote repository
+    //
+    def sdkVersion = rootProject.qbSdkVersion;
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$sdkVersion"
+    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$sdkVersion") {
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$sdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$sdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$sdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-location:$sdkVersion"
+
+    // offline dependencies, from 'jars' dir
+    //
     offlineCompile files(rootProject.core_jar_path,
             rootProject.chat_jar_path,
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
             rootProject.messages_jar_path)
+
+    // offline dependencies, from 'SDK-android' dir, for debug
+    //
+    offlineDevCompile project(':quickblox-android-sdk-core')
+    offlineDevCompile project(':quickblox-android-sdk-chat')
+    offlineDevCompile project(':quickblox-android-sdk-content')
+    offlineDevCompile project(':quickblox-android-sdk-messages')
+    offlineDevCompile project(':quickblox-android-sdk-location')
+    offlineDevCompile project(':quickblox-android-sdk-customobjects')
 }

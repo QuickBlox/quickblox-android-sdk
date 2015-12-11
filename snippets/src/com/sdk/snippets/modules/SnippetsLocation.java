@@ -12,7 +12,7 @@ import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -95,7 +95,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet createLocationSynchronous = new AsyncSnippet("create location (synchronous)", context) {
+    Snippet createLocationSynchronous = new SnippetAsync("create location (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -146,7 +146,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet createLocationWithPushSynchronous = new AsyncSnippet("create location with push (synchronous)", context) {
+    Snippet createLocationWithPushSynchronous = new SnippetAsync("create location with push (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -193,7 +193,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet getLocationWithIdSynchronous = new AsyncSnippet("get location (synchronous)", "with ID", context) {
+    Snippet getLocationWithIdSynchronous = new SnippetAsync("get location (synchronous)", "with ID", context) {
         @Override
         public void executeAsync() {
             QBLocation location = new QBLocation(11308);
@@ -237,7 +237,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet updateLocationSynchronous = new AsyncSnippet("update location (synchronous)", context) {
+    Snippet updateLocationSynchronous = new SnippetAsync("update location (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBLocation qbLocation = new QBLocation();
@@ -282,7 +282,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet deleteLocationWithIdSynchronous = new AsyncSnippet("update location (synchronous)", "with ID", context) {
+    Snippet deleteLocationWithIdSynchronous = new SnippetAsync("update location (synchronous)", "with ID", context) {
         @Override
         public void executeAsync() {
             QBLocation location = new QBLocation(1141748);
@@ -350,7 +350,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet getLocationsSynchronous = new AsyncSnippet("get locations (synchronous)", context) {
+    Snippet getLocationsSynchronous = new SnippetAsync("get locations (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -422,7 +422,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet deleteLocationsSynchronous = new AsyncSnippet("delete locations (synchronous)", context) {
+    Snippet deleteLocationsSynchronous = new SnippetAsync("delete locations (synchronous)", context) {
         @Override
         public void executeAsync() {
             int days = 2;
@@ -467,7 +467,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet createPlaceSynchronous = new AsyncSnippet("create place(synchronous)", context) {
+    Snippet createPlaceSynchronous = new SnippetAsync("create place(synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPlace place = new QBPlace();
@@ -516,7 +516,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet getPlaceWithIdSynchronous = new AsyncSnippet("get place(synchronous)", "with ID", context) {
+    Snippet getPlaceWithIdSynchronous = new SnippetAsync("get place(synchronous)", "with ID", context) {
         @Override
         public void executeAsync() {
             QBPlace place = new QBPlace(33261);
@@ -563,7 +563,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet updatePlaceSynchronous = new AsyncSnippet("update place(synchronous)", context) {
+    Snippet updatePlaceSynchronous = new SnippetAsync("update place(synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPlace place = new QBPlace();
@@ -608,7 +608,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet deletePlaceSynchronous = new AsyncSnippet("delete place(synchronous)", context) {
+    Snippet deletePlaceSynchronous = new SnippetAsync("delete place(synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPlace place = new QBPlace(33261);
@@ -649,7 +649,7 @@ public class SnippetsLocation extends Snippets {
         }
     };
 
-    Snippet getPlacesSynchronous = new AsyncSnippet("get places (synchronous)", context) {
+    Snippet getPlacesSynchronous = new SnippetAsync("get places (synchronous)", context) {
         @Override
         public void executeAsync() {
             Bundle params = new Bundle();

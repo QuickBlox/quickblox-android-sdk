@@ -14,7 +14,7 @@ import com.quickblox.auth.model.QBProvider;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
@@ -141,7 +141,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet signInUserWithLoginSynchronous = new AsyncSnippet("sign in user (synchronous)", "with login" , context) {
+    Snippet signInUserWithLoginSynchronous = new SnippetAsync("sign in user (synchronous)", "with login" , context) {
         @Override
         public void executeAsync() {
             QBUser user = new QBUser();
@@ -187,7 +187,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet signInUserWithEmailSynchronous = new AsyncSnippet("sign in user (synchronous)", "with email", context) {
+    Snippet signInUserWithEmailSynchronous = new SnippetAsync("sign in user (synchronous)", "with email", context) {
         @Override
         public void executeAsync() {
             QBUser user = new QBUser();
@@ -232,7 +232,7 @@ public class SnippetsUsers extends Snippets{
     };
 
 
-    Snippet signInUsingSocialProviderSynchronous = new AsyncSnippet("sign in user (synchronous)", "with social provider", context) {
+    Snippet signInUsingSocialProviderSynchronous = new SnippetAsync("sign in user (synchronous)", "with social provider", context) {
         @Override
         public void executeAsync() {
 
@@ -274,7 +274,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet signOutSynchronous = new AsyncSnippet("sign out (synchronous)", context) {
+    Snippet signOutSynchronous = new SnippetAsync("sign out (synchronous)", context) {
         @Override
         public void executeAsync() {
             try {
@@ -325,7 +325,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet signUpUserSynchronous = new AsyncSnippet("sign up user (synchronous)", context) {
+    Snippet signUpUserSynchronous = new SnippetAsync("sign up user (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -396,7 +396,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet signUpSignInUserSynchronous = new AsyncSnippet("sign up and sign in user (synchronous)", context) {
+    Snippet signUpSignInUserSynchronous = new SnippetAsync("sign up and sign in user (synchronous)", context) {
         @Override
         public void executeAsync() {
             final QBUser user = new QBUser("te12stuser12344443", "testpassword");
@@ -463,7 +463,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet updateUserSynchronous = new AsyncSnippet("update user (synchronous)", context) {
+    Snippet updateUserSynchronous = new SnippetAsync("update user (synchronous)", context) {
         @Override
         public void executeAsync() {
             final QBUser user = new QBUser();
@@ -507,7 +507,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet deleteUserByIdSynchronous = new AsyncSnippet("delete user (synchronous)", "by id", context) {
+    Snippet deleteUserByIdSynchronous = new SnippetAsync("delete user (synchronous)", "by id", context) {
         @Override
         public void executeAsync() {
 
@@ -545,7 +545,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet deleteUserByExternalIdSynchronous = new AsyncSnippet("delete user (synchronous)", "by external id", context) {
+    Snippet deleteUserByExternalIdSynchronous = new SnippetAsync("delete user (synchronous)", "by external id", context) {
         @Override
         public void executeAsync() {
 
@@ -581,7 +581,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet resetPasswordSynchronous = new AsyncSnippet("reset password (synchronous)", context) {
+    Snippet resetPasswordSynchronous = new SnippetAsync("reset password (synchronous)", context) {
         @Override
         public void executeAsync() {
 
@@ -629,7 +629,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getAllUsersSynchronous = new AsyncSnippet("get users (synchronous)", context) {
+    Snippet getAllUsersSynchronous = new SnippetAsync("get users (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -690,7 +690,7 @@ public class SnippetsUsers extends Snippets{
     };
 
 
-    Snippet getUsersByIdsSynchronous = new AsyncSnippet("get users (synchronous)", "by ids", context) {
+    Snippet getUsersByIdsSynchronous = new SnippetAsync("get users (synchronous)", "by ids", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -754,7 +754,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersByLoginsSynchronous = new AsyncSnippet("get users (synchronous)", "by logins", context) {
+    Snippet getUsersByLoginsSynchronous = new SnippetAsync("get users (synchronous)", "by logins", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -818,7 +818,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersByEmailsSynchronous = new AsyncSnippet("get users (synchronous)", "by emails", context) {
+    Snippet getUsersByEmailsSynchronous = new SnippetAsync("get users (synchronous)", "by emails", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -882,7 +882,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersByPhoneNumbersSynchronous = new AsyncSnippet("get users (synchronous)", "by phone numbers", context) {
+    Snippet getUsersByPhoneNumbersSynchronous = new SnippetAsync("get users (synchronous)", "by phone numbers", context) {
         @Override
         public void executeAsync() {
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
@@ -945,7 +945,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersWithFacebookIDsSynchronous = new AsyncSnippet("get users (synchronous)", "with facebook IDs", context) {
+    Snippet getUsersWithFacebookIDsSynchronous = new SnippetAsync("get users (synchronous)", "with facebook IDs", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList facebookIDs = new StringifyArrayList();
@@ -1008,7 +1008,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersWithTwitterIDsSynchronous = new AsyncSnippet("get users (synchronous)", "with twitter IDs", context) {
+    Snippet getUsersWithTwitterIDsSynchronous = new SnippetAsync("get users (synchronous)", "with twitter IDs", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList twitterIDs = new StringifyArrayList();
@@ -1071,7 +1071,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersWithTagsSynchronous = new AsyncSnippet("get users (synchronous)", "with tags", context) {
+    Snippet getUsersWithTagsSynchronous = new SnippetAsync("get users (synchronous)", "with tags", context) {
         @Override
         public void executeAsync() {
             StringifyArrayList userTags = new StringifyArrayList();
@@ -1127,7 +1127,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUsersWithFullNameSynchronous = new AsyncSnippet("get users (synchronous)", "with fullname", context) {
+    Snippet getUsersWithFullNameSynchronous = new SnippetAsync("get users (synchronous)", "with fullname", context) {
         @Override
         public void executeAsync() {
 
@@ -1176,7 +1176,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserByIdSynchronous = new AsyncSnippet("get user (synchronous)", "by id", context) {
+    Snippet getUserByIdSynchronous = new SnippetAsync("get user (synchronous)", "by id", context) {
         @Override
         public void executeAsync() {
             QBUser user = null;
@@ -1216,7 +1216,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserWithLoginSynchronous = new AsyncSnippet("get user (synchronous)", "with login", context) {
+    Snippet getUserWithLoginSynchronous = new SnippetAsync("get user (synchronous)", "with login", context) {
         @Override
         public void executeAsync() {
             String login = "testuser";
@@ -1258,7 +1258,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserWithTwitterIdSynchronous = new AsyncSnippet("get user (synchronous)", "with twitter id", context) {
+    Snippet getUserWithTwitterIdSynchronous = new SnippetAsync("get user (synchronous)", "with twitter id", context) {
         @Override
         public void executeAsync() {
             String twitterId = "56802037340";
@@ -1299,7 +1299,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserWithFacebookIdSynchronous = new AsyncSnippet("get user (synchronous)", "with facebook id", context) {
+    Snippet getUserWithFacebookIdSynchronous = new SnippetAsync("get user (synchronous)", "with facebook id", context) {
         @Override
         public void executeAsync() {
             String facebookId = "100003123141430";
@@ -1340,7 +1340,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserWithEmailSynchronous = new AsyncSnippet("get user (synchronous)", "with email", context) {
+    Snippet getUserWithEmailSynchronous = new SnippetAsync("get user (synchronous)", "with email", context) {
 
         QBUser userByEmail;
         @Override
@@ -1385,7 +1385,7 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-    Snippet getUserWithExternalIdSynchronous = new AsyncSnippet("get user (synchronous)", "with external id", context) {
+    Snippet getUserWithExternalIdSynchronous = new SnippetAsync("get user (synchronous)", "with external id", context) {
         @Override
         public void executeAsync() {
             String externalId = "123145235";
