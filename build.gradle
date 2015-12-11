@@ -18,11 +18,11 @@ allprojects {
 
 }
 
-ext.compileSdkVersion = 22
+ext.compileSdkVersion = 23
 ext.buildToolsVersion = "22.0.1"
 
 ext.minSdkVersion = 14
-ext.targetSdkVersion = 21
+ext.targetSdkVersion = 23
 
 ext.qbSdkVersion = '2.5'
 

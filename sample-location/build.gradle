@@ -30,9 +30,16 @@ android {
 
 dependencies {
 
+    // offline dependencies, from 'jars' dir
+    //
     offlineCompile files(rootProject.core_jar_path, rootProject.location_jar_path )
 
-    compile 'com.android.support:support-v4:19.0.0'
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+
+    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services:3.2.+'
+    compile 'com.google.android.gms:play-services:4.2.+'
 }

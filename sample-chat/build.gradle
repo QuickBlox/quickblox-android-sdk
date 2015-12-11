@@ -34,7 +34,20 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
+    // offline dependencies, from 'jars' dir
+    //
+    offlineCompile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
+
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion") {
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }
+    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+
+
     compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
     compile('vc908.stickers:stickerfactory:0.2.2@aar') {
         transitive = true;

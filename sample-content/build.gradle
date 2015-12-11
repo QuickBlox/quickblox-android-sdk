@@ -33,7 +33,16 @@ android {
 }
 
 dependencies {
+
+    // offline dependencies, from 'jars' dir
+    //
     offlineCompile files(rootProject.core_jar_path, rootProject.content_jar_path )
+
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+
 
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'

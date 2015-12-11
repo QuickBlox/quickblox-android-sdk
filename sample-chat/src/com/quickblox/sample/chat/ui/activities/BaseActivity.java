@@ -40,8 +40,7 @@ public class BaseActivity extends AppCompatActivity implements ApplicationSessio
 
         // 'initialised' will be true if it's the 1st start of the app or if the app's process was killed by OS(or user)
         //
-        boolean initialised = ChatService.initIfNeed(this);
-        if(initialised && savedInstanceState != null){
+        if(savedInstanceState != null){
             needToRecreateSession = true;
         }else{
             sessionActive = true;

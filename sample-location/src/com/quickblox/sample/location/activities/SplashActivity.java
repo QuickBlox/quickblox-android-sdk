@@ -45,7 +45,9 @@ public class SplashActivity extends Activity {
 
         // Initialize QuickBlox application with credentials.
         //
-        QBSettings.getInstance().fastConfigInit(String.valueOf(Constants.APP_ID), Constants.AUTH_KEY, Constants.AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), String.valueOf(Constants.APP_ID),
+                Constants.AUTH_KEY, Constants.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Constants.ACCOUNT_KEY);
 
         // Create QuickBlox session
         //

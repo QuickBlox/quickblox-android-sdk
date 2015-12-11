@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.user.definitions.Consts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.user.R;
@@ -20,11 +20,6 @@ import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.sample.user.utils.DialogUtils;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.quickblox.sample.user.definitions.Consts.APP_ID;
-import static com.quickblox.sample.user.definitions.Consts.AUTH_KEY;
-import static com.quickblox.sample.user.definitions.Consts.AUTH_SECRET;
 
 public class SplashActivity extends Activity{
 
@@ -41,7 +36,8 @@ public class SplashActivity extends Activity{
 
         // Initialize QuickBlox application with credentials.
         //
-        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
 
         // Create QuickBlox session
         //

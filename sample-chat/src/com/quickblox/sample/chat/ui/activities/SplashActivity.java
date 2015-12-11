@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ApplicationSingleton;
@@ -27,9 +28,8 @@ public class SplashActivity extends Activity {
         user.setLogin(ApplicationSingleton.USER_LOGIN);
         user.setPassword(ApplicationSingleton.USER_PASSWORD);
 
-        ChatService.initIfNeed(this);
 
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
+        ChatService.getInstance().login(user, new QBEntityCallback<Void>() {
 
             @Override
             public void onSuccess(Void result, Bundle bundle) {

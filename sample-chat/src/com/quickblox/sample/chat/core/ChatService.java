@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.core;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,21 +37,10 @@ public class ChatService {
 
     public static synchronized ChatService getInstance() {
         if(instance == null) {
+            QBChatService.setDebugEnabled(true);
             instance = new ChatService();
         }
         return instance;
-    }
-
-    public static boolean initIfNeed(Context ctx) {
-        if (!QBChatService.isInitialized()) {
-            QBChatService.setDebugEnabled(true);
-            QBChatService.init(ctx);
-            Log.d(TAG, "Initialise QBChatService");
-
-            return true;
-        }
-
-        return false;
     }
 
     private QBChatService chatService;
@@ -74,7 +62,7 @@ public class ChatService {
 
         // Create REST API session
         //
-        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession session, Bundle args) {
 
@@ -120,7 +108,7 @@ public class ChatService {
     private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
         chatService.setUseStreamManagement(true);
-        chatService.login(user, new QBEntityCallbackImpl<Void>() {
+        chatService.login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle b) {
 

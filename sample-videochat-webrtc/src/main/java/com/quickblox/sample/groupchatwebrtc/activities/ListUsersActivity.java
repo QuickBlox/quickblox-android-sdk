@@ -19,6 +19,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.UsersAdapter;
@@ -60,17 +61,18 @@ public class ListUsersActivity extends Activity {
 
         initUI();
 
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        // Set application credentials
+        //
+        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
 
         if (getActionBar() != null) {
             getActionBar().setTitle(getResources().getString(R.string.opponentsListActionBarTitle));
         }
 
         QBChatService.setDebugEnabled(true);
-        if (!QBChatService.isInitialized()) {
-            QBChatService.init(this);
-            chatService = QBChatService.getInstance();
-        }
+        chatService = QBChatService.getInstance();
+
         createAppSession();
     }
 
@@ -84,12 +86,7 @@ public class ListUsersActivity extends Activity {
             }
 
             @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError(List<String> list) {
+            public void onError(QBResponseException exception) {
                 Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
                 showProgress(false);
             }
@@ -223,7 +220,7 @@ public class ListUsersActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException exc) {
                 showProgress(false);
 
                 Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
@@ -269,10 +266,10 @@ public class ListUsersActivity extends Activity {
                     resultReceived = true;
                     startCallActivity(login);
                 } else {
-                    chatService.login(user, new QBEntityCallbackImpl<QBUser>() {
+                    chatService.login(user, new QBEntityCallback<Void>() {
 
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(Void result, Bundle b) {
                             Log.d(TAG, "onSuccess login to chat");
                             resultReceived = true;
 
@@ -287,15 +284,13 @@ public class ListUsersActivity extends Activity {
                         }
 
                         @Override
-                        public void onError(List errors) {
+                        public void onError(QBResponseException exc) {
                             resultReceived = true;
 
                             showProgress(false);
 
                             Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
-                            for (Object error : errors) {
-                                Log.d(TAG, error.toString());
-                            }
+                            Log.d(TAG, exc.toString());
                         }
                     });
                 }
@@ -303,7 +298,7 @@ public class ListUsersActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException exc) {
                 resultReceived = true;
 
                 progressBar.setVisibility(View.INVISIBLE);

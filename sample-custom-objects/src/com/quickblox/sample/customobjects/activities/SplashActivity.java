@@ -27,6 +27,41 @@ public class SplashActivity extends Activity{
 
     private ProgressBar progressBar;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
+        initUI();
+
+        // Initialize QuickBlox application with credentials.
+        //
+        QBSettings.getInstance().init(getApplicationContext(), String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
+
+        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
+
+                getNoteList();
+            }
+
+            @Override
+            public void onError(QBResponseException strings) {
+                Toast.makeText(getBaseContext(), strings.toString(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void initUI() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private void getNoteList() {
 
         // Get all notes
@@ -60,38 +95,5 @@ public class SplashActivity extends Activity{
         Intent intent = new Intent(this, DisplayNoteListActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        initUI();
-
-        // Initialize QuickBlox application with credentials.
-        //
-        QBSettings.getInstance().fastConfigInit(String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
-        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-
-        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
-            @Override
-            public void onSuccess(QBSession qbSession, Bundle bundle) {
-                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
-
-                getNoteList();
-            }
-
-            @Override
-            public void onError(QBResponseException strings) {
-                Toast.makeText(getBaseContext(), strings.toString(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    private void initUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
     }
 }

@@ -141,11 +141,11 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
     @Override
     public void processMessageSent(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
-        Toast.makeText(chatActivity, "message was sent to dialogId="+qbChatMessage.getDialogId(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public void processMessageFailed(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
-        Toast.makeText(chatActivity, "message sent failed to dialogId="+qbChatMessage.getDialogId(), Toast.LENGTH_LONG).show();
+
     }
 }
