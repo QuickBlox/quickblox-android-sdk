@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QuickBlox Sample Chat</string>
+    <string name="chat_sample">Chat Sample</string>
 
     <string name="menu_new_chat">New Chat</string>
     <string name="menu_chat_info">Chat info</string>
+    <string name="menu_add_people">Add People</string>
+    <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_select_people_done">Done</string>
 
     <string name="dlg_error">Error</string>
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
 
+    <string name="placeholder_username_you">%s (you)</string>
     <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
 
-    <string name="splash_chat_sample">Chat Sample</string>
+    <string name="login_title">@string/chat_sample</string>
+
+    <string name="splash_chat_sample">@string/chat_sample</string>
     <string name="splash_chat_version">v %s</string>
     <string name="splash_chat_login_error">"Chat login errors: "</string>
+    
+    <string name="login_select_user_for_login">Select User for Login to Chat</string>
 
-    <string name="dialogs_select_a_dialog_to_chat">Select a Dialog to Chat</string>
-    <string name="dialogs_new_select_users_to_chat">Select users to chat</string>
-    <string name="dialogs_new_create_chat">Create Chat</string>
+    <string name="dialogs_logged_in_as">Logged in as %s</string>
+    <string name="dialogs_creation_error">"Dialog creation errors: "</string>
+    <string name="dialogs_list_hint">Select a Dialog to Chat</string>
     <string name="dialogs_get_error">"Get dialogs errors: "</string>
 
-    <string name="new_dialog_get_users_error">"Get users errors: "</string>
-    <string name="new_dialog_creation_error">"Dialog creation errors: "</string>
+    <string name="select_people_list_hint">Select Users you want to chat</string>
+    <string name="select_people_create_chat">Create new chat</string>
+    <string name="select_people_get_users_error">"Get users errors: "</string>
 
     <string name="chat_sticker">Sticker</string>
     <string name="chat_send">Send</string>
@@ -34,4 +44,7 @@
     <string name="chat_send_message_error">Failed to send a message</string>
     <string name="chat_load_history_error">"Load chat history errors: "</string>
     <string name="chat_load_users_error">"Load chat users errors: "</string>
+
+    <string name="chat_info">Chat info</string>
+    <string name="chat_info_add_people_error">"Add people errors: "</string>
 </resources>

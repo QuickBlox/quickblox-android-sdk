@@ -8,25 +8,31 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
+import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
+    private static final int REQUEST_SELECT_PEOPLE = 174;
 
     private ListView dialogsListView;
     private ProgressBar progressBar;
@@ -53,11 +59,13 @@ public class DialogsActivity extends BaseActivity {
         dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);
 
-        View listHeader = LayoutInflater.from(this).inflate(R.layout.include_chat_list_header, dialogsListView, false);
+        TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
+        listHeader.setText(R.string.dialogs_list_hint);
         dialogsListView.addHeaderView(listHeader);
 
-        if (isSessionActive()) {
-            loadDialogsFromQb();
+        QBUser currentUser = ChatUtils.getCurrentUser();
+        if (currentUser != null) {
+            actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getLogin()));
         }
     }
 
@@ -80,14 +88,57 @@ public class DialogsActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_dialogs, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_action_logout:
+            // TODO Logout
+            return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onSessionCreated(boolean success) {
         if (success) {
             loadDialogsFromQb();
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_SELECT_PEOPLE) {
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectPeopleActivity.EXTRA_QB_USERS);
+
+                ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
+                        new QBEntityCallbackImpl<QBDialog>() {
+                            @Override
+                            public void onSuccess(QBDialog dialog, Bundle args) {
+                                ChatActivity.start(DialogsActivity.this, dialog);
+                            }
+
+                            @Override
+                            public void onError(List<String> errors) {
+                                ErrorUtils.showErrorDialog(DialogsActivity.this, getString(R.string.dialogs_creation_error), errors);
+                            }
+                        }
+                );
+            }
+        }
+    }
+
     public void onStartChatClick(View view) {
-        NewDialogActivity.start(this);
+        SelectPeopleActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
 
     private void loadDialogsFromQb() {

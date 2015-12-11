@@ -24,7 +24,13 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.NewDialogActivity"
+            android:name=".ui.activity.LoginActivity"
+            android:label="@string/login_title"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.SelectPeopleActivity"
+            android:label="@string/select_people_create_chat"
             android:screenOrientation="portrait" />
 
         <activity
@@ -36,6 +42,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/ChatActivityTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name=".ui.activity.ChatInfoActivity"
+            android:label="@string/chat_info"
+            android:screenOrientation="portrait" />
 
         <!-- GCM (Push Notifications) setup: http://developer.android.com/google/gcm/gs.html#android-app -->
 

@@ -16,7 +16,7 @@
             android:id="@+id/list_chat_messages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/layout_chat_send_container"
+            android:layout_above="@+id/divider"
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll" />
@@ -28,6 +28,12 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_color"
+            android:layout_above="@+id/layout_chat_send_container"/>
 
         <LinearLayout
             android:id="@+id/layout_chat_send_container"

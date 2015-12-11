@@ -16,6 +16,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -178,6 +179,31 @@ public class ChatHelper {
                     }
                 }
         );
+    }
+
+    public void addUsersToDialog(final QBDialog qbDialog, final List<QBUser> addedUsers, final QBEntityCallbackImpl<QBDialog> callback) {
+        List<QBUser> allDialogUsers = new ArrayList<>();
+        for (Integer id : qbDialog.getOccupants()) {
+            allDialogUsers.add(dialogsUsersMap.get(id));
+        }
+        allDialogUsers.addAll(addedUsers);
+
+        QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
+        qbRequestBuilder.push("occupants_ids", ChatUtils.getUserIds(addedUsers));
+        qbRequestBuilder.push("name", ChatUtils.createChatNameFromUserList(allDialogUsers));
+
+        QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder, new QBEntityCallbackImpl<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                addDialogsUsers(addedUsers);
+                callback.onSuccess(qbDialog, bundle);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                callback.onError(errors);
+            }
+        });
     }
 
     public void loadChatHistory(QBDialog dialog, final QBEntityCallbackImpl<ArrayList<QBChatMessage>> callback) {

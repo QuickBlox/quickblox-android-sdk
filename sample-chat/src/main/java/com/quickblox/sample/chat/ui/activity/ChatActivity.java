@@ -84,10 +84,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         dialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
         initViews();
-
-        if (isSessionActive()) {
-            initChat();
-        }
     }
 
     @Override
@@ -143,7 +139,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         int id = item.getItemId();
         switch (id) {
         case R.id.menu_action_info:
-            // TODO Open chat info activity
+            ChatInfoActivity.start(this, dialog);
             return true;
 
         default:
@@ -193,6 +189,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void initViews() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         messagesListView = (ListView) findViewById(R.id.list_chat_messages);
         messageEditText = (EditText) findViewById(R.id.edit_chat_message);
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);

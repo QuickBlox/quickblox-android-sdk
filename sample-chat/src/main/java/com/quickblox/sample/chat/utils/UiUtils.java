@@ -49,7 +49,7 @@ public class UiUtils {
         return previousColor;
     }
 
-    private static int getColor(@ColorRes int colorId) {
+    public static int getColor(@ColorRes int colorId) {
         return App.getInstance().getResources().getColor(colorId);
     }
 }

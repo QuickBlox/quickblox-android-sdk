@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.ui.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,17 +29,30 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
 
     private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
+    protected ActionBar actionBar;
     private boolean isSessionActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 'isChatServiceInitialisedJustNow' will be true if it's the 1st start of the app
+        // 'isChatServiceStartedJustNow' will be true if it's the 1st start of the app
         // or if the app's process was restarted after background death
-        boolean isChatServiceInitialisedJustNow = ChatHelper.initIfNeed(this);
-        boolean wasAppRestored = savedInstanceState != null;
-        isSessionActive = !(isChatServiceInitialisedJustNow && wasAppRestored);
+        boolean isChatServiceStartedJustNow = ChatHelper.initIfNeed(this);
+        boolean isAppRestored = savedInstanceState != null;
+        isSessionActive = !(isChatServiceStartedJustNow && isAppRestored);
+
+        actionBar = getSupportActionBar();
+
+        // Triggering callback via post() to let all child's code in onCreate() to execute first
+        mainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isSessionActive) {
+                    onSessionCreated(true);
+                }
+            }
+        });
     }
 
     @Override
@@ -125,9 +139,5 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
                 });
             }
         });
-    }
-
-    public boolean isSessionActive() {
-        return isSessionActive;
     }
 }
