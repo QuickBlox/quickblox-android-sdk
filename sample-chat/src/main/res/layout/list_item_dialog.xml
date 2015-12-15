@@ -6,8 +6,9 @@
 
     <ImageView
         android:id="@+id/image_dialog_icon"
-        style="@style/DialogIcon"
-        tools:ignore="ContentDescription" />
+        style="@style/ListItemIcon"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_chat_group" />
 
     <LinearLayout
         style="@style/WeightWidth"

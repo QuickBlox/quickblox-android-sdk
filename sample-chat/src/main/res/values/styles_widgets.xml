@@ -15,7 +15,7 @@
 
     <style name="BorderlessImageButton" parent="WrapContent">
         <item name="android:background">@null</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">@dimen/common_padding</item>
     </style>
 
     <style name="CenterProgressBar" parent="@style/Widget.AppCompat.ProgressBar">
@@ -64,10 +64,6 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="DialogIcon" parent="ListItemIcon">
-        <item name="android:src">@drawable/ic_chat_group</item>
-    </style>
-
     <style name="DialogName" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_primary</item>
         <item name="android:textSize">16sp</item>
@@ -90,7 +86,7 @@
     </style>
 
     <style name="UserIcon" parent="ListItemIcon">
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">@dimen/common_padding</item>
     </style>
 
     <style name="UserTitle" parent="WeightWidth">
@@ -106,7 +102,7 @@
 
     <style name="MessageContainer" parent="MatchWidth">
         <item name="android:orientation">vertical</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">@dimen/common_padding</item>
     </style>
 
     <style name="MessageContentContainer" parent="WrapContent">
@@ -132,8 +128,8 @@
     </style>
 
     <style name="MessageInfo" parent="WrapContent">
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">@dimen/common_padding</item>
+        <item name="android:paddingRight">@dimen/common_padding</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">@dimen/chat_message_info_text_size</item>
         <item name="android:visibility">gone</item>
