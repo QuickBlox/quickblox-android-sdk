@@ -11,6 +11,7 @@
     <dimen name="chat_author_text_size">16sp</dimen>
     <dimen name="chat_message_info_text_size">13sp</dimen>
     <dimen name="chat_message_content_margin">4dp</dimen>
+    <dimen name="chat_message_sticker_size">160dp</dimen>
 
     <!-- Fix for wrong FAB margin on v21+-->
     <dimen name="fab_margin_right">0dp</dimen>

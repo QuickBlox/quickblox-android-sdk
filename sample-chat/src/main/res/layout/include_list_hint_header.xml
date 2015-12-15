@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.devspark.robototextview.widget.RobotoTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/list_item_side_margin"
-    android:textColor="@color/text_color_dark_grey"
-    android:textSize="14sp"
-    app:typeface="roboto_medium"
+<com.devspark.robototextview.widget.RobotoTextView xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ListHeader"
     tools:ignore="RtlHardcoded,RtlSymmetry"
     tools:text="@string/dialogs_list_hint" />

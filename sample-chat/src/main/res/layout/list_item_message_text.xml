@@ -1,62 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_chat_message_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="right"
-    android:orientation="vertical"
-    android:padding="8dp"
+    style="@style/MessageContainer"
+    tools:gravity="right"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
         android:id="@+id/layout_message_content_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/outgoing_message_bg"
-        android:orientation="vertical">
+        style="@style/MessageContentContainer"
+        tools:background="@drawable/outgoing_message_bg">
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_message_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/chat_message_content_margin"
-            android:layout_marginRight="@dimen/chat_message_content_margin"
-            android:gravity="left"
-            android:textColor="@color/text_color_dark_grey"
-            android:textSize="@dimen/chat_author_text_size"
-            android:textStyle="bold"
-            app:typeface="roboto_bold"
+            style="@style/MessageAuthor"
             tools:text="User 2" />
 
         <TextView
             android:id="@+id/text_image_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/chat_message_content_margin"
-            android:layout_marginRight="@dimen/chat_message_content_margin"
-            android:maxWidth="250dp"
-            android:textColor="@color/text_color_white"
-            android:textSize="@dimen/chat_message_text_size"
+            style="@style/MessageText"
             tools:text="Test message" />
 
         <ImageView
             android:id="@+id/image_message_sticker"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="@dimen/chat_message_sticker_size"
+            android:layout_height="@dimen/chat_message_sticker_size"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/text_message_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:textColor="@color/text_color_dark_grey"
-        android:textSize="@dimen/chat_message_info_text_size"
-        android:visibility="gone"
+        style="@style/MessageInfo"
         tools:text="10:50" />
 </LinearLayout>
