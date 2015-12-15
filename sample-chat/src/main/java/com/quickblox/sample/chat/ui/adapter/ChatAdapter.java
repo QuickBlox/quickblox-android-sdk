@@ -15,6 +15,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.TimeUtils;
+import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
@@ -77,7 +78,7 @@ public class ChatAdapter extends BaseAdapter {
         QBUser currentUser = ChatUtils.getCurrentUser();
         final boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
 
-        setMessageAlignmentAndBackground(holder, isIncomingMessage);
+        setIncomingOrOutgoingMessageAttributes(holder, isIncomingMessage);
         setMessageBody(holder, messageBody);
         setMessageInfo(chatMessage, holder);
         setMessageAuthor(holder, chatMessage, isIncomingMessage);
@@ -123,7 +124,7 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     @SuppressLint("RtlHardcoded")
-    private void setMessageAlignmentAndBackground(ViewHolder holder, boolean isIncoming) {
+    private void setIncomingOrOutgoingMessageAttributes(ViewHolder holder, boolean isIncoming) {
         int gravity = isIncoming ? Gravity.LEFT : Gravity.RIGHT;
         holder.messageContainerLayout.setGravity(gravity);
         holder.messageInfoTextView.setGravity(gravity);
@@ -132,6 +133,11 @@ public class ChatAdapter extends BaseAdapter {
                 ? R.drawable.incoming_message_bg
                 : R.drawable.outgoing_message_bg;
         holder.textContainerLayout.setBackgroundResource(textContainerBgResource);
+
+        int textColorResource = isIncoming
+                ? R.color.text_color_black
+                : R.color.text_color_white;
+        holder.messageBodyTextView.setTextColor(UiUtils.getColor(textColorResource));
     }
 
     private static class ViewHolder {
