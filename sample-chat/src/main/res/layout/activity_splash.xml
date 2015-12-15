@@ -12,17 +12,17 @@
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_title"
-            style="@style/SplashAppTitle"
+            style="@style/SplashAppTitleStyle"
             android:text="@string/splash_chat_sample" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_version"
-            style="@style/SplashAppVersion"
+            style="@style/SplashAppVersionStyle"
             android:layout_marginTop="20dp"
             tools:text="@string/splash_chat_version" />
     </LinearLayout>
 
     <ImageView
-        style="@style/SplashLogo"
+        style="@style/SplashLogoStyle"
         android:layout_marginBottom="40dp" />
 </RelativeLayout>

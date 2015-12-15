@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Fab" parent="WrapContent">
+    <style name="FabStyle" parent="WrapContent">
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginBottom">@dimen/fab_margin_bottom</item>
@@ -9,27 +9,27 @@
         <item name="fabSize">normal</item>
     </style>
 
-    <style name="ListViewWithoutDivider" parent="MatchParent">
+    <style name="ListViewWithoutDividerStyle" parent="MatchParent">
         <item name="android:divider">@null</item>
     </style>
 
-    <style name="BorderlessImageButton" parent="WrapContent">
+    <style name="BorderlessImageButtonStyle" parent="WrapContent">
         <item name="android:background">@null</item>
         <item name="android:padding">@dimen/common_padding</item>
     </style>
 
-    <style name="CenterProgressBar" parent="@style/Widget.AppCompat.ProgressBar">
+    <style name="CenterProgressBarStyle" parent="@style/Widget.AppCompat.ProgressBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <style name="HorizontalDivider" parent="MatchWidth">
+    <style name="HorizontalDividerStyle" parent="MatchWidth">
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/divider_color</item>
     </style>
 
-    <style name="ListHeader" parent="ListItem">
+    <style name="ListHeaderStyle" parent="ListItem">
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">@dimen/list_item_side_margin</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
@@ -37,25 +37,25 @@
         <item name="typeface">roboto_medium</item>
     </style>
 
-    <style name="SplashAppTitle" parent="WrapContent">
+    <style name="SplashAppTitleStyle" parent="WrapContent">
         <item name="android:textColor">@color/text_color_black</item>
         <item name="android:textSize">@dimen/splash_main_text_size</item>
         <item name="typeface">roboto_light</item>
     </style>
 
-    <style name="SplashAppVersion" parent="WrapContent">
+    <style name="SplashAppVersionStyle" parent="WrapContent">
         <item name="android:textColor">@color/text_color_light_grey</item>
         <item name="android:textSize">@dimen/splash_version_text_size</item>
         <item name="typeface">roboto_light</item>
     </style>
 
-    <style name="SplashLogo" parent="WrapContent">
+    <style name="SplashLogoStyle" parent="WrapContent">
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:src">@drawable/qb_logo</item>
     </style>
 
-    <style name="ListItemIcon">
+    <style name="ListItemIconStyle">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:layout_centerVertical">true</item>
@@ -64,17 +64,17 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="DialogName" parent="MatchWidth">
+    <style name="DialogNameStyle" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_primary</item>
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="DialogLastMessage" parent="MatchWidth">
+    <style name="DialogLastMessageStyle" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="DialogUnreadCounter">
+    <style name="DialogUnreadCounterStyle">
         <item name="android:layout_width">20dp</item>
         <item name="android:layout_height">20dp</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -85,31 +85,31 @@
         <item name="android:textColor">@color/text_color_white</item>
     </style>
 
-    <style name="UserIcon" parent="ListItemIcon">
+    <style name="UserIconStyle" parent="ListItemIconStyle">
         <item name="android:padding">@dimen/common_padding</item>
     </style>
 
-    <style name="UserTitle" parent="WeightWidth">
+    <style name="UserTitleStyle" parent="WeightWidth">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="UserCheckbox" parent="WrapContent">
+    <style name="UserCheckboxStyle" parent="WrapContent">
         <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
         <item name="android:clickable">false</item>
         <item name="android:gravity">right</item>
     </style>
 
-    <style name="MessageContainer" parent="MatchWidth">
+    <style name="MessageContainerStyle" parent="MatchWidth">
         <item name="android:orientation">vertical</item>
         <item name="android:padding">@dimen/common_padding</item>
     </style>
 
-    <style name="MessageContentContainer" parent="WrapContent">
+    <style name="MessageContentContainerStyle" parent="WrapContent">
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="MessageAuthor" parent="WrapContent">
+    <style name="MessageAuthorStyle" parent="WrapContent">
         <item name="android:layout_marginLeft">@dimen/chat_message_content_margin</item>
         <item name="android:layout_marginRight">@dimen/chat_message_content_margin</item>
         <item name="android:gravity">left</item>
@@ -119,7 +119,7 @@
         <item name="typeface">roboto_bold</item>
     </style>
 
-    <style name="MessageText" parent="WrapContent">
+    <style name="MessageTextStyle" parent="WrapContent">
         <item name="android:layout_marginLeft">@dimen/chat_message_content_margin</item>
         <item name="android:layout_marginRight">@dimen/chat_message_content_margin</item>
         <item name="android:maxWidth">250dp</item>
@@ -127,7 +127,7 @@
         <item name="android:textSize">@dimen/chat_message_text_size</item>
     </style>
 
-    <style name="MessageInfo" parent="WrapContent">
+    <style name="MessageInfoStyle" parent="WrapContent">
         <item name="android:paddingLeft">@dimen/common_padding</item>
         <item name="android:paddingRight">@dimen/common_padding</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>

@@ -5,10 +5,10 @@
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/list_select_people_users"
-        style="@style/ListViewWithoutDivider"
+        style="@style/ListViewWithoutDividerStyle"
         app:ptrMode="pullFromEnd" />
 
     <ProgressBar
         android:id="@+id/progress_select_people"
-        style="@style/CenterProgressBar" />
+        style="@style/CenterProgressBarStyle" />
 </RelativeLayout>

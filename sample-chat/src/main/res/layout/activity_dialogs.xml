@@ -6,16 +6,16 @@
 
     <ListView
         android:id="@+id/list_dialogs_chats"
-        style="@style/ListViewWithoutDivider" />
+        style="@style/ListViewWithoutDividerStyle" />
 
     <ProgressBar
         android:id="@+id/progress_dialogs"
-        style="@style/CenterProgressBar"
+        style="@style/CenterProgressBarStyle"
         android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_dialogs_new_chat"
-        style="@style/Fab"
+        style="@style/FabStyle"
         android:onClick="onStartNewChatClick"
         android:src="@drawable/ic_action_start_chat" />
 </RelativeLayout>

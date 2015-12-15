@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/image_dialog_icon"
-        style="@style/ListItemIcon"
+        style="@style/ListItemIconStyle"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_chat_group" />
 
@@ -17,17 +17,17 @@
 
         <TextView
             android:id="@+id/text_dialog_name"
-            style="@style/DialogName"
+            style="@style/DialogNameStyle"
             tools:text="Room name" />
 
         <TextView
             android:id="@+id/text_dialog_last_message"
-            style="@style/DialogLastMessage"
+            style="@style/DialogLastMessageStyle"
             tools:text="Last message" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/text_dialog_unread_count"
-        style="@style/DialogUnreadCounter"
+        style="@style/DialogUnreadCounterStyle"
         tools:text="4" />
 </LinearLayout>

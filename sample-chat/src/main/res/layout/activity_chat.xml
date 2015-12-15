@@ -11,18 +11,18 @@
 
         <ListView
             android:id="@+id/list_chat_messages"
-            style="@style/ListViewWithoutDivider"
+            style="@style/ListViewWithoutDividerStyle"
             android:layout_above="@+id/divider_chat"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll" />
 
         <ProgressBar
             android:id="@+id/progress_chat"
-            style="@style/CenterProgressBar" />
+            style="@style/CenterProgressBarStyle" />
 
         <View
             android:id="@+id/divider_chat"
-            style="@style/HorizontalDivider"
+            style="@style/HorizontalDividerStyle"
             android:layout_above="@+id/layout_chat_send_container" />
 
         <LinearLayout
@@ -34,7 +34,7 @@
 
             <ImageButton
                 android:id="@+id/button_chat_stickers"
-                style="@style/BorderlessImageButton"
+                style="@style/BorderlessImageButtonStyle"
                 android:onClick="onStickersClick"
                 android:src="@drawable/ic_action_insert_emoticon" />
 
@@ -46,7 +46,7 @@
 
             <ImageButton
                 android:id="@+id/button_chat_send"
-                style="@style/BorderlessImageButton"
+                style="@style/BorderlessImageButtonStyle"
                 android:onClick="onSendChatClick"
                 android:src="@drawable/ic_send"
                 android:text="@string/chat_send" />

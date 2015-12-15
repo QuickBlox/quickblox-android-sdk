@@ -2,23 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_chat_message_container"
-    style="@style/MessageContainer"
+    style="@style/MessageContainerStyle"
     tools:gravity="right"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
         android:id="@+id/layout_message_content_container"
-        style="@style/MessageContentContainer"
+        style="@style/MessageContentContainerStyle"
         tools:background="@drawable/outgoing_message_bg">
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_message_author"
-            style="@style/MessageAuthor"
+            style="@style/MessageAuthorStyle"
             tools:text="User 2" />
 
         <TextView
             android:id="@+id/text_image_message"
-            style="@style/MessageText"
+            style="@style/MessageTextStyle"
             tools:text="Test message" />
 
         <ImageView
@@ -30,6 +30,6 @@
 
     <TextView
         android:id="@+id/text_message_info"
-        style="@style/MessageInfo"
+        style="@style/MessageInfoStyle"
         tools:text="10:50" />
 </LinearLayout>

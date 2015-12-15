@@ -6,14 +6,14 @@
 
     <ImageView
         android:id="@+id/image_user"
-        style="@style/UserIcon" />
+        style="@style/UserIconStyle" />
 
     <TextView
         android:id="@+id/text_user_login"
-        style="@style/UserTitle" />
+        style="@style/UserTitleStyle" />
 
     <CheckBox
         android:id="@+id/checkbox_user"
-        style="@style/UserCheckbox" />
+        style="@style/UserCheckboxStyle" />
 
 </LinearLayout>
