@@ -57,7 +57,7 @@ public class DialogsActivity extends BaseActivity {
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
         dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
+        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
 
         TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
         listHeader.setText(R.string.dialogs_list_hint);
@@ -96,7 +96,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_action_logout:
+        case R.id.menu_dialogs_action_logout:
             // TODO Logout
             return true;
 
@@ -137,7 +137,7 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    public void onStartChatClick(View view) {
+    public void onStartNewChatClick(View view) {
         SelectPeopleActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
 

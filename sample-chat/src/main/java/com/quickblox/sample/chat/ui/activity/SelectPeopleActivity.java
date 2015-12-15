@@ -63,9 +63,8 @@ public class SelectPeopleActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_people);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
-        userPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_dialog_users);
-
+        progressBar = (ProgressBar) findViewById(R.id.progress_select_people);
+        userPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_select_people_users);
         userPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -87,7 +86,7 @@ public class SelectPeopleActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_action_done:
+        case R.id.menu_select_people_action_done:
             if (usersAdapter != null && !usersAdapter.getSelectedUsers().isEmpty()) {
                 passResultToCallerActivity();
             }

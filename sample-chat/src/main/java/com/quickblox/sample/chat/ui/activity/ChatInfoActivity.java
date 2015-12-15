@@ -54,7 +54,7 @@ public class ChatInfoActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_action_add_people:
+        case R.id.menu_chat_info_action_add_people:
             SelectPeopleActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
             return true;
 

@@ -60,12 +60,12 @@ public class ChatAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item_message_text, parent, false);
 
-            holder.messageBodyTextView = (TextView) convertView.findViewById(R.id.text_chat_message);
-            holder.messageAuthorTextView = (TextView) convertView.findViewById(R.id.text_chat_author);
+            holder.messageBodyTextView = (TextView) convertView.findViewById(R.id.text_image_message);
+            holder.messageAuthorTextView = (TextView) convertView.findViewById(R.id.text_message_author);
             holder.messageContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_message_container);
-            holder.textContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_text_container);
-            holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_chat_info);
-            holder.stickerImageView = (ImageView) convertView.findViewById(R.id.image_chat_sticker);
+            holder.textContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_message_text_container);
+            holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_message_info);
+            holder.stickerImageView = (ImageView) convertView.findViewById(R.id.image_message_sticker);
 
             convertView.setTag(holder);
         } else {

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/text_unread_message_count"
+        android:layout_toLeftOf="@+id/text_dialog_unread_count"
         android:layout_toRightOf="@+id/image_dialog_icon"
         android:orientation="vertical">
 
@@ -33,7 +33,7 @@
             tools:text="Room name" />
 
         <TextView
-            android:id="@+id/text_room_last_message"
+            android:id="@+id/text_dialog_last_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color_dark_grey"
@@ -42,7 +42,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/text_unread_message_count"
+        android:id="@+id/text_dialog_unread_count"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentRight="true"

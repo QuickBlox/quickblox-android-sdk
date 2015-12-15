@@ -138,7 +138,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-        case R.id.menu_action_info:
+        case R.id.menu_chat_action_info:
             ChatInfoActivity.start(this, dialog);
             return true;
 
@@ -194,8 +194,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         messagesListView = (ListView) findViewById(R.id.list_chat_messages);
         messageEditText = (EditText) findViewById(R.id.edit_chat_message);
         progressBar = (ProgressBar) findViewById(R.id.progress_chat);
-        containerLayout = (RelativeLayout) findViewById(R.id.layout_container);
-        keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_keyboard_notifier);
+        containerLayout = (RelativeLayout) findViewById(R.id.layout_chat_container);
+        keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_chat_keyboard_notifier);
         stickersContainerLayout = (FrameLayout) findViewById(R.id.layout_chat_stickers_container);
         stickerImageButton = (ImageButton) findViewById(R.id.button_chat_stickers);
 

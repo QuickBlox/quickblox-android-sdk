@@ -53,9 +53,9 @@ public class DialogsAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
             holder.nameTextView = (TextView) convertView.findViewById(R.id.text_dialog_name);
-            holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.text_room_last_message);
+            holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.text_dialog_last_message);
             holder.dialogImageView = (ImageView) convertView.findViewById(R.id.image_dialog_icon);
-            holder.unreadCounterTextView = (TextView) convertView.findViewById(R.id.text_unread_message_count);
+            holder.unreadCounterTextView = (TextView) convertView.findViewById(R.id.text_dialog_unread_count);
 
             convertView.setTag(holder);
         } else {

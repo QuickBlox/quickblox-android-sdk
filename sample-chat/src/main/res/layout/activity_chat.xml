@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_keyboard_notifier"
+    android:id="@+id/layout_chat_keyboard_notifier"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/layout_container"
+        android:id="@+id/layout_chat_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -16,7 +16,7 @@
             android:id="@+id/list_chat_messages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/divider"
+            android:layout_above="@+id/divider_chat"
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll" />
@@ -29,11 +29,11 @@
             android:layout_centerInParent="true" />
 
         <View
-            android:id="@+id/divider"
+            android:id="@+id/divider_chat"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"
-            android:layout_above="@+id/layout_chat_send_container"/>
+            android:layout_above="@+id/layout_chat_send_container"
+            android:background="@color/divider_color" />
 
         <LinearLayout
             android:id="@+id/layout_chat_send_container"

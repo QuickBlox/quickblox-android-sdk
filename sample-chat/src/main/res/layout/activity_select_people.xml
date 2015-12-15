@@ -1,17 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/list_dialog_users"
+        android:id="@+id/list_select_people_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
         app:ptrMode="pullFromEnd" />
 
     <ProgressBar
-        android:id="@+id/progress_chat"
+        android:id="@+id/progress_select_people"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

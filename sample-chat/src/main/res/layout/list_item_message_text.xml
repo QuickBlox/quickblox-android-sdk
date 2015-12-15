@@ -11,14 +11,14 @@
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
-        android:id="@+id/layout_chat_text_container"
+        android:id="@+id/layout_message_text_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/outgoing_message_bg"
         android:orientation="vertical">
 
         <com.devspark.robototextview.widget.RobotoTextView
-            android:id="@+id/text_chat_author"
+            android:id="@+id/text_message_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/chat_message_content_margin"
@@ -31,7 +31,7 @@
             tools:text="User 2" />
 
         <TextView
-            android:id="@+id/text_chat_message"
+            android:id="@+id/text_image_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -43,14 +43,14 @@
             tools:text="Test message" />
 
         <ImageView
-            android:id="@+id/image_chat_sticker"
+            android:id="@+id/image_message_sticker"
             android:layout_width="160dp"
             android:layout_height="160dp"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/text_chat_info"
+        android:id="@+id/text_message_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
