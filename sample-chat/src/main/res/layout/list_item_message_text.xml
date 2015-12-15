@@ -11,7 +11,7 @@
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
-        android:id="@+id/layout_message_text_container"
+        android:id="@+id/layout_message_content_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/outgoing_message_bg"
