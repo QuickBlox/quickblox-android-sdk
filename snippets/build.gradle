@@ -1,5 +1,20 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -14,10 +29,18 @@ android {
 }
 
 dependencies {
+    // offline dependencies, from 'jars' dir
+    //
     compile files(rootProject.core_jar_path,
             rootProject.chat_jar_path,
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
             rootProject.messages_jar_path)
+
+    // twitter digits
+    compile('com.digits.sdk.android:digits:1.9.0@aar') {
+        transitive = true;
+    }
+    compile 'io.fabric.sdk.android:fabric:1.2.0'
 }
