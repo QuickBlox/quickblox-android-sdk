@@ -68,7 +68,6 @@ public class SignInActivity extends BaseActivity {
         AuthCallback authCallback = new AuthCallback() {
             @Override
             public void success(DigitsSession session, String phoneNumber) {
-//                    createSessionUsingTwitterDigits(session);
                 signInUsingTwitterDigits(session);
             }
 

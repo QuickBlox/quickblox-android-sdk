@@ -28,6 +28,9 @@
         <activity android:name=".activities.ContentActivity" />
         <activity android:name=".activities.MessagesActivity" />
         <activity android:name=".activities.ChatActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="06afe5b32890416c317e719380d755a99dd2d5ba" />
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

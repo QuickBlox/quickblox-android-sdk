@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 
+import com.digits.sdk.android.AuthCallback;
+import com.digits.sdk.android.Digits;
+import com.digits.sdk.android.DigitsException;
+import com.digits.sdk.android.DigitsOAuthSigning;
+import com.digits.sdk.android.DigitsSession;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
@@ -18,8 +23,14 @@ import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.AsyncSnippet;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.List;
+import java.util.Map;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by vfite on 22.01.14.
@@ -27,6 +38,8 @@ import java.util.List;
 public class SnippetsAuth extends Snippets{
 
     private static final String TAG = SnippetsAuth.class.getSimpleName();
+
+    private TwitterAuthConfig authConfig;
 
     public SnippetsAuth(Context context) {
         super(context);
@@ -39,6 +52,9 @@ public class SnippetsAuth extends Snippets{
         //
         snippets.add(createSessionWithSocialProvider);
         snippets.add(createSessionWithSocialProviderSynchronous);
+        //
+        snippets.add(createSessionWithTwitterDigits);
+        snippets.add(createSessionWithTwitterDigitsSynchronous);
         //
         snippets.add(destroySession);
         snippets.add(destroySessionSynchronous);
@@ -184,6 +200,90 @@ public class SnippetsAuth extends Snippets{
             }
         }
     };
+
+
+    //
+    ////////////////////////// Create session with Twitter Digits /////////////////////////////////
+    //
+
+
+    Snippet createSessionWithTwitterDigits = new Snippet("create session", "with Twitter Digits") {
+        @Override
+        public void execute() {
+            initTwitterDigits();
+            authenticateWithTwitterDigits(false);
+
+        }
+    };
+
+    Snippet createSessionWithTwitterDigitsSynchronous = new AsyncSnippet("create session (synchronous)", "with Twitter Digits", context) {
+        @Override
+        public void executeAsync() {
+            initTwitterDigits();
+            authenticateWithTwitterDigits(true);
+        }
+    };
+
+    private void initTwitterDigits() {
+        if(authConfig == null) {
+            // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+            String consumerKey = "A1NXq7BxZ74NZ3dDzXA1HcSN7";
+            String consumerSecret = "Piuy52Kf2m2iHVKpfpffi6xjvOYVI904O6sl1c50TLpntTVsl6";
+
+            authConfig = new TwitterAuthConfig(consumerKey, consumerSecret);
+            Fabric.with(context, new TwitterCore(authConfig), new Digits());
+        }
+    }
+
+    private void authenticateWithTwitterDigits(final boolean isSync) {
+        Digits.authenticate(new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                Map<String, String> authHeaders = getAuthHeadersBySession(session);
+
+                Lo.g(authHeaders);
+
+                String xAuthServiceProvider = authHeaders.get("X-Auth-Service-Provider");
+                String xVerifyCredentialsAuthorization = authHeaders.get("X-Verify-Credentials-Authorization");
+
+                if(isSync){
+                    QBSession qbSession = null;
+                    try {
+                        qbSession = QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization);
+                    } catch (QBResponseException e) {
+                        e.printStackTrace();
+                    }
+                    if(session != null){
+                        Log.i(TAG, "session created: " + qbSession);
+                    }
+                }else{
+                    QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallbackImpl<QBSession>() {
+                        @Override
+                        public void onSuccess(QBSession qbSession, Bundle params) {
+                            Log.i(TAG, "session created: "+qbSession);
+                        }
+
+                        @Override
+                        public void onError(List<String> errors) {
+                            handleErrors(errors);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void failure(DigitsException exception) {
+                log(exception.getMessage());
+            }
+        }, "+38");
+    }
+
+    private Map<String, String> getAuthHeadersBySession(DigitsSession digitsSession) {
+        TwitterAuthToken authToken = (TwitterAuthToken) digitsSession.getAuthToken();
+        DigitsOAuthSigning oauthSigning = new DigitsOAuthSigning(authConfig, authToken);
+
+        return oauthSigning.getOAuthEchoHeadersForVerifyCredentials();
+    }
 
 
     //
