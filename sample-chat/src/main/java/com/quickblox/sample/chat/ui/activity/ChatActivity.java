@@ -27,7 +27,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.utils.ChatUtils;
-import com.quickblox.sample.chat.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;

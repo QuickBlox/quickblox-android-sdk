@@ -1,11 +1,11 @@
-package com.quickblox.sample.chat.utils;
+package com.quickblox.sample.core.utils;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 
-import com.quickblox.sample.chat.R;
+import com.quickblox.sample.core.R;
 
 import java.util.List;
 

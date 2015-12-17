@@ -9,7 +9,6 @@
     <string name="menu_dialogs_logout">Logout</string>
     <string name="menu_select_people_done">Done</string>
 
-    <string name="dlg_error">Error</string>
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
 

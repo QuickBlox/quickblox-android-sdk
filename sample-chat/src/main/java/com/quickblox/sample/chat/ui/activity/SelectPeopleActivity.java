@@ -18,7 +18,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
-import com.quickblox.sample.chat.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 

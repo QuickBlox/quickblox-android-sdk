@@ -3,10 +3,10 @@ package com.quickblox.sample.chat.utils;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.core.utils.ResourceUtils;
 
 import java.util.Random;
 
@@ -18,15 +18,15 @@ public class UiUtils {
     private UiUtils() {}
 
     public static Drawable getGreyCircleDrawable() {
-        return getColoredCicleDrawable(getColor(R.color.color_grey));
+        return getColoredCircleDrawable(ResourceUtils.getColor(R.color.color_grey));
     }
 
     public static Drawable getRandomColorCircleDrawable() {
-        return getColoredCicleDrawable(getRandomColor());
+        return getColoredCircleDrawable(getRandomColor());
     }
 
-    private static Drawable getColoredCicleDrawable(@ColorInt int color) {
-        GradientDrawable drawable = (GradientDrawable) App.getInstance().getResources().getDrawable(R.drawable.shape_circle);
+    private static Drawable getColoredCircleDrawable(@ColorInt int color) {
+        GradientDrawable drawable = (GradientDrawable) ResourceUtils.getDrawable(R.drawable.shape_circle);
         drawable.setColor(color);
         return drawable;
     }
@@ -37,7 +37,7 @@ public class UiUtils {
 
         int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
 
-        int generatedColor = getColor(colorId);
+        int generatedColor = ResourceUtils.getColor(colorId);
         if (generatedColor != previousColor) {
             previousColor = generatedColor;
             return generatedColor;
@@ -47,9 +47,5 @@ public class UiUtils {
             } while (generatedColor != previousColor);
         }
         return previousColor;
-    }
-
-    public static int getColor(@ColorRes int colorId) {
-        return App.getInstance().getResources().getColor(colorId);
     }
 }

@@ -23,7 +23,7 @@ import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.chat.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 

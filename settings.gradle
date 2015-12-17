@@ -1,5 +1,6 @@
 include 'sample-chat'
 include 'sample-content'
+include 'sample-core'
 include 'sample-custom-objects'
 include 'sample-location'
 include 'sample-messages'

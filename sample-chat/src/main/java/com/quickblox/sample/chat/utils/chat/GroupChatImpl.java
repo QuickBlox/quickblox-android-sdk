@@ -9,7 +9,7 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
-import com.quickblox.sample.chat.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.ErrorUtils;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;

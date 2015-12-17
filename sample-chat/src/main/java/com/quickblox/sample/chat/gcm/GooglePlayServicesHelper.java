@@ -20,6 +20,7 @@ import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.utils.Consts;
+import com.quickblox.sample.core.utils.VersionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -148,7 +149,7 @@ public class GooglePlayServicesHelper {
      * @param gcmRegId registration ID
      */
     private void saveGcmRegIdToPreferences(String gcmRegId) {
-        int appVersion = App.getInstance().getAppVersion();
+        int appVersion = VersionUtils.getAppVersion();
         Log.i(TAG, "Saving gcmRegId on app version " + appVersion);
 
         // We save both gcmRegId and current app version,
@@ -175,7 +176,7 @@ public class GooglePlayServicesHelper {
         // since the existing gcmRegId is not guaranteed to work
         // with the new app version
         int registeredVersion = prefs.getInt(PREF_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = App.getInstance().getAppVersion();
+        int currentVersion = VersionUtils.getAppVersion();
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
             return "";

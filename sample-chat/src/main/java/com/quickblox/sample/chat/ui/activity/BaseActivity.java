@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.ui.fragment.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.QbSessionStateCallback;
@@ -94,7 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
     }
 
     private void recreateQbSession(final QBUser user) {
-        ProgressDialogFragment.show(getSupportFragmentManager());
+        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
 
         ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<String>() {
             @Override
