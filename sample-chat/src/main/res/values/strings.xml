@@ -17,8 +17,7 @@
 
     <string name="login_title">@string/chat_sample</string>
 
-    <string name="splash_chat_sample">@string/chat_sample</string>
-    <string name="splash_chat_version">v %s</string>
+    <string name="splash_app_title">@string/chat_sample</string>
     <string name="splash_chat_login_error">"Chat login errors: "</string>
     
     <string name="login_select_user_for_login">Select User for Login to Chat</string>

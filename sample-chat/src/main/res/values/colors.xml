@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">#ffffff</color>
-    <color name="color_primary_dark">#d0d0d0</color>
-    <color name="color_accent">#4ad24d</color>
-
-    <color name="color_blue_qb">#046ad0</color>
     <color name="color_grey">#d3d3d3</color>
 
-    <color name="background_app_color">#ffffff</color>
     <color name="background_chat_color">#f5f6f5</color>
-
-    <color name="text_color_primary">#212121</color>
-    <color name="text_color_white">#ffffff</color>
-    <color name="text_color_black">#000000</color>
-    <color name="text_color_light_grey">#dedede</color>
-    <color name="text_color_medium_grey">#b1b1b1</color>
-    <color name="text_color_dark_grey">#6e6e6e</color>
 
     <color name="divider_color">#e0e0e0</color>
 

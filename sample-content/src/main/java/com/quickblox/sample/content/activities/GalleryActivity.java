@@ -1,5 +1,6 @@
 package com.quickblox.sample.content.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.quickblox.content.QBContent;
+import com.quickblox.content.model.QBFile;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
@@ -17,14 +21,16 @@ import com.quickblox.sample.content.utils.DialogUtils;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.content.QBContent;
-import com.quickblox.content.model.QBFile;
 
 import java.io.File;
 import java.util.List;
 
-public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener{
+public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, GalleryActivity.class);
+        context.startActivity(intent);
+    }
 
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;

@@ -39,6 +39,7 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path)
-
-    compile "com.android.support:appcompat-v7:${rootProject.appcompatV7Version}"
+    compile (project(":sample-core")) {
+        transitive = true;
+    }
 }

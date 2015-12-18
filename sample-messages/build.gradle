@@ -39,8 +39,9 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.messages_jar_path)
+    compile (project(":sample-core")) {
+        transitive = true;
+    }
 
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
-    compile "com.android.support:support-v4:${rootProject.supportV4Version}"
-    compile "com.android.support:appcompat-v7:${rootProject.appcompatV7Version}"
 }

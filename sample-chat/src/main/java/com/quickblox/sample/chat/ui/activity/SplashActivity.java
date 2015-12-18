@@ -1,33 +1,22 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.sample.chat.BuildConfig;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-public class SplashActivity extends Activity {
-    private static final int SPLASH_DELAY = 1500;
-
-    private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        TextView versionTextView = (TextView) findViewById(R.id.text_splash_app_version);
-        versionTextView.setText(getString(R.string.splash_chat_version, BuildConfig.VERSION_NAME));
 
         boolean isChatInitializedJustNow = ChatHelper.initIfNeed(this);
         // If QBChatService is already running that means that
@@ -54,17 +43,14 @@ public class SplashActivity extends Activity {
         });
     }
 
-    private void proceedToTheNextActivity() {
-        DialogsActivity.start(this);
-        finish();
+    @Override
+    protected String getAppName() {
+        return getString(R.string.splash_app_title);
     }
 
-    private void proceedToTheNextActivityWithDelay() {
-        mainThreadHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                proceedToTheNextActivity();
-            }
-        }, SPLASH_DELAY);
+    @Override
+    protected void proceedToTheNextActivity() {
+        DialogsActivity.start(this);
+        finish();
     }
 }

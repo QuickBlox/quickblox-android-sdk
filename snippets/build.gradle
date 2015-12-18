@@ -44,4 +44,8 @@ dependencies {
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
             rootProject.messages_jar_path)
+
+    compile (project(":sample-core")) {
+        transitive = true;
+    }
 }

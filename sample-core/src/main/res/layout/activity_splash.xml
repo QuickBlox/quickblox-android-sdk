@@ -13,7 +13,7 @@
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_title"
             style="@style/SplashAppTitleStyle"
-            android:text="@string/splash_chat_sample" />
+            tools:text="AppName"/>
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_version"

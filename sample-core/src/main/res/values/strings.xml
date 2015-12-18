@@ -2,4 +2,6 @@
 
     <string name="dlg_error">Error</string>
 
+    <string name="splash_app_version">v %s</string>
+
 </resources>

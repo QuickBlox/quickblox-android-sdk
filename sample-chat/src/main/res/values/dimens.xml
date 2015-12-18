@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="common_padding">8dp</dimen>
 
-    <dimen name="splash_main_text_size">32sp</dimen>
-    <dimen name="splash_version_text_size">12sp</dimen>
-
-    <dimen name="toolbar_title_text_size">20sp</dimen>
     <dimen name="unread_counter_text_size">13sp</dimen>
 
     <dimen name="chat_date_text_size">13sp</dimen>

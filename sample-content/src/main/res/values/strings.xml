@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sample Content</string>
+    <string name="splash_app_title">Content Sample</string>
+    
     <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
     <string name="content">Content</string>
     <string name="add_new_image">Add new image</string>

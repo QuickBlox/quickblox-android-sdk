@@ -39,7 +39,9 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.content_jar_path)
-    compile "com.nostra13.universalimageloader:universal-image-loader:${rootProject.uilVersion}"
+    compile (project(":sample-core")) {
+        transitive = true;
+    }
 
-    compile "com.android.support:appcompat-v7:${rootProject.appcompatV7Version}"
+    compile "com.nostra13.universalimageloader:universal-image-loader:${rootProject.uilVersion}"
 }
