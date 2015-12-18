@@ -26,7 +26,17 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    
+
+    productFlavors {
+        speedDev {
+            minSdkVersion 21
+        }
+        dev {
+            minSdkVersion rootProject.minSdkVersion
+        }
+    }
+
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -41,16 +51,6 @@ android {
             keyPassword "android"
         }
     }
-
-    productFlavors {
-        speedDev {
-            minSdkVersion 21
-        }
-        dev {
-            minSdkVersion rootProject.minSdkVersion
-        }
-    }
-
 }
 
 dependencies {
