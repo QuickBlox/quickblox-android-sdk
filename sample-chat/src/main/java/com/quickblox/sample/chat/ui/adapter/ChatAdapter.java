@@ -15,8 +15,8 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.TimeUtils;
-import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -137,7 +137,7 @@ public class ChatAdapter extends BaseAdapter {
         int textColorResource = isIncoming
                 ? R.color.text_color_black
                 : R.color.text_color_white;
-        holder.messageBodyTextView.setTextColor(UiUtils.getColor(textColorResource));
+        holder.messageBodyTextView.setTextColor(ResourceUtils.getColor(textColorResource));
     }
 
     private static class ViewHolder {

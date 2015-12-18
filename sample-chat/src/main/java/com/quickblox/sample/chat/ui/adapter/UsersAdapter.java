@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.UiUtils;
+import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -63,10 +64,10 @@ public class UsersAdapter extends BaseAdapter {
         }
 
         if (isUserMe(user)) {
-            holder.loginTextView.setTextColor(UiUtils.getColor(R.color.text_color_medium_grey));
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
             holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getLogin()));
         } else {
-            holder.loginTextView.setTextColor(UiUtils.getColor(R.color.text_color_black));
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
             holder.loginTextView.setText(user.getLogin());
         }
         holder.userImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
