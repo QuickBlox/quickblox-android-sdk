@@ -14,7 +14,7 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.DialogUtils;
+import com.quickblox.sample.core.utils.Toaster;
 
 public class ShowImageActivity extends BaseActivity {
 
@@ -28,8 +28,7 @@ public class ShowImageActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
-        resources = getResources();
-        currentPosition = getIntent().getIntExtra(POSITION, 0);
+        currentPosition = getIntent().getIntExtra(EXTRA_POSITION, 0);
         initUI();
         initImageLoaderOptions();
         showSelectedImage();
@@ -63,22 +62,22 @@ public class ShowImageActivity extends BaseActivity {
 
                         switch (failReason.getType()) {
                             case IO_ERROR:
-                                message = resources.getString(R.string.mgs_io_error);
+                                message = getString(R.string.mgs_io_error);
                                 break;
                             case DECODING_ERROR:
-                                message = resources.getString(R.string.mgs_decode_error);
+                                message = getString(R.string.mgs_decode_error);
                                 break;
                             case NETWORK_DENIED:
-                                message = resources.getString(R.string.mgs_denied_error);
+                                message = getString(R.string.mgs_denied_error);
                                 break;
                             case OUT_OF_MEMORY:
-                                message = resources.getString(R.string.mgs_memory_error);
+                                message = getString(R.string.mgs_memory_error);
                                 break;
                             case UNKNOWN:
-                                message = resources.getString(R.string.mgs_unknown_error);
+                                message = getString(R.string.mgs_unknown_error);
                                 break;
                         }
-                        DialogUtils.showLong(baseActivity, message);
+                        Toaster.longToast(message);
                         progressBar.setVisibility(View.GONE);
                     }
 

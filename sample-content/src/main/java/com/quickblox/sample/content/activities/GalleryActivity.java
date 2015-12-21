@@ -17,25 +17,37 @@ import com.quickblox.core.QBProgressCallback;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.DialogUtils;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
+import com.quickblox.sample.core.utils.Toaster;
 
 import java.io.File;
 import java.util.List;
 
 public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
 
+    private GridView galleryGridView;
+    private GalleryAdapter galleryAdapter;
+    private ImageHelper imageHelper;
+    private ImageView selectedImageImageView;
+
+
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
         context.startActivity(intent);
     }
 
-    private GridView galleryGridView;
-    private GalleryAdapter galleryAdapter;
-    private ImageHelper imageHelper;
-    private ImageView selectedImageImageView;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_gallery);
+
+        initUI();
+        initGalleryView();
+
+        imageHelper = new ImageHelper(this);
+    }
 
     public void onClick(View view) {
         switch (view.getId()) {
@@ -57,19 +69,8 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
     private void startShowImgActivity(int position) {
         Intent intent = new Intent(this, ShowImageActivity.class);
-        intent.putExtra(POSITION, position);
+        intent.putExtra(EXTRA_POSITION, position);
         startActivity(intent);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
-
-        initUI();
-        initGalleryView();
-
-        imageHelper = new ImageHelper(this);
     }
 
     private void initUI() {
@@ -89,6 +90,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             Uri originalUri = data.getData();
             selectedImageImageView.setImageURI(originalUri);
             selectedImageImageView.setVisibility(View.VISIBLE);
+
             progressDialog.setProgress(0);
             progressDialog.show();
 
@@ -114,10 +116,10 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(List<String> errors) {
                 progressDialog.hide();
 
-                DialogUtils.show(GalleryActivity.this, strings.toString());
+                Toaster.shortToast(errors.toString());
             }
         }, new QBProgressCallback() {
             @Override
