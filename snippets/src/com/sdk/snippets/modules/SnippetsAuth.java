@@ -77,15 +77,12 @@ public class SnippetsAuth extends Snippets{
 
                 @Override
                 public void onSuccess(QBSession session, Bundle params) {
-                    super.onSuccess(session, params);
                     Log.i(TAG, "session created, token = " + session.getToken());
-
-                    Lo.g("Main thread (callback ok): " + (Looper.myLooper() == Looper.getMainLooper()));
                 }
 
                 @Override
                 public void onError(List<String> errors) {
-                    Lo.g("Main thread (callback error): " + (Looper.myLooper() == Looper.getMainLooper()));
+                    Log.i(TAG, "session creation, error = " + errors);
                     handleErrors(errors);
                 }
             });
