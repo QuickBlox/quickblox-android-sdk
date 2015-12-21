@@ -1,6 +1,5 @@
 package com.quickblox.simplesample.messages.activities;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,55 +19,63 @@ import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
+import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
 import com.quickblox.simplesample.messages.helper.PlayServicesHelper;
-import com.quickblox.simplesample.messages.utils.DialogUtils;
 
 import java.util.List;
 
-public class MessagesActivity extends Activity {
+public class MessagesActivity extends CoreBaseActivity {
 
     private static final String TAG = MessagesActivity.class.getSimpleName();
 
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
-    private Button sendMessageButton;
 
     private PlayServicesHelper playServicesHelper;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MessagesActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.messages_layout);
+        setContentView(R.layout.activity_messages);
 
         playServicesHelper = new PlayServicesHelper(this);
 
         initUI();
         addMessageToList();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playServicesHelper.checkPlayServices();
 
         // Register to receive push notifications events
-        //
-        LocalBroadcastManager.getInstance(this).registerReceiver(mPushReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(Consts.NEW_PUSH_EVENT));
     }
 
     @Override
-    protected void onDestroy() {
-
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mPushReceiver);
-
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
     private void initUI() {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         messageOutEditText = (EditText) findViewById(R.id.message_out_edittext);
         messageInEditText = (EditText) findViewById(R.id.messages_in_edittext);
-        sendMessageButton = (Button) findViewById(R.id.send_message_button);
 
+        Button sendMessageButton = (Button) findViewById(R.id.send_message_button);
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,16 +91,10 @@ public class MessagesActivity extends Activity {
         }
     }
 
-    public void retrieveMessage(final String message) {
+    public void retrieveMessage(String message) {
         String text = message + "\n\n" + messageInEditText.getText().toString();
         messageInEditText.setText(text);
         progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        playServicesHelper.checkPlayServices();
     }
 
     public void sendMessageOnClick(View view) {
@@ -109,7 +110,6 @@ public class MessagesActivity extends Activity {
         userIds.add(1243440);
         qbEvent.setUserIds(userIds);
 
-
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
@@ -122,15 +122,13 @@ public class MessagesActivity extends Activity {
             }
 
             @Override
-            public void onError(List<String> strings) {
-                // errors
-                DialogUtils.showLong(MessagesActivity.this, strings.toString());
+            public void onError(List<String> errors) {
+                Toaster.longToast(errors.toString());
 
                 progressBar.setVisibility(View.INVISIBLE);
 
                 // hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(messageOutEditText.getWindowToken(), 0);
             }
         });
@@ -138,17 +136,13 @@ public class MessagesActivity extends Activity {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    // Our handler for received Intents.
-    //
-    private BroadcastReceiver mPushReceiver = new BroadcastReceiver() {
+    // Our handler for receiving Intents
+    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             // Get extra data included in the Intent
             String message = intent.getStringExtra(Consts.EXTRA_MESSAGE);
-
             Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
-
             retrieveMessage(message);
         }
     };

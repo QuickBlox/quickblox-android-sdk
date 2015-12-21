@@ -1,57 +1,47 @@
 package com.quickblox.simplesample.messages.activities;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.utils.DialogUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-public class SplashActivity extends Activity{
-
-    private ProgressBar progressBar;
+public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        initUI();
 
         // Create QuickBlox session
-        //
-        QBUser qbUser = new QBUser();
-        qbUser.setLogin(Consts.USER_LOGIN);
-        qbUser.setPassword(Consts.USER_PASSWORD);
-
+        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
         QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
-                Intent intent = new Intent(SplashActivity.this, MessagesActivity.class);
-                startActivity(intent);
-                finish();
+                proceedToTheNextActivity();
             }
 
             @Override
             public void onError(List<String> strings) {
-                // Show errors
-                DialogUtils.showLong(SplashActivity.this, strings.toString());
-                progressBar.setVisibility(View.INVISIBLE);
+                Toaster.longToast(strings.toString());
             }
         });
     }
 
-    private void initUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+    @Override
+    protected String getAppName() {
+        return getString(R.string.splash_app_title);
+    }
+
+    @Override
+    protected void proceedToTheNextActivity() {
+        MessagesActivity.start(this);
+        finish();
     }
 }
