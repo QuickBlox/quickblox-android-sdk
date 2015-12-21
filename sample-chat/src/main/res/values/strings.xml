@@ -18,18 +18,18 @@
     <string name="login_title">@string/chat_sample</string>
 
     <string name="splash_app_title">@string/chat_sample</string>
-    <string name="splash_chat_login_error">"Chat login errors: "</string>
+    <string name="splash_chat_login_error">Chat login errors</string>
     
     <string name="login_select_user_for_login">Select User for Login to Chat</string>
 
     <string name="dialogs_logged_in_as">Logged in as %s</string>
-    <string name="dialogs_creation_error">"Dialog creation errors: "</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
     <string name="dialogs_list_hint">Select a Dialog to Chat</string>
-    <string name="dialogs_get_error">"Get dialogs errors: "</string>
+    <string name="dialogs_get_error">Get dialogs errors</string>
 
     <string name="select_people_list_hint">Select Users you want to chat</string>
     <string name="select_people_create_chat">Create new chat</string>
-    <string name="select_people_get_users_error">"Get users errors: "</string>
+    <string name="select_people_get_users_error">Get users errors</string>
 
     <string name="chat_sticker">Sticker</string>
     <string name="chat_send">Send</string>
@@ -38,11 +38,13 @@
     <string name="chat_friend">Friend</string>
     <string name="chat_joining_room">Joining room…</string>
     <string name="chat_join_successful">Join successful</string>
-    <string name="chat_join_error">"Error join group chat: "</string>
+    <string name="chat_join_error">Error join group chat</string>
     <string name="chat_send_message_error">Failed to send a message</string>
-    <string name="chat_load_history_error">"Load chat history errors: "</string>
-    <string name="chat_load_users_error">"Load chat users errors: "</string>
+    <string name="chat_load_history_error">Load chat history errors</string>
+    <string name="chat_load_users_error">Load chat users errors</string>
 
     <string name="chat_info">Chat info</string>
-    <string name="chat_info_add_people_error">"Add people errors: "</string>
+    <string name="chat_info_add_people_error">Add people errors</string>
+
+    <string name="group_chat_join_error">Could not join chat, errors:</string>
 </resources>

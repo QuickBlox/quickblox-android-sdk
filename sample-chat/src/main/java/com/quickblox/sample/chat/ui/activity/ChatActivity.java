@@ -315,7 +315,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_join_error), errors);
+                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_join_error, errors);
             }
         });
     }
@@ -342,7 +342,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
             @Override
             public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_users_error), errors);
+                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_load_users_error, errors);
             }
         });
     }
@@ -365,7 +365,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(ChatActivity.this, getString(R.string.chat_load_history_error), errors);
+                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_load_history_error, errors);
             }
         });
     }

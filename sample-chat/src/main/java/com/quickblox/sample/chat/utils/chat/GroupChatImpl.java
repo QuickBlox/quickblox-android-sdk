@@ -8,6 +8,7 @@ import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
 import com.quickblox.sample.core.utils.ErrorUtils;
 
@@ -64,7 +65,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
                     @Override
                     public void run() {
                         callback.onError(list);
-                        ErrorUtils.showErrorDialog(chatActivity, "Could not join chat, errors:", list);
+                        ErrorUtils.showErrorDialog(chatActivity, R.string.group_chat_join_error, list);
                     }
                 });
             }
