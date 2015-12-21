@@ -19,7 +19,6 @@ import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.chat.App;
-import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.core.utils.VersionUtils;
 
 import java.io.IOException;
@@ -34,13 +33,13 @@ public class GooglePlayServicesHelper {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    public void registerForGcmIfPossible(Activity activity) {
+    public void registerForGcmIfPossible(Activity activity, String senderId) {
         // Check device for Play Services APK.
         // If check succeeds, proceed with GCM registration.
         if (checkGooglePlayServices(activity)) {
             String gcmRegId = getGcmRegIdFromPreferences();
             if (TextUtils.isEmpty(gcmRegId)) {
-                registerInGcmInBackground();
+                registerInGcmInBackground(senderId);
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
@@ -75,13 +74,13 @@ public class GooglePlayServicesHelper {
      * Stores the registration ID and app versionCode in the application's
      * shared preferences.
      */
-    private void registerInGcmInBackground() {
-        new AsyncTask<Void, Void, String>() {
+    private void registerInGcmInBackground(String senderId) {
+        new AsyncTask<String, Void, String>() {
             @Override
-            protected String doInBackground(Void... params) {
+            protected String doInBackground(String... params) {
                 try {
                     GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(App.getInstance());
-                    return gcm.register(Consts.GCM_SENDER_ID);
+                    return gcm.register(params[0]);
                 } catch (IOException e) {
                     // If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
@@ -101,7 +100,7 @@ public class GooglePlayServicesHelper {
                     saveGcmRegIdToPreferences(gcmRegId);
                 }
             }
-        }.execute();
+        }.execute(senderId);
     }
 
     /**

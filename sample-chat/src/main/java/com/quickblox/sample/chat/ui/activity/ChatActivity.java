@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
@@ -27,12 +26,13 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.utils.ChatUtils;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.VerboseQbChatConnectionListener;
+import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
@@ -244,7 +244,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             }
         } catch (XMPPException | SmackException e) {
             Log.e(TAG, "Failed to send a message", e);
-            Toast.makeText(this, R.string.chat_send_message_error, Toast.LENGTH_SHORT).show();
+            Toaster.shortToast(R.string.chat_send_message_error);
         }
     }
 
@@ -302,13 +302,13 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void joinGroupChat() {
-        Toast.makeText(this, R.string.chat_joining_room, Toast.LENGTH_SHORT).show();
+        Toaster.shortToast(R.string.chat_joining_room);
         progressBar.setVisibility(View.VISIBLE);
 
         ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-                Toast.makeText(ChatActivity.this, R.string.chat_join_successful, Toast.LENGTH_SHORT).show();
+                Toaster.shortToast(R.string.chat_join_successful);
                 loadDialogUsers();
             }
 

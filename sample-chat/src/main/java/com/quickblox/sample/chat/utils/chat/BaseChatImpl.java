@@ -1,13 +1,13 @@
 package com.quickblox.sample.chat.utils.chat;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
+import com.quickblox.sample.core.utils.Toaster;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -34,13 +34,13 @@ public abstract class BaseChatImpl<T extends QBChat> implements Chat, QBMessageL
                 qbChat.sendMessage(message);
             } catch (SmackException.NotConnectedException e) {
                 Log.w(TAG, e);
-                Toast.makeText(chatActivity, "Can't send a message, You are not connected to chat", Toast.LENGTH_SHORT).show();
+                Toaster.shortToast("Can't send a message, You are not connected to chat");
             } catch (IllegalStateException e) {
                 Log.w(TAG, e);
-                Toast.makeText(chatActivity, "You're still joining a group chat, please wait a bit", Toast.LENGTH_SHORT).show();
+                Toaster.shortToast("You're still joining a group chat, please wait a bit");
             }
         } else {
-            Toast.makeText(chatActivity, "Join unsuccessful", Toast.LENGTH_LONG).show();
+            Toaster.longToast("Join unsuccessful");
         }
     }
 

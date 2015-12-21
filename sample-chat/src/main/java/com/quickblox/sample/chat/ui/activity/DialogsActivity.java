@@ -52,7 +52,7 @@ public class DialogsActivity extends BaseActivity {
         setContentView(R.layout.activity_dialogs);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        googlePlayServicesHelper.registerForGcmIfPossible(this);
+        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 

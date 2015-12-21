@@ -7,14 +7,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.QbSessionStateCallback;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -118,7 +118,7 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
             public void onError(List<String> errors) {
                 Log.v(TAG, "Chat login onError(): " + errors);
 
-                Toast.makeText(BaseActivity.this, R.string.error_recreate_session, Toast.LENGTH_SHORT).show();
+                Toaster.shortToast(R.string.error_recreate_session);
 
                 // Retry to create session
                 // in RECREATE_SESSION_AFTER_ERROR_DELAY milliseconds
