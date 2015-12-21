@@ -1,5 +1,6 @@
 package com.quickblox.sample.customobjects.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +12,14 @@ import com.quickblox.sample.customobjects.adapter.NoteListAdapter;
 
 public class DisplayNoteListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    private final String POSITION = "position";
-    private ListView notesListView;
+    private static final String EXTRA_POSITION = "extra_position";
+
     private NoteListAdapter noteListAdapter;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, DisplayNoteListActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,7 @@ public class DisplayNoteListActivity extends BaseActivity implements AdapterView
     }
 
     private void initUI() {
-        notesListView = (ListView) findViewById(R.id.notes_listview);
+        ListView notesListView = (ListView) findViewById(R.id.notes_listview);
         notesListView.setOnItemClickListener(this);
         noteListAdapter = new NoteListAdapter(this);
         notesListView.setAdapter(noteListAdapter);
@@ -47,7 +53,7 @@ public class DisplayNoteListActivity extends BaseActivity implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(this, ShowNoteActivity.class);
-        intent.putExtra(POSITION, position);
+        intent.putExtra(EXTRA_POSITION, position);
         startActivity(intent);
     }
 }

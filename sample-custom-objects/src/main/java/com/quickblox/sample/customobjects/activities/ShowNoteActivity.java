@@ -8,12 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.customobjects.QBCustomObjects;
+import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.sample.core.utils.ResourceUtils;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Note;
-import com.quickblox.sample.customobjects.utils.DialogUtils;
-import com.quickblox.customobjects.QBCustomObjects;
-import com.quickblox.customobjects.model.QBCustomObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,8 @@ import static com.quickblox.sample.customobjects.definition.Consts.STATUS_NEW;
 
 public class ShowNoteActivity extends BaseActivity {
 
-    private final String POSITION = "position";
+    private static final String EXTRA_POSITION = "position";
+
     private TextView titleTextView;
     private TextView statusTextView;
     private TextView commentsTextView;
@@ -43,7 +45,7 @@ public class ShowNoteActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        position = getIntent().getIntExtra(POSITION, 0);
+        position = getIntent().getIntExtra(EXTRA_POSITION, 0);
         titleTextView = (TextView) findViewById(R.id.note_textview);
         statusTextView = (TextView) findViewById(R.id.status_textview);
         commentsTextView = (TextView) findViewById(R.id.comments_textview);
@@ -56,14 +58,13 @@ public class ShowNoteActivity extends BaseActivity {
     }
 
     private void applyComment() {
-        String commentsStr = "";
-        for (int i = 0; i < DataHolder.getDataHolder().getNoteComments(position).size(); ++i) {
-            commentsStr += "#" + i + "-" + DataHolder.getDataHolder().getNoteComments(position).get(
-                    i) + "\n\n";
+        List<String> notes = DataHolder.getDataHolder().getNoteComments(position);
+        String commentsStr = null;
+        for (int i = 0; i < notes.size(); ++i) {
+            commentsStr += "#" + i + "-" + notes.get(i) + "\n\n";
         }
         commentsTextView.setText(commentsStr);
     }
-
 
     private void setNewNote(QBCustomObject qbCustomObject) {
         Note note = new Note(qbCustomObject);
@@ -82,21 +83,19 @@ public class ShowNoteActivity extends BaseActivity {
                 progressDialog.show();
 
                 // Delete note
-                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallbackImpl() {
-
+                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallbackImpl<String>() {
                     @Override
                     public void onSuccess() {
                         progressDialog.dismiss();
 
                         DataHolder.getDataHolder().removeNoteFromList(position);
-                        DialogUtils.showLong(baseActivity, baseActivity.getResources().getString(
-                                R.string.note_successfully_deleted));
+                        Toaster.longToast(R.string.note_successfully_deleted);
                         finish();
                     }
 
                     @Override
-                    public void onError(List list) {
-                        DialogUtils.showLong(baseActivity, list.get(0).toString());
+                    public void onError(List<String> errors) {
+                        Toaster.longToast(errors.get(0));
 
                         progressDialog.dismiss();
                     }
@@ -108,23 +107,24 @@ public class ShowNoteActivity extends BaseActivity {
 
     private void showAddNewCommentDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(getResources().getString(R.string.new_comment));
-        alert.setMessage(getResources().getString(R.string.write_new_comment));
-        final EditText input = new EditText(this);
-        input.setTextColor(getResources().getColor(R.color.white));
-        alert.setView(input);
-        input.setSingleLine();
-        alert.setPositiveButton(getBaseContext().getResources().getString(R.string.ok),
+        alert.setTitle(R.string.new_comment);
+        alert.setMessage(R.string.write_new_comment);
+
+        final EditText editText = new EditText(this);
+        editText.setTextColor(ResourceUtils.getColor(R.color.white));
+        alert.setView(editText);
+        editText.setSingleLine();
+        alert.setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int buttonNumber) {
                         progressDialog.show();
-                        addNewComment(input.getText().toString());
+                        addNewComment(editText.getText().toString());
                         dialog.cancel();
                     }
                 }
         );
 
-        alert.setNegativeButton(getResources().getString(R.string.cancel),
+        alert.setNegativeButton(R.string.cancel,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.cancel();
@@ -137,7 +137,7 @@ public class ShowNoteActivity extends BaseActivity {
     private void showSetNewStatusDialog() {
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final String[] statusList = {STATUS_NEW, STATUS_IN_PROCESS, STATUS_DONE};
-        alert.setTitle(getBaseContext().getResources().getString(R.string.choose_new_status));
+        alert.setTitle(R.string.choose_new_status);
 
         alert.setItems(statusList, new DialogInterface.OnClickListener() {
             @Override
@@ -179,16 +179,14 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(List<String> errors) {
                 progressDialog.dismiss();
-
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                Toaster.longToast(errors.get(0));
             }
         });
     }
 
     private void updateNoteStatus(String status) {
-
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(STATUS, status);
         QBCustomObject qbCustomObject = new QBCustomObject();
@@ -206,10 +204,10 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(List<String> errors) {
                 progressDialog.dismiss();
 
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                Toaster.longToast(errors.get(0));
             }
         });
     }
