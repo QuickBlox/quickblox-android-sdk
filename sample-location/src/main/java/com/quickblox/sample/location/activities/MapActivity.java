@@ -3,13 +3,12 @@ package com.quickblox.sample.location.activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -26,20 +25,21 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.request.QBLocationRequestBuilder;
+import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
+import com.quickblox.sample.core.utils.DialogUtils;
+import com.quickblox.sample.core.utils.ResourceUtils;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.location.R;
 import com.quickblox.sample.location.model.Data;
 import com.quickblox.sample.location.utils.Constants;
-import com.quickblox.sample.location.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapActivity extends FragmentActivity implements LocationListener {
+public class MapActivity extends CoreBaseActivity implements LocationListener {
 
-    private Context context;
-    private Resources resources;
     private GoogleMap googleMap;
     private Location lastLocation;
     private Map<Marker, Data> storageMap = new HashMap<Marker, Data>();
@@ -47,13 +47,15 @@ public class MapActivity extends FragmentActivity implements LocationListener {
     private DialogInterface.OnClickListener checkInPositiveButton;
     private DialogInterface.OnClickListener checkInNegativeButton;
 
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MapActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
-        context = this;
-        resources = getResources();
 
         initGooglePlayStatus();
         initLocationRequestBuilder();
@@ -103,7 +105,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
 
             @Override
             public void onError(List<String> errors) {
-                DialogUtils.showLong(context, resources.getString(R.string.dlg_location_error) + errors);
+                Toaster.longToast(getString(R.string.dlg_location_error) + errors);
             }
         });
     }
@@ -118,14 +120,14 @@ public class MapActivity extends FragmentActivity implements LocationListener {
                     public boolean onMarkerClick(Marker marker) {
                         String message;
                         if (marker.equals(myMarker)) {
-                            message = resources.getString(R.string.dlg_it_is_me);
+                            message = getString(R.string.dlg_it_is_me);
                         } else {
                             Data data = storageMap.get(marker);
-                            message = resources.getString(R.string.dlg_user_login) + data.getUserName() +
-                                    resources.getString(R.string.dlg_status) + (data
-                                    .getUserStatus() != null ? data.getUserStatus() : resources.getString(R.string.empty));
+                            String status = data.getUserStatus() != null ? data.getUserStatus() : getString(R.string.empty);
+                            message = getString(R.string.dlg_user_login) + data.getUserName()
+                                    + getString(R.string.dlg_status) + status;
                         }
-                        DialogUtils.showLong(context, message);
+                        Toaster.longToast(message);
                         return false;
                     }
                 });
@@ -180,14 +182,14 @@ public class MapActivity extends FragmentActivity implements LocationListener {
         switch (view.getId()) {
             case R.id.check_in_button:
 
-                final EditText input = new EditText(this);
-                input.setTextColor(getResources().getColor(R.color.white));
-                initAlertListeners(input);
+                final EditText inputEditText = new EditText(this);
+                inputEditText.setTextColor(ResourceUtils.getColor(R.color.white));
+                initAlertListeners(inputEditText);
 
-                final Dialog checkInAlert = DialogUtils.createDialog(context, R.string.dlg_check_in,
-                        R.string.dlg_enter_message, input, checkInPositiveButton, checkInNegativeButton);
+                final Dialog checkInAlert = DialogUtils.createDialog(this, R.string.dlg_check_in,
+                        R.string.dlg_enter_message, inputEditText, checkInPositiveButton, checkInNegativeButton);
 
-                initAlertListeners(input);
+                initAlertListeners(inputEditText);
                 checkInAlert.show();
         }
     }
@@ -205,12 +207,12 @@ public class MapActivity extends FragmentActivity implements LocationListener {
                 QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
                     @Override
                     public void onSuccess(QBLocation qbLocation, Bundle bundle) {
-                        DialogUtils.showLong(context, resources.getString(R.string.dlg_check_in_success));
+                        Toaster.longToast(R.string.dlg_check_in_success);
                     }
 
                     @Override
                     public void onError(List<String> errors) {
-                        DialogUtils.showLong(context, resources.getString(R.string.dlg_location_error) + errors);
+                        Toaster.longToast(getString(R.string.dlg_location_error) + errors);
                     }
                 });
             }
