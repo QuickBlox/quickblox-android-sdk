@@ -1,10 +1,10 @@
 package com.quickblox.sample.user.definitions;
 
-public interface Consts {
+public class Consts {
 
-    String APP_ID = "92";
-    String AUTH_KEY = "wJHdOcQSxXQGWx5";
-    String AUTH_SECRET = "BTFsj7Rtt27DAmT";
-    String POSITION = "position";
-    String EMPTY_STRING = "";
+    public static final String APP_ID = "92";
+    public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
+    public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
+    public static final String POSITION = "position";
+    public static final String EMPTY_STRING = "";
 }

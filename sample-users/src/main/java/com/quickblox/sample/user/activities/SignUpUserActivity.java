@@ -5,11 +5,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
-import com.quickblox.sample.user.utils.DialogUtils;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -54,10 +54,10 @@ public class SignUpUserActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List<String> strings) {
+                    public void onError(List<String> errors) {
                         progressDialog.hide();
 
-                        DialogUtils.showLong(context, strings.get(0));
+                        Toaster.longToast(errors.get(0));
                     }
                 });
 

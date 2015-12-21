@@ -1,5 +1,6 @@
 package com.quickblox.sample.user.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,11 +9,11 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.users.QBUsers;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
 import com.quickblox.sample.user.helper.DataHolder;
-import com.quickblox.sample.user.utils.DialogUtils;
+import com.quickblox.users.QBUsers;
 
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     private Button signInButton;
     private Button selfEditButton;
     private Button singUpButton;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, UsersListActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,20 +99,20 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
                 // Logout
                 //
-                QBUsers.signOut(new QBEntityCallbackImpl() {
+                QBUsers.signOut(new QBEntityCallbackImpl<String>() {
                     @Override
                     public void onSuccess() {
                         progressDialog.hide();
 
-                        DialogUtils.showLong(context, getResources().getString(R.string.user_log_out_msg));
+                        Toaster.longToast(R.string.user_log_out_msg);
                         updateDataAfterLogOut();
                     }
 
                     @Override
-                    public void onError(List list) {
+                    public void onError(List<String> errors) {
                         progressDialog.hide();
 
-                        DialogUtils.showLong(context, list.get(0).toString());
+                        Toaster.longToast(errors.get(0));
                     }
                 });
 

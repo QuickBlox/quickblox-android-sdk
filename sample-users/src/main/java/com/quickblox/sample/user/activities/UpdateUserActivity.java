@@ -1,16 +1,17 @@
 package com.quickblox.sample.user.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
-import com.quickblox.sample.user.utils.DialogUtils;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -60,8 +61,6 @@ public class UpdateUserActivity extends BaseActivity {
             case R.id.update_button:
                 progressDialog.show();
 
-                // Update user
-                //
                 // create QBUser object
                 QBUser qbUser = new QBUser();
                 if (DataHolder.getDataHolder().getSignInUserId() != -1) {
@@ -79,7 +78,7 @@ public class UpdateUserActivity extends BaseActivity {
                 qbUser.setPhone(phoneEditText.getText().toString());
                 qbUser.setWebsite(webSiteEditText.getText().toString());
                 StringifyArrayList<String> tagList = new StringifyArrayList<String>();
-                for (String tag : tagsEditText.getText().toString().toString().split(",")) {
+                for (String tag : tagsEditText.getText().toString().split(",")) {
                     tagList.add(tag);
                 }
                 qbUser.setTags(tagList);
@@ -89,12 +88,11 @@ public class UpdateUserActivity extends BaseActivity {
                     public void onSuccess(QBUser qbUser, Bundle bundle) {
 
                         DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                        if (!passwordEditText.equals(EMPTY_STRING)) {
+                        if (!TextUtils.isEmpty(passwordEditText.getText())) {
                             DataHolder.getDataHolder().setSignInUserPassword(
                                     passwordEditText.getText().toString());
                         }
-                        DialogUtils.showLong(context, getResources().getString(
-                                R.string.user_successfully_updated));
+                        Toaster.longToast(R.string.user_successfully_updated);
                         finish();
                     }
 

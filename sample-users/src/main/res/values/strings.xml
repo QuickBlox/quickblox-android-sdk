@@ -4,7 +4,8 @@
     <string name="test_user_password">qbuser33</string>
 
     <string name="app_name">Sample Users</string>
-    <string name="qb_slogan">YOUR COMMUNICATION \nBACKEND</string>
+    <string name="splash_app_title">Users Sample</string>
+
     <string name="name">Name</string>
     <string name="tags">Tags</string>
     <string name="name_with_colon">Name:</string>
@@ -25,7 +26,6 @@
     <string name="update">Update</string>
     <string name="choose">Choose</string>
     <string name="delete">Delete</string>
-    <string name="please_wait">Please wait…</string>
     <string name="user_log_out_msg">User successfully logout!</string>
     <string name="please_sign_in">Please signIn by this user!</string>
     <string name="user_successfully_updated">User was successfully updated!</string>
@@ -34,7 +34,5 @@
     <string name="colon">:</string>
     <string name="self_edit">Self edit</string>
     <string name="save">save</string>
-    <string name="dlg_ok">OK</string>
-    <string name="dlg_cancel">Cancel</string>
     <string name="three_dots">…</string>
 </resources>
