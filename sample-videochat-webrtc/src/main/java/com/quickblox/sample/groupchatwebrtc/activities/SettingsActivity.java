@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
 
 /**
  * QuickBlox team
@@ -63,13 +63,13 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
             String bitrateValue = sharedPreferences.getString(bitrateStringKey,
                     getString(R.string.pref_startbitratevalue_default));
             if (TextUtils.isEmpty(bitrateValue)){
-                Toast.makeText(this, "Value can't be empty:", Toast.LENGTH_LONG).show();
+                Toaster.longToast("Value can't be empty:");
                 setDefaultstartingBitrate(sharedPreferences);
                 return;
             }
             int startBitrate = Integer.parseInt(bitrateValue);
             if (startBitrate > MAX_VIDEO_START_BITRATE){
-                Toast.makeText(this, "Max value is:"+MAX_VIDEO_START_BITRATE, Toast.LENGTH_LONG).show();
+                Toaster.longToast("Max value is:" + MAX_VIDEO_START_BITRATE);
                 setDefaultstartingBitrate(sharedPreferences);
             }
         }

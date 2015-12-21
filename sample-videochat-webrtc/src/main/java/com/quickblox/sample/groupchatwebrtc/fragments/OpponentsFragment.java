@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
+import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
-import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -62,7 +62,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         progresDialog = new ProgressDialog(getActivity()) {
             @Override
             public void onBackPressed() {
-                Toast.makeText(getActivity(), "Wait until loading finish", Toast.LENGTH_SHORT).show();
+                Toaster.shortToast("Wait until loading finish");
             }
         };
         progresDialog.setMessage("Load opponents ...");
@@ -119,12 +119,12 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
 
         if (opponentsAdapter.getSelected().isEmpty()){
-            Toast.makeText(getActivity(), "Choose one opponent", Toast.LENGTH_LONG).show();
+            Toaster.longToast("Choose one opponent");
             return;
         }
 
         if (opponentsAdapter.getSelected().size() > QBRTCConfig.getMaxOpponentsCount()){
-            Toast.makeText(getActivity(), "Max number of opponents is 6", Toast.LENGTH_LONG).show();
+            Toaster.longToast("Max number of opponents is 6");
             return;
         }
             QBRTCTypes.QBConferenceType qbConferenceType = null;
@@ -162,7 +162,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.fragment_opponents, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
     }
