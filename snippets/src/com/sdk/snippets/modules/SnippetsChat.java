@@ -641,7 +641,7 @@ public class SnippetsChat extends Snippets {
                 chatMessage.setMarkable(true);
 
 //                long time = System.currentTimeMillis()/1000;
-//                chatMessage.setProperty("date_sent", time + "");
+//                chatMessage.setProperty("date_sent", time + ".431");
 
                 // attach a photo
                 QBAttachment attachment = new QBAttachment("photo");

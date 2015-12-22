@@ -19,7 +19,9 @@ import com.sdk.snippets.core.Snippets;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by vfite on 10.02.14.
@@ -283,45 +285,69 @@ public class SnippetsMessages extends Snippets{
     ///////////////////////////////////////// Create Event /////////////////////////////////////////
     //
 
+    protected QBEvent buildEvent(){
+        // recipient
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
+        userIds.add(ApplicationConfig.getInstance().getTestUserId1());
+        userIds.add(ApplicationConfig.getInstance().getTestUserId2());
+        userIds.add(5179218);
+        userIds.add(301);
+
+        QBEvent event = new QBEvent();
+        event.setUserIds(userIds);
+        event.setType(QBEventType.ONE_SHOT);
+        event.setEnvironment(QBEnvironment.DEVELOPMENT);
+        event.setNotificationType(QBNotificationType.PUSH);
+
+//            // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
+//            //
+//            event.setMessage("This is simple generic push notification!");
+
+
+//            // generic push with custom parameters - http://quickblox.com/developers/Messages#Use_custom_parameters
+//            //
+//            JSONObject json = new JSONObject();
+//            try {
+//                json.put("message", "This is generic push notification with custom params!");
+//                json.put("param1", "value1");
+//                json.put("ios_badge", "4"); // iOS badge value
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            //
+//            event.setMessage(json.toString());
+
+
+//            // Android based push
+//            //
+//            event.setPushType(QBPushType.GCM);
+//            HashMap<String, Object> data = new HashMap<>();
+//            data.put("data.message", "This is Android based push notification!");
+//            data.put("data.param1", "value1");
+//            //
+//            event.setMessage(data);
+
+
+        // iOS based push
+        //
+        event.setPushType(QBPushType.APNS);
+        HashMap<String, Object> data = new HashMap<>();
+        Map<String, String> aps = new HashMap<>();
+        aps.put("alert", "You have 3 new messages");
+        aps.put("badge", "3");
+        data.put("aps", aps);
+        //
+        event.setMessage(data);
+
+        return event;
+    }
+
 
     Snippet createEvent = new Snippet("create event (send push)") {
         @Override
         public void execute() {
-            // recipient
-            StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-//            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
-            userIds.add(2792282);
-//            userIds.add(2792283);
 
-            QBEvent event = new QBEvent();
-            event.setUserIds(userIds);
-            event.setType(QBEventType.ONE_SHOT);
-            event.setEnvironment(QBEnvironment.DEVELOPMENT);
-            event.setNotificationType(QBNotificationType.PUSH);
-
-            // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-            //
-//            event.setMessage("Gonna send Push Notification!");
-
-            // generic push with custom parameters
-            //
-            JSONObject json = new JSONObject();
-            try {
-                json.put("message", "hello to all");
-                json.put("param1", "value1");
-                json.put("ios_badge", "4");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            event.setMessage(json.toString());
-
-            // Android based push
-            //
-//            event.setPushType(QBPushType.GCM);
-//            HashMap<String, String> data = new HashMap<String, String>();
-//            data.put("data.message", "Hello");
-//            data.put("data.type", "welcome message");
-//            event.setMessage(data);
+            QBEvent event = buildEvent();
 
             QBMessages.createEvent(event, new QBEntityCallbackImpl<QBEvent>() {
                 @Override
@@ -340,39 +366,7 @@ public class SnippetsMessages extends Snippets{
     Snippet createEventSynchronous = new AsyncSnippet("create event (send push) (synchronous)", context) {
         @Override
         public void executeAsync() {
-            // recipient
-            StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
-
-            QBEvent event = new QBEvent();
-            event.setUserIds(userIds);
-            event.setType(QBEventType.ONE_SHOT);
-            event.setEnvironment(QBEnvironment.DEVELOPMENT);
-            event.setNotificationType(QBNotificationType.PUSH);
-
-            // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-            //
-            event.setMessage("Gonna send Push Notification!");
-
-            // generic push with custom parameters
-            //
-//            JSONObject json = new JSONObject();
-//            try {
-//                json.put("message", "hello");
-//                json.put("param1", "value1");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            event.setMessage(json.toString());
-
-            // Android based push
-            //
-//            event.setPushType(QBPushType.GCM);
-//            HashMap<String, String> data = new HashMap<String, String>();
-//            data.put("data.message", "Hello");
-//            data.put("data.type", "welcome message");
-//            event.setMessage(data);
-
+            QBEvent event = buildEvent();
 
             QBEvent createdEvent = null;
             try {
