@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
+
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.TransferProtocol;
+import com.quickblox.sample.core.utils.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Snippets {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+                Toaster.shortToast(data);
             }
         });
 
@@ -32,7 +33,7 @@ public class Snippets {
 
     public void handleErrors(List<String> errors) {
         String message = String.format("[ERROR] Request has been completed with errors: %s", errors);
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        Toaster.shortToast(message);
 
         // print
         Log.i(TAG, message);

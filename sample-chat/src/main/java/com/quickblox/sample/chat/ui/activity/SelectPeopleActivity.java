@@ -148,7 +148,7 @@ public class SelectPeopleActivity extends BaseActivity {
                     currentUsersQbPage--;
                 }
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(SelectPeopleActivity.this, getString(R.string.select_people_get_users_error), errors);
+                ErrorUtils.showErrorDialog(SelectPeopleActivity.this, R.string.select_people_get_users_error, errors);
             }
         });
     }

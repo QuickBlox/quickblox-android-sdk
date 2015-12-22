@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent"
+    android:paddingLeft="@dimen/padding_large"
+    android:paddingRight="@dimen/padding_large">
+
+    <TextView
+        android:id="@+id/movie_name_textview"
+        style="@style/ItemNameStyle"
+        android:paddingTop="@dimen/padding_large"
+        android:textStyle="bold"
+        android:text="@string/title"/>
+
+    <TextView
+        android:id="@+id/movie_year_textview"
+        style="@style/ItemCommentStyle"
+        android:layout_below="@+id/movie_name_textview"
+        android:text="@string/year"/>
+
+    <TextView
+        android:id="@+id/movie_description_textview"
+        style="@style/ItemDescriptionStyle"
+        android:paddingTop="@dimen/padding_large"
+        android:layout_below="@+id/movie_year_textview"
+        android:text="@string/description"/>
+
+    <TextView
+        android:id="@+id/movie_rating_textview"
+        style="@style/ItemRatingStyle"
+        android:layout_below="@+id/movie_description_textview"
+        android:text="@string/rating"/>
+
+    <RatingBar
+        android:id="@+id/movie_ratingBar"
+        style="@style/ItemRatingBarStyle"
+        android:layout_below="@+id/movie_rating_textview"/>
+
+</RelativeLayout>

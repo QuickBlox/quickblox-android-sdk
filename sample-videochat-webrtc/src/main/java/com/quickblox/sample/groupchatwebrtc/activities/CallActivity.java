@@ -14,34 +14,33 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
+import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.OpponentsFragment;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
-import com.quickblox.sample.groupchatwebrtc.util.DialogUtil;
 import com.quickblox.sample.groupchatwebrtc.util.FragmentExecuotr;
 import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.util.SettingsUtil;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
-import com.quickblox.videochat.webrtc.QBSignalingSpec;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
-import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
+import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
 import org.jivesoftware.smack.SmackException;
@@ -119,7 +118,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 CallActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(CallActivity.this, s, Toast.LENGTH_LONG).show();
+                        Toaster.longToast(s);
                     }
                 });
             }
@@ -181,7 +180,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 } else {
                     rejectCurrentSession();
                 }
-                Toast.makeText(CallActivity.this, "Call was stopped by timer", Toast.LENGTH_LONG).show();
+                Toaster.longToast("Call was stopped by timer");
             }
         };
     }
@@ -452,7 +451,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                DialogUtil.showToast(CallActivity.this, message);
+                Toaster.longToast(message);
             }
         });
     }
@@ -461,7 +460,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                DialogUtil.showToast(CallActivity.this, message);
+                Toaster.longToast(message);
             }
         });
     }

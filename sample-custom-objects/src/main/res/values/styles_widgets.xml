@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="UserTitleStyle" parent="WeightHeight">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
+
+    <style name="ItemNameStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
     </style>
+
+    <style name="ItemCommentStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="ItemDescriptionStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
+    </style>
+
+    <style name="ItemRatingStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:paddingTop">@dimen/margin_very_large</item>
+    </style>
+
+    <style name="ItemRatingBarStyle" parent="WrapContent">
+        <item name="android:paddingTop">@dimen/margin_middle</item>
+        <item name="android:numStars">5</item>
+    </style>
+
 </resources>

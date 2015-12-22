@@ -6,10 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Blue"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.SplashActivity"
@@ -21,16 +22,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.DisplayNoteListActivity"
-            android:label="@string/notes"
+            android:name=".activities.DisplayMovieListActivity"
+            android:label="@string/movies"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddNewNoteActivity"
             android:label="@string/add_new_note"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ShowNoteActivity"
-            android:label="@string/note_title"
+            android:name=".activities.ShowMovieActivity"
+            android:label="@string/movie_details"
             android:screenOrientation="portrait" />
     </application>
 </manifest>

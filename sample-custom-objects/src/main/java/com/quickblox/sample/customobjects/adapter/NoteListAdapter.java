@@ -37,7 +37,7 @@ public class NoteListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.list_item_note, null);
+            convertView = layoutInflater.inflate(R.layout.list_item_note, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.note_textview);
             viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.date_textview);
@@ -66,7 +66,6 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-
         TextView titleTextView;
         TextView statusTextView;
         TextView dateTextView;

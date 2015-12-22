@@ -5,11 +5,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
-import com.quickblox.sample.user.utils.DialogUtils;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class SignInActivity extends BaseActivity {
                         DataHolder.getDataHolder().setSignInQbUser(qbUser);
                         // password does not come, so if you want use it somewhere else, try something like this:
                         DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
-                        DialogUtils.showLong(context, getResources().getString(R.string.user_successfully_sign_in));
+                        Toaster.longToast(R.string.user_successfully_sign_in);
 
                         finish();
                     }
@@ -57,7 +57,7 @@ public class SignInActivity extends BaseActivity {
                     @Override
                     public void onError(List<String> errors) {
                         progressDialog.hide();
-                        DialogUtils.showLong(context, errors.get(0));
+                        Toaster.longToast(errors.get(0));
                     }
                 });
 

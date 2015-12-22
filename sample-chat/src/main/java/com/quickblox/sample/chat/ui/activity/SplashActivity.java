@@ -37,7 +37,7 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(SplashActivity.this, getString(R.string.splash_chat_login_error), errors);
+                ErrorUtils.showErrorDialog(SplashActivity.this, R.string.splash_chat_login_error, errors);
                 finish();
             }
         });

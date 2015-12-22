@@ -3,7 +3,8 @@ package com.sdk.snippets.core;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.quickblox.sample.core.utils.Toaster;
 
 public abstract class AsyncSnippet extends Snippet {
     private static final String TAG = AsyncSnippet.class.getSimpleName();
@@ -48,7 +49,7 @@ public abstract class AsyncSnippet extends Snippet {
     protected void postExecute(){
         if(exception == null){
             Log.i(TAG, ">>> executed successful");
-            Toast.makeText(context, " executed successful", Toast.LENGTH_SHORT).show();
+            Toaster.shortToast("executed successful");
         }
         else{
             Log.i(TAG, ">>> errors:"+exception.getLocalizedMessage());

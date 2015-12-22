@@ -52,7 +52,7 @@ public class DialogsActivity extends BaseActivity {
         setContentView(R.layout.activity_dialogs);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        googlePlayServicesHelper.registerForGcmIfPossible(this);
+        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
@@ -129,7 +129,7 @@ public class DialogsActivity extends BaseActivity {
 
                             @Override
                             public void onError(List<String> errors) {
-                                ErrorUtils.showErrorDialog(DialogsActivity.this, getString(R.string.dialogs_creation_error), errors);
+                                ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_creation_error, errors);
                             }
                         }
                 );
@@ -154,7 +154,7 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(DialogsActivity.this, getString(R.string.dialogs_get_error), errors);
+                ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_get_error, errors);
             }
         });
     }

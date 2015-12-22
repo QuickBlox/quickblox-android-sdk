@@ -6,11 +6,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.sample.customobjects.R;
-import com.quickblox.sample.customobjects.helper.DataHolder;
-import com.quickblox.sample.customobjects.utils.DialogUtils;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.customobjects.R;
+import com.quickblox.sample.customobjects.helper.DataHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +26,14 @@ public class AddNewNoteActivity extends BaseActivity {
     private EditText noteEditText;
     private EditText commentsEditText;
 
+    private EditText titleEditText;
+    private EditText descriptionEditText;
+    private EditText yearEditText;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_note);
+        setContentView(R.layout.activity_add_movie);
         initUI();
     }
 
@@ -56,7 +60,7 @@ public class AddNewNoteActivity extends BaseActivity {
         String comments = commentsEditText.getText().toString();
 
         if(!isValidData(note, comments)) {
-            DialogUtils.showLong(baseActivity, baseActivity.getResources().getString(R.string.error_fields_is_empty));
+            Toaster.longToast(R.string.error_fields_is_empty);
             return;
         }
 
@@ -82,7 +86,7 @@ public class AddNewNoteActivity extends BaseActivity {
             @Override
             public void onError(List<String> errors) {
                 progressDialog.dismiss();
-                DialogUtils.showLong(baseActivity, errors.get(0));
+                Toaster.longToast(errors.get(0));
             }
         });
     }

@@ -9,44 +9,44 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChat;
-import com.quickblox.chat.QBMessageStatusesManager;
-import com.quickblox.chat.QBPingManager;
-import com.quickblox.chat.QBSystemMessagesManager;
-import com.quickblox.chat.listeners.QBGroupChatManagerListener;
-import com.quickblox.chat.listeners.QBMessageStatusListener;
-import com.quickblox.chat.listeners.QBParticipantListener;
-import com.quickblox.chat.listeners.QBSystemMessageListener;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.helper.StringifyArrayList;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
+import com.quickblox.chat.QBMessageStatusesManager;
+import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.QBPrivacyListsManager;
+import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBRoster;
+import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.exception.QBChatException;
+import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBIsTypingListener;
 import com.quickblox.chat.listeners.QBMessageListener;
+import com.quickblox.chat.listeners.QBMessageStatusListener;
+import com.quickblox.chat.listeners.QBParticipantListener;
 import com.quickblox.chat.listeners.QBPrivacyListListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.listeners.QBRosterListener;
 import com.quickblox.chat.listeners.QBSubscriptionListener;
+import com.quickblox.chat.listeners.QBSystemMessageListener;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
-import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.model.QBPresence;
 import com.quickblox.chat.model.QBPrivacyList;
 import com.quickblox.chat.model.QBPrivacyListItem;
 import com.quickblox.chat.model.QBRosterEntry;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.AsyncSnippet;
@@ -133,9 +133,9 @@ public class SnippetsChat extends Snippets {
             NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
 
             if (currentNetworkInfo.isConnected()) {
-                Toast.makeText(context, "WiFi Connected", Toast.LENGTH_LONG).show();
+                Toaster.longToast("WiFi Connected");
             } else {
-                Toast.makeText(context, "WiFi Not Connected", Toast.LENGTH_LONG).show();
+                Toaster.longToast("WiFi Not Connected");
             }
         }
     };

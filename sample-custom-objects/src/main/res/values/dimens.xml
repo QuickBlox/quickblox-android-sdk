@@ -2,10 +2,12 @@
     <dimen name="margin_small">5dp</dimen>
     <dimen name="margin_middle">10dp</dimen>
     <dimen name="margin_large">20dp</dimen>
+    <dimen name="margin_very_large">30dp</dimen>
 
     <dimen name="padding_small">5dp</dimen>
     <dimen name="padding_middle">10dp</dimen>
     <dimen name="padding_large">15dp</dimen>
+    <dimen name="padding_very_large">20dp</dimen>
 
     <dimen name="node_width">300dp</dimen>
     <dimen name="comments_width">300dp</dimen>
@@ -14,7 +16,7 @@
 
     <dimen name="list_item_node_height">100dp</dimen>
 
-    <dimen name="text_size_small">15sp</dimen>
-    <dimen name="text_size_middle">18sp</dimen>
-    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_middle">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
 </resources>

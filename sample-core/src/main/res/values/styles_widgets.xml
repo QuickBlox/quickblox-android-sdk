@@ -28,6 +28,7 @@
     <style name="SplashAppTitleStyle" parent="WrapContent">
         <item name="android:textColor">@color/text_color_black</item>
         <item name="android:textSize">@dimen/splash_main_text_size</item>
+        <item name="android:gravity">center</item>
         <item name="typeface">roboto_light</item>
     </style>
 

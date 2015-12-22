@@ -81,7 +81,7 @@ public class ChatInfoActivity extends BaseActivity {
 
                             @Override
                             public void onError(List<String> errors) {
-                                ErrorUtils.showErrorDialog(ChatInfoActivity.this, getString(R.string.chat_info_add_people_error), errors);
+                                ErrorUtils.showErrorDialog(ChatInfoActivity.this, R.string.chat_info_add_people_error, errors);
                             }
                         }
                 );
