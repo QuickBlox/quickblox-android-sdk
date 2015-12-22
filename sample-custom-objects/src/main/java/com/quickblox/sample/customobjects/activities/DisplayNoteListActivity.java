@@ -7,32 +7,33 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.quickblox.sample.customobjects.R;
+import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
 import com.quickblox.sample.customobjects.adapter.NoteListAdapter;
 
 public class DisplayNoteListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private final String POSITION = "position";
-    private ListView notesListView;
-    private NoteListAdapter noteListAdapter;
+    private ListView moviesListView;
+    private MovieListAdapter movieListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes_list);
+        setContentView(R.layout.activity_movies_list);
         initUI();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        noteListAdapter.notifyDataSetChanged();
+        movieListAdapter.notifyDataSetChanged();
     }
 
     private void initUI() {
-        notesListView = (ListView) findViewById(R.id.notes_listview);
-        notesListView.setOnItemClickListener(this);
-        noteListAdapter = new NoteListAdapter(this);
-        notesListView.setAdapter(noteListAdapter);
+        moviesListView = (ListView) findViewById(R.id.movies_listview);
+        moviesListView.setOnItemClickListener(this);
+        movieListAdapter = new MovieListAdapter(this);
+        moviesListView.setAdapter(movieListAdapter);
     }
 
     public void onClick(View view) {

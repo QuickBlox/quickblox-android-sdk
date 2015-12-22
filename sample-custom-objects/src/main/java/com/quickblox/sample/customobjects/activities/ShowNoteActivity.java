@@ -50,18 +50,18 @@ public class ShowNoteActivity extends BaseActivity {
     }
 
     private void fillFields() {
-        titleTextView.setText(DataHolder.getDataHolder().getNoteTitle(position));
+        //titleTextView.setText(DataHolder.getDataHolder().getNoteTitle(position));
         statusTextView.setText(DataHolder.getDataHolder().getNoteStatus(position));
         applyComment();
     }
 
     private void applyComment() {
-        String commentsStr = "";
-        for (int i = 0; i < DataHolder.getDataHolder().getNoteComments(position).size(); ++i) {
-            commentsStr += "#" + i + "-" + DataHolder.getDataHolder().getNoteComments(position).get(
-                    i) + "\n\n";
-        }
-        commentsTextView.setText(commentsStr);
+//        String commentsStr = "";
+//        for (int i = 0; i < DataHolder.getDataHolder().getNoteComments(position).size(); ++i) {
+//            commentsStr += "#" + i + "-" + DataHolder.getDataHolder().getNoteComments(position).get(
+//                    i) + "\n\n";
+//        }
+        //commentsTextView.setText(commentsStr);
     }
 
 

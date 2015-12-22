@@ -39,7 +39,7 @@ public class SplashActivity extends Activity{
 
                 if (qbCustomObjects != null && qbCustomObjects.size() != 0) {
                     for (QBCustomObject customObject : qbCustomObjects) {
-                        DataHolder.getDataHolder().addNoteToList(customObject);
+                        DataHolder.getDataHolder().addMovieToList(customObject);
                     }
                 }
 

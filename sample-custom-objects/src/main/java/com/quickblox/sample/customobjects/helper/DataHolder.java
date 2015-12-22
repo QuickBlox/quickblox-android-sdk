@@ -1,5 +1,6 @@
 package com.quickblox.sample.customobjects.helper;
 
+import com.quickblox.sample.customobjects.model.Movie;
 import com.quickblox.sample.customobjects.model.Note;
 import com.quickblox.customobjects.model.QBCustomObject;
 
@@ -10,7 +11,8 @@ public class DataHolder {
 
     private static DataHolder dataHolder;
     private int signInUserId;
-    private List<Note> noteList;
+    private List<Movie> movieList;
+    List<Note> noteList;
 
     public static synchronized DataHolder getDataHolder() {
         if (dataHolder == null) {
@@ -27,24 +29,36 @@ public class DataHolder {
         this.signInUserId = signInUserId;
     }
 
-    public int getNoteListSize() {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
+    public int getMovieListSize() {
+        if (movieList == null) {
+            movieList = new ArrayList<Movie>();
         }
-        return noteList.size();
+        return movieList.size();
     }
 
-    public String getNoteTitle(int position) {
-        return noteList.get(position).getTitle();
+    public String getMovieName(int position) {
+        return movieList.get(position).getName();
     }
 
-    public String getNoteDate(int position) {
-        return noteList.get(position).getDate();
+    public String getMovieDescription(int position ){
+        return movieList.get(position).getDescription();
     }
 
-    public List<String> getNoteComments(int position) {
-        return noteList.get(position).getCommentsList();
+    public String getMovieDate(int position) {
+        return movieList.get(position).getDate();
     }
+
+    public String getMovieYear(int position) {
+        return movieList.get(position).getYear();
+    }
+
+    public String getMovieRating(int position) {
+        return movieList.get(position).getRating();
+    }
+
+//    public List<String> getNoteComments(int position) {
+//        return movieList.get(position).getCommentsList();
+//    }
 
     public String getNoteStatus(int position) {
         return noteList.get(position).getStatus();
@@ -67,18 +81,25 @@ public class DataHolder {
     }
 
     public void removeNoteFromList(int position) {
-        noteList.remove(position);
+        movieList.remove(position);
     }
 
     public void clear() {
-        noteList.clear();
+        movieList.clear();
     }
 
     public int size() {
-        if (noteList != null) {
-            return noteList.size();
+        if (movieList != null) {
+            return movieList.size();
         }
         return 0;
+    }
+
+    public void addMovieToList(QBCustomObject customObject){
+        if(movieList ==null){
+           movieList = new ArrayList<>();
+        }
+        movieList.add(new Movie(customObject));
     }
 
     public void addNoteToList(QBCustomObject customObject) {

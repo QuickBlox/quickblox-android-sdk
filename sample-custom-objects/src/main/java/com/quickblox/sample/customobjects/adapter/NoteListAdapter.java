@@ -20,7 +20,7 @@ public class NoteListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return DataHolder.getDataHolder().getNoteListSize();
+        return 0;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     private void applyTitle(TextView title, int position) {
-        title.setText(DataHolder.getDataHolder().getNoteTitle(position));
+       // title.setText(DataHolder.getDataHolder().getNoteTitle(position));
     }
 
     private void applyStatus(TextView status, int position) {
@@ -62,7 +62,7 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     private void applyDate(TextView date, int position) {
-        date.setText(DataHolder.getDataHolder().getNoteDate(position));
+        //date.setText(DataHolder.getDataHolder().getNoteDate(position));
     }
 
     private static class ViewHolder {
