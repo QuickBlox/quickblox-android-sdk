@@ -4,22 +4,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.QbSessionStateCallback;
+import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-public abstract class BaseActivity extends AppCompatActivity implements QbSessionStateCallback {
+public abstract class BaseActivity extends CoreBaseActivity implements QbSessionStateCallback {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
     private static final int RECREATE_SESSION_AFTER_ERROR_DELAY = 3000;
@@ -79,18 +78,6 @@ public abstract class BaseActivity extends AppCompatActivity implements QbSessio
         }
 
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            onBackPressed();
-            return true;
-
-        default:
-            return super.onOptionsItemSelected(item);
-        }
     }
 
     private void recreateQbSession(final QBUser user) {

@@ -28,8 +28,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activity.SelectPeopleActivity"
-            android:label="@string/select_people_create_chat"
+            android:name=".ui.activity.SelectUsersActivity"
             android:screenOrientation="portrait" />
 
         <activity

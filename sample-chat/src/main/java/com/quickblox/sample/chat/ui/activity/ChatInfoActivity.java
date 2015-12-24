@@ -55,7 +55,7 @@ public class ChatInfoActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_chat_info_action_add_people:
-            SelectPeopleActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
+            SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE, qbDialog);
             return true;
 
         default:
@@ -69,9 +69,9 @@ public class ChatInfoActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PEOPLE) {
-                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectPeopleActivity.EXTRA_QB_USERS);
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-                ChatHelper.getInstance().addUsersToDialog(qbDialog, selectedUsers,
+                ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
                         new QBEntityCallbackImpl<QBDialog>() {
                             @Override
                             public void onSuccess(QBDialog dialog, Bundle args) {

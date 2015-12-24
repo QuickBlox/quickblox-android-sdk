@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -112,7 +112,7 @@ public class ChatAdapter extends BaseAdapter {
     private void setMessageAuthor(ViewHolder holder, QBChatMessage chatMessage, boolean isIncomingMessage) {
         if (isIncomingMessage) {
             QBUser sender = ChatHelper.getInstance().getQbUserById(chatMessage.getSenderId());
-            holder.messageAuthorTextView.setText(sender.getLogin());
+            holder.messageAuthorTextView.setText(sender.getFullName());
             holder.messageAuthorTextView.setVisibility(View.VISIBLE);
         } else {
             holder.messageAuthorTextView.setVisibility(View.GONE);

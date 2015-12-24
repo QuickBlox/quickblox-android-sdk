@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.UiUtils;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.users.model.QBUser;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 
 import java.util.List;
 
@@ -64,19 +62,13 @@ public class DialogsAdapter extends BaseAdapter {
 
         QBDialog dialog = dialogs.get(position);
         if (dialog.getType().equals(QBDialogType.GROUP)) {
-            holder.nameTextView.setText(dialog.getName());
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
             holder.dialogImageView.setImageResource(R.drawable.ic_chat_group);
         } else {
-            // It's a private dialog, let's use opponent's name as chat name
-            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
-            QBUser user = ChatHelper.getInstance().getQbUserById(opponentId);
-            if (user != null) {
-                holder.nameTextView.setText(user.getLogin() == null ? user.getFullName() : user.getLogin());
-            }
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
             holder.dialogImageView.setImageDrawable(null);
         }
+        holder.nameTextView.setText(ChatUtils.getDialogName(dialog));
 
         String lastMessage = dialog.getLastMessage();
         if (!TextUtils.isEmpty(lastMessage) && StickersManager.isSticker(lastMessage)) {

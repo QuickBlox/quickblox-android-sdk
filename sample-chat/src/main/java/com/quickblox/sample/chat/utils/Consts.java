@@ -18,5 +18,8 @@ public class Consts {
     public static final String QB_USER_LOGIN = "igorquickblox44";
     public static final String QB_USER_PASSWORD = "igorquickblox44";
 
+    public static final String USERS_TAG = "webrtcusers";
+    public static final String USERS_PASSWORD = "x6Bt0VDy5";
+
     public static final String STICKER_API_KEY = "847b82c49db21ecec88c510e377b452c";
 }

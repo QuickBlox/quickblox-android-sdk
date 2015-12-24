@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
@@ -65,10 +65,10 @@ public class UsersAdapter extends BaseAdapter {
 
         if (isUserMe(user)) {
             holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
-            holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getLogin()));
+            holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
         } else {
             holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
-            holder.loginTextView.setText(user.getLogin());
+            holder.loginTextView.setText(user.getFullName());
         }
         holder.userImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
         holder.userCheckBox.setVisibility(View.GONE);
