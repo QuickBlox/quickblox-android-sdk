@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -20,6 +19,7 @@ import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
+import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
@@ -115,21 +115,15 @@ public class MessagesActivity extends CoreBaseActivity {
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
 
-                // hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(messageOutEditText.getWindowToken(), 0);
+                KeyboardUtils.hideKeyboard(messageOutEditText);
             }
 
             @Override
             public void onError(List<String> errors) {
                 Toaster.longToast(errors.toString());
-
                 progressBar.setVisibility(View.INVISIBLE);
-
-                // hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(messageOutEditText.getWindowToken(), 0);
+                
+                KeyboardUtils.hideKeyboard(messageOutEditText);
             }
         });
 
