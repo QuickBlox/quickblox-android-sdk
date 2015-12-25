@@ -25,7 +25,7 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
-import com.quickblox.sample.chat.utils.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
@@ -178,8 +178,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void setChatNameToActionBar() {
-        List<QBUser> chatUsers = ChatHelper.getInstance().getUsersByIds(dialog.getOccupants());
-        String chatName = ChatUtils.createChatNameFromUserList(chatUsers);
+        String chatName = ChatUtils.getDialogName(dialog);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(chatName);

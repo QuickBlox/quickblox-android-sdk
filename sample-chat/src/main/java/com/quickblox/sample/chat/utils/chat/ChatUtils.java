@@ -1,7 +1,10 @@
-package com.quickblox.sample.chat.utils;
+package com.quickblox.sample.chat.utils.chat;
+
+import android.text.TextUtils;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -36,10 +39,30 @@ public class ChatUtils {
 
     public static String createChatNameFromUserList(List<QBUser> users) {
         String chatName = "";
+        QBUser currentUser = getCurrentUser();
         for (QBUser user : users) {
+            if (user.getId().equals(currentUser.getId())) {
+                continue;
+            }
+
             String prefix = chatName.equals("") ? "" : ", ";
-            chatName = chatName + prefix + user.getLogin();
+            chatName = chatName + prefix + user.getFullName();
         }
         return chatName;
+    }
+
+    public static String getDialogName(QBDialog dialog) {
+        if (dialog.getType().equals(QBDialogType.GROUP)) {
+            return  dialog.getName();
+        } else {
+            // It's a private dialog, let's use opponent's name as chat name
+            Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
+            QBUser user = ChatHelper.getInstance().getQbUserById(opponentId);
+            if (user != null) {
+                return  TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
+            }
+        }
+
+        return "";
     }
 }

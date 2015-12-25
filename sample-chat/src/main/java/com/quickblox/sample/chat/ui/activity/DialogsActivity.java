@@ -21,10 +21,10 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
-import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -61,11 +61,37 @@ public class DialogsActivity extends BaseActivity {
 
         TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
         listHeader.setText(R.string.dialogs_list_hint);
-        dialogsListView.addHeaderView(listHeader);
+        dialogsListView.addHeaderView(listHeader, null, false);
+        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                ChatActivity.start(DialogsActivity.this, selectedDialog);
+            }
+        });
+        dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Temporary, need to use ActionMode for selection
+                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                ChatHelper.getInstance().deleteDialog(selectedDialog, new QBEntityCallbackImpl<Void>() {
+                    @Override
+                    public void onSuccess() {
+                        loadDialogsFromQb();
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
+                    }
+                });
+                return true;
+            }
+        });
 
         QBUser currentUser = ChatUtils.getCurrentUser();
         if (currentUser != null) {
-            actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getLogin()));
+            actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
         }
     }
 
@@ -74,6 +100,8 @@ public class DialogsActivity extends BaseActivity {
         super.onResume();
 
         googlePlayServicesHelper.checkGooglePlayServices(this);
+
+        loadDialogsFromQb();
 
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(pushBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
@@ -97,7 +125,9 @@ public class DialogsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_dialogs_action_logout:
-            // TODO Logout
+            ChatHelper.getInstance().logout();
+            LoginActivity.start(this);
+            finish();
             return true;
 
         default:
@@ -118,7 +148,7 @@ public class DialogsActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PEOPLE) {
-                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectPeopleActivity.EXTRA_QB_USERS);
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
                 ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
                         new QBEntityCallbackImpl<QBDialog>() {
@@ -138,7 +168,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     public void onStartNewChatClick(View view) {
-        SelectPeopleActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
+        SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
 
     private void loadDialogsFromQb() {
@@ -162,13 +192,6 @@ public class DialogsActivity extends BaseActivity {
     private void fillListView(List<QBDialog> dialogs) {
         DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
         dialogsListView.setAdapter(adapter);
-        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
-                ChatActivity.start(DialogsActivity.this, selectedDialog);
-            }
-        });
     }
 
     private static class PushBroadcastReceiver extends BroadcastReceiver {

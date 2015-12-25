@@ -17,7 +17,6 @@ import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
-import com.quickblox.sample.chat.utils.ChatUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -156,6 +155,9 @@ public class ChatHelper {
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users, final QBEntityCallbackImpl<QBDialog> callback) {
+        QBUser currentUser = ChatUtils.getCurrentUser();
+        users.remove(currentUser);
+
         QBDialog dialogToCreate = new QBDialog();
         dialogToCreate.setName(ChatUtils.createChatNameFromUserList(users));
         if (users.size() == 1) {
@@ -181,29 +183,106 @@ public class ChatHelper {
         );
     }
 
-    public void addUsersToDialog(final QBDialog qbDialog, final List<QBUser> addedUsers, final QBEntityCallbackImpl<QBDialog> callback) {
-        List<QBUser> allDialogUsers = new ArrayList<>();
+    public void deleteDialog(QBDialog qbDialog, final QBEntityCallback<Void> callback) {
+        QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
+                new QBEntityCallbackImpl<Void>() {
+                    @Override
+                    public void onSuccess() {
+                        callback.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        callback.onError(errors);
+                    }
+                });
+    }
+
+    public void updateDialogUsers(QBDialog qbDialog, final List<QBUser> currentDialogUsers, final QBEntityCallbackImpl<QBDialog> callback) {
+        List<QBUser> previousDialogUsers = new ArrayList<>();
         for (Integer id : qbDialog.getOccupants()) {
-            allDialogUsers.add(dialogsUsersMap.get(id));
+            QBUser user = dialogsUsersMap.get(id);
+            if (user == null) {
+                throw new RuntimeException("User from dialog is not in memory. This should never happen, or we are screwed");
+            }
+            previousDialogUsers.add(user);
         }
-        allDialogUsers.addAll(addedUsers);
+        logDialogUsers(qbDialog);
 
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
-        qbRequestBuilder.push("occupants_ids", ChatUtils.getUserIds(addedUsers));
-        qbRequestBuilder.push("name", ChatUtils.createChatNameFromUserList(allDialogUsers));
+        for (Integer id : ChatUtils.getUserIds(getAddedUsers(previousDialogUsers, currentDialogUsers))) {
+            qbRequestBuilder.push("occupants_ids", id);
+        }
+        qbRequestBuilder.pullAll("occupants_ids", ChatUtils.getUserIds(getRemovedUsers(previousDialogUsers, currentDialogUsers)));
+        qbDialog.setName(ChatUtils.createChatNameFromUserList(currentDialogUsers));
 
-        QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder, new QBEntityCallbackImpl<QBDialog>() {
-            @Override
-            public void onSuccess(QBDialog qbDialog, Bundle bundle) {
-                addDialogsUsers(addedUsers);
-                callback.onSuccess(qbDialog, bundle);
+        QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
+                new QBEntityCallbackImpl<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                        addDialogsUsers(currentDialogUsers);
+                        logDialogUsers(qbDialog);
+                        callback.onSuccess(qbDialog, bundle);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        callback.onError(errors);
+                    }
+                });
+    }
+
+    private List<QBUser> getAddedUsers(List<QBUser> previousUsers, List<QBUser> currentUsers) {
+        List<QBUser> addedUsers = new ArrayList<>();
+        for (QBUser currentUser : currentUsers) {
+            boolean wasInChatBefore = false;
+            for (QBUser previousUser : previousUsers) {
+                if (currentUser.getId().equals(previousUser.getId())) {
+                    wasInChatBefore = true;
+                    break;
+                }
             }
 
-            @Override
-            public void onError(List<String> errors) {
-                callback.onError(errors);
+            if (!wasInChatBefore) {
+                addedUsers.add(currentUser);
             }
-        });
+        }
+
+        QBUser currentUser = ChatUtils.getCurrentUser();
+        addedUsers.remove(currentUser);
+
+        return addedUsers;
+    }
+
+    private List<QBUser> getRemovedUsers(List<QBUser> previousUsers, List<QBUser> currentUsers) {
+        List<QBUser> removedUsers = new ArrayList<>();
+        for (QBUser previousUser : previousUsers) {
+            boolean isUserStillPresented = false;
+            for (QBUser currentUser : currentUsers) {
+                if (previousUser.getId().equals(currentUser.getId())) {
+                    isUserStillPresented = true;
+                    break;
+                }
+            }
+
+            if (!isUserStillPresented) {
+                removedUsers.add(previousUser);
+            }
+        }
+
+        QBUser currentUser = ChatUtils.getCurrentUser();
+        removedUsers.remove(currentUser);
+
+        return removedUsers;
+    }
+
+    private void logDialogUsers(QBDialog qbDialog) {
+        Log.v(TAG, "Dialog " + ChatUtils.getDialogName(qbDialog));
+        for (Integer id : qbDialog.getOccupants()) {
+            QBUser user = dialogsUsersMap.get(id);
+            Log.v(TAG, user.getId() + " " + user.getFullName());
+        }
+        Log.v(TAG, "===============");
     }
 
     public void loadChatHistory(QBDialog dialog, final QBEntityCallbackImpl<ArrayList<QBChatMessage>> callback) {
