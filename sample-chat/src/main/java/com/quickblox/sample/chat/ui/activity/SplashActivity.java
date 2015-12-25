@@ -6,6 +6,7 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.ErrorUtils;
@@ -14,13 +15,12 @@ import java.util.List;
 
 public class SplashActivity extends CoreSplashActivity {
 
-    private boolean isChatServiceInitializedJustNow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isChatServiceInitializedJustNow = ChatHelper.initIfNeed(this);
+        ChatHelper.initIfNeed(this);
+
         QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
@@ -41,13 +41,10 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        // If QBChatService was just initialized that means that
-        // we do not have created session from the last app launch
-        // so we just proceeding to the Login activity
-        if (isChatServiceInitializedJustNow) {
-            LoginActivity.start(this);
-        } else {
+        if (SharedPreferencesUtil.hasQbUser()) {
             DialogsActivity.start(this);
+        } else {
+            LoginActivity.start(this);
         }
         finish();
     }

@@ -19,11 +19,11 @@
     <string name="login_title">@string/chat_sample</string>
 
     <string name="splash_app_title">@string/chat_sample</string>
-    <string name="splash_chat_login_error">Chat login errors</string>
     <string name="splash_create_session_error">Create session errors:</string>
-    
+
     <string name="login_select_user_for_login">Select User for Login to Chat</string>
     <string name="login_cant_obtain_users">Can\'t obtain users errors</string>
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
 
     <string name="dialogs_logged_in_as">Logged in as %s</string>
     <string name="dialogs_creation_error">Dialog creation errors</string>

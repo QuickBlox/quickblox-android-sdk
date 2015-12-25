@@ -15,8 +15,6 @@ public class Consts {
     public static final String QB_APP_ID = "92";
     public static final String QB_AUTH_KEY = "wJHdOcQSxXQGWx5";
     public static final String QB_AUTH_SECRET = "BTFsj7Rtt27DAmT";
-    public static final String QB_USER_LOGIN = "igorquickblox44";
-    public static final String QB_USER_PASSWORD = "igorquickblox44";
 
     public static final String USERS_TAG = "webrtcusers";
     public static final String USERS_PASSWORD = "x6Bt0VDy5";

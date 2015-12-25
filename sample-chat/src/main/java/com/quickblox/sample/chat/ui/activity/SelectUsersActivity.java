@@ -63,8 +63,8 @@ public class SelectUsersActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_select_users);
-        usersListView = (ListView) findViewById(R.id.list_select_users);
+        progressBar = _findViewById(R.id.progress_select_users);
+        usersListView = _findViewById(R.id.list_select_users);
 
         TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, usersListView, false);
         listHeader.setText(R.string.select_users_list_hint);

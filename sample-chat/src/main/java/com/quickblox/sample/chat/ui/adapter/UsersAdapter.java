@@ -70,7 +70,7 @@ public class UsersAdapter extends BaseAdapter {
             holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
             holder.loginTextView.setText(user.getFullName());
         }
-        holder.userImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
+        holder.userImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
         holder.userCheckBox.setVisibility(View.GONE);
 
         return convertView;

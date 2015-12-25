@@ -39,7 +39,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         // or if the app's process was restarted after background death
         boolean isChatServiceStartedJustNow = ChatHelper.initIfNeed(this);
         boolean isAppRestored = savedInstanceState != null;
-        isSessionActive = !(isChatServiceStartedJustNow && isAppRestored);
+        isSessionActive = !(isChatServiceStartedJustNow || isAppRestored);
 
         actionBar = getSupportActionBar();
 
