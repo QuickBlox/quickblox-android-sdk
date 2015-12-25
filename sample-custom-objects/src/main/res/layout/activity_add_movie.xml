@@ -6,6 +6,7 @@
     <EditText
         android:id="@+id/add_movie_name_textview"
         style="@style/ItemNameStyle"
+        android:inputType="text"
         android:hint="@string/title"/>
 
     <EditText
@@ -19,6 +20,7 @@
         android:id="@+id/add_movie_year_textview"
         style="@style/ItemDescriptionStyle"
         android:layout_below="@+id/add_movie_description_textview"
+        android:inputType="numberDecimal"
         android:hint="@string/year"/>
 
     <TextView

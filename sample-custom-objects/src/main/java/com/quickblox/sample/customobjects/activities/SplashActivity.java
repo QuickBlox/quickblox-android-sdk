@@ -27,8 +27,6 @@ public class SplashActivity extends CoreSplashActivity {
         QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
-                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
-
                 getMovieList();
             }
 

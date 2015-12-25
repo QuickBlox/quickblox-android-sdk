@@ -33,6 +33,7 @@
     <RatingBar
         android:id="@+id/movie_ratingBar"
         style="@style/ItemRatingBarStyle"
-        android:layout_below="@+id/movie_rating_textview"/>
+        android:layout_below="@+id/movie_rating_textview"
+        android:isIndicator="true"/>
 
 </RelativeLayout>

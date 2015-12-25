@@ -10,7 +10,6 @@ import java.util.List;
 public class DataHolder {
 
     private static DataHolder dataHolder;
-    private int signInUserId;
     private List<Movie> movieList;
     List<Note> noteList;
 
@@ -21,17 +20,9 @@ public class DataHolder {
         return dataHolder;
     }
 
-    public int getSignInUserId() {
-        return signInUserId;
-    }
-
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
     public int getMovieListSize() {
         if (movieList == null) {
-            movieList = new ArrayList<Movie>();
+            movieList = new ArrayList<>();
         }
         return movieList.size();
     }
@@ -56,32 +47,8 @@ public class DataHolder {
         return movieList.get(position).getRating();
     }
 
-//    public List<String> getNoteComments(int position) {
-//        return movieList.get(position).getCommentsList();
-//    }
-
     public String getNoteStatus(int position) {
         return noteList.get(position).getStatus();
-    }
-
-    public String getNoteId(int position) {
-        return noteList.get(position).getId();
-    }
-
-    public void setNoteToNoteList(int position, Note note) {
-        noteList.set(position, note);
-    }
-
-    public void addNewComment(int notePosition, String comment) {
-        noteList.get(notePosition).addNewComment(comment);
-    }
-
-    public String getComments(int notePosition) {
-        return noteList.get(notePosition).getComments();
-    }
-
-    public void removeNoteFromList(int position) {
-        movieList.remove(position);
     }
 
     public void clear() {
@@ -100,12 +67,5 @@ public class DataHolder {
            movieList = new ArrayList<>();
         }
         movieList.add(new Movie(customObject));
-    }
-
-    public void addNoteToList(QBCustomObject customObject) {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
-        }
-        noteList.add(new Note(customObject));
     }
 }
