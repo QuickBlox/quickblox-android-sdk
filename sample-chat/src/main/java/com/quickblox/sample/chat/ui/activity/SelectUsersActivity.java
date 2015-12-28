@@ -104,7 +104,7 @@ public class SelectUsersActivity extends BaseActivity {
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
-            loadUsers();
+            loadUsersFromQb();
         }
     }
 
@@ -116,7 +116,7 @@ public class SelectUsersActivity extends BaseActivity {
         finish();
     }
 
-    private void loadUsers() {
+    private void loadUsersFromQb() {
         List<String> tags = new ArrayList<>();
         tags.add(Consts.USERS_TAG);
 
