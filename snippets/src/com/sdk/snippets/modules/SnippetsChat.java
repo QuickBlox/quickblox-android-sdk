@@ -148,7 +148,6 @@ public class SnippetsChat extends Snippets {
         // Init Chat service
         initChatService();
 
-
         // Init 1-1 listeners
         initPrivateChatMessageListener();
         initIsTypingListener();
@@ -327,6 +326,10 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChat = new Snippet("login to Chat") {
         @Override
         public void execute() {
+
+            // Init Chat service
+            initChatService();
+
             // init test user
             QBUser qbUser = new QBUser();
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());
@@ -363,6 +366,10 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChatSynchronous = new AsyncSnippet("login to Chat (synchronous)", context) {
         @Override
         public void executeAsync() {
+
+            // Init Chat service
+            initChatService();
+
             // init test user
             QBUser qbUser = new QBUser();
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());

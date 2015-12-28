@@ -34,7 +34,7 @@ import java.util.List;
 public class SnippetsContent extends Snippets{
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
-    private static final String FILE_UID = "72bf17cf1c6b47118485b527435b5fd500";
+    private static final String FILE_UID = "6221dd49a1bb46cfb61efe62c4526bd800";
 
     File file1 = null;
     QBFileObjectAccess fileObjectAccess;
@@ -590,7 +590,7 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTask = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 2641910;
+            final int fileId = 3251182;
 
             QBContent.downloadFileTask(fileId, new QBEntityCallbackImpl<InputStream>(){
 
@@ -641,7 +641,7 @@ public class SnippetsContent extends Snippets{
     Snippet downloadFileTaskSynchronous = new AsyncSnippet("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 2641910;
+            final int fileId = 3251182;
 
             InputStream inputStream = null;
             Bundle params = new Bundle();
