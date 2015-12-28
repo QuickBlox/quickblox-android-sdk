@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.utils;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IntRange;
 
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
@@ -22,7 +23,11 @@ public class UiUtils {
     }
 
     public static Drawable getRandomColorCircleDrawable() {
-        return getColoredCircleDrawable(getRandomColor());
+        return getColoredCircleDrawable(getRandomCircleColor());
+    }
+
+    public static Drawable getColorCircleDrawable(@IntRange(from = 0, to = 9) int colorPosition) {
+        return getColoredCircleDrawable(getCircleColor(colorPosition));
     }
 
     private static Drawable getColoredCircleDrawable(@ColorInt int color) {
@@ -31,21 +36,25 @@ public class UiUtils {
         return drawable;
     }
 
-    public static int getRandomColor() {
+    public static int getRandomCircleColor() {
         int randomNumber = random.nextInt(10) + 1;
-        String colorIdName = String.format("random_color_%d", randomNumber);
 
-        int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
-
-        int generatedColor = ResourceUtils.getColor(colorId);
+        int generatedColor = getCircleColor(randomNumber);
         if (generatedColor != previousColor) {
             previousColor = generatedColor;
             return generatedColor;
         } else {
             do {
-                generatedColor = getRandomColor();
+                generatedColor = getRandomCircleColor();
             } while (generatedColor != previousColor);
         }
         return previousColor;
+    }
+
+    public static int getCircleColor(@IntRange(from = 0, to = 9) int colorPosition) {
+        String colorIdName = String.format("random_color_%d", colorPosition + 1);
+        int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
+
+        return ResourceUtils.getColor(colorId);
     }
 }

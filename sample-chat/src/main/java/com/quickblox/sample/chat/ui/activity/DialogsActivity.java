@@ -38,7 +38,6 @@ public class DialogsActivity extends BaseActivity {
     private ProgressBar progressBar;
 
     private BroadcastReceiver pushBroadcastReceiver;
-
     private GooglePlayServicesHelper googlePlayServicesHelper;
 
     public static void start(Context context) {
@@ -56,38 +55,7 @@ public class DialogsActivity extends BaseActivity {
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
-        dialogsListView = (ListView) findViewById(R.id.list_dialogs_chats);
-        progressBar = (ProgressBar) findViewById(R.id.progress_dialogs);
-
-        TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
-        listHeader.setText(R.string.dialogs_list_hint);
-        dialogsListView.addHeaderView(listHeader, null, false);
-        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
-                ChatActivity.start(DialogsActivity.this, selectedDialog);
-            }
-        });
-        dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Temporary, need to use ActionMode for selection
-                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
-                ChatHelper.getInstance().deleteDialog(selectedDialog, new QBEntityCallbackImpl<Void>() {
-                    @Override
-                    public void onSuccess() {
-                        loadDialogsFromQb();
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
-                    }
-                });
-                return true;
-            }
-        });
+        initUi();
 
         QBUser currentUser = ChatUtils.getCurrentUser();
         if (currentUser != null) {
@@ -169,6 +137,41 @@ public class DialogsActivity extends BaseActivity {
 
     public void onStartNewChatClick(View view) {
         SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
+    }
+
+    private void initUi() {
+        dialogsListView = _findViewById(R.id.list_dialogs_chats);
+        progressBar = _findViewById(R.id.progress_dialogs);
+
+        TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
+        listHeader.setText(R.string.dialogs_list_hint);
+        dialogsListView.addHeaderView(listHeader, null, false);
+        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                ChatActivity.start(DialogsActivity.this, selectedDialog);
+            }
+        });
+        dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Temporary, need to use ActionMode for selection
+                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                ChatHelper.getInstance().deleteDialog(selectedDialog, new QBEntityCallbackImpl<Void>() {
+                    @Override
+                    public void onSuccess() {
+                        loadDialogsFromQb();
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
+                    }
+                });
+                return true;
+            }
+        });
     }
 
     private void loadDialogsFromQb() {

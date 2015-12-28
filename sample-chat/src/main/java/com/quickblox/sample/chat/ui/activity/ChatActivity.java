@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -25,13 +24,14 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
@@ -48,10 +48,8 @@ import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
 import vc908.stickerfactory.ui.OnStickerSelectedListener;
 import vc908.stickerfactory.ui.fragment.StickersFragment;
 import vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout;
-import vc908.stickerfactory.utils.KeyboardUtils;
 
 public class ChatActivity extends BaseActivity implements KeyboardHandleRelativeLayout.KeyboardSizeChangeListener {
-
     private static final String TAG = ChatActivity.class.getSimpleName();
 
     private static final String EXTRA_DIALOG = "dialog";
@@ -156,7 +154,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     public void onStickersClick(View view) {
         if (isStickersContainerVisible()) {
-            showKeyboard();
+            KeyboardUtils.showKeyboard(messageEditText);
             stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
         } else if (keyboardHandleLayout.isKeyboardVisible()) {
             keyboardHandleLayout.hideKeyboard(this, new KeyboardHandleRelativeLayout.KeyboardHideCallback() {
@@ -190,13 +188,13 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private void initViews() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        messagesListView = (ListView) findViewById(R.id.list_chat_messages);
-        messageEditText = (EditText) findViewById(R.id.edit_chat_message);
-        progressBar = (ProgressBar) findViewById(R.id.progress_chat);
-        containerLayout = (RelativeLayout) findViewById(R.id.layout_chat_container);
-        keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.layout_chat_keyboard_notifier);
-        stickersContainerLayout = (FrameLayout) findViewById(R.id.layout_chat_stickers_container);
-        stickerImageButton = (ImageButton) findViewById(R.id.button_chat_stickers);
+        messagesListView = _findViewById(R.id.list_chat_messages);
+        messageEditText = _findViewById(R.id.edit_chat_message);
+        progressBar = _findViewById(R.id.progress_chat);
+        containerLayout = _findViewById(R.id.layout_chat_container);
+        keyboardHandleLayout = _findViewById(R.id.layout_chat_keyboard_notifier);
+        stickersContainerLayout = _findViewById(R.id.layout_chat_stickers_container);
+        stickerImageButton = _findViewById(R.id.button_chat_stickers);
 
         keyboardHandleLayout.setKeyboardSizeChangeListener(this);
 
@@ -224,11 +222,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         updateStickersContainerParams();
     }
 
-    private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
-    }
-
     private void sendChatMessage(String text) {
         QBChatMessage chatMessage = new QBChatMessage();
         chatMessage.setBody(text);
@@ -249,7 +242,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private void setStickersContainerVisible(boolean isVisible) {
         stickersContainerLayout.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        int keyboardHeight = KeyboardUtils.getKeyboardHeight();
+        int keyboardHeight = vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight();
         if (stickersContainerLayout.getHeight() != keyboardHeight) {
             updateStickersContainerParams();
         }
@@ -275,7 +268,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private void updateStickersContainerParams() {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) stickersContainerLayout.getLayoutParams();
-        lp.height = KeyboardUtils.getKeyboardHeight();
+        lp.height = vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight();
         stickersContainerLayout.setLayoutParams(lp);
     }
 

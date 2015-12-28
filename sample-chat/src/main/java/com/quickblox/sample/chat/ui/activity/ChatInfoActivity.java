@@ -38,7 +38,7 @@ public class ChatInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
-        usersListView = (ListView) findViewById(R.id.list_login_users);
+        usersListView = _findViewById(R.id.list_login_users);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
