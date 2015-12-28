@@ -12,12 +12,17 @@ import android.widget.ListView;
 
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
+import com.quickblox.sample.customobjects.helper.DataHolder;
+import com.quickblox.sample.customobjects.model.Movie;
+
+import java.util.List;
 
 public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private final String EXTRA_POSITION = "position";
     private ListView moviesListView;
     private MovieListAdapter movieListAdapter;
+    private List<Movie> movieList;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, DisplayMovieListActivity.class);
@@ -27,6 +32,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        movieList = DataHolder.getDataHolder().getMovieList();
         setContentView(R.layout.activity_movies_list);
         initUI();
     }
@@ -40,7 +46,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
     private void initUI() {
         moviesListView = (ListView) findViewById(R.id.movies_listview);
         moviesListView.setOnItemClickListener(this);
-        movieListAdapter = new MovieListAdapter(this);
+        movieListAdapter = new MovieListAdapter(this, movieList);
         moviesListView.setAdapter(movieListAdapter);
     }
 

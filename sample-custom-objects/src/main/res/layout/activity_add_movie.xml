@@ -6,32 +6,33 @@
     <EditText
         android:id="@+id/add_movie_name_textview"
         style="@style/ItemNameStyle"
-        android:inputType="text"
-        android:hint="@string/title"/>
+        android:hint="@string/title"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/add_movie_description_textview"
-        style="@style/ItemDescriptionStyle"
-        android:paddingTop="@dimen/padding_very_large"
+        style="@style/ItemDescriptionYearStyle"
         android:layout_below="@+id/add_movie_name_textview"
-        android:hint="@string/description"/>
+        android:hint="@string/description"
+        android:paddingTop="@dimen/padding_very_large" />
 
     <EditText
         android:id="@+id/add_movie_year_textview"
-        style="@style/ItemDescriptionStyle"
+        style="@style/ItemDescriptionYearStyle"
         android:layout_below="@+id/add_movie_description_textview"
-        android:inputType="numberDecimal"
-        android:hint="@string/year"/>
+        android:hint="@string/year"
+        android:inputType="numberDecimal" />
 
     <TextView
         android:id="@+id/add_movie_rating_textview"
         style="@style/ItemRatingStyle"
         android:layout_below="@+id/add_movie_year_textview"
-        android:text="@string/rating"/>
+        android:paddingLeft="@dimen/padding_very_small"
+        android:text="@string/rating" />
 
     <RatingBar
         android:id="@+id/add_movie_ratingBar"
         style="@style/ItemRatingBarStyle"
-        android:layout_below="@+id/add_movie_rating_textview"/>
+        android:layout_below="@+id/add_movie_rating_textview" />
 
 </RelativeLayout>

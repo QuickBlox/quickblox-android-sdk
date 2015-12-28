@@ -27,7 +27,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddNewMovieActivity"
-            android:label="@string/add_new_note"
+            android:label="@string/add_new_movie"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ShowMovieActivity"

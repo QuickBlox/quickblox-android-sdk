@@ -8,32 +8,32 @@
         android:id="@+id/movie_name_textview"
         style="@style/ItemNameStyle"
         android:paddingTop="@dimen/padding_large"
-        android:textStyle="bold"
-        android:text="@string/title"/>
+        android:text="@string/title"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/movie_year_textview"
         style="@style/ItemCommentStyle"
         android:layout_below="@+id/movie_name_textview"
-        android:text="@string/year"/>
+        android:text="@string/year" />
 
     <TextView
         android:id="@+id/movie_description_textview"
-        style="@style/ItemDescriptionStyle"
-        android:paddingTop="@dimen/padding_large"
+        style="@style/ItemDescriptionYearStyle"
         android:layout_below="@+id/movie_year_textview"
-        android:text="@string/description"/>
+        android:paddingTop="@dimen/padding_large"
+        android:text="@string/description" />
 
     <TextView
         android:id="@+id/movie_rating_textview"
         style="@style/ItemRatingStyle"
         android:layout_below="@+id/movie_description_textview"
-        android:text="@string/rating"/>
+        android:text="@string/rating" />
 
     <RatingBar
         android:id="@+id/movie_ratingBar"
         style="@style/ItemRatingBarStyle"
         android:layout_below="@+id/movie_rating_textview"
-        android:isIndicator="true"/>
+        android:isIndicator="true" />
 
 </RelativeLayout>

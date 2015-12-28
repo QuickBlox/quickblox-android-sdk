@@ -7,6 +7,9 @@ import android.widget.TextView;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+
 public class ShowMovieActivity extends BaseActivity {
 
     private static final String EXTRA_POSITION = "position";
@@ -28,6 +31,7 @@ public class ShowMovieActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
+
         position = getIntent().getIntExtra(EXTRA_POSITION, 0);
         nameTextView = (TextView) findViewById(R.id.movie_name_textview);
         yearTextView = (TextView) findViewById(R.id.movie_year_textview);
@@ -39,6 +43,19 @@ public class ShowMovieActivity extends BaseActivity {
         nameTextView.setText(DataHolder.getDataHolder().getMovieName(position));
         yearTextView.setText(DataHolder.getDataHolder().getMovieYear(position));
         descriptionTextView.setText(DataHolder.getDataHolder().getMovieDescription(position));
-        ratingBar.setRating(Float.parseFloat(DataHolder.getDataHolder().getMovieRating(position)));
+        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getDataHolder().getMovieRating(position));
+        ratingBar.setRating(rating);
+    }
+
+    private boolean isRatingNull() {
+        return DataHolder.getDataHolder().getMovieRating(position).equals("null"); //достаточно такой проверки?!
+    }
+
+    private boolean isNumeric() {
+        String rating = DataHolder.getDataHolder().getMovieRating(position);// или надо такую
+        NumberFormat formatter = NumberFormat.getInstance();
+        ParsePosition pos = new ParsePosition(0);
+        formatter.parse(rating, pos);
+        return rating.length() == pos.getIndex();
     }
 }
