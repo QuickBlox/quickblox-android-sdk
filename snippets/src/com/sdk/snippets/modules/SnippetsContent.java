@@ -599,30 +599,29 @@ public class SnippetsContent extends Snippets{
                     long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                     Log.i(TAG, "content.length: " + length);
 
-//                        Thread thread = new Thread() {
-//                            @Override
-//                            public void run() {
-//                                try {
-//                                    while(true) {
-//                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
-//                                        File file = new File(filePath);
-//                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
-//                                        int bufferSize = 1024;
-//                                        byte[] buffer = new byte[bufferSize];
-//                                        int len;
-//                                        while ((len = inputStream.read(buffer)) != -1) {
-//                                            stream.write(buffer, 0, len);
-//                                        }
-//                                        if(stream != null) {
-//                                            stream.close();
-//                                        }
-//                                    }
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        };
-//                        thread.start();
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
+                                    File file = new File(filePath);
+                                    OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+                                    int bufferSize = 1024;
+                                    byte[] buffer = new byte[bufferSize];
+                                    int len;
+                                    while ((len = inputStream.read(buffer)) != -1) {
+                                        stream.write(buffer, 0, len);
+                                    }
+                                    if(stream != null) {
+                                        Log.i(TAG, "done");
+                                        stream.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        thread.start();
                 }
 
                 @Override
