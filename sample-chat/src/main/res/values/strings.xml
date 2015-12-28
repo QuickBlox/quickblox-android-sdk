@@ -14,7 +14,7 @@
     <string name="dlg_login">Login…</string>
 
     <string name="placeholder_username_you">%s (you)</string>
-    <string name="error_recreate_session">Error in the recreate session request, trying again in 3 seconds.. Check you internet connection.</string>
+    <string name="error_recreate_session">Login Chat error. Trying again in 3 seconds…</string>
 
     <string name="login_title">@string/chat_sample</string>
 
