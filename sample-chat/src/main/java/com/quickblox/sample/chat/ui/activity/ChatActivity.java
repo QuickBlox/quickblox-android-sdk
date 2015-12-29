@@ -175,16 +175,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         scrollMessageListDown();
     }
 
-    private void setChatNameToActionBar() {
-        String chatName = ChatUtils.getDialogName(dialog);
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setTitle(chatName);
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeButtonEnabled(true);
-        }
-    }
-
     private void initViews() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -337,6 +327,16 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
                 ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_load_users_error, errors);
             }
         });
+    }
+
+    private void setChatNameToActionBar() {
+        String chatName = ChatUtils.getDialogName(dialog);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setTitle(chatName);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
     }
 
     private void loadChatHistory() {

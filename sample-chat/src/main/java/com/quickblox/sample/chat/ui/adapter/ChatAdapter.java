@@ -24,14 +24,14 @@ import java.util.List;
 import vc908.stickerfactory.StickersManager;
 
 public class ChatAdapter extends BaseAdapter {
-    private List<QBChatMessage> chatMessages;
     private Context context;
     private LayoutInflater inflater;
+    private List<QBChatMessage> chatMessages;
 
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
-        this.chatMessages = chatMessages;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
+        this.chatMessages = chatMessages;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ChatAdapter extends BaseAdapter {
         QBChatMessage chatMessage = getItem(position);
         String messageBody = chatMessage.getBody();
         QBUser currentUser = ChatUtils.getCurrentUser();
-        final boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
+        boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
 
         setIncomingOrOutgoingMessageAttributes(holder, isIncomingMessage);
         setMessageBody(holder, messageBody);

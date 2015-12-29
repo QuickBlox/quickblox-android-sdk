@@ -21,6 +21,11 @@ public class SplashActivity extends CoreSplashActivity {
 
         ChatHelper.initIfNeed(this);
 
+        if (SharedPreferencesUtil.hasQbUser()) {
+            proceedToTheNextActivityWithDelay();
+            return;
+        }
+
         QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {

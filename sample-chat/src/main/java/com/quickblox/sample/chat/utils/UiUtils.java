@@ -13,6 +13,9 @@ import java.util.Random;
 
 public class UiUtils {
 
+    private static final int RANDOM_COLOR_START_RANGE = 0;
+    private static final int RANDOM_COLOR_END_RANGE = 9;
+
     private static final Random random = new Random();
     private static int previousColor;
 
@@ -26,7 +29,7 @@ public class UiUtils {
         return getColoredCircleDrawable(getRandomCircleColor());
     }
 
-    public static Drawable getColorCircleDrawable(@IntRange(from = 0, to = 9) int colorPosition) {
+    public static Drawable getColorCircleDrawable(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE) int colorPosition) {
         return getColoredCircleDrawable(getCircleColor(colorPosition));
     }
 
@@ -37,7 +40,7 @@ public class UiUtils {
     }
 
     public static int getRandomCircleColor() {
-        int randomNumber = random.nextInt(10) + 1;
+        int randomNumber = random.nextInt(RANDOM_COLOR_END_RANGE) + 1;
 
         int generatedColor = getCircleColor(randomNumber);
         if (generatedColor != previousColor) {
@@ -51,7 +54,7 @@ public class UiUtils {
         return previousColor;
     }
 
-    public static int getCircleColor(@IntRange(from = 0, to = 9) int colorPosition) {
+    public static int getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE) int colorPosition) {
         String colorIdName = String.format("random_color_%d", colorPosition + 1);
         int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
 

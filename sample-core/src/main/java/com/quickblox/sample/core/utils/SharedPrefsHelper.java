@@ -32,23 +32,24 @@ public class SharedPrefsHelper {
     }
 
     public void savePref(String key, Object value) {
+        SharedPreferences.Editor editor = getEditor();
         if (value instanceof Boolean) {
-            getEditor().putBoolean(key, (Boolean) value);
+            editor.putBoolean(key, (Boolean) value);
         } else if (value instanceof Integer) {
-            getEditor().putInt(key, (Integer) value);
+            editor.putInt(key, (Integer) value);
         } else if (value instanceof Float) {
-            getEditor().putFloat(key, (Float) value);
+            editor.putFloat(key, (Float) value);
         } else if (value instanceof Long) {
-            getEditor().putLong(key, (Long) value);
+            editor.putLong(key, (Long) value);
         } else if (value instanceof String) {
-            getEditor().putString(key, (String) value);
+            editor.putString(key, (String) value);
         } else if (value instanceof Enum) {
-            getEditor().putString(key, value.toString());
+            editor.putString(key, value.toString());
         } else if (value != null) {
             throw new RuntimeException("Attempting to save non-supported preference");
         }
 
-        getEditor().commit();
+        editor.commit();
     }
 
     @SuppressWarnings("unchecked")
