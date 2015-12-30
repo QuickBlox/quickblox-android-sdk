@@ -9,6 +9,7 @@ public class Movie {
     private String name;
     private String description;
     private String year;
+    // TODO Shouldn't rating be float value?
     private String rating;
     private String date;
 
@@ -21,6 +22,7 @@ public class Movie {
         date = qbCustomObject.getUpdatedAt().toString();
     }
 
+    // TODO Make static, maybe create QbCustomObjectUtils class and move this method there
     private String parseField(String field, QBCustomObject customObject) {
         Object object = customObject.getFields().get(field);
         if (object != null) {

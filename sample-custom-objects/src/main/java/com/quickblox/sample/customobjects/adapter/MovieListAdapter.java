@@ -56,15 +56,21 @@ public class MovieListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    // TODO If there is only one line for method it's not necessarily to create separate method
+    // Also it will be better to pass as argument Movie object itself
     private void applyName(TextView name, int position) {
+        // TODO Replace movieList.get(position) with getItem(position), adapter should encapsulate its data set
         name.setText(movieList.get(position).getName());
     }
 
+    // TODO The same :)
     private void applyComment(TextView comment, int position) {
         comment.setText(movieList.get(position).getDescription());
     }
 
     public int getMovieListSize() {
+        // TODO After creating DataHolder constructor movieList never will be null
+        // So we can skip this check
         if (movieList == null) {
             movieList = new ArrayList<>();
         }
