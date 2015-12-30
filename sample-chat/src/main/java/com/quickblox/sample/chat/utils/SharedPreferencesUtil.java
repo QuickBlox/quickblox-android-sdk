@@ -6,11 +6,13 @@ import com.quickblox.users.model.QBUser;
 public class SharedPreferencesUtil {
     private static final String QB_USER_LOGIN = "qb_user_login";
     private static final String QB_USER_PASSWORD = "qb_user_password";
+    private static final String QB_USER_FULL_NAME = "qb_user_full_name";
 
     public static void saveQbUser(QBUser qbUser) {
         SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
         helper.savePref(QB_USER_LOGIN, qbUser.getLogin());
         helper.savePref(QB_USER_PASSWORD, qbUser.getPassword());
+        helper.savePref(QB_USER_FULL_NAME, qbUser.getFullName());
     }
 
     public static boolean hasQbUser() {
@@ -24,8 +26,11 @@ public class SharedPreferencesUtil {
         if (hasQbUser()) {
             String login = helper.getPref(QB_USER_LOGIN);
             String password = helper.getPref(QB_USER_PASSWORD);
+            String fullName = helper.getPref(QB_USER_FULL_NAME);
 
-            return new QBUser(login, password);
+            QBUser user = new QBUser(login, password);
+            user.setFullName(fullName);
+            return user;
         } else {
             return null;
         }
