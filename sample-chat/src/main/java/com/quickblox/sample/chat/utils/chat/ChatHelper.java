@@ -10,13 +10,17 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
+import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
+import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
+import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
+import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackTwoTypeWrapper;
+import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackWrapper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -47,6 +51,10 @@ public class ChatHelper {
         return instance;
     }
 
+    public static QBUser getCurrentUser() {
+        return QBChatService.getInstance().getUser();
+    }
+
     /**
      * Starts QBChatService initialization
      *
@@ -74,7 +82,7 @@ public class ChatHelper {
             return true;
         }
 
-        if (ChatUtils.getCurrentUser() == null) {
+        if (getCurrentUser() == null) {
             return true;
         }
 
@@ -94,35 +102,19 @@ public class ChatHelper {
         qbChatService.removeConnectionListener(listener);
     }
 
-    public void login(final QBUser user, final QBEntityCallback callback) {
+    public void login(final QBUser user, final QBEntityCallback<Void> callback) {
         // Create REST API session on QuickBlox
-        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(user, new QbEntityCallbackTwoTypeWrapper<QBSession, Void>(callback) {
             @Override
             public void onSuccess(QBSession session, Bundle args) {
                 user.setId(session.getUserId());
-
-                loginToChat(user, new QBEntityCallbackImpl<String>() {
-                    @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                callback.onError(errors);
+                loginToChat(user, new QbEntityCallbackWrapper<>(callback));
             }
         });
     }
 
-    private void loginToChat(final QBUser user, final QBEntityCallback callback) {
-        qbChatService.login(user, new QBEntityCallbackImpl<String>() {
+    private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
+        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
             @Override
             public void onSuccess() {
                 try {
@@ -130,13 +122,7 @@ public class ChatHelper {
                 } catch (SmackException.NotLoggedInException e) {
                     e.printStackTrace();
                 }
-
-                callback.onSuccess();
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                callback.onError(errors);
+                super.onSuccess();
             }
         });
     }
@@ -150,29 +136,12 @@ public class ChatHelper {
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users, final QBEntityCallbackImpl<QBDialog> callback) {
-        QBUser currentUser = ChatUtils.getCurrentUser();
-        users.remove(currentUser);
-
-        QBDialog dialogToCreate = new QBDialog();
-        dialogToCreate.setName(ChatUtils.createChatNameFromUserList(users));
-        if (users.size() == 1) {
-            dialogToCreate.setType(QBDialogType.PRIVATE);
-        } else {
-            dialogToCreate.setType(QBDialogType.GROUP);
-        }
-        dialogToCreate.setOccupantsIds(ChatUtils.getUserIds(users));
-
-        QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate,
-                new QBEntityCallbackImpl<QBDialog>() {
+        QBChatService.getInstance().getGroupChatManager().createDialog(QbDialogUtils.createDialog(users),
+                new QbEntityCallbackWrapper<QBDialog>(callback) {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         QbUsersHolder.getInstance().putUsers(users);
-                        callback.onSuccess(dialog, args);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
+                        super.onSuccess(dialog, args);
                     }
                 }
         );
@@ -180,56 +149,33 @@ public class ChatHelper {
 
     public void deleteDialog(QBDialog qbDialog, final QBEntityCallback<Void> callback) {
         QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
-                new QBEntityCallbackImpl<Void>() {
-                    @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
-                    }
-                });
+                new QbEntityCallbackWrapper<>(callback));
     }
 
-    public void updateDialogUsers(QBDialog qbDialog, final List<QBUser> currentDialogUsers, final QBEntityCallbackImpl<QBDialog> callback) {
-        List<QBUser> previousDialogUsers = new ArrayList<>();
-        for (Integer id : qbDialog.getOccupants()) {
-            QBUser user = QbUsersHolder.getInstance().getUserById(id);
-            if (user == null) {
-                throw new RuntimeException("User from dialog is not in memory. This should never happen, or we are screwed");
-            }
-            previousDialogUsers.add(user);
-        }
+    public void updateDialogUsers(QBDialog qbDialog, final List<QBUser> currentDialogUsers, QBEntityCallbackImpl<QBDialog> callback) {
         QbDialogUtils.logDialogUsers(qbDialog);
 
-        List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(previousDialogUsers, currentDialogUsers);
-        List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(previousDialogUsers, currentDialogUsers);
+        List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(qbDialog, currentDialogUsers);
+        List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(qbDialog, currentDialogUsers);
 
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
-        for (Integer id : ChatUtils.getUserIds(addedUsers)) {
+        for (Integer id : QbDialogUtils.getUserIds(addedUsers)) {
             // FIXME Replace with pushAll
             qbRequestBuilder.push("occupants_ids", id);
         }
-        for (Integer id : ChatUtils.getUserIds(removedUsers)) {
+        for (Integer id : QbDialogUtils.getUserIds(removedUsers)) {
             // FIXME Replace with pullAll
             qbRequestBuilder.pull("occupants_ids", id);
         }
-        qbDialog.setName(ChatUtils.createChatNameFromUserList(currentDialogUsers));
+        qbDialog.setName(QbDialogUtils.createChatNameFromUserList(currentDialogUsers));
 
         QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
-                new QBEntityCallbackImpl<QBDialog>() {
+                new QbEntityCallbackWrapper<QBDialog>(callback) {
                     @Override
                     public void onSuccess(QBDialog qbDialog, Bundle bundle) {
                         QbUsersHolder.getInstance().putUsers(currentDialogUsers);
                         QbDialogUtils.logDialogUsers(qbDialog);
-                        callback.onSuccess(qbDialog, bundle);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
+                        super.onSuccess(qbDialog, bundle);
                     }
                 });
     }
@@ -240,17 +186,7 @@ public class ChatHelper {
         customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
 
         QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
-                new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
-                    @Override
-                    public void onSuccess(ArrayList<QBChatMessage> result, Bundle params) {
-                        callback.onSuccess(result, params);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
-                    }
-                });
+                new QbEntityCallbackWrapper<>(callback));
     }
 
     public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
@@ -258,45 +194,37 @@ public class ChatHelper {
         customObjectRequestBuilder.setPagesLimit(DIALOG_ITEMS_PER_PAGE);
 
         QBChatService.getChatDialogs(null, customObjectRequestBuilder,
-                new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+                new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {
                     @Override
-                    public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
+                    public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
                         getUsersFromDialogs(dialogs, callback);
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        callback.onError(errors);
+                        // Not calling super.onSuccess() because
+                        // we're want to load chat users before triggering callback
                     }
                 });
     }
 
-    public void getUsersFromDialog(QBDialog dialog, final QBEntityCallback<List<QBUser>> callback) {
+    public void getUsersFromDialog(QBDialog dialog, final QBEntityCallback<ArrayList<QBUser>> callback) {
         ArrayList<Integer> userIds = dialog.getOccupants();
 
-        List<QBUser> users = new ArrayList<>(userIds.size());
+        ArrayList<QBUser> users = new ArrayList<>(userIds.size());
         for (Integer id : userIds) {
             users.add(QbUsersHolder.getInstance().getUserById(id));
         }
 
         // If we already have all users in memory
-        // there is no need to make REST request to QB
+        // there is no need to make REST requests to QB
         if (userIds.size() == users.size()) {
             callback.onSuccess(users, null);
             return;
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsersByIDs(userIds, requestBuilder, new QbEntityCallbackWrapper<ArrayList<QBUser>>(callback) {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 QbUsersHolder.getInstance().putUsers(qbUsers);
-                callback.onSuccess(qbUsers, bundle);
-            }
-
-            @Override
-            public void onError(List<String> list) {
-                callback.onError(list);
+                super.onSuccess(qbUsers, bundle);
             }
         });
     }
@@ -308,17 +236,13 @@ public class ChatHelper {
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsersByIDs(userIds, requestBuilder, new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBDialog>>(callback) {
             @Override
             public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                 QbUsersHolder.getInstance().putUsers(users);
-                callback.onSuccess(dialogs, null);
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                callback.onError(errors);
+                onSuccessInMainThread(dialogs, params);
             }
         });
     }
+
 }

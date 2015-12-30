@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
     public CheckboxUsersAdapter(Context context, List<QBUser> users) {
         super(context, users);
         this.selectedUsers = new ArrayList<>();
-        this.selectedUsers.add(ChatUtils.getCurrentUser());
+        this.selectedUsers.add(ChatHelper.getCurrentUser());
     }
 
     public void addSelectedUsers(List<Integer> userIds) {

@@ -23,7 +23,6 @@ import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -99,7 +98,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
-            QBUser currentUser = ChatUtils.getCurrentUser();
+            QBUser currentUser = ChatHelper.getCurrentUser();
             if (currentUser != null) {
                 actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
             }

@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.TimeUtils;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
-import com.quickblox.sample.chat.utils.chat.QbUsersHolder;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -75,7 +75,7 @@ public class ChatAdapter extends BaseAdapter {
 
         QBChatMessage chatMessage = getItem(position);
         String messageBody = chatMessage.getBody();
-        QBUser currentUser = ChatUtils.getCurrentUser();
+        QBUser currentUser = ChatHelper.getCurrentUser();
         boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
 
         setIncomingOrOutgoingMessageAttributes(holder, isIncomingMessage);
