@@ -57,7 +57,7 @@ public class ChatUtils {
         } else {
             // It's a private dialog, let's use opponent's name as chat name
             Integer opponentId = ChatUtils.getOpponentIdForPrivateDialog(dialog);
-            QBUser user = ChatHelper.getInstance().getQbUserById(opponentId);
+            QBUser user = QbUsersHolder.getInstance().getUserById(opponentId);
             if (user != null) {
                 return  TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
             }
