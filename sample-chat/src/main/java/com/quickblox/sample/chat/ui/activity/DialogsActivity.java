@@ -56,11 +56,6 @@ public class DialogsActivity extends BaseActivity {
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
         initUi();
-
-        QBUser currentUser = ChatUtils.getCurrentUser();
-        if (currentUser != null) {
-            actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
-        }
     }
 
     @Override
@@ -68,8 +63,6 @@ public class DialogsActivity extends BaseActivity {
         super.onResume();
 
         googlePlayServicesHelper.checkGooglePlayServices(this);
-
-        loadDialogsFromQb();
 
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(pushBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
@@ -106,6 +99,11 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
+            QBUser currentUser = ChatUtils.getCurrentUser();
+            if (currentUser != null) {
+                actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
+            }
+
             loadDialogsFromQb();
         }
     }

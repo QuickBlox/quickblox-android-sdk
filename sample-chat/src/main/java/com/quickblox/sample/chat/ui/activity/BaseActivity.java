@@ -37,6 +37,9 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         boolean isChatServiceStartedJustNow = ChatHelper.initIfNeed(this);
         boolean wasAppRestored = savedInstanceState != null;
         final boolean isChatSessionActive = !(isChatServiceStartedJustNow || wasAppRestored);
+        Log.v(TAG, "isChatServiceStartedJustNow = " + isChatServiceStartedJustNow);
+        Log.v(TAG, "wasAppRestored = " + wasAppRestored);
+        Log.v(TAG, "isChatSessionActive = " + isChatSessionActive);
 
         // Triggering callback via Handler#post() method
         // to let child's code in onCreate() to execute first
@@ -46,14 +49,14 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
                 if (isChatSessionActive) {
                     onSessionCreated(true);
                 } else {
-                    restoreChatSession();
+                    recreateChatSession();
                 }
             }
         });
     }
 
 
-    private void restoreChatSession() {
+    private void recreateChatSession() {
         Log.d(TAG, "Need to recreate chat session");
 
         QBUser user = SharedPreferencesUtil.getQbUser();

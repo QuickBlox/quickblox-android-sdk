@@ -12,6 +12,7 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.chat.QbUsersHolder;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
@@ -98,7 +99,7 @@ public class ChatInfoActivity extends BaseActivity {
 
     private void buildUserList() {
         ArrayList<Integer> userIds = qbDialog.getOccupants();
-        List<QBUser> users = ChatHelper.getInstance().getUsersByIds(userIds);
+        List<QBUser> users = QbUsersHolder.getInstance().getUsersByIds(userIds);
 
         UsersAdapter adapter = new UsersAdapter(this, users);
         usersListView.setAdapter(adapter);
