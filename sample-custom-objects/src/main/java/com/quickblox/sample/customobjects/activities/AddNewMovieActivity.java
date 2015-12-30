@@ -35,10 +35,10 @@ public class AddNewMovieActivity extends BaseActivity {
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        titleEditText = (EditText) findViewById(R.id.add_movie_name_textview);
-        descriptionEditText = (EditText) findViewById(R.id.add_movie_description_textview);
-        yearEditText = (EditText) findViewById(R.id.add_movie_year_textview);
-        ratingBar = (RatingBar) findViewById(R.id.add_movie_ratingBar);
+        titleEditText = _findViewById(R.id.add_movie_name_textview);
+        descriptionEditText = _findViewById(R.id.add_movie_description_textview);
+        yearEditText = _findViewById(R.id.add_movie_year_textview);
+        ratingBar = _findViewById(R.id.add_movie_ratingBar);
     }
 
     // TODO Method code should start right after method signature, without empty line
@@ -74,7 +74,7 @@ public class AddNewMovieActivity extends BaseActivity {
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
 
-                DataHolder.getDataHolder().addMovieToList(qbCustomObject);
+                DataHolder.getInstance().addMovieToList(qbCustomObject);
                 finish();
             }
 

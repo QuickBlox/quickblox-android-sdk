@@ -8,19 +8,19 @@ import java.util.List;
 
 public class DataHolder {
 
-    // TODO Rename to instance, it's a common name for singleton field
-    private static DataHolder dataHolder;
+    private static DataHolder instance;
     private List<Movie> movieList;
 
-    // TODO Rename to getInstance()
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
-        }
-        return dataHolder;
+    private DataHolder() {
+        movieList = new ArrayList<>();
     }
 
-    // TODO Add private constructor to avoid DataHolder creation somewhere else then in singleton
+    public static synchronized DataHolder getInstance() {
+        if (instance == null) {
+            instance = new DataHolder();
+        }
+        return instance;
+    }
 
     public List<Movie> getMovieList() {
         return movieList;
@@ -53,18 +53,18 @@ public class DataHolder {
     }
 
     public int size() {
-        // TODO remove null check after moving initialization to constructor
-        if (movieList != null) {
-            return movieList.size();
-        }
-        return 0;
+        return movieList.size();
     }
 
     public void addMovieToList(QBCustomObject customObject) {
-        // TODO movieList initialization should be done in constructor and nowhere else
-        if (movieList == null) {
-            movieList = new ArrayList<>();
-        }
         movieList.add(new Movie(customObject));
+    }
+
+    public void addQBCustomObject (ArrayList<QBCustomObject> qbCustomObjects){
+        if (!qbCustomObjects.isEmpty()) {
+            for (QBCustomObject customObject : qbCustomObjects) {
+                movieList.add(new Movie(customObject));
+            }
+        }
     }
 }

@@ -46,19 +46,19 @@ public class ShowMovieActivity extends BaseActivity {
 
     private void fillFields() {
         // TODO It will be better to get movie by id and then work with it and not with DataHolder itself
-        nameTextView.setText(DataHolder.getDataHolder().getMovieName(position));
-        yearTextView.setText(DataHolder.getDataHolder().getMovieYear(position));
-        descriptionTextView.setText(DataHolder.getDataHolder().getMovieDescription(position));
-        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getDataHolder().getMovieRating(position));
+        nameTextView.setText(DataHolder.getInstance().getMovieName(position));
+        yearTextView.setText(DataHolder.getInstance().getMovieYear(position));
+        descriptionTextView.setText(DataHolder.getInstance().getMovieDescription(position));
+        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getInstance().getMovieRating(position));
         ratingBar.setRating(rating);
     }
 
     private boolean isRatingNull() {
-        return DataHolder.getDataHolder().getMovieRating(position).equals("null"); //достаточно такой проверки?!
+        return DataHolder.getInstance().getMovieRating(position).equals("null"); //достаточно такой проверки?!
     }
 
     private boolean isNumeric() {
-        String rating = DataHolder.getDataHolder().getMovieRating(position);// или надо такую
+        String rating = DataHolder.getInstance().getMovieRating(position);// или надо такую
         NumberFormat formatter = NumberFormat.getInstance();
         ParsePosition pos = new ParsePosition(0);
         formatter.parse(rating, pos);

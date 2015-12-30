@@ -33,7 +33,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieList = DataHolder.getDataHolder().getMovieList();
+        movieList = DataHolder.getInstance().getMovieList();
         setContentView(R.layout.activity_movies_list);
         initUI();
     }
@@ -48,7 +48,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
         // TODO Use _findViewById method from CoreBaseActivity to avoid class cast, do this in all activities
         // TODO View ids should look like "view_view_purpose"
         // In this case it would be just "list_movies"
-        moviesListView = (ListView) findViewById(R.id.movies_listview);
+        moviesListView = _findViewById(R.id.movies_listview);
         moviesListView.setOnItemClickListener(this);
         // TODO We can pass DataHolder#getMovieList right to constructor, without using class field
         movieListAdapter = new MovieListAdapter(this, movieList);
