@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- TODO Organize strings by categories -->
     <string name="app_name">Sample CustomObjects</string>
 
     <string name="movie_sample">Custom Objects Sample</string>

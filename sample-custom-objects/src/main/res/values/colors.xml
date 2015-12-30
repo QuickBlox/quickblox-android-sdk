@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- TODO Do we need these colors at all? -->
     <color name="background_color">#fff</color>
     <color name="black">#111</color>
     <color name="green">#1cba48</color>

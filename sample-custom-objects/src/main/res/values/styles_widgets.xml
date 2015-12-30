@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- TODO Use more specific names, related to Movies, like MoveListItem, MovieNameStyle etc.-->
     <style name="ListItemStyle" parent="ListItem">
         <item name="android:paddingLeft">@dimen/padding_large</item>
         <item name="android:paddingRight">@dimen/padding_large</item>

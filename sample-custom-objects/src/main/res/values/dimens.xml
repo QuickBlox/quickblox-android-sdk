@@ -1,4 +1,5 @@
 <resources>
+    <!--TODO Cleanup unused dimens -->
     <dimen name="margin_small">5dp</dimen>
     <dimen name="margin_middle">10dp</dimen>
     <dimen name="margin_large">20dp</dimen>
