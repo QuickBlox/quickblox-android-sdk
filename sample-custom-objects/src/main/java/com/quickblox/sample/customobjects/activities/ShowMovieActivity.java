@@ -12,6 +12,8 @@ import java.text.ParsePosition;
 
 public class ShowMovieActivity extends BaseActivity {
 
+    // TODO This constant should be in one place, if used in multiple activities
+    // If we'll change its value in one place we will get wrong app behavior
     private static final String EXTRA_POSITION = "position";
 
     private TextView nameTextView;
@@ -32,14 +34,18 @@ public class ShowMovieActivity extends BaseActivity {
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        // TODO This has nothing to do with UI
         position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        // TODO "text_movie_name" etc
         nameTextView = (TextView) findViewById(R.id.movie_name_textview);
         yearTextView = (TextView) findViewById(R.id.movie_year_textview);
         descriptionTextView = (TextView) findViewById(R.id.movie_description_textview);
+        // TODO No camel case in view ids — "rating_movie" will be ok
         ratingBar = (RatingBar) findViewById(R.id.movie_ratingBar);
     }
 
     private void fillFields() {
+        // TODO It will be better to get movie by id and then work with it and not with DataHolder itself
         nameTextView.setText(DataHolder.getDataHolder().getMovieName(position));
         yearTextView.setText(DataHolder.getDataHolder().getMovieYear(position));
         descriptionTextView.setText(DataHolder.getDataHolder().getMovieDescription(position));

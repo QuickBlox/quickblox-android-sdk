@@ -41,6 +41,7 @@ public class AddNewMovieActivity extends BaseActivity {
         ratingBar = (RatingBar) findViewById(R.id.add_movie_ratingBar);
     }
 
+    // TODO Method code should start right after method signature, without empty line
     private void createNewMovie() {
 
         String title = titleEditText.getText().toString();
@@ -48,6 +49,7 @@ public class AddNewMovieActivity extends BaseActivity {
         String year = yearEditText.getText().toString();
         float rating = ratingBar.getRating();
 
+        // TODO Comments should be in English, and above the code
         if (!isValidData(title, description, year)) {                      // нужна ли эта проверка?
             Toaster.longToast(R.string.error_fields_is_empty);
             return;
@@ -55,6 +57,7 @@ public class AddNewMovieActivity extends BaseActivity {
 
         progressDialog.show();
 
+        // TODO Move this to QbCustomObjectUtils as well
         HashMap<String, Object> fields = new HashMap<String, Object>();
         fields.put(Consts.NAME, title);
         fields.put(Consts.DESCRIPTION, description);
@@ -64,6 +67,7 @@ public class AddNewMovieActivity extends BaseActivity {
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setClassName(Consts.CLASS_NAME);
         qbCustomObject.setFields(fields);
+        // TODO
 
         QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
             @Override
@@ -83,6 +87,7 @@ public class AddNewMovieActivity extends BaseActivity {
     }
 
     private boolean isValidData(String title, String description, String year) {
+        // TODO TextUtils.isEmpty is better to use, as it checks for null as well
         return (!title.isEmpty() && !description.isEmpty() && !year.isEmpty());
     }
 
@@ -97,6 +102,7 @@ public class AddNewMovieActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
+                // TODO All string to be shown to user should be in strings.xml
                 Toaster.shortToast("Save");
                 createNewMovie();
                 return true;

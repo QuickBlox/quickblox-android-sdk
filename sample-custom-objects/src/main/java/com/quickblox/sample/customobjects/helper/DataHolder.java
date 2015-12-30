@@ -8,9 +8,11 @@ import java.util.List;
 
 public class DataHolder {
 
+    // TODO Rename to instance, it's a common name for singleton field
     private static DataHolder dataHolder;
     private List<Movie> movieList;
 
+    // TODO Rename to getInstance()
     public static synchronized DataHolder getDataHolder() {
         if (dataHolder == null) {
             dataHolder = new DataHolder();
@@ -18,10 +20,14 @@ public class DataHolder {
         return dataHolder;
     }
 
+    // TODO Add private constructor to avoid DataHolder creation somewhere else then in singleton
+
     public List<Movie> getMovieList() {
         return movieList;
     }
 
+    // TODO Remove Movie fields (name, description, date, year, rating) access from here
+    // DataHolder should only be able to put/get Movie objects by id (not position) and nothing else
     public String getMovieName(int position) {
         return movieList.get(position).getName();
     }
@@ -47,6 +53,7 @@ public class DataHolder {
     }
 
     public int size() {
+        // TODO remove null check after moving initialization to constructor
         if (movieList != null) {
             return movieList.size();
         }
@@ -54,6 +61,7 @@ public class DataHolder {
     }
 
     public void addMovieToList(QBCustomObject customObject) {
+        // TODO movieList initialization should be done in constructor and nowhere else
         if (movieList == null) {
             movieList = new ArrayList<>();
         }

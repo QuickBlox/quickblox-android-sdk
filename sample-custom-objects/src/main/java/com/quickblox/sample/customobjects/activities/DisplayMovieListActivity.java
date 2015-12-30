@@ -19,6 +19,7 @@ import java.util.List;
 
 public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
+    // TODO constants should *always* be static
     private final String EXTRA_POSITION = "position";
     private ListView moviesListView;
     private MovieListAdapter movieListAdapter;
@@ -44,14 +45,20 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
     }
 
     private void initUI() {
+        // TODO Use _findViewById method from CoreBaseActivity to avoid class cast, do this in all activities
+        // TODO View ids should look like "view_view_purpose"
+        // In this case it would be just "list_movies"
         moviesListView = (ListView) findViewById(R.id.movies_listview);
         moviesListView.setOnItemClickListener(this);
+        // TODO We can pass DataHolder#getMovieList right to constructor, without using class field
         movieListAdapter = new MovieListAdapter(this, movieList);
         moviesListView.setAdapter(movieListAdapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        // TODO ShowMovieActivity should have start() method with Movie id as an argument
+        // And intent should be created in the start() method
         Intent intent = new Intent(this, ShowMovieActivity.class);
         intent.putExtra(EXTRA_POSITION, position);
         startActivity(intent);
