@@ -1,6 +1,7 @@
 package com.quickblox.sample.customobjects.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,24 +43,20 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
     }
 
-    // TODO Method code should start right after method signature, without empty line
     private void createNewMovie() {
-
         String title = titleEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
         String year = yearEditText.getText().toString();
         float rating = ratingBar.getRating();
 
-        // TODO Comments should be in English, and above the code
-        if (!isValidData(title, description, year)) {                      // нужна ли эта проверка?
+        if (!isValidData(title, description, year)) {
             Toaster.longToast(R.string.error_fields_is_empty);
             return;
         }
-
         progressDialog.show();
 
         // TODO Move this to QbCustomObjectUtils as well
-        HashMap<String, Object> fields = new HashMap<String, Object>();
+        HashMap<String, Object> fields = new HashMap<>();
         fields.put(NAME, title);
         fields.put(DESCRIPTION, description);
         fields.put(YEAR, year);
@@ -74,7 +71,7 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
-
+                Toaster.shortToast(R.string.done);
                 DataHolder.getInstance().addMovieToList(qbCustomObject);
                 finish();
             }
@@ -88,8 +85,7 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
     }
 
     private boolean isValidData(String title, String description, String year) {
-        // TODO TextUtils.isEmpty is better to use, as it checks for null as well
-        return (!title.isEmpty() && !description.isEmpty() && !year.isEmpty());
+        return (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(description) && !TextUtils.isEmpty(year));
     }
 
     @Override
@@ -103,8 +99,6 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // TODO All string to be shown to user should be in strings.xml
-                Toaster.shortToast("Save");
                 createNewMovie();
                 return true;
 

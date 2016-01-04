@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.model.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListAdapter extends BaseAdapter {
@@ -23,13 +22,9 @@ public class MovieListAdapter extends BaseAdapter {
         this.inflater = LayoutInflater.from(context);
     }
 
-    public MovieListAdapter(Context context) {
-        this.inflater = LayoutInflater.from(context);
-    }
-
     @Override
     public int getCount() {
-        return getMovieListSize();
+        return movieList.size();
     }
 
     @Override
@@ -54,31 +49,10 @@ public class MovieListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        applyName(holder.titleTextView, position);
-        applyComment(holder.descriptionTextView, position);
+        holder.titleTextView.setText(((Movie) getItem(position)).getName());
+        holder.descriptionTextView.setText(((Movie)getItem(position)).getDescription());
 
         return convertView;
-    }
-
-    // TODO If there is only one line for method it's not necessarily to create separate method
-    // Also it will be better to pass as argument Movie object itself
-    private void applyName(TextView name, int position) {
-        // TODO Replace movieList.get(position) with getItem(position), adapter should encapsulate its data set
-        name.setText(movieList.get(position).getName());
-    }
-
-    // TODO The same :)
-    private void applyComment(TextView comment, int position) {
-        comment.setText(movieList.get(position).getDescription());
-    }
-
-    public int getMovieListSize() {
-        // TODO After creating DataHolder constructor movieList never will be null
-        // So we can skip this check
-        if (movieList == null) {
-            movieList = new ArrayList<>();
-        }
-        return movieList.size();
     }
 
 

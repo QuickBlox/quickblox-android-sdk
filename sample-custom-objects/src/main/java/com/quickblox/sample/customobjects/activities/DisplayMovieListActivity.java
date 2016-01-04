@@ -77,9 +77,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
                 Intent intent = new Intent(this, AddNewMovieActivity.class);
                 this.startActivity(intent);
                 return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 }

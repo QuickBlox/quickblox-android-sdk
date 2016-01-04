@@ -7,9 +7,7 @@ import android.widget.TextView;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
-
-import java.text.NumberFormat;
-import java.text.ParsePosition;
+import com.quickblox.sample.customobjects.model.Movie;
 
 public class ShowMovieActivity extends BaseActivity {
 
@@ -17,8 +15,6 @@ public class ShowMovieActivity extends BaseActivity {
     private TextView yearTextView;
     private TextView descriptionTextView;
     private RatingBar ratingBar;
-
-    private int position;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,28 +26,19 @@ public class ShowMovieActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // TODO This has nothing to do with UI
-        position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
-        // TODO "text_movie_name" etc
-        nameTextView = (TextView) findViewById(R.id.movie_name_textview);
-        yearTextView = (TextView) findViewById(R.id.movie_year_textview);
-        descriptionTextView = (TextView) findViewById(R.id.movie_description_textview);
-        // TODO No camel case in view ids — "rating_movie" will be ok
-        ratingBar = (RatingBar) findViewById(R.id.movie_ratingBar);
+        nameTextView = _findViewById(R.id.text_movie_name);
+        yearTextView = _findViewById(R.id.text_movie_year);
+        descriptionTextView = _findViewById(R.id.text_movie_description);
+        ratingBar = _findViewById(R.id.rating_movie);
     }
 
     private void fillFields() {
-        // TODO It will be better to get movie by id and then work with it and not with DataHolder itself
-        nameTextView.setText(DataHolder.getInstance().getMovieObject(position).getName());
-        yearTextView.setText(DataHolder.getInstance().getMovieObject(position).getYear());
-        descriptionTextView.setText(DataHolder.getInstance().getMovieObject(position).getDescription());
-        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getInstance().getMovieObject(position).getRating());
-        ratingBar.setRating(rating);
-    }
-
-    private boolean isRatingNull() {
-        return DataHolder.getInstance().getMovieObject(position).getRating().equals("null"); //достаточно такой проверки?!
+        int position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
+        Movie movie = DataHolder.getInstance().getMovieObject(position);
+        nameTextView.setText(movie.getName());
+        yearTextView.setText(movie.getYear());
+        descriptionTextView.setText(movie.getDescription());
+        ratingBar.setRating(movie.getRating());
     }
 
 }

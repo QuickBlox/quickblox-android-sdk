@@ -5,33 +5,33 @@
     android:paddingRight="@dimen/padding_large">
 
     <TextView
-        android:id="@+id/movie_name_textview"
+        android:id="@+id/text_movie_name"
         style="@style/ItemNameStyle"
         android:paddingTop="@dimen/padding_large"
         android:text="@string/title"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/movie_year_textview"
+        android:id="@+id/text_movie_year"
         style="@style/ItemCommentStyle"
-        android:layout_below="@+id/movie_name_textview"
+        android:layout_below="@+id/text_movie_name"
         android:text="@string/year" />
 
     <TextView
-        android:id="@+id/movie_description_textview"
+        android:id="@+id/text_movie_description"
         style="@style/ItemDescriptionYearStyle"
-        android:layout_below="@+id/movie_year_textview"
+        android:layout_below="@+id/text_movie_year"
         android:paddingTop="@dimen/padding_large"
         android:text="@string/description" />
 
     <TextView
         android:id="@+id/movie_rating_textview"
         style="@style/ItemRatingStyle"
-        android:layout_below="@+id/movie_description_textview"
+        android:layout_below="@+id/text_movie_description"
         android:text="@string/rating" />
 
     <RatingBar
-        android:id="@+id/movie_ratingBar"
+        android:id="@+id/rating_movie"
         style="@style/ItemRatingBarStyle"
         android:layout_below="@+id/movie_rating_textview"
         android:isIndicator="true" />
