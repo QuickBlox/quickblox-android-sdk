@@ -14,11 +14,12 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
+import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class AddNewMovieActivity extends BaseActivity {
+public class AddNewMovieActivity extends BaseActivity implements Movie.Contract {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
@@ -59,10 +60,10 @@ public class AddNewMovieActivity extends BaseActivity {
 
         // TODO Move this to QbCustomObjectUtils as well
         HashMap<String, Object> fields = new HashMap<String, Object>();
-        fields.put(Consts.NAME, title);
-        fields.put(Consts.DESCRIPTION, description);
-        fields.put(Consts.YEAR, year);
-        fields.put(Consts.RATING, rating);
+        fields.put(NAME, title);
+        fields.put(DESCRIPTION, description);
+        fields.put(YEAR, year);
+        fields.put(RATING, rating);
 
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setClassName(Consts.CLASS_NAME);

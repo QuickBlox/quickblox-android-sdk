@@ -2,8 +2,17 @@ package com.quickblox.sample.customobjects.model;
 
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.customobjects.definition.Consts;
+import com.quickblox.sample.customobjects.util.QbCustomObjectsUtils;
 
 public class Movie {
+
+   public interface Contract{
+        String NAME = "name";
+        String DESCRIPTION = "description";
+        String YEAR = "year";
+        String RATING = "rating";
+    }
+
 
     private String id;
     private String name;
@@ -15,20 +24,11 @@ public class Movie {
 
     public Movie(QBCustomObject qbCustomObject) {
         id = qbCustomObject.getParentId();
-        name = parseField(Consts.NAME, qbCustomObject);
-        description = parseField(Consts.DESCRIPTION, qbCustomObject);
-        year = parseField(Consts.YEAR, qbCustomObject);
-        rating = parseField(Consts.RATING, qbCustomObject);
+        name = QbCustomObjectsUtils.parseField(Contract.NAME, qbCustomObject);
+        description = QbCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
+        year = QbCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
+        rating = QbCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject);
         date = qbCustomObject.getUpdatedAt().toString();
-    }
-
-    // TODO Make static, maybe create QbCustomObjectUtils class and move this method there
-    private String parseField(String field, QBCustomObject customObject) {
-        Object object = customObject.getFields().get(field);
-        if (object != null) {
-            return object.toString();
-        }
-        return null;
     }
 
     public String getName() {

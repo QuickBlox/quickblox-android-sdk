@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
+import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
 
@@ -19,8 +20,6 @@ import java.util.List;
 
 public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    // TODO constants should *always* be static
-    private final String EXTRA_POSITION = "position";
     private ListView moviesListView;
     private MovieListAdapter movieListAdapter;
     private List<Movie> movieList;
@@ -60,7 +59,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
         // TODO ShowMovieActivity should have start() method with Movie id as an argument
         // And intent should be created in the start() method
         Intent intent = new Intent(this, ShowMovieActivity.class);
-        intent.putExtra(EXTRA_POSITION, position);
+        intent.putExtra(Consts.EXTRA_POSITION, position);
         startActivity(intent);
     }
 

@@ -23,6 +23,10 @@ public class MovieListAdapter extends BaseAdapter {
         this.inflater = LayoutInflater.from(context);
     }
 
+    public MovieListAdapter(Context context) {
+        this.inflater = LayoutInflater.from(context);
+    }
+
     @Override
     public int getCount() {
         return getMovieListSize();

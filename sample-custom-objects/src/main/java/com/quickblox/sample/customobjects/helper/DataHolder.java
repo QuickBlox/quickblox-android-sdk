@@ -26,26 +26,8 @@ public class DataHolder {
         return movieList;
     }
 
-    // TODO Remove Movie fields (name, description, date, year, rating) access from here
-    // DataHolder should only be able to put/get Movie objects by id (not position) and nothing else
-    public String getMovieName(int position) {
-        return movieList.get(position).getName();
-    }
-
-    public String getMovieDescription(int position) {
-        return movieList.get(position).getDescription();
-    }
-
-    public String getMovieDate(int position) {
-        return movieList.get(position).getDate();
-    }
-
-    public String getMovieYear(int position) {
-        return movieList.get(position).getYear();
-    }
-
-    public String getMovieRating(int position) {
-        return movieList.get(position).getRating();
+    public Movie getMovieObject(int id){
+        return movieList.get(id);
     }
 
     public void clear() {

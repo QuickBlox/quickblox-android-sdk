@@ -5,16 +5,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.quickblox.sample.customobjects.R;
+import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
 public class ShowMovieActivity extends BaseActivity {
-
-    // TODO This constant should be in one place, if used in multiple activities
-    // If we'll change its value in one place we will get wrong app behavior
-    private static final String EXTRA_POSITION = "position";
 
     private TextView nameTextView;
     private TextView yearTextView;
@@ -35,7 +32,7 @@ public class ShowMovieActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // TODO This has nothing to do with UI
-        position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
         // TODO "text_movie_name" etc
         nameTextView = (TextView) findViewById(R.id.movie_name_textview);
         yearTextView = (TextView) findViewById(R.id.movie_year_textview);
@@ -46,22 +43,15 @@ public class ShowMovieActivity extends BaseActivity {
 
     private void fillFields() {
         // TODO It will be better to get movie by id and then work with it and not with DataHolder itself
-        nameTextView.setText(DataHolder.getInstance().getMovieName(position));
-        yearTextView.setText(DataHolder.getInstance().getMovieYear(position));
-        descriptionTextView.setText(DataHolder.getInstance().getMovieDescription(position));
-        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getInstance().getMovieRating(position));
+        nameTextView.setText(DataHolder.getInstance().getMovieObject(position).getName());
+        yearTextView.setText(DataHolder.getInstance().getMovieObject(position).getYear());
+        descriptionTextView.setText(DataHolder.getInstance().getMovieObject(position).getDescription());
+        float rating = isRatingNull() ? 0 : Float.parseFloat(DataHolder.getInstance().getMovieObject(position).getRating());
         ratingBar.setRating(rating);
     }
 
     private boolean isRatingNull() {
-        return DataHolder.getInstance().getMovieRating(position).equals("null"); //достаточно такой проверки?!
+        return DataHolder.getInstance().getMovieObject(position).getRating().equals("null"); //достаточно такой проверки?!
     }
 
-    private boolean isNumeric() {
-        String rating = DataHolder.getInstance().getMovieRating(position);// или надо такую
-        NumberFormat formatter = NumberFormat.getInstance();
-        ParsePosition pos = new ParsePosition(0);
-        formatter.parse(rating, pos);
-        return rating.length() == pos.getIndex();
-    }
 }
