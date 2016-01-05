@@ -50,7 +50,7 @@ public class MovieListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.titleTextView.setText(((Movie) getItem(position)).getName());
-        holder.descriptionTextView.setText(((Movie)getItem(position)).getDescription());
+        holder.descriptionTextView.setText(((Movie) getItem(position)).getDescription());
 
         return convertView;
     }

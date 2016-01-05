@@ -1,5 +1,7 @@
 package com.quickblox.sample.customobjects.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -13,19 +15,22 @@ import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
-import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
-import com.quickblox.sample.customobjects.model.Movie;
+import com.quickblox.sample.customobjects.util.QBCustomObjectsUtils;
 
-import java.util.HashMap;
 import java.util.List;
 
-public class AddNewMovieActivity extends BaseActivity implements Movie.Contract {
+public class AddNewMovieActivity extends BaseActivity {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
     private EditText yearEditText;
     private RatingBar ratingBar;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, AddNewMovieActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,17 +60,7 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
         }
         progressDialog.show();
 
-        // TODO Move this to QbCustomObjectUtils as well
-        HashMap<String, Object> fields = new HashMap<>();
-        fields.put(NAME, title);
-        fields.put(DESCRIPTION, description);
-        fields.put(YEAR, year);
-        fields.put(RATING, rating);
-
-        QBCustomObject qbCustomObject = new QBCustomObject();
-        qbCustomObject.setClassName(Consts.CLASS_NAME);
-        qbCustomObject.setFields(fields);
-        // TODO
+        QBCustomObject qbCustomObject = QBCustomObjectsUtils.setQBFields(title, description, year, rating);
 
         QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
             @Override
@@ -91,14 +86,14 @@ public class AddNewMovieActivity extends BaseActivity implements Movie.Contract 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.save_movie_menu, menu);
+        inflater.inflate(R.menu.activity_add_movie, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.menu_save_movie:
                 createNewMovie();
                 return true;
 

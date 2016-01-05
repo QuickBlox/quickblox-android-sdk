@@ -26,7 +26,7 @@ public class DataHolder {
         return movieList;
     }
 
-    public Movie getMovieObject(int id){
+    public Movie getMovieObject(int id) {
         return movieList.get(id);
     }
 
@@ -34,15 +34,11 @@ public class DataHolder {
         movieList.clear();
     }
 
-    public int size() {
-        return movieList.size();
-    }
-
     public void addMovieToList(QBCustomObject customObject) {
         movieList.add(new Movie(customObject));
     }
 
-    public void addQBCustomObject (ArrayList<QBCustomObject> qbCustomObjects){
+    public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
         if (!qbCustomObjects.isEmpty()) {
             for (QBCustomObject customObject : qbCustomObjects) {
                 movieList.add(new Movie(customObject));

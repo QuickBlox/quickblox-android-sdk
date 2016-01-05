@@ -1,5 +1,7 @@
 package com.quickblox.sample.customobjects.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -15,6 +17,12 @@ public class ShowMovieActivity extends BaseActivity {
     private TextView yearTextView;
     private TextView descriptionTextView;
     private RatingBar ratingBar;
+
+    public static void start(Context context, int id) {
+        Intent intent = new Intent(context, ShowMovieActivity.class);
+        intent.putExtra(Consts.EXTRA_POSITION, id);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,5 +48,4 @@ public class ShowMovieActivity extends BaseActivity {
         descriptionTextView.setText(movie.getDescription());
         ratingBar.setRating(movie.getRating());
     }
-
 }

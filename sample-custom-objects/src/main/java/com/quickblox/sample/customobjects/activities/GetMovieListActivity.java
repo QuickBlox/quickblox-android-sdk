@@ -28,14 +28,12 @@ public class GetMovieListActivity extends BaseActivity {
     }
 
     private void getMovieList() {
-        // TODO There is no need to comment obvious code
-        // Get all movies
         progressDialog.show();
         QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-                // TODO Create method isEmpty() to avoid long statements with numbers
-                if (DataHolder.getInstance().size() > 0) {
+
+                if (!DataHolder.getInstance().getMovieList().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }
 

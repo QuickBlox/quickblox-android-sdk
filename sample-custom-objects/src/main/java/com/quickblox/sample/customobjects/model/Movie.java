@@ -1,7 +1,7 @@
 package com.quickblox.sample.customobjects.model;
 
 import com.quickblox.customobjects.model.QBCustomObject;
-import com.quickblox.sample.customobjects.util.QbCustomObjectsUtils;
+import com.quickblox.sample.customobjects.util.QBCustomObjectsUtils;
 
 public class Movie {
 
@@ -21,10 +21,10 @@ public class Movie {
 
     public Movie(QBCustomObject qbCustomObject) {
         id = qbCustomObject.getParentId();
-        name = QbCustomObjectsUtils.parseField(Contract.NAME, qbCustomObject);
-        description = QbCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
-        year = QbCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
-        String Rating = QbCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject);
+        name = QBCustomObjectsUtils.parseField(Contract.NAME, qbCustomObject);
+        description = QBCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
+        year = QBCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
+        String Rating = QBCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject);
         rating = Rating.equals("null") ? 0 : Float.parseFloat(Rating);
         date = qbCustomObject.getUpdatedAt().toString();
     }
