@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MovieListStyle">
+
+    <TextView
+        android:id="@+id/text_title"
+        style="@style/MovieNameStyle"
+        android:layout_marginTop="@dimen/margin_middle"
+        android:text="@string/movie" />
+
+    <TextView
+        android:id="@+id/text_description"
+        style="@style/MovieCommentStyle"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="@string/comment" />
+
+</LinearLayout>

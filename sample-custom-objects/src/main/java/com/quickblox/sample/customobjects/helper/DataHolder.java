@@ -1,6 +1,6 @@
 package com.quickblox.sample.customobjects.helper;
 
-import com.quickblox.sample.customobjects.model.Note;
+import com.quickblox.sample.customobjects.model.Movie;
 import com.quickblox.customobjects.model.QBCustomObject;
 
 import java.util.ArrayList;
@@ -8,83 +8,41 @@ import java.util.List;
 
 public class DataHolder {
 
-    private static DataHolder dataHolder;
-    private int signInUserId;
-    private List<Note> noteList;
+    private static DataHolder instance;
+    private List<Movie> movieList;
 
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
+    private DataHolder() {
+        movieList = new ArrayList<>();
+    }
+
+    public static synchronized DataHolder getInstance() {
+        if (instance == null) {
+            instance = new DataHolder();
         }
-        return dataHolder;
+        return instance;
     }
 
-    public int getSignInUserId() {
-        return signInUserId;
+    public List<Movie> getMovieList() {
+        return movieList;
     }
 
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
-    public int getNoteListSize() {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
-        }
-        return noteList.size();
-    }
-
-    public String getNoteTitle(int position) {
-        return noteList.get(position).getTitle();
-    }
-
-    public String getNoteDate(int position) {
-        return noteList.get(position).getDate();
-    }
-
-    public List<String> getNoteComments(int position) {
-        return noteList.get(position).getCommentsList();
-    }
-
-    public String getNoteStatus(int position) {
-        return noteList.get(position).getStatus();
-    }
-
-    public String getNoteId(int position) {
-        return noteList.get(position).getId();
-    }
-
-    public void setNoteToNoteList(int position, Note note) {
-        noteList.set(position, note);
-    }
-
-    public void addNewComment(int notePosition, String comment) {
-        noteList.get(notePosition).addNewComment(comment);
-    }
-
-    public String getComments(int notePosition) {
-        return noteList.get(notePosition).getComments();
-    }
-
-    public void removeNoteFromList(int position) {
-        noteList.remove(position);
+    public Movie getMovieObject(int id) {
+        return movieList.get(id);
     }
 
     public void clear() {
-        noteList.clear();
+        movieList.clear();
     }
 
-    public int size() {
-        if (noteList != null) {
-            return noteList.size();
-        }
-        return 0;
+    public void addMovieToList(QBCustomObject customObject) {
+        movieList.add(new Movie(customObject));
     }
 
-    public void addNoteToList(QBCustomObject customObject) {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
+    public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
+        if (!qbCustomObjects.isEmpty()) {
+            for (QBCustomObject customObject : qbCustomObjects) {
+                movieList.add(new Movie(customObject));
+            }
         }
-        noteList.add(new Note(customObject));
     }
 }
