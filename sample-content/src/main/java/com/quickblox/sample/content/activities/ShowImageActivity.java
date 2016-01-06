@@ -36,20 +36,21 @@ public class ShowImageActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        imageView = (ImageView) findViewById(R.id.image_imageview);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        imageView = _findViewById(R.id.image_upload_view);
+        progressBar = _findViewById(R.id.progress_bar);
     }
 
     private void initImageLoaderOptions() {
         displayImageOptions = new DisplayImageOptions.Builder().showImageForEmptyUri(R.drawable.ic_empty)
                 .showImageOnFail(R.drawable.ic_error).resetViewBeforeLoading(true).cacheOnDisc(true)
                 .imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true).displayer(new FadeInBitmapDisplayer(300)).build();
+                .considerExifParams(true).displayer(new FadeInBitmapDisplayer(300))
+                .build();
     }
 
     private void showSelectedImage() {
         ImageLoader.getInstance().displayImage(
-                DataHolder.getDataHolder().getUrl(currentPosition),
+                DataHolder.getInstance().getUrl(currentPosition),
                 imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {

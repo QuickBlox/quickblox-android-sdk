@@ -21,12 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.GetFileListActivity"/>
+
         <activity
             android:name=".activities.GalleryActivity"
             android:label="@string/gallery_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ShowImageActivity"
+            android:theme="@style/AppTheme.Dark"
             android:label="@string/show_image_title" />
     </application>
 

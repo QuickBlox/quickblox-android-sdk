@@ -1,5 +1,7 @@
 package com.quickblox.sample.content.helper;
 
+import android.util.Log;
+
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.server.BaseService;
@@ -8,15 +10,17 @@ import java.util.List;
 
 public class DataHolder {
 
-    private static DataHolder dataHolder;
+    private static DataHolder instance;
     private int signInUserId;
     private List<QBFile> qbFileList;
 
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
+    private DataHolder (){}
+
+    public static synchronized DataHolder getInstance() {
+        if (instance == null) {
+            instance = new DataHolder();
         }
-        return dataHolder;
+        return instance;
     }
 
     public int getSignInUserId() {
@@ -31,8 +35,8 @@ public class DataHolder {
         this.qbFileList = qbFileList;
     }
 
-    public int getQbFileListSize() {
-        return qbFileList.size();
+    public List<QBFile> getQBFileList() {
+        return qbFileList;
     }
 
     public String getUrl(int position) {
@@ -45,7 +49,6 @@ public class DataHolder {
         } catch (BaseServiceException e) {
             e.printStackTrace();
         }
-
         return BaseService.getServiceEndpointURL() + "/blobs/" + qbFileList.get(position).getUid() +
                 "?token=" + sessionToken;
     }
