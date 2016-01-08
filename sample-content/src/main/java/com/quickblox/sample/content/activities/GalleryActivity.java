@@ -19,7 +19,7 @@ import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
-import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.io.File;
 import java.util.List;
@@ -30,7 +30,6 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     private GalleryAdapter galleryAdapter;
     private ImageHelper imageHelper;
     private ImageView selectedImageView;
-
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -50,7 +49,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        startShowImgActivity(position);
+        startShowImageActivity(position);
     }
 
     public void onStartUploadImageClick(View view) {
@@ -62,7 +61,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         uploadSelectedImage(imageFile);
     }
 
-    private void startShowImgActivity(int position) {
+    private void startShowImageActivity(int position) {
         Intent intent = new Intent(this, ShowImageActivity.class);
         intent.putExtra(EXTRA_POSITION, position);
         startActivity(intent);
@@ -83,15 +82,20 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            Uri originalUri = data.getData();
-            selectedImageView.setImageURI(originalUri);
-            selectedImageView.setVisibility(View.VISIBLE);
-
-            progressDialog.setProgress(0);
-            progressDialog.show();
-
-            new GetImageFileTask(this).execute(imageHelper, selectedImageView);
+            getImageFile(data);
         }
+    }
+
+    //ToDo Try to upload file more than 40 mb size
+    private void getImageFile(Intent data) {
+        Uri originalUri = data.getData();
+        selectedImageView.setImageURI(originalUri);
+        selectedImageView.setVisibility(View.VISIBLE);
+
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        new GetImageFileTask(this).execute(imageHelper, selectedImageView);
     }
 
     private void uploadSelectedImage(File imageFile) {
@@ -108,7 +112,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             public void onError(List<String> errors) {
                 progressDialog.dismiss();
 
-                Toaster.shortToast(errors.toString());
+                ErrorUtils.showErrorDialog(GalleryActivity.this, R.string.gallery_upload_file_error, errors);
             }
         }, new QBProgressCallback() {
             @Override

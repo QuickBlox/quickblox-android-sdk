@@ -16,7 +16,7 @@ import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
-import com.quickblox.sample.customobjects.util.QBCustomObjectsUtils;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 import java.util.List;
 

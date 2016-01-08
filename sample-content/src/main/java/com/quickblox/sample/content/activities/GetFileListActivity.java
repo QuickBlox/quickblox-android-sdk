@@ -9,9 +9,10 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBPagedRequestBuilder;
+import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
-import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class GetFileListActivity extends BaseActivity {
             @Override
             public void onError(List<String> errors) {
                 progressDialog.dismiss();
-                Toaster.shortToast(errors.get(0));
+                ErrorUtils.showErrorDialog(GetFileListActivity.this, R.string.get_file_list_get_files_error, errors);
             }
         });
     }

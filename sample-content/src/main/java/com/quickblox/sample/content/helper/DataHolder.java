@@ -1,11 +1,8 @@
 package com.quickblox.sample.content.helper;
 
-import android.util.Log;
-
 import com.quickblox.content.model.QBFile;
-import com.quickblox.core.exception.BaseServiceException;
-import com.quickblox.core.server.BaseService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataHolder {
@@ -14,7 +11,9 @@ public class DataHolder {
     private int signInUserId;
     private List<QBFile> qbFileList;
 
-    private DataHolder (){}
+    private DataHolder() {
+        qbFileList = new ArrayList<>();
+    }
 
     public static synchronized DataHolder getInstance() {
         if (instance == null) {
@@ -37,20 +36,6 @@ public class DataHolder {
 
     public List<QBFile> getQBFileList() {
         return qbFileList;
-    }
-
-    public String getUrl(int position) {
-        // URL formation documentation
-        // http://quickblox.com/developers/Content#API_Content_Get_File_As_A_Redirect_To_The_S3_Object
-
-        String sessionToken = null;
-        try {
-            sessionToken = BaseService.getBaseService().getToken();
-        } catch (BaseServiceException e) {
-            e.printStackTrace();
-        }
-        return BaseService.getServiceEndpointURL() + "/blobs/" + qbFileList.get(position).getUid() +
-                "?token=" + sessionToken;
     }
 
     public void addQbFile(QBFile qbFile) {

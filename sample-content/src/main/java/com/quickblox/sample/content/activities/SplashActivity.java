@@ -9,7 +9,7 @@ import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
-import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(List<String> errors) {
-                Toaster.shortToast(errors.get(0));
+                ErrorUtils.showErrorDialog(SplashActivity.this, R.string.splash_create_session_error, errors);
             }
         });
     }

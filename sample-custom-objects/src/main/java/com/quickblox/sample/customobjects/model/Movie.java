@@ -1,7 +1,7 @@
 package com.quickblox.sample.customobjects.model;
 
 import com.quickblox.customobjects.model.QBCustomObject;
-import com.quickblox.sample.customobjects.util.QBCustomObjectsUtils;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 public class Movie {
 

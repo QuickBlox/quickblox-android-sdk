@@ -2,7 +2,6 @@ package com.quickblox.sample.content.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
+import com.quickblox.sample.content.utils.QBContentUtils;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class GalleryAdapter extends BaseAdapter {
     private void setImage(final ViewHolder holder, int position) {
 
         ImageLoader.getInstance().displayImage(
-                DataHolder.getInstance().getUrl(position),
+                QBContentUtils.getUrl(position, DataHolder.getInstance().getQBFileList()),
                 holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
