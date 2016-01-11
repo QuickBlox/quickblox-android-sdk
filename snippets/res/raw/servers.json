@@ -31,6 +31,6 @@
             "dialog_id": "561cffc2a28f9a97ec0001d9"
         }
     },
-    "active": "stage1",
+    "active": "production",
     "use_first_user": false
 }
