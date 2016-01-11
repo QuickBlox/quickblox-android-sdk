@@ -14,8 +14,23 @@
             "test_user_login2": "igorquickblox712",
             "test_user_password2": "igorquickblox712",
             "dialog_id": "561cffc2a28f9a97ec0001d9"
+        },
+        "stage5": {
+            "app_id": "8",
+            "auth_key": "vUJwqDGyWA9gark",
+            "auth_secret": "SgGBnZVOwrBQu8K",
+            "api_domain": "apistage5.quickblox.com",
+            "chat_domain": "chatstage5.quickblox.com",
+            "bucket_name": "qb-stage5-s3",
+            "test_user_id1": 504,
+            "test_user_login1": "igorquickblox711",
+            "test_user_password1": "igorquickblox711",
+            "test_user_id2": 505,
+            "test_user_login2": "igorquickblox712",
+            "test_user_password2": "igorquickblox712",
+            "dialog_id": "561cffc2a28f9a97ec0001d9"
         }
     },
-    "active": "production",
-    "use_first_user": true
+    "active": "stage5",
+    "use_first_user": false
 }

@@ -641,7 +641,7 @@ public class SnippetsChat extends Snippets {
             try {
                 // create a message
                 QBChatMessage chatMessage = new QBChatMessage();
-                chatMessage.setBody("Hey man! " + new Random().nextInt());
+                chatMessage.setBody("Hey " + new Random().nextInt());
                 chatMessage.setProperty("name", "bob");
                 chatMessage.setProperty("lastname", "boblast");
                 chatMessage.setSaveToHistory(true);
@@ -667,6 +667,8 @@ public class SnippetsChat extends Snippets {
                     privateChat.addIsTypingListener(isTypingListener);
                 }
                 privateChat.sendMessage(chatMessage);
+
+                privateChat.readMessage(chatMessage);
 
                 log("dialog id: " + privateChat.getDialogId());
             } catch (XMPPException e) {
