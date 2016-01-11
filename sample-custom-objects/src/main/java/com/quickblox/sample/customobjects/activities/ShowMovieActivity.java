@@ -41,6 +41,7 @@ public class ShowMovieActivity extends BaseActivity {
     }
 
     private void fillFields() {
+        // TODO Rename variable position to id, as well as constant EXTRA_POSITION to EXTRA_MOVIE_ID
         int position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
         Movie movie = DataHolder.getInstance().getMovieObject(position);
         nameTextView.setText(movie.getName());

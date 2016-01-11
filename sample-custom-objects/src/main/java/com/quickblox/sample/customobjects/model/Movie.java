@@ -24,7 +24,9 @@ public class Movie {
         name = QBCustomObjectsUtils.parseField(Contract.NAME, qbCustomObject);
         description = QBCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
         year = QBCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
+        // TODO field should start with lowercase letter
         String Rating = QBCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject);
+        // TODO There will not be a "null" value, empty rating will return as "0.0", so there is no need for this check
         rating = Rating.equals("null") ? 0 : Float.parseFloat(Rating);
         date = qbCustomObject.getUpdatedAt().toString();
     }

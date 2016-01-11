@@ -44,18 +44,21 @@ public class MovieListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_item_movie, parent, false);
             holder = new ViewHolder();
             holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
+            // TODO Add singleLine attribute to description, to avoid
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.text_description);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        // TODO Get movie as variable, instead of casting it everytime
         holder.titleTextView.setText(((Movie) getItem(position)).getName());
         holder.descriptionTextView.setText(((Movie) getItem(position)).getDescription());
 
         return convertView;
     }
 
-
+    // TODO One blank line between method and class declaration will be enough
     private static class ViewHolder {
         public TextView titleTextView;
         public TextView descriptionTextView;
