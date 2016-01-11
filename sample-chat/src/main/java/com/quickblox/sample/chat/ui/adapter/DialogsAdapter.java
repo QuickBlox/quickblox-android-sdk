@@ -1,7 +1,6 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,10 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.UiUtils;
+import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 
 import java.util.List;
-
-import vc908.stickerfactory.StickersManager;
 
 public class DialogsAdapter extends BaseAdapter {
     private List<QBDialog> dialogs;
@@ -61,6 +58,7 @@ public class DialogsAdapter extends BaseAdapter {
         }
 
         QBDialog dialog = dialogs.get(position);
+        String lastMessage = dialog.getLastMessage();
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
             holder.dialogImageView.setImageResource(R.drawable.ic_chat_group);
@@ -68,15 +66,9 @@ public class DialogsAdapter extends BaseAdapter {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
             holder.dialogImageView.setImageDrawable(null);
         }
+
         holder.nameTextView.setText(QbDialogUtils.getDialogName(dialog));
-
-        String lastMessage = dialog.getLastMessage();
-        if (!TextUtils.isEmpty(lastMessage) && StickersManager.isSticker(lastMessage)) {
-            holder.lastMessageTextView.setText(R.string.chat_sticker);
-        } else {
-            holder.lastMessageTextView.setText(lastMessage);
-        }
-
+        holder.lastMessageTextView.setText(lastMessage);
         holder.unreadCounterTextView.setText(String.valueOf(dialog.getUnreadMessageCount()));
 
         return convertView;

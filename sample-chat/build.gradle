@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    maven { url 'http://maven.stickerpipe.com/artifactory/stickerfactory' }
-}
-
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -48,9 +44,5 @@ dependencies {
     }
 
     compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
-    compile("vc908.stickers:stickerfactory:${rootProject.stickersVersion}@aar") {
-        transitive = true;
-    }
-
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
 }

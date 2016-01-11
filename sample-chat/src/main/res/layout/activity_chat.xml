@@ -1,62 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_chat_keyboard_notifier"
+    android:id="@+id/layout_chat_container"
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded">
 
-    <RelativeLayout
-        android:id="@+id/layout_chat_container"
-        style="@style/MatchParent">
+    <ListView
+        android:id="@+id/list_chat_messages"
+        style="@style/ListViewWithoutDividerStyle"
+        android:layout_above="@+id/divider_chat"
+        android:listSelector="@android:color/transparent"
+        android:transcriptMode="alwaysScroll" />
 
-        <ListView
-            android:id="@+id/list_chat_messages"
-            style="@style/ListViewWithoutDividerStyle"
-            android:layout_above="@+id/divider_chat"
-            android:listSelector="@android:color/transparent"
-            android:transcriptMode="alwaysScroll" />
+    <ProgressBar
+        android:id="@+id/progress_chat"
+        style="@style/CenterProgressBarStyle" />
 
-        <ProgressBar
-            android:id="@+id/progress_chat"
-            style="@style/CenterProgressBarStyle" />
+    <View
+        android:id="@+id/divider_chat"
+        style="@style/HorizontalDividerStyle"
+        android:layout_above="@+id/layout_chat_send_container" />
 
-        <View
-            android:id="@+id/divider_chat"
-            style="@style/HorizontalDividerStyle"
-            android:layout_above="@+id/layout_chat_send_container" />
-
-        <LinearLayout
-            android:id="@+id/layout_chat_send_container"
-            style="@style/MatchWidth"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/colorPrimary"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/button_chat_stickers"
-                style="@style/BorderlessImageButtonStyle"
-                android:onClick="onStickersClick"
-                android:src="@drawable/ic_action_insert_emoticon" />
-
-            <EditText
-                android:id="@+id/edit_chat_message"
-                style="@style/WeightWidth"
-                android:layout_height="wrap_content"
-                android:hint="@string/chat_edit_text_hint" />
-
-            <ImageButton
-                android:id="@+id/button_chat_send"
-                style="@style/BorderlessImageButtonStyle"
-                android:onClick="onSendChatClick"
-                android:src="@drawable/ic_send"
-                android:text="@string/chat_send" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/layout_chat_stickers_container"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
+    <LinearLayout
+        android:id="@+id/layout_chat_send_container"
+        style="@style/MatchWidth"
         android:layout_alignParentBottom="true"
-        android:visibility="gone" />
-</vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout>
+        android:background="?attr/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_chat_emoticon"
+            style="@style/BorderlessImageButtonStyle"
+            android:onClick="onEmoticonClick"
+            android:src="@drawable/ic_action_insert_emoticon" />
+
+        <EditText
+            android:id="@+id/edit_chat_message"
+            style="@style/WeightWidth"
+            android:layout_height="wrap_content"
+            android:hint="@string/chat_edit_text_hint" />
+
+        <ImageButton
+            android:id="@+id/button_chat_send"
+            style="@style/BorderlessImageButtonStyle"
+            android:onClick="onSendChatClick"
+            android:src="@drawable/ic_send"
+            android:text="@string/chat_send" />
+    </LinearLayout>
+</RelativeLayout>
