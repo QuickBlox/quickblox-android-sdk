@@ -20,7 +20,7 @@ public class ShowMovieActivity extends BaseActivity {
 
     public static void start(Context context, int id) {
         Intent intent = new Intent(context, ShowMovieActivity.class);
-        intent.putExtra(Consts.EXTRA_POSITION, id);
+        intent.putExtra(Consts.EXTRA_MOVIE_ID, id);
         context.startActivity(intent);
     }
 
@@ -41,9 +41,8 @@ public class ShowMovieActivity extends BaseActivity {
     }
 
     private void fillFields() {
-        // TODO Rename variable position to id, as well as constant EXTRA_POSITION to EXTRA_MOVIE_ID
-        int position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
-        Movie movie = DataHolder.getInstance().getMovieObject(position);
+        int id = getIntent().getIntExtra(Consts.EXTRA_MOVIE_ID, 0);
+        Movie movie = DataHolder.getInstance().getMovieObject(id);
         nameTextView.setText(movie.getName());
         yearTextView.setText(movie.getYear());
         descriptionTextView.setText(movie.getDescription());

@@ -60,7 +60,7 @@ public class AddNewMovieActivity extends BaseActivity {
         }
         progressDialog.show();
 
-        QBCustomObject qbCustomObject = QBCustomObjectsUtils.setQBFields(title, description, year, rating);
+        QBCustomObject qbCustomObject = QBCustomObjectsUtils.createCustomObject(title, description, year, rating);
 
         QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
             @Override

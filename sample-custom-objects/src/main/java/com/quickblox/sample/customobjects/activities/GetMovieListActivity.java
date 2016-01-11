@@ -32,8 +32,6 @@ public class GetMovieListActivity extends BaseActivity {
         QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-                // TODO Remove an empty line
-
                 if (!DataHolder.getInstance().getMovieList().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }

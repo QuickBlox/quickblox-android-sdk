@@ -11,16 +11,15 @@ public class DataHolder {
     private static DataHolder instance;
     private List<Movie> movieList;
 
-    private DataHolder() {
-        movieList = new ArrayList<>();
-    }
-
-    // TODO Static singleton method must be first in class, but below the fields
     public static synchronized DataHolder getInstance() {
         if (instance == null) {
             instance = new DataHolder();
         }
         return instance;
+    }
+
+    private DataHolder() {
+        movieList = new ArrayList<>();
     }
 
     public List<Movie> getMovieList() {
@@ -40,11 +39,8 @@ public class DataHolder {
     }
 
     public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
-        // TODO It's okay to skip emptiness check, loop will not launch if list is empty
-        if (!qbCustomObjects.isEmpty()) {
-            for (QBCustomObject customObject : qbCustomObjects) {
-                movieList.add(new Movie(customObject));
-            }
+        for (QBCustomObject customObject : qbCustomObjects) {
+            movieList.add(new Movie(customObject));
         }
     }
 }
