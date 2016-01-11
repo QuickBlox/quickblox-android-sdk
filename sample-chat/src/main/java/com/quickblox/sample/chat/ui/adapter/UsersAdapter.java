@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
@@ -77,7 +77,7 @@ public class UsersAdapter extends BaseAdapter {
     }
 
     protected boolean isUserMe(QBUser user) {
-        QBUser currentUser = ChatUtils.getCurrentUser();
+        QBUser currentUser = ChatHelper.getCurrentUser();
         return currentUser != null && currentUser.getId().equals(user.getId());
     }
 

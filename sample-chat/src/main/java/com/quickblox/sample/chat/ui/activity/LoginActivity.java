@@ -83,7 +83,7 @@ public class LoginActivity extends CoreBaseActivity {
             // Of course you shouldn't do that in your app
             user.setPassword(Consts.USERS_PASSWORD);
 
-            ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<String>() {
+            ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
                 @Override
                 public void onSuccess() {
                     SharedPreferencesUtil.saveQbUser(user);

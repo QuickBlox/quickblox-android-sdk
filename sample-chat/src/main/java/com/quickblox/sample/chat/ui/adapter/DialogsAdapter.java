@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.UiUtils;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class DialogsAdapter extends BaseAdapter {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
             holder.dialogImageView.setImageDrawable(null);
         }
-        holder.nameTextView.setText(ChatUtils.getDialogName(dialog));
+        holder.nameTextView.setText(QbDialogUtils.getDialogName(dialog));
 
         String lastMessage = dialog.getLastMessage();
         if (!TextUtils.isEmpty(lastMessage) && StickersManager.isSticker(lastMessage)) {

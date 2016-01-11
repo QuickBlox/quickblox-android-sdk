@@ -10,7 +10,7 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.sample.chat.utils.chat.QbSessionStateCallback;
+import com.quickblox.sample.chat.utils.qb.QbSessionStateCallback;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
@@ -75,14 +75,8 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             @Override
             public void onSuccess() {
                 Log.v(TAG, "Chat login onSuccess()");
+                onSessionCreated(true);
 
-                // We need to trigger callback in UI Thread
-                mainThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onSessionCreated(true);
-                    }
-                });
                 ProgressDialogFragment.hide(getSupportFragmentManager());
             }
 
@@ -98,13 +92,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
                     }
                 }, RECREATE_SESSION_AFTER_ERROR_DELAY);
 
-                // We need to trigger callback in UI Thread
-                mainThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onSessionCreated(false);
-                    }
-                });
+                onSessionCreated(false);
             }
         });
     }

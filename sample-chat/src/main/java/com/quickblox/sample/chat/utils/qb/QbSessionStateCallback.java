@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.utils.chat;
+package com.quickblox.sample.chat.utils.qb;
 
 public interface QbSessionStateCallback {
 

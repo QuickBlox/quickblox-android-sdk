@@ -24,12 +24,12 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.sample.chat.utils.chat.ChatUtils;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
-import com.quickblox.sample.chat.utils.chat.VerboseQbChatConnectionListener;
+import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
@@ -277,7 +277,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             break;
 
         case PRIVATE:
-            chat = new PrivateChatImpl(this, ChatUtils.getOpponentIdForPrivateDialog(dialog));
+            chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(dialog));
             loadDialogUsers();
             break;
         }
@@ -315,9 +315,9 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void loadDialogUsers() {
-        ChatHelper.getInstance().getUsersFromDialog(dialog, new QBEntityCallbackImpl<List<QBUser>>() {
+        ChatHelper.getInstance().getUsersFromDialog(dialog, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
-            public void onSuccess(List<QBUser> users, Bundle bundle) {
+            public void onSuccess(ArrayList<QBUser> users, Bundle bundle) {
                 setChatNameToActionBar();
                 loadChatHistory();
             }
@@ -330,7 +330,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void setChatNameToActionBar() {
-        String chatName = ChatUtils.getDialogName(dialog);
+        String chatName = QbDialogUtils.getDialogName(dialog);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(chatName);

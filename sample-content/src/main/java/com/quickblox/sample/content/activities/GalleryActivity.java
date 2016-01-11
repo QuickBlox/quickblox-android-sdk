@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -20,7 +19,7 @@ import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
-import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.io.File;
 import java.util.List;
@@ -30,8 +29,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
     private ImageHelper imageHelper;
-    private ImageView selectedImageImageView;
-
+    private ImageView selectedImageView;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -49,17 +47,13 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         imageHelper = new ImageHelper(this);
     }
 
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_new_image_button:
-                imageHelper.getImage();
-                break;
-        }
-    }
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        startShowImgActivity(position);
+        startShowImageActivity(position);
+    }
+
+    public void onStartUploadImageClick(View view) {
+        imageHelper.getImage();
     }
 
     @Override
@@ -67,64 +61,62 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         uploadSelectedImage(imageFile);
     }
 
-    private void startShowImgActivity(int position) {
+    private void startShowImageActivity(int position) {
         Intent intent = new Intent(this, ShowImageActivity.class);
         intent.putExtra(EXTRA_POSITION, position);
         startActivity(intent);
     }
 
     private void initUI() {
-        galleryGridView = (GridView) findViewById(R.id.gallery_gridview);
-        selectedImageImageView = (ImageView) findViewById(R.id.image_imageview);
+        galleryGridView = _findViewById(R.id.gallery_gridview);
+        selectedImageView = _findViewById(R.id.image_upload_view);
     }
 
     private void initGalleryView() {
-        galleryAdapter = new GalleryAdapter(this);
+        galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFileList());
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Uri originalUri = data.getData();
-            selectedImageImageView.setImageURI(originalUri);
-            selectedImageImageView.setVisibility(View.VISIBLE);
-
-            progressDialog.setProgress(0);
-            progressDialog.show();
-
-            new GetImageFileTask(this).execute(imageHelper, selectedImageImageView);
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            getImageFile(data);
+        }
+    }
+
+    //ToDo Try to upload file more than 40 mb size
+    private void getImageFile(Intent data) {
+        Uri originalUri = data.getData();
+        selectedImageView.setImageURI(originalUri);
+        selectedImageView.setVisibility(View.VISIBLE);
+
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        new GetImageFileTask(this).execute(imageHelper, selectedImageView);
     }
 
     private void uploadSelectedImage(File imageFile) {
-
-        // Upload new file
-        //
         QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
-                DataHolder.getDataHolder().addQbFile(qbFile);
-                selectedImageImageView.setVisibility(View.GONE);
-                galleryAdapter.notifyDataSetChanged();
+                DataHolder.getInstance().addQbFile(qbFile);
+                selectedImageView.setVisibility(View.GONE);
 
-                progressDialog.hide();
-
-                Log.d("GalleryActivity", "url: " + qbFile.getPublicUrl());
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError(List<String> errors) {
-                progressDialog.hide();
+                progressDialog.dismiss();
 
-                Toaster.shortToast(errors.toString());
+                ErrorUtils.showErrorDialog(GalleryActivity.this, R.string.gallery_upload_file_error, errors);
             }
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
-                Log.d("GalleryActivity", "progress: " + progress);
                 progressDialog.setProgress(progress);
             }
         });

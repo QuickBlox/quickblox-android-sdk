@@ -1,4 +1,4 @@
-package com.quickblox.sample.chat.utils.chat;
+package com.quickblox.sample.chat.utils.qb;
 
 import android.util.Log;
 
