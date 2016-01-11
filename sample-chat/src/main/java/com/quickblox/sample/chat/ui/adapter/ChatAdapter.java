@@ -21,8 +21,6 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-import vc908.stickerfactory.StickersManager;
-
 public class ChatAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
@@ -66,7 +64,7 @@ public class ChatAdapter extends BaseAdapter {
             holder.messageContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_message_container);
             holder.textContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_message_content_container);
             holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_message_info);
-            holder.stickerImageView = (ImageView) convertView.findViewById(R.id.image_message_sticker);
+            holder.attachmentImageView = (ImageView) convertView.findViewById(R.id.image_message_attachment);
 
             convertView.setTag(holder);
         } else {
@@ -96,17 +94,9 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private void setMessageBody(ViewHolder holder, String messageBody) {
-        if (StickersManager.isSticker(messageBody)) {
-            StickersManager.with(context)
-                    .loadSticker(messageBody)
-                    .into(holder.stickerImageView);
-            holder.stickerImageView.setVisibility(View.VISIBLE);
-            holder.messageBodyTextView.setVisibility(View.GONE);
-        } else {
-            holder.messageBodyTextView.setText(messageBody);
-            holder.messageBodyTextView.setVisibility(View.VISIBLE);
-            holder.stickerImageView.setVisibility(View.GONE);
-        }
+        holder.messageBodyTextView.setText(messageBody);
+        holder.messageBodyTextView.setVisibility(View.VISIBLE);
+        holder.attachmentImageView.setVisibility(View.GONE);
     }
 
     private void setMessageAuthor(ViewHolder holder, QBChatMessage chatMessage, boolean isIncomingMessage) {
@@ -146,6 +136,6 @@ public class ChatAdapter extends BaseAdapter {
         public TextView messageInfoTextView;
         public LinearLayout messageContainerLayout;
         public LinearLayout textContainerLayout;
-        public ImageView stickerImageView;
+        public ImageView attachmentImageView;
     }
 }

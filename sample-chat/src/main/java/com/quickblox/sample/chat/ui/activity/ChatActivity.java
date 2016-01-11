@@ -2,21 +2,17 @@ package com.quickblox.sample.chat.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
@@ -24,14 +20,13 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
-import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
+import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.utils.ErrorUtils;
-import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
@@ -43,26 +38,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import vc908.stickerfactory.StickersManager;
-import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
-import vc908.stickerfactory.ui.OnStickerSelectedListener;
-import vc908.stickerfactory.ui.fragment.StickersFragment;
-import vc908.stickerfactory.ui.view.KeyboardHandleRelativeLayout;
-
-public class ChatActivity extends BaseActivity implements KeyboardHandleRelativeLayout.KeyboardSizeChangeListener {
+public class ChatActivity extends BaseActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
 
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
-    private KeyboardHandleRelativeLayout keyboardHandleLayout;
-    private RelativeLayout containerLayout;
-    private FrameLayout stickersContainerLayout;
-
     private ProgressBar progressBar;
     private ListView messagesListView;
     private EditText messageEditText;
-    private ImageButton stickerImageButton;
+    private ImageButton emoticonImageButton;
 
     private ChatAdapter adapter;
 
@@ -98,31 +83,14 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     @Override
     public void onBackPressed() {
-        if (isStickersContainerVisible()) {
-            setStickersContainerVisible(false);
-            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
-        } else {
-            releaseChat();
-            super.onBackPressed();
-        }
+        releaseChat();
+        super.onBackPressed();
     }
 
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
             initChat();
-        }
-    }
-
-    @Override
-    public void onKeyboardVisibilityChanged(boolean isKeyboardVisible) {
-        if (isKeyboardVisible) {
-            setStickersContainerVisible(false);
-            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
-        } else if (isStickersContainerVisible()) {
-            stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-        } else {
-            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
         }
     }
 
@@ -136,12 +104,12 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-        case R.id.menu_chat_action_info:
-            ChatInfoActivity.start(this, dialog);
-            return true;
+            case R.id.menu_chat_action_info:
+                ChatInfoActivity.start(this, dialog);
+                return true;
 
-        default:
-            return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -152,22 +120,8 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
-    public void onStickersClick(View view) {
-        if (isStickersContainerVisible()) {
-            KeyboardUtils.showKeyboard(messageEditText);
-            stickerImageButton.setImageResource(R.drawable.ic_action_insert_emoticon);
-        } else if (keyboardHandleLayout.isKeyboardVisible()) {
-            keyboardHandleLayout.hideKeyboard(this, new KeyboardHandleRelativeLayout.KeyboardHideCallback() {
-                @Override
-                public void onKeyboardHide() {
-                    stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-                    setStickersContainerVisible(true);
-                }
-            });
-        } else {
-            stickerImageButton.setImageResource(R.drawable.ic_action_keyboard);
-            setStickersContainerVisible(true);
-        }
+    public void onEmoticonClick(View view) {
+        // TODO Show emoticon keyboard
     }
 
     public void showMessage(QBChatMessage message) {
@@ -181,35 +135,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         messagesListView = _findViewById(R.id.list_chat_messages);
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
-        containerLayout = _findViewById(R.id.layout_chat_container);
-        keyboardHandleLayout = _findViewById(R.id.layout_chat_keyboard_notifier);
-        stickersContainerLayout = _findViewById(R.id.layout_chat_stickers_container);
-        stickerImageButton = _findViewById(R.id.button_chat_stickers);
-
-        keyboardHandleLayout.setKeyboardSizeChangeListener(this);
-
-        String fragmentTag = StickersFragment.class.getSimpleName();
-        StickersFragment stickersFragment = (StickersFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag);
-        if (stickersFragment == null) {
-            stickersFragment = new StickersFragment();
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.layout_chat_stickers_container, stickersFragment, fragmentTag)
-                    .commit();
-        }
-
-        stickersFragment.setOnStickerSelectedListener(stickerSelectedListener);
-        stickersFragment.setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
-            @Override
-            public void onEmojiBackspaceClicked() {
-                KeyEvent event = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
-                messageEditText.dispatchKeyEvent(event);
-            }
-        });
-
-        setStickersContainerVisible(isStickersContainerVisible());
-        updateStickersContainerParams();
+        emoticonImageButton = _findViewById(R.id.button_chat_emoticon);
     }
 
     private void sendChatMessage(String text) {
@@ -230,56 +156,17 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
-    private void setStickersContainerVisible(boolean isVisible) {
-        stickersContainerLayout.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        int keyboardHeight = vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight();
-        if (stickersContainerLayout.getHeight() != keyboardHeight) {
-            updateStickersContainerParams();
-        }
-
-        final int bottomPadding = isVisible ? keyboardHeight : 0;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            keyboardHandleLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    setContentBottomPadding(bottomPadding);
-                    scrollMessageListDown();
-                }
-            });
-        } else {
-            setContentBottomPadding(bottomPadding);
-            scrollMessageListDown();
-        }
-    }
-
-    private boolean isStickersContainerVisible() {
-        return stickersContainerLayout.getVisibility() == View.VISIBLE;
-    }
-
-    private void updateStickersContainerParams() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) stickersContainerLayout.getLayoutParams();
-        lp.height = vc908.stickerfactory.utils.KeyboardUtils.getKeyboardHeight();
-        stickersContainerLayout.setLayoutParams(lp);
-    }
-
-    public void setContentBottomPadding(int padding) {
-        int leftPadding = containerLayout.getPaddingLeft();
-        int topPadding = containerLayout.getPaddingTop();
-        int rightPadding = containerLayout.getPaddingRight();
-        containerLayout.setPadding(leftPadding, topPadding, rightPadding, padding);
-    }
-
     private void initChat() {
         switch (dialog.getType()) {
-        case GROUP:
-            chat = new GroupChatImpl(this);
-            joinGroupChat();
-            break;
+            case GROUP:
+                chat = new GroupChatImpl(this);
+                joinGroupChat();
+                break;
 
-        case PRIVATE:
-            chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(dialog));
-            loadDialogUsers();
-            break;
+            case PRIVATE:
+                chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(dialog));
+                loadDialogUsers();
+                break;
         }
     }
 
@@ -365,17 +252,6 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     private void scrollMessageListDown() {
         messagesListView.setSelection(messagesListView.getCount() - 1);
     }
-
-    private OnStickerSelectedListener stickerSelectedListener = new OnStickerSelectedListener() {
-        @Override
-        public void onStickerSelected(String code) {
-            if (StickersManager.isSticker(code)) {
-                sendChatMessage(code);
-            } else {
-                messageEditText.append(code);
-            }
-        }
-    };
 
     private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
         @Override
