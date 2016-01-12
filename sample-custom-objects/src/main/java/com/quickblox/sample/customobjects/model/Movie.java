@@ -20,7 +20,7 @@ public class Movie {
     private String date;
 
     public Movie(QBCustomObject qbCustomObject) {
-        id = qbCustomObject.getParentId();
+        id = qbCustomObject.getCustomObjectId();
         name = QBCustomObjectsUtils.parseField(Contract.NAME, qbCustomObject);
         description = QBCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
         year = QBCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);

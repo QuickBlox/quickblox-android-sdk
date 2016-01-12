@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent"
-    android:paddingLeft="@dimen/padding_large"
-    android:paddingRight="@dimen/padding_large">
+    android:paddingLeft="@dimen/padding_very_large"
+    android:paddingRight="@dimen/padding_very_large">
 
     <TextView
         android:id="@+id/text_movie_name"
         style="@style/MovieNameStyle"
-        android:paddingTop="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_tittle_details"
         android:text="@string/title"
         android:textStyle="bold" />
 
@@ -15,26 +15,27 @@
         android:id="@+id/text_movie_year"
         style="@style/MovieCommentStyle"
         android:layout_below="@+id/text_movie_name"
-        android:paddingTop="@dimen/padding_small"
         android:text="@string/year" />
 
     <TextView
         android:id="@+id/text_movie_description"
         style="@style/MovieDescriptionYearStyle"
         android:layout_below="@+id/text_movie_year"
-        android:paddingTop="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_description_details"
         android:text="@string/description" />
 
     <TextView
         android:id="@+id/movie_rating_textview"
         style="@style/MovieRatingStyle"
         android:layout_below="@+id/text_movie_description"
+        android:paddingTop="@dimen/padding_rating_details"
         android:text="@string/rating" />
 
     <RatingBar
         android:id="@+id/rating_movie"
         style="@style/MovieRatingBarStyle"
         android:layout_below="@+id/movie_rating_textview"
-        android:isIndicator="true" />
+        android:isIndicator="true"
+        android:paddingTop="@dimen/padding_rating_bar_details" />
 
 </RelativeLayout>

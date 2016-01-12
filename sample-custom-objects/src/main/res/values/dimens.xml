@@ -4,11 +4,25 @@
     <dimen name="margin_middle">10dp</dimen>
     <dimen name="margin_large">30dp</dimen>
 
-    <dimen name="padding_very_small">3dp</dimen>
-    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_small">3dp</dimen>
     <dimen name="padding_middle">10dp</dimen>
-    <dimen name="padding_large">15dp</dimen>
-    <dimen name="padding_very_large">20dp</dimen>
+    <dimen name="padding_large">12dp</dimen>
+    <dimen name="padding_very_large">15dp</dimen>
+
+    <dimen name="padding_tittle_details">35dp</dimen>
+    <dimen name="padding_year_details">15dp</dimen>
+    <dimen name="padding_description_details">25dp</dimen>
+    <dimen name="padding_rating_details">55dp</dimen>
+    <dimen name="padding_rating_bar_details">25dp</dimen>
+
+    <dimen name="padding_tittle_add">25dp</dimen>
+    <dimen name="padding_description">50dp</dimen>
+    <dimen name="padding_year_add">25dp</dimen>
+    <dimen name="padding_rating_add">45dp</dimen>
+    <dimen name="padding_rating_bar_add">25dp</dimen>
+
+    <dimen name="padding_list">10dp</dimen>
+    <dimen name="padding_item">20dp</dimen>
 
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_middle">16sp</dimen>

@@ -4,7 +4,10 @@ import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.model.Movie;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QBCustomObjectsUtils {
 
@@ -28,5 +31,11 @@ public class QBCustomObjectsUtils {
         qbCustomObject.setFields(fields);
 
         return qbCustomObject;
+    }
+
+    public static Movie getMovieItem(Map<String, Movie> movieList, int position) {
+        List list = new ArrayList(movieList.values());
+        Movie movie = (Movie) list.get(position);
+        return movie;
     }
 }

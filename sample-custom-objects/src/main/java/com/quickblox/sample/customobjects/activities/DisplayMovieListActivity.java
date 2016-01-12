@@ -13,6 +13,8 @@ import android.widget.ListView;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
 import com.quickblox.sample.customobjects.helper.DataHolder;
+import com.quickblox.sample.customobjects.model.Movie;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
@@ -46,7 +48,8 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ShowMovieActivity.start(this, (int) id);
+        Movie movie = QBCustomObjectsUtils.getMovieItem(DataHolder.getInstance().getMovieList(), position);
+        ShowMovieActivity.start(this, movie.getId());
     }
 
     @Override

@@ -1,15 +1,16 @@
 package com.quickblox.sample.customobjects.helper;
 
-import com.quickblox.sample.customobjects.model.Movie;
 import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataHolder {
 
     private static DataHolder instance;
-    private List<Movie> movieList;
+    private Map<String, Movie> movieListMap;
 
     public static synchronized DataHolder getInstance() {
         if (instance == null) {
@@ -19,28 +20,31 @@ public class DataHolder {
     }
 
     private DataHolder() {
-        movieList = new ArrayList<>();
+        movieListMap = new HashMap<>();
     }
 
-    public List<Movie> getMovieList() {
-        return movieList;
+    public Map<String, Movie> getMovieList() {
+        return movieListMap;
     }
 
-    public Movie getMovieObject(int id) {
-        return movieList.get(id);
+    public Movie getMovieObject(String id) {
+        return movieListMap.get(id);
     }
 
     public void clear() {
-        movieList.clear();
+        movieListMap.clear();
     }
 
     public void addMovieToList(QBCustomObject customObject) {
-        movieList.add(new Movie(customObject));
+        Movie movie = new Movie(customObject);
+        movieListMap.put(movie.getId(), movie);
     }
 
     public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
+        Movie movie;
         for (QBCustomObject customObject : qbCustomObjects) {
-            movieList.add(new Movie(customObject));
+            movie = new Movie(customObject);
+            movieListMap.put(movie.getId(), movie);
         }
     }
 }

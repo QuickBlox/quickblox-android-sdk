@@ -2,8 +2,8 @@
 <resources>
 
     <style name="MovieListStyle" parent="ListItem">
-        <item name="android:paddingLeft">@dimen/padding_large</item>
-        <item name="android:paddingRight">@dimen/padding_large</item>
+        <item name="android:paddingLeft">@dimen/padding_very_large</item>
+        <item name="android:paddingRight">@dimen/padding_very_large</item>
         <item name="android:orientation">vertical</item>
     </style>
 
