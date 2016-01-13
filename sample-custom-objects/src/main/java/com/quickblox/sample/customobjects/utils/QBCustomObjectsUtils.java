@@ -34,6 +34,7 @@ public class QBCustomObjectsUtils {
     }
 
     public static Movie getMovieItem(Map<String, Movie> movieList, int position) {
+        // TODO Specify generic type for List to avoid unnecessary class cast
         List list = new ArrayList(movieList.values());
         Movie movie = (Movie) list.get(position);
         return movie;

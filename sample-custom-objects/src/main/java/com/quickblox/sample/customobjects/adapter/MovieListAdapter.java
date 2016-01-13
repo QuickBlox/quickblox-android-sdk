@@ -19,6 +19,7 @@ public class MovieListAdapter extends BaseAdapter {
     private Map<String, Movie> movieList;
 
     public MovieListAdapter(Context context, Map<String, Movie> movieList) {
+        // TODO Adapter should have List<Movie> field, which have to be set and filled with values from map in constructor
         this.movieList = movieList;
         this.inflater = LayoutInflater.from(context);
     }
@@ -30,6 +31,7 @@ public class MovieListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
+        // TODO return movieList.get(position)
         return QBCustomObjectsUtils.getMovieItem(movieList, position);
     }
 
