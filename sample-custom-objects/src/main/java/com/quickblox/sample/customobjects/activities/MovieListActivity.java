@@ -3,7 +3,6 @@ package com.quickblox.sample.customobjects.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,13 +44,13 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        movieListAdapter.notifyDataSetChanged();
+        movieListAdapter.updateAdapter(DataHolder.getInstance().getMovieMap());
     }
 
     private void initUI() {
         moviesListView = _findViewById(R.id.list_movies);
         moviesListView.setOnItemClickListener(this);
-        movieListAdapter = new MovieListAdapter(this, DataHolder.getInstance().getMovieList());
+        movieListAdapter = new MovieListAdapter(this, DataHolder.getInstance().getMovieMap());
         moviesListView.setAdapter(movieListAdapter);
     }
 
@@ -79,18 +78,18 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void getMovieList() {
         progressDialog.show();
         QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-                if (!DataHolder.getInstance().getMovieList().isEmpty()) {
+                if (!DataHolder.getInstance().getMovieMap().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }
-
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 progressDialog.dismiss();
-                movieListAdapter.notifyDataSetChanged();
+                movieListAdapter.updateAdapter(DataHolder.getInstance().getMovieMap());
             }
 
             @Override

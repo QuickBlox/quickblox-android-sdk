@@ -7,36 +7,37 @@
     <TextView
         android:id="@+id/text_movie_name"
         style="@style/MovieNameStyle"
-        android:paddingTop="@dimen/padding_tittle_details"
+        android:layout_marginTop="@dimen/margin_tittle_details"
         android:text="@string/title"
+        android:textSize="@dimen/text_size_large"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_movie_year"
         style="@style/MovieCommentStyle"
         android:layout_below="@+id/text_movie_name"
-        android:paddingTop="@dimen/padding_year_details"
+        android:layout_marginTop="@dimen/margin_year_details"
         android:text="@string/year" />
 
     <TextView
         android:id="@+id/text_movie_description"
         style="@style/MovieDescriptionYearStyle"
         android:layout_below="@+id/text_movie_year"
-        android:paddingTop="@dimen/padding_description_details"
+        android:layout_marginTop="@dimen/margin_description_details"
         android:text="@string/description" />
 
     <TextView
         android:id="@+id/movie_rating_textview"
         style="@style/MovieRatingStyle"
         android:layout_below="@+id/text_movie_description"
-        android:paddingTop="@dimen/padding_rating_details"
+        android:layout_marginTop="@dimen/margin_rating_details"
         android:text="@string/rating" />
 
     <RatingBar
         android:id="@+id/rating_movie"
         style="@style/MovieRatingBarStyle"
         android:layout_below="@+id/movie_rating_textview"
-        android:isIndicator="true"
-        android:paddingTop="@dimen/padding_rating_bar_details" />
+        android:layout_marginTop="@dimen/margin_rating_bar_details"
+        android:isIndicator="true" />
 
 </RelativeLayout>

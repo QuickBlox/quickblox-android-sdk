@@ -23,7 +23,7 @@ public class DataHolder {
         movieListMap = new HashMap<>();
     }
 
-    public Map<String, Movie> getMovieList() {
+    public Map<String, Movie> getMovieMap() {
         return movieListMap;
     }
 

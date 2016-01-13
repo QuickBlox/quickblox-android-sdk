@@ -6,38 +6,37 @@
     <EditText
         android:id="@+id/add_movie_name_textview"
         style="@style/MovieNameStyle"
+        android:layout_marginTop="@dimen/margin_title_add"
         android:hint="@string/title"
-        android:inputType="text"
-        android:paddingTop="@dimen/padding_tittle_add"
-        android:textSize="@dimen/text_size_middle" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/add_movie_description_textview"
         style="@style/MovieDescriptionYearStyle"
         android:layout_below="@+id/add_movie_name_textview"
-        android:hint="@string/description"
-        android:paddingTop="@dimen/padding_description" />
+        android:layout_marginTop="@dimen/margin_description"
+        android:hint="@string/description" />
 
     <EditText
         android:id="@+id/add_movie_year_textview"
         style="@style/MovieDescriptionYearStyle"
         android:layout_below="@+id/add_movie_description_textview"
+        android:layout_marginTop="@dimen/margin_year_add"
         android:hint="@string/year"
-        android:inputType="numberDecimal"
-        android:paddingTop="@dimen/padding_year_add" />
+        android:inputType="numberDecimal" />
 
     <TextView
         android:id="@+id/add_movie_rating_textview"
         style="@style/MovieRatingStyle"
         android:layout_below="@+id/add_movie_year_textview"
+        android:layout_marginTop="@dimen/margin_rating_add"
         android:paddingLeft="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_rating_add"
         android:text="@string/rating" />
 
     <RatingBar
         android:id="@+id/add_movie_ratingBar"
         style="@style/MovieRatingBarStyle"
         android:layout_below="@+id/add_movie_rating_textview"
-        android:paddingTop="@dimen/padding_rating_bar_add" />
+        android:layout_marginTop="@dimen/margin_rating_bar_add" />
 
 </RelativeLayout>

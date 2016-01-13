@@ -61,6 +61,11 @@ public class MovieListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void updateAdapter(Map<String, Movie> movieMap) {
+        this.movieList = new ArrayList(movieMap.values());
+        this.notifyDataSetChanged();
+    }
+
     private static class ViewHolder {
         public TextView titleTextView;
         public TextView descriptionTextView;

@@ -28,8 +28,6 @@
             android:label="@string/movies"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".activities.GetMovieListActivity" />
-
         <activity
             android:name=".activities.AddNewMovieActivity"
             android:label="@string/movie_add_new"

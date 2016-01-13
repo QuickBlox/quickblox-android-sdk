@@ -8,27 +8,26 @@
     </style>
 
     <style name="MovieNameStyle" parent="MatchWidth">
-        <item name="android:textColor">@color/text_color_primary</item>
-        <item name="android:textSize">@dimen/text_size_large</item>
-    </style>
-
-    <style name="MovieCommentStyle" parent="MatchWidth">
-        <item name="android:textColor">@color/text_color_dark_grey</item>
+        <item name="android:textColor">@color/text_color_black</item>
         <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
 
+    <style name="MovieCommentStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_black</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
     <style name="MovieDescriptionYearStyle" parent="MatchWidth">
-        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textColor">@color/text_color_black</item>
         <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
 
     <style name="MovieRatingStyle" parent="WrapContent">
-        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 
     <style name="MovieRatingBarStyle" parent="WrapContent">
-        <item name="android:paddingTop">@dimen/margin_middle</item>
         <item name="android:numStars">5</item>
     </style>
 

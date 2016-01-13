@@ -5,13 +5,12 @@
     <TextView
         android:id="@+id/text_title"
         style="@style/MovieNameStyle"
-        android:layout_marginTop="@dimen/margin_middle"
         android:text="@string/movie" />
 
     <TextView
         android:id="@+id/text_description"
         style="@style/MovieCommentStyle"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:singleLine="true"
         android:text="@string/comment" />
 
 </LinearLayout>
