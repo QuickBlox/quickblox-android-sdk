@@ -10,10 +10,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 
+import com.quickblox.sample.core.R;
+
 public class ProgressDialogFragment extends DialogFragment {
 
     private static final String TAG = ProgressDialogFragment.class.getSimpleName();
     private static final String ARG_MESSAGE_ID = "message_id";
+
+    public static void show(FragmentManager fm) {
+        show(fm, R.string.dlg_loading);
+    }
 
     public static void show(FragmentManager fm, @StringRes int messageId) {
         // We're not using dialogFragment.show() method because we may call this DialogFragment

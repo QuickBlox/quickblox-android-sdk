@@ -47,6 +47,7 @@
     <string name="chat_send_message_error">Failed to send a message</string>
     <string name="chat_load_history_error">Load chat history errors</string>
     <string name="chat_load_users_error">Load chat users errors</string>
+    <string name="chat_attachment_error">Can\'t load chosen file</string>
 
     <string name="chat_info">Chat info</string>
     <string name="chat_info_add_people_error">Add people errors</string>
