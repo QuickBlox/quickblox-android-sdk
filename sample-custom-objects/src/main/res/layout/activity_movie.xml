@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent"
-    android:paddingLeft="@dimen/padding_very_large"
-    android:paddingRight="@dimen/padding_very_large">
+    android:paddingLeft="@dimen/padding_middle"
+    android:paddingRight="@dimen/padding_middle">
 
     <TextView
         android:id="@+id/text_movie_name"
@@ -15,6 +15,7 @@
         android:id="@+id/text_movie_year"
         style="@style/MovieCommentStyle"
         android:layout_below="@+id/text_movie_name"
+        android:paddingTop="@dimen/padding_year_details"
         android:text="@string/year" />
 
     <TextView

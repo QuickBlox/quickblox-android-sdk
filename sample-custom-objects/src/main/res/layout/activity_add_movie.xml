@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent"
-    android:paddingLeft="@dimen/padding_large"
-    android:paddingRight="@dimen/padding_very_large">
+    android:paddingLeft="@dimen/padding_middle"
+    android:paddingRight="@dimen/padding_middle">
 
     <EditText
         android:id="@+id/add_movie_name_textview"

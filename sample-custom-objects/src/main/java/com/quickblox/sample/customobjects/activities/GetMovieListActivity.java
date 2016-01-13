@@ -38,6 +38,7 @@ public class GetMovieListActivity extends BaseActivity {
 
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 DisplayMovieListActivity.start(GetMovieListActivity.this);
+                progressDialog.dismiss();
                 finish();
             }
 
