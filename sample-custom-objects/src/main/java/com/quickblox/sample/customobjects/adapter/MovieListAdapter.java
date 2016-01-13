@@ -9,18 +9,18 @@ import android.widget.TextView;
 
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.model.Movie;
-import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MovieListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private Map<String, Movie> movieList;
+    private List<Movie> movieList;
 
-    public MovieListAdapter(Context context, Map<String, Movie> movieList) {
-        // TODO Adapter should have List<Movie> field, which have to be set and filled with values from map in constructor
-        this.movieList = movieList;
+    public MovieListAdapter(Context context, Map<String, Movie> movieMap) {
+        this.movieList = new ArrayList(movieMap.values());
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -31,8 +31,7 @@ public class MovieListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        // TODO return movieList.get(position)
-        return QBCustomObjectsUtils.getMovieItem(movieList, position);
+        return movieList.get(position);
     }
 
     @Override

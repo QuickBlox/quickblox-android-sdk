@@ -3,6 +3,7 @@ package com.quickblox.sample.customobjects.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,20 +11,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.customobjects.QBCustomObjects;
+import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
+import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
-import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
-// TODO Rename to MovieListActivity
-public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private ListView moviesListView;
     private MovieListAdapter movieListAdapter;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, DisplayMovieListActivity.class);
+        Intent intent = new Intent(context, MovieListActivity.class);
         context.startActivity(intent);
     }
 
@@ -32,6 +39,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies_list);
         initUI();
+        getMovieList();
     }
 
     @Override
@@ -49,8 +57,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        // TODO Replace QBCustomObjectsUtils class call to "(Movie) adapterView.getItemAtPosition(position)"
-        Movie movie = QBCustomObjectsUtils.getMovieItem(DataHolder.getInstance().getMovieList(), position);
+        Movie movie = (Movie) adapterView.getItemAtPosition(position);
         ShowMovieActivity.start(this, movie.getId());
     }
 
@@ -71,5 +78,26 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void getMovieList() {
+        progressDialog.show();
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
+            @Override
+            public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
+                if (!DataHolder.getInstance().getMovieList().isEmpty()) {
+                    DataHolder.getInstance().clear();
+                }
+
+                DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
+                progressDialog.dismiss();
+                movieListAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Toaster.shortToast(errors.get(0));
+                progressDialog.dismiss();
+            }
+        });
     }
 }
