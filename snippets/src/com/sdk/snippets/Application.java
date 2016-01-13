@@ -1,5 +1,6 @@
 package com.sdk.snippets;
 
+import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.ServiceZone;
 import com.sdk.snippets.core.ApplicationConfig;
@@ -20,6 +21,7 @@ public class Application extends android.app.Application {
         QBSettings.getInstance().init(getApplicationContext(), CONFIG.getAppId(),
                 CONFIG.getAuthKey(), CONFIG.getAuthSecret());
 
+//        QBSettings.getInstance().setLogLevel(LogLevel.NOTHING);
 
         if(CONFIG.getApiDomain().equals("https://api.quickblox.com")){
             QBSettings.getInstance().setAccountKey(CONFIG.getAccountKey());
