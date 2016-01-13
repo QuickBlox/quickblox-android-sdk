@@ -16,6 +16,7 @@ import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
+// TODO Rename to MovieListActivity
 public class DisplayMovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private ListView moviesListView;
@@ -48,6 +49,7 @@ public class DisplayMovieListActivity extends BaseActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        // TODO Replace QBCustomObjectsUtils class call to "(Movie) adapterView.getItemAtPosition(position)"
         Movie movie = QBCustomObjectsUtils.getMovieItem(DataHolder.getInstance().getMovieList(), position);
         ShowMovieActivity.start(this, movie.getId());
     }

@@ -14,6 +14,7 @@ import com.quickblox.sample.customobjects.helper.DataHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO Move all movie downloading logic to the MovieListActivity
 public class GetMovieListActivity extends BaseActivity {
 
     public static void start(Context context) {
