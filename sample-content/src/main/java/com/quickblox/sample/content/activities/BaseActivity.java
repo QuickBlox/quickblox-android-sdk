@@ -9,7 +9,7 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 
 public class BaseActivity extends CoreBaseActivity {
 
-    protected static final String EXTRA_POSITION = "position";
+    protected static final String EXTRA_QBFILE_ID = "id";
 
     protected ActionBar actionBar;
     protected ProgressDialog progressDialog;

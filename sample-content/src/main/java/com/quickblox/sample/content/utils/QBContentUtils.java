@@ -8,11 +8,9 @@ import com.quickblox.sample.content.R;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.Toaster;
 
-import java.util.List;
-
 public class QBContentUtils {
 
-    public static String getUrl(int position, List<QBFile> qbFileList) {
+    public static String getUrl(QBFile qbFile) {
         // URL formation documentation
         // http://quickblox.com/developers/Content#API_Content_Get_File_As_A_Redirect_To_The_S3_Object
 
@@ -22,7 +20,7 @@ public class QBContentUtils {
         } catch (BaseServiceException e) {
             e.printStackTrace();
         }
-        return BaseService.getServiceEndpointURL() + "/blobs/" + qbFileList.get(position).getUid() +
+        return BaseService.getServiceEndpointURL() + "/blobs/" + qbFile.getUid() +
                 "?token=" + sessionToken;
     }
 

@@ -84,6 +84,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
+//                ToDo Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
                 if (!DataHolder.getInstance().getMovieMap().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }

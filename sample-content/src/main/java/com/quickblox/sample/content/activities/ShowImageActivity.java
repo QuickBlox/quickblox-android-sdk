@@ -1,5 +1,7 @@
 package com.quickblox.sample.content.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.QBContentUtils;
@@ -22,13 +25,17 @@ public class ShowImageActivity extends BaseActivity {
     private ProgressBar progressBar;
 
     private DisplayImageOptions displayImageOptions;
-    private int currentPosition;
+
+    public static void start(Context context, int id) {
+        Intent intent = new Intent(context, ShowImageActivity.class);
+        intent.putExtra(EXTRA_QBFILE_ID, id);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
-        currentPosition = getIntent().getIntExtra(EXTRA_POSITION, 0);
         initUI();
         initImageLoaderOptions();
         showSelectedImage();
@@ -50,8 +57,10 @@ public class ShowImageActivity extends BaseActivity {
     }
 
     private void showSelectedImage() {
-        ImageLoader.getInstance().displayImage(
-                QBContentUtils.getUrl(currentPosition, DataHolder.getInstance().getQBFileList()),
+        int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
+        QBFile qbFile = DataHolder.getInstance().getQBFile(id);
+                ImageLoader.getInstance().displayImage(
+                QBContentUtils.getUrl(qbFile),
                 imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {

@@ -18,7 +18,7 @@ public class GetImageFileTask extends AsyncTask {
     }
 
     @Override
-    protected Object doInBackground(Object[] params) {
+    protected Object doInBackground(Object... params) {
         File imageFile = null;
         ImageHelper imageHelper = (ImageHelper) params[0];
         ImageView imageView = (ImageView) params[1];

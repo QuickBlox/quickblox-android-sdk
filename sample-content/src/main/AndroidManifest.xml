@@ -22,10 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.GetFileListActivity"/>
-
         <activity
-            android:name=".activities.GalleryActivity"
+            android:name=".activities.GalleryListActivity"
             android:label="@string/gallery_title"
             android:screenOrientation="portrait" />
         <activity

@@ -10,6 +10,7 @@ public class Consts {
     public static final String USER_PASSWORD = "supersample-ios";
 
     public static final String CLASS_NAME = "Movie";
+//    ToDo rename position to id
     public static final String EXTRA_MOVIE_ID = "position";
 
 }

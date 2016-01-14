@@ -2,6 +2,7 @@ package com.quickblox.sample.content.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,15 @@ import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.QBContentUtils;
 
-import java.util.List;
-
 public class GalleryAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private DisplayImageOptions displayImageOptions;
-    private List<QBFile> qbFileList;
+    private SparseArray<QBFile> qbFileSparseArr;
 
-    public GalleryAdapter(Context context, List<QBFile> qbFileList) {
+    public GalleryAdapter(Context context, SparseArray<QBFile> qbFileSparseArr) {
         layoutInflater = LayoutInflater.from(context);
-        this.qbFileList = qbFileList;
+        this.qbFileSparseArr = qbFileSparseArr;
         initImageLoaderOptions();
     }
 
@@ -43,17 +42,17 @@ public class GalleryAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return qbFileList.size();
+        return qbFileSparseArr.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return qbFileList.get(position);
+        return qbFileSparseArr.valueAt(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return qbFileSparseArr.keyAt(position);
     }
 
     @Override
@@ -75,9 +74,8 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     private void setImage(final ViewHolder holder, int position) {
-
-        ImageLoader.getInstance().displayImage(
-                QBContentUtils.getUrl(position, DataHolder.getInstance().getQBFileList()),
+        QBFile qbFile = DataHolder.getInstance().getQBFileSparseArray().valueAt(position);
+        ImageLoader.getInstance().displayImage(QBContentUtils.getUrl(qbFile),
                 holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
@@ -96,6 +94,11 @@ public class GalleryAdapter extends BaseAdapter {
                     }
                 }
         );
+    }
+
+    public void updateAdapter(SparseArray<QBFile> qbFileSparseArr) {
+        this.qbFileSparseArr = qbFileSparseArr;
+        notifyDataSetChanged();
     }
 
     private static class ViewHolder {
