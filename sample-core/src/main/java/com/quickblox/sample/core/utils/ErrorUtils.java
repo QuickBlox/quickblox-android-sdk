@@ -16,12 +16,16 @@ public class ErrorUtils {
 
     private ErrorUtils() {}
 
-    public static void showErrorDialog(Context context, @StringRes int errorMessage, List<String> errors) {
-        showErrorDialog(context, context.getString(errorMessage), errors);
+    public static void showErrorDialog(Context context, @StringRes int errorMessage, String error) {
+        showErrorDialog(context, context.getString(errorMessage), error);
     }
 
-    private static void showErrorDialog(final Context context, final String errorMessage, final List<String> errors) {
-        showErrorDialog(context, String.format("%s: %s", errorMessage, errors));
+    public static void showErrorDialog(Context context, @StringRes int errorMessage, List<String> errors) {
+        showErrorDialog(context, context.getString(errorMessage), errors.toString());
+    }
+
+    private static void showErrorDialog(Context context, String errorMessage, String error) {
+        showErrorDialog(context, String.format("%s: %s", errorMessage, error));
     }
 
     private static void showErrorDialog(final Context context, final String errorMessage) {
