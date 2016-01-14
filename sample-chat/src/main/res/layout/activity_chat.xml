@@ -29,10 +29,10 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/button_chat_emoticon"
+            android:id="@+id/button_chat_attachment"
             style="@style/BorderlessImageButtonStyle"
-            android:onClick="onEmoticonClick"
-            android:src="@drawable/ic_action_insert_emoticon" />
+            android:onClick="onAttachmentsClick"
+            android:src="@drawable/ic_action_attachment" />
 
         <EditText
             android:id="@+id/edit_chat_message"

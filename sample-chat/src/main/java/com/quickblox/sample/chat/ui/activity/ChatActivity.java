@@ -28,18 +28,22 @@ import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
+import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
+    private static final int ATTACHMENT_REQUEST_CODE = 721;
 
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
@@ -120,8 +124,8 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
-    public void onEmoticonClick(View view) {
-        // TODO Show emoticon keyboard
+    public void onAttachmentsClick(View view) {
+        new ImagePickHelper().pickAnImage(this, ATTACHMENT_REQUEST_CODE);
     }
 
     public void showMessage(QBChatMessage message) {
@@ -135,7 +139,7 @@ public class ChatActivity extends BaseActivity {
         messagesListView = _findViewById(R.id.list_chat_messages);
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
-        emoticonImageButton = _findViewById(R.id.button_chat_emoticon);
+        emoticonImageButton = _findViewById(R.id.button_chat_attachment);
     }
 
     private void sendChatMessage(String text) {
@@ -251,6 +255,26 @@ public class ChatActivity extends BaseActivity {
 
     private void scrollMessageListDown() {
         messagesListView.setSelection(messagesListView.getCount() - 1);
+    }
+
+    @Override
+    public void onImagePicked(int requestCode, File file) {
+        switch (requestCode) {
+            case ATTACHMENT_REQUEST_CODE:
+                // TODO Send attachment
+                break;
+        }
+
+    }
+
+    @Override
+    public void onImagePickError(int requestCode, Exception e) {
+        ErrorUtils.showErrorDialog(this, R.string.chat_attachment_error, e.toString());
+    }
+
+    @Override
+    public void onImagePickClosed(int requestCode) {
+        // ignore
     }
 
     private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
