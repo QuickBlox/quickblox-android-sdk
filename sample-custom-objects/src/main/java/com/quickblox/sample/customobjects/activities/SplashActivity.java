@@ -40,7 +40,7 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        GetMovieListActivity.start(this);
+        MovieListActivity.start(this);
         finish();
     }
 }

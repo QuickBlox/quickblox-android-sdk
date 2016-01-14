@@ -24,11 +24,9 @@
         </activity>
 
         <activity
-            android:name=".activities.DisplayMovieListActivity"
+            android:name=".activities.MovieListActivity"
             android:label="@string/movies"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".activities.GetMovieListActivity" />
 
         <activity
             android:name=".activities.AddNewMovieActivity"

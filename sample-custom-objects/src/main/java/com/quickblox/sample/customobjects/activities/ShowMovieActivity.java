@@ -18,9 +18,9 @@ public class ShowMovieActivity extends BaseActivity {
     private TextView descriptionTextView;
     private RatingBar ratingBar;
 
-    public static void start(Context context, int id) {
+    public static void start(Context context, String id) {
         Intent intent = new Intent(context, ShowMovieActivity.class);
-        intent.putExtra(Consts.EXTRA_POSITION, id);
+        intent.putExtra(Consts.EXTRA_MOVIE_ID, id);
         context.startActivity(intent);
     }
 
@@ -41,8 +41,8 @@ public class ShowMovieActivity extends BaseActivity {
     }
 
     private void fillFields() {
-        int position = getIntent().getIntExtra(Consts.EXTRA_POSITION, 0);
-        Movie movie = DataHolder.getInstance().getMovieObject(position);
+        String id = getIntent().getStringExtra(Consts.EXTRA_MOVIE_ID);
+        Movie movie = DataHolder.getInstance().getMovieObject(id);
         nameTextView.setText(movie.getName());
         yearTextView.setText(movie.getYear());
         descriptionTextView.setText(movie.getDescription());

@@ -10,15 +10,17 @@ import android.widget.TextView;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.model.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MovieListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private List<Movie> movieList;
 
-    public MovieListAdapter(Context context, List<Movie> movieList) {
-        this.movieList = movieList;
+    public MovieListAdapter(Context context, Map<String, Movie> movieMap) {
+        this.movieList = new ArrayList(movieMap.values());
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -43,18 +45,26 @@ public class MovieListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_movie, parent, false);
             holder = new ViewHolder();
+
             holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.text_description);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.titleTextView.setText(((Movie) getItem(position)).getName());
-        holder.descriptionTextView.setText(((Movie) getItem(position)).getDescription());
+
+        Movie movie = (Movie) getItem(position);
+        holder.titleTextView.setText(movie.getName());
+        holder.descriptionTextView.setText(movie.getDescription());
 
         return convertView;
     }
 
+    public void updateAdapter(Map<String, Movie> movieMap) {
+        this.movieList = new ArrayList(movieMap.values());
+        this.notifyDataSetChanged();
+    }
 
     private static class ViewHolder {
         public TextView titleTextView;
