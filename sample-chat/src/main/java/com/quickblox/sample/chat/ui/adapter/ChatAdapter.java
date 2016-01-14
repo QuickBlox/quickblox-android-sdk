@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.TimeUtils;
@@ -19,6 +21,7 @@ import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
@@ -57,7 +60,7 @@ public class ChatAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.list_item_message_text, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_chat_message, parent, false);
 
             holder.messageBodyTextView = (TextView) convertView.findViewById(R.id.text_image_message);
             holder.messageAuthorTextView = (TextView) convertView.findViewById(R.id.text_message_author);
@@ -72,12 +75,11 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         QBChatMessage chatMessage = getItem(position);
-        String messageBody = chatMessage.getBody();
         QBUser currentUser = ChatHelper.getCurrentUser();
         boolean isIncomingMessage = chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
 
         setIncomingOrOutgoingMessageAttributes(holder, isIncomingMessage);
-        setMessageBody(holder, messageBody);
+        setMessageBody(holder, chatMessage);
         setMessageInfo(chatMessage, holder);
         setMessageAuthor(holder, chatMessage, isIncomingMessage);
 
@@ -93,10 +95,21 @@ public class ChatAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setMessageBody(ViewHolder holder, String messageBody) {
-        holder.messageBodyTextView.setText(messageBody);
-        holder.messageBodyTextView.setVisibility(View.VISIBLE);
-        holder.attachmentImageView.setVisibility(View.GONE);
+    private void setMessageBody(ViewHolder holder, QBChatMessage chatMessage) {
+        Collection<QBAttachment> attachments = chatMessage.getAttachments();
+        if (attachments == null || attachments.isEmpty()) {
+            holder.messageBodyTextView.setText(chatMessage.getBody());
+            holder.messageBodyTextView.setVisibility(View.VISIBLE);
+            holder.attachmentImageView.setVisibility(View.GONE);
+        } else {
+            QBAttachment attachment = attachments.iterator().next();
+
+            holder.messageBodyTextView.setVisibility(View.GONE);
+            holder.attachmentImageView.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(attachment.getUrl())
+                    .into(holder.attachmentImageView);
+        }
     }
 
     private void setMessageAuthor(ViewHolder holder, QBChatMessage chatMessage, boolean isIncomingMessage) {

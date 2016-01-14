@@ -8,8 +8,11 @@ import android.util.Log;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.content.QBContent;
+import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
@@ -27,6 +30,7 @@ import com.quickblox.users.model.QBUser;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -229,6 +233,18 @@ public class ChatHelper {
         });
     }
 
+    public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback) {
+        QBContent.uploadFileTask(file, true, null, new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
+            @Override
+            public void onSuccess(QBFile qbFile, Bundle bundle) {
+                QBAttachment attachment = new QBAttachment(QBAttachment.PHOTO_TYPE);
+                attachment.setId(qbFile.getId().toString());
+                attachment.setUrl(qbFile.getPublicUrl());
+                onSuccessInMainThread(attachment, bundle);
+            }
+        });
+    }
+
     private void getUsersFromDialogs(final ArrayList<QBDialog> dialogs, final QBEntityCallback<ArrayList<QBDialog>> callback) {
         List<Integer> userIds = new ArrayList<>();
         for (QBDialog dialog : dialogs) {
@@ -244,5 +260,4 @@ public class ChatHelper {
             }
         });
     }
-
 }

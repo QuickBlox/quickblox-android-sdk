@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
@@ -57,6 +58,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private Chat chat;
     private QBDialog dialog;
+    private File attachmentFile;
 
     public static void start(Context context, QBDialog dialog) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -117,10 +119,44 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
     }
 
+    @Override
+    public void onImagePicked(int requestCode, File file) {
+        switch (requestCode) {
+        case ATTACHMENT_REQUEST_CODE:
+            attachmentFile = file;
+            // TODO Show attachment preview
+            break;
+        }
+
+    }
+
+    @Override
+    public void onImagePickError(int requestCode, Exception e) {
+        ErrorUtils.showErrorDialog(this, R.string.chat_attachment_error, e.toString());
+    }
+
+    @Override
+    public void onImagePickClosed(int requestCode) {
+        // ignore
+    }
+
     public void onSendChatClick(View view) {
-        String text = messageEditText.getText().toString();
-        if (!TextUtils.isEmpty(text)) {
-            sendChatMessage(text);
+        final String text = messageEditText.getText().toString();
+
+        if (attachmentFile != null) {
+            ChatHelper.getInstance().loadFileAsAttachment(attachmentFile, new QBEntityCallbackImpl<QBAttachment>() {
+                @Override
+                public void onSuccess(QBAttachment result, Bundle params) {
+                    sendChatMessage(text, result);
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_attachment_error, errors);
+                }
+            });
+        } else if (!TextUtils.isEmpty(text)) {
+            sendChatMessage(text, null);
         }
     }
 
@@ -142,8 +178,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         emoticonImageButton = _findViewById(R.id.button_chat_attachment);
     }
 
-    private void sendChatMessage(String text) {
+    private void sendChatMessage(String text, QBAttachment attachment) {
         QBChatMessage chatMessage = new QBChatMessage();
+        chatMessage.addAttachment(attachment);
         chatMessage.setBody(text);
         chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
@@ -151,6 +188,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         try {
             chat.sendMessage(chatMessage);
             messageEditText.setText("");
+            attachmentFile = null;
             if (dialog.getType() == QBDialogType.PRIVATE) {
                 showMessage(chatMessage);
             }
@@ -255,26 +293,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void scrollMessageListDown() {
         messagesListView.setSelection(messagesListView.getCount() - 1);
-    }
-
-    @Override
-    public void onImagePicked(int requestCode, File file) {
-        switch (requestCode) {
-            case ATTACHMENT_REQUEST_CODE:
-                // TODO Send attachment
-                break;
-        }
-
-    }
-
-    @Override
-    public void onImagePickError(int requestCode, Exception e) {
-        ErrorUtils.showErrorDialog(this, R.string.chat_attachment_error, e.toString());
-    }
-
-    @Override
-    public void onImagePickClosed(int requestCode) {
-        // ignore
     }
 
     private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
