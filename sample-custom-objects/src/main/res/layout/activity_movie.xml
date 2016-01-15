@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent"
-    android:paddingLeft="@dimen/padding_middle"
-    android:paddingRight="@dimen/padding_middle">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_large"
+    android:paddingRight="@dimen/padding_large">
 
-    <TextView
-        android:id="@+id/text_movie_name"
-        style="@style/MovieNameStyle"
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/movie_title_textview"
+        style="@style/TextPrimaryStyle"
         android:layout_marginTop="@dimen/margin_tittle_details"
         android:text="@string/title"
         android:textSize="@dimen/text_size_large"
-        android:textStyle="bold" />
+        app:typeface="roboto_medium" />
 
     <TextView
         android:id="@+id/text_movie_year"
-        style="@style/MovieCommentStyle"
-        android:layout_below="@+id/text_movie_name"
+        style="@style/TextSecondaryStyle"
         android:layout_marginTop="@dimen/margin_year_details"
         android:text="@string/year" />
 
     <TextView
-        android:id="@+id/text_movie_description"
-        style="@style/MovieDescriptionYearStyle"
-        android:layout_below="@+id/text_movie_year"
+        android:id="@+id/movie_description_textview"
+        style="@style/TextPrimaryStyle"
         android:layout_marginTop="@dimen/margin_description_details"
         android:text="@string/description" />
 
-    <TextView
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/movie_rating_textview"
         style="@style/MovieRatingStyle"
-        android:layout_below="@+id/text_movie_description"
         android:layout_marginTop="@dimen/margin_rating_details"
-        android:text="@string/rating" />
+        android:text="@string/rating"
+        app:typeface="roboto_medium" />
 
     <RatingBar
         android:id="@+id/rating_movie"
         style="@style/MovieRatingBarStyle"
-        android:layout_below="@+id/movie_rating_textview"
         android:layout_marginTop="@dimen/margin_rating_bar_details"
         android:isIndicator="true" />
 
-</RelativeLayout>
+</LinearLayout>

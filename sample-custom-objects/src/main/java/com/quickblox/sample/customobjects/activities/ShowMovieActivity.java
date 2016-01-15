@@ -34,9 +34,9 @@ public class ShowMovieActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        nameTextView = _findViewById(R.id.text_movie_name);
+        nameTextView = _findViewById(R.id.movie_title_textview);
         yearTextView = _findViewById(R.id.text_movie_year);
-        descriptionTextView = _findViewById(R.id.text_movie_description);
+        descriptionTextView = _findViewById(R.id.movie_description_textview);
         ratingBar = _findViewById(R.id.rating_movie);
     }
 

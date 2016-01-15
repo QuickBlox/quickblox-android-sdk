@@ -42,7 +42,7 @@ public class AddNewMovieActivity extends BaseActivity {
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        titleEditText = _findViewById(R.id.add_movie_name_textview);
+        titleEditText = _findViewById(R.id.add_movie_title_textview);
         descriptionEditText = _findViewById(R.id.add_movie_description_textview);
         yearEditText = _findViewById(R.id.add_movie_year_textview);
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
