@@ -3,6 +3,8 @@ package com.quickblox.sample.customobjects.model;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
+import java.util.Comparator;
+
 public class Movie {
 
     public interface Contract {
@@ -17,7 +19,7 @@ public class Movie {
     private String description;
     private String year;
     private float rating;
-    private String date;
+    private long date;
 
     public Movie(QBCustomObject qbCustomObject) {
         id = qbCustomObject.getCustomObjectId();
@@ -25,7 +27,7 @@ public class Movie {
         description = QBCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
         year = QBCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
         rating = Float.parseFloat(QBCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject));
-        date = qbCustomObject.getUpdatedAt().toString();
+        date = qbCustomObject.getCreatedAt().getTime() / 1000;
     }
 
     public String getName() {
@@ -48,7 +50,15 @@ public class Movie {
         return rating;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
+    }
+
+    public static class DateComparator implements Comparator<Movie> {
+
+        @Override
+        public int compare(Movie lhs, Movie rhs) {
+            return (int) (rhs.getDate() - lhs.getDate());
+        }
     }
 }
