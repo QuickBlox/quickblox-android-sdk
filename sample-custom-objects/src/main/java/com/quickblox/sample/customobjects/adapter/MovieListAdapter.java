@@ -11,6 +11,7 @@ import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public class MovieListAdapter extends BaseAdapter {
     private List<Movie> movieList;
 
     public MovieListAdapter(Context context, Map<String, Movie> movieMap) {
-        this.movieList = new ArrayList(movieMap.values());
         this.inflater = LayoutInflater.from(context);
+        updateAdapter(movieMap);
     }
 
     @Override
@@ -62,8 +63,9 @@ public class MovieListAdapter extends BaseAdapter {
     }
 
     public void updateAdapter(Map<String, Movie> movieMap) {
-        this.movieList = new ArrayList(movieMap.values());
-        this.notifyDataSetChanged();
+        this.movieList = new ArrayList<>(movieMap.values());
+        Collections.sort(movieList, new Movie.DateComparator());
+        notifyDataSetChanged();
     }
 
     private static class ViewHolder {
