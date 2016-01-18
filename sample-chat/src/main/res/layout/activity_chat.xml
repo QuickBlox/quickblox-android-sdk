@@ -5,7 +5,7 @@
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded">
 
-    <ListView
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/list_chat_messages"
         style="@style/ListViewWithoutDividerStyle"
         android:layout_above="@+id/divider_chat"
@@ -38,7 +38,8 @@
             android:id="@+id/edit_chat_message"
             style="@style/WeightWidth"
             android:layout_height="wrap_content"
-            android:hint="@string/chat_edit_text_hint" />
+            android:hint="@string/chat_edit_text_hint"
+            android:inputType="textShortMessage" />
 
         <ImageButton
             android:id="@+id/button_chat_send"

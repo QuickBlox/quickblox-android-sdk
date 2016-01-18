@@ -7,6 +7,7 @@
     <color name="background_app_color">#ffffff</color>
 
     <color name="color_blue_qb">#046ad0</color>
+    <color name="color_username_rectangle">#99000000</color>
 
     <color name="text_color_primary">#212121</color>
     <color name="text_color_white">#ffffff</color>

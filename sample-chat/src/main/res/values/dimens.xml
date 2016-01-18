@@ -4,11 +4,15 @@
     <dimen name="unread_counter_text_size">13sp</dimen>
 
     <dimen name="chat_date_text_size">13sp</dimen>
-    <dimen name="chat_message_text_size">16sp</dimen>
     <dimen name="chat_author_text_size">16sp</dimen>
+
+    <dimen name="chat_message_body_text_size">16sp</dimen>
     <dimen name="chat_message_info_text_size">13sp</dimen>
     <dimen name="chat_message_content_margin">4dp</dimen>
-    <dimen name="chat_message_sticker_size">160dp</dimen>
+    <dimen name="chat_message_username_margin">@dimen/chat_message_content_margin</dimen>
+
+    <dimen name="chat_message_attachment_username_margin">12dp</dimen>
+    <dimen name="chat_message_attachment_size">160dp</dimen>
 
     <!-- Fix for wrong FAB margin on v21+-->
     <dimen name="fab_margin_right">0dp</dimen>

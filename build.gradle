@@ -50,6 +50,7 @@ ext {
     uilVersion = '1.9.0'
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
+    stickyListHeaders = '2.7.0'
     robotoTextViewVersion = '2.4.3'
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'

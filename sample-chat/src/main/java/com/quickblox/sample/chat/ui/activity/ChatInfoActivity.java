@@ -3,25 +3,21 @@ package com.quickblox.sample.chat.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ErrorUtils;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatInfoActivity extends BaseActivity {
-    private static final int REQUEST_SELECT_PEOPLE = 752;
     private static final String EXTRA_DIALOG = "dialog";
 
     private ListView usersListView;
@@ -42,26 +38,6 @@ public class ChatInfoActivity extends BaseActivity {
         usersListView = _findViewById(R.id.list_login_users);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (qbDialog.getType() == QBDialogType.GROUP) {
-            getMenuInflater().inflate(R.menu.activity_chat_info, menu);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_chat_info_action_add_people:
-            SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE, qbDialog);
-            return true;
-
-        default:
-            return super.onOptionsItemSelected(item);
-        }
     }
 
     @SuppressWarnings("unchecked")
