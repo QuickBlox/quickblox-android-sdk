@@ -7,7 +7,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.quickblox.core.QBSettings;
-import com.quickblox.sample.content.utils.Constants;
+import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.core.CoreApp;
 
 public class App extends CoreApp {
@@ -16,12 +16,12 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
 
-        QBSettings.getInstance().fastConfigInit(Constants.APP_ID, Constants.AUTH_KEY, Constants.AUTH_SECRET);
+        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
 
         initImageLoader(this);
     }
 
-    public static void initImageLoader(Context context) {
+    public void initImageLoader(Context context) {
         // This configuration tuning is custom. You can tune every option, you may tune some of them,
         // or you can create default configuration by calling ImageLoaderConfiguration.createDefault(this)
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)

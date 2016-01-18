@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Sample CustomObjects</string>
-    
-    <string name="splash_app_title">Custom Object Sample</string>
-    
-    <string name="note">Note:</string>
-    <string name="status">Status:</string>
-    <string name="date">Date:</string>
-    <string name="comments">Comments:</string>
-    <string name="add_comment">Add comment</string>
-    <string name="change_status">Change status</string>
-    <string name="delete">Delete</string>
-    <string name="add_new_note">Add new note</string>
-    <string name="new_comment">New comment</string>
-    <string name="write_new_comment">Write new comment</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="choose_new_status">Choose new status</string>
-    <string name="note_successfully_deleted">Note was successfully deleted!</string>
-    <string name="save">Save</string>
-    <string name="notes">Notes</string>
-    <string name="note_title">Note</string>
+    <string name="movie_sample">Custom Objects Sample</string>
+    <string name="splash_app_title">@string/movie_sample</string>
+
+    <string name="movie_add_new">Add Movie</string>
+    <string name="movie_details">Movie Details</string>
+    <string name="movies">Movies</string>
+
+    <string name="movie">Movie</string>
+    <string name="comment">Comment</string>
+
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="year">Year</string>
+    <string name="rating">Rating</string>
+
+    <string name="add_movie">Add</string>
+    <string name="save_movie">Save</string>
+    <string name="done">Done</string>
     <string name="error_fields_is_empty">Field(s) is empty!</string>
+
 </resources>

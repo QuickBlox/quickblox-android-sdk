@@ -17,5 +17,6 @@ public class BaseActivity extends CoreBaseActivity {
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
         progressDialog = DialogUtils.getProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
 }

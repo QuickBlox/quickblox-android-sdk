@@ -1,20 +1,22 @@
 <resources>
-    <dimen name="margin_small">5dp</dimen>
-    <dimen name="margin_middle">10dp</dimen>
-    <dimen name="margin_large">20dp</dimen>
 
-    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_small">3dp</dimen>
     <dimen name="padding_middle">10dp</dimen>
-    <dimen name="padding_large">15dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
 
-    <dimen name="node_width">300dp</dimen>
-    <dimen name="comments_width">300dp</dimen>
+    <dimen name="margin_tittle_details">36dp</dimen>
+    <dimen name="margin_year_details">8dp</dimen>
+    <dimen name="margin_description_details">16dp</dimen>
+    <dimen name="margin_rating_details">51dp</dimen>
+    <dimen name="margin_rating_bar_details">17dp</dimen>
 
-    <dimen name="logo_maxwidth">320dp</dimen>
+    <dimen name="margin_title_add">8dp</dimen>
+    <dimen name="margin_description">32dp</dimen>
+    <dimen name="margin_year_add">8dp</dimen>
+    <dimen name="margin_rating_add">39dp</dimen>
+    <dimen name="margin_rating_bar_add">17dp</dimen>
 
-    <dimen name="list_item_node_height">100dp</dimen>
-
-    <dimen name="text_size_small">15sp</dimen>
-    <dimen name="text_size_middle">18sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_middle">16sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
 </resources>

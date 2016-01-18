@@ -4,7 +4,7 @@
     android:background="@color/background_color">
 
     <ImageView
-        android:id="@+id/image_image_view"
+        android:id="@+id/image_show_view"
         android:layout_width="match_parent"
         android:layout_height="120dip"
         android:adjustViewBounds="true"

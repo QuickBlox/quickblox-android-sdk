@@ -1,90 +1,49 @@
 package com.quickblox.sample.customobjects.helper;
 
-import com.quickblox.sample.customobjects.model.Note;
 import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataHolder {
 
-    private static DataHolder dataHolder;
-    private int signInUserId;
-    private List<Note> noteList;
+    private static DataHolder instance;
+    private Map<String, Movie> movieMap;
 
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
+    public static synchronized DataHolder getInstance() {
+        if (instance == null) {
+            instance = new DataHolder();
         }
-        return dataHolder;
+        return instance;
     }
 
-    public int getSignInUserId() {
-        return signInUserId;
+    private DataHolder() {
+        movieMap = new HashMap<>();
     }
 
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
+    public Map<String, Movie> getMovieMap() {
+        return movieMap;
     }
 
-    public int getNoteListSize() {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
-        }
-        return noteList.size();
-    }
-
-    public String getNoteTitle(int position) {
-        return noteList.get(position).getTitle();
-    }
-
-    public String getNoteDate(int position) {
-        return noteList.get(position).getDate();
-    }
-
-    public List<String> getNoteComments(int position) {
-        return noteList.get(position).getCommentsList();
-    }
-
-    public String getNoteStatus(int position) {
-        return noteList.get(position).getStatus();
-    }
-
-    public String getNoteId(int position) {
-        return noteList.get(position).getId();
-    }
-
-    public void setNoteToNoteList(int position, Note note) {
-        noteList.set(position, note);
-    }
-
-    public void addNewComment(int notePosition, String comment) {
-        noteList.get(notePosition).addNewComment(comment);
-    }
-
-    public String getComments(int notePosition) {
-        return noteList.get(notePosition).getComments();
-    }
-
-    public void removeNoteFromList(int position) {
-        noteList.remove(position);
+    public Movie getMovieObject(String id) {
+        return movieMap.get(id);
     }
 
     public void clear() {
-        noteList.clear();
+        movieMap.clear();
     }
 
-    public int size() {
-        if (noteList != null) {
-            return noteList.size();
-        }
-        return 0;
+    public void addMovieToList(QBCustomObject customObject) {
+        Movie movie = new Movie(customObject);
+        movieMap.put(movie.getId(), movie);
     }
 
-    public void addNoteToList(QBCustomObject customObject) {
-        if (noteList == null) {
-            noteList = new ArrayList<Note>();
+    public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
+        for (QBCustomObject customObject : qbCustomObjects) {
+            Movie movie = new Movie(customObject);
+            movieMap.put(movie.getId(), movie);
         }
-        noteList.add(new Note(customObject));
     }
 }
