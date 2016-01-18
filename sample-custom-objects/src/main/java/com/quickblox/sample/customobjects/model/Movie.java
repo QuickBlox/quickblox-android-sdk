@@ -27,7 +27,7 @@ public class Movie {
         description = QBCustomObjectsUtils.parseField(Contract.DESCRIPTION, qbCustomObject);
         year = QBCustomObjectsUtils.parseField(Contract.YEAR, qbCustomObject);
         rating = Float.parseFloat(QBCustomObjectsUtils.parseField(Contract.RATING, qbCustomObject));
-        date = qbCustomObject.getCreatedAt().getTime() / 1000;
+        date = qbCustomObject.getCreatedAt().getTime();
     }
 
     public String getName() {
@@ -58,7 +58,7 @@ public class Movie {
 
         @Override
         public int compare(Movie lhs, Movie rhs) {
-            return (int) (rhs.getDate() - lhs.getDate());
+            return Long.valueOf(rhs.getDate()).compareTo(Long.valueOf(lhs.getDate()));
         }
     }
 }

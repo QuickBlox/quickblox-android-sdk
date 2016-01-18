@@ -14,13 +14,13 @@
 
     <EditText
         android:id="@+id/add_movie_description_textview"
-        style="@style/MovieEditTextStyle"
+        style="@style/TextPrimaryStyle"
         android:layout_marginTop="@dimen/margin_description"
         android:hint="@string/description" />
 
     <EditText
         android:id="@+id/add_movie_year_textview"
-        style="@style/MovieEditTextStyle"
+        style="@style/TextPrimaryStyle"
         android:layout_marginTop="@dimen/margin_year_add"
         android:hint="@string/year"
         android:inputType="numberDecimal" />

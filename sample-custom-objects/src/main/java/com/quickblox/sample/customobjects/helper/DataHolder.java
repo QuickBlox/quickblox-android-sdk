@@ -10,7 +10,7 @@ import java.util.Map;
 public class DataHolder {
 
     private static DataHolder instance;
-    private Map<String, Movie> movieListMap;
+    private Map<String, Movie> movieMap;
 
     public static synchronized DataHolder getInstance() {
         if (instance == null) {
@@ -20,30 +20,30 @@ public class DataHolder {
     }
 
     private DataHolder() {
-        movieListMap = new HashMap<>();
+        movieMap = new HashMap<>();
     }
 
     public Map<String, Movie> getMovieMap() {
-        return movieListMap;
+        return movieMap;
     }
 
     public Movie getMovieObject(String id) {
-        return movieListMap.get(id);
+        return movieMap.get(id);
     }
 
     public void clear() {
-        movieListMap.clear();
+        movieMap.clear();
     }
 
     public void addMovieToList(QBCustomObject customObject) {
         Movie movie = new Movie(customObject);
-        movieListMap.put(movie.getId(), movie);
+        movieMap.put(movie.getId(), movie);
     }
 
     public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
         for (QBCustomObject customObject : qbCustomObjects) {
             Movie movie = new Movie(customObject);
-            movieListMap.put(movie.getId(), movie);
+            movieMap.put(movie.getId(), movie);
         }
     }
 }

@@ -22,6 +22,7 @@ import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
@@ -84,13 +85,13 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-//                ToDo Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
-                if (!DataHolder.getInstance().getMovieMap().isEmpty()) {
+                Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
+                if (!movieMap.isEmpty()) {
                     DataHolder.getInstance().clear();
                 }
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 progressDialog.dismiss();
-                movieListAdapter.updateAdapter(DataHolder.getInstance().getMovieMap());
+                movieListAdapter.updateAdapter(movieMap);
             }
 
             @Override

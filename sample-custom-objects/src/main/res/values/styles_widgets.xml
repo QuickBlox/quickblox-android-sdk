@@ -8,18 +8,13 @@
     </style>
 
     <style name="TextPrimaryStyle" parent="MatchWidth">
-        <item name="android:textSize">@dimen/text_size_middle</item>
         <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
 
     <style name="TextSecondaryStyle" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_medium_dark_grey</item>
         <item name="android:textSize">@dimen/text_size_small</item>
-    </style>
-
-    <style name="MovieEditTextStyle" parent="MatchWidth">
-        <item name="android:textColor">@color/text_color_primary</item>
-        <item name="android:textSize">@dimen/text_size_middle</item>
     </style>
 
     <style name="MovieRatingStyle" parent="WrapContent">
