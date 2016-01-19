@@ -193,6 +193,14 @@ public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter
         QBChatMessage chatMessage = getItem(position);
         holder.dateTextView.setText(TimeUtils.getDate(chatMessage.getDateSent() * 1000));
 
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.dateTextView.getLayoutParams();
+        if (position == 0) {
+            lp.topMargin = ResourceUtils.getDimen(R.dimen.chat_date_header_top_margin);
+        } else {
+            lp.topMargin = 0;
+        }
+        holder.dateTextView.setLayoutParams(lp);
+
         return convertView;
     }
 

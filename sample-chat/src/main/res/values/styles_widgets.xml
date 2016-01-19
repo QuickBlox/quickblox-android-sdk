@@ -23,6 +23,13 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
+    <style name="ListDateHeaderStyle" parent="MatchWidth">
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
     <style name="DialogNameStyle" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_primary</item>
         <item name="android:textSize">16sp</item>

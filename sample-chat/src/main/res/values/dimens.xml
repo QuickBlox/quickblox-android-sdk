@@ -6,6 +6,8 @@
     <dimen name="chat_date_text_size">13sp</dimen>
     <dimen name="chat_author_text_size">16sp</dimen>
 
+    <dimen name="chat_date_header_top_margin">30dp</dimen>
+
     <dimen name="chat_message_body_text_size">16sp</dimen>
     <dimen name="chat_message_info_text_size">13sp</dimen>
     <dimen name="chat_message_content_margin">4dp</dimen>
