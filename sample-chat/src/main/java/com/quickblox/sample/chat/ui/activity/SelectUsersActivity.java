@@ -144,6 +144,6 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     private boolean isEditingChat() {
-        return getIntent().hasExtra(EXTRA_QB_DIALOG);
+        return getIntent().getSerializableExtra(EXTRA_QB_DIALOG) != null;
     }
 }
