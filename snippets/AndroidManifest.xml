@@ -27,7 +27,7 @@
         <activity android:name=".activities.LocationsActivity" />
         <activity android:name=".activities.CustomObjectsActivity" />
         <activity android:name=".activities.ContentActivity" />
-        <activity android:name=".activities.MessagesActivity" />
+        <activity android:name=".activities.PushNotificationsActivity" />
         <activity android:name=".activities.ChatActivity" />
     </application>
 

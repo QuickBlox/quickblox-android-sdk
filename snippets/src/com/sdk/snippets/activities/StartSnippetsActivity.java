@@ -35,8 +35,8 @@ public class StartSnippetsActivity extends TabActivity {
         content.setIndicator("Content")
                 .setContent(new Intent(this, ContentActivity.class));
 
-        messages.setIndicator("Messages")
-                .setContent(new Intent(this, MessagesActivity.class));
+        messages.setIndicator("Push notifications")
+                .setContent(new Intent(this, PushNotificationsActivity.class));
 
         customObjects.setIndicator("Custom Objects")
                 .setContent(new Intent(this, CustomObjectsActivity.class));

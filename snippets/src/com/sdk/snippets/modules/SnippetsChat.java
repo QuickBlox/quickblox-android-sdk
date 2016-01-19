@@ -1,6 +1,7 @@
 package com.sdk.snippets.modules;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -244,12 +245,12 @@ public class SnippetsChat extends Snippets {
         privateChatMessageSentListener = new QBMessageSentListener<QBPrivateChat>() {
             @Override
             public void processMessageSent(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent to "+qbChat.getParticipant());
+                log("message " + qbChatMessage.getId() + " sent to " + qbChat.getParticipant());
             }
 
             @Override
             public void processMessageFailed(QBPrivateChat qbChat, QBChatMessage qbChatMessage) {
-                log("message sent failed to "+qbChat.getParticipant());
+                log("send message " + qbChatMessage.getId() + " has failed to "+ qbChat.getParticipant());
             }
         };
 
@@ -332,11 +333,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             // init test user
-            QBUser qbUser = new QBUser();
+            final QBUser qbUser = new QBUser();
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());
             qbUser.setPassword(ApplicationConfig.getInstance().getTestUserPassword1());
-
-            log("login with user: " + qbUser);
 
             chatService.login(qbUser, new QBEntityCallback<Void>() {
                 @Override
@@ -372,13 +371,16 @@ public class SnippetsChat extends Snippets {
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());
             qbUser.setPassword(ApplicationConfig.getInstance().getTestUserPassword1());
 
-            log("login with user: " + qbUser);
+            log("login with user: " + qbUser.getId());
 
-            try {
-                chatService.login(qbUser);
+            if(!chatService.isLoggedIn()) {
 
-            } catch (SmackException | IOException | XMPPException e) {
-                setException(e);
+                try {
+                    chatService.login(qbUser);
+
+                } catch (SmackException | IOException | XMPPException e) {
+                    setException(e);
+                }
             }
         }
 
@@ -567,7 +569,7 @@ public class SnippetsChat extends Snippets {
         privateChatMessageListener = new QBMessageListener<QBPrivateChat>() {
             @Override
             public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
-                log("received message: " + chatMessage + " from user: " + privateChat.getParticipant() + ", dialogId: " + privateChat.getDialogId());
+                log("received message: " + chatMessage.getId());
 
                 if(chatMessage.getSenderId().equals(chatService.getUser().getId())){
                     log("Message comes here from carbons");

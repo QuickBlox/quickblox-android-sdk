@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.quickblox.core.Consts;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.core.Consts;
-import com.quickblox.messages.QBMessages;
+import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.*;
 import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.SnippetAsync;
@@ -19,23 +19,17 @@ import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by vfite on 10.02.14.
  */
-public class SnippetsMessages extends Snippets{
-    private static final String TAG = SnippetsMessages.class.getSimpleName();
+public class SnippetsPushNotifications extends Snippets{
+    private static final String TAG = SnippetsPushNotifications.class.getSimpleName();
 
-    public SnippetsMessages(Context context) {
+    public SnippetsPushNotifications(Context context) {
         super(context);
 
-        snippets.add(createPushToken);
-        snippets.add(createPushTokenSynchronous);
-        //
-        snippets.add(deletePushToken);
-        snippets.add(deletePushTokenSynchronous);
-        //
-        //
         snippets.add(createSubscription);
         snippets.add(createSubscriptionSynchronous);
         //
@@ -68,100 +62,6 @@ public class SnippetsMessages extends Snippets{
 
 
     //
-    /////////////////////////////////////// Create Push token //////////////////////////////////////
-    //
-
-
-    Snippet createPushToken = new Snippet("create push token") {
-        @Override
-        public void execute() {
-            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            if(deviceId == null){
-                deviceId = "UniversalDeviceId";
-            }
-            //
-            QBPushToken qbPushToken = new QBPushToken();
-            qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
-            qbPushToken.setDeviceUdid(deviceId);
-            qbPushToken.setCis("APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o");
-
-            QBMessages.createPushToken(qbPushToken, new QBEntityCallback<QBPushToken>() {
-
-                @Override
-                public void onSuccess(QBPushToken pushToken, Bundle args) {
-                    Log.i(TAG, ">>> PushToken: " + pushToken.toString());
-                }
-
-                @Override
-                public void onError(QBResponseException errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet createPushTokenSynchronous = new SnippetAsync("create push token (synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            if(deviceId == null){
-                deviceId = "UniversalDeviceId";
-            }
-
-            QBPushToken qbPushToken = new QBPushToken();
-            qbPushToken.setEnvironment(QBEnvironment.DEVELOPMENT);
-            qbPushToken.setDeviceUdid(deviceId);
-            qbPushToken.setCis("APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o");
-
-            QBPushToken pushToken = null;
-            try {
-                pushToken = QBMessages.createPushToken(qbPushToken);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-            if(pushToken != null){
-                Log.i(TAG, ">>> PushToken: " + pushToken.toString());
-            }
-        }
-    };
-
-
-    //
-    /////////////////////////////////////// Delete Push token //////////////////////////////////////
-    //
-
-
-    Snippet deletePushToken = new Snippet("delete push token") {
-        @Override
-        public void execute() {
-            QBMessages.deletePushToken(1473068, new QBEntityCallback<Void>() {
-
-                @Override
-                public void onSuccess(Void result, Bundle bundle) {
-                    Log.i(TAG, ">>> push token successfully deleted");
-                }
-
-                @Override
-                public void onError(QBResponseException errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet deletePushTokenSynchronous = new SnippetAsync("delete push token (synchronous)", context) {
-        @Override
-        public void executeAsync() {
-
-            try {
-                QBMessages.deletePushToken(1473068);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-        }
-    };
-
-    //
     /////////////////////////////////////// Create Subscription ////////////////////////////////////
     //
 
@@ -172,15 +72,17 @@ public class SnippetsMessages extends Snippets{
 
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
             subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+            //
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
             if(deviceId == null){
                 deviceId = "UniversalDeviceId";
             }
             subscription.setDeviceUdid(deviceId);
+            //
             String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
             subscription.setRegistrationID(registrationID);
 
-            QBMessages.createSubscription(subscription, new QBEntityCallback<ArrayList<QBSubscription>>() {
+            QBPushNotifications.createSubscription(subscription, new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {
@@ -199,19 +101,22 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void executeAsync() {
             QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
+            //
             subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+            //
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
             if(deviceId == null){
                 deviceId = "UniversalDeviceId";
             }
             subscription.setDeviceUdid(deviceId);
+            //
             String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
             subscription.setRegistrationID(registrationID);
 
 
             ArrayList<QBSubscription> createdSubscriptions = null;
             try {
-                createdSubscriptions =  QBMessages.createSubscription(subscription);
+                createdSubscriptions =  QBPushNotifications.createSubscription(subscription);
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -230,7 +135,7 @@ public class SnippetsMessages extends Snippets{
     Snippet getSubscriptions = new Snippet("get subscriptions") {
         @Override
         public void execute() {
-            QBMessages.getSubscriptions(new QBEntityCallback<ArrayList<QBSubscription>>() {
+            QBPushNotifications.getSubscriptions(new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {
@@ -250,7 +155,7 @@ public class SnippetsMessages extends Snippets{
         public void executeAsync() {
             ArrayList<QBSubscription> subscriptions = null;
             try {
-                subscriptions = QBMessages.getSubscriptions();
+                subscriptions = QBPushNotifications.getSubscriptions();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -269,7 +174,7 @@ public class SnippetsMessages extends Snippets{
     Snippet deleteSubscription = new Snippet("delete subscription") {
         @Override
         public void execute() {
-            QBMessages.deleteSubscription(1558628, new QBEntityCallback<Void>() {
+            QBPushNotifications.deleteSubscription(1558628, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -288,7 +193,7 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void executeAsync() {
             try {
-                QBMessages.deleteSubscription(1558628);
+                QBPushNotifications.deleteSubscription(1558628);
                 Log.i(TAG, ">>> subscription successfully deleted");
             } catch (QBResponseException e) {
                 setException(e);
@@ -306,8 +211,8 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void execute() {
             // recipient
-            StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-//            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
+            StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
+            userIds.add(ApplicationConfig.getInstance().getTestUserId1());
             userIds.add(2792282);
 //            userIds.add(2792283);
 
@@ -321,11 +226,11 @@ public class SnippetsMessages extends Snippets{
             //
 //            event.setMessage("Gonna send Push Notification!");
 
-//            // generic push with custom parameters
-//            //
+            // generic push with custom parameters
+            //
 //            JSONObject json = new JSONObject();
 //            try {
-//                json.put("message", "hello to all");
+//                json.put("message", "This is generic push notification with custom params!");
 //                json.put("param1", "value1");
 //                json.put("ios_badge", "4");
 //            } catch (Exception e) {
@@ -333,15 +238,26 @@ public class SnippetsMessages extends Snippets{
 //            }
 //            event.setMessage(json.toString());
 
-            // Android based push
+//            // Android based push
+//            //
+//            event.setPushType(QBPushType.GCM);
+//            HashMap<String, Object> data = new HashMap<>();
+//            data.put("data.message", "This is Android based push notification!"");
+//            data.put("data.param1", "value1");
+
+
+            // iOS based push
             //
-            event.setPushType(QBPushType.GCM);
-            HashMap<String, String> data = new HashMap<>();
-            data.put("data.message", "Hello");
-            data.put("data.type", "welcome message");
+            event.setPushType(QBPushType.APNS);
+            HashMap<String, Object> data = new HashMap<>();
+            Map<String, String> aps = new HashMap<>();
+            aps.put("alert", "You have 3 new messages");
+            aps.put("badge", "3");
+            data.put("aps", aps);
+
             event.setMessage(data);
 
-            QBMessages.createEvent(event, new QBEntityCallback<QBEvent>() {
+            QBPushNotifications.createEvent(event, new QBEntityCallback<QBEvent>() {
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
                     Log.i(TAG, ">>> new event: " + qbEvent.toString());
@@ -394,7 +310,7 @@ public class SnippetsMessages extends Snippets{
 
             QBEvent createdEvent = null;
             try {
-                createdEvent = QBMessages.createEvent(event);
+                createdEvent = QBPushNotifications.createEvent(event);
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -413,7 +329,7 @@ public class SnippetsMessages extends Snippets{
     Snippet getEventWithId = new Snippet("get event", "with id") {
         @Override
         public void execute() {
-            QBMessages.getEvent(1454324, new QBEntityCallback<QBEvent>() {
+            QBPushNotifications.getEvent(1454324, new QBEntityCallback<QBEvent>() {
 
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
@@ -435,7 +351,7 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void executeAsync() {
             try {
-                event = QBMessages.getEvent(1454324);
+                event = QBPushNotifications.getEvent(1454324);
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -456,7 +372,7 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void execute() {
             QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(20, 1);
-            QBMessages.getEvents(requestBuilder, new QBEntityCallback<ArrayList<QBEvent>>() {
+            QBPushNotifications.getEvents(requestBuilder, new QBEntityCallback<ArrayList<QBEvent>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBEvent> events, Bundle args) {
@@ -482,7 +398,7 @@ public class SnippetsMessages extends Snippets{
             Bundle params = new Bundle();
             ArrayList<QBEvent> events = null;
             try {
-                events = QBMessages.getEvents(requestBuilder, params);
+                events = QBPushNotifications.getEvents(requestBuilder, params);
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -508,7 +424,7 @@ public class SnippetsMessages extends Snippets{
             event.setId(1470629);
             event.setActive(true); // send it again
 
-            QBMessages.updateEvent(event, new QBEntityCallback<QBEvent>() {
+            QBPushNotifications.updateEvent(event, new QBEntityCallback<QBEvent>() {
 
                 @Override
                 public void onSuccess(QBEvent qbEvent, Bundle args) {
@@ -533,7 +449,7 @@ public class SnippetsMessages extends Snippets{
 
             QBEvent updatedEvent = null;
             try {
-                updatedEvent = QBMessages.updateEvent(event);
+                updatedEvent = QBPushNotifications.updateEvent(event);
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -552,7 +468,7 @@ public class SnippetsMessages extends Snippets{
     Snippet deleteEvent = new Snippet("delete event") {
         @Override
         public void execute() {
-            QBMessages.deleteEvent(1454324, new QBEntityCallback<Void>() {
+            QBPushNotifications.deleteEvent(1454324, new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -571,7 +487,7 @@ public class SnippetsMessages extends Snippets{
         @Override
         public void executeAsync() {
             try {
-                QBMessages.deleteEvent(1454326);
+                QBPushNotifications.deleteEvent(1454326);
 
                 Log.i(TAG, ">>> event successfully deleted");
             } catch (QBResponseException e) {
@@ -595,7 +511,7 @@ public class SnippetsMessages extends Snippets{
                 deviceId = "UniversalDeviceId";
             }
 
-            QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT,
+            QBPushNotifications.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT,
                     new QBEntityCallback<ArrayList<QBSubscription>>() {
 
                 @Override
@@ -623,7 +539,7 @@ public class SnippetsMessages extends Snippets{
 
             ArrayList<QBSubscription> subscriptions = null;
             try {
-                subscriptions = QBMessages.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT);
+                subscriptions = QBPushNotifications.subscribeToPushNotificationsTask(registrationID, deviceId, QBEnvironment.DEVELOPMENT);
             } catch (QBResponseException e) {
                 setException(e);
             }

@@ -3,6 +3,7 @@ package com.sdk.snippets.core;
 import android.content.Context;
 import android.util.Log;
 
+import com.quickblox.core.helper.Lo;
 import com.sdk.snippets.R;
 
 import org.json.JSONObject;
@@ -94,6 +95,15 @@ public class ApplicationConfig {
             //parse other data
             activeServer = jObject.getString("active");
             useUser1 = jObject.getBoolean("use_first_user");
+
+
+            // fast run mode (only for debug)
+            //
+            if(android.os.Build.MODEL.equals("Galaxy Nexus")){
+                useUser1 = false;
+            }else{
+                useUser1 = true;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

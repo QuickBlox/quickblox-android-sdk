@@ -16,12 +16,17 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
 import com.sdk.snippets.R;
+import com.sdk.snippets.Utils;
 import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -444,30 +449,7 @@ public class SnippetsContent extends Snippets {
                     long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                     Log.i(TAG, "content.length: " + length);
 
-//                        Thread thread = new Thread() {
-//                            @Override
-//                            public void run() {
-//                                try {
-//                                    while(true) {
-//                                        String filePath = context.getFilesDir().getPath().toString() + "/bigFile.pkg";
-//                                        File file = new File(filePath);
-//                                        OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
-//                                        int bufferSize = 1024;
-//                                        byte[] buffer = new byte[bufferSize];
-//                                        int len;
-//                                        while ((len = inputStream.read(buffer)) != -1) {
-//                                            stream.write(buffer, 0, len);
-//                                        }
-//                                        if(stream != null) {
-//                                            stream.close();
-//                                        }
-//                                    }
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        };
-//                        thread.start();
+                    Utils.downloadFile(inputStream, context);
                 }
 
                 @Override
@@ -505,6 +487,8 @@ public class SnippetsContent extends Snippets {
             if(inputStream != null){
                 long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                 Log.i(TAG, "content.length  : " + length);
+
+                Utils.downloadFile(inputStream, context);
             }
         }
     };
