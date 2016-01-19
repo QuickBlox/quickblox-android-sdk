@@ -168,10 +168,8 @@ public class ChatHelper {
         List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(qbDialog, currentDialogUsers);
 
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
-        for (Integer id : QbDialogUtils.getUserIds(addedUsers)) {
-            // FIXME Replace with pushAll
-            qbRequestBuilder.push("occupants_ids", id);
-        }
+        // FIXME Replace with pushAll
+        qbRequestBuilder.push("occupants_ids", QbDialogUtils.getUserIds(addedUsers));
         for (Integer id : QbDialogUtils.getUserIds(removedUsers)) {
             // FIXME Replace with pullAll
             qbRequestBuilder.pull("occupants_ids", id);

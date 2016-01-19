@@ -141,6 +141,33 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_SELECT_PEOPLE) {
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(
+                        SelectUsersActivity.EXTRA_QB_USERS);
+
+                ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
+                        new QBEntityCallbackImpl<QBDialog>() {
+                            @Override
+                            public void onSuccess(QBDialog dialog, Bundle args) {
+                                qbDialog = dialog;
+                                loadDialogUsers();
+                            }
+
+                            @Override
+                            public void onError(List<String> errors) {
+                                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_info_add_people_error, errors);
+                            }
+                        }
+                );
+            }
+        }
+    }
+
     @Override
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
