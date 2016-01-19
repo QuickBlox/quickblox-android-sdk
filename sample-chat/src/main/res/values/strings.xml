@@ -51,6 +51,8 @@
     <string name="chat_load_users_error">Load chat users errors</string>
     <string name="chat_attachment_error">Can\'t load chosen file</string>
     <string name="chat_attachment">Attachment</string>
+    <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
+    <string name="chat_empty_start_new_chat">Start new chat.</string>
 
     <string name="chat_info">Chat info</string>
     <string name="chat_info_add_people_error">Add people errors</string>

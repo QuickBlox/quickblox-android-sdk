@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class DialogsActivity extends BaseActivity {
     private static final int REQUEST_SELECT_PEOPLE = 174;
 
     private ListView dialogsListView;
+    private LinearLayout emptyHintLayout;
     private ProgressBar progressBar;
 
     private BroadcastReceiver pushBroadcastReceiver;
@@ -137,6 +139,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void initUi() {
+        emptyHintLayout = _findViewById(R.id.layout_chat_empty);
         dialogsListView = _findViewById(R.id.list_dialogs_chats);
         progressBar = _findViewById(R.id.progress_dialogs);
 
@@ -191,6 +194,7 @@ public class DialogsActivity extends BaseActivity {
 
     private void fillListView(List<QBDialog> dialogs) {
         DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
+        dialogsListView.setEmptyView(emptyHintLayout);
         dialogsListView.setAdapter(adapter);
     }
 
