@@ -5,8 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.core.QBEntityCallback;
+import com.digits.sdk.android.AuthCallback;
+import com.digits.sdk.android.Digits;
+import com.digits.sdk.android.DigitsException;
+import com.digits.sdk.android.DigitsOAuthSigning;
+import com.digits.sdk.android.DigitsSession;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBRequestCanceler;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.Lo;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.Consts;
@@ -17,9 +24,15 @@ import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by vfite on 04.02.14.
@@ -27,6 +40,8 @@ import java.util.List;
 
 public class SnippetsUsers extends Snippets{
     private static final String TAG = SnippetsUsers.class.getSimpleName();
+
+    private TwitterAuthConfig authConfig;
 
     public SnippetsUsers(Context context) {
         super(context);
@@ -39,6 +54,9 @@ public class SnippetsUsers extends Snippets{
         //
         snippets.add(signInUsingSocialProvider);
         snippets.add(signInUsingSocialProviderSynchronous);
+        //
+        snippets.add(signInUsingTwitterDigits);
+        snippets.add(signInUsingTwitterDigitsSynchronous);
         //
         snippets.add(signOut);
         snippets.add(signOutSynchronous);
@@ -86,6 +104,9 @@ public class SnippetsUsers extends Snippets{
         snippets.add(getUsersWithTwitterIDs);
         snippets.add(getUsersWithTwitterIDsSynchronous);
         //
+        snippets.add(getUsersWithTwitterDigitsIDs);
+        snippets.add(getUsersWithTwitterDigitsIDsSynchronous);
+        //
         snippets.add(getUsersWithTags);
         snippets.add(getUsersWithTagsSynchronous);
         //
@@ -101,6 +122,9 @@ public class SnippetsUsers extends Snippets{
         //
         snippets.add(getUserWithTwitterId);
         snippets.add(getUserWithTwitterIdSynchronous);
+        //
+        snippets.add(getUserWithTwitterDigitsId);
+        snippets.add(getUserWithTwitterDigitsIdSynchronous);
         //
         snippets.add(getUserWithFacebookId);
         snippets.add(getUserWithFacebookIdSynchronous);
@@ -249,6 +273,90 @@ public class SnippetsUsers extends Snippets{
             }
         }
     };
+
+
+    //
+    ////////////////////////// Sign in with Twitter Digits /////////////////////////////////
+    //
+
+
+    Snippet signInUsingTwitterDigits = new Snippet("sign in user", "with Twitter Digits") {
+        @Override
+        public void execute() {
+            initTwitterDigits();
+            authenticateWithTwitterDigits(false);
+
+        }
+    };
+
+    Snippet signInUsingTwitterDigitsSynchronous = new SnippetAsync("sign in user (synchronous)", "with Twitter Digits", context) {
+        @Override
+        public void executeAsync() {
+            initTwitterDigits();
+            authenticateWithTwitterDigits(true);
+        }
+    };
+
+    private void initTwitterDigits() {
+        if(authConfig == null) {
+            // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+            String consumerKey = "A1NXq7BxZ74NZ3dDzXA1HcSN7";
+            String consumerSecret = "Piuy52Kf2m2iHVKpfpffi6xjvOYVI904O6sl1c50TLpntTVsl6";
+
+            authConfig = new TwitterAuthConfig(consumerKey, consumerSecret);
+            Fabric.with(context, new TwitterCore(authConfig), new Digits());
+        }
+    }
+
+    private void authenticateWithTwitterDigits(final boolean isSync) {
+        Digits.authenticate(new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                Map<String, String> authHeaders = getAuthHeadersBySession(session);
+
+                Lo.g(authHeaders);
+
+                String xAuthServiceProvider = authHeaders.get("X-Auth-Service-Provider");
+                String xVerifyCredentialsAuthorization = authHeaders.get("X-Verify-Credentials-Authorization");
+
+                if(isSync){
+                    QBUser user = null;
+                    try {
+                        user = QBUsers.signInUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization);
+                    } catch (QBResponseException e) {
+                        e.printStackTrace();
+                    }
+                    if(session != null){
+                        Log.i(TAG, "user: " + user);
+                    }
+                }else{
+                    QBUsers.signInUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallbackImpl<QBUser>() {
+                        @Override
+                        public void onSuccess(QBUser user, Bundle params) {
+                            Log.i(TAG, "user: "+user);
+                        }
+
+                        @Override
+                        public void onError(QBResponseException errors) {
+                            handleErrors(errors);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void failure(DigitsException exception) {
+                log(exception.getMessage());
+            }
+        }, "+38");
+    }
+
+    private Map<String, String> getAuthHeadersBySession(DigitsSession digitsSession) {
+        TwitterAuthToken authToken = (TwitterAuthToken) digitsSession.getAuthToken();
+        DigitsOAuthSigning oauthSigning = new DigitsOAuthSigning(authConfig, authToken);
+
+        return oauthSigning.getOAuthEchoHeadersForVerifyCredentials();
+    }
 
 
     //
@@ -1039,6 +1147,67 @@ public class SnippetsUsers extends Snippets{
 
 
     //
+    //////////////////////////////////////// Get users with Twitter Digits ID ///////////////////////////////////
+    //
+
+
+    Snippet getUsersWithTwitterDigitsIDs = new Snippet("get users", "with twitter digits IDs") {
+        @Override
+        public void execute() {
+            ArrayList<String> twitterDigitsIDs = new ArrayList<String>();
+            twitterDigitsIDs.add("3533173695");
+
+            QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+            pagedRequestBuilder.setPage(1);
+            pagedRequestBuilder.setPerPage(10);
+
+            QBUsers.getUsersByTwitterDigitsId(twitterDigitsIDs, pagedRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+                @Override
+                public void onSuccess(ArrayList<QBUser> users, Bundle params) {
+                    Log.i(TAG, ">>> Users: " + users.toString());
+                    Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
+                    Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
+                    Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
+                }
+
+                @Override
+                public void onError(QBResponseException errors) {
+                    handleErrors(errors);
+                }
+            });
+        }
+    };
+
+    Snippet getUsersWithTwitterDigitsIDsSynchronous = new SnippetAsync("get users (synchronous)", "with twitter digits IDs", context) {
+        @Override
+        public void executeAsync() {
+            ArrayList<String> twitterDigitsIDs = new ArrayList<String>();
+            twitterDigitsIDs.add("3533173695");
+
+            QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+            pagedRequestBuilder.setPage(1);
+            pagedRequestBuilder.setPerPage(10);
+
+            Bundle params = new Bundle();
+
+            ArrayList<QBUser> users = null;
+            try {
+                users = QBUsers.getUsersByTwitterDigitsId(twitterDigitsIDs, pagedRequestBuilder, params);
+            } catch (QBResponseException e) {
+                handleErrors(e);
+            }
+
+            if(users != null){
+                Log.i(TAG, ">>> Users: " + users.toString());
+                Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
+                Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
+                Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
+            }
+        }
+    };
+
+
+    //
     //////////////////////////////////////// Get users with tags ///////////////////////////////////
     //
 
@@ -1266,6 +1435,49 @@ public class SnippetsUsers extends Snippets{
             QBUser user = null;
             try {
                 user = QBUsers.getUserByTwitterId(twitterId);
+            } catch (QBResponseException e) {
+                setException(e);
+            }
+
+            if(user != null){
+                Log.i(TAG, ">>> User: " + user.toString());
+            }
+        }
+    };
+
+
+    //
+    //////////////////////////////////////// Get user with twitter digits ID //////////////////////////////
+    //
+
+
+    Snippet getUserWithTwitterDigitsId = new Snippet("get user", "with twitter digits id") {
+        @Override
+        public void execute() {
+            String twitterDigitsId = "3533173695";
+            QBUsers.getUserByTwitterDigitsId(twitterDigitsId, new QBEntityCallbackImpl<QBUser>() {
+
+                @Override
+                public void onSuccess(QBUser user, Bundle args) {
+                    Log.i(TAG, ">>> User: " + user.toString());
+                }
+
+                @Override
+                public void onError(QBResponseException errors) {
+                    super.onError(errors);
+                }
+            });
+        }
+    };
+
+    Snippet getUserWithTwitterDigitsIdSynchronous = new SnippetAsync("get user (synchronous)", "with twitter digits id", context) {
+        @Override
+        public void executeAsync() {
+            String twitterDigitsId = "3533173695";
+
+            QBUser user = null;
+            try {
+                user = QBUsers.getUserByTwitterDigitsId(twitterDigitsId);
             } catch (QBResponseException e) {
                 setException(e);
             }

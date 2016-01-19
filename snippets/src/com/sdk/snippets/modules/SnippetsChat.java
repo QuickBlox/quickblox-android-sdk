@@ -1,7 +1,6 @@
 package com.sdk.snippets.modules;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -127,7 +126,6 @@ public class SnippetsChat extends Snippets {
 
         // Init Chat service
         initChatService();
-
 
         // Init 1-1 listeners
         initPrivateChatMessageListener();
@@ -332,6 +330,10 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChat = new Snippet("login to Chat") {
         @Override
         public void execute() {
+
+            // Init Chat service
+            initChatService();
+
             // init test user
             final QBUser qbUser = new QBUser();
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());
@@ -366,6 +368,10 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChatSynchronous = new SnippetAsync("login to Chat (synchronous)", context) {
         @Override
         public void executeAsync() {
+
+            // Init Chat service
+            initChatService();
+
             // init test user
             QBUser qbUser = new QBUser();
             qbUser.setId(ApplicationConfig.getInstance().getTestUserId1());
@@ -638,11 +644,14 @@ public class SnippetsChat extends Snippets {
             try {
                 // create a message
                 QBChatMessage chatMessage = new QBChatMessage();
-                chatMessage.setBody("Hey man! " + new Random().nextInt());
+                chatMessage.setBody("Hey " + new Random().nextInt());
                 chatMessage.setProperty("name", "bob");
                 chatMessage.setProperty("lastname", "boblast");
                 chatMessage.setSaveToHistory(true);
                 chatMessage.setMarkable(true);
+
+//                long time = System.currentTimeMillis()/1000;
+//                chatMessage.setProperty("date_sent", time + ".431");
 
                 // attach a photo
                 QBAttachment attachment = new QBAttachment("photo");

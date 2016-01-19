@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class SnippetsContent extends Snippets {
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
-    private static final String FILE_UID = "72bf17cf1c6b47118485b527435b5fd500";
+    private static final String FILE_UID = "6221dd49a1bb46cfb61efe62c4526bd800";
 
     File file1 = null;
     QBFileObjectAccess fileObjectAccess;
