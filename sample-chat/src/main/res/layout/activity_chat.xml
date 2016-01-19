@@ -32,6 +32,7 @@
         <ImageButton
             android:id="@+id/button_chat_attachment"
             style="@style/BorderlessImageButtonStyle"
+            android:layout_gravity="center_vertical"
             android:onClick="onAttachmentsClick"
             android:src="@drawable/ic_action_attachment" />
 
@@ -45,6 +46,7 @@
         <ImageButton
             android:id="@+id/button_chat_send"
             style="@style/BorderlessImageButtonStyle"
+            android:layout_gravity="center_vertical"
             android:onClick="onSendChatClick"
             android:src="@drawable/ic_send"
             android:text="@string/chat_send" />
