@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
@@ -71,7 +72,9 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
 
     private void initUI() {
         galleryGridView = _findViewById(R.id.gallery_gridview);
-        selectedImageView = _findViewById(R.id.image_upload_view);
+
+
+        selectedImageView = _findViewById(R.id.image_add_view);
     }
 
     private void initGalleryView() {
@@ -100,8 +103,10 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 SparseArray<QBFile> qbFileSparseArr = DataHolder.getInstance().getQBFileSparseArray();
-                if (qbFileSparseArr != null) {
-                    DataHolder.getInstance().clear();                }
+                if (qbFileSparseArr.size() > 0) {
+                    Log.d("GalleryListActivity", "qbFileSparseArr.size() > 0");
+                     DataHolder.getInstance().clear();
+                }
 
                 DataHolder.getInstance().setQbFileSparseArray(qbFiles);
                 progressDialog.dismiss();

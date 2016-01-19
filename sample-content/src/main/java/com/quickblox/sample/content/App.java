@@ -26,9 +26,6 @@ public class App extends CoreApp {
         // or you can create default configuration by calling ImageLoaderConfiguration.createDefault(this)
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .discCacheFileNameGenerator(new Md5FileNameGenerator())
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .build();
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);

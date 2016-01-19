@@ -23,12 +23,12 @@ public class DataHolder {
         return instance;
     }
 
-    public int getSignInUserId() {
-        return signInUserId;
-    }
-
     public void setSignInUserId(int signInUserId) {
         this.signInUserId = signInUserId;
+    }
+
+    public int getSignInUserId() {
+        return signInUserId;
     }
 
     public void setQbFileSparseArray(List<QBFile> qbFileList) {
@@ -37,19 +37,19 @@ public class DataHolder {
         }
     }
 
-    public void clear() {
-        qbFileSparseArr.clear();
-    }
-
-    public QBFile getQBFile(int id) {
-        return qbFileSparseArr.get(id);
-    }
-
     public SparseArray<QBFile> getQBFileSparseArray() {
         return qbFileSparseArr;
     }
 
+    public void clear() {
+        qbFileSparseArr.clear();
+    }
+
     public void addQbFile(QBFile qbFile) {
         qbFileSparseArr.put(qbFile.getId(), qbFile);
+    }
+
+    public QBFile getQBFile(int id) {
+        return qbFileSparseArr.get(id);
     }
 }
