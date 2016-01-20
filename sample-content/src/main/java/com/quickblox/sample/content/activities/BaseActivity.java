@@ -9,6 +9,7 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 
 public class BaseActivity extends CoreBaseActivity {
 
+    // TODO Move to ShowImageActivity
     protected static final String EXTRA_QBFILE_ID = "id";
 
     protected ActionBar actionBar;

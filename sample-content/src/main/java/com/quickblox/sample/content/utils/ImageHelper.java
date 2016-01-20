@@ -14,10 +14,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+// TODO Replace with ImageUtils from core module
 public class ImageHelper {
 
     public static final int GALLERY_KITKAT_INTENT_CALLED = 2;
     public static final int GALLERY_INTENT_CALLED = 1;
+    // TODO We shouldn't hardcode image size with pixels, use ResourceUtils#dpToPx() instead
     private static final int PREF_WIDTH_IMAGE = 500;
     private static final String IMAGE_NAME = "temp.png";
     private Activity activity;

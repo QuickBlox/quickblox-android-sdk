@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO Rename to GalleryActivity, there is no list in it
 public class GalleryListActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
 
     private GridView galleryGridView;
@@ -51,6 +52,7 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         initGalleryView();
         getFileList();
 
+        // TODO Replace with ImageUtils from core module
         imageHelper = new ImageHelper(this);
     }
 
@@ -74,16 +76,19 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         selectedImageView = _findViewById(R.id.image_upload_view);
     }
 
+    // Move to initUI method
     private void initGalleryView() {
         galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFileSparseArray());
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
     }
 
+    // TODO All @Override methods should be on top of others
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            // TODO We also need to check if request code is the same as passed when starting activity for result
             getImageFile(data);
         }
     }
@@ -126,6 +131,7 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         progressDialog.setProgress(0);
         progressDialog.show();
 
+        // TODO We already have Uri here, why to create file from ImageView drawable?
         new GetImageFileTask(this).execute(imageHelper, selectedImageView);
     }
 

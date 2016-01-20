@@ -9,6 +9,8 @@ import com.quickblox.sample.core.utils.Toaster;
 import java.io.File;
 import java.io.IOException;
 
+// TODO AsyncTask is parametrized class, need use generic types to avoid casting all parameters to Object
+// TODO Extend from BaseAsyncTask as it has more convenient exception handling
 public class GetImageFileTask extends AsyncTask {
 
     private OnGetImageFileListener listener;

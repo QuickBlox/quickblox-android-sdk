@@ -49,6 +49,7 @@ public class ShowImageActivity extends BaseActivity {
     }
 
     private void initImageLoaderOptions() {
+        // TODO All Builder classes should use method chain formatting
         displayImageOptions = new DisplayImageOptions.Builder().showImageForEmptyUri(R.drawable.ic_empty)
                 .showImageOnFail(R.drawable.ic_error).resetViewBeforeLoading(true).cacheOnDisc(true)
                 .imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
