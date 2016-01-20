@@ -119,7 +119,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 return true;
 
             case R.id.menu_chat_action_leave:
-
+                // TODO Add leaving
                 return true;
 
             case R.id.menu_chat_action_delete:

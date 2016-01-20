@@ -8,10 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
@@ -71,6 +75,7 @@ public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter
             holder.messageBodyContainerLayout = (RelativeLayout) convertView.findViewById(R.id.layout_message_content_container);
             holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_message_info);
             holder.attachmentImageView = (MaskedImageView) convertView.findViewById(R.id.image_message_attachment);
+            holder.attachmentProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_message_attachment);
 
             convertView.setTag(holder);
         } else {
@@ -96,20 +101,69 @@ public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter
         return convertView;
     }
 
-    private void setMessageBody(ViewHolder holder, QBChatMessage chatMessage) {
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        HeaderViewHolder holder;
+        if (convertView == null) {
+            holder = new HeaderViewHolder();
+            convertView = inflater.inflate(R.layout.view_chat_message_header, parent, false);
+            holder.dateTextView = (TextView) convertView.findViewById(R.id.header_date_textview);
+            convertView.setTag(holder);
+        } else {
+            holder = (HeaderViewHolder) convertView.getTag();
+        }
+
+        QBChatMessage chatMessage = getItem(position);
+        holder.dateTextView.setText(TimeUtils.getDate(chatMessage.getDateSent() * 1000));
+
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.dateTextView.getLayoutParams();
+        if (position == 0) {
+            lp.topMargin = ResourceUtils.getDimen(R.dimen.chat_date_header_top_margin);
+        } else {
+            lp.topMargin = 0;
+        }
+        holder.dateTextView.setLayoutParams(lp);
+
+        return convertView;
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        QBChatMessage chatMessage = getItem(position);
+        return TimeUtils.getDateAsHeaderId(chatMessage.getDateSent() * 1000);
+    }
+
+    private void setMessageBody(final ViewHolder holder, QBChatMessage chatMessage) {
         if (hasAttachments(chatMessage)) {
             Collection<QBAttachment> attachments = chatMessage.getAttachments();
             QBAttachment attachment = attachments.iterator().next();
 
             holder.messageBodyTextView.setVisibility(View.GONE);
             holder.attachmentImageView.setVisibility(View.VISIBLE);
+            holder.attachmentProgressBar.setVisibility(View.VISIBLE);
             Glide.with(context)
                     .load(attachment.getUrl())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                                   boolean isFirstResource) {
+                            holder.attachmentProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.attachmentProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .into(holder.attachmentImageView);
         } else {
             holder.messageBodyTextView.setText(chatMessage.getBody());
             holder.messageBodyTextView.setVisibility(View.VISIBLE);
             holder.attachmentImageView.setVisibility(View.GONE);
+            holder.attachmentProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -178,38 +232,6 @@ public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter
         return chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
     }
 
-    @Override
-    public View getHeaderView(int position, View convertView, ViewGroup parent) {
-        HeaderViewHolder holder;
-        if (convertView == null) {
-            holder = new HeaderViewHolder();
-            convertView = inflater.inflate(R.layout.view_chat_message_header, parent, false);
-            holder.dateTextView = (TextView) convertView.findViewById(R.id.header_date_textview);
-            convertView.setTag(holder);
-        } else {
-            holder = (HeaderViewHolder) convertView.getTag();
-        }
-
-        QBChatMessage chatMessage = getItem(position);
-        holder.dateTextView.setText(TimeUtils.getDate(chatMessage.getDateSent() * 1000));
-
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.dateTextView.getLayoutParams();
-        if (position == 0) {
-            lp.topMargin = ResourceUtils.getDimen(R.dimen.chat_date_header_top_margin);
-        } else {
-            lp.topMargin = 0;
-        }
-        holder.dateTextView.setLayoutParams(lp);
-
-        return convertView;
-    }
-
-    @Override
-    public long getHeaderId(int position) {
-        QBChatMessage chatMessage = getItem(position);
-        return TimeUtils.getDateAsHeaderId(chatMessage.getDateSent() * 1000);
-    }
-
     private static class HeaderViewHolder {
         public TextView dateTextView;
     }
@@ -221,5 +243,6 @@ public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter
         public LinearLayout messageContainerLayout;
         public RelativeLayout messageBodyContainerLayout;
         public MaskedImageView attachmentImageView;
+        public ProgressBar attachmentProgressBar;
     }
 }

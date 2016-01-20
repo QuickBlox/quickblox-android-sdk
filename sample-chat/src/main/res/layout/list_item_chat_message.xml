@@ -25,6 +25,10 @@
             android:scaleType="centerCrop"
             app:mask="@drawable/outgoing_message_bg" />
 
+        <ProgressBar
+            android:id="@+id/progress_message_attachment"
+            style="@style/CenterProgressBarStyle" />
+
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_message_author"
             style="@style/MessageAuthorStyle"
