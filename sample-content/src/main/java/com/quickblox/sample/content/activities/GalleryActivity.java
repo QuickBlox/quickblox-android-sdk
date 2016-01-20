@@ -22,25 +22,25 @@ import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.GetImageFileTask;
-import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
+import com.quickblox.sample.content.utils.QBContentUtils;
 import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.ImageUtils;
 import com.quickblox.sample.core.utils.Toaster;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryListActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
+public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener {
 
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
-    private ImageHelper imageHelper;
     private ImageView selectedImageView;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, GalleryListActivity.class);
+        Intent intent = new Intent(context, GalleryActivity.class);
         context.startActivity(intent);
     }
 
@@ -49,10 +49,7 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         initUI();
-        initGalleryView();
         getFileList();
-
-        imageHelper = new ImageHelper(this);
     }
 
     @Override
@@ -61,34 +58,32 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         ShowImageActivity.start(this, qbFile.getId());
     }
 
-    public void onStartUploadImageClick(View view) {
-        imageHelper.getImage();
-    }
-
     @Override
     public void onGotImageFile(File imageFile) {
         uploadSelectedImage(imageFile);
-    }
-
-    private void initUI() {
-        galleryGridView = _findViewById(R.id.gallery_gridview);
-
-
-        selectedImageView = _findViewById(R.id.image_add_view);
-    }
-
-    private void initGalleryView() {
-        galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFileSparseArray());
-        galleryGridView.setAdapter(galleryAdapter);
-        galleryGridView.setOnItemClickListener(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            getImageFile(data);
+            if (requestCode == ImageUtils.GALLERY_REQUEST_CODE) {
+                getImageFile(data);
+            }
         }
+    }
+
+    public void onStartUploadImageClick(View view) {
+        ImageUtils.startImagePicker(this);
+    }
+
+    private void initUI() {
+        galleryGridView = _findViewById(R.id.gallery_gridview);
+        selectedImageView = _findViewById(R.id.image_add_view);
+
+        galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFileSparseArray());
+        galleryGridView.setAdapter(galleryAdapter);
+        galleryGridView.setOnItemClickListener(this);
     }
 
     private void getFileList() {
@@ -104,8 +99,8 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 SparseArray<QBFile> qbFileSparseArr = DataHolder.getInstance().getQBFileSparseArray();
                 if (qbFileSparseArr.size() > 0) {
-                    Log.d("GalleryListActivity", "qbFileSparseArr.size() > 0");
-                     DataHolder.getInstance().clear();
+                    Log.d("GalleryActivity", "qbFileSparseArr.size() > 0");
+                    DataHolder.getInstance().clear();
                 }
 
                 DataHolder.getInstance().setQbFileSparseArray(qbFiles);
@@ -131,8 +126,10 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
         progressDialog.setProgress(0);
         progressDialog.show();
 
-        new GetImageFileTask(this).execute(imageHelper, selectedImageView);
+        String realPath = QBContentUtils.getRealPathFromURI(this, originalUri);
+        new GetImageFileTask(this).execute(realPath, selectedImageView);
     }
+
 
     private void uploadSelectedImage(File imageFile) {
         QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
@@ -148,7 +145,7 @@ public class GalleryListActivity extends BaseActivity implements AdapterView.OnI
             public void onError(List<String> errors) {
                 progressDialog.dismiss();
 
-                ErrorUtils.showErrorDialog(GalleryListActivity.this, R.string.gallery_upload_file_error, errors);
+                ErrorUtils.showErrorDialog(GalleryActivity.this, R.string.gallery_upload_file_error, errors);
             }
         }, new QBProgressCallback() {
             @Override

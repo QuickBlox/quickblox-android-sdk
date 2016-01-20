@@ -16,7 +16,7 @@ public class QbUsersHolder {
 
     private static QbUsersHolder instance;
 
-    private SparseArray<QBUser> dialogsUsersMap;
+    private SparseArray<QBUser> qbUserSparseArray;
 
     public static synchronized QbUsersHolder getInstance() {
         if (instance == null) {
@@ -27,7 +27,7 @@ public class QbUsersHolder {
     }
 
     private QbUsersHolder() {
-        dialogsUsersMap = new SparseArray<>();
+        qbUserSparseArray = new SparseArray<>();
     }
 
     public void putUsers(List<QBUser> users) {
@@ -37,11 +37,11 @@ public class QbUsersHolder {
     }
 
     public void putUser(QBUser user) {
-        dialogsUsersMap.put(user.getId(), user);
+        qbUserSparseArray.put(user.getId(), user);
     }
 
     public QBUser getUserById(int id) {
-        return dialogsUsersMap.get(id);
+        return qbUserSparseArray.get(id);
     }
 
     public List<QBUser> getUsersByIds(List<Integer> ids) {

@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,6 @@ public class DialogsAdapter extends BaseAdapter {
         }
 
         QBDialog dialog = dialogs.get(position);
-        String lastMessage = dialog.getLastMessage();
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
             holder.dialogImageView.setImageResource(R.drawable.ic_chat_group);
@@ -68,10 +68,20 @@ public class DialogsAdapter extends BaseAdapter {
         }
 
         holder.nameTextView.setText(QbDialogUtils.getDialogName(dialog));
-        holder.lastMessageTextView.setText(lastMessage);
+        if (isLastMessageAttachment(dialog)) {
+            holder.lastMessageTextView.setText(R.string.chat_attachment);
+        } else {
+            holder.lastMessageTextView.setText(dialog.getLastMessage());
+        }
         holder.unreadCounterTextView.setText(String.valueOf(dialog.getUnreadMessageCount()));
 
         return convertView;
+    }
+
+    private boolean isLastMessageAttachment(QBDialog dialog) {
+        String lastMessage = dialog.getLastMessage();
+        Integer lastMessageSenderId = dialog.getLastMessageUserId();
+        return TextUtils.isEmpty(lastMessage) && lastMessageSenderId != null;
     }
 
     private static class ViewHolder {

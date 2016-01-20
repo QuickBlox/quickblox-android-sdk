@@ -9,7 +9,9 @@ import java.util.List;
 public class DataHolder {
 
     private static DataHolder instance;
+    // TODO Remove signInUserId field, we don't need it
     private int signInUserId;
+    // TODO Rename to qbFileSparseArray, without shortening
     private SparseArray<QBFile> qbFileSparseArr;
 
     private DataHolder() {

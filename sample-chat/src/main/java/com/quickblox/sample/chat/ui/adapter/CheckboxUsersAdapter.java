@@ -12,12 +12,15 @@ import java.util.List;
 
 public class CheckboxUsersAdapter extends UsersAdapter {
 
+    private List<Integer> initiallySelectedUsers;
     private List<QBUser> selectedUsers;
 
     public CheckboxUsersAdapter(Context context, List<QBUser> users) {
         super(context, users);
         this.selectedUsers = new ArrayList<>();
         this.selectedUsers.add(ChatHelper.getCurrentUser());
+
+        this.initiallySelectedUsers = new ArrayList<>();
     }
 
     public void addSelectedUsers(List<Integer> userIds) {
@@ -25,6 +28,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
             for (Integer id : userIds) {
                 if (user.getId().equals(id)) {
                     selectedUsers.add(user);
+                    initiallySelectedUsers.add(user.getId());
                     break;
                 }
             }
@@ -41,7 +45,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isUserMe(user)) {
+                if (!isAvailableForSelection(user)) {
                     return;
                 }
 
@@ -62,5 +66,10 @@ public class CheckboxUsersAdapter extends UsersAdapter {
 
     public List<QBUser> getSelectedUsers() {
         return selectedUsers;
+    }
+
+    @Override
+    protected boolean isAvailableForSelection(QBUser user) {
+        return super.isAvailableForSelection(user) && !initiallySelectedUsers.contains(user.getId());
     }
 }

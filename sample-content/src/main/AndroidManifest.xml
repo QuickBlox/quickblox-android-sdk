@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".activities.GalleryListActivity"
+            android:name=".activities.GalleryActivity"
             android:label="@string/gallery_title"
             android:screenOrientation="portrait" />
         <activity

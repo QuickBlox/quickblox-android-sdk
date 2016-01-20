@@ -44,7 +44,7 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        GalleryListActivity.start(this);
+        GalleryActivity.start(this);
         finish();
     }
 }

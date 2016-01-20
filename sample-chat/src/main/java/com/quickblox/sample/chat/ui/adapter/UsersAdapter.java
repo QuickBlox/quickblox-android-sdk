@@ -64,12 +64,17 @@ public class UsersAdapter extends BaseAdapter {
         }
 
         if (isUserMe(user)) {
-            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
             holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
         } else {
-            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
             holder.loginTextView.setText(user.getFullName());
         }
+
+        if (isAvailableForSelection(user)) {
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
+        } else {
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
+        }
+
         holder.userImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
         holder.userCheckBox.setVisibility(View.GONE);
 
@@ -79,6 +84,11 @@ public class UsersAdapter extends BaseAdapter {
     protected boolean isUserMe(QBUser user) {
         QBUser currentUser = ChatHelper.getCurrentUser();
         return currentUser != null && currentUser.getId().equals(user.getId());
+    }
+
+    protected boolean isAvailableForSelection(QBUser user) {
+        QBUser currentUser = ChatHelper.getCurrentUser();
+        return currentUser != null && !currentUser.getId().equals(user.getId());
     }
 
     protected static class ViewHolder {

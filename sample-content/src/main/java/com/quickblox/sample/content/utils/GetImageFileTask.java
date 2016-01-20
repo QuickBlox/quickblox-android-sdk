@@ -1,5 +1,6 @@
 package com.quickblox.sample.content.utils;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -8,7 +9,11 @@ import com.quickblox.sample.core.utils.Toaster;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+// TODO AsyncTask is parametrized class, need use generic types to avoid casting all parameters to Object
+// TODO Extend from BaseAsyncTask as it has more convenient exception handling
 public class GetImageFileTask extends AsyncTask {
 
     private OnGetImageFileListener listener;
@@ -20,21 +25,18 @@ public class GetImageFileTask extends AsyncTask {
     @Override
     protected Object doInBackground(Object... params) {
         File imageFile = null;
-        ImageHelper imageHelper = (ImageHelper) params[0];
+        String path = (String)params[0];
+//        ImageHelper imageHelper = (ImageHelper) params[0];
         ImageView imageView = (ImageView) params[1];
 
-        try {
-            imageFile = imageHelper.getFileFromImageView(imageView);
-        } catch (IOException e) {
-            Toaster.longToast(R.string.mgs_io_error);
-            e.printStackTrace();
-        }
+        //            imageFile = imageHelper.getFileFromImageView(imageView);
 
-        return imageFile;
+        File file = new File(path);
+        return file;
     }
 
     @Override
-    protected void onPostExecute(Object imageFile) {
-        listener.onGotImageFile((File) imageFile);
+    protected void onPostExecute(Object file) {
+        listener.onGotImageFile((File) file);
     }
 }

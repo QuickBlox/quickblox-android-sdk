@@ -28,6 +28,7 @@ public class GalleryAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private DisplayImageOptions displayImageOptions;
+    // TODO Rename field without shortening
     private SparseArray<QBFile> qbFileSparseArr;
     private Activity activity;
 
@@ -79,7 +80,6 @@ public class GalleryAdapter extends BaseAdapter {
         setImageGlide(holder, position);
         return convertView;
     }
-
     private void setImageGlide(final ViewHolder holder, int position) {
         QBFile qbFile = DataHolder.getInstance().getQBFileSparseArray().valueAt(position);
         holder.progressBar.setVisibility(View.VISIBLE);
@@ -105,11 +105,10 @@ public class GalleryAdapter extends BaseAdapter {
                 .dontAnimate()
                 .fitCenter()
                 .override(300, 558)
-//                .preload()
                 .into(holder.imageView);
     }
-
-    private void setImageUniversal(final ViewHolder holder, int position) {
+    private void setImage(final ViewHolder holder, int position) {
+        // TODO Adapter shouldn't know about DataHolder existence, it has it's own data set and should work only with it
         QBFile qbFile = DataHolder.getInstance().getQBFileSparseArray().valueAt(position);
         ImageLoader.getInstance().displayImage(QBContentUtils.getUrl(qbFile),
                 holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
@@ -132,6 +131,7 @@ public class GalleryAdapter extends BaseAdapter {
         );
     }
 
+    // TODO We're not updating adapter, we're updating data. Method name should told us about it's purpose
     public void updateAdapter(SparseArray<QBFile> qbFileSparseArr) {
         this.qbFileSparseArr = qbFileSparseArr;
         notifyDataSetChanged();
