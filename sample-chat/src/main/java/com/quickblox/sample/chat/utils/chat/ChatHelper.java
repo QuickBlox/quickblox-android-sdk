@@ -11,6 +11,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
@@ -154,9 +155,14 @@ public class ChatHelper {
         );
     }
 
-    public void deleteDialog(QBDialog qbDialog, final QBEntityCallback<Void> callback) {
-        QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
-                new QbEntityCallbackWrapper<>(callback));
+    public void deleteDialog(QBDialog qbDialog, QBEntityCallback<Void> callback) {
+        if (qbDialog.getType() == QBDialogType.GROUP) {
+            QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
+                    new QbEntityCallbackWrapper<>(callback));
+        } else if (qbDialog.getType() == QBDialogType.PRIVATE) {
+            QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(),
+                    new QbEntityCallbackWrapper<>(callback));
+        }
     }
 
     public void updateDialogUsers(QBDialog qbDialog,
