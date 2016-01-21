@@ -21,26 +21,28 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
-import com.quickblox.sample.content.helper.DataHolder;
+import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.QBContentUtils;
+import com.quickblox.sample.core.utils.ResourceUtils;
 
 public class GalleryAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private DisplayImageOptions displayImageOptions;
-    // TODO Rename field without shortening
-    private SparseArray<QBFile> qbFileSparseArr;
+    private SparseArray<QBFile> qbFileSparseArray;
     private Activity activity;
 
-    public GalleryAdapter(Activity activity, SparseArray<QBFile> qbFileSparseArr) {
+    public GalleryAdapter(Activity activity, SparseArray<QBFile> qbFileSparseArray) {
         this.activity = activity;
         layoutInflater = LayoutInflater.from(activity);
-        this.qbFileSparseArr = qbFileSparseArr;
-//        initImageLoaderOptions();
+        this.qbFileSparseArray = qbFileSparseArray;
+        initImageLoaderOptions();
     }
 
     public void initImageLoaderOptions() {
-        displayImageOptions = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_stub)
+        displayImageOptions = new DisplayImageOptions
+                .Builder()
+                .showImageOnLoading(R.drawable.ic_stub)
                 .showImageForEmptyUri(R.drawable.ic_empty)
                 .showImageOnFail(R.drawable.ic_error)
                 .cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
@@ -50,17 +52,17 @@ public class GalleryAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return qbFileSparseArr.size();
+        return qbFileSparseArray.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return qbFileSparseArr.valueAt(position);
+        return qbFileSparseArray.valueAt(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return qbFileSparseArr.keyAt(position);
+        return qbFileSparseArray.keyAt(position);
     }
 
     @Override
@@ -69,19 +71,19 @@ public class GalleryAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.list_item_gallery, parent, false);
             holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.image_show_view);
-            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.image_preview);
+            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar_adapter);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-//        setImageUniversal(holder, position);
-        setImageGlide(holder, position);
+        QBFile qbFile = (QBFile) getItem(position);
+        setImageUniversal(holder, qbFile);
+//        setImageGlide(holder, qbFile);
         return convertView;
     }
-    private void setImageGlide(final ViewHolder holder, int position) {
-        QBFile qbFile = DataHolder.getInstance().getQBFileSparseArray().valueAt(position);
+
+    private void setImageGlide(final ViewHolder holder, QBFile qbFile) {
         holder.progressBar.setVisibility(View.VISIBLE);
         Glide
                 .with(activity)
@@ -104,12 +106,11 @@ public class GalleryAdapter extends BaseAdapter {
                 .error(R.drawable.ic_error)
                 .dontAnimate()
                 .fitCenter()
-                .override(300, 558)
+                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH))
                 .into(holder.imageView);
     }
-    private void setImage(final ViewHolder holder, int position) {
-        // TODO Adapter shouldn't know about DataHolder existence, it has it's own data set and should work only with it
-        QBFile qbFile = DataHolder.getInstance().getQBFileSparseArray().valueAt(position);
+
+    private void setImageUniversal(final ViewHolder holder, QBFile qbFile) {
         ImageLoader.getInstance().displayImage(QBContentUtils.getUrl(qbFile),
                 holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
                     @Override
@@ -131,9 +132,8 @@ public class GalleryAdapter extends BaseAdapter {
         );
     }
 
-    // TODO We're not updating adapter, we're updating data. Method name should told us about it's purpose
-    public void updateAdapter(SparseArray<QBFile> qbFileSparseArr) {
-        this.qbFileSparseArr = qbFileSparseArr;
+    public void updateData(SparseArray<QBFile> qbFileSparseArr) {
+        this.qbFileSparseArray = qbFileSparseArr;
         notifyDataSetChanged();
     }
 

@@ -9,13 +9,10 @@ import java.util.List;
 public class DataHolder {
 
     private static DataHolder instance;
-    // TODO Remove signInUserId field, we don't need it
-    private int signInUserId;
-    // TODO Rename to qbFileSparseArray, without shortening
-    private SparseArray<QBFile> qbFileSparseArr;
+    private SparseArray<QBFile> qbFileSparseArray;
 
     private DataHolder() {
-        qbFileSparseArr = new SparseArray<>();
+        qbFileSparseArray = new SparseArray<>();
     }
 
     public static synchronized DataHolder getInstance() {
@@ -25,33 +22,25 @@ public class DataHolder {
         return instance;
     }
 
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
-    public int getSignInUserId() {
-        return signInUserId;
-    }
-
     public void setQbFileSparseArray(List<QBFile> qbFileList) {
         for (QBFile qbFile : qbFileList) {
-            qbFileSparseArr.put(qbFile.getId(), qbFile);
+            qbFileSparseArray.put(qbFile.getId(), qbFile);
         }
     }
 
     public SparseArray<QBFile> getQBFileSparseArray() {
-        return qbFileSparseArr;
+        return qbFileSparseArray;
     }
 
     public void clear() {
-        qbFileSparseArr.clear();
+        qbFileSparseArray.clear();
     }
 
     public void addQbFile(QBFile qbFile) {
-        qbFileSparseArr.put(qbFile.getId(), qbFile);
+        qbFileSparseArray.put(qbFile.getId(), qbFile);
     }
 
     public QBFile getQBFile(int id) {
-        return qbFileSparseArr.get(id);
+        return qbFileSparseArray.get(id);
     }
 }

@@ -11,12 +11,12 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-        // Apply options to the builder here.
+
         builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565);
     }
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-        // register ModelLoaders here.
+
     }
 }

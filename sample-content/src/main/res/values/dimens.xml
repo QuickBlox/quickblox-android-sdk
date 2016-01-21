@@ -7,10 +7,10 @@
     <dimen name="padding_middle">10dp</dimen>
     <dimen name="padding_large">15dp</dimen>
 
-    <dimen name="item_gallery_width">100dp</dimen>
-    <dimen name="item_gallery_height">100dp</dimen>
-    <dimen name="item_gallery_column_width">90dp</dimen>
-    <dimen name="gridview_spacing">10dp</dimen>
+    <dimen name="item_gallery_width">115dp</dimen>
+    <dimen name="item_gallery_height">115dp</dimen>
+    <dimen name="item_gallery_column_width">115dp</dimen>
+    <dimen name="gridview_spacing">5dp</dimen>
 
     <dimen name="logo_maxwidth">320dp</dimen>
 

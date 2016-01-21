@@ -45,7 +45,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        movieListAdapter.updateAdapter(DataHolder.getInstance().getMovieMap());
+        movieListAdapter.updateData(DataHolder.getInstance().getMovieMap());
     }
 
     private void initUI() {
@@ -91,7 +91,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                 }
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 progressDialog.dismiss();
-                movieListAdapter.updateAdapter(movieMap);
+                movieListAdapter.updateData(movieMap);
             }
 
             @Override

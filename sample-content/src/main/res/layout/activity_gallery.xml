@@ -1,22 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MatchParent"
     android:background="@color/color_primary">
 
-
     <ImageView
-        android:id="@+id/image_add_view"
+        android:id="@+id/image_uploading_view"
         android:layout_width="@dimen/item_gallery_width"
         android:layout_height="@dimen/item_gallery_height"
         android:layout_centerHorizontal="true"
         android:visibility="gone" />
 
-
     <GridView
         android:id="@+id/gallery_gridview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/image_add_view"
+        style="@style/MatchParent"
+        android:layout_below="@+id/image_uploading_view"
         android:columnWidth="@dimen/item_gallery_column_width"
         android:gravity="center"
         android:horizontalSpacing="@dimen/gridview_spacing"

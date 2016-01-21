@@ -1,20 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="120dp"
+    style="@style/MatchParent"
     android:background="@color/background_color">
 
     <ImageView
-        android:id="@+id/image_show_view"
+        android:id="@+id/image_preview"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="@dimen/item_gallery_column_width"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 
     <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="false"
-        android:max="100"
+        android:id="@+id/progress_bar_adapter"
+        style="@style/MatchWidth"
         android:layout_gravity="bottom" />
 </FrameLayout>
