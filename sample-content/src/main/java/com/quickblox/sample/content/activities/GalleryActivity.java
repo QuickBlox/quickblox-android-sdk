@@ -21,8 +21,8 @@ import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.GetImageFileTask;
+import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
-import com.quickblox.sample.content.utils.QBContentUtils;
 import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ImageUtils;
 import com.quickblox.sample.core.utils.Toaster;
@@ -36,6 +36,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
     private ImageView selectedImageView;
+    private ImageHelper imageHelper;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -48,6 +49,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         setContentView(R.layout.activity_gallery);
         initUI();
         getFileList();
+        imageHelper = new ImageHelper(this);
     }
 
     @Override
@@ -119,8 +121,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         selectedImageView.setImageURI(originalUri);
         selectedImageView.setVisibility(View.VISIBLE);
 
-        String realPath = QBContentUtils.getRealPathFromURI(this, originalUri);
-        new GetImageFileTask(this).execute(realPath);
+        new GetImageFileTask(this).execute(imageHelper, selectedImageView);
     }
 
 

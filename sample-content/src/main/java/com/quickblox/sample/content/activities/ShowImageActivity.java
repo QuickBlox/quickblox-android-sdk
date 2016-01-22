@@ -46,9 +46,9 @@ public class ShowImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         initUI();
-        initImageLoaderOptions();
-        setImageUniversal();
-//        setImageGlide();
+//        initImageLoaderOptions();
+//        setImageUniversal();
+        setImageGlide();
     }
 
     private void initUI() {
@@ -71,7 +71,6 @@ public class ShowImageActivity extends BaseActivity {
                 .displayer(new FadeInBitmapDisplayer(300))
                 .build();
     }
-
 
     private void setImageUniversal() {
         int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
@@ -120,8 +119,9 @@ public class ShowImageActivity extends BaseActivity {
                     }
                 })
                 .error(R.drawable.ic_error)
-                .fitCenter()
-                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH))
+                .dontTransform()
+                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT))
+//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .into(imageView);
     }
 }

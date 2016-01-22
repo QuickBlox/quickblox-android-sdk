@@ -1,10 +1,12 @@
 package com.quickblox.sample.content.utils;
 
+import android.widget.ImageView;
+
 import com.quickblox.sample.core.async.BaseAsyncTask;
 
 import java.io.File;
 
-public class GetImageFileTask extends BaseAsyncTask<String, Void, File> {
+public class GetImageFileTask extends BaseAsyncTask<Object, Void, File> {
 
     private OnGetImageFileListener listener;
 
@@ -13,14 +15,17 @@ public class GetImageFileTask extends BaseAsyncTask<String, Void, File> {
     }
 
     @Override
-    public File performInBackground(String... params) throws Exception {
-        String path = params[0];
-        File file = new File(path);
-        return file;
+    public File performInBackground(Object... params) throws Exception {
+        ImageHelper imageHelper = (ImageHelper) params[0];
+        ImageView imageView = (ImageView) params[1];
+
+        File imageFile = imageHelper.getFileFromImageView(imageView);
+
+        return imageFile;
     }
 
     @Override
-    public void onResult(File file) {
-        listener.onGotImageFile(file);
+    public void onResult(File imageFile) {
+        listener.onGotImageFile(imageFile);
     }
 }

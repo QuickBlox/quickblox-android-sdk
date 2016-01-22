@@ -28,15 +28,16 @@ import com.quickblox.sample.core.utils.ResourceUtils;
 public class GalleryAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private DisplayImageOptions displayImageOptions;
     private SparseArray<QBFile> qbFileSparseArray;
     private Activity activity;
+    
+    private DisplayImageOptions displayImageOptions;
 
     public GalleryAdapter(Activity activity, SparseArray<QBFile> qbFileSparseArray) {
         this.activity = activity;
         layoutInflater = LayoutInflater.from(activity);
         this.qbFileSparseArray = qbFileSparseArray;
-        initImageLoaderOptions();
+//        initImageLoaderOptions();
     }
 
     public void initImageLoaderOptions() {
@@ -78,8 +79,8 @@ public class GalleryAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         QBFile qbFile = (QBFile) getItem(position);
-        setImageUniversal(holder, qbFile);
-//        setImageGlide(holder, qbFile);
+//        setImageUniversal(holder, qbFile);
+        setImageGlide(holder, qbFile);
         return convertView;
     }
 
@@ -105,8 +106,8 @@ public class GalleryAdapter extends BaseAdapter {
                 .placeholder(R.drawable.ic_stub)
                 .error(R.drawable.ic_error)
                 .dontAnimate()
-                .fitCenter()
-                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH))
+                .dontTransform()
+                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT))
                 .into(holder.imageView);
     }
 

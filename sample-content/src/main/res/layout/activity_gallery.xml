@@ -16,7 +16,7 @@
         android:columnWidth="@dimen/item_gallery_column_width"
         android:gravity="center"
         android:horizontalSpacing="@dimen/gridview_spacing"
-        android:numColumns="auto_fit"
+        android:numColumns="3"
         android:stretchMode="columnWidth"
         android:verticalSpacing="@dimen/gridview_spacing" />
 

@@ -12,6 +12,6 @@ public final class Consts {
     public static final int QB_PER_PAGE = 30;
     public static final int QB_PAGE = 1;
 
-    public static final int PREFER_IMAGE_WIDTH = 300;
-    public static final int PREFER_IMAGE_HEIGHT = 300;
+    public static final int PREFER_IMAGE_WIDTH = 480;
+    public static final int PREFER_IMAGE_HEIGHT = 800;
 }
