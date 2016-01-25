@@ -6,8 +6,5 @@
         <item name="actionBarTheme">@style/MyApp.ActionBarTheme</item>
     </style>
 
-    <!-- Styles -->
-    <style name="MyApp.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">@color/white</item>
-    </style>
+    <style name="MyApp.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></style>
 </resources>

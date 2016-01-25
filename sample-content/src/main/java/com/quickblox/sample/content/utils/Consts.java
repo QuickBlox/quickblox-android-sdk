@@ -14,4 +14,5 @@ public final class Consts {
 
     public static final int PREFER_IMAGE_WIDTH = 480;
     public static final int PREFER_IMAGE_HEIGHT = 800;
+    public static final int PRIORITY_MAX_IMAGE_SIZE = 20000000;
 }

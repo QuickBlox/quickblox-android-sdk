@@ -4,13 +4,8 @@
     <string name="splash_app_title">Content Sample</string>
 
     <string name="gallery_upload_file_error">Upload image errors: </string>
+    <string name="gallery_pick_error">Pick image errors: </string>
 
     <string name="gallery_title">Images</string>
     <string name="show_image_title">Show image</string>
-
-    <string name="mgs_io_error">Input/Output error</string>
-    <string name="mgs_decode_error">Image cannot be decoded</string>
-    <string name="mgs_denied_error">Downloads are denied</string>
-    <string name="mgs_memory_error">Out Of Memory error</string>
-    <string name="mgs_unknown_error">Unknown error</string>
 </resources>

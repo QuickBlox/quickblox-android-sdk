@@ -39,10 +39,9 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.content_jar_path)
-    compile (project(":sample-core")) {
+    compile(project(":sample-core")) {
         transitive = true;
     }
 
-    compile "com.nostra13.universalimageloader:universal-image-loader:${rootProject.uilVersion}"
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
 }

@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MatchParent"
-    android:background="@color/color_primary">
+    style="@style/MatchParent">
 
     <ImageView
         android:id="@+id/image_uploading_view"
@@ -11,14 +10,8 @@
 
     <GridView
         android:id="@+id/gallery_gridview"
-        style="@style/MatchParent"
-        android:layout_below="@+id/image_uploading_view"
-        android:columnWidth="@dimen/item_gallery_column_width"
-        android:gravity="center"
-        android:horizontalSpacing="@dimen/gridview_spacing"
-        android:numColumns="3"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="@dimen/gridview_spacing" />
+        style="@style/GalleryGridStyle"
+        android:layout_below="@+id/image_uploading_view" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_upload_image"

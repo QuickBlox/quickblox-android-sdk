@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GalleryGridStyle" parent="MatchParent">
+        <item name="android:columnWidth">@dimen/item_gallery_column_width</item>
+        <item name="android:gravity">center</item>
+        <item name="android:horizontalSpacing">@dimen/gridview_spacing</item>
+        <item name="android:numColumns">3</item>
+        <item name="android:stretchMode">columnWidth</item>
+        <item name="android:verticalSpacing">@dimen/gridview_spacing</item>
+    </style>
+
+</resources>
