@@ -22,9 +22,9 @@ public class DataHolder {
         return instance;
     }
 
-    public void setQbFileSparseArray(List<QBFile> qbFileList) {
+    public void addQbFiles(List<QBFile> qbFileList) {
         for (QBFile qbFile : qbFileList) {
-            qbFileSparseArray.put(qbFile.getId(), qbFile);
+            addQbFile(qbFile);
         }
     }
 

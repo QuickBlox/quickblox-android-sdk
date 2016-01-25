@@ -11,7 +11,6 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-
         builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565);
     }
 

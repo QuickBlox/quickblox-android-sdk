@@ -1,7 +1,6 @@
 package com.quickblox.sample.content.adapter;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.QBContentUtils;
-import com.quickblox.sample.core.utils.ResourceUtils;
 
 public class GalleryAdapter extends BaseAdapter {
 
@@ -32,24 +26,10 @@ public class GalleryAdapter extends BaseAdapter {
     private SparseArray<QBFile> qbFileSparseArray;
     private Activity activity;
 
-    private DisplayImageOptions displayImageOptions;
-
     public GalleryAdapter(Activity activity, SparseArray<QBFile> qbFileSparseArray) {
         this.activity = activity;
         layoutInflater = LayoutInflater.from(activity);
         this.qbFileSparseArray = qbFileSparseArray;
-//        initImageLoaderOptions();
-    }
-
-    public void initImageLoaderOptions() {
-        displayImageOptions = new DisplayImageOptions
-                .Builder()
-                .showImageOnLoading(R.drawable.ic_stub)
-                .showImageForEmptyUri(R.drawable.ic_empty)
-                .showImageOnFail(R.drawable.ic_error)
-                .cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
     }
 
     @Override
@@ -58,7 +38,7 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public QBFile getItem(int position) {
         return qbFileSparseArray.valueAt(position);
     }
 
@@ -79,8 +59,7 @@ public class GalleryAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        QBFile qbFile = (QBFile) getItem(position);
-//        setImageUniversal(holder, qbFile);
+        QBFile qbFile = getItem(position);
         setImageGlide(holder, qbFile);
         return convertView;
     }
@@ -89,8 +68,7 @@ public class GalleryAdapter extends BaseAdapter {
         holder.progressBar.setVisibility(View.VISIBLE);
 
         Priority customPriority = qbFile.getSize() > Consts.PRIORITY_MAX_IMAGE_SIZE ? Priority.LOW : Priority.NORMAL;
-        Glide
-                .with(activity)
+        Glide.with(activity)
                 .load(QBContentUtils.getUrl(qbFile))
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .priority(customPriority)
@@ -98,44 +76,22 @@ public class GalleryAdapter extends BaseAdapter {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         holder.progressBar.setVisibility(View.GONE);
+                        holder.imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                         holder.progressBar.setVisibility(View.GONE);
+                        holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         return false;
                     }
                 })
-                .placeholder(R.drawable.ic_stub)
                 .error(R.drawable.ic_error)
                 .dontAnimate()
                 .dontTransform()
-                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT))
+                .override(Consts.PREFER_IMAGE_WIDTH, Consts.PREFER_IMAGE_HEIGHT)
                 .into(holder.imageView);
-
-    }
-
-    private void setImageUniversal(final ViewHolder holder, QBFile qbFile) {
-        ImageLoader.getInstance().displayImage(QBContentUtils.getUrl(qbFile),
-                holder.imageView, displayImageOptions, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        holder.progressBar.setProgress(0);
-                        holder.progressBar.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        holder.progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        holder.progressBar.setVisibility(View.GONE);
-                    }
-                }
-        );
     }
 
     public void updateData(SparseArray<QBFile> qbFileSparseArr) {

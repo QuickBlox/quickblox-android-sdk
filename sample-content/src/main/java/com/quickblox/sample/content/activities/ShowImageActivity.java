@@ -2,7 +2,6 @@ package com.quickblox.sample.content.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,18 +11,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.QBContentUtils;
-import com.quickblox.sample.core.utils.ResourceUtils;
 
 public class ShowImageActivity extends BaseActivity {
 
@@ -31,8 +23,6 @@ public class ShowImageActivity extends BaseActivity {
 
     private ImageView imageView;
     private ProgressBar progressBar;
-
-    private DisplayImageOptions displayImageOptions;
 
     public static void start(Context context, int id) {
         Intent intent = new Intent(context, ShowImageActivity.class);
@@ -45,8 +35,6 @@ public class ShowImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         initUI();
-//        initImageLoaderOptions();
-//        setImageUniversal();
         setImageGlide();
     }
 
@@ -57,51 +45,12 @@ public class ShowImageActivity extends BaseActivity {
         progressBar = _findViewById(R.id.progress_bar_show_image);
     }
 
-    private void initImageLoaderOptions() {
-        displayImageOptions = new DisplayImageOptions
-                .Builder()
-                .showImageForEmptyUri(R.drawable.ic_empty)
-                .showImageOnFail(R.drawable.ic_error)
-                .resetViewBeforeLoading(true)
-                .cacheOnDisc(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                .displayer(new FadeInBitmapDisplayer(300))
-                .build();
-    }
-
-    private void setImageUniversal() {
-        int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
-        QBFile qbFile = DataHolder.getInstance().getQBFile(id);
-        ImageLoader.getInstance().displayImage(
-                QBContentUtils.getUrl(qbFile),
-                imageView, displayImageOptions, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        QBContentUtils.showTypeError(failReason);
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-        );
-    }
-
     private void setImageGlide() {
         int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
         QBFile qbFile = DataHolder.getInstance().getQBFile(id);
+
         progressBar.setVisibility(View.VISIBLE);
-        Glide
-                .with(this)
+        Glide.with(this)
                 .load(QBContentUtils.getUrl(qbFile))
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
@@ -118,8 +67,7 @@ public class ShowImageActivity extends BaseActivity {
                 })
                 .error(R.drawable.ic_error)
                 .dontTransform()
-                .override(ResourceUtils.dpToPx(Consts.PREFER_IMAGE_WIDTH), ResourceUtils.dpToPx(Consts.PREFER_IMAGE_HEIGHT))
-//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                .override(Consts.PREFER_IMAGE_WIDTH, Consts.PREFER_IMAGE_HEIGHT)
                 .into(imageView);
     }
 }
