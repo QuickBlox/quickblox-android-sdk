@@ -21,6 +21,9 @@
     <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
     <string name="select_user_to_call">Select Users You Want to Call</string>
 
+    <string name="service_launched">Service for listening to calls launched</string>
+    <string name="internet_not_connected">Please check your Internet connection</string>
+
     
     <string name="btn_audio_call">AUDIO CALL</string>
     <string name="btn_video_call">VIDEO CALL</string>

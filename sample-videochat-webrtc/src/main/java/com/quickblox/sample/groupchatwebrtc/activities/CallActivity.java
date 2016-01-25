@@ -47,6 +47,7 @@ import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 import org.jivesoftware.smack.SmackException;
 import org.webrtc.VideoCapturerAndroid;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback {
+public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback {
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -81,6 +82,20 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private boolean wifiEnabled = true;
     private SharedPreferences sharedPref;
     private RingtonePlayer ringtonePlayer;
+
+    public static void start(Context context, QBRTCTypes.QBConferenceType qbConferenceType,
+                             List<Integer> opponentsIds, Map<String, String> userInfo,
+                             Consts.CALL_DIRECTION_TYPE callDirectionType){
+        Intent intent = new Intent(context, CallActivity.class);
+        intent.putExtra(Consts.CALL_DIRECTION_TYPE_EXTRAS, callDirectionType);
+        intent.putExtra(Consts.CALL_TYPE_EXTRAS, qbConferenceType);
+        intent.putExtra(Consts.USER_INFO_EXTRAS, (Serializable) userInfo);
+        intent.putExtra(Consts.OPPONENTS_LIST_EXTRAS, (Serializable) opponentsIds);
+        if (callDirectionType == Consts.CALL_DIRECTION_TYPE.INCOMING) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
