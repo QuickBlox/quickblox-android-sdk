@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DialogsActivity extends BaseActivity {
@@ -37,9 +40,12 @@ public class DialogsActivity extends BaseActivity {
     private ListView dialogsListView;
     private LinearLayout emptyHintLayout;
     private ProgressBar progressBar;
+    private FloatingActionButton fab;
+    private ActionMode currentActionMode;
 
     private BroadcastReceiver pushBroadcastReceiver;
     private GooglePlayServicesHelper googlePlayServicesHelper;
+    private DialogsAdapter dialogsAdapter;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
@@ -134,6 +140,12 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public ActionMode startSupportActionMode(ActionMode.Callback callback) {
+        currentActionMode = super.startSupportActionMode(callback);
+        return currentActionMode;
+    }
+
     public void onStartNewChatClick(View view) {
         SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
@@ -142,33 +154,30 @@ public class DialogsActivity extends BaseActivity {
         emptyHintLayout = _findViewById(R.id.layout_chat_empty);
         dialogsListView = _findViewById(R.id.list_dialogs_chats);
         progressBar = _findViewById(R.id.progress_dialogs);
+        fab = _findViewById(R.id.fab_dialogs_new_chat);
 
-        TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, dialogsListView, false);
+        TextView listHeader = (TextView) LayoutInflater.from(this)
+                .inflate(R.layout.include_list_hint_header, dialogsListView, false);
         listHeader.setText(R.string.dialogs_list_hint);
         dialogsListView.addHeaderView(listHeader, null, false);
+
         dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
-                ChatActivity.start(DialogsActivity.this, selectedDialog);
+                if (currentActionMode == null) {
+                    ChatActivity.start(DialogsActivity.this, selectedDialog);
+                } else {
+                    dialogsAdapter.toggleSelection(selectedDialog);
+                }
             }
         });
         dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Temporary, need to use ActionMode for selection
                 QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
-                ChatHelper.getInstance().deleteDialog(selectedDialog, new QBEntityCallbackImpl<Void>() {
-                    @Override
-                    public void onSuccess() {
-                        loadDialogsFromQb();
-                    }
-
-                    @Override
-                    public void onError(List<String> errors) {
-                        ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
-                    }
-                });
+                startSupportActionMode(new DeleteActionModeCallback());
+                dialogsAdapter.selectItem(selectedDialog);
                 return true;
             }
         });
@@ -193,9 +202,9 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void fillListView(List<QBDialog> dialogs) {
-        DialogsAdapter adapter = new DialogsAdapter(this, dialogs);
+        dialogsAdapter = new DialogsAdapter(this, dialogs);
         dialogsListView.setEmptyView(emptyHintLayout);
-        dialogsListView.setAdapter(adapter);
+        dialogsListView.setAdapter(dialogsAdapter);
     }
 
     private static class PushBroadcastReceiver extends BroadcastReceiver {
@@ -204,6 +213,59 @@ public class DialogsActivity extends BaseActivity {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
             Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
+        }
+    }
+
+    private class DeleteActionModeCallback implements ActionMode.Callback {
+
+        public DeleteActionModeCallback() {
+            fab.hide();
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.action_mode_dialogs, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+            case R.id.menu_dialogs_action_delete:
+                deleteSelectedDialogs();
+                if (currentActionMode != null) {
+                    currentActionMode.finish();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            currentActionMode = null;
+            dialogsAdapter.clearSelection();
+            fab.show();
+        }
+
+        private void deleteSelectedDialogs() {
+            Collection<QBDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+            ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallbackImpl<Void>() {
+                @Override
+                public void onSuccess() {
+                    loadDialogsFromQb();
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
+                }
+            });
         }
     }
 }

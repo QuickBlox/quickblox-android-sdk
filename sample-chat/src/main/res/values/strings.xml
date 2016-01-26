@@ -9,6 +9,7 @@
     <string name="menu_leave_chat">Leave Chat</string>
     <string name="menu_delete_chat">Delete Chat</string>
     <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_dialogs_delete">Delete</string>
     <string name="menu_select_people_done">Done</string>
 
     <string name="dlg_loading">Loading</string>
