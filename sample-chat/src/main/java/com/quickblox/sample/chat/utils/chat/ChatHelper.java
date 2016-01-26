@@ -33,6 +33,7 @@ import org.jivesoftware.smack.SmackException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -155,6 +156,15 @@ public class ChatHelper {
         );
     }
 
+    public void deleteDialogs(Collection<QBDialog> dialogs, QBEntityCallback<Void> callback) {
+        for (QBDialog dialog : dialogs) {
+            // TODO Implement callback logic to get triggered only after deletion of all dialogs
+            deleteDialog(dialog, new QBEntityCallbackImpl<Void>());
+        }
+
+        callback.onSuccess();
+    }
+
     public void deleteDialog(QBDialog qbDialog, QBEntityCallback<Void> callback) {
         if (qbDialog.getType() == QBDialogType.GROUP) {
             QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
@@ -218,6 +228,10 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
+                        for (QBDialog dialog : dialogs) {
+                            // FIXME Fix for crash when using equals() or hashcode() methods on QBEntityw
+                            dialog.setId(dialog.getDialogId().hashCode());
+                        }
                         getUsersFromDialogs(dialogs, callback);
                         // Not calling super.onSuccess() because
                         // we're want to load chat users before triggering callback
