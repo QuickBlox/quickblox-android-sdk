@@ -27,7 +27,8 @@
 
         <ProgressBar
             android:id="@+id/progress_message_attachment"
-            style="@style/CenterProgressBarStyle" />
+            style="@style/CenterProgressBarStyle"
+            android:theme="@style/AppTheme.BlueAccent"/>
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_message_author"

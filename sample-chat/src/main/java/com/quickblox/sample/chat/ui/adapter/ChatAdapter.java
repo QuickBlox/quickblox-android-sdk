@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -119,19 +120,23 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
                     .load(attachment.getUrl())
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
-                                                   boolean isFirstResource) {
+                        public boolean onException(Exception e, String model,
+                                                   Target<GlideDrawable> target, boolean isFirstResource) {
+                            holder.attachmentImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             holder.attachmentProgressBar.setVisibility(View.GONE);
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.attachmentImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             holder.attachmentProgressBar.setVisibility(View.GONE);
                             return false;
                         }
                     })
+                    .error(R.drawable.ic_error)
                     .into(holder.attachmentImageView);
         } else {
             holder.messageBodyTextView.setText(chatMessage.getBody());
