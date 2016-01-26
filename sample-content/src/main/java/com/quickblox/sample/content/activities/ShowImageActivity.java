@@ -19,14 +19,15 @@ import com.quickblox.sample.content.utils.QBContentUtils;
 
 public class ShowImageActivity extends BaseActivity {
 
-    private static final String EXTRA_QBFILE_ID = "id";
+    private static final String EXTRA_QB_FILE_ID = "qb_file_id";
+    private static final int NO_ID = -1;
 
     private ImageView imageView;
     private ProgressBar progressBar;
 
     public static void start(Context context, int id) {
         Intent intent = new Intent(context, ShowImageActivity.class);
-        intent.putExtra(EXTRA_QBFILE_ID, id);
+        intent.putExtra(EXTRA_QB_FILE_ID, id);
         context.startActivity(intent);
     }
 
@@ -35,7 +36,7 @@ public class ShowImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         initUI();
-        setImageGlide();
+        loadImage();
     }
 
     private void initUI() {
@@ -45,27 +46,34 @@ public class ShowImageActivity extends BaseActivity {
         progressBar = _findViewById(R.id.progress_bar_show_image);
     }
 
-    private void setImageGlide() {
-        int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
+    private void loadImage() {
+        int id = getIntent().getIntExtra(EXTRA_QB_FILE_ID, NO_ID);
         QBFile qbFile = DataHolder.getInstance().getQBFile(id);
+        if (qbFile == null) {
+            imageView.setImageResource(R.drawable.ic_error);
+            return;
+        }
 
         progressBar.setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(QBContentUtils.getUrl(qbFile))
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public boolean onException(Exception e, String model,
+                                               Target<GlideDrawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public boolean onResourceReady(GlideDrawable resource, String model,
+                                                   Target<GlideDrawable> target, boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
                         return false;
                     }
                 })
-                .error(R.drawable.ic_error)
+                .error(R.drawable.ic_error_white)
                 .dontTransform()
                 .override(Consts.PREFER_IMAGE_WIDTH, Consts.PREFER_IMAGE_HEIGHT)
                 .into(imageView);
