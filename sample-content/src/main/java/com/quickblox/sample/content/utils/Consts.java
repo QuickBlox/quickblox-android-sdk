@@ -1,5 +1,6 @@
 package com.quickblox.sample.content.utils;
 
+import com.quickblox.sample.content.R;
 import com.quickblox.sample.core.utils.ResourceUtils;
 
 public final class Consts {
@@ -14,7 +15,11 @@ public final class Consts {
     public static final int IMAGES_PER_PAGE = 80;
     public static final int START_PAGE = 1;
 
-    public static final int PREFER_IMAGE_WIDTH = ResourceUtils.dpToPx(200);
-    public static final int PREFER_IMAGE_HEIGHT = ResourceUtils.dpToPx(200);
+    public static final int PREFERRED_IMAGE_WIDTH_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_width);
+    public static final int PREFERRED_IMAGE_HEIGHT_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_height);
+
+    public static final int PREFERRED_IMAGE_WIDTH_FULL = ResourceUtils.dpToPx(320);
+    public static final int PREFERRED_IMAGE_HEIGHT_FULL = ResourceUtils.dpToPx(320);
+
     public static final int PRIORITY_MAX_IMAGE_SIZE = 1024 * 1024 * 20;
 }

@@ -1,6 +1,6 @@
 package com.quickblox.sample.content.adapter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +24,12 @@ public class GalleryAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private SparseArray<QBFile> qbFileSparseArray;
-    private Activity activity;
+    private Context context;
 
-    public GalleryAdapter(Activity activity, SparseArray<QBFile> qbFileSparseArray) {
-        this.activity = activity;
-        layoutInflater = LayoutInflater.from(activity);
+    public GalleryAdapter(Context context, SparseArray<QBFile> qbFileSparseArray) {
+        this.context = context;
         this.qbFileSparseArray = qbFileSparseArray;
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -60,28 +60,39 @@ public class GalleryAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         QBFile qbFile = getItem(position);
-        setImageGlide(holder, qbFile);
+        loadImage(holder, qbFile);
         return convertView;
     }
 
-    private void setImageGlide(final ViewHolder holder, QBFile qbFile) {
+    public void updateData(SparseArray<QBFile> qbFileSparseArray) {
+        this.qbFileSparseArray = qbFileSparseArray;
+        notifyDataSetChanged();
+    }
+
+    private void loadImage(final ViewHolder holder, QBFile qbFile) {
         holder.progressBar.setVisibility(View.VISIBLE);
 
-        Priority customPriority = qbFile.getSize() > Consts.PRIORITY_MAX_IMAGE_SIZE ? Priority.LOW : Priority.NORMAL;
-        Glide.with(activity)
+        Priority customPriority = qbFile.getSize() > Consts.PRIORITY_MAX_IMAGE_SIZE
+                ? Priority.LOW
+                : Priority.NORMAL;
+
+        Glide.with(context)
                 .load(QBContentUtils.getUrl(qbFile))
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .priority(customPriority)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public boolean onException(Exception e, String model,
+                                               Target<GlideDrawable> target, boolean isFirstResource) {
                         holder.progressBar.setVisibility(View.GONE);
                         holder.imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public boolean onResourceReady(GlideDrawable resource, String model,
+                                                   Target<GlideDrawable> target, boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
                         holder.progressBar.setVisibility(View.GONE);
                         holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         return false;
@@ -90,13 +101,8 @@ public class GalleryAdapter extends BaseAdapter {
                 .error(R.drawable.ic_error)
                 .dontAnimate()
                 .dontTransform()
-                .override(Consts.PREFER_IMAGE_WIDTH, Consts.PREFER_IMAGE_HEIGHT)
+                .override(Consts.PREFERRED_IMAGE_WIDTH_PREVIEW, Consts.PREFERRED_IMAGE_HEIGHT_PREVIEW)
                 .into(holder.imageView);
-    }
-
-    public void updateData(SparseArray<QBFile> qbFileSparseArr) {
-        this.qbFileSparseArray = qbFileSparseArr;
-        notifyDataSetChanged();
     }
 
     private static class ViewHolder {

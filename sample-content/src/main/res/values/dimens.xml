@@ -2,6 +2,8 @@
 
     <dimen name="item_gallery_width">115dp</dimen>
     <dimen name="item_gallery_height">115dp</dimen>
-    <dimen name="item_gallery_column_width">115dp</dimen>
+
+    <dimen name="item_gallery_column_width">@dimen/item_gallery_width</dimen>
+
     <dimen name="gridview_spacing">5dp</dimen>
 </resources>

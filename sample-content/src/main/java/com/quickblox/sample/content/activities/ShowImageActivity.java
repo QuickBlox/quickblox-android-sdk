@@ -75,7 +75,7 @@ public class ShowImageActivity extends BaseActivity {
                 })
                 .error(R.drawable.ic_error_white)
                 .dontTransform()
-                .override(Consts.PREFER_IMAGE_WIDTH, Consts.PREFER_IMAGE_HEIGHT)
+                .override(Consts.PREFERRED_IMAGE_WIDTH_FULL, Consts.PREFERRED_IMAGE_HEIGHT_FULL)
                 .into(imageView);
     }
 }
