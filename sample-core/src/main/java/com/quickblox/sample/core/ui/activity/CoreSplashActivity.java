@@ -3,7 +3,10 @@ package com.quickblox.sample.core.ui.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -44,4 +47,17 @@ public abstract class CoreSplashActivity extends AppCompatActivity {
             }
         }, SPLASH_DELAY);
     }
+
+    protected void showSnackbarError(@StringRes int resId) {
+        View rootLayout = findViewById(R.id.layout_root);
+        Snackbar snackbar = Snackbar.make(rootLayout, resId, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(R.string.dlg_retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                repeatAfterError();
+            }
+        });
+    }
+
+    protected abstract void repeatAfterError();
 }
