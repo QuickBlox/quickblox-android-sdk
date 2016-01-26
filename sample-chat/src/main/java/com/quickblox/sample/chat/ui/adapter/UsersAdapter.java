@@ -1,55 +1,30 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.UiUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-public class UsersAdapter extends BaseAdapter {
-    protected Context context;
-    protected List<QBUser> users;
-    protected LayoutInflater inflater;
+public class UsersAdapter extends BaseListAdapter<QBUser> {
 
     public UsersAdapter(Context context, List<QBUser> users) {
-        this.context = context;
-        this.users = users;
-        this.inflater = LayoutInflater.from(context);
-    }
-
-    public List<QBUser> getUsers() {
-        return users;
-    }
-
-    @Override
-    public int getCount() {
-        return users.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return users.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+        super(context, users);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        QBUser user = users.get(position);
+        QBUser user = getItem(position);
 
         ViewHolder holder;
         if (convertView == null) {
