@@ -3,10 +3,8 @@ package com.quickblox.sample.chat.ui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -23,6 +21,7 @@ import com.quickblox.sample.chat.ui.widget.MaskedImageView;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
+import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -31,35 +30,10 @@ import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-public class ChatAdapter extends BaseAdapter implements StickyListHeadersAdapter {
-    private Context context;
-    private LayoutInflater inflater;
-    private List<QBChatMessage> chatMessages;
+public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.chatMessages = chatMessages;
-    }
-
-    @Override
-    public int getCount() {
-        return chatMessages.size();
-    }
-
-    @Override
-    public QBChatMessage getItem(int position) {
-        return chatMessages.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    public void add(QBChatMessage message) {
-        chatMessages.add(message);
-        notifyDataSetChanged();
+        super(context, chatMessages);
     }
 
     @Override
