@@ -80,7 +80,8 @@ public class ChatHelper {
         try {
             String token = QBAuth.getBaseService().getToken();
             Date tokenExpireDate = QBAuth.getBaseService().getTokenExpirationDate();
-            boolean isTokenExpired = tokenExpireDate != null && System.currentTimeMillis() >= tokenExpireDate.getTime();
+            boolean isTokenExpired = tokenExpireDate != null
+                    && System.currentTimeMillis() >= tokenExpireDate.getTime();
             if (TextUtils.isEmpty(token) || isTokenExpired) {
                 Log.d(TAG, "Token is either empty or expired");
                 return true;
@@ -229,7 +230,7 @@ public class ChatHelper {
                     @Override
                     public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
                         for (QBDialog dialog : dialogs) {
-                            // FIXME Fix for crash when using equals() or hashcode() methods on QBEntityw
+                            // FIXME Fix for crash when using equals() or hashcode() methods on QBEntity
                             dialog.setId(dialog.getDialogId().hashCode());
                         }
                         getUsersFromDialogs(dialogs, callback);
@@ -305,12 +306,13 @@ public class ChatHelper {
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder, new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
-            @Override
-            public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-                QbUsersHolder.getInstance().putUsers(users);
-                onSuccessInMainThread(messages, params);
-            }
-        });
+        QBUsers.getUsersByIDs(userIds, requestBuilder,
+                new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
+                    @Override
+                    public void onSuccess(ArrayList<QBUser> users, Bundle params) {
+                        QbUsersHolder.getInstance().putUsers(users);
+                        onSuccessInMainThread(messages, params);
+                    }
+                });
     }
 }
