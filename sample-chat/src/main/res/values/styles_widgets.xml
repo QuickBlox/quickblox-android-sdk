@@ -101,5 +101,4 @@
         <item name="android:textSize">@dimen/chat_message_info_text_size</item>
         <item name="android:visibility">gone</item>
     </style>
-
 </resources>
