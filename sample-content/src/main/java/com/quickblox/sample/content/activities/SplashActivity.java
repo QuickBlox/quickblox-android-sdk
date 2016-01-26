@@ -20,7 +20,6 @@ public class SplashActivity extends CoreSplashActivity {
         super.onCreate(savedInstanceState);
 
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-
         QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {

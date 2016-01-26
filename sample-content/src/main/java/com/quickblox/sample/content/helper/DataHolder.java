@@ -4,15 +4,15 @@ import android.util.SparseArray;
 
 import com.quickblox.content.model.QBFile;
 
-import java.util.List;
+import java.util.Collection;
 
 public class DataHolder {
 
     private static DataHolder instance;
-    private SparseArray<QBFile> qbFileSparseArray;
+    private SparseArray<QBFile> qbFiles;
 
     private DataHolder() {
-        qbFileSparseArray = new SparseArray<>();
+        qbFiles = new SparseArray<>();
     }
 
     public static synchronized DataHolder getInstance() {
@@ -22,25 +22,29 @@ public class DataHolder {
         return instance;
     }
 
-    public void addQbFiles(List<QBFile> qbFileList) {
+    public void addQbFiles(Collection<QBFile> qbFileList) {
         for (QBFile qbFile : qbFileList) {
             addQbFile(qbFile);
         }
     }
 
-    public SparseArray<QBFile> getQBFileSparseArray() {
-        return qbFileSparseArray;
+    public SparseArray<QBFile> getQBFiles() {
+        return qbFiles;
+    }
+
+    public boolean isEmpty() {
+        return qbFiles.size() == 0;
     }
 
     public void clear() {
-        qbFileSparseArray.clear();
+        qbFiles.clear();
     }
 
     public void addQbFile(QBFile qbFile) {
-        qbFileSparseArray.put(qbFile.getId(), qbFile);
+        qbFiles.put(qbFile.getId(), qbFile);
     }
 
     public QBFile getQBFile(int id) {
-        return qbFileSparseArray.get(id);
+        return qbFiles.get(id);
     }
 }

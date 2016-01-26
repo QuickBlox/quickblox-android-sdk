@@ -4,13 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallbackImpl;
@@ -20,7 +17,6 @@ import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
-import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
@@ -30,13 +26,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnImagePickedListener {
+public class GalleryActivity extends BaseActivity
+        implements AdapterView.OnItemClickListener, OnImagePickedListener {
 
     public static final int GALLERY_REQUEST_CODE = 183;
 
-    private GridView galleryGridView;
     private GalleryAdapter galleryAdapter;
-    private ImageView selectedImageView;
     private ImagePickHelper imagePickHelper;
 
     public static void start(Context context) {
@@ -64,10 +59,9 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     }
 
     private void initUI() {
-        galleryGridView = _findViewById(R.id.gallery_gridview);
-        selectedImageView = _findViewById(R.id.image_uploading_view);
+        galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFiles());
 
-        galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFileSparseArray());
+        GridView galleryGridView = _findViewById(R.id.gallery_gridview);
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
     }
@@ -83,13 +77,13 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
         QBContent.getFiles(builder, new QBEntityCallbackImpl<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
-                SparseArray<QBFile> qbFileSparseArr = DataHolder.getInstance().getQBFileSparseArray();
-                if (qbFileSparseArr.size() > 0) {
+                if (!DataHolder.getInstance().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }
+
                 DataHolder.getInstance().addQbFiles(qbFiles);
                 progressDialog.dismiss();
-                galleryAdapter.updateData(qbFileSparseArr);
+                galleryAdapter.updateData(DataHolder.getInstance().getQBFiles());
             }
 
             @Override
@@ -101,19 +95,16 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
     }
 
     private void uploadSelectedImage(File imageFile) {
-        progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.show();
         QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallbackImpl<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
-                selectedImageView.setVisibility(View.GONE);
                 progressDialog.dismiss();
             }
 
             @Override
             public void onError(List<String> errors) {
-                selectedImageView.setVisibility(View.GONE);
                 progressDialog.dismiss();
                 Toaster.shortToast(R.string.gallery_upload_file_error + errors.get(0));
             }
@@ -127,11 +118,6 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
     @Override
     public void onImagePicked(int requestCode, File file) {
-        selectedImageView.setVisibility(View.VISIBLE);
-        Glide.with(this)
-                .load(file)
-                .into(selectedImageView);
-
         uploadSelectedImage(file);
     }
 
@@ -142,6 +128,6 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
     @Override
     public void onImagePickClosed(int requestCode) {
-//ignored
+        // ignored
     }
 }

@@ -1,17 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent">
 
-    <ImageView
-        android:id="@+id/image_uploading_view"
-        android:layout_width="@dimen/item_gallery_width"
-        android:layout_height="@dimen/item_gallery_height"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone" />
-
     <GridView
         android:id="@+id/gallery_gridview"
-        style="@style/GalleryGridStyle"
-        android:layout_below="@+id/image_uploading_view" />
+        style="@style/GalleryGridStyle" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_upload_image"
