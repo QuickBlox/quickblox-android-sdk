@@ -4,6 +4,7 @@
     package="com.quickblox.sample.content">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -12,6 +13,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="com.quickblox.sample.content.utils.GlideConfiguration"
+            android:value="GlideModule" />
+
         <activity
             android:name=".activities.SplashActivity"
             android:label="@string/app_name"
@@ -23,13 +29,13 @@
         </activity>
 
         <activity
-            android:name=".activities.GalleryListActivity"
+            android:name=".activities.GalleryActivity"
             android:label="@string/gallery_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ShowImageActivity"
-            android:theme="@style/AppTheme.Dark"
-            android:label="@string/show_image_title" />
+            android:label="@string/show_image_title"
+            android:theme="@style/AppTheme.Dark" />
     </application>
 
 

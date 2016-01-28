@@ -4,16 +4,15 @@ import android.util.SparseArray;
 
 import com.quickblox.content.model.QBFile;
 
-import java.util.List;
+import java.util.Collection;
 
 public class DataHolder {
 
     private static DataHolder instance;
-    private int signInUserId;
-    private SparseArray<QBFile> qbFileSparseArr;
+    private SparseArray<QBFile> qbFiles;
 
     private DataHolder() {
-        qbFileSparseArr = new SparseArray<>();
+        qbFiles = new SparseArray<>();
     }
 
     public static synchronized DataHolder getInstance() {
@@ -23,33 +22,29 @@ public class DataHolder {
         return instance;
     }
 
-    public int getSignInUserId() {
-        return signInUserId;
-    }
-
-    public void setSignInUserId(int signInUserId) {
-        this.signInUserId = signInUserId;
-    }
-
-    public void setQbFileSparseArray(List<QBFile> qbFileList) {
+    public void addQbFiles(Collection<QBFile> qbFileList) {
         for (QBFile qbFile : qbFileList) {
-            qbFileSparseArr.put(qbFile.getId(), qbFile);
+            addQbFile(qbFile);
         }
     }
 
+    public SparseArray<QBFile> getQBFiles() {
+        return qbFiles;
+    }
+
+    public boolean isEmpty() {
+        return qbFiles.size() == 0;
+    }
+
     public void clear() {
-        qbFileSparseArr.clear();
-    }
-
-    public QBFile getQBFile(int id) {
-        return qbFileSparseArr.get(id);
-    }
-
-    public SparseArray<QBFile> getQBFileSparseArray() {
-        return qbFileSparseArr;
+        qbFiles.clear();
     }
 
     public void addQbFile(QBFile qbFile) {
-        qbFileSparseArr.put(qbFile.getId(), qbFile);
+        qbFiles.put(qbFile.getId(), qbFile);
+    }
+
+    public QBFile getQBFile(int id) {
+        return qbFiles.get(id);
     }
 }

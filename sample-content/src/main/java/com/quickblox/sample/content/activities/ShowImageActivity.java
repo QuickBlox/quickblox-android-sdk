@@ -2,33 +2,32 @@ package com.quickblox.sample.content.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DataHolder;
+import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.content.utils.QBContentUtils;
 
 public class ShowImageActivity extends BaseActivity {
 
+    private static final String EXTRA_QB_FILE_ID = "qb_file_id";
+    private static final int NO_ID = -1;
+
     private ImageView imageView;
     private ProgressBar progressBar;
 
-    private DisplayImageOptions displayImageOptions;
-
     public static void start(Context context, int id) {
         Intent intent = new Intent(context, ShowImageActivity.class);
-        intent.putExtra(EXTRA_QBFILE_ID, id);
+        intent.putExtra(EXTRA_QB_FILE_ID, id);
         context.startActivity(intent);
     }
 
@@ -37,47 +36,46 @@ public class ShowImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         initUI();
-        initImageLoaderOptions();
-        showSelectedImage();
+        loadImage();
     }
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
-        imageView = _findViewById(R.id.image_upload_view);
-        progressBar = _findViewById(R.id.progress_bar);
+        imageView = _findViewById(R.id.image_full_view);
+        progressBar = _findViewById(R.id.progress_bar_show_image);
     }
 
-    private void initImageLoaderOptions() {
-        displayImageOptions = new DisplayImageOptions.Builder().showImageForEmptyUri(R.drawable.ic_empty)
-                .showImageOnFail(R.drawable.ic_error).resetViewBeforeLoading(true).cacheOnDisc(true)
-                .imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true).displayer(new FadeInBitmapDisplayer(300))
-                .build();
-    }
-
-    private void showSelectedImage() {
-        int id = getIntent().getIntExtra(EXTRA_QBFILE_ID, 0);
+    private void loadImage() {
+        int id = getIntent().getIntExtra(EXTRA_QB_FILE_ID, NO_ID);
         QBFile qbFile = DataHolder.getInstance().getQBFile(id);
-                ImageLoader.getInstance().displayImage(
-                QBContentUtils.getUrl(qbFile),
-                imageView, displayImageOptions, new SimpleImageLoadingListener() {
+        if (qbFile == null) {
+            imageView.setImageResource(R.drawable.ic_error);
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        Glide.with(this)
+                .load(QBContentUtils.getUrl(qbFile))
+                .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        progressBar.setVisibility(View.VISIBLE);
+                    public boolean onException(Exception e, String model,
+                                               Target<GlideDrawable> target, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
                     }
 
                     @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        QBContentUtils.showTypeError(failReason);
+                    public boolean onResourceReady(GlideDrawable resource, String model,
+                                                   Target<GlideDrawable> target, boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        return false;
                     }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-        );
+                })
+                .error(R.drawable.ic_error_white)
+                .dontTransform()
+                .override(Consts.PREFERRED_IMAGE_WIDTH_FULL, Consts.PREFERRED_IMAGE_HEIGHT_FULL)
+                .into(imageView);
     }
 }

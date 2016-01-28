@@ -6,7 +6,6 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.content.R;
-import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.Toaster;
@@ -21,12 +20,9 @@ public class SplashActivity extends CoreSplashActivity {
         super.onCreate(savedInstanceState);
 
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-
         QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
-//                ToDo Is it really necessary to getUserId? I do not think so.
-                DataHolder.getInstance().setSignInUserId(qbSession.getUserId());
                 proceedToTheNextActivity();
             }
 
@@ -44,7 +40,7 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        GalleryListActivity.start(this);
+        GalleryActivity.start(this);
         finish();
     }
 }
