@@ -17,7 +17,6 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
 import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -66,7 +65,8 @@ public class SelectUsersActivity extends BaseActivity {
         progressBar = _findViewById(R.id.progress_select_users);
         usersListView = _findViewById(R.id.list_select_users);
 
-        TextView listHeader = (TextView) LayoutInflater.from(this).inflate(R.layout.include_list_hint_header, usersListView, false);
+        TextView listHeader = (TextView) LayoutInflater.from(this)
+                .inflate(R.layout.include_list_hint_header, usersListView, false);
         listHeader.setText(R.string.select_users_list_hint);
         usersListView.addHeaderView(listHeader, null, false);
 
@@ -108,6 +108,11 @@ public class SelectUsersActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.layout_root);
+    }
+
     private void passResultToCallerActivity() {
         Intent result = new Intent();
         ArrayList<QBUser> selectedUsers = new ArrayList<>(usersAdapter.getSelectedUsers());
@@ -137,7 +142,13 @@ public class SelectUsersActivity extends BaseActivity {
 
             @Override
             public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(SelectUsersActivity.this, R.string.select_users_get_users_error, errors);
+                showErrorSnackbar(R.string.select_users_get_users_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadUsersFromQb();
+                            }
+                        });
                 progressBar.setVisibility(View.GONE);
             }
         });

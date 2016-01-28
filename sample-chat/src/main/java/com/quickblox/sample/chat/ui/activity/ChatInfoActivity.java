@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import com.quickblox.chat.model.QBDialog;
@@ -35,6 +36,11 @@ public class ChatInfoActivity extends BaseActivity {
         usersListView = _findViewById(R.id.list_login_users);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return usersListView;
     }
 
     @Override

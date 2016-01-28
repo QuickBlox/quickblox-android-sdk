@@ -54,9 +54,11 @@ public class UiUtils {
         return previousColor;
     }
 
-    public static int getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE) int colorPosition) {
+    public static int getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE)
+                                     int colorPosition) {
         String colorIdName = String.format("random_color_%d", colorPosition + 1);
-        int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
+        int colorId = App.getInstance().getResources()
+                .getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
 
         return ResourceUtils.getColor(colorId);
     }

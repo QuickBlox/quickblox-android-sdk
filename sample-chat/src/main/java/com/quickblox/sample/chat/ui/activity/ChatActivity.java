@@ -118,34 +118,25 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.menu_chat_action_info:
-                ChatInfoActivity.start(this, qbDialog);
-                return true;
+        case R.id.menu_chat_action_info:
+            ChatInfoActivity.start(this, qbDialog);
+            return true;
 
-            case R.id.menu_chat_action_add:
-                SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
-                return true;
+        case R.id.menu_chat_action_add:
+            SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
+            return true;
 
-            case R.id.menu_chat_action_leave:
-                // TODO Add leaving
-                return true;
+        case R.id.menu_chat_action_leave:
+            ((GroupChatImpl) chat).leave();
+            finish();
+            return true;
 
-            case R.id.menu_chat_action_delete:
-                ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallbackImpl<Void>() {
-                    @Override
-                    public void onSuccess() {
-                        finish();
-                    }
+        case R.id.menu_chat_action_delete:
+            deleteChat();
+            return true;
 
-                    @Override
-                    public void onError(List<String> errors) {
-                        ErrorUtils.showErrorDialog(ChatActivity.this, R.string.dialogs_deletion_error, errors);
-                    }
-                });
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -158,20 +149,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(
                         SelectUsersActivity.EXTRA_QB_USERS);
 
-                ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
-                        new QBEntityCallbackImpl<QBDialog>() {
-                            @Override
-                            public void onSuccess(QBDialog dialog, Bundle args) {
-                                qbDialog = dialog;
-                                loadDialogUsers();
-                            }
-
-                            @Override
-                            public void onError(List<String> errors) {
-                                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_info_add_people_error, errors);
-                            }
-                        }
-                );
+                updateDialog(selectedUsers);
             }
         }
     }
@@ -197,24 +175,39 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         // ignore
     }
 
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.list_chat_messages);
+    }
+
     public void onSendChatClick(View view) {
         final String text = messageEditText.getText().toString();
 
         if (attachmentFile != null) {
-            ChatHelper.getInstance().loadFileAsAttachment(attachmentFile, new QBEntityCallbackImpl<QBAttachment>() {
-                @Override
-                public void onSuccess(QBAttachment result, Bundle params) {
-                    sendChatMessage(text, result);
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_attachment_error, errors);
-                }
-            });
+            uploadAttachmentAndSendChatMessage(text);
         } else if (!TextUtils.isEmpty(text)) {
             sendChatMessage(text, null);
         }
+    }
+
+    private void uploadAttachmentAndSendChatMessage(final String text) {
+        ChatHelper.getInstance().loadFileAsAttachment(attachmentFile, new QBEntityCallbackImpl<QBAttachment>() {
+            @Override
+            public void onSuccess(QBAttachment result, Bundle params) {
+                sendChatMessage(text, result);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                showErrorSnackbar(R.string.chat_attachment_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                uploadAttachmentAndSendChatMessage(text);
+                            }
+                        });
+            }
+        });
     }
 
     public void onAttachmentsClick(View view) {
@@ -234,12 +227,33 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         progressBar = _findViewById(R.id.progress_chat);
     }
 
+    private void deleteChat() {
+        ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallbackImpl<Void>() {
+            @Override
+            public void onSuccess() {
+                finish();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                showErrorSnackbar(R.string.dialogs_deletion_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                deleteChat();
+                            }
+                        });
+            }
+        });
+    }
+
     private void sendChatMessage(String text, QBAttachment attachment) {
         QBChatMessage chatMessage = new QBChatMessage();
         if (attachment != null) {
             chatMessage.addAttachment(attachment);
+        } else {
+            chatMessage.setBody(text);
         }
-        chatMessage.setBody(text);
         chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
 
@@ -258,33 +272,36 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void initChat() {
         switch (qbDialog.getType()) {
-            case GROUP:
-                chat = new GroupChatImpl(this);
-                joinGroupChat();
-                break;
+        case GROUP:
+            chat = new GroupChatImpl(this);
+            joinGroupChat();
+            break;
 
-            case PRIVATE:
-                chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
-                loadDialogUsers();
-                break;
+        case PRIVATE:
+            chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+            loadDialogUsers();
+            break;
         }
     }
 
     private void joinGroupChat() {
-        Toaster.shortToast(R.string.chat_joining_room);
         progressBar.setVisibility(View.VISIBLE);
 
         ((GroupChatImpl) chat).joinGroupChat(qbDialog, new QBEntityCallbackImpl<String>() {
             @Override
             public void onSuccess() {
-                Toaster.shortToast(R.string.chat_join_successful);
                 loadDialogUsers();
             }
 
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_join_error, errors);
+                showErrorSnackbar(R.string.chat_join_error, errors, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        joinGroupChat();
+                    }
+                });
             }
         });
     }
@@ -301,6 +318,29 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
     }
 
+    private void updateDialog(final ArrayList<QBUser> selectedUsers) {
+        ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
+                new QBEntityCallbackImpl<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog dialog, Bundle args) {
+                        qbDialog = dialog;
+                        loadDialogUsers();
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        showErrorSnackbar(R.string.chat_info_add_people_error, errors,
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        updateDialog(selectedUsers);
+                                    }
+                                });
+                    }
+                }
+        );
+    }
+
     private void loadDialogUsers() {
         ChatHelper.getInstance().getUsersFromDialog(qbDialog, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
@@ -311,7 +351,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
             @Override
             public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_load_users_error, errors);
+                showErrorSnackbar(R.string.chat_load_users_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadDialogUsers();
+                            }
+                        });
             }
         });
     }
@@ -346,7 +392,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(ChatActivity.this, R.string.chat_load_history_error, errors);
+                showErrorSnackbar(R.string.chat_load_history_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadChatHistory();
+                            }
+                        });
             }
         });
     }

@@ -26,7 +26,6 @@ import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -121,23 +120,17 @@ public class DialogsActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PEOPLE) {
-                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
+                        .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-                ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
-                        new QBEntityCallbackImpl<QBDialog>() {
-                            @Override
-                            public void onSuccess(QBDialog dialog, Bundle args) {
-                                ChatActivity.start(DialogsActivity.this, dialog);
-                            }
-
-                            @Override
-                            public void onError(List<String> errors) {
-                                ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_creation_error, errors);
-                            }
-                        }
-                );
+                createDialog(selectedUsers);
             }
         }
+    }
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.layout_root);
     }
 
     @Override
@@ -183,6 +176,29 @@ public class DialogsActivity extends BaseActivity {
         });
     }
 
+    private void createDialog(final ArrayList<QBUser> selectedUsers) {
+        ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
+                new QBEntityCallbackImpl<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog dialog, Bundle args) {
+                        ChatActivity.start(DialogsActivity.this, dialog);
+                        loadDialogsFromQb();
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        showErrorSnackbar(R.string.dialogs_creation_error, errors,
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        createDialog(selectedUsers);
+                                    }
+                                });
+                    }
+                }
+        );
+    }
+
     private void loadDialogsFromQb() {
         progressBar.setVisibility(View.VISIBLE);
 
@@ -196,7 +212,13 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(List<String> errors) {
                 progressBar.setVisibility(View.GONE);
-                ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_get_error, errors);
+                showErrorSnackbar(R.string.dialogs_get_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadDialogsFromQb();
+                            }
+                        });
             }
         });
     }
@@ -263,7 +285,13 @@ public class DialogsActivity extends BaseActivity {
 
                 @Override
                 public void onError(List<String> errors) {
-                    ErrorUtils.showErrorDialog(DialogsActivity.this, R.string.dialogs_deletion_error, errors);
+                    showErrorSnackbar(R.string.dialogs_deletion_error, errors,
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    deleteSelectedDialogs();
+                                }
+                            });
                 }
             });
         }

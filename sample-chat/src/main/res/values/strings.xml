@@ -17,7 +17,7 @@
     <string name="dlg_login">Login…</string>
 
     <string name="placeholder_username_you">%s (you)</string>
-    <string name="error_recreate_session">Login Chat error. Trying again in 3 seconds…</string>
+    <string name="error_recreate_session">Login Chat error</string>
 
     <string name="login_title">@string/chat_sample</string>
 
@@ -44,8 +44,6 @@
     <string name="chat_edit_text_hint">Message</string>
     <string name="chat_me">Me</string>
     <string name="chat_friend">Friend</string>
-    <string name="chat_joining_room">Joining room…</string>
-    <string name="chat_join_successful">Join successful</string>
     <string name="chat_join_error">Error join group chat</string>
     <string name="chat_send_message_error">Failed to send a message</string>
     <string name="chat_load_history_error">Load chat history errors</string>
