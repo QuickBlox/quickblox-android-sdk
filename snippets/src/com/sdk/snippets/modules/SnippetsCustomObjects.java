@@ -27,7 +27,11 @@ import com.sdk.snippets.core.Snippets;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +44,8 @@ public class SnippetsCustomObjects extends Snippets {
     // Define custom object model in QB Admin Panel
     // http://quickblox.com/developers/Custom_Objects
     //
-    private final String MOVIE_CLASS = "Post";
+//    private final String MOVIE_CLASS = "Post";
+    private final String MOVIE_CLASS = "Advert";
 
     private File imageFile;
 
@@ -213,8 +218,8 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(10);
-            requestBuilder.all("tags", "a", "b");
-//            requestBuilder.gt("rating", 1);
+//            requestBuilder.all("tags", "a", "b");
+            requestBuilder.in("_id", "56aa4760a0eb47c299000019");
 //            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
             
 
@@ -226,6 +231,21 @@ public class SnippetsCustomObjects extends Snippets {
                     int limit = params.getInt(Consts.LIMIT);
                     Log.i(TAG, "limit=" + limit + " skip=" + skip);
                     Log.i(TAG, ">>> custom objects: " + customObjects);
+
+                    QBCustomObject object = customObjects.get(0);
+                    Log.i(TAG, "arr: " + object.getArray("arr"));
+                    Log.i(TAG, "bbb: " + object.getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + object.getFloat("fff"));
+                    Log.i(TAG, "fff2: " + object.get("fff"));
+                    Log.i(TAG, "iii: " + object.getInteger("iii"));
+                    Log.i(TAG, "name: " + object.getString("name"));
+                    Log.i(TAG, "loc: " + object.getString("loc"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + object.getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -317,14 +337,32 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
             QBCustomObject newRecord = new QBCustomObject(MOVIE_CLASS);
-            newRecord.put("rating", 10);
-            newRecord.put("name", "The Dark Knight");
-            newRecord.put("description", "About Batman");
+            newRecord.putString("name", "bingo");
+            newRecord.putArray("arr", Arrays.asList(new Double[]{1.32, 2.56}));
+            newRecord.putBoolean("bbb", true);
+            newRecord.putFloat("fff", 45.676f);
+            newRecord.putInteger("iii", 56);
+            newRecord.putDate("ddd", new Date());
+            newRecord.putLocation("loc", Arrays.asList(new Double[]{3.78, 4.87}));
 
             QBCustomObjects.createObject(newRecord, new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> created object: " + object);
+
+                    Log.i(TAG, "arr: " + object.getArray("arr"));
+                    Log.i(TAG, "bbb: " + object.getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + object.getFloat("fff"));
+                    Log.i(TAG, "fff2: " + object.get("fff"));
+                    Log.i(TAG, "iii: " + object.getInteger("iii"));
+                    Log.i(TAG, "name: " + object.getString("name"));
+                    Log.i(TAG, "loc: " + object.getString("loc"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + object.getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -435,11 +473,14 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet updateCustomObject = new Snippet("update object") {
         @Override
         public void execute() {
-            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "55ba3a5d535c12b66a00015e");
+            QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "56aa4045a28f9a2297000455");
             //
             HashMap<String, Object> fields = new HashMap<>();
 //            fields.put("rating", 10);
 //            record.setFields(fields);
+
+            record.putString("name", "bingo2");
+            record.putArray("arr", Arrays.asList(new Double[]{11.32, 12.56}));
 
             QBRequestUpdateBuilder rb = new QBRequestUpdateBuilder();
             rb.pullAll("tags", "car1", "car2");
@@ -448,6 +489,20 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> updated record: : " + object.toString());
+
+                    Log.i(TAG, "arr: " + object.getArray("arr"));
+                    Log.i(TAG, "bbb: " + object.getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + object.getFloat("fff"));
+                    Log.i(TAG, "fff2: " + object.get("fff"));
+                    Log.i(TAG, "iii: " + object.getInteger("iii"));
+                    Log.i(TAG, "name: " + object.getString("name"));
+                    Log.i(TAG, "loc: " + object.getString("loc"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + object.getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override

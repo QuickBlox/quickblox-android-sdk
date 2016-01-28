@@ -13,6 +13,7 @@ import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBParticipantListener;
 import com.quickblox.chat.listeners.QBSystemMessageListener;
+import com.quickblox.chat.model.QBDialogCustomData;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -40,6 +41,7 @@ import com.quickblox.chat.model.QBPrivacyListItem;
 import com.quickblox.chat.model.QBRosterEntry;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
+import com.quickblox.core.request.QueryRule;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.SnippetAsync;
@@ -50,13 +52,21 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -1100,12 +1110,26 @@ public class SnippetsChat extends Snippets {
 
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
-//            requestBuilder.addParameter("data[class_name]", "Advert");
+            requestBuilder.addRule("data[class_name]", QueryRule.EQ, "Advert");
 
             QBChatService.getChatDialogs(null, requestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
                 @Override
                 public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
                     Log.i(TAG, "dialogs: " + dialogs);
+
+                    QBDialog dialog = dialogs.get(0);
+                    Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
+                    Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + dialog.getCustomData().getFloat("fff"));
+                    Log.i(TAG, "fff2: " + dialog.getCustomData().get("fff"));
+                    Log.i(TAG, "iii: " + dialog.getCustomData().getInteger("iii"));
+                    Log.i(TAG, "name: " + dialog.getCustomData().getString("name"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + dialog.getCustomData().getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -1124,7 +1148,7 @@ public class SnippetsChat extends Snippets {
             //
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
-            requestBuilder.all("occupants_ids", "76,58");
+            requestBuilder.addRule("data[class_name]", QueryRule.EQ, "Advert");
 //            requestBuilder.addParameter("data[class_name]", "Advert");
             //
             List<QBDialog> chatDialogsList = null;
@@ -1195,6 +1219,7 @@ public class SnippetsChat extends Snippets {
 
             ArrayList<Integer> occupantIdsList = new ArrayList<>();
             occupantIdsList.add(ApplicationConfig.getInstance().getTestUserId2());
+            occupantIdsList.add(301);
 
             QBDialog dialog = new QBDialog();
             dialog.setName("Chat with Garry and John");
@@ -1202,15 +1227,40 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
-//            Map<String, String> data = new HashMap<String, String>();
+//            HashMap<String, Object> data = new HashMap<>();
 //            data.put("data[class_name]", "Advert");
-//            data.put("data[title]", "bingo");
+//            data.put("data[name]", "bingo");
+            final String myLocation = Double.toString(23.45454) + ","+ Double.toString(0.4456);
+//            data.put("data[arr]", myLocation);
 //            dialog.setData(data);
+
+            QBDialogCustomData data = new QBDialogCustomData("Advert");
+            data.putString("name", "bingo");
+            data.putArray("arr", Arrays.asList(new Double[]{1.32, 2.56}));
+            data.putBoolean("bbb", true);
+            data.putFloat("fff", 45.676f);
+            data.putInteger("iii", 56);
+            data.putDate("ddd", new Date());
+            data.putLocation("loc", Arrays.asList(new Double[]{3.78, 4.87}));
+
+            dialog.setCustomData(data);
 
             groupChatManager.createDialog(dialog, new QBEntityCallback<QBDialog>() {
                 @Override
                 public void onSuccess(QBDialog dialog, Bundle args) {
                     Log.i(TAG, "dialog: " + dialog);
+                    Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
+                    Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + dialog.getCustomData().getFloat("fff"));
+                    Log.i(TAG, "fff2: " + dialog.getCustomData().get("fff"));
+                    Log.i(TAG, "iii: " + dialog.getCustomData().getInteger("iii"));
+                    Log.i(TAG, "name: " + dialog.getCustomData().getString("name"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + dialog.getCustomData().getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -1231,6 +1281,7 @@ public class SnippetsChat extends Snippets {
 
             ArrayList<Integer> occupantIdsList = new ArrayList<>();
             occupantIdsList.add(ApplicationConfig.getInstance().getTestUserId2());
+            occupantIdsList.add(301);
             //
             QBDialog dialog = new QBDialog();
             dialog.setName("Chat with Garry and John");
@@ -1238,10 +1289,10 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
-//            Map<String, String> data = new HashMap<String, String>();
-//            data.put("data[class_name]", "Advert");
-//            data.put("data[title]", "bingo");
-//            dialog.setData(data);
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("data[class_name]", "Advert");
+            data.put("data[name]", "bingo");
+            dialog.setData(data);
 
 
             QBDialog createdDialog = null;
@@ -1266,21 +1317,40 @@ public class SnippetsChat extends Snippets {
             }
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
-            requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
+//            requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
 
-            QBDialog dialog = new QBDialog("5444bba7535c121d3302245f");
+            QBDialog dialog = new QBDialog("56aa3d7da28f9a5b1f0000cf");
             dialog.setName("Chat with Garry and John");
             dialog.setPhoto("452444");
 
-//            Map<String, String> data = new HashMap<String, String>();
+//            HashMap<String, Object> data = new HashMap<>();
 //            data.put("data[class_name]", "Advert");
-//            data.put("data[title]", "bingo");
+//            data.put("data[name]", "bingo2");
 //            dialog.setData(data);
+            QBDialogCustomData data = new QBDialogCustomData("Advert");
+            data.putString("name", "bingo4");
+            data.putArray("arr", Arrays.asList(new Double[]{99.0, 100.0, 101.0}));
+
+            dialog.setCustomData(data);
+
 
             groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallback<QBDialog>() {
                 @Override
                 public void onSuccess(QBDialog dialog, Bundle args) {
                     Log.i(TAG, "dialog: " + dialog);
+
+                    Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
+                    Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + dialog.getCustomData().getFloat("fff"));
+                    Log.i(TAG, "fff2: " + dialog.getCustomData().get("fff"));
+                    Log.i(TAG, "iii: " + dialog.getCustomData().getInteger("iii"));
+                    Log.i(TAG, "name: " + dialog.getCustomData().getString("name"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + dialog.getCustomData().getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
