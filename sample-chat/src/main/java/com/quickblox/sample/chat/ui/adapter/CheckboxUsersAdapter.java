@@ -24,7 +24,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
     }
 
     public void addSelectedUsers(List<Integer> userIds) {
-        for (QBUser user : users) {
+        for (QBUser user : objectsList) {
             for (Integer id : userIds) {
                 if (user.getId().equals(id)) {
                     selectedUsers.add(user);
@@ -39,7 +39,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
 
-        final QBUser user = (QBUser) getItem(position);
+        final QBUser user = getItem(position);
         final ViewHolder holder = (ViewHolder) view.getTag();
 
         view.setOnClickListener(new View.OnClickListener() {
