@@ -39,8 +39,9 @@ public class SplashActivity extends Activity{
         QBSettings.getInstance().init(getApplicationContext(), String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
 
+        // Create QuickBlox session
+        //
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-
         QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
@@ -50,8 +51,8 @@ public class SplashActivity extends Activity{
             }
 
             @Override
-            public void onError(QBResponseException strings) {
-                Toast.makeText(getBaseContext(), strings.toString(), Toast.LENGTH_SHORT).show();
+            public void onError(QBResponseException error) {
+                Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });

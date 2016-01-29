@@ -18,16 +18,17 @@ allprojects {
 
 }
 
-ext.compileSdkVersion = 22
-ext.buildToolsVersion = "22.0.1"
+ext.compileSdkVersion = 23
+ext.buildToolsVersion = "23.0.1"
 
 ext.minSdkVersion = 14
-ext.targetSdkVersion = 22
+ext.targetSdkVersion = 23
 
-ext.qbSdkVersion = '2.5'
-
+ext.appCompatVersion = "23.1.1"
 ext.androidSupportVersion = "22.1.0"
 ext.playServiceVersion = "7.0.0"
+
+ext.qbSdkVersion = '2.5'
 
 ext.sourceCompatibility = JavaVersion.VERSION_1_7
 ext.targetCompatibility = JavaVersion.VERSION_1_7

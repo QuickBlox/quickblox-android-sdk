@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.customobjects.R;
@@ -63,7 +64,7 @@ public class AddNewNoteActivity extends BaseActivity {
 
         progressDialog.show();
 
-        HashMap<String, Object> fields = new HashMap<String, Object>();
+        HashMap<String, Object> fields = new HashMap<>();
         fields.put(TITLE, note);
         fields.put(COMMENTS, comments);
         fields.put(STATUS, STATUS_NEW);
@@ -71,7 +72,7 @@ public class AddNewNoteActivity extends BaseActivity {
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
 
-        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
+        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
@@ -81,9 +82,9 @@ public class AddNewNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(QBResponseException errors) {
+            public void onError(QBResponseException error) {
                 progressDialog.dismiss();
-                DialogUtils.showLong(baseActivity, errors.toString());
+                DialogUtils.showLong(baseActivity, error.getLocalizedMessage());
             }
         });
     }

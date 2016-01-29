@@ -7,14 +7,14 @@ public interface Consts {
     String AUTH_SECRET = "YavMAxm5T59-BRw";
     String ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
-    public static final String USER_LOGIN = "bobbobbob";
-    public static final String USER_PASSWORD = "bobbobbob";
+    String USER_LOGIN = "bobbobbob";
+    String USER_PASSWORD = "bobbobbob";
 
-    public static final String STATUS_NEW = "New";
-    public static final String STATUS_IN_PROCESS = "In Process";
-    public static final String STATUS_DONE = "Done";
-    public static final String CLASS_NAME = "note";
-    public static final String TITLE = "title";
-    public static final String STATUS = "status";
-    public static final String COMMENTS = "comments";
+    String STATUS_NEW = "New";
+    String STATUS_IN_PROCESS = "In Process";
+    String STATUS_DONE = "Done";
+    String CLASS_NAME = "note";
+    String TITLE = "title";
+    String STATUS = "status";
+    String COMMENTS = "comments";
 }
