@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.sample.user.R;

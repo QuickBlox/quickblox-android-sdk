@@ -12,6 +12,8 @@
         android:layout_above="@+id/password_edittext"
         android:layout_centerHorizontal="true"
         android:capitalize="none"
+        android:textColor="#000"
+        android:textColorHint="#709898"
         android:hint="@string/login"
         android:paddingBottom="@dimen/padding_middle"
         android:singleLine="true" />
@@ -23,6 +25,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:capitalize="none"
+        android:textColor="#000"
+        android:textColorHint="#709898"
         android:hint="@string/password"
         android:imeOptions="actionSend"
         android:password="true"

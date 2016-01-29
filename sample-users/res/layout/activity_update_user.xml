@@ -25,6 +25,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/login" />
 
             <EditText
@@ -32,12 +33,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/password" />
 
             <EditText
@@ -46,12 +49,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/email" />
 
             <EditText
@@ -60,12 +65,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/full_name" />
 
             <EditText
@@ -73,12 +80,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/phone" />
 
             <EditText
@@ -87,12 +96,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/web_site" />
 
             <EditText
@@ -101,12 +112,14 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:inputType="textWebEditText"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
 
             <TextView
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/tags" />
 
             <EditText
@@ -114,6 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:singleLine="true"
+                android:textColor="#000"
                 android:layout_marginBottom="@dimen/margin_large"/>
         </LinearLayout>
     </ScrollView>

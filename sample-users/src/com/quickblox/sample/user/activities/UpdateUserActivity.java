@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.users.QBUsers;
@@ -13,8 +12,6 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.sample.user.utils.DialogUtils;
-
-import java.util.List;
 
 import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
 

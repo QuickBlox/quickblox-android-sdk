@@ -15,7 +15,6 @@ import com.digits.sdk.android.DigitsOAuthSigning;
 import com.digits.sdk.android.DigitsSession;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.user.definitions.Consts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -89,7 +88,7 @@ public class SignInActivity extends BaseActivity {
         String xAuthServiceProvider = authHeaders.get(Consts.X_AUTH_SERVICE_PROVIDER_KEY);
         String xVerifyCredentialsAuthorization = authHeaders.get(Consts.X_VERIFY_CREDENTIALS_AUTORIZATION_KEY);
 
-        QBUsers.signInUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallbackImpl<QBUser>() {
+        QBUsers.signInUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle params) {
                 progressDialog.hide();
@@ -103,9 +102,9 @@ public class SignInActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 progressDialog.hide();
-                DialogUtils.showLong(context, errors.get(0));
+                DialogUtils.showLong(context, errors.getLocalizedMessage());
             }
         });
     }
@@ -116,17 +115,15 @@ public class SignInActivity extends BaseActivity {
         String xAuthServiceProvider = authHeaders.get(Consts.X_AUTH_SERVICE_PROVIDER_KEY);
         String xVerifyCredentialsAuthorization = authHeaders.get(Consts.X_VERIFY_CREDENTIALS_AUTORIZATION_KEY);
 
-        QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
+
             }
 
             @Override
-            public void onSuccess() {
-            }
+            public void onError(QBResponseException errors) {
 
-            @Override
-            public void onError(List<String> errors) {
             }
         });
     }

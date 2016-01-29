@@ -10,7 +10,7 @@ import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
 public class DataHolder {
 
     private static DataHolder dataHolder;
-    private List<QBUser> qbUsersList = new ArrayList<QBUser>();
+    private List<QBUser> qbUsersList = new ArrayList<>();
     private QBUser signInQbUser;
 
     public static synchronized DataHolder getDataHolder() {

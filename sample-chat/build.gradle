@@ -53,6 +53,5 @@ dependencies {
         transitive = true;
     }
     compile "com.google.android.gms:play-services-gcm:7.5.0"
-//    compile "com.android.support:support-v4:$rootProject.androidSupportVersion"
     compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
 }

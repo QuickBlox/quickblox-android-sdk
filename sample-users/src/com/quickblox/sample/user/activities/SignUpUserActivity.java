@@ -5,15 +5,12 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.sample.user.utils.DialogUtils;
-
-import java.util.List;
 
 public class SignUpUserActivity extends BaseActivity {
 
@@ -56,9 +53,9 @@ public class SignUpUserActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(QBResponseException strings) {
+                    public void onError(QBResponseException error) {
                         progressDialog.hide();
-                        DialogUtils.showLong(context, strings.toString());
+                        DialogUtils.showLong(context, error.getLocalizedMessage());
                     }
                 });
 

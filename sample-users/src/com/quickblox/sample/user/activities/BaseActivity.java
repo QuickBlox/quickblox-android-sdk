@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.utils.DialogUtils;
 
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     protected Context context;
     protected ProgressDialog progressDialog;
