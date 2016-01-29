@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -84,7 +86,7 @@ public class UpdateUserActivity extends BaseActivity {
                 }
                 qbUser.setTags(tagList);
 
-                QBUsers.updateUser(qbUser, new QBEntityCallbackImpl<QBUser>() {
+                QBUsers.updateUser(qbUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser qbUser, Bundle bundle) {
 
@@ -99,7 +101,7 @@ public class UpdateUserActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List<String> strings) {
+                    public void onError(QBResponseException strings) {
 
                     }
                 });

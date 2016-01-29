@@ -16,8 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.sample.chat.pushnotifications.Consts;
 import com.quickblox.sample.chat.pushnotifications.PlayServicesHelper;
@@ -64,12 +66,10 @@ public class DialogsActivity extends BaseActivity {
 
         // Get dialogs
         //
-        ChatService.getInstance().getDialogs(new QBEntityCallbackImpl() {
+        ChatService.getInstance().getDialogs(new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
-            public void onSuccess(Object object, Bundle bundle) {
+            public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
                 progressBar.setVisibility(View.GONE);
-
-                final ArrayList<QBDialog> dialogs = (ArrayList<QBDialog>)object;
 
                 // build list view
                 //
@@ -77,7 +77,7 @@ public class DialogsActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 progressBar.setVisibility(View.GONE);
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(DialogsActivity.this);

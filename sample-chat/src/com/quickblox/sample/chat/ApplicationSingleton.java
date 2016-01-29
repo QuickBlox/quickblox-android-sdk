@@ -15,6 +15,8 @@ public class ApplicationSingleton extends Application {
     public static final String APP_ID = "92";
     public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
     public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
+    public static final String ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
+
     public static final String STICKER_API_KEY = "847b82c49db21ecec88c510e377b452c";
 
     public static final String USER_LOGIN = "igorquickblox44";
@@ -35,7 +37,12 @@ public class ApplicationSingleton extends Application {
 
         // Initialise QuickBlox SDK
         //
-        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
+
+
+        // Initialise Stickers sdk
+        //
         StickersManager.initialize(STICKER_API_KEY, this);
     }
 

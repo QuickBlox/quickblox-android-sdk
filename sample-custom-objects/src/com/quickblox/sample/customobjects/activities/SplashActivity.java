@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
@@ -25,11 +27,47 @@ public class SplashActivity extends Activity{
 
     private ProgressBar progressBar;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
+        initUI();
+
+        // Initialize QuickBlox application with credentials.
+        //
+        QBSettings.getInstance().init(getApplicationContext(), String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
+
+        // Create QuickBlox session
+        //
+        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
+
+                getNoteList();
+            }
+
+            @Override
+            public void onError(QBResponseException error) {
+                Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void initUI() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private void getNoteList() {
 
         // Get all notes
         //
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallback<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
 
@@ -47,8 +85,8 @@ public class SplashActivity extends Activity{
             }
 
             @Override
-            public void onError(List<String> strings) {
-                Toast.makeText(getBaseContext(), strings.get(0), Toast.LENGTH_SHORT).show();
+            public void onError(QBResponseException strings) {
+                Toast.makeText(getBaseContext(), strings.toString(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -58,38 +96,5 @@ public class SplashActivity extends Activity{
         Intent intent = new Intent(this, DisplayNoteListActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        initUI();
-
-        // Initialize QuickBlox application with credentials.
-        //
-        QBSettings.getInstance().fastConfigInit(String.valueOf(Consts.APP_ID), Consts.AUTH_KEY, Consts.AUTH_SECRET);
-        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-
-        QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
-            @Override
-            public void onSuccess(QBSession qbSession, Bundle bundle) {
-                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
-
-                getNoteList();
-            }
-
-            @Override
-            public void onError(List<String> strings) {
-                Toast.makeText(getBaseContext(), strings.get(0), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    private void initUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
     }
 }

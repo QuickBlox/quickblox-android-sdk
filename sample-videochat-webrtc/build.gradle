@@ -18,45 +18,46 @@ repositories {
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
-        applicationId "com.quickblox.sample.videogroupchat"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
     }
 
     productFlavors {
-        speedDev {
-            minSdkVersion 21
-        }
-        dev {
-            minSdkVersion rootProject.minSdkVersion
-        }
+        online {
 
-        ios {
+        }
+        offline {
 
         }
     }
-
 }
 
 dependencies {
+
+    // offline dependencies, from 'jars' dir
+    //
+    offlineCompile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
+
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion") {
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }
+    onlineCompile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
+
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
+
+    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
-    compile files('libs/android-support-v4.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }

@@ -19,6 +19,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.UsersAdapter;
@@ -58,17 +59,18 @@ public class LoginActivity extends BaseActivity {
 
         initUI();
 
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        // Set application credentials
+        //
+        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
 
         if (getActionBar() != null) {
             getActionBar().setTitle(getResources().getString(R.string.opponentsListActionBarTitle));
         }
 
         QBChatService.setDebugEnabled(true);
-        if (!QBChatService.isInitialized()) {
-            QBChatService.init(this);
-            chatService = QBChatService.getInstance();
-        }
+        chatService = QBChatService.getInstance();
+
         createAppSession();
     }
 
@@ -216,7 +218,7 @@ public class LoginActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException exc) {
                 showProgress(false);
 
                 Toast.makeText(LoginActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
@@ -244,8 +246,7 @@ public class LoginActivity extends BaseActivity {
                 upTime = SystemClock.uptimeMillis();
                 QBUser user = usersListAdapter.getItem(position);
 
-                startIncomeCallListenerService(user.getLogin(), user.getPassword(), Consts.LOGIN);
-            }
+                startIncomeCallListenerService(user.getLogin(), user.getPassword(), Consts.LOGIN);            }
         }
     };
 }

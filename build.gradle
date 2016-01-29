@@ -8,26 +8,44 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+        mavenCentral()
+    }
+
+}
+
 ext.compileSdkVersion = 23
-ext.buildToolsVersion = "23.0.2"
+ext.buildToolsVersion = "23.0.1"
 
 ext.minSdkVersion = 14
-ext.targetSdkVersion = 19
+ext.targetSdkVersion = 23
+
+ext.appCompatVersion = "23.1.1"
+ext.androidSupportVersion = "23.1.0"
+ext.playServiceVersion = "7.0.0"
+ext.playServiceGCMVersion = "8.3.0"
+
+ext.qbSdkVersion = '2.5'
 
 ext.sourceCompatibility = JavaVersion.VERSION_1_7
 ext.targetCompatibility = JavaVersion.VERSION_1_7
 
 ext.lintAbortOnError = false
 
+ext.useOnlineDependency = true
+
 def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
-def qb_sdk_version = '2.4'
-ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
-ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
-ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
-ext.content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
-ext.customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
-ext.messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
-ext.videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
+ext.core_jar_path = qb_sdk_jars_template_path + '-core-' + qbSdkVersion + '.jar'
+ext.location_jar_path = qb_sdk_jars_template_path + '-location-' + qbSdkVersion + '.jar'
+ext.chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qbSdkVersion + '.jar'
+ext.content_jar_path = qb_sdk_jars_template_path + '-content-' + qbSdkVersion + '.jar'
+ext.customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qbSdkVersion + '.jar'
+ext.messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qbSdkVersion + '.jar'
+ext.videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qbSdkVersion + '.jar'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'

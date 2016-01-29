@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Note;
@@ -82,10 +84,10 @@ public class ShowNoteActivity extends BaseActivity {
                 progressDialog.show();
 
                 // Delete note
-                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallbackImpl() {
+                QBCustomObjects.deleteObject(CLASS_NAME, DataHolder.getDataHolder().getNoteId(position), new QBEntityCallback<Void>() {
 
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void result, Bundle params) {
                         progressDialog.dismiss();
 
                         DataHolder.getDataHolder().removeNoteFromList(position);
@@ -95,8 +97,8 @@ public class ShowNoteActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List list) {
-                        DialogUtils.showLong(baseActivity, list.get(0).toString());
+                    public void onError(QBResponseException error) {
+                        DialogUtils.showLong(baseActivity, error.getLocalizedMessage());
 
                         progressDialog.dismiss();
                     }
@@ -159,17 +161,18 @@ public class ShowNoteActivity extends BaseActivity {
 
     private void addNewComment(String comment) {
         DataHolder.getDataHolder().addNewComment(position, comment);
+
         // create query for update activity_note status
         // set class name
         // add new comments
-        HashMap<String, Object> fields = new HashMap<String, Object>();
+        HashMap<String, Object> fields = new HashMap<>();
         fields.put(COMMENTS, DataHolder.getDataHolder().getComments(position));
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setCustomObjectId(DataHolder.getDataHolder().getNoteId(position));
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
 
-        QBCustomObjects.updateObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
+        QBCustomObjects.updateObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
@@ -179,24 +182,24 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException error) {
                 progressDialog.dismiss();
 
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                DialogUtils.showLong(baseActivity, error.getLocalizedMessage());
             }
         });
     }
 
     private void updateNoteStatus(String status) {
 
-        HashMap<String, Object> fields = new HashMap<String, Object>();
+        HashMap<String, Object> fields = new HashMap<>();
         fields.put(STATUS, status);
         QBCustomObject qbCustomObject = new QBCustomObject();
         qbCustomObject.setCustomObjectId(DataHolder.getDataHolder().getNoteId(position));
         qbCustomObject.setClassName(CLASS_NAME);
         qbCustomObject.setFields(fields);
 
-        QBCustomObjects.updateObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
+        QBCustomObjects.updateObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
@@ -206,10 +209,10 @@ public class ShowNoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException error) {
                 progressDialog.dismiss();
 
-                DialogUtils.showLong(baseActivity, strings.get(0).toString());
+                DialogUtils.showLong(baseActivity, error.getLocalizedMessage());
             }
         });
     }

@@ -7,7 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.core.ApplicationSessionStateCallback;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
@@ -39,8 +40,7 @@ public class BaseActivity extends AppCompatActivity implements ApplicationSessio
 
         // 'initialised' will be true if it's the 1st start of the app or if the app's process was killed by OS(or user)
         //
-        boolean initialised = ChatService.initIfNeed(this);
-        if(initialised && savedInstanceState != null){
+        if(savedInstanceState != null){
             needToRecreateSession = true;
         }else{
             sessionActive = true;
@@ -75,9 +75,9 @@ public class BaseActivity extends AppCompatActivity implements ApplicationSessio
 
         // Restoring Chat session
         //
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl() {
+        ChatService.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
                 Log.d(TAG, "Chat login onSuccess");
 
                 progressDialog.dismiss();
@@ -88,7 +88,7 @@ public class BaseActivity extends AppCompatActivity implements ApplicationSessio
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
 
                 Log.d(TAG, "Chat login onError: " + errors);
 

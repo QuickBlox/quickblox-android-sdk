@@ -13,9 +13,13 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.messages.QBMessages;
+import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
+import com.quickblox.messages.model.QBNotificationChannel;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.chat.ApplicationSingleton;
 
@@ -163,15 +167,17 @@ public class PlayServicesHelper {
     /**
      * Subscribe to Push Notifications
      *
-     * @param regId registration ID
+     * @param registrationID registration ID
      */
-    private void subscribeToPushNotifications(String regId) {
+    private void subscribeToPushNotifications(String registrationID) {
         //Create push token with  Registration Id for Android
         //
         Log.d(TAG, "subscribing...");
 
+        QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
+        subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+        //
         String deviceId;
-
         final TelephonyManager mTelephony = (TelephonyManager) activity.getSystemService(
                 Context.TELEPHONY_SERVICE);
         if (mTelephony.getDeviceId() != null) {
@@ -180,16 +186,20 @@ public class PlayServicesHelper {
             deviceId = Settings.Secure.getString(activity.getContentResolver(),
                     Settings.Secure.ANDROID_ID); //*** use for tablets
         }
+        subscription.setDeviceUdid(deviceId);
+        //
+        subscription.setRegistrationID(registrationID);
+        //
+        QBPushNotifications.createSubscription(subscription, new QBEntityCallback<ArrayList<QBSubscription>>() {
 
-        QBMessages.subscribeToPushNotificationsTask(regId, deviceId, QBEnvironment.DEVELOPMENT, new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
             @Override
-            public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {
+            public void onSuccess(ArrayList<QBSubscription> subscriptions, Bundle args) {
                 Log.d(TAG, "subscribed");
             }
 
             @Override
-            public void onError(List<String> strings) {
-
+            public void onError(QBResponseException error) {
+                Log.e(TAG, error.getLocalizedMessage());
             }
         });
     }

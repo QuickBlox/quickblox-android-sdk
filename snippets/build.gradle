@@ -1,8 +1,29 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        applicationId "com.sdk.snippets"
+    }
 
     sourceSets {
         main {
@@ -11,13 +32,76 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+    productFlavors {
+        online{
+
+        }
+
+        onlineAar{
+
+        }
+
+        offline{
+
+        }
+
+        offlineDev{
+
+        }
+    }
+
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path,
+
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion") {
+        exclude group: 'de.measite.minidns'
+        exclude group: 'org.jxmpp'
+    }
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+
+
+    // online dependencies, from remote repository, aar files
+    //
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
+    onlineAarCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar"){
+        transitive=true
+    }
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
+
+
+    // offline dependencies, from 'jars' dir
+    //
+    offlineCompile files(rootProject.core_jar_path,
             rootProject.chat_jar_path,
             rootProject.content_jar_path,
             rootProject.customobjects_jar_path,
             rootProject.location_jar_path,
             rootProject.messages_jar_path)
+
+    // offline dependencies, from 'SDK-android' dir, for debug
+    //
+    offlineDevCompile project(':quickblox-android-sdk-core')
+    offlineDevCompile project(':quickblox-android-sdk-chat')
+    offlineDevCompile project(':quickblox-android-sdk-content')
+    offlineDevCompile project(':quickblox-android-sdk-messages')
+    offlineDevCompile project(':quickblox-android-sdk-location')
+    offlineDevCompile project(':quickblox-android-sdk-customobjects')
+
+    // twitter digits
+    compile('com.digits.sdk.android:digits:1.9.0@aar') {
+        transitive = true;
+    }
+    compile 'io.fabric.sdk.android:fabric:1.2.0'
+
 }

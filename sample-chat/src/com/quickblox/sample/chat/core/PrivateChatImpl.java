@@ -1,12 +1,14 @@
 package com.quickblox.sample.chat.core;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListenerImpl;
+import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
@@ -14,7 +16,8 @@ import com.quickblox.sample.chat.ui.activities.ChatActivity;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
-public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implements Chat, QBPrivateChatManagerListener {
+public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implements Chat, QBPrivateChatManagerListener,
+        QBMessageSentListener<QBPrivateChat>{
 
     private static final String TAG = "PrivateChatManagerImpl";
 
@@ -35,6 +38,7 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
             privateChat = privateChatManager.createChat(opponentID, this);
         }else{
             privateChat.addMessageListener(this);
+            privateChat.addMessageSentListener(this);
         }
     }
 
@@ -74,8 +78,19 @@ public class PrivateChatImpl extends QBMessageListenerImpl<QBPrivateChat> implem
         if(!createdLocally){
             privateChat = incomingPrivateChat;
             privateChat.addMessageListener(PrivateChatImpl.this);
+            privateChat.addMessageSentListener(PrivateChatImpl.this);
         }
 
         Log.w(TAG, "private chat created: " + incomingPrivateChat.getParticipant() + ", createdLocally:" + createdLocally);
+    }
+
+    @Override
+    public void processMessageSent(QBPrivateChat qbPrivateChat, QBChatMessage qbChatMessage) {
+        Toast.makeText(chatActivity, "message was sent to " + qbChatMessage.getRecipientId(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void processMessageFailed(QBPrivateChat qbPrivateChat, QBChatMessage qbChatMessage) {
+        Toast.makeText(chatActivity, "message sent failed to " + qbChatMessage.getRecipientId(), Toast.LENGTH_LONG).show();
     }
 }

@@ -22,7 +22,9 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.Chat;
@@ -38,7 +40,6 @@ import org.jivesoftware.smack.XMPPException;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import vc908.stickerfactory.StickersManager;
 import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
@@ -302,10 +303,10 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
     }
 
-    private void joinGroupChat() {
-        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl() {
+    private void joinGroupChat(){
+        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
 
                 // Load Chat history
                 //
@@ -313,7 +314,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             }
 
             @Override
-            public void onError(List list) {
+            public void onError(QBResponseException list) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
                 dialog.setMessage("error when join group chat: " + list.toString()).create().show();
             }
@@ -322,10 +323,10 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private void loadChatHistory() {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
+        customObjectRequestBuilder.setLimit(100);
         customObjectRequestBuilder.sortDesc("date_sent");
 
-        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
+        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallback<ArrayList<QBChatMessage>>() {
             @Override
             public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
 
@@ -341,7 +342,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 if (!ChatActivity.this.isFinishing()) {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(ChatActivity.this);
                     dialog.setMessage("load chat history errors: " + errors).create().show();
@@ -374,7 +375,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean authenticated) {
             Log.i(TAG, "authenticated");
         }
 

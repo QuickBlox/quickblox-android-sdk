@@ -15,6 +15,7 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.core.ChatService;
@@ -65,7 +66,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
                 }
                 dialogToCreate.setOccupantsIds(getUserIds(usersAdapter.getSelected()));
 
-                QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate, new QBEntityCallbackImpl<QBDialog>() {
+                QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate, new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         if (usersAdapter.getSelected().size() == 1) {
@@ -76,7 +77,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(NewDialogActivity.this);
                         dialog.setMessage("dialog creation errors: " + errors).create().show();
                     }
@@ -135,12 +136,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     @Override
-    public void onSuccess(){
-
-    }
-
-    @Override
-    public void onError(List<String> errors){
+    public void onError(QBResponseException errors){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("get users errors: " + errors).create().show();
     }
@@ -176,7 +172,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     public static ArrayList<Integer> getUserIds(List<QBUser> users){
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList<>();
         for(QBUser user : users){
             ids.add(user.getId());
         }

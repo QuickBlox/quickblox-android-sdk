@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.location.R;
 import com.quickblox.sample.location.utils.Constants;
@@ -43,19 +45,21 @@ public class SplashActivity extends Activity {
 
         // Initialize QuickBlox application with credentials.
         //
-        QBSettings.getInstance().fastConfigInit(String.valueOf(Constants.APP_ID), Constants.AUTH_KEY, Constants.AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), String.valueOf(Constants.APP_ID),
+                Constants.AUTH_KEY, Constants.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Constants.ACCOUNT_KEY);
 
         // Create QuickBlox session
         //
         QBUser qbUser = new QBUser(Constants.USER_LOGIN, Constants.USER_PASSWORD);
-        QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 startMapActivity();
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 DialogUtils.showLong(context, resources.getString(R.string.dlg_location_error) + errors);
                 progressBar.setVisibility(View.INVISIBLE);
             }

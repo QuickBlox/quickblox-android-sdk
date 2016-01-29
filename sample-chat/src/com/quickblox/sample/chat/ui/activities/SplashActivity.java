@@ -5,13 +5,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.chat.R;
-
-import java.util.List;
 
 public class SplashActivity extends Activity {
 
@@ -26,12 +25,11 @@ public class SplashActivity extends Activity {
         user.setLogin(ApplicationSingleton.USER_LOGIN);
         user.setPassword(ApplicationSingleton.USER_PASSWORD);
 
-        ChatService.initIfNeed(this);
 
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl() {
+        ChatService.getInstance().login(user, new QBEntityCallback<Void>() {
 
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
                 // Go to Dialogs screen
                 //
                 Intent intent = new Intent(SplashActivity.this, DialogsActivity.class);
@@ -40,7 +38,7 @@ public class SplashActivity extends Activity {
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(SplashActivity.this);
                 dialog.setMessage("chat login errors: " + errors).create().show();
             }

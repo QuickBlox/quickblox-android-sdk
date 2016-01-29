@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.user.R;
@@ -41,7 +43,7 @@ public class SignUpUserActivity extends BaseActivity {
                 QBUser qbUser = new QBUser();
                 qbUser.setLogin(loginEditText.getText().toString());
                 qbUser.setPassword(passwordEditText.getText().toString());
-                QBUsers.signUpSignInTask(qbUser, new QBEntityCallbackImpl<QBUser>() {
+                QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser qbUser, Bundle bundle) {
                         progressDialog.hide();
@@ -54,10 +56,9 @@ public class SignUpUserActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List<String> strings) {
+                    public void onError(QBResponseException strings) {
                         progressDialog.hide();
-
-                        DialogUtils.showLong(context, strings.get(0));
+                        DialogUtils.showLong(context, strings.toString());
                     }
                 });
 

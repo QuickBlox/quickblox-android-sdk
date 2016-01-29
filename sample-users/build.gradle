@@ -1,8 +1,29 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+    }
 
     sourceSets {
         main {
@@ -11,9 +32,33 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+
+    productFlavors {
+        online{
+
+        }
+
+        offline{
+
+        }
+    }
+
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path)
+    // offline dependencies, from 'jars' dir
+    //
+    offlineCompile files(rootProject.core_jar_path)
+
+    // online dependencies, from maven repository, jar files
+    //
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
+
     compile 'com.android.support:appcompat-v7:23.1.1'
+
+    compile('com.digits.sdk.android:digits:1.9.0@aar') {
+        transitive = true;
+    }
+    compile 'io.fabric.sdk.android:fabric:1.2.0'
 }

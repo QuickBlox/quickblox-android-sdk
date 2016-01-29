@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/note_title_textview"
         android:layout_centerHorizontal="true"
+        android:textColor="#000"
         android:singleLine="true" />
 
     <TextView
@@ -34,6 +35,7 @@
         android:layout_width="@dimen/comments_width"
         android:layout_height="wrap_content"
         android:layout_below="@+id/comments_title_textview"
+        android:textColor="#000"
         android:layout_centerHorizontal="true" />
 
     <Button

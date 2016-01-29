@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.model.QBUser;
 
 import com.quickblox.simplesample.messages.R;
@@ -33,8 +34,8 @@ public class SplashActivity extends Activity{
         QBUser qbUser = new QBUser();
         qbUser.setLogin(Consts.USER_LOGIN);
         qbUser.setPassword(Consts.USER_PASSWORD);
-
-        QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
+        //
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 Intent intent = new Intent(SplashActivity.this, MessagesActivity.class);
@@ -43,9 +44,9 @@ public class SplashActivity extends Activity{
             }
 
             @Override
-            public void onError(List<String> strings) {
+            public void onError(QBResponseException error) {
                 // Show errors
-                DialogUtils.showLong(SplashActivity.this, strings.toString());
+                DialogUtils.showLong(SplashActivity.this, error.getLocalizedMessage());
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });

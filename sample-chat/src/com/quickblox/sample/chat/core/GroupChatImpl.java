@@ -1,27 +1,26 @@
 package com.quickblox.sample.chat.core;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListenerImpl;
+import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat {
+public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat, QBMessageSentListener<QBGroupChat> {
     private static final String TAG = GroupChatImpl.class.getSimpleName();
 
     private ChatActivity chatActivity;
@@ -54,16 +53,17 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
         Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_LONG).show();
 
-        groupChat.join(history, new QBEntityCallbackImpl() {
+        groupChat.join(history, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(final Void result, final Bundle bundle) {
 
                 groupChat.addMessageListener(GroupChatImpl.this);
+                groupChat.addMessageSentListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onSuccess();
+                        callback.onSuccess(result, bundle);
 
                         Toast.makeText(chatActivity, "Join successful", Toast.LENGTH_LONG).show();
                     }
@@ -72,16 +72,16 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
             }
 
             @Override
-            public void onError(final List list) {
+            public void onError(final QBResponseException error) {
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onError(list);
+                        callback.onError(error);
                     }
                 });
 
 
-                Log.w("Could not join chat, errors:", Arrays.toString(list.toArray()));
+                Log.w("Could not join chat:", error.getErrors().toString());
             }
         });
     }
@@ -131,6 +131,16 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
     @Override
     public void processError(QBGroupChat groupChat, QBChatException error, QBChatMessage originMessage){
+
+    }
+
+    @Override
+    public void processMessageSent(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
+
+    }
+
+    @Override
+    public void processMessageFailed(QBGroupChat qbChat, QBChatMessage qbChatMessage) {
 
     }
 }

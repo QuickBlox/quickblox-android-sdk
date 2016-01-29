@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.core;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -9,7 +8,7 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.QBUsers;
@@ -37,21 +36,10 @@ public class ChatService {
 
     public static synchronized ChatService getInstance() {
         if(instance == null) {
+            QBChatService.setDebugEnabled(true);
             instance = new ChatService();
         }
         return instance;
-    }
-
-    public static boolean initIfNeed(Context ctx) {
-        if (!QBChatService.isInitialized()) {
-            QBChatService.setDebugEnabled(true);
-            QBChatService.init(ctx);
-            Log.d(TAG, "Initialise QBChatService");
-
-            return true;
-        }
-
-        return false;
     }
 
     private QBChatService chatService;
@@ -73,7 +61,7 @@ public class ChatService {
 
         // Create REST API session
         //
-        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession session, Bundle args) {
 
@@ -81,36 +69,36 @@ public class ChatService {
 
                 // login to Chat
                 //
-                loginToChat(user, new QBEntityCallbackImpl() {
+                loginToChat(user, new QBEntityCallback<Void>() {
 
                     @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
+                    public void onSuccess(Void result, Bundle bundle) {
+                        callback.onSuccess(result,bundle);
                     }
 
                     @Override
-                    public void onError(List errors) {
+                    public void onError(QBResponseException errors) {
                         callback.onError(errors);
                     }
                 });
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });
     }
 
     public void logout(){
-        chatService.logout(new QBEntityCallbackImpl() {
+        chatService.logout(new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
 
             }
 
             @Override
-            public void onError(List list) {
+            public void onError(QBResponseException list) {
 
             }
         });
@@ -118,23 +106,14 @@ public class ChatService {
 
     private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
-        chatService.login(user, new QBEntityCallbackImpl() {
+        chatService.login(user, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
-
-                // Start sending presences
-                //
-                try {
-                    chatService.startAutoSendPresence(AUTO_PRESENCE_INTERVAL_IN_SECONDS);
-                } catch (SmackException.NotLoggedInException e) {
-                    e.printStackTrace();
-                }
-
-                callback.onSuccess();
+            public void onSuccess(Void result, Bundle b) {
+                callback.onSuccess(result, b);
             }
 
             @Override
-            public void onError(List errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });
@@ -144,9 +123,9 @@ public class ChatService {
         // get dialogs
         //
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
+        customObjectRequestBuilder.setLimit(100);
 
-        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
             public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
 
@@ -163,7 +142,7 @@ public class ChatService {
                 requestBuilder.setPage(1);
                 requestBuilder.setPerPage(usersIDs.size());
                 //
-                QBUsers.getUsersByIDs(usersIDs, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+                QBUsers.getUsersByIDs(usersIDs, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {
 
@@ -175,7 +154,7 @@ public class ChatService {
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
+                    public void onError(QBResponseException errors) {
                         callback.onError(errors);
                     }
 
@@ -183,14 +162,14 @@ public class ChatService {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 callback.onError(errors);
             }
         });
     }
 
 
-    private Map<Integer, QBUser> dialogsUsers = new HashMap<Integer, QBUser>();
+    private Map<Integer, QBUser> dialogsUsers = new HashMap<>();
 
     public Map<Integer, QBUser> getDialogsUsers() {
         return dialogsUsers;
@@ -233,7 +212,7 @@ public class ChatService {
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean authenticated) {
             Log.i(TAG, "authenticated");
         }
 

@@ -10,9 +10,10 @@
 
     <application
         android:icon="@drawable/icon"
+        android:name=".Application"
         android:label="@string/app_name">
         <activity
-            android:name=".activities.StartActivity"
+            android:name=".activities.StartSnippetsActivity"
             android:configChanges="locale|keyboard|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
@@ -26,8 +27,11 @@
         <activity android:name=".activities.LocationsActivity" />
         <activity android:name=".activities.CustomObjectsActivity" />
         <activity android:name=".activities.ContentActivity" />
-        <activity android:name=".activities.MessagesActivity" />
+        <activity android:name=".activities.PushNotificationsActivity" />
         <activity android:name=".activities.ChatActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="06afe5b32890416c317e719380d755a99dd2d5ba" />
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
