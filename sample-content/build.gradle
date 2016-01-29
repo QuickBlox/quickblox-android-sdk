@@ -45,3 +45,5 @@ dependencies {
 
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
 }
+
+apply from: "../artifacts.gradle"

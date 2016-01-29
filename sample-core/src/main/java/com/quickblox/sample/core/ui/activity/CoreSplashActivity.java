@@ -4,16 +4,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import com.quickblox.sample.core.R;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.VersionUtils;
 
-public abstract class CoreSplashActivity extends AppCompatActivity {
+import java.util.List;
+
+public abstract class CoreSplashActivity extends CoreBaseActivity {
     private static final int SPLASH_DELAY = 1500;
 
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -28,8 +29,8 @@ public abstract class CoreSplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
-        TextView appNameTextView = (TextView) findViewById(R.id.text_splash_app_title);
-        TextView versionTextView = (TextView) findViewById(R.id.text_splash_app_version);
+        TextView appNameTextView = _findViewById(R.id.text_splash_app_title);
+        TextView versionTextView = _findViewById(R.id.text_splash_app_version);
 
         appNameTextView.setText(getAppName());
         versionTextView.setText(getString(R.string.splash_app_version, VersionUtils.getAppVersionName()));
@@ -48,16 +49,8 @@ public abstract class CoreSplashActivity extends AppCompatActivity {
         }, SPLASH_DELAY);
     }
 
-    protected void showSnackbarError(@StringRes int resId) {
+    protected void showSnackbarError(@StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
         View rootLayout = findViewById(R.id.layout_root);
-        Snackbar snackbar = Snackbar.make(rootLayout, resId, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(R.string.dlg_retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                repeatAfterError();
-            }
-        });
+        ErrorUtils.showSnackbar(rootLayout, resId, errors, R.string.dlg_retry, clickListener);
     }
-
-    protected abstract void repeatAfterError();
 }

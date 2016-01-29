@@ -43,3 +43,5 @@ dependencies {
         transitive = true;
     }
 }
+
+apply from: "../artifacts.gradle"
