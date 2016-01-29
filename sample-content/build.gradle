@@ -45,3 +45,5 @@ dependencies {
 
     compile "com.nostra13.universalimageloader:universal-image-loader:${rootProject.uilVersion}"
 }
+
+apply from: "../artifacts.gradle"
