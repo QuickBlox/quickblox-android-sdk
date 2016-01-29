@@ -6,7 +6,7 @@ repositories {
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion '23.0.2'
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -44,6 +44,6 @@ dependencies {
     onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
 
 
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
+    compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
+    compile "com.nostra13.universalimageloader:universal-image-loader:1.9.0"
 }

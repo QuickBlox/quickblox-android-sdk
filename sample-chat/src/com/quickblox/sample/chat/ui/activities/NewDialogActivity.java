@@ -66,7 +66,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
                 }
                 dialogToCreate.setOccupantsIds(getUserIds(usersAdapter.getSelected()));
 
-                QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate, new QBEntityCallbackImpl<QBDialog>() {
+                QBChatService.getInstance().getGroupChatManager().createDialog(dialogToCreate, new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         if (usersAdapter.getSelected().size() == 1) {
@@ -172,7 +172,7 @@ public class NewDialogActivity extends BaseActivity implements QBEntityCallback<
     }
 
     public static ArrayList<Integer> getUserIds(List<QBUser> users){
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList<>();
         for(QBUser user : users){
             ids.add(user.getId());
         }

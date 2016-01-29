@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.core.ApplicationSessionStateCallback;
 import com.quickblox.sample.chat.core.ChatService;
@@ -75,7 +75,7 @@ public class BaseActivity extends AppCompatActivity implements ApplicationSessio
 
         // Restoring Chat session
         //
-        ChatService.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
+        ChatService.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 Log.d(TAG, "Chat login onSuccess");

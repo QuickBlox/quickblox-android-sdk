@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.content.R;
@@ -23,7 +24,6 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 
 import java.io.File;
-import java.util.List;
 
 public class GalleryActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnGetImageFileListener{
 
@@ -96,7 +96,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
 
         // Upload new file
         //
-        QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
+        QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getDataHolder().addQbFile(qbFile);
@@ -109,10 +109,10 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             }
 
             @Override
-            public void onError(QBResponseException strings) {
+            public void onError(QBResponseException error) {
                 progressDialog.hide();
 
-                DialogUtils.show(GalleryActivity.this, strings.toString());
+                DialogUtils.show(GalleryActivity.this, error.getLocalizedMessage());
             }
         }, new QBProgressCallback() {
             @Override

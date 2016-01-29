@@ -8,7 +8,6 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
@@ -107,19 +106,9 @@ public class ChatService {
 
     private void loginToChat(final QBUser user, final QBEntityCallback callback){
 
-        chatService.setUseStreamManagement(true);
         chatService.login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle b) {
-
-                // Start sending presences
-                //
-                try {
-                    chatService.startAutoSendPresence(AUTO_PRESENCE_INTERVAL_IN_SECONDS);
-                } catch (SmackException.NotLoggedInException e) {
-                    e.printStackTrace();
-                }
-
                 callback.onSuccess(result, b);
             }
 
@@ -134,9 +123,9 @@ public class ChatService {
         // get dialogs
         //
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
+        customObjectRequestBuilder.setLimit(100);
 
-        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+        QBChatService.getChatDialogs(null, customObjectRequestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
             public void onSuccess(final ArrayList<QBDialog> dialogs, Bundle args) {
 
@@ -153,7 +142,7 @@ public class ChatService {
                 requestBuilder.setPage(1);
                 requestBuilder.setPerPage(usersIDs.size());
                 //
-                QBUsers.getUsersByIDs(usersIDs, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+                QBUsers.getUsersByIDs(usersIDs, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {
 
@@ -180,7 +169,7 @@ public class ChatService {
     }
 
 
-    private Map<Integer, QBUser> dialogsUsers = new HashMap<Integer, QBUser>();
+    private Map<Integer, QBUser> dialogsUsers = new HashMap<>();
 
     public Map<Integer, QBUser> getDialogsUsers() {
         return dialogsUsers;

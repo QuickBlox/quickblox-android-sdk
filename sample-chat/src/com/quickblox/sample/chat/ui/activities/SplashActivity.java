@@ -6,14 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ApplicationSingleton;
 import com.quickblox.sample.chat.core.ChatService;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.sample.chat.R;
-
-import java.util.List;
 
 public class SplashActivity extends Activity {
 

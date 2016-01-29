@@ -22,6 +22,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
@@ -303,7 +304,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
     }
 
     private void joinGroupChat(){
-        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallbackImpl<Void>() {
+        ((GroupChatImpl) chat).joinGroupChat(dialog, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
 
@@ -322,10 +323,10 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
     private void loadChatHistory() {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(100);
+        customObjectRequestBuilder.setLimit(100);
         customObjectRequestBuilder.sortDesc("date_sent");
 
-        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
+        QBChatService.getDialogMessages(dialog, customObjectRequestBuilder, new QBEntityCallback<ArrayList<QBChatMessage>>() {
             @Override
             public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
 

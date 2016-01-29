@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
@@ -14,16 +13,12 @@ import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ui.activities.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements Chat, QBMessageSentListener<QBGroupChat> {
     private static final String TAG = GroupChatImpl.class.getSimpleName();
@@ -58,7 +53,7 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
 
         Toast.makeText(chatActivity, "Joining room...", Toast.LENGTH_LONG).show();
 
-        groupChat.join(history, new QBEntityCallbackImpl<Void>() {
+        groupChat.join(history, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(final Void result, final Bundle bundle) {
 
@@ -77,16 +72,16 @@ public class GroupChatImpl extends QBMessageListenerImpl<QBGroupChat> implements
             }
 
             @Override
-            public void onError(final QBResponseException list) {
+            public void onError(final QBResponseException error) {
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onError(list);
+                        callback.onError(error);
                     }
                 });
 
 
-                Log.w("Could not join chat:", list.getErrors().toString());
+                Log.w("Could not join chat:", error.getErrors().toString());
             }
         });
     }
