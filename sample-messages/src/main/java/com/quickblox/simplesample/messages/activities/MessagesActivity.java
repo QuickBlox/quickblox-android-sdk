@@ -29,18 +29,30 @@ import java.util.List;
 
 public class MessagesActivity extends CoreBaseActivity {
 
-    private static final String TAG = MessagesActivity.class.getSimpleName();
+    private final String TAG = getClass().getSimpleName();
 
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
+    public static final String CRLF = "\r\n";
 
     private GooglePlayServicesHelper googlePlayServicesHelper;
+
+    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
+            retrieveMessage(message);
+        }
+    };
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MessagesActivity.class);
         context.startActivity(intent);
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,13 +66,11 @@ public class MessagesActivity extends CoreBaseActivity {
         addMessageToList();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         googlePlayServicesHelper.checkGooglePlayServices(this);
 
-        // Register to receive push notifications events
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
     }
@@ -87,13 +97,14 @@ public class MessagesActivity extends CoreBaseActivity {
 
     private void addMessageToList() {
         String message = getIntent().getStringExtra(Consts.EXTRA_GCM_MESSAGE);
+        Log.d("MessActivity","message= "+message);
         if (message != null) {
             retrieveMessage(message);
         }
     }
 
     public void retrieveMessage(String message) {
-        String text = message + "\n\n" + messageInEditText.getText().toString();
+        String text = message + CRLF + messageInEditText.getText().toString();
         messageInEditText.setText(text);
         progressBar.setVisibility(View.INVISIBLE);
     }
@@ -123,22 +134,11 @@ public class MessagesActivity extends CoreBaseActivity {
             public void onError(List<String> errors) {
                 Toaster.longToast(errors.toString());
                 progressBar.setVisibility(View.INVISIBLE);
-                
+
                 KeyboardUtils.hideKeyboard(messageOutEditText);
             }
         });
 
         progressBar.setVisibility(View.VISIBLE);
     }
-
-    // Our handler for receiving Intents
-    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
-            retrieveMessage(message);
-        }
-    };
 }
