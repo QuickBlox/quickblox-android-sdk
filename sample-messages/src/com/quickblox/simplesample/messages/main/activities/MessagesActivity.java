@@ -15,10 +15,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.messages.QBMessages;
+import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
@@ -107,12 +106,12 @@ public class MessagesActivity extends Activity {
         // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
         qbEvent.setMessage(messageOutEditText.getText().toString());
 
-        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
         userIds.add(1243440);
         qbEvent.setUserIds(userIds);
 
 
-        QBMessages.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
+        QBPushNotifications.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -124,9 +123,9 @@ public class MessagesActivity extends Activity {
             }
 
             @Override
-            public void onError(QBResponseException strings) {
+            public void onError(QBResponseException error) {
                 // errors
-                DialogUtils.showLong(MessagesActivity.this, strings.toString());
+                DialogUtils.showLong(MessagesActivity.this, error.getLocalizedMessage());
 
                 progressBar.setVisibility(View.INVISIBLE);
 
