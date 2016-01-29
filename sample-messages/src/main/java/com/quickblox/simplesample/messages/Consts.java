@@ -8,7 +8,7 @@ public class Consts {
     public static final String AUTH_SECRET = "KBA8tPCPFpsXFCw";
     public static final String USER_LOGIN = "beethoven";
     public static final String USER_PASSWORD = "testing2015";
-
+    public static final int USER_ID = 6276758;
     // In GCM, the Sender ID is a project ID that you acquire from the API console
     public static final String GCM_SENDER_ID = "1065754803087";
 

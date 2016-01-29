@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.messages.QBMessages;
@@ -36,7 +36,7 @@ public class GooglePlayServicesHelper {
     public void registerForGcmIfPossible(Activity activity, String senderId) {
         // Check device for Play Services APK.
         // If check succeeds, proceed with GCM registration.
-        if (checkGooglePlayServices(activity)) {
+        if (checkPlayServices(activity)) {
             String gcmRegId = getGcmRegIdFromPreferences();
             if (TextUtils.isEmpty(gcmRegId)) {
                 registerInGcmInBackground(senderId);
@@ -53,19 +53,20 @@ public class GooglePlayServicesHelper {
      *
      * @param activity activity where you check Google Play Services availability
      */
-    public boolean checkGooglePlayServices(Activity activity) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-        if (resultCode == ConnectionResult.SUCCESS) {
-            return true;
+    public boolean checkPlayServices(Activity activity) {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(activity, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                activity.finish();
+            }
+            return false;
         }
-
-        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-            GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-        } else {
-            Log.w(TAG, "This device is not supported.");
-            activity.finish();
-        }
-        return false;
+        return true;
     }
 
     /**

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -30,11 +29,11 @@ import java.util.List;
 public class MessagesActivity extends CoreBaseActivity {
 
     private final String TAG = getClass().getSimpleName();
+    public static final String CRLF = "\n\n";
 
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
-    public static final String CRLF = "\r\n";
 
     private GooglePlayServicesHelper googlePlayServicesHelper;
 
@@ -53,7 +52,6 @@ public class MessagesActivity extends CoreBaseActivity {
         context.startActivity(intent);
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,13 +61,14 @@ public class MessagesActivity extends CoreBaseActivity {
         googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         initUI();
+//        TODO Is it need?
         addMessageToList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        googlePlayServicesHelper.checkGooglePlayServices(this);
+        googlePlayServicesHelper.checkPlayServices(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
@@ -82,23 +81,15 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void initUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        messageOutEditText = (EditText) findViewById(R.id.message_out_edittext);
-        messageInEditText = (EditText) findViewById(R.id.messages_in_edittext);
-
-        Button sendMessageButton = (Button) findViewById(R.id.send_message_button);
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMessageOnClick(view);
-            }
-        });
+        progressBar = _findViewById(R.id.progress_bar);
+        messageOutEditText = _findViewById(R.id.message_out_edittext);
+        messageInEditText = _findViewById(R.id.messages_in_edittext);
     }
 
     private void addMessageToList() {
         String message = getIntent().getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-        Log.d("MessActivity","message= "+message);
         if (message != null) {
+            Log.d(TAG, "message != null, message = " + message);
             retrieveMessage(message);
         }
     }
@@ -119,7 +110,7 @@ public class MessagesActivity extends CoreBaseActivity {
         qbEvent.setMessage(messageOutEditText.getText().toString());
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(6276758);
+        userIds.add(Consts.USER_ID);
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
