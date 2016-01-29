@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBLocation;
@@ -35,7 +34,6 @@ import com.quickblox.sample.location.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapActivity extends FragmentActivity implements LocationListener {
