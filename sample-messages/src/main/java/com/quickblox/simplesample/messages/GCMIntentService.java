@@ -66,10 +66,10 @@ public class GCMIntentService extends IntentService {
     private void processNotification(String type, Bundle extras) {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        final String messageValue = extras.getString(Consts.EXTRA_MESSAGE);
+        final String messageValue = extras.getString(Consts.EXTRA_GCM_MESSAGE);
 
         Intent intent = new Intent(this, MessagesActivity.class);
-        intent.putExtra(Consts.EXTRA_MESSAGE, messageValue);
+        intent.putExtra(Consts.EXTRA_GCM_MESSAGE, messageValue);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -85,10 +85,10 @@ public class GCMIntentService extends IntentService {
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
         // notify activity
-        Intent intentNewPush = new Intent(Consts.NEW_PUSH_EVENT);
-        intentNewPush.putExtra(Consts.EXTRA_MESSAGE, messageValue);
+        Intent intentNewPush = new Intent(Consts.ACTION_NEW_GCM_EVENT);
+        intentNewPush.putExtra(Consts.EXTRA_GCM_MESSAGE, messageValue);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentNewPush);
 
-        Log.i(TAG, "Broadcasting event " + Consts.NEW_PUSH_EVENT + " with data: " + messageValue);
+        Log.i(TAG, "Broadcasting event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + messageValue);
     }
 }

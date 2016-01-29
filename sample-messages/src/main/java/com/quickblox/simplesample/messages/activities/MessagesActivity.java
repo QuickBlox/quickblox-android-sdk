@@ -23,7 +23,7 @@ import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.helper.PlayServicesHelper;
+import com.quickblox.simplesample.messages.gcm.GooglePlayServicesHelper;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class MessagesActivity extends CoreBaseActivity {
     private EditText messageInEditText;
     private ProgressBar progressBar;
 
-    private PlayServicesHelper playServicesHelper;
+    private GooglePlayServicesHelper googlePlayServicesHelper;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MessagesActivity.class);
@@ -47,7 +47,8 @@ public class MessagesActivity extends CoreBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        playServicesHelper = new PlayServicesHelper(this);
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
+        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         initUI();
         addMessageToList();
@@ -57,11 +58,11 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        playServicesHelper.checkPlayServices();
+        googlePlayServicesHelper.checkGooglePlayServices(this);
 
         // Register to receive push notifications events
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(Consts.NEW_PUSH_EVENT));
+                new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void addMessageToList() {
-        String message = getIntent().getStringExtra(Consts.EXTRA_MESSAGE);
+        String message = getIntent().getStringExtra(Consts.EXTRA_GCM_MESSAGE);
         if (message != null) {
             retrieveMessage(message);
         }
@@ -107,7 +108,7 @@ public class MessagesActivity extends CoreBaseActivity {
         qbEvent.setMessage(messageOutEditText.getText().toString());
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(1243440);
+        userIds.add(6276758);
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
@@ -135,8 +136,8 @@ public class MessagesActivity extends CoreBaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            String message = intent.getStringExtra(Consts.EXTRA_MESSAGE);
-            Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
+            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
             retrieveMessage(message);
         }
     };

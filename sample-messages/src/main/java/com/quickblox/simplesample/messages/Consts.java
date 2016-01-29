@@ -3,16 +3,16 @@ package com.quickblox.simplesample.messages;
 public class Consts {
 
     // QuickBlox credentials
-    public static final String APP_ID = "99";
-    public static final String AUTH_KEY = "63ebrp5VZt7qTOv";
-    public static final String AUTH_SECRET = "YavMAxm5T59-BRw";
-    public static final String USER_LOGIN = "samsamsam";
-    public static final String USER_PASSWORD = "samsamsam";
+    public static final String APP_ID = "29949";
+    public static final String AUTH_KEY = "9HTvhpTECXcfLfR";
+    public static final String AUTH_SECRET = "KBA8tPCPFpsXFCw";
+    public static final String USER_LOGIN = "beethoven";
+    public static final String USER_PASSWORD = "testing2015";
 
     // In GCM, the Sender ID is a project ID that you acquire from the API console
-    public static final String PROJECT_NUMBER = "761750217637";
+    public static final String GCM_SENDER_ID = "1065754803087";
 
-    public static final String EXTRA_MESSAGE = "message";
+    public static final String EXTRA_GCM_MESSAGE = "message";
 
     public static final String GCM_NOTIFICATION = "GCM Notification";
     public static final String GCM_DELETED_MESSAGE = "Deleted messages on server: ";
@@ -20,5 +20,5 @@ public class Consts {
     public static final String GCM_SEND_ERROR = "Send error: ";
     public static final String GCM_RECEIVED = "Received: ";
 
-    public static final String NEW_PUSH_EVENT = "new-push-event";
+    public static final String ACTION_NEW_GCM_EVENT = "new-push-event";
 }
