@@ -54,8 +54,7 @@ public class AddNewMovieActivity extends BaseActivity {
         String year = yearEditText.getText().toString();
         float rating = ratingBar.getRating();
 
-        if (!isValidData(title, description, year)) {
-            Toaster.longToast(R.string.error_fields_is_empty);
+        if (!isValidData(title, description, year, rating)) {
             return;
         }
         progressDialog.show();
@@ -79,8 +78,19 @@ public class AddNewMovieActivity extends BaseActivity {
         });
     }
 
-    private boolean isValidData(String title, String description, String year) {
-        return (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(description) && !TextUtils.isEmpty(year));
+    private boolean isValidData(String title, String description, String year, float rating) {
+        String space = Character.toString((char) 0x20);
+
+        if (title.startsWith(space) || description.startsWith(space)
+                || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
+            Toaster.longToast(R.string.error_fields_is_empty);
+            return false;
+        }
+        if (rating == 0) {
+            Toaster.longToast(R.string.error_rating_is_empty);
+            return false;
+        }
+        return true;
     }
 
     @Override

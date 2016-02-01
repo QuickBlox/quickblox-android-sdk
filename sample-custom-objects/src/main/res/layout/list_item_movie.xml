@@ -6,6 +6,7 @@
     <TextView
         android:id="@+id/text_title"
         style="@style/TextPrimaryStyle"
+        android:singleLine="true"
         tools:text="@string/movie" />
 
     <TextView
