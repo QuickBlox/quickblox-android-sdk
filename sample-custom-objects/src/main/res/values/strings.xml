@@ -21,5 +21,6 @@
     <string name="save_movie">Save</string>
     <string name="done">Done</string>
     <string name="error_fields_is_empty">Field(s) is empty!</string>
+    <string name="error_rating_is_empty">Please, rate this movie!</string>
 
 </resources>

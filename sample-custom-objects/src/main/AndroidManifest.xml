@@ -31,7 +31,6 @@
         <activity
             android:name=".activities.AddNewMovieActivity"
             android:label="@string/movie_add_new"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity
