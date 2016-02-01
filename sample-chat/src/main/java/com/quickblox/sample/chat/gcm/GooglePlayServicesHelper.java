@@ -119,7 +119,8 @@ public class GooglePlayServicesHelper {
      * @param gcmRegId registration ID
      */
     private void subscribeToQbPushNotifications(String gcmRegId) {
-        TelephonyManager telephonyManager = (TelephonyManager) App.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) App.getInstance()
+                .getSystemService(Context.TELEPHONY_SERVICE);
         String uniqueDeviceId = telephonyManager.getDeviceId();
         if (TextUtils.isEmpty(uniqueDeviceId)) {
             ContentResolver cr = App.getInstance().getContentResolver();

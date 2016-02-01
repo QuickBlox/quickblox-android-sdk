@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.ui.activity;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -9,7 +10,6 @@ import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
-import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.util.List;
 
@@ -26,17 +26,7 @@ public class SplashActivity extends CoreSplashActivity {
             return;
         }
 
-        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
-            @Override
-            public void onSuccess(QBSession result, Bundle params) {
-                proceedToTheNextActivity();
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                ErrorUtils.showErrorDialog(SplashActivity.this, R.string.splash_create_session_error, errors);
-            }
-        });
+        createSession();
     }
 
     @Override
@@ -52,5 +42,24 @@ public class SplashActivity extends CoreSplashActivity {
             LoginActivity.start(this);
         }
         finish();
+    }
+
+    private void createSession() {
+        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+            @Override
+            public void onSuccess(QBSession result, Bundle params) {
+                proceedToTheNextActivity();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                showSnackbarError(R.string.splash_create_session_error, errors, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createSession();
+                    }
+                });
+            }
+        });
     }
 }

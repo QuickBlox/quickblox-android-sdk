@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchWidth">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/header_date_textview"
+        style="@style/ListDateHeaderStyle" />
+</LinearLayout>

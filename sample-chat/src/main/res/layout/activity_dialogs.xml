@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <ListView
         android:id="@+id/list_dialogs_chats"
         style="@style/ListViewWithoutDividerStyle" />
+
+    <LinearLayout
+        android:id="@+id/layout_chat_empty"
+        style="@style/MatchWidth"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:onClick="onStartNewChatClick"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/WrapContent"
+            android:text="@string/chat_empty_you_are_alone_here"
+            android:textColor="@color/text_color_dark_grey"
+            android:textSize="20sp"
+            app:typeface="roboto_medium" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/WrapContent"
+            android:text="@string/chat_empty_start_new_chat"
+            android:textColor="@color/text_color_green"
+            android:textSize="20sp"
+            app:typeface="roboto_medium" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_dialogs"
@@ -18,4 +46,4 @@
         style="@style/FabStyle"
         android:onClick="onStartNewChatClick"
         android:src="@drawable/ic_action_start_chat" />
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

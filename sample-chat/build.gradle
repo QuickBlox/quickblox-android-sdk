@@ -38,11 +38,14 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path)
+    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.messages_jar_path, rootProject.content_jar_path)
     compile (project(":sample-core")) {
         transitive = true;
     }
 
-    compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
+    compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
+    compile "se.emilsjolander:stickylistheaders:${rootProject.stickyListHeaders}"
 }
+
+apply from: "../artifacts.gradle"

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="AppTheme.Blue" parent="AppTheme">
-        <item name="colorControlNormal">@color/color_blue_qb</item>
-        <item name="colorControlActivated">@color/color_blue_qb</item>
-        <item name="colorControlHighlight">@color/color_blue_qb</item>
-    </style>
-</resources>

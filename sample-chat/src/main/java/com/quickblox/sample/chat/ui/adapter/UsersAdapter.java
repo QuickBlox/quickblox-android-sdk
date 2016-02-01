@@ -1,55 +1,30 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.UiUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
-public class UsersAdapter extends BaseAdapter {
-    protected Context context;
-    protected List<QBUser> users;
-    protected LayoutInflater inflater;
+public class UsersAdapter extends BaseListAdapter<QBUser> {
 
     public UsersAdapter(Context context, List<QBUser> users) {
-        this.context = context;
-        this.users = users;
-        this.inflater = LayoutInflater.from(context);
-    }
-
-    public List<QBUser> getUsers() {
-        return users;
-    }
-
-    @Override
-    public int getCount() {
-        return users.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return users.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+        super(context, users);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        QBUser user = users.get(position);
+        QBUser user = getItem(position);
 
         ViewHolder holder;
         if (convertView == null) {
@@ -64,12 +39,17 @@ public class UsersAdapter extends BaseAdapter {
         }
 
         if (isUserMe(user)) {
-            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
             holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
         } else {
-            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
             holder.loginTextView.setText(user.getFullName());
         }
+
+        if (isAvailableForSelection(user)) {
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
+        } else {
+            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
+        }
+
         holder.userImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
         holder.userCheckBox.setVisibility(View.GONE);
 
@@ -79,6 +59,11 @@ public class UsersAdapter extends BaseAdapter {
     protected boolean isUserMe(QBUser user) {
         QBUser currentUser = ChatHelper.getCurrentUser();
         return currentUser != null && currentUser.getId().equals(user.getId());
+    }
+
+    protected boolean isAvailableForSelection(QBUser user) {
+        QBUser currentUser = ChatHelper.getCurrentUser();
+        return currentUser != null && !currentUser.getId().equals(user.getId());
     }
 
     protected static class ViewHolder {

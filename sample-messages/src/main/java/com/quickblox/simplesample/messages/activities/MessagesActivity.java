@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -23,19 +22,30 @@ import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.helper.PlayServicesHelper;
+import com.quickblox.simplesample.messages.gcm.GooglePlayServicesHelper;
 
 import java.util.List;
 
 public class MessagesActivity extends CoreBaseActivity {
 
-    private static final String TAG = MessagesActivity.class.getSimpleName();
+    private final String TAG = getClass().getSimpleName();
+    public static final String CRLF = "\n\n";
 
     private EditText messageOutEditText;
     private EditText messageInEditText;
     private ProgressBar progressBar;
 
-    private PlayServicesHelper playServicesHelper;
+    private GooglePlayServicesHelper googlePlayServicesHelper;
+
+    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
+            retrieveMessage(message);
+        }
+    };
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MessagesActivity.class);
@@ -47,21 +57,21 @@ public class MessagesActivity extends CoreBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        playServicesHelper = new PlayServicesHelper(this);
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
+        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         initUI();
+//        TODO Is it need?
         addMessageToList();
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        playServicesHelper.checkPlayServices();
+        googlePlayServicesHelper.checkPlayServices(this);
 
-        // Register to receive push notifications events
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(Consts.NEW_PUSH_EVENT));
+                new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
@@ -71,28 +81,21 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void initUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        messageOutEditText = (EditText) findViewById(R.id.message_out_edittext);
-        messageInEditText = (EditText) findViewById(R.id.messages_in_edittext);
-
-        Button sendMessageButton = (Button) findViewById(R.id.send_message_button);
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMessageOnClick(view);
-            }
-        });
+        progressBar = _findViewById(R.id.progress_bar);
+        messageOutEditText = _findViewById(R.id.message_out_edittext);
+        messageInEditText = _findViewById(R.id.messages_in_edittext);
     }
 
     private void addMessageToList() {
-        String message = getIntent().getStringExtra(Consts.EXTRA_MESSAGE);
+        String message = getIntent().getStringExtra(Consts.EXTRA_GCM_MESSAGE);
         if (message != null) {
+            Log.d(TAG, "message != null, message = " + message);
             retrieveMessage(message);
         }
     }
 
     public void retrieveMessage(String message) {
-        String text = message + "\n\n" + messageInEditText.getText().toString();
+        String text = message + CRLF + messageInEditText.getText().toString();
         messageInEditText.setText(text);
         progressBar.setVisibility(View.INVISIBLE);
     }
@@ -107,7 +110,7 @@ public class MessagesActivity extends CoreBaseActivity {
         qbEvent.setMessage(messageOutEditText.getText().toString());
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(1243440);
+        userIds.add(Consts.USER_ID);
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
@@ -122,22 +125,11 @@ public class MessagesActivity extends CoreBaseActivity {
             public void onError(List<String> errors) {
                 Toaster.longToast(errors.toString());
                 progressBar.setVisibility(View.INVISIBLE);
-                
+
                 KeyboardUtils.hideKeyboard(messageOutEditText);
             }
         });
 
         progressBar.setVisibility(View.VISIBLE);
     }
-
-    // Our handler for receiving Intents
-    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra(Consts.EXTRA_MESSAGE);
-            Log.i(TAG, "Receiving event " + Consts.NEW_PUSH_EVENT + " with data: " + message);
-            retrieveMessage(message);
-        }
-    };
 }

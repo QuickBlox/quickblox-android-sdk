@@ -29,8 +29,8 @@ public class UiUtils {
         return getColoredCircleDrawable(getRandomCircleColor());
     }
 
-    public static Drawable getColorCircleDrawable(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE) int colorPosition) {
-        return getColoredCircleDrawable(getCircleColor(colorPosition));
+    public static Drawable getColorCircleDrawable(int colorPosition) {
+        return getColoredCircleDrawable(getCircleColor(colorPosition % RANDOM_COLOR_END_RANGE));
     }
 
     private static Drawable getColoredCircleDrawable(@ColorInt int color) {
@@ -54,9 +54,11 @@ public class UiUtils {
         return previousColor;
     }
 
-    public static int getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE) int colorPosition) {
+    public static int getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE, to = RANDOM_COLOR_END_RANGE)
+                                     int colorPosition) {
         String colorIdName = String.format("random_color_%d", colorPosition + 1);
-        int colorId = App.getInstance().getResources().getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
+        int colorId = App.getInstance().getResources()
+                .getIdentifier(colorIdName, "color", App.getInstance().getPackageName());
 
         return ResourceUtils.getColor(colorId);
     }

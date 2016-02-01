@@ -25,7 +25,8 @@
         android:layout_alignParentRight="true"
         android:text="@string/send"
         android:clickable="false"
-        android:layout_below="@id/message_out_edittext" />
+        android:layout_below="@id/message_out_edittext"
+        android:onClick="sendMessageOnClick"/>
 
     <EditText
         android:id="@+id/messages_in_edittext"

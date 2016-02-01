@@ -3,7 +3,21 @@
 
     <item
         android:id="@+id/menu_chat_action_info"
-        android:icon="@drawable/ic_info"
         android:title="@string/menu_chat_info"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_chat_action_add"
+        android:title="@string/menu_add_users_to_chat"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_chat_action_leave"
+        android:title="@string/menu_leave_chat"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_chat_action_delete"
+        android:title="@string/menu_delete_chat"
+        app:showAsAction="never" />
 </menu>

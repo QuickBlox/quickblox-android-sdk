@@ -22,7 +22,7 @@ public class MovieListAdapter extends BaseAdapter {
 
     public MovieListAdapter(Context context, Map<String, Movie> movieMap) {
         this.inflater = LayoutInflater.from(context);
-        updateAdapter(movieMap);
+        updateData(movieMap);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MovieListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void updateAdapter(Map<String, Movie> movieMap) {
+    public void updateData(Map<String, Movie> movieMap) {
         this.movieList = new ArrayList<>(movieMap.values());
         Collections.sort(movieList, new Movie.DateComparator());
         notifyDataSetChanged();

@@ -1,10 +1,9 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,31 +12,15 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.UiUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
+import com.quickblox.sample.core.ui.adapter.BaseSelectableListAdapter;
+import com.quickblox.sample.core.utils.ResourceUtils;
 
 import java.util.List;
 
-public class DialogsAdapter extends BaseAdapter {
-    private List<QBDialog> dialogs;
-    private LayoutInflater inflater;
+public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
 
     public DialogsAdapter(Context context, List<QBDialog> dialogs) {
-        this.dialogs = dialogs;
-        this.inflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return dialogs.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return dialogs.size();
+        super(context, dialogs);
     }
 
     @Override
@@ -47,6 +30,7 @@ public class DialogsAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_item_dialog, parent, false);
 
             holder = new ViewHolder();
+            holder.rootLayout = (ViewGroup) convertView.findViewById(R.id.root);
             holder.nameTextView = (TextView) convertView.findViewById(R.id.text_dialog_name);
             holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.text_dialog_last_message);
             holder.dialogImageView = (ImageView) convertView.findViewById(R.id.image_dialog_icon);
@@ -57,24 +41,40 @@ public class DialogsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QBDialog dialog = dialogs.get(position);
-        String lastMessage = dialog.getLastMessage();
+        QBDialog dialog = getItem(position);
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
             holder.dialogImageView.setImageResource(R.drawable.ic_chat_group);
         } else {
-            holder.dialogImageView.setBackgroundDrawable(UiUtils.getRandomColorCircleDrawable());
+            holder.dialogImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
             holder.dialogImageView.setImageDrawable(null);
         }
 
         holder.nameTextView.setText(QbDialogUtils.getDialogName(dialog));
-        holder.lastMessageTextView.setText(lastMessage);
+        if (isLastMessageAttachment(dialog)) {
+            holder.lastMessageTextView.setText(R.string.chat_attachment);
+        } else {
+            holder.lastMessageTextView.setText(dialog.getLastMessage());
+        }
         holder.unreadCounterTextView.setText(String.valueOf(dialog.getUnreadMessageCount()));
+
+        if (isItemSelected(position)) {
+            holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(R.color.selected_list_item_color));
+        } else {
+            holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(android.R.color.transparent));
+        }
 
         return convertView;
     }
 
+    private boolean isLastMessageAttachment(QBDialog dialog) {
+        String lastMessage = dialog.getLastMessage();
+        Integer lastMessageSenderId = dialog.getLastMessageUserId();
+        return TextUtils.isEmpty(lastMessage) && lastMessageSenderId != null;
+    }
+
     private static class ViewHolder {
+        ViewGroup rootLayout;
         ImageView dialogImageView;
         TextView nameTextView;
         TextView lastMessageTextView;
