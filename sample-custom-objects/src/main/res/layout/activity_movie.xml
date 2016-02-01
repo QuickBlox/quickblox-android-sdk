@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent">
+
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent"
     android:orientation="vertical"
@@ -40,3 +44,4 @@
         android:isIndicator="true" />
 
 </LinearLayout>
+    </ScrollView>
