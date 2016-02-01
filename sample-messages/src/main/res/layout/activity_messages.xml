@@ -14,31 +14,21 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:layout_alignParentLeft="true"
         android:layout_below="@id/message_out_edittext"
-        android:layout_alignParentLeft="true" />
-
-    <Button
-        android:id="@+id/send_message_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="@string/send"
-        android:clickable="false"
-        android:layout_below="@id/message_out_edittext"
-        android:onClick="sendMessageOnClick"/>
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/messages_in_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:hint="@string/no_messages"
-        android:editable="false" />
+        android:editable="false"
+        android:hint="@string/no_messages" />
 
     <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
         android:id="@+id/messages_in_title_textview"
+        style="?android:attr/listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/messages_in_edittext"

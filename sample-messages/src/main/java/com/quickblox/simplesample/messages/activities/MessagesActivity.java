@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -100,7 +103,7 @@ public class MessagesActivity extends CoreBaseActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    public void sendMessageOnClick(View view) {
+    public void sendPushNotification() {
         // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();
         qbEvent.setNotificationType(QBNotificationType.PUSH);
@@ -131,5 +134,23 @@ public class MessagesActivity extends CoreBaseActivity {
         });
 
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_messages, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_send_message:
+                sendPushNotification();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
