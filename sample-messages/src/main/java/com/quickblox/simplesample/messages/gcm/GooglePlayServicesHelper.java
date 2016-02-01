@@ -14,6 +14,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
@@ -80,8 +81,9 @@ public class GooglePlayServicesHelper {
             @Override
             protected String doInBackground(String... params) {
                 try {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(App.getInstance());
-                    return gcm.register(params[0]);
+                    InstanceID instanceID = InstanceID.getInstance(App.getInstance());
+                    String token = instanceID.getToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                    return token;
                 } catch (IOException e) {
                     // If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
