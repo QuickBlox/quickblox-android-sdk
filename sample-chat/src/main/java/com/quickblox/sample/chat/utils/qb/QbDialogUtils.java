@@ -124,17 +124,17 @@ public class QbDialogUtils {
 
     public static String getDialogName(QBDialog dialog) {
         if (dialog.getType().equals(QBDialogType.GROUP)) {
-            return  dialog.getName();
+            return dialog.getName();
         } else {
             // It's a private dialog, let's use opponent's name as chat name
             Integer opponentId = getOpponentIdForPrivateDialog(dialog);
             QBUser user = QbUsersHolder.getInstance().getUserById(opponentId);
             if (user != null) {
-                return  TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
+                return TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
+            } else {
+                return dialog.getName();
             }
         }
-
-        return "";
     }
 
     private static List<QBUser> getQbUsersFromQbDialog(QBDialog dialog) {

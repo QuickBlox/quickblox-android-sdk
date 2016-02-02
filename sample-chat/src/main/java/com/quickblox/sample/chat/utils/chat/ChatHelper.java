@@ -16,6 +16,7 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
@@ -268,6 +269,11 @@ public class ChatHelper {
     }
 
     public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback) {
+        loadFileAsAttachment(file, callback, null);
+    }
+
+    public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback,
+                                     QBProgressCallback progressCallback) {
         QBContent.uploadFileTask(file, true, null,
                 new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     @Override
@@ -277,7 +283,7 @@ public class ChatHelper {
                         attachment.setUrl(qbFile.getPublicUrl());
                         onSuccessInMainThread(attachment, bundle);
                     }
-                });
+                }, progressCallback);
     }
 
     private void getUsersFromDialogs(final ArrayList<QBDialog> dialogs,
@@ -285,6 +291,7 @@ public class ChatHelper {
         List<Integer> userIds = new ArrayList<>();
         for (QBDialog dialog : dialogs) {
             userIds.addAll(dialog.getOccupants());
+            userIds.add(dialog.getLastMessageUserId());
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
