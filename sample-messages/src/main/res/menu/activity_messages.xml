@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/menu_send_message"
-        android:icon="@drawable/ic_action_send"
+        android:icon="@drawable/ic_send"
         android:title="@string/send_push"
         app:showAsAction="always" />
 

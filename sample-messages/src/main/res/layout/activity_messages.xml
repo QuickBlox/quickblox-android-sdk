@@ -1,37 +1,51 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/background_color"
-    android:padding="@dimen/padding_middle">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/MatchParent"
+    android:background="@color/background_app_color"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/message_out_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_out_width"
+        android:padding="@dimen/padding_large"
+        style="@style/MatchWidth"
+        android:textSize="@dimen/text_size_medium"
+        android:background="@android:color/transparent"
         android:hint="@string/hint_enter_your_message" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/message_out_edittext"
+        style="@style/WrapContent"
+        android:layout_gravity="center_horizontal"
         android:visibility="invisible" />
 
-    <EditText
-        android:id="@+id/messages_in_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:editable="false"
-        android:hint="@string/no_messages" />
-
-    <TextView
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/messages_in_title_textview"
-        style="?android:attr/listSeparatorTextViewStyle"
+        android:paddingLeft="@dimen/padding_large"
+        android:gravity="left|center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/messages_in_edittext"
+        android:layout_height="@dimen/layout_height_small"
+        app:typeface="roboto_medium"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/text_color_medium_dark_grey"
+        android:layout_marginTop="@dimen/margin_large"
+        android:background="@color/text_color_light_grey"
         android:text="@string/received_messages" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/messages_in_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_height_medium"
+        android:textColor="@color/black"
+        android:paddingLeft="@dimen/padding_large"
+        android:textSize="@dimen/text_size_medium"
+        android:gravity="left|center"
+        android:layout_alignParentBottom="true"
+        android:editable="false"
+        android:background="@drawable/text_line"
+        android:text="@string/no_messages" />
+
+    <ListView
+        android:id="@+id/list_messages"
+        style="@style/MatchParent" />
+
+</LinearLayout>
