@@ -29,6 +29,10 @@ android {
         offline{
 
         }
+
+        offlineDev{
+
+        }
     }
 }
 
@@ -43,6 +47,10 @@ dependencies {
     onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
     onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
 
+    // offline dependencies, from 'SDK-android' dir, for debug
+    //
+    offlineDevCompile project(':quickblox-android-sdk-core')
+    offlineDevCompile project(':quickblox-android-sdk-content')
 
     compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
     compile "com.nostra13.universalimageloader:universal-image-loader:1.9.0"

@@ -2,6 +2,7 @@ package com.sdk.snippets.modules;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.content.model.amazon.PostResponse;
@@ -440,7 +441,7 @@ public class SnippetsContent extends Snippets {
     Snippet downloadFileWithID = new Snippet("TASK: download file") {
         @Override
         public void execute() {
-            final int fileId = 2641910;
+            final int fileId = 3607775;
 
             QBContent.downloadFileById(fileId, new QBEntityCallback<InputStream>() {
 
@@ -468,7 +469,7 @@ public class SnippetsContent extends Snippets {
     Snippet downloadFileWithIDSynchronous = new SnippetAsync("TASK: download file (synchronous)", context) {
         @Override
         public void executeAsync() {
-            final int fileId = 2641910;
+            final int fileId = 3607775;
 
             InputStream inputStream = null;
             Bundle params = new Bundle();

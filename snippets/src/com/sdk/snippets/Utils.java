@@ -3,6 +3,7 @@ package com.sdk.snippets;
 import android.content.Context;
 
 import com.quickblox.core.helper.FileHelper;
+import com.quickblox.core.helper.Lo;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -53,6 +54,7 @@ public class Utils {
                         stream.write(buffer, 0, len);
                     }
                     if(stream != null) {
+                        Lo.g("download done");
                         stream.close();
                     }
                 } catch (IOException e) {

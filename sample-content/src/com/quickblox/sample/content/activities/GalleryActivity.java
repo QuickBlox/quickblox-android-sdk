@@ -3,6 +3,7 @@ package com.quickblox.sample.content.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +20,6 @@ import com.quickblox.sample.content.utils.DialogUtils;
 import com.quickblox.sample.content.utils.GetImageFileTask;
 import com.quickblox.sample.content.utils.ImageHelper;
 import com.quickblox.sample.content.utils.OnGetImageFileListener;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 
@@ -112,13 +112,20 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             public void onError(QBResponseException error) {
                 progressDialog.hide();
 
+                Log.d("GalleryActivity", "onError: " + error.getErrors());
+
                 DialogUtils.show(GalleryActivity.this, error.getLocalizedMessage());
             }
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
-                Log.d("GalleryActivity", "progress: " + progress);
-                progressDialog.setProgress(progress);
+                boolean isMain = Looper.myLooper() == Looper.getMainLooper();
+                Log.d("GalleryActivity", "progress: " + progress + ", isMain: " + isMain);
+                if(progress == 0){
+                    progressDialog.setProgress(0);
+                }else {
+                    progressDialog.setProgress(progress);
+                }
             }
         });
     }

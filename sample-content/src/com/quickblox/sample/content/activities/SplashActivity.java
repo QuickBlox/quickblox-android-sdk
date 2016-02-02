@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -63,6 +64,7 @@ public class SplashActivity extends Activity {
             @Override
             public void onError(QBResponseException error) {
                 progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(SplashActivity.this, "Error while creating a session", Toast.LENGTH_SHORT).show();
             }
         });
     }
