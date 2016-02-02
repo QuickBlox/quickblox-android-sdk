@@ -52,6 +52,7 @@
     <string name="chat_attachment">Attachment</string>
     <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
     <string name="chat_empty_start_new_chat">Start new chat.</string>
+    <string name="chat_unsupported_type">Unsupported dialog type</string>
 
     <string name="chat_info">Chat info</string>
     <string name="chat_info_add_people_error">Add people errors</string>

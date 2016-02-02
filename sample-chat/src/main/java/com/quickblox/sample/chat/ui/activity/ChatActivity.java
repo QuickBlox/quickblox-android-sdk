@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.quickblox.chat.model.QBAttachment;
@@ -18,7 +19,9 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
@@ -37,6 +40,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,11 +58,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
 
-    private ChatAdapter adapter;
+    private LinearLayout attachmentPreviewContainerLayout;
+
+    private ChatAdapter chatAdapter;
+    private AttachmentPreviewAdapter attachmentPreviewAdapter;
 
     private Chat chat;
     private QBDialog qbDialog;
-    private File attachmentFile;
 
     public static void start(Context context, QBDialog dialog) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -158,11 +164,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
         case REQUEST_CODE_ATTACHMENT:
-            attachmentFile = file;
-            // TODO Show attachment preview
+            attachmentPreviewContainerLayout.setVisibility(View.VISIBLE);
+            attachmentPreviewAdapter.add(file);
             break;
         }
-
     }
 
     @Override
@@ -181,33 +186,23 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void onSendChatClick(View view) {
-        final String text = messageEditText.getText().toString();
+        int totalAttachmentsCount = attachmentPreviewAdapter.getCount();
+        Collection<QBAttachment> uploadedAttachments = attachmentPreviewAdapter.getUploadedAttachments();
+        if (!uploadedAttachments.isEmpty()) {
+            if (uploadedAttachments.size() == totalAttachmentsCount) {
+                for (QBAttachment attachment : uploadedAttachments) {
+                    sendChatMessage(null, attachment);
+                }
+                attachmentPreviewContainerLayout.setVisibility(View.GONE);
+            } else {
+                // TODO Show message to user "wait for all attachments to upload"
+            }
+        }
 
-        if (attachmentFile != null) {
-            uploadAttachmentAndSendChatMessage(text);
-        } else if (!TextUtils.isEmpty(text)) {
+        String text = messageEditText.getText().toString();
+        if (!TextUtils.isEmpty(text)) {
             sendChatMessage(text, null);
         }
-    }
-
-    private void uploadAttachmentAndSendChatMessage(final String text) {
-        ChatHelper.getInstance().loadFileAsAttachment(attachmentFile, new QBEntityCallbackImpl<QBAttachment>() {
-            @Override
-            public void onSuccess(QBAttachment result, Bundle params) {
-                sendChatMessage(text, result);
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                showErrorSnackbar(R.string.chat_attachment_error, errors,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                uploadAttachmentAndSendChatMessage(text);
-                            }
-                        });
-            }
-        });
     }
 
     public void onAttachmentsClick(View view) {
@@ -215,7 +210,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void showMessage(QBChatMessage message) {
-        adapter.add(message);
+        chatAdapter.add(message);
         scrollMessageListDown();
     }
 
@@ -225,26 +220,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         messagesListView = _findViewById(R.id.list_chat_messages);
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
-    }
+        attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
+        AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
 
-    private void deleteChat() {
-        ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallbackImpl<Void>() {
-            @Override
-            public void onSuccess() {
-                finish();
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                showErrorSnackbar(R.string.dialogs_deletion_error, errors,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                deleteChat();
-                            }
-                        });
-            }
-        });
+        attachmentPreviewAdapter = new AttachmentPreviewAdapter(this);
+        previewAdapterView.setAdapter(attachmentPreviewAdapter);
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -259,10 +239,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         try {
             chat.sendMessage(chatMessage);
-            messageEditText.setText("");
-            attachmentFile = null;
+
             if (qbDialog.getType() == QBDialogType.PRIVATE) {
                 showMessage(chatMessage);
+            }
+
+            if (attachment != null) {
+                attachmentPreviewAdapter.remove(attachment);
+            } else {
+                messageEditText.setText("");
             }
         } catch (XMPPException | SmackException e) {
             Log.e(TAG, "Failed to send a message", e);
@@ -280,6 +265,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         case PRIVATE:
             chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
             loadDialogUsers();
+            break;
+
+        default:
+            Toaster.shortToast(R.string.chat_unsupported_type);
+            finish();
             break;
         }
     }
@@ -307,12 +297,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void leaveGroupChat() {
-        ((GroupChatImpl) chat).leave();
+        if (chat != null) {
+            ((GroupChatImpl) chat).leave();
+        }
     }
 
     private void releaseChat() {
         try {
-            chat.release();
+            if (chat != null) {
+                chat.release();
+            }
         } catch (XMPPException e) {
             Log.e(TAG, "Failed to release chat", e);
         }
@@ -380,8 +374,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
 
-                adapter = new ChatAdapter(ChatActivity.this, messages);
-                messagesListView.setAdapter(adapter);
+                chatAdapter = new ChatAdapter(ChatActivity.this, messages);
+                messagesListView.setAdapter(chatAdapter);
                 messagesListView.setAreHeadersSticky(false);
                 messagesListView.setDivider(null);
                 scrollMessageListDown();
@@ -405,6 +399,26 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void scrollMessageListDown() {
         messagesListView.setSelection(messagesListView.getCount() - 1);
+    }
+
+    private void deleteChat() {
+        ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallbackImpl<Void>() {
+            @Override
+            public void onSuccess() {
+                finish();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                showErrorSnackbar(R.string.dialogs_deletion_error, errors,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                deleteChat();
+                            }
+                        });
+            }
+        });
     }
 
     private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
