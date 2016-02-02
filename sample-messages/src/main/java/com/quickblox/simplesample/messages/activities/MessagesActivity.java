@@ -11,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -27,6 +30,7 @@ import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
 import com.quickblox.simplesample.messages.gcm.GooglePlayServicesHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesActivity extends CoreBaseActivity {
@@ -35,8 +39,11 @@ public class MessagesActivity extends CoreBaseActivity {
     public static final String CRLF = "\n\n";
 
     private EditText messageOutEditText;
-    private EditText messageInEditText;
+    private TextView messageInEditText;
+    private ListView messageInList;
     private ProgressBar progressBar;
+    private List<String> receive;
+    private ArrayAdapter<String> adapter;
 
     private GooglePlayServicesHelper googlePlayServicesHelper;
 
@@ -59,6 +66,7 @@ public class MessagesActivity extends CoreBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        receive = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
@@ -87,6 +95,11 @@ public class MessagesActivity extends CoreBaseActivity {
         progressBar = _findViewById(R.id.progress_bar);
         messageOutEditText = _findViewById(R.id.message_out_edittext);
         messageInEditText = _findViewById(R.id.messages_in_edittext);
+        messageInList = _findViewById(R.id.list_messages);
+        adapter = new ArrayAdapter<>(this,
+                R.layout.list_item_message, receive);
+        messageInList.setAdapter(adapter);
+
     }
 
     private void addMessageToList() {
@@ -98,8 +111,11 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     public void retrieveMessage(String message) {
-        String text = message + CRLF + messageInEditText.getText().toString();
-        messageInEditText.setText(text);
+        receive.add(message);
+//        String text = message + CRLF + messageInEditText.getText().toString();
+//        messageInEditText.setText(text);
+        messageInEditText.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
         progressBar.setVisibility(View.INVISIBLE);
     }
 

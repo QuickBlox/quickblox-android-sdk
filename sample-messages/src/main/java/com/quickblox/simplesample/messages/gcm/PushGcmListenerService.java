@@ -15,6 +15,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
 import com.quickblox.simplesample.messages.activities.MessagesActivity;
+import com.quickblox.simplesample.messages.activities.SplashActivity;
 
 public class PushGcmListenerService extends GcmListenerService {
     private final String TAG = getClass().getSimpleName();
@@ -33,7 +34,7 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message) {
-        Intent intent = new Intent(this, MessagesActivity.class);
+        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent,
                 PendingIntent.FLAG_ONE_SHOT);

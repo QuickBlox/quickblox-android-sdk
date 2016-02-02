@@ -36,7 +36,7 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected String getAppName() {
-        return getString(R.string.splash_app_title);
+        return getString(R.string.app_title);
     }
 
     @Override
