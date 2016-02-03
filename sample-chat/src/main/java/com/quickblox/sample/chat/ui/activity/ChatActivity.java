@@ -268,7 +268,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             break;
 
         default:
-            Toaster.shortToast(R.string.chat_unsupported_type);
+            Toaster.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbDialog.getType().name()));
             finish();
             break;
         }
