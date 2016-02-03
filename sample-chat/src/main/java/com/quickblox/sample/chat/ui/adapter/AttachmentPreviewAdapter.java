@@ -38,13 +38,13 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
 
     @Override
     public void add(final File item) {
-        super.add(item);
-
+        fileUploadProgressMap.put(item, 0);
         ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallbackImpl<QBAttachment>() {
             @Override
             public void onSuccess(QBAttachment result, Bundle params) {
                 fileUploadProgressMap.remove(item);
                 fileQBAttachmentMap.put(item, result);
+                notifyDataSetChanged();
             }
 
             @Override
@@ -54,34 +54,21 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
             }
         }, new QBProgressCallback() {
             @Override
-            public void onProgressUpdate(int i) {
-                fileUploadProgressMap.put(item, i);
+            public void onProgressUpdate(int progress) {
+                fileUploadProgressMap.put(item, progress);
                 notifyDataSetChanged();
             }
         });
+
+        super.add(item);
     }
 
     @Override
     public void remove(File item) {
-        super.remove(item);
         fileUploadProgressMap.remove(item);
         fileQBAttachmentMap.remove(item);
-    }
 
-    public void remove(QBAttachment qbAttachment) {
-        if (fileQBAttachmentMap.containsValue(qbAttachment)) {
-            Set<File> files = fileQBAttachmentMap.keySet();
-            for (File file : files) {
-                QBAttachment attachment = fileQBAttachmentMap.get(file);
-                if (attachment.equals(qbAttachment)) {
-                    remove(file);
-                }
-            }
-        }
-    }
-
-    public Collection<QBAttachment> getUploadedAttachments() {
-        return fileQBAttachmentMap.values();
+        super.remove(item);
     }
 
     @Override
@@ -99,13 +86,14 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         }
 
         final File attachmentFile = getItem(position);
+
         Glide.with(context)
                 .load(attachmentFile)
                 .override(ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size),
                         ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size))
                 .into(holder.attachmentImageView);
 
-        if (fileUploadProgressMap.containsKey(attachmentFile)) {
+        if (isFileUploading(attachmentFile)) {
             int progress = fileUploadProgressMap.get(attachmentFile);
             holder.progressBar.setProgress(progress);
 
@@ -125,6 +113,26 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         }
 
         return convertView;
+    }
+
+    public void remove(QBAttachment qbAttachment) {
+        if (fileQBAttachmentMap.containsValue(qbAttachment)) {
+            Set<File> files = fileQBAttachmentMap.keySet();
+            for (File file : files) {
+                QBAttachment attachment = fileQBAttachmentMap.get(file);
+                if (attachment.equals(qbAttachment)) {
+                    remove(file);
+                }
+            }
+        }
+    }
+
+    public Collection<QBAttachment> getUploadedAttachments() {
+        return fileQBAttachmentMap.values();
+    }
+
+    private boolean isFileUploading(File attachmentFile) {
+        return fileUploadProgressMap.containsKey(attachmentFile);
     }
 
     private static class ViewHolder {
