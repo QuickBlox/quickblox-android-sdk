@@ -14,7 +14,6 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.activities.MessagesActivity;
 import com.quickblox.simplesample.messages.activities.SplashActivity;
 
 public class PushGcmListenerService extends GcmListenerService {
@@ -29,8 +28,10 @@ public class PushGcmListenerService extends GcmListenerService {
 
         sendNotification(message);
     }
+
     /**
      * Create and show a simple notification containing the received GCM message.
+     *
      * @param message GCM message received.
      */
     private void sendNotification(String message) {

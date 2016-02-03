@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ListStyle" parent="ListItem">
-        <item name="android:paddingLeft">@dimen/padding_large</item>
 
+    <style name="TextCustomStyle" parent="MatchParent">
+        <item name="android:layout_height">@dimen/layout_height_medium</item>
+        <item name="android:paddingLeft">@dimen/padding_large</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">left|center</item>
+    </style>
+
+    <style name="TextRobotoCustomStyle" parent="MatchParent">
+        <item name="android:layout_height">@dimen/layout_height_small</item>
+        <item name="android:background">@color/text_color_light_grey</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:paddingLeft">@dimen/padding_large</item>
+        <item name="android:textColor">@color/text_color_medium_dark_grey</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 
 </resources>

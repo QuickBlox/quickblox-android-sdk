@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_message"
-    android:layout_width="match_parent"
+    style="@style/MatchParent"
     android:layout_height="@dimen/layout_height_medium"
-    android:layout_alignParentBottom="true"
-    android:editable="false"
-    android:gravity="left|center"
-    android:paddingLeft="@dimen/padding_large"
-    android:textColor="@color/black"
-    android:textSize="@dimen/text_size_medium"
-    tools:text="@string/message">
+    android:fillViewport="true">
 
-</TextView>
+    <TextView
+        android:id="@+id/item_message"
+        style="@style/TextCustomStyle"
+        tools:text="@string/message" />
+
+</ScrollView>

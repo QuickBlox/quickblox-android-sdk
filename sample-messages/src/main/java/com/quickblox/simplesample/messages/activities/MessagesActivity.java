@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,13 +37,12 @@ import java.util.List;
 public class MessagesActivity extends CoreBaseActivity {
 
     private final String TAG = getClass().getSimpleName();
-    public static final String CRLF = "\n\n";
 
-    private EditText messageOutEditText;
-    private TextView messageInEditText;
+    private EditText messageOutText;
+    private TextView messageInText;
     private ListView messageInList;
     private ProgressBar progressBar;
-    private List<String> receive;
+    private List<String> receivedPushes;
     private ArrayAdapter<String> adapter;
 
     private GooglePlayServicesHelper googlePlayServicesHelper;
@@ -66,14 +66,14 @@ public class MessagesActivity extends CoreBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-        receive = new ArrayList<>();
+        receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
 
         initUI();
 //        TODO Is it need?
-        addMessageToList();
+//        addMessageToList();
     }
 
     @Override
@@ -93,13 +93,12 @@ public class MessagesActivity extends CoreBaseActivity {
 
     private void initUI() {
         progressBar = _findViewById(R.id.progress_bar);
-        messageOutEditText = _findViewById(R.id.message_out_edittext);
-        messageInEditText = _findViewById(R.id.messages_in_edittext);
+        messageOutText = _findViewById(R.id.message_out_edittext);
+        messageInText = _findViewById(R.id.messages_in_text);
         messageInList = _findViewById(R.id.list_messages);
-        adapter = new ArrayAdapter<>(this,
-                R.layout.list_item_message, receive);
-        messageInList.setAdapter(adapter);
+        adapter = new ArrayAdapter<>(this, R.layout.list_item_message, R.id.item_message, receivedPushes);
 
+        messageInList.setAdapter(adapter);
     }
 
     private void addMessageToList() {
@@ -111,22 +110,24 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     public void retrieveMessage(String message) {
-        receive.add(message);
-//        String text = message + CRLF + messageInEditText.getText().toString();
-//        messageInEditText.setText(text);
-        messageInEditText.setVisibility(View.GONE);
+        receivedPushes.add(message);
+        messageInText.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
         progressBar.setVisibility(View.INVISIBLE);
     }
 
     public void sendPushNotification() {
+        String outMessage = messageOutText.getText().toString();
+        if (!isValidData(outMessage)) {
+            return;
+        }
         // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();
         qbEvent.setNotificationType(QBNotificationType.PUSH);
         qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
 
         // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-        qbEvent.setMessage(messageOutEditText.getText().toString());
+        qbEvent.setMessage(outMessage);
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
         userIds.add(Consts.USER_ID);
@@ -136,20 +137,30 @@ public class MessagesActivity extends CoreBaseActivity {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
-
-                KeyboardUtils.hideKeyboard(messageOutEditText);
+                KeyboardUtils.hideKeyboard(messageOutText);
+                messageOutText.setText(null);
             }
 
             @Override
             public void onError(List<String> errors) {
                 Toaster.longToast(errors.toString());
-                progressBar.setVisibility(View.INVISIBLE);
 
-                KeyboardUtils.hideKeyboard(messageOutEditText);
+                progressBar.setVisibility(View.INVISIBLE);
+                KeyboardUtils.hideKeyboard(messageOutText);
             }
         });
 
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isValidData(String outcome) {
+        String space = Character.toString((char) 0x20);
+
+        if (outcome.startsWith(space) || TextUtils.isEmpty(outcome)) {
+            Toaster.longToast(R.string.error_fields_is_empty);
+            return false;
+        }
+        return true;
     }
 
     @Override

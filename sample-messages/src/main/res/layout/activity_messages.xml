@@ -1,16 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent"
-    android:background="@color/background_app_color"
     android:orientation="vertical">
 
     <EditText
         android:id="@+id/message_out_edittext"
-        android:padding="@dimen/padding_large"
         style="@style/MatchWidth"
-        android:textSize="@dimen/text_size_medium"
         android:background="@android:color/transparent"
-        android:hint="@string/hint_enter_your_message" />
+        android:hint="@string/hint_enter_your_message"
+        android:padding="@dimen/padding_large"
+        android:textSize="@dimen/text_size_medium" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -20,27 +20,14 @@
 
     <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/messages_in_title_textview"
-        android:paddingLeft="@dimen/padding_large"
-        android:gravity="left|center"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_height_small"
-        app:typeface="roboto_medium"
-        android:textSize="@dimen/text_size_small"
-        android:textColor="@color/text_color_medium_dark_grey"
+        style="@style/TextRobotoCustomStyle"
         android:layout_marginTop="@dimen/margin_large"
-        android:background="@color/text_color_light_grey"
-        android:text="@string/received_messages" />
+        android:text="@string/received_messages"
+        app:typeface="roboto_medium" />
 
     <TextView
-        android:id="@+id/messages_in_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_height_medium"
-        android:textColor="@color/black"
-        android:paddingLeft="@dimen/padding_large"
-        android:textSize="@dimen/text_size_medium"
-        android:gravity="left|center"
-        android:layout_alignParentBottom="true"
-        android:editable="false"
+        android:id="@+id/messages_in_text"
+        style="@style/TextCustomStyle"
         android:background="@drawable/text_line"
         android:text="@string/no_messages" />
 

@@ -19,7 +19,6 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Create QuickBlox session
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
         QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
             @Override
