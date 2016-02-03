@@ -2,12 +2,18 @@ package com.quickblox.sample.chat.ui.widget;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Adapter;
-import android.widget.HorizontalScrollView;
+import android.widget.RelativeLayout;
 
-public class AttachmentPreviewAdapterView extends HorizontalScrollView {
+public class AttachmentPreviewAdapterView extends RelativeLayout {
+
+    private static String TAG = AttachmentPreviewAdapterView.class.getSimpleName();
+
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     private Adapter adapter;
     private DataSetObserver dataSetObserver;
@@ -18,12 +24,12 @@ public class AttachmentPreviewAdapterView extends HorizontalScrollView {
         dataSetObserver = new DataSetObserver() {
             @Override
             public void onChanged() {
-                populateContainerWithViews();
+                populateWithViewsFromAdapter();
             }
 
             @Override
             public void onInvalidated() {
-                populateContainerWithViews();
+                populateWithViewsFromAdapter();
             }
         };
     }
@@ -34,14 +40,19 @@ public class AttachmentPreviewAdapterView extends HorizontalScrollView {
         }
         adapter = newAdapter;
         adapter.registerDataSetObserver(dataSetObserver);
-        populateContainerWithViews();
+        populateWithViewsFromAdapter();
     }
 
-    private void populateContainerWithViews() {
-        removeAllViews();
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View childView = adapter.getView(i, null, this);
-            addView(childView);
-        }
+    private void populateWithViewsFromAdapter() {
+        mainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                removeAllViews();
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    View childView = adapter.getView(i, null, AttachmentPreviewAdapterView.this);
+                    addView(childView, i);
+                }
+            }
+        });
     }
 }
