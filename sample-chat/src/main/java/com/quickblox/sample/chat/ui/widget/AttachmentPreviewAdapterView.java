@@ -6,20 +6,27 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.RelativeLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 
-public class AttachmentPreviewAdapterView extends RelativeLayout {
-
-    private static String TAG = AttachmentPreviewAdapterView.class.getSimpleName();
+public class AttachmentPreviewAdapterView extends HorizontalScrollView {
 
     private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
+    private LinearLayout container;
     private Adapter adapter;
     private DataSetObserver dataSetObserver;
 
     public AttachmentPreviewAdapterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        HorizontalScrollView.LayoutParams lp = new HorizontalScrollView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addView(container, lp);
 
         dataSetObserver = new DataSetObserver() {
             @Override
@@ -47,10 +54,10 @@ public class AttachmentPreviewAdapterView extends RelativeLayout {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                removeAllViews();
+                container.removeAllViews();
                 for (int i = 0; i < adapter.getCount(); i++) {
                     View childView = adapter.getView(i, null, AttachmentPreviewAdapterView.this);
-                    addView(childView, i);
+                    container.addView(childView, i);
                 }
             }
         });
