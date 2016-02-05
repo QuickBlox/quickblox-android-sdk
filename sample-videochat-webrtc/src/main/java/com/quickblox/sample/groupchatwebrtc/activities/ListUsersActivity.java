@@ -17,7 +17,6 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
@@ -38,15 +37,17 @@ import io.fabric.sdk.android.Fabric;
 /**
  * QuickBlox team
  */
-public class LoginActivity extends BaseActivity {
+public class ListUsersActivity extends Activity {
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "ListUsersActivity";
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
 
     private UsersAdapter usersListAdapter;
     private ListView usersList;
     private ProgressBar progressBar;
+    private Context context;
+    private static QBChatService chatService;
     private static ArrayList<QBUser> users = new ArrayList<>();
     private volatile boolean resultReceived = true;
 
@@ -59,7 +60,7 @@ public class LoginActivity extends BaseActivity {
 
         initUI();
 
-        // Set application credentials
+        // Initialize QuickBlox application with credentials.
         //
         QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
@@ -83,9 +84,10 @@ public class LoginActivity extends BaseActivity {
                 loadUsers();
             }
 
+
             @Override
-            public void onError(List<String> list) {
-                Toast.makeText(LoginActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
+            public void onError(QBResponseException exc) {
+                Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
                 showProgress(false);
             }
         });
@@ -207,7 +209,7 @@ public class LoginActivity extends BaseActivity {
         requestBuilder.setPerPage(getResources().getInteger(R.integer.users_count));
         List<String> tags = new LinkedList<>();
         tags.add(tag);
-        QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 showProgress(false);
@@ -221,7 +223,7 @@ public class LoginActivity extends BaseActivity {
             public void onError(QBResponseException exc) {
                 showProgress(false);
 
-                Toast.makeText(LoginActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onError()");
             }
         });
@@ -233,20 +235,96 @@ public class LoginActivity extends BaseActivity {
 
     private long upTime = 0l;
 
+    private QBUser currentUser;
     AdapterView.OnItemClickListener clicklistener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (!resultReceived || (SystemClock.uptimeMillis() - upTime) < ON_ITEM_CLICK_DELAY){
+                return;
+            }
+            resultReceived = false;
+            upTime = SystemClock.uptimeMillis();
+            currentUser = usersListAdapter.getItem(position);
 
-            if(!LoginActivity.this.isConnectivityExists){
-                showToast(R.string.internet_not_connected);
-            }else{
-                if (!resultReceived || (SystemClock.uptimeMillis() - upTime) < ON_ITEM_CLICK_DELAY){
-                    return;
-                }
-                resultReceived = false;
-                upTime = SystemClock.uptimeMillis();
-                QBUser user = usersListAdapter.getItem(position);
-
-                startIncomeCallListenerService(user.getLogin(), user.getPassword(), Consts.LOGIN);            }
+            createSession(currentUser.getLogin(), currentUser.getPassword());
         }
     };
+
+
+    private void createSession(final String login, final String password) {
+
+        showProgress(true);
+
+        final QBUser user = new QBUser(login, password);
+        QBAuth.createSession(login, password, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession session, Bundle bundle) {
+                Log.d(TAG, "onSuccess create session with params");
+                user.setId(session.getUserId());
+
+                DataHolder.setLoggedUser(currentUser);
+                if (chatService.isLoggedIn()){
+                    resultReceived = true;
+                    startCallActivity(login);
+                } else {
+                    chatService.login(user, new QBEntityCallback<Void>() {
+
+                        @Override
+                        public void onSuccess(Void result, Bundle bundle) {
+                            Log.d(TAG, "onSuccess login to chat");
+                            resultReceived = true;
+
+                            ListUsersActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showProgress(false);
+                                }
+                            });
+
+                            startCallActivity(login);
+                        }
+
+                        @Override
+                        public void onError(QBResponseException exc) {
+                            resultReceived = true;
+
+                            showProgress(false);
+
+                            Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onError(QBResponseException exc) {
+                resultReceived = true;
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startCallActivity(String login) {
+        Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
+        intent.putExtra("login", login);
+        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Consts.CALL_ACTIVITY_CLOSE){
+            if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
+                Toast.makeText(this, getString(R.string.WIFI_DISABLED),Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

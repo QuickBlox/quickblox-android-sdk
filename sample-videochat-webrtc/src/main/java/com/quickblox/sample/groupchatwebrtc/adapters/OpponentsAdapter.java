@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.quickblox.sample.groupchatwebrtc.activities.LoginActivity;
+import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
@@ -78,7 +78,7 @@ public class OpponentsAdapter extends BaseAdapter {
 
             holder.opponentsNumber.setText(String.valueOf(number+1));
 
-            holder.opponentsNumber.setBackgroundResource(LoginActivity.resourceSelector
+            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
                     (number));
             holder.opponentsName.setText(user.getFullName());
 

@@ -137,13 +137,4 @@ public class DataHolder {
         }
         return result;
     }
-
-    public static String getUserNameByLogin(String login) {
-        for (QBUser user : getUsersList()) {
-            if (user.getLogin().equals(login)) {
-                return user.getFullName();
-            }
-        }
-        return "User_name_unused";
-    }
 }

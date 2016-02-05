@@ -120,7 +120,7 @@ public class GalleryActivity extends BaseActivity implements AdapterView.OnItemC
             @Override
             public void onProgressUpdate(int progress) {
                 boolean isMain = Looper.myLooper() == Looper.getMainLooper();
-                Log.d("GalleryActivity", "progress: " + progress + ", isMain: " + isMain);
+                Log.d("GalleryActivity", "progress: " + progress);
                 if(progress == 0){
                     progressDialog.setProgress(0);
                 }else {

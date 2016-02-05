@@ -342,7 +342,7 @@ public class SnippetsChat extends Snippets {
         public void execute() {
 
             // Init Chat service
-            initChatService();
+//            initChatService();
 
             // init test user
             final QBUser qbUser = new QBUser();
@@ -380,7 +380,7 @@ public class SnippetsChat extends Snippets {
         public void executeAsync() {
 
             // Init Chat service
-            initChatService();
+//            initChatService();
 
             // init test user
             QBUser qbUser = new QBUser();

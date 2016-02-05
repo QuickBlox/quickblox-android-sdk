@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
-import com.quickblox.sample.groupchatwebrtc.activities.LoginActivity;
+import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -111,7 +111,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callerName = (TextView) view.findViewById(R.id.callerName);
         callerName.setText(getCallerName(((CallActivity) getActivity()).getCurrentSession()));
         callerName.setBackgroundResource(
-                LoginActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
+                ListUsersActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
                         ((CallActivity) getActivity()).getCurrentSession().getCallerID()))) + 1));
 
         otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
