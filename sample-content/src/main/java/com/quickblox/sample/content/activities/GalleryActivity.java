@@ -17,6 +17,7 @@ import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
 import com.quickblox.sample.content.utils.Consts;
+import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
@@ -95,6 +96,8 @@ public class GalleryActivity extends BaseActivity
     }
 
     private void uploadSelectedImage(File imageFile) {
+        progressDialog = DialogUtils.getProgressDialog(this);
+        progressDialog.setMax((int) imageFile.length() / 1024);
         progressDialog.show();
         QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallbackImpl<QBFile>() {
             @Override
@@ -111,7 +114,7 @@ public class GalleryActivity extends BaseActivity
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
-                progressDialog.setProgress(progress);
+                progressDialog.incrementProgressBy(progress);
             }
         });
     }
