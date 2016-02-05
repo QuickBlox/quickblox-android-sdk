@@ -13,19 +13,26 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 
+    <View
+        android:layout_width="@dimen/chat_attachment_preview_size"
+        android:layout_height="@dimen/chat_attachment_preview_size"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gradient_attachment" />
+
     <ImageButton
         android:id="@+id/button_attachment_preview_delete"
         style="@style/BorderlessImageButtonStyle"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="top|right"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:padding="0dp"
         android:src="@drawable/ic_action_remove" />
 
     <ProgressBar
         android:id="@+id/progress_attachment_preview"
         style="@style/CenterProgressBarStyle"
-        android:indeterminate="false" />
+        android:indeterminateOnly="false"
+        android:max="100"
+        android:progressDrawable="@drawable/shape_progressbar_circle" />
 
 </FrameLayout>
