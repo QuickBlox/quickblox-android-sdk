@@ -34,3 +34,6 @@ The repository https://github.com/QuickBlox/quickblox-android-sdk-releases conta
 # Questions and feedback
 
 Please raise questions, requests for help etc. via http://stackoverflow.com/questions/tagged/quickblox
+
+# License
+BSD
