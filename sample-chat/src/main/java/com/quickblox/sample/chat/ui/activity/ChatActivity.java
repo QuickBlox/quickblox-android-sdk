@@ -164,7 +164,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
         case REQUEST_CODE_ATTACHMENT:
-            attachmentPreviewContainerLayout.setVisibility(View.VISIBLE);
             attachmentPreviewAdapter.add(file);
             break;
         }
@@ -193,9 +192,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 for (QBAttachment attachment : uploadedAttachments) {
                     sendChatMessage(null, attachment);
                 }
-                attachmentPreviewContainerLayout.setVisibility(View.GONE);
             } else {
-                // TODO Show message to user "wait for all attachments to upload"
+                Toaster.shortToast(R.string.chat_wait_for_attachments_to_upload);
             }
         }
 
@@ -221,9 +219,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
-        AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
 
-        attachmentPreviewAdapter = new AttachmentPreviewAdapter(this);
+        attachmentPreviewAdapter = new AttachmentPreviewAdapter(this,
+                new AttachmentPreviewAdapter.OnAttachmentCountChangedListener() {
+                    @Override
+                    public void onAttachmentCountChanged(int count) {
+                        attachmentPreviewContainerLayout.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+                    }
+                });
+        AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
         previewAdapterView.setAdapter(attachmentPreviewAdapter);
     }
 
