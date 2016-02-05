@@ -2,9 +2,6 @@
 
 This project contains QuickBlox Android SDK, that includes
 
-* [framework library jars](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/jars)
-* [snippets](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/snippets) (shows main use cases of using this one)
-* samples (separated samples for each QuickBlox module)
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
   * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
   * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
@@ -13,27 +10,23 @@ This project contains QuickBlox Android SDK, that includes
   * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-objects)
   * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
 
-## How to start
+# How to run samples
 
-To start work you should just put library jars into your project and call desired methods.
+To run samples on Android Studio go to menu **File - Import Project**. Select path to sample, select **Use default gradle wrapper(recommended)** and click OK.
 
-Latest jar-packed framework file you can clone from [jars  folder](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/jars).
+[edit]
 
-Java Framework provides following jars/services to interact with QuickBlox functions (each service is represented by a model with suite of static methods):
+# Connect SDK to your existing apps 
 
-* quickblox-android-sdk-core.jar (contains core, auth and users classes)
-* quickblox-android-sdk-chat.jar (contains chat class)
-* quickblox-android-sdk-videochat-webrtc.jar (contains video chat webrtc classes)
-* quickblox-android-sdk-customobjects.jar (contains custom objects class)
-* quickblox-android-sdk-location.jar (contains location class)
-* quickblox-android-sdk-content.jar (contains content class)
-* quickblox-android-sdk-messages.jar (contains messages class)
+To get the QuickBlox SDK project running you will need Android Studio and Maven installed.
 
-## Documentation
+The repository https://github.com/QuickBlox/quickblox-android-sdk-releases contains binary distributions of QuickBlox Android SDK and an instruction how to connect SDK to your project. Check it out.
+
+# Documentation
 
 * [Project page on QuickBlox developers section](http://quickblox.com/developers/Android)
 * [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
 
-## See also
+# Questions and feedback
 
-* [QuickBlox REST API](http://quickblox.com/developers/Overview)
+Please raise questions, requests for help etc. via http://stackoverflow.com/questions/tagged/quickblox
