@@ -10,6 +10,10 @@ This project contains QuickBlox Android SDK, that includes
   * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-objects)
   * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
 
+# Overview 
+
+QuickBlox  is Communication as a Service provider. The platform provides chat using the XMPP protocol, WebRTC signalling for video/voice calling and an API for sending push notifications. It provides a user management system, data storage and more. 
+
 # How to run samples
 
 To run samples on Android Studio go to menu **File - Import Project**. Select path to sample, select **Use default gradle wrapper(recommended)** and click OK.
