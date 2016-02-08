@@ -124,6 +124,11 @@ public class ChatHelper {
     }
 
     private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
+        if (qbChatService.isLoggedIn()) {
+            callback.onSuccess();
+            return;
+        }
+
         qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
             @Override
             public void onSuccess() {
