@@ -180,6 +180,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
                 : R.drawable.outgoing_message_bg;
         if (hasAttachments(chatMessage)) {
             holder.messageBodyContainerLayout.setBackgroundResource(0);
+            holder.messageBodyContainerLayout.setPadding(0, 0, 0, 0);
             holder.attachmentImageView.setMaskResourceId(messageBodyContainerBgResource);
         } else {
             holder.messageBodyContainerLayout.setBackgroundResource(messageBodyContainerBgResource);
