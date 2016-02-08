@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -79,6 +80,22 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
         initViews();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        if (qbDialog != null) {
+            outState.putSerializable(EXTRA_DIALOG, qbDialog);
+        }
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (qbDialog == null) {
+            qbDialog = (QBDialog) savedInstanceState.getSerializable(EXTRA_DIALOG);
+        }
     }
 
     @Override
