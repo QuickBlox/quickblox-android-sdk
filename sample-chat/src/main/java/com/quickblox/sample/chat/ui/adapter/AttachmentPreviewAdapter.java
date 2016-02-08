@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -140,7 +141,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
     }
 
     public Collection<QBAttachment> getUploadedAttachments() {
-        return fileQBAttachmentMap.values();
+        return new HashSet<>(fileQBAttachmentMap.values());
     }
 
     private boolean isFileUploading(File attachmentFile) {
