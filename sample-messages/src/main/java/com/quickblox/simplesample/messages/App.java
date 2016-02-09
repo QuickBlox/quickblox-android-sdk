@@ -9,7 +9,6 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
 
-        // Set application credentials
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().fastConfigInit(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET);
     }
 }
