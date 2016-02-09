@@ -35,6 +35,7 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat> implements QBPr
     @Override
     public void release() {
         Log.i(TAG, "Release private chat");
+        initManagerIfNeed();
 
         qbChat.removeMessageListener(this);
         qbPrivateChatManager.removePrivateChatManagerListener(this);
