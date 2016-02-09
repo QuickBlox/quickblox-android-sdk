@@ -10,9 +10,9 @@ public class SharedPreferencesUtil {
 
     public static void saveQbUser(QBUser qbUser) {
         SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
-        helper.savePref(QB_USER_LOGIN, qbUser.getLogin());
-        helper.savePref(QB_USER_PASSWORD, qbUser.getPassword());
-        helper.savePref(QB_USER_FULL_NAME, qbUser.getFullName());
+        helper.save(QB_USER_LOGIN, qbUser.getLogin());
+        helper.save(QB_USER_PASSWORD, qbUser.getPassword());
+        helper.save(QB_USER_FULL_NAME, qbUser.getFullName());
     }
 
     public static boolean hasQbUser() {
@@ -24,9 +24,9 @@ public class SharedPreferencesUtil {
         SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
 
         if (hasQbUser()) {
-            String login = helper.getPref(QB_USER_LOGIN);
-            String password = helper.getPref(QB_USER_PASSWORD);
-            String fullName = helper.getPref(QB_USER_FULL_NAME);
+            String login = helper.get(QB_USER_LOGIN);
+            String password = helper.get(QB_USER_PASSWORD);
+            String fullName = helper.get(QB_USER_FULL_NAME);
 
             QBUser user = new QBUser(login, password);
             user.setFullName(fullName);
