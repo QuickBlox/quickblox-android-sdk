@@ -90,6 +90,10 @@ public class AddNewMovieActivity extends BaseActivity {
             Toaster.longToast(R.string.error_rating_is_empty);
             return false;
         }
+        if (year.length() != 4) {
+            Toaster.longToast(R.string.error_year_is_empty);
+            return false;
+        }
         return true;
     }
 
