@@ -2,6 +2,8 @@ package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -20,25 +22,31 @@ import com.quickblox.sample.core.utils.Toaster;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
+
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     private Map<File, QBAttachment> fileQBAttachmentMap;
     private Map<File, Integer> fileUploadProgressMap;
 
-    public AttachmentPreviewAdapter(Context context) {
+    private OnAttachmentCountChangedListener onAttachmentCountChangedListener;
+
+    public AttachmentPreviewAdapter(Context context, OnAttachmentCountChangedListener listener) {
         super(context);
-        fileQBAttachmentMap = new HashMap<>();
-        fileUploadProgressMap = new HashMap<>();
+        fileQBAttachmentMap = Collections.synchronizedMap(new HashMap<File, QBAttachment>());
+        fileUploadProgressMap = Collections.synchronizedMap(new HashMap<File, Integer>());
+        onAttachmentCountChangedListener = listener;
     }
 
     @Override
     public void add(final File item) {
-        fileUploadProgressMap.put(item, 0);
+        fileUploadProgressMap.put(item, 1);
         ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallbackImpl<QBAttachment>() {
             @Override
             public void onSuccess(QBAttachment result, Bundle params) {
@@ -54,13 +62,19 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
             }
         }, new QBProgressCallback() {
             @Override
-            public void onProgressUpdate(int progress) {
+            public void onProgressUpdate(final int progress) {
                 fileUploadProgressMap.put(item, progress);
-                notifyDataSetChanged();
+                mainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
             }
         });
 
         super.add(item);
+        onAttachmentCountChangedListener.onAttachmentCountChanged(getCount());
     }
 
     @Override
@@ -69,6 +83,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         fileQBAttachmentMap.remove(item);
 
         super.remove(item);
+        onAttachmentCountChangedListener.onAttachmentCountChanged(getCount());
     }
 
     @Override
@@ -86,7 +101,6 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         }
 
         final File attachmentFile = getItem(position);
-
         Glide.with(context)
                 .load(attachmentFile)
                 .override(ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size),
@@ -94,19 +108,18 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
                 .into(holder.attachmentImageView);
 
         if (isFileUploading(attachmentFile)) {
-            int progress = fileUploadProgressMap.get(attachmentFile);
-            holder.progressBar.setProgress(progress);
-
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.deleteButton.setVisibility(View.GONE);
             holder.deleteButton.setOnClickListener(null);
+
+            int progress = fileUploadProgressMap.get(attachmentFile);
+            holder.progressBar.setProgress(progress);
         } else {
             holder.progressBar.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fileQBAttachmentMap.remove(attachmentFile);
                     remove(attachmentFile);
                 }
             });
@@ -117,27 +130,31 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
 
     public void remove(QBAttachment qbAttachment) {
         if (fileQBAttachmentMap.containsValue(qbAttachment)) {
-            Set<File> files = fileQBAttachmentMap.keySet();
-            for (File file : files) {
+            for (File file : fileQBAttachmentMap.keySet()) {
                 QBAttachment attachment = fileQBAttachmentMap.get(file);
                 if (attachment.equals(qbAttachment)) {
                     remove(file);
+                    break;
                 }
             }
         }
     }
 
     public Collection<QBAttachment> getUploadedAttachments() {
-        return fileQBAttachmentMap.values();
+        return new HashSet<>(fileQBAttachmentMap.values());
     }
 
     private boolean isFileUploading(File attachmentFile) {
-        return fileUploadProgressMap.containsKey(attachmentFile);
+        return fileUploadProgressMap.containsKey(attachmentFile) && !fileQBAttachmentMap.containsKey(attachmentFile);
     }
 
     private static class ViewHolder {
         ImageView attachmentImageView;
         ProgressBar progressBar;
         ImageButton deleteButton;
+    }
+
+    public static interface OnAttachmentCountChangedListener {
+        void onAttachmentCountChanged(int count);
     }
 }

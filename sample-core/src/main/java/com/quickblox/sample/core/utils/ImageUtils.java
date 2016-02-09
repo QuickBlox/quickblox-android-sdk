@@ -29,7 +29,6 @@ public class ImageUtils {
     public static final int CAMERA_REQUEST_CODE = 212;
 
     private static final String CAMERA_FILE_NAME_PREFIX = "CAMERA_";
-    private static final String CAMERA_FILE_NAME = CAMERA_FILE_NAME_PREFIX + System.currentTimeMillis() + ".jpg";
 
     private ImageUtils() {}
 
@@ -40,7 +39,7 @@ public class ImageUtils {
         InputStream inputStream = new FileInputStream(fileDescriptor);
         BufferedInputStream bis = new BufferedInputStream(inputStream);
 
-        File parentDir = StorageUtils.getAppExternalDataDirectoryFile();
+        File parentDir = StorageUtil.getAppExternalDataDirectoryFile();
         String fileName = String.valueOf(System.currentTimeMillis()) + ".jpg";
         File resultFile = new File(parentDir, fileName);
 
@@ -99,8 +98,8 @@ public class ImageUtils {
     }
 
     public static File getTemporaryCameraFile() {
-        File storageDir = StorageUtils.getAppExternalDataDirectoryFile();
-        File file = new File(storageDir, CAMERA_FILE_NAME);
+        File storageDir = StorageUtil.getAppExternalDataDirectoryFile();
+        File file = new File(storageDir, getTemporaryCameraFileName());
         try {
             file.createNewFile();
         } catch (IOException e) {
@@ -110,7 +109,7 @@ public class ImageUtils {
     }
 
     public static File getLastUsedCameraFile() {
-        File dataDir = StorageUtils.getAppExternalDataDirectoryFile();
+        File dataDir = StorageUtil.getAppExternalDataDirectoryFile();
         File[] files = dataDir.listFiles();
         List<File> filteredFiles = new ArrayList<>();
         for (File file : files) {
@@ -125,5 +124,9 @@ public class ImageUtils {
         } else {
             return null;
         }
+    }
+
+    private static String getTemporaryCameraFileName() {
+        return CAMERA_FILE_NAME_PREFIX + System.currentTimeMillis() + ".jpg";
     }
 }
