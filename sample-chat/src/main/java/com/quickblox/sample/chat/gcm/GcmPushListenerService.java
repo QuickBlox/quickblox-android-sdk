@@ -1,34 +1,21 @@
-package com.quickblox.simplesample.messages.gcm;
+package com.quickblox.sample.chat.gcm;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
+import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.ui.activity.DialogsActivity;
 import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.NotificationUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
-import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.activities.SplashActivity;
 
 public class GcmPushListenerService extends CoreGcmPushListenerService {
-    private static final String TAG = GcmPushListenerService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
 
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString(GcmConsts.EXTRA_GCM_MESSAGE);
-        Log.v(TAG, "From: " + from);
-        Log.v(TAG, "Message: " + message);
-
-        showNotification(message);
-        sendPushMessageBroadcast(message);
-    }
-
-    @Override
     protected void showNotification(String message) {
-        NotificationUtils.showNotification(this, SplashActivity.class,
+        NotificationUtils.showNotification(this, DialogsActivity.class,
                 ResourceUtils.getString(R.string.notification_title), message,
                 R.mipmap.ic_launcher, NOTIFICATION_ID);
     }

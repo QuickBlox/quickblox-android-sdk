@@ -23,12 +23,14 @@ import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.simplesample.messages.App;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.gcm.GooglePlayServicesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +49,8 @@ public class MessagesActivity extends CoreBaseActivity {
     private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
+            String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Receiving event " + GcmConsts.ACTION_NEW_GCM_EVENT + " with data: " + message);
             retrieveMessage(message);
         }
     };
@@ -78,7 +80,7 @@ public class MessagesActivity extends CoreBaseActivity {
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
+                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
@@ -137,7 +139,7 @@ public class MessagesActivity extends CoreBaseActivity {
         qbEvent.setMessage(outMessage);
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
-        userIds.add(Consts.USER_ID);
+        userIds.add(App.getInstance().getCurrentUserId());
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {

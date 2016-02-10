@@ -22,10 +22,11 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
+import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public class DialogsActivity extends BaseActivity {
         setContentView(R.layout.activity_dialogs);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
@@ -68,18 +71,17 @@ public class DialogsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        googlePlayServicesHelper.checkGooglePlayServices(this);
+        googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
-        broadcastManager.registerReceiver(pushBroadcastReceiver, new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
-        broadcastManager.unregisterReceiver(pushBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
     @Override
@@ -93,6 +95,9 @@ public class DialogsActivity extends BaseActivity {
         switch (item.getItemId()) {
         case R.id.menu_dialogs_action_logout:
             ChatHelper.getInstance().logout();
+            if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
+                googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+            }
             LoginActivity.start(this);
             finish();
             return true;
@@ -229,15 +234,6 @@ public class DialogsActivity extends BaseActivity {
         dialogsListView.setAdapter(dialogsAdapter);
     }
 
-    private static class PushBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-            Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
-        }
-    }
-
     private class DeleteActionModeCallback implements ActionMode.Callback {
 
         public DeleteActionModeCallback() {
@@ -294,6 +290,16 @@ public class DialogsActivity extends BaseActivity {
                             });
                 }
             });
+        }
+
+    }
+
+    private static class PushBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
         }
     }
 }

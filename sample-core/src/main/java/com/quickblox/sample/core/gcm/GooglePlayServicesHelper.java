@@ -1,4 +1,4 @@
-package com.quickblox.simplesample.messages.gcm;
+package com.quickblox.sample.core.gcm;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -11,12 +11,13 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.messages.QBMessages;
+import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.core.CoreApp;
+import com.quickblox.sample.core.utils.DeviceUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.VersionUtils;
-import com.quickblox.simplesample.messages.App;
-import com.quickblox.simplesample.messages.QbUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class GooglePlayServicesHelper {
     private static final String PREF_APP_VERSION = "appVersion";
     private static final String PREF_GCM_REG_ID = "registration_id";
 
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int PLAY_SERVICES_REQUEST_CODE = 9000;
 
     public void registerForGcm(String senderId) {
         String gcmRegId = getGcmRegIdFromPreferences();
@@ -56,7 +57,7 @@ public class GooglePlayServicesHelper {
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(activity, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                apiAvailability.getErrorDialog(activity, resultCode, PLAY_SERVICES_REQUEST_CODE)
                         .show();
             } else {
                 Log.i(TAG, "This device is not supported.");
@@ -68,8 +69,7 @@ public class GooglePlayServicesHelper {
     }
 
     public boolean checkPlayServicesAvailable() {
-        int resultCode = getPlayServicesAvailabilityResultCode();
-        return resultCode == ConnectionResult.SUCCESS;
+        return getPlayServicesAvailabilityResultCode() == ConnectionResult.SUCCESS;
     }
 
     private int getPlayServicesAvailabilityResultCode() {
@@ -88,7 +88,7 @@ public class GooglePlayServicesHelper {
             @Override
             protected String doInBackground(String... params) {
                 try {
-                    InstanceID instanceID = InstanceID.getInstance(App.getInstance());
+                    InstanceID instanceID = InstanceID.getInstance(CoreApp.getInstance());
                     return instanceID.getToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 } catch (IOException e) {
                     // If there is an error, don't just keep trying to register.
@@ -106,7 +106,9 @@ public class GooglePlayServicesHelper {
                 } else {
                     Log.i(TAG, "Device registered in GCM, regId=" + gcmRegId);
 
-                    QbUtils.subscribeToPushMessages(gcmRegId,
+                    QBMessages.subscribeToPushNotificationsTask(gcmRegId,
+                            DeviceUtils.getDeviceUid(),
+                            QBEnvironment.DEVELOPMENT, // Don't forget to change QBEnvironment to PRODUCTION when releasing application
                             new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
                                 @Override
                                 public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {
@@ -129,7 +131,7 @@ public class GooglePlayServicesHelper {
             @Override
             protected Void doInBackground(String... params) {
                 try {
-                    InstanceID instanceID = InstanceID.getInstance(App.getInstance());
+                    InstanceID instanceID = InstanceID.getInstance(CoreApp.getInstance());
                     instanceID.deleteToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                     return null;
                 } catch (IOException e) {
@@ -148,7 +150,7 @@ public class GooglePlayServicesHelper {
         }.execute(senderId);
     }
 
-    private void saveGcmRegIdToPreferences(String gcmRegId) {
+    protected void saveGcmRegIdToPreferences(String gcmRegId) {
         int appVersion = VersionUtils.getAppVersion();
         Log.i(TAG, "Saving gcmRegId on app version " + appVersion);
 
@@ -158,12 +160,12 @@ public class GooglePlayServicesHelper {
         SharedPrefsHelper.getInstance().save(PREF_APP_VERSION, appVersion);
     }
 
-    private void deleteGcmRegIdFromPreferences() {
+    protected void deleteGcmRegIdFromPreferences() {
         SharedPrefsHelper.getInstance().delete(PREF_GCM_REG_ID);
         SharedPrefsHelper.getInstance().delete(PREF_APP_VERSION);
     }
 
-    private String getGcmRegIdFromPreferences() {
+    protected String getGcmRegIdFromPreferences() {
         // Check if app was updated; if so, we must request new gcmRegId
         // since the existing gcmRegId is not guaranteed to work
         // with the new app version
