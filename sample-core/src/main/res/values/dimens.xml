@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="common_padding">8dp</dimen>
+    <dimen name="padding_common">8dp</dimen>
 
     <dimen name="splash_main_text_size">32sp</dimen>
     <dimen name="splash_version_text_size">12sp</dimen>

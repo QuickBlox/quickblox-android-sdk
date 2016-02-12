@@ -38,8 +38,7 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.messages_jar_path)
-    compile (project(":sample-core")) {
+    compile(project(":sample-core")) {
         transitive = true;
     }
 
@@ -47,3 +46,4 @@ dependencies {
 }
 
 apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'

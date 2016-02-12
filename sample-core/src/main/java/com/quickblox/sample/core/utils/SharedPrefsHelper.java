@@ -31,7 +31,7 @@ public class SharedPrefsHelper {
         }
     }
 
-    public void savePref(String key, Object value) {
+    public void save(String key, Object value) {
         SharedPreferences.Editor editor = getEditor();
         if (value instanceof Boolean) {
             editor.putBoolean(key, (Boolean) value);
@@ -53,12 +53,12 @@ public class SharedPrefsHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getPref(String key) {
+    public <T> T get(String key) {
         return (T) sharedPreferences.getAll().get(key);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getPref(String key, T defValue) {
+    public <T> T get(String key, T defValue) {
         T returnValue = (T) sharedPreferences.getAll().get(key);
         return returnValue == null ? defValue : returnValue;
     }

@@ -25,7 +25,6 @@ public class DialogUtils {
                                       @StringRes int titleId, @StringRes int messageId, View view,
                                       DialogInterface.OnClickListener positiveClickListener,
                                       DialogInterface.OnClickListener negativeClickListener) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(titleId);
         builder.setMessage(messageId);

@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchParent"
-    android:layout_height="@dimen/layout_height_medium"
-    android:fillViewport="true">
-
-    <TextView
-        android:id="@+id/item_message"
-        style="@style/TextCustomStyle"
-        tools:text="@string/message" />
-
-</ScrollView>
+    android:id="@+id/item_message"
+    style="@style/PushMessageItemStyle"
+    tools:text="@string/message" />

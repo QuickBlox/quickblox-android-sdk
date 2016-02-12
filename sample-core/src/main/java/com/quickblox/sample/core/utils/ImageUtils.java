@@ -39,7 +39,7 @@ public class ImageUtils {
         InputStream inputStream = new FileInputStream(fileDescriptor);
         BufferedInputStream bis = new BufferedInputStream(inputStream);
 
-        File parentDir = StorageUtil.getAppExternalDataDirectoryFile();
+        File parentDir = StorageUtils.getAppExternalDataDirectoryFile();
         String fileName = String.valueOf(System.currentTimeMillis()) + ".jpg";
         File resultFile = new File(parentDir, fileName);
 
@@ -98,7 +98,7 @@ public class ImageUtils {
     }
 
     public static File getTemporaryCameraFile() {
-        File storageDir = StorageUtil.getAppExternalDataDirectoryFile();
+        File storageDir = StorageUtils.getAppExternalDataDirectoryFile();
         File file = new File(storageDir, getTemporaryCameraFileName());
         try {
             file.createNewFile();
@@ -109,7 +109,7 @@ public class ImageUtils {
     }
 
     public static File getLastUsedCameraFile() {
-        File dataDir = StorageUtil.getAppExternalDataDirectoryFile();
+        File dataDir = StorageUtils.getAppExternalDataDirectoryFile();
         File[] files = dataDir.listFiles();
         List<File> filteredFiles = new ArrayList<>();
         for (File file : files) {
