@@ -39,13 +39,16 @@ android {
 
 dependencies {
     compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.content_jar_path)
-    compile (project(":sample-core")) {
+    compile(project(":sample-core")) {
         transitive = true;
     }
 
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
     compile "se.emilsjolander:stickylistheaders:${rootProject.stickyListHeaders}"
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
+
+
 
 apply from: "../artifacts.gradle"
