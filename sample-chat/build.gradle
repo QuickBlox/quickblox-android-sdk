@@ -38,8 +38,8 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.content_jar_path)
-    compile(project(":sample-core")) {
+    compile files(rootProject.chat_jar_path, rootProject.content_jar_path)
+    compile (project(":sample-core")) {
         transitive = true;
     }
 
