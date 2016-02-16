@@ -52,7 +52,7 @@ public class LoginActivity extends CoreBaseActivity {
 
     private void buildUsersList() {
         List<String> tags = new ArrayList<>();
-        tags.add(Consts.USERS_TAG);
+        tags.add(Consts.QB_USERS_TAG);
 
         QBUsers.getUsersByTags(tags, null, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
             @Override
@@ -114,7 +114,7 @@ public class LoginActivity extends CoreBaseActivity {
             final QBUser user = (QBUser) parent.getItemAtPosition(position);
             // We use hardcoded password for all users for test purposes
             // Of course you shouldn't do that in your app
-            user.setPassword(Consts.USERS_PASSWORD);
+            user.setPassword(Consts.QB_USERS_PASSWORD);
 
             login(user);
         }

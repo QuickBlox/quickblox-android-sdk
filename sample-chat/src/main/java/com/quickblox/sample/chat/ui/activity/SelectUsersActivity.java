@@ -123,7 +123,7 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void loadUsersFromQb() {
         List<String> tags = new ArrayList<>();
-        tags.add(Consts.USERS_TAG);
+        tags.add(Consts.QB_USERS_TAG);
 
         progressBar.setVisibility(View.VISIBLE);
         QBUsers.getUsersByTags(tags, null, new QBEntityCallbackImpl<ArrayList<QBUser>>() {

@@ -4,7 +4,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.0.0-beta2'
+        classpath 'com.google.gms:google-services:2.0.0-beta2'
     }
 }
 
@@ -37,7 +38,6 @@ ext {
     customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
     messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
     videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
-
 
     // Dependency versions
     playServicesVersion = '8.4.0'

@@ -6,9 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.quickblox.core.QBEntityCallbackImpl;
@@ -17,32 +23,34 @@ import com.quickblox.messages.QBMessages;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.simplesample.messages.App;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
-import com.quickblox.simplesample.messages.gcm.GooglePlayServicesHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesActivity extends CoreBaseActivity {
 
     private final String TAG = getClass().getSimpleName();
-    public static final String CRLF = "\n\n";
 
-    private EditText messageOutEditText;
-    private EditText messageInEditText;
+    private EditText outgoingMessageEditText;
     private ProgressBar progressBar;
+    private ArrayAdapter<String> adapter;
 
+    private List<String> receivedPushes;
     private GooglePlayServicesHelper googlePlayServicesHelper;
 
     private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            String message = intent.getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-            Log.i(TAG, "Receiving event " + Consts.ACTION_NEW_GCM_EVENT + " with data: " + message);
+            String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+            Log.i(TAG, "Receiving event " + GcmConsts.ACTION_NEW_GCM_EVENT + " with data: " + message);
             retrieveMessage(message);
         }
     };
@@ -56,22 +64,23 @@ public class MessagesActivity extends CoreBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        googlePlayServicesHelper.registerForGcmIfPossible(this, Consts.GCM_SENDER_ID);
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
 
         initUI();
-//        TODO Is it need?
-        addMessageToList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        googlePlayServicesHelper.checkPlayServices(this);
+        googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(Consts.ACTION_NEW_GCM_EVENT));
+                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
@@ -80,56 +89,80 @@ public class MessagesActivity extends CoreBaseActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
-    private void initUI() {
-        progressBar = _findViewById(R.id.progress_bar);
-        messageOutEditText = _findViewById(R.id.message_out_edittext);
-        messageInEditText = _findViewById(R.id.messages_in_edittext);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_messages, menu);
+        return true;
     }
 
-    private void addMessageToList() {
-        String message = getIntent().getStringExtra(Consts.EXTRA_GCM_MESSAGE);
-        if (message != null) {
-            Log.d(TAG, "message != null, message = " + message);
-            retrieveMessage(message);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_send_message:
+            sendPushMessage();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
-    public void retrieveMessage(String message) {
-        String text = message + CRLF + messageInEditText.getText().toString();
-        messageInEditText.setText(text);
+    private void initUI() {
+        progressBar = _findViewById(R.id.progress_bar);
+        outgoingMessageEditText = _findViewById(R.id.edit_message_out);
+
+        ListView incomingMessagesListView = _findViewById(R.id.list_messages);
+        adapter = new ArrayAdapter<>(this, R.layout.list_item_message, R.id.item_message, receivedPushes);
+        incomingMessagesListView.setAdapter(adapter);
+        incomingMessagesListView.setEmptyView(_findViewById(R.id.text_empty_messages));
+    }
+
+    private void retrieveMessage(String message) {
+        receivedPushes.add(message);
+        adapter.notifyDataSetChanged();
+
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    public void sendMessageOnClick(View view) {
+    private void sendPushMessage() {
+        String outMessage = outgoingMessageEditText.getText().toString();
+        if (!isValidData(outMessage)) {
+            Toaster.longToast(R.string.error_fields_is_empty);
+            return;
+        }
+
         // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();
         qbEvent.setNotificationType(QBNotificationType.PUSH);
         qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
+        // Generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
+        qbEvent.setMessage(outMessage);
 
-        // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-        qbEvent.setMessage(messageOutEditText.getText().toString());
-
-        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-        userIds.add(Consts.USER_ID);
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
+        userIds.add(App.getInstance().getCurrentUserId());
         qbEvent.setUserIds(userIds);
 
         QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
-
-                KeyboardUtils.hideKeyboard(messageOutEditText);
+                KeyboardUtils.hideKeyboard(outgoingMessageEditText);
+                outgoingMessageEditText.setText(null);
             }
 
             @Override
             public void onError(List<String> errors) {
                 Toaster.longToast(errors.toString());
-                progressBar.setVisibility(View.INVISIBLE);
 
-                KeyboardUtils.hideKeyboard(messageOutEditText);
+                progressBar.setVisibility(View.INVISIBLE);
+                KeyboardUtils.hideKeyboard(outgoingMessageEditText);
             }
         });
 
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isValidData(String message) {
+        return !TextUtils.isEmpty(message.trim());
     }
 }

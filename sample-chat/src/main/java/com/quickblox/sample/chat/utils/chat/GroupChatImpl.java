@@ -33,6 +33,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
     }
 
     public void joinGroupChat(QBDialog dialog, QBEntityCallback callback) {
+        initManagerIfNeed();
         if (qbChat == null) {
             qbChat = qbGroupChatManager.createGroupChat(dialog.getRoomJid());
         }
