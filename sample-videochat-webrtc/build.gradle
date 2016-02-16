@@ -55,7 +55,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
+    compile files(rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
     compile (project(":sample-core")) {
         transitive = true;
     }
