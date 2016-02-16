@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/WrapContent"
     android:orientation="vertical"
-    android:padding="@dimen/common_padding"
+    android:padding="@dimen/padding_common"
     tools:ignore="RtlHardcoded,RtlSymmetry,ContentDescription">
 
     <ImageView
