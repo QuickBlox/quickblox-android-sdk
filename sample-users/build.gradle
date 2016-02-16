@@ -38,7 +38,6 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path)
     compile (project(":sample-core")) {
         transitive = true;
     }
