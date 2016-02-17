@@ -1,15 +1,16 @@
 package com.quickblox.sample.customobjects.definition;
 
-public class Consts {
+public interface Consts {
 
-    public static final String APP_ID = "92";
-    public static final String AUTH_KEY = "wJHdOcQSxXQGWx5";
-    public static final String AUTH_SECRET = "BTFsj7Rtt27DAmT";
+    String APP_ID = "92";
+    String AUTH_KEY = "wJHdOcQSxXQGWx5";
+    String AUTH_SECRET = "BTFsj7Rtt27DAmT";
+    String ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
-    public static final String USER_LOGIN = "supersample-ios";
-    public static final String USER_PASSWORD = "supersample-ios";
+    String USER_LOGIN = "supersample-ios";
+    String USER_PASSWORD = "supersample-ios";
 
-    public static final String CLASS_NAME = "Movie";
-    public static final String EXTRA_MOVIE_ID = "id";
+    String CLASS_NAME = "Movie";
+    String EXTRA_MOVIE_ID = "id";
 
 }

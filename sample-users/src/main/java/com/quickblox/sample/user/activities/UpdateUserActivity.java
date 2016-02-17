@@ -5,15 +5,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-
-import java.util.List;
 
 import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
 
@@ -58,51 +57,51 @@ public class UpdateUserActivity extends BaseActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.update_button:
-                progressDialog.show();
+        case R.id.update_button:
+            progressDialog.show();
 
-                // create QBUser object
-                QBUser qbUser = new QBUser();
-                if (DataHolder.getDataHolder().getSignInUserId() != -1) {
-                    qbUser.setId(DataHolder.getDataHolder().getSignInUserId());
-                }
-                if (!DataHolder.getDataHolder().getSignInUserLogin().equals(loginEditText.getText().toString())) {
-                    qbUser.setLogin(loginEditText.getText().toString());
-                }
-                if (!passwordEditText.getText().toString().equals(EMPTY_STRING)) {
-                    qbUser.setPassword(passwordEditText.getText().toString());
-                    qbUser.setOldPassword(DataHolder.getDataHolder().getSignInUserOldPassword());
-                }
-                qbUser.setFullName(fullNameEditText.getText().toString());
-                qbUser.setEmail(emailEditText.getText().toString());
-                qbUser.setPhone(phoneEditText.getText().toString());
-                qbUser.setWebsite(webSiteEditText.getText().toString());
-                StringifyArrayList<String> tagList = new StringifyArrayList<String>();
-                for (String tag : tagsEditText.getText().toString().split(",")) {
-                    tagList.add(tag);
-                }
-                qbUser.setTags(tagList);
+            // create QBUser object
+            QBUser qbUser = new QBUser();
+            if (DataHolder.getDataHolder().getSignInUserId() != -1) {
+                qbUser.setId(DataHolder.getDataHolder().getSignInUserId());
+            }
+            if (!DataHolder.getDataHolder().getSignInUserLogin().equals(loginEditText.getText().toString())) {
+                qbUser.setLogin(loginEditText.getText().toString());
+            }
+            if (!passwordEditText.getText().toString().equals(EMPTY_STRING)) {
+                qbUser.setPassword(passwordEditText.getText().toString());
+                qbUser.setOldPassword(DataHolder.getDataHolder().getSignInUserOldPassword());
+            }
+            qbUser.setFullName(fullNameEditText.getText().toString());
+            qbUser.setEmail(emailEditText.getText().toString());
+            qbUser.setPhone(phoneEditText.getText().toString());
+            qbUser.setWebsite(webSiteEditText.getText().toString());
+            StringifyArrayList<String> tagList = new StringifyArrayList<String>();
+            for (String tag : tagsEditText.getText().toString().split(",")) {
+                tagList.add(tag);
+            }
+            qbUser.setTags(tagList);
 
-                QBUsers.updateUser(qbUser, new QBEntityCallbackImpl<QBUser>() {
-                    @Override
-                    public void onSuccess(QBUser qbUser, Bundle bundle) {
+            QBUsers.updateUser(qbUser, new QBEntityCallback<QBUser>() {
+                @Override
+                public void onSuccess(QBUser qbUser, Bundle bundle) {
 
-                        DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                        if (!TextUtils.isEmpty(passwordEditText.getText())) {
-                            DataHolder.getDataHolder().setSignInUserPassword(
-                                    passwordEditText.getText().toString());
-                        }
-                        Toaster.longToast(R.string.user_successfully_updated);
-                        finish();
+                    DataHolder.getDataHolder().setSignInQbUser(qbUser);
+                    if (!TextUtils.isEmpty(passwordEditText.getText())) {
+                        DataHolder.getDataHolder().setSignInUserPassword(
+                                passwordEditText.getText().toString());
                     }
+                    Toaster.longToast(R.string.user_successfully_updated);
+                    finish();
+                }
 
-                    @Override
-                    public void onError(List<String> strings) {
+                @Override
+                public void onError(QBResponseException strings) {
 
-                    }
-                });
+                }
+            });
 
-                break;
+            break;
         }
     }
 }

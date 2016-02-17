@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sample Content</string>
+    <string name="app_name">Content</string>
     <string name="splash_app_title">Content Sample</string>
 
     <string name="gallery_upload_file_error">Upload image errors: </string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sample Messages</string>
+    <string name="app_name">Push Notifications</string>
     <string name="app_title">Push Notification Sample</string>
     <string name="activity_title">Push Notification Sample</string>
 

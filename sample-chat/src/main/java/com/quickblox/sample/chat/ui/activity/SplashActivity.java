@@ -5,21 +5,17 @@ import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
-import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
-
-import java.util.List;
 
 public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ChatHelper.initIfNeed(this);
 
         if (SharedPreferencesUtil.hasQbUser()) {
             proceedToTheNextActivityWithDelay();
@@ -45,15 +41,15 @@ public class SplashActivity extends CoreSplashActivity {
     }
 
     private void createSession() {
-        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 proceedToTheNextActivity();
             }
 
             @Override
-            public void onError(List<String> errors) {
-                showSnackbarError(R.string.splash_create_session_error, errors, new View.OnClickListener() {
+            public void onError(QBResponseException e) {
+                showSnackbarError(R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createSession();

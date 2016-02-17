@@ -10,7 +10,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
@@ -21,7 +22,6 @@ import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
@@ -82,7 +82,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
 
     private void getMovieList() {
         progressDialog.show();
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallbackImpl<ArrayList<QBCustomObject>>() {
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallback<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
                 Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
@@ -95,8 +95,8 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
             }
 
             @Override
-            public void onError(List<String> errors) {
-                Toaster.shortToast(errors.get(0));
+            public void onError(QBResponseException e) {
+                Toaster.shortToast(e.getErrors().toString());
                 progressDialog.dismiss();
             }
         });

@@ -3,20 +3,19 @@ package com.sdk.snippets.modules;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import com.quickblox.core.QBEntityCallbackImpl;
+
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.Consts;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
-import com.quickblox.location.model.QBPlace;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.sdk.snippets.core.AsyncSnippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
 import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vfite on 10.02.14.
@@ -47,22 +46,6 @@ public class SnippetsLocation extends Snippets {
         //
         snippets.add(deleteLocations);
         snippets.add(deleteLocationsSynchronous);
-        //
-        //
-        snippets.add(createPlace);
-        snippets.add(createPlaceSynchronous);
-        //
-        snippets.add(getPlaceWithId);
-        snippets.add(getPlaceWithIdSynchronous);
-        //
-        snippets.add(updatePlace);
-        snippets.add(updatePlaceSynchronous);
-        //
-        snippets.add(deletePlace);
-        snippets.add(deletePlaceSynchronous);
-        //
-        snippets.add(getPlaces);
-        snippets.add(getPlacesSynchronous);
     }
 
 
@@ -80,7 +63,7 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -88,14 +71,14 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet createLocationSynchronous = new AsyncSnippet("create location (synchronous)", context) {
+    Snippet createLocationSynchronous = new SnippetAsync("create location (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -131,7 +114,7 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -139,14 +122,14 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             }, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
         }
     };
 
-    Snippet createLocationWithPushSynchronous = new AsyncSnippet("create location with push (synchronous)", context) {
+    Snippet createLocationWithPushSynchronous = new SnippetAsync("create location with push (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -177,7 +160,7 @@ public class SnippetsLocation extends Snippets {
         @Override
         public void execute() {
             QBLocation location = new QBLocation(11308);
-            QBLocations.getLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.getLocation(location, new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -186,14 +169,14 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet getLocationWithIdSynchronous = new AsyncSnippet("get location (synchronous)", "with ID", context) {
+    Snippet getLocationWithIdSynchronous = new SnippetAsync("get location (synchronous)", "with ID", context) {
         @Override
         public void executeAsync() {
             QBLocation location = new QBLocation(11308);
@@ -223,21 +206,21 @@ public class SnippetsLocation extends Snippets {
             qbLocation.setId(1141748);
             qbLocation.setStatus("I'am at Pizza");
 
-            QBLocations.updateLocation(qbLocation, new QBEntityCallbackImpl<QBLocation>() {
+            QBLocations.updateLocation(qbLocation, new QBEntityCallback<QBLocation>() {
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
                     Log.i(TAG, "Location is: " + qbLocation);
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet updateLocationSynchronous = new AsyncSnippet("update location (synchronous)", context) {
+    Snippet updateLocationSynchronous = new SnippetAsync("update location (synchronous)", context) {
         @Override
         public void executeAsync() {
             QBLocation qbLocation = new QBLocation();
@@ -267,22 +250,22 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             QBLocation location = new QBLocation(1141748);
 
-            QBLocations.deleteLocation(location, new QBEntityCallbackImpl<Void>() {
+            QBLocations.deleteLocation(location, new QBEntityCallback<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "Location was removed");
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet deleteLocationWithIdSynchronous = new AsyncSnippet("update location (synchronous)", "with ID", context) {
+    Snippet deleteLocationWithIdSynchronous = new SnippetAsync("update location (synchronous)", "with ID", context) {
         @Override
         public void executeAsync() {
             QBLocation location = new QBLocation(1141748);
@@ -332,7 +315,7 @@ public class SnippetsLocation extends Snippets {
             locationRequestBuilder.setPage(1);
             locationRequestBuilder.setPerPage(10);
 
-            QBLocations.getLocations(locationRequestBuilder, new QBEntityCallbackImpl<ArrayList<QBLocation>>() {
+            QBLocations.getLocations(locationRequestBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBLocation> locations, Bundle params) {
@@ -343,14 +326,14 @@ public class SnippetsLocation extends Snippets {
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet getLocationsSynchronous = new AsyncSnippet("get locations (synchronous)", context) {
+    Snippet getLocationsSynchronous = new SnippetAsync("get locations (synchronous)", context) {
         @Override
         public void executeAsync() {
             double latitude = 25.3433;
@@ -407,22 +390,22 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             int days = 2;
 
-            QBLocations.deleteObsoleteLocations(days, new QBEntityCallbackImpl<Void>() {
+            QBLocations.deleteObsoleteLocations(days, new QBEntityCallback<Void>() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> Delete locations OK ");
                 }
 
                 @Override
-                public void onError(List<String> errors) {
+                public void onError(QBResponseException errors) {
                     handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet deleteLocationsSynchronous = new AsyncSnippet("delete locations (synchronous)", context) {
+    Snippet deleteLocationsSynchronous = new SnippetAsync("delete locations (synchronous)", context) {
         @Override
         public void executeAsync() {
             int days = 2;
@@ -432,238 +415,6 @@ public class SnippetsLocation extends Snippets {
                 Log.i(TAG, "Locations was removed");
             } catch (QBResponseException e) {
                 setException(e);
-            }
-        }
-    };
-
-
-    //
-    ///////////////////////////////////////// Create Place /////////////////////////////////////////
-    //
-
-
-    Snippet createPlace = new Snippet("create place") {
-        @Override
-        public void execute() {
-            QBPlace place = new QBPlace();
-            place.setDescription("Pizza house");
-            place.setAddress("London bridge 17");
-            place.setLocationId(1141759);
-            place.setTitle("the best place on the planet");
-            place.setPhotoId(212247);
-
-            QBLocations.createPlace(place, new QBEntityCallbackImpl<QBPlace>() {
-
-                @Override
-                public void onSuccess(QBPlace qbPlace, Bundle params) {
-                    Log.i(TAG, ">> Place: " + qbPlace);
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet createPlaceSynchronous = new AsyncSnippet("create place(synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            QBPlace place = new QBPlace();
-            place.setDescription("Pizza house");
-            place.setAddress("London bridge 17");
-            place.setLocationId(1141762);
-            place.setTitle("the best place on the planet");
-            place.setPhotoId(212249);
-
-            QBPlace newPlace = null;
-            try {
-                newPlace = QBLocations.createPlace(place);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-
-            if (newPlace != null) {
-                Log.i(TAG, "Place is: " + newPlace);
-            }
-        }
-    };
-
-
-    //
-    //////////////////////////////////////// Get Place with ID /////////////////////////////////////
-    //
-
-
-    Snippet getPlaceWithId = new Snippet("get place", "with ID") {
-        @Override
-        public void execute() {
-            QBPlace place = new QBPlace(33261);
-
-            QBLocations.getPlace(place, new QBEntityCallbackImpl<QBPlace>() {
-
-                @Override
-                public void onSuccess(QBPlace qbPlace, Bundle params) {
-                    Log.i(TAG, ">> Place: " + qbPlace);
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet getPlaceWithIdSynchronous = new AsyncSnippet("get place(synchronous)", "with ID", context) {
-        @Override
-        public void executeAsync() {
-            QBPlace place = new QBPlace(33261);
-
-            QBPlace getPlace = null;
-            try {
-                getPlace = QBLocations.getPlace(place);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-
-            if (getPlace != null) {
-                Log.i(TAG, "Place is: " + getPlace);
-            }
-        }
-    };
-
-
-    //
-    ///////////////////////////////////// Update Place with ID /////////////////////////////////////
-    //
-
-
-    Snippet updatePlace = new Snippet("update place") {
-        @Override
-        public void execute() {
-
-            QBPlace place = new QBPlace();
-            place.setId(33261);
-            place.setTitle("Great title");
-
-            QBLocations.updatePlace(place, new QBEntityCallbackImpl<QBPlace>() {
-
-                @Override
-                public void onSuccess(QBPlace qbPlace, Bundle params) {
-                    Log.i(TAG, ">> Place: " + qbPlace);
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet updatePlaceSynchronous = new AsyncSnippet("update place(synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            QBPlace place = new QBPlace();
-            place.setId(33261);
-            place.setTitle("Great title");
-
-            QBPlace updatedPlace = null;
-            try {
-                updatedPlace = QBLocations.updatePlace(place);
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-
-            if (updatedPlace != null) {
-                Log.i(TAG, "Place is: " + updatedPlace);
-            }
-        }
-    };
-
-
-    //
-    /////////////////////////////////////// Delete Place ///////////////////////////////////////////
-    //
-
-
-    Snippet deletePlace = new Snippet("delete place") {
-        @Override
-        public void execute() {
-            QBPlace place = new QBPlace(33261);
-
-            QBLocations.deletePlace(place, new QBEntityCallbackImpl<Void>(){
-                @Override
-                public void onSuccess() {
-                    Log.i(TAG, ">> Place was deleted");
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet deletePlaceSynchronous = new AsyncSnippet("delete place(synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            QBPlace place = new QBPlace(33261);
-
-            try {
-                QBLocations.deletePlace(place);
-                Log.i(TAG, "Place deleted");
-            } catch (QBResponseException e) {
-                setException(e);
-            }
-        }
-    };
-
-
-    //
-    /////////////////////////////////////// Get Places /////////////////////////////////////////////
-    //
-
-
-    Snippet getPlaces = new Snippet("get places") {
-        @Override
-        public void execute() {
-            QBLocations.getPlaces(new QBEntityCallbackImpl<ArrayList<QBPlace>>() {
-
-                @Override
-                public void onSuccess(ArrayList<QBPlace> qbPlaces, Bundle args) {
-                    Log.i(TAG, ">>> Places:" + qbPlaces);
-                    Log.i(TAG, ">>> currentPage: " + args.getInt(Consts.CURR_PAGE));
-                    Log.i(TAG, ">>> perPage: " + args.getInt(Consts.PER_PAGE));
-                    Log.i(TAG, ">>> totalPages: " + args.getInt(Consts.TOTAL_ENTRIES));
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    handleErrors(errors);
-                }
-            });
-        }
-    };
-
-    Snippet getPlacesSynchronous = new AsyncSnippet("get places (synchronous)", context) {
-        @Override
-        public void executeAsync() {
-            Bundle params = new Bundle();
-            ArrayList<QBPlace> places = null;
-            try {
-                places = QBLocations.getPlaces(params);
-            } catch (QBResponseException e) {
-               setException(e);
-            }
-            if (places != null) {
-                Log.i(TAG, ">>> Places:" + places.toString());
-                Log.i(TAG, ">>> currentPage: " + params.getInt(Consts.CURR_PAGE));
-                Log.i(TAG, ">>> perPage: " + params.getInt(Consts.PER_PAGE));
-                Log.i(TAG, ">>> totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
             }
         }
     };

@@ -13,7 +13,9 @@ public class App extends CoreApp {
         super.onCreate();
         instance = this;
 
-        QBSettings.getInstance().fastConfigInit(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), Consts.QB_APP_ID, Consts.QB_AUTH_KEY,
+                Consts.QB_AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.QB_ACCOUNT_KEY);
     }
 
     public static synchronized App getInstance() {

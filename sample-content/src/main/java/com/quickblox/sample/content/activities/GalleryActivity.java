@@ -10,8 +10,9 @@ import android.widget.GridView;
 
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
@@ -24,7 +25,6 @@ import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GalleryActivity extends BaseActivity
         implements AdapterView.OnItemClickListener, OnImagePickedListener {
@@ -74,7 +74,7 @@ public class GalleryActivity extends BaseActivity
         builder.setPerPage(Consts.IMAGES_PER_PAGE);
         builder.setPage(Consts.START_PAGE);
 
-        QBContent.getFiles(builder, new QBEntityCallbackImpl<ArrayList<QBFile>>() {
+        QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 if (!DataHolder.getInstance().isEmpty()) {
@@ -87,16 +87,16 @@ public class GalleryActivity extends BaseActivity
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(errors.get(0));
+                Toaster.shortToast(e.getErrors().toString());
             }
         });
     }
 
     private void uploadSelectedImage(File imageFile) {
         progressDialog.show();
-        QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallbackImpl<QBFile>() {
+        QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
@@ -104,9 +104,9 @@ public class GalleryActivity extends BaseActivity
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(R.string.gallery_upload_file_error + errors.get(0));
+                Toaster.shortToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
             }
         }, new QBProgressCallback() {
             @Override

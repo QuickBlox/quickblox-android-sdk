@@ -9,7 +9,8 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
@@ -33,24 +34,18 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
 
-        // 'isChatServiceStartedJustNow' will be true if app was just started
-        // or if app's process was restarted after background death
-        boolean isChatServiceStartedJustNow = ChatHelper.initIfNeed(this);
-        boolean wasAppRestored = savedInstanceState != null;
-        final boolean isChatSessionActive = !(isChatServiceStartedJustNow || wasAppRestored);
-        Log.v(TAG, "isChatServiceStartedJustNow = " + isChatServiceStartedJustNow);
+        final boolean wasAppRestored = savedInstanceState != null;
         Log.v(TAG, "wasAppRestored = " + wasAppRestored);
-        Log.v(TAG, "isChatSessionActive = " + isChatSessionActive);
 
         // Triggering callback via Handler#post() method
         // to let child's code in onCreate() to execute first
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (isChatSessionActive) {
-                    onSessionCreated(true);
-                } else {
+                if (wasAppRestored) {
                     recreateChatSession();
+                } else {
+                    onSessionCreated(true);
                 }
             }
         });
@@ -83,9 +78,9 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
     private void reloginToChat(final QBUser user) {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
 
-        ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle bundle) {
                 Log.v(TAG, "Chat login onSuccess()");
                 onSessionCreated(true);
 
@@ -93,10 +88,10 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException errors) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 Log.w(TAG, "Chat login onError(): " + errors);
-                showErrorSnackbar(R.string.error_recreate_session, errors,
+                showErrorSnackbar(R.string.error_recreate_session, errors.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

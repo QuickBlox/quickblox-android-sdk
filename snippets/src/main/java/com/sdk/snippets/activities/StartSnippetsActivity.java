@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.TabHost;
 import com.sdk.snippets.R;
 
-public class StartActivity extends TabActivity {
+public class StartSnippetsActivity extends TabActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class StartActivity extends TabActivity {
         content.setIndicator("Content")
                 .setContent(new Intent(this, ContentActivity.class));
 
-        messages.setIndicator("Messages")
-                .setContent(new Intent(this, MessagesActivity.class));
+        messages.setIndicator("Push notifications")
+                .setContent(new Intent(this, PushNotificationsActivity.class));
 
         customObjects.setIndicator("Custom Objects")
                 .setContent(new Intent(this, CustomObjectsActivity.class));

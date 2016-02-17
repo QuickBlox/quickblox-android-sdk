@@ -10,15 +10,14 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
-
-import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity {
 
@@ -61,7 +60,7 @@ public class AddNewMovieActivity extends BaseActivity {
 
         QBCustomObject qbCustomObject = QBCustomObjectsUtils.createCustomObject(title, description, year, rating);
 
-        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
+        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
@@ -71,9 +70,9 @@ public class AddNewMovieActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.longToast(errors.get(0));
+                Toaster.longToast(e.getErrors().toString());
             }
         });
     }

@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-
-import java.util.List;
 
 public class SignUpUserActivity extends BaseActivity {
 
@@ -33,35 +32,35 @@ public class SignUpUserActivity extends BaseActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.sign_up_button:
-                progressDialog.show();
+        case R.id.sign_up_button:
+            progressDialog.show();
 
-                // Sign Up user
-                //
-                QBUser qbUser = new QBUser();
-                qbUser.setLogin(loginEditText.getText().toString());
-                qbUser.setPassword(passwordEditText.getText().toString());
-                QBUsers.signUpSignInTask(qbUser, new QBEntityCallbackImpl<QBUser>() {
-                    @Override
-                    public void onSuccess(QBUser qbUser, Bundle bundle) {
-                        progressDialog.hide();
+            // Sign Up user
+            //
+            QBUser qbUser = new QBUser();
+            qbUser.setLogin(loginEditText.getText().toString());
+            qbUser.setPassword(passwordEditText.getText().toString());
+            QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
+                @Override
+                public void onSuccess(QBUser qbUser, Bundle bundle) {
+                    progressDialog.hide();
 
-                        DataHolder.getDataHolder().addQbUserToList(qbUser);
-                        DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                        DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
+                    DataHolder.getDataHolder().addQbUserToList(qbUser);
+                    DataHolder.getDataHolder().setSignInQbUser(qbUser);
+                    DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
 
-                        finish();
-                    }
+                    finish();
+                }
 
-                    @Override
-                    public void onError(List<String> errors) {
-                        progressDialog.hide();
+                @Override
+                public void onError(QBResponseException error) {
+                    progressDialog.hide();
 
-                        Toaster.longToast(errors.get(0));
-                    }
-                });
+                    Toaster.longToast(error.getErrors().toString());
+                }
+            });
 
-                break;
+            break;
         }
     }
 }

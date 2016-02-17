@@ -1,20 +1,14 @@
 package com.sdk.snippets.activities;
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.sdk.snippets.R;
-import com.sdk.snippets.core.SnippetsList;
+import android.content.Context;
+
+import com.sdk.snippets.core.Snippets;
 import com.sdk.snippets.modules.SnippetsChat;
 
-public class ChatActivity extends Activity {
+public class ChatActivity extends BaseSnippetsActivity{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.snippets_list);
-
-        SnippetsChat snippets = new SnippetsChat(this);
-        SnippetsList list = (SnippetsList) findViewById(R.id.list);
-        list.initialize(snippets);
+    public Snippets onCreateSnippets(Context context) {
+        return new SnippetsChat(this);
     }
 }

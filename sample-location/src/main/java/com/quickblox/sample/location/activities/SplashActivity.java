@@ -4,14 +4,13 @@ import android.os.Bundle;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.location.R;
-import com.quickblox.sample.location.utils.Constants;
+import com.quickblox.sample.location.utils.Consts;
 import com.quickblox.users.model.QBUser;
-
-import java.util.List;
 
 public class SplashActivity extends CoreSplashActivity {
 
@@ -20,16 +19,16 @@ public class SplashActivity extends CoreSplashActivity {
         super.onCreate(savedInstanceState);
 
         // Create QuickBlox session
-        QBUser qbUser = new QBUser(Constants.USER_LOGIN, Constants.USER_PASSWORD);
-        QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
+        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 proceedToTheNextActivity();
             }
 
             @Override
-            public void onError(List<String> errors) {
-                Toaster.longToast(getString(R.string.dlg_location_error) + errors);
+            public void onError(QBResponseException e) {
+                Toaster.longToast(getString(R.string.dlg_location_error) + e.getErrors().toString());
             }
         });
     }

@@ -21,7 +21,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.request.QBLocationRequestBuilder;
@@ -31,11 +32,10 @@ import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.location.R;
 import com.quickblox.sample.location.model.Data;
-import com.quickblox.sample.location.utils.Constants;
+import com.quickblox.sample.location.utils.Consts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapActivity extends CoreBaseActivity implements LocationListener {
@@ -68,7 +68,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         // Showing status
         if (status != ConnectionResult.SUCCESS) {
             // Google Play Services are not available
-            int requestCode = Constants.PLAY_SERVICE_REQUEST_CODE;
+            int requestCode = Consts.PLAY_SERVICE_REQUEST_CODE;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
             dialog.show();
         } else {
@@ -84,13 +84,12 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         // Retrieve other users' locations from QuickBlox
         //
         QBLocationRequestBuilder getLocationsBuilder = new QBLocationRequestBuilder();
-        getLocationsBuilder.setPerPage(Constants.LOCATION_PER_PAGE);
+        getLocationsBuilder.setPerPage(Consts.LOCATION_PER_PAGE);
         getLocationsBuilder.setLastOnly();
 
-        QBLocations.getLocations(getLocationsBuilder, new QBEntityCallbackImpl<ArrayList<QBLocation>>() {
+        QBLocations.getLocations(getLocationsBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
             @Override
             public void onSuccess(ArrayList<QBLocation> qbLocations, Bundle bundle) {
-
                 // show all locations on the map
                 //
                 for (QBLocation location : qbLocations) {
@@ -103,9 +102,8 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
                 }
             }
 
-            @Override
-            public void onError(List<String> errors) {
-                Toaster.longToast(getString(R.string.dlg_location_error) + errors);
+            public void onError(QBResponseException e) {
+                Toaster.longToast(getString(R.string.dlg_location_error) + e.getErrors().toString());
             }
         });
     }
@@ -143,7 +141,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         if (location != null) {
             onLocationChanged(location);
         }
-        locationManager.requestLocationUpdates(provider, Constants.LOCATION_MIN_TIME, 0, this);
+        locationManager.requestLocationUpdates(provider, Consts.LOCATION_MIN_TIME, 0, this);
     }
 
     @Override
@@ -180,17 +178,17 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
 
     public void onClickButtons(View view) {
         switch (view.getId()) {
-            case R.id.check_in_button:
+        case R.id.check_in_button:
+            final EditText inputEditText = new EditText(this);
+            inputEditText.setTextColor(ResourceUtils.getColor(R.color.white));
+            initAlertListeners(inputEditText);
 
-                final EditText inputEditText = new EditText(this);
-                inputEditText.setTextColor(ResourceUtils.getColor(R.color.white));
-                initAlertListeners(inputEditText);
+            final Dialog checkInAlert = DialogUtils.createDialog(this, R.string.dlg_check_in,
+                    R.string.dlg_enter_message, inputEditText, checkInPositiveButton, checkInNegativeButton);
 
-                final Dialog checkInAlert = DialogUtils.createDialog(this, R.string.dlg_check_in,
-                        R.string.dlg_enter_message, inputEditText, checkInPositiveButton, checkInNegativeButton);
-
-                initAlertListeners(inputEditText);
-                checkInAlert.show();
+            initAlertListeners(inputEditText);
+            checkInAlert.show();
+            break;
         }
     }
 
@@ -204,15 +202,14 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
                 // ================= QuickBlox ====================
                 // Share own location
                 QBLocation location = new QBLocation(lat, lng, input.getText().toString());
-                QBLocations.createLocation(location, new QBEntityCallbackImpl<QBLocation>() {
+                QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
                     @Override
                     public void onSuccess(QBLocation qbLocation, Bundle bundle) {
                         Toaster.longToast(R.string.dlg_check_in_success);
                     }
 
-                    @Override
-                    public void onError(List<String> errors) {
-                        Toaster.longToast(getString(R.string.dlg_location_error) + errors);
+                    public void onError(QBResponseException errors) {
+                        Toaster.longToast(getString(R.string.dlg_location_error) + errors.getErrors().toString());
                     }
                 });
             }

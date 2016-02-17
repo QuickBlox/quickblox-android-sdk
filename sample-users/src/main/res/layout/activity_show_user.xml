@@ -22,6 +22,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/login" />
 
             <TextView
@@ -37,6 +38,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/email" />
 
             <TextView
@@ -52,6 +54,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/full_name" />
 
             <TextView
@@ -67,6 +70,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/phone" />
 
             <TextView
@@ -82,6 +86,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/web_site" />
 
             <TextView
@@ -97,6 +102,7 @@
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#000"
                 android:text="@string/tags" />
 
             <TextView
