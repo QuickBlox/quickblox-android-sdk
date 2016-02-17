@@ -23,13 +23,13 @@
             android:inputType="textMultiLine"
             android:maxLength="@integer/field_max_length" />
 
-        <EditText
-            android:id="@+id/add_movie_year_textview"
+        <Spinner
+            android:id="@+id/year_spinner"
             style="@style/TextPrimaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/margin_spinner"
             android:layout_marginTop="@dimen/margin_year_add"
-            android:hint="@string/year"
-            android:inputType="number"
-            android:maxLength="4" />
+            android:hint="@string/year" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/add_movie_rating_textview"

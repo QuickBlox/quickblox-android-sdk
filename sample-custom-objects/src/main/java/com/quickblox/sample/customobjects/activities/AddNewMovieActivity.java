@@ -9,8 +9,10 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallbackImpl;
@@ -21,6 +23,8 @@ import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
@@ -28,7 +32,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     private String SPACE = Character.toString((char) 0x20);
     private EditText titleEditText;
     private EditText descriptionEditText;
-    private EditText yearEditText;
+    private Spinner yearSpinner;
     private RatingBar ratingBar;
     private Toast toast;
     private String title, description, year;
@@ -44,6 +48,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_movie);
         initUI();
+        initSpinner();
     }
 
     private void initUI() {
@@ -57,14 +62,25 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         descriptionEditText = _findViewById(R.id.add_movie_description_textview);
         descriptionEditText.addTextChangedListener(this);
 
-        yearEditText = _findViewById(R.id.add_movie_year_textview);
+        yearSpinner = _findViewById(R.id.year_spinner);
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
+    }
+
+    private void initSpinner() {
+        List<String> years = new ArrayList<>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = currentYear; i >= 1895; i--) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+
+        yearSpinner.setAdapter(adapter);
     }
 
     private void createNewMovie() {
         title = titleEditText.getText().toString();
         description = descriptionEditText.getText().toString();
-        year = yearEditText.getText().toString();
+        year = yearSpinner.getSelectedItem().toString();
         rating = ratingBar.getRating();
 
         if (!isValidData()) {
@@ -96,24 +112,16 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         if (title.startsWith(SPACE) || title.endsWith(SPACE)) {
             title = cropSpace(title);
         }
-
         if (description.startsWith(SPACE) || description.endsWith(SPACE)) {
             description = cropSpace(description);
         }
-
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
             toast.setText(R.string.error_fields_is_empty);
             toast.show();
             return false;
         }
-
         if (rating == 0) {
             toast.setText(R.string.error_rating_is_empty);
-            toast.show();
-            return false;
-        }
-        if (year.length() != 4) {
-            toast.setText(R.string.error_year_is_empty);
             toast.show();
             return false;
         }

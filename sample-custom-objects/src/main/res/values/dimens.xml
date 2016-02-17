@@ -9,6 +9,7 @@
     <dimen name="margin_description_details">16dp</dimen>
     <dimen name="margin_rating_details">51dp</dimen>
     <dimen name="margin_rating_bar_details">17dp</dimen>
+    <dimen name="margin_spinner">-5dp</dimen>
 
     <dimen name="margin_title_add">8dp</dimen>
     <dimen name="margin_description">32dp</dimen>
