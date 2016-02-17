@@ -47,9 +47,9 @@ dependencies {
         transitive = true;
     }
 
-    compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
     compile "se.emilsjolander:stickylistheaders:${rootProject.stickyListHeaders}"
 }
 
 apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'

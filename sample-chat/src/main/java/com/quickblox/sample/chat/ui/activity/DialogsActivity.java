@@ -293,15 +293,15 @@ public class DialogsActivity extends BaseActivity {
                 }
             });
         }
-
     }
 
-    private static class PushBroadcastReceiver extends BroadcastReceiver {
+    private class PushBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
             Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
+            loadDialogsFromQb();
         }
     }
 }
