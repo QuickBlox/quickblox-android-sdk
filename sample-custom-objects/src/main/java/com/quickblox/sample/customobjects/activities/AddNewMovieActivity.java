@@ -85,7 +85,8 @@ public class AddNewMovieActivity extends BaseActivity {
         String space = Character.toString((char) 0x20);
 
         if (title.startsWith(space) || description.startsWith(space)
-                || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
+                || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)
+                || (!(title instanceof String)) || (!(description instanceof String))) {
             toast.setText(R.string.error_fields_is_empty);
             toast.show();
             return false;
