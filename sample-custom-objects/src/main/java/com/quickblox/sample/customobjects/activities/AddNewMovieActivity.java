@@ -25,11 +25,14 @@ import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
+    private String SPACE = Character.toString((char) 0x20);
     private EditText titleEditText;
     private EditText descriptionEditText;
     private EditText yearEditText;
     private RatingBar ratingBar;
     private Toast toast;
+    private String title, description, year;
+    private float rating;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, AddNewMovieActivity.class);
@@ -59,12 +62,12 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     }
 
     private void createNewMovie() {
-        String title = titleEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-        String year = yearEditText.getText().toString();
-        float rating = ratingBar.getRating();
+        title = titleEditText.getText().toString();
+        description = descriptionEditText.getText().toString();
+        year = yearEditText.getText().toString();
+        rating = ratingBar.getRating();
 
-        if (!isValidData(title, description, year, rating)) {
+        if (!isValidData()) {
             return;
         }
         progressDialog.show();
@@ -88,16 +91,22 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         });
     }
 
-    private boolean isValidData(String title, String description, String year, float rating) {
-        String space = Character.toString((char) 0x20);
+    private boolean isValidData() {
 
-        if (title.startsWith(space) || description.startsWith(space)
-                || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)
-                || (!(title instanceof String)) || (!(description instanceof String))) {
+        if (title.startsWith(SPACE) || title.endsWith(SPACE)) {
+            title = cropSpace(title);
+        }
+
+        if (description.startsWith(SPACE) || description.endsWith(SPACE)) {
+            description = cropSpace(description);
+        }
+
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
             toast.setText(R.string.error_fields_is_empty);
             toast.show();
             return false;
         }
+
         if (rating == 0) {
             toast.setText(R.string.error_rating_is_empty);
             toast.show();
@@ -109,6 +118,16 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             return false;
         }
         return true;
+    }
+
+    private String cropSpace(String field) {
+        while (field.startsWith(SPACE)) {
+            field = field.substring(1);
+        }
+        while (field.endsWith(SPACE)) {
+            field = field.substring(0, field.length() - 1);
+        }
+        return field;
     }
 
     @Override

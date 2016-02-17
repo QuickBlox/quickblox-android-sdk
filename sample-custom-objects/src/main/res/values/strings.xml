@@ -20,6 +20,7 @@
     <string name="add_movie">Add</string>
     <string name="save_movie">Save</string>
     <string name="done">Done</string>
+
     <string name="error">error</string>
     <string name="error_fields_is_empty">Field(s) is empty!</string>
     <string name="error_too_long_text">You can enter only 1024 symbols!</string>

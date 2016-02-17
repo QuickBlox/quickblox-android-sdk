@@ -12,6 +12,7 @@
             style="@style/TextPrimaryStyle"
             android:layout_marginTop="@dimen/margin_title_add"
             android:hint="@string/title"
+            android:inputType="textMultiLine"
             android:maxLength="@integer/field_max_length" />
 
         <EditText
@@ -19,6 +20,7 @@
             style="@style/TextPrimaryStyle"
             android:layout_marginTop="@dimen/margin_description"
             android:hint="@string/description"
+            android:inputType="textMultiLine"
             android:maxLength="@integer/field_max_length" />
 
         <EditText
