@@ -22,6 +22,7 @@
     <string name="done">Done</string>
     <string name="error">error</string>
     <string name="error_fields_is_empty">Field(s) is empty!</string>
+    <string name="error_too_long_text">You can enter only 1024 symbols!</string>
     <string name="error_rating_is_empty">Please, rate this movie!</string>
     <string name="error_year_is_empty">Please, set real year!</string>
 

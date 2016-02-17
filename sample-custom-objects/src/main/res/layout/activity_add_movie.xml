@@ -12,13 +12,14 @@
             style="@style/TextPrimaryStyle"
             android:layout_marginTop="@dimen/margin_title_add"
             android:hint="@string/title"
-            android:inputType="text" />
+            android:maxLength="@integer/field_max_length" />
 
         <EditText
             android:id="@+id/add_movie_description_textview"
             style="@style/TextPrimaryStyle"
             android:layout_marginTop="@dimen/margin_description"
-            android:hint="@string/description" />
+            android:hint="@string/description"
+            android:maxLength="@integer/field_max_length" />
 
         <EditText
             android:id="@+id/add_movie_year_textview"

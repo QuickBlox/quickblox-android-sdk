@@ -3,7 +3,9 @@ package com.quickblox.sample.customobjects.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +23,7 @@ import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 import java.util.List;
 
-public class AddNewMovieActivity extends BaseActivity {
+public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
@@ -45,8 +47,13 @@ public class AddNewMovieActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         toast = Toast.makeText(this, R.string.error, Toast.LENGTH_LONG);
+
         titleEditText = _findViewById(R.id.add_movie_title_textview);
+        titleEditText.addTextChangedListener(this);
+
         descriptionEditText = _findViewById(R.id.add_movie_description_textview);
+        descriptionEditText.addTextChangedListener(this);
+
         yearEditText = _findViewById(R.id.add_movie_year_textview);
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
     }
@@ -105,8 +112,8 @@ public class AddNewMovieActivity extends BaseActivity {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         toast.cancel();
     }
 
@@ -126,6 +133,24 @@ public class AddNewMovieActivity extends BaseActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        //ignore
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        //ignore
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.length() >= getResources().getInteger(R.integer.field_max_length)) {
+            toast.setText(R.string.error_too_long_text);
+            toast.show();
         }
     }
 }
