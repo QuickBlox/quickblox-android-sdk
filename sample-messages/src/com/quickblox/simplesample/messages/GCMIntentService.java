@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -74,13 +75,15 @@ public class GCMIntentService extends IntentService {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.app_icon)
-                        .setContentTitle(Consts.GCM_NOTIFICATION)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(messageValue))
-                        .setContentText(messageValue);
+        long[] vibrate = { 0, 100, 200, 300 };
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.app_icon)
+                    .setContentTitle(Consts.GCM_NOTIFICATION)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(messageValue))
+                    .setContentText(messageValue)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
+                            setVibrate(vibrate);
 
         mBuilder.setContentIntent(contentIntent);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
