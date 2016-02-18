@@ -29,7 +29,8 @@ import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
-    private String SPACE = Character.toString((char) 0x20);
+    private static String SPACE = "\u0020";
+    private static String OBJ = "\uFFFC";
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Spinner yearSpinner;
@@ -69,7 +70,8 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     private void initSpinner() {
         List<String> years = new ArrayList<>();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = currentYear; i >= 1895; i--) {
+        int firstFilmYear = 1895;
+        for (int i = currentYear; i >= firstFilmYear; i--) {
             years.add(Integer.toString(i));
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
@@ -178,6 +180,10 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         if (s.length() >= getResources().getInteger(R.integer.field_max_length)) {
             toast.setText(R.string.error_too_long_text);
             toast.show();
+        }
+        if (s.toString().contains(OBJ)) {
+            int index = s.toString().indexOf(OBJ);
+            s.replace(index, index + 1, "");
         }
     }
 }
