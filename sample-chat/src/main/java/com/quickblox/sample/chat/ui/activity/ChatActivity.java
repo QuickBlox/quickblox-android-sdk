@@ -279,6 +279,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private void initChat() {
         switch (qbDialog.getType()) {
         case GROUP:
+        case PUBLIC_GROUP:
             chat = new GroupChatImpl(this);
             joinGroupChat();
             break;

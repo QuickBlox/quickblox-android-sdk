@@ -20,11 +20,13 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
+import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackTwoTypeWrapper;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackWrapper;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -140,6 +142,8 @@ public class ChatHelper {
         } else if (qbDialog.getType() == QBDialogType.PRIVATE) {
             QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(),
                     new QbEntityCallbackWrapper<>(callback));
+        } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+            Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         }
     }
 
@@ -205,7 +209,7 @@ public class ChatHelper {
                         }
                         getUsersFromDialogs(dialogs, callback);
                         // Not calling super.onSuccess() because
-                        // we're want to load chat users before triggering callback
+                        // we want to load chat users before triggering callback
                     }
                 });
     }
