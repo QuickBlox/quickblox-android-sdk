@@ -143,8 +143,11 @@ public class GalleryActivity extends BaseActivity
     }
 
     private void uploadSelectedImage(File imageFile) {
+        final int imageSize = (int) imageFile.length() / 1024;
+        final float onePercent = (float) imageSize / 100;
         progressDialog = DialogUtils.getProgressDialog(this);
-        progressDialog.setMax((int) imageFile.length() / 1024);
+        progressDialog.setMax(imageSize);
+        progressDialog.setProgressNumberFormat("%1d/%2d kB");
         progressDialog.show();
         QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
             @Override
@@ -163,7 +166,7 @@ public class GalleryActivity extends BaseActivity
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
-                progressDialog.incrementProgressBy(progress);
+                progressDialog.setProgress((int) (onePercent * progress));
             }
         });
     }
