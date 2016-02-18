@@ -21,11 +21,11 @@ import android.widget.TextView;
 
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
+import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
@@ -100,6 +100,7 @@ public class DialogsActivity extends BaseActivity {
             if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
                 googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
             }
+            SharedPreferencesUtil.removeQbUser();
             LoginActivity.start(this);
             finish();
             return true;
