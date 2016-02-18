@@ -214,7 +214,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             }
         }
 
-        String text = messageEditText.getText().toString();
+        String text = messageEditText.getText().toString().trim();
         if (!TextUtils.isEmpty(text)) {
             sendChatMessage(text, null);
         }
