@@ -14,6 +14,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.QbAuthUtils;
 import com.quickblox.sample.chat.utils.qb.QbSessionStateCallback;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -34,15 +35,18 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
 
-        final boolean wasAppRestored = savedInstanceState != null;
+        boolean wasAppRestored = savedInstanceState != null;
+        boolean isSessionActive = QbAuthUtils.isSessionActive();
+        final boolean needToRestoreSession = wasAppRestored || !isSessionActive;
         Log.v(TAG, "wasAppRestored = " + wasAppRestored);
+        Log.v(TAG, "isSessionActive = " + isSessionActive);
 
         // Triggering callback via Handler#post() method
         // to let child's code in onCreate() to execute first
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (wasAppRestored) {
+                if (needToRestoreSession) {
                     recreateChatSession();
                 } else {
                     onSessionCreated(true);
