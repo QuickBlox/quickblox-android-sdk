@@ -14,7 +14,7 @@ public class VerboseQbChatConnectionListener implements ConnectionListener {
     }
 
     @Override
-    public void authenticated(XMPPConnection connection) {
+    public void authenticated(XMPPConnection connection, boolean authenticated) {
         Log.i(TAG, "authenticated()");
     }
 

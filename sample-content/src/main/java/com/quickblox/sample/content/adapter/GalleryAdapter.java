@@ -78,7 +78,7 @@ public class GalleryAdapter extends BaseAdapter {
 
         Glide.with(context)
                 .load(QBContentUtils.getUrl(qbFile))
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .priority(customPriority)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override

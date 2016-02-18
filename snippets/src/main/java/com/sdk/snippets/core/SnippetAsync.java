@@ -3,20 +3,19 @@ package com.sdk.snippets.core;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.quickblox.sample.core.utils.Toaster;
-
-public abstract class AsyncSnippet extends Snippet {
-    private static final String TAG = AsyncSnippet.class.getSimpleName();
+public abstract class SnippetAsync extends Snippet {
+    private static final String TAG = SnippetAsync.class.getSimpleName();
     Exception exception;
     private Context context;
 
-    public AsyncSnippet(String title, Context context) {
+    public SnippetAsync(String title, Context context) {
         super(title);
         this.context = context;
     }
 
-    public AsyncSnippet(String title, String subtitle, Context context) {
+    public SnippetAsync(String title, String subtitle, Context context) {
         super(title, subtitle);
         this.context = context;
     }
@@ -49,7 +48,7 @@ public abstract class AsyncSnippet extends Snippet {
     protected void postExecute(){
         if(exception == null){
             Log.i(TAG, ">>> executed successful");
-            Toaster.shortToast("executed successful");
+            Toast.makeText(context, " executed successful", Toast.LENGTH_SHORT).show();
         }
         else{
             Log.i(TAG, ">>> errors:"+exception.getLocalizedMessage());

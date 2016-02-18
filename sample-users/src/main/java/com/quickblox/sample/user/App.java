@@ -11,6 +11,7 @@ public class App extends CoreApp {
         super.onCreate();
 
         // Initialize QuickBlox application with credentials
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
     }
 }

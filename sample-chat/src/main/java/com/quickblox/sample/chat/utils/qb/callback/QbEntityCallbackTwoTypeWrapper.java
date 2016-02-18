@@ -5,8 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.quickblox.core.QBEntityCallback;
-
-import java.util.List;
+import com.quickblox.core.exception.QBResponseException;
 
 public class QbEntityCallbackTwoTypeWrapper<T, R> implements QBEntityCallback<T> {
     protected static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -22,13 +21,8 @@ public class QbEntityCallbackTwoTypeWrapper<T, R> implements QBEntityCallback<T>
     }
 
     @Override
-    public void onSuccess() {
-        onSuccessInMainThread();
-    }
-
-    @Override
-    public void onError(List<String> errors) {
-        onErrorInMainThread(errors);
+    public void onError(QBResponseException error) {
+        onErrorInMainThread(error);
     }
 
     protected void onSuccessInMainThread(final R result, final Bundle bundle) {
@@ -40,20 +34,11 @@ public class QbEntityCallbackTwoTypeWrapper<T, R> implements QBEntityCallback<T>
         });
     }
 
-    protected void onSuccessInMainThread() {
+    protected void onErrorInMainThread(final QBResponseException error) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                callback.onSuccess();
-            }
-        });
-    }
-
-    protected void onErrorInMainThread(final List<String> errors) {
-        mainThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                callback.onError(errors);
+                callback.onError(error);
             }
         });
     }

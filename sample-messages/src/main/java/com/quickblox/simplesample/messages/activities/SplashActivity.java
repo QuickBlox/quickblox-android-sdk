@@ -4,7 +4,8 @@ import android.os.Bundle;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.simplesample.messages.App;
@@ -21,7 +22,7 @@ public class SplashActivity extends CoreSplashActivity {
         super.onCreate(savedInstanceState);
 
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-        QBAuth.createSession(qbUser, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 App.getInstance().setCurrentUserId(qbSession.getUserId());
@@ -29,8 +30,8 @@ public class SplashActivity extends CoreSplashActivity {
             }
 
             @Override
-            public void onError(List<String> strings) {
-                Toaster.longToast(strings.toString());
+            public void onError(QBResponseException e) {
+                Toaster.longToast(e.getErrors().toString());
             }
         });
     }

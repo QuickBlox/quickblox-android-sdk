@@ -3,6 +3,7 @@ package com.sdk.snippets.core;
 import android.content.Context;
 import android.util.Log;
 
+import com.quickblox.core.helper.Lo;
 import com.sdk.snippets.R;
 
 import org.json.JSONObject;
@@ -95,19 +96,32 @@ public class ApplicationConfig {
             activeServer = jObject.getString("active");
             useUser1 = jObject.getBoolean("use_first_user");
 
+
+            // fast run mode (only for debug)
+            //
+            if(android.os.Build.MODEL.equals("Galaxy Nexus")){
+                useUser1 = false;
+            }else{
+                useUser1 = true;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public String getAppId(){
-        return (String)servers.get(activeServer).get("app_id");
+        return servers.get(activeServer).get("app_id").toString();
     }
     public String getAuthKey(){
         return (String)servers.get(activeServer).get("auth_key");
     }
     public String getAuthSecret(){
         return (String)servers.get(activeServer).get("auth_secret");
+    }
+
+    public String getAccountKey(){
+        return (String)servers.get(activeServer).get("account_key");
     }
     //
     public String getApiDomain(){

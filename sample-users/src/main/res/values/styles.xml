@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="DigitsTheme" parent="android:Theme.Holo.Light">
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/gray</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorLink">@color/blue</item>
+        <item name="dgts__accentColor">@color/blue</item>
+    </style>
+
+</resources>

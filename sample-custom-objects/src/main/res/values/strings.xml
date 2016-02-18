@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Sample CustomObjects</string>
+    <string name="app_name">Custom Objects</string>
     <string name="movie_sample">Custom Objects Sample</string>
     <string name="splash_app_title">@string/movie_sample</string>
 

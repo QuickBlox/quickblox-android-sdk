@@ -1,20 +1,18 @@
 package com.sdk.snippets.activities;
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.sdk.snippets.R;
-import com.sdk.snippets.core.SnippetsList;
+import android.content.Context;
+
+import com.sdk.snippets.core.Snippets;
 import com.sdk.snippets.modules.SnippetsAuth;
 
-public class AuthActivity extends Activity {
-
+/**
+ * User: Oleg Soroka
+ * Date: 02.10.12
+ * Time: 09:38
+ */
+public class AuthActivity extends BaseSnippetsActivity {
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.snippets_list);
-
-        SnippetsAuth snippets = new SnippetsAuth(this);
-        SnippetsList list = (SnippetsList) findViewById(R.id.list);
-        list.initialize(snippets);
+    public Snippets onCreateSnippets(Context context) {
+        return new SnippetsAuth(this);
     }
 }

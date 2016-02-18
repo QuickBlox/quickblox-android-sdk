@@ -5,10 +5,13 @@ import android.util.Log;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
+import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
 
-public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat> implements QBPrivateChatManagerListener {
+public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
+        implements QBPrivateChatManagerListener, QBMessageSentListener<QBPrivateChat> {
     private static final String TAG = PrivateChatImpl.class.getSimpleName();
 
     private QBPrivateChatManager qbPrivateChatManager;
@@ -29,6 +32,7 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat> implements QBPr
         if (qbPrivateChatManager == null) {
             qbPrivateChatManager = QBChatService.getInstance().getPrivateChatManager();
             qbPrivateChatManager.addPrivateChatManagerListener(this);
+            qbPrivateChatManager.addPrivateChatManagerListener(this);
         }
     }
 
@@ -48,6 +52,16 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat> implements QBPr
         if (!createdLocally) {
             qbChat = incomingPrivateChat;
             qbChat.addMessageListener(this);
+            qbChat.addMessageSentListener(this);
         }
+    }
+
+    @Override
+    public void processMessageSent(QBPrivateChat qbPrivateChat, QBChatMessage qbChatMessage) {
+    }
+
+    @Override
+    public void processMessageFailed(QBPrivateChat qbPrivateChat, QBChatMessage qbChatMessage) {
+
     }
 }

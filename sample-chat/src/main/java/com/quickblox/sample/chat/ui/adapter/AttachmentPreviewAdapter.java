@@ -12,8 +12,9 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.quickblox.chat.model.QBAttachment;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
@@ -25,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
@@ -47,7 +47,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
     @Override
     public void add(final File item) {
         fileUploadProgressMap.put(item, 1);
-        ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallbackImpl<QBAttachment>() {
+        ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallback<QBAttachment>() {
             @Override
             public void onSuccess(QBAttachment result, Bundle params) {
                 fileUploadProgressMap.remove(item);
@@ -56,7 +56,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 Toaster.shortToast(R.string.chat_attachment_error);
                 remove(item);
             }

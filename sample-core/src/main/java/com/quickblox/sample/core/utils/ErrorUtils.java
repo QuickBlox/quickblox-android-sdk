@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 
@@ -32,6 +33,11 @@ public class ErrorUtils {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(actionLabel, clickListener);
         snackbar.show();
+    }
+
+    public static void showErrorToast(QBResponseException exception) {
+        Toaster.shortToast(String.format("[ERROR] Request has been completed with errors: %s", exception.getErrors()
+                + ", code: " + exception.getHttpStatusCode()));
     }
 
     public static void showErrorDialog(Context context, @StringRes int errorMessage, String error) {

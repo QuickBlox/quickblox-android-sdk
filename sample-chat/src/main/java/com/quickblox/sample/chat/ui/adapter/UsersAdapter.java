@@ -63,7 +63,7 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
 
     protected boolean isAvailableForSelection(QBUser user) {
         QBUser currentUser = ChatHelper.getCurrentUser();
-        return currentUser != null && !currentUser.getId().equals(user.getId());
+        return currentUser == null || !currentUser.getId().equals(user.getId());
     }
 
     protected static class ViewHolder {

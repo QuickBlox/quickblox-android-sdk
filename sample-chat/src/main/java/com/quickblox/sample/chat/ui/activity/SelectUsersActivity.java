@@ -13,7 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
 import com.quickblox.sample.chat.utils.Consts;
@@ -126,7 +127,7 @@ public class SelectUsersActivity extends BaseActivity {
         tags.add(Consts.QB_USERS_TAG);
 
         progressBar.setVisibility(View.VISIBLE);
-        QBUsers.getUsersByTags(tags, null, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, null, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 QBDialog dialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
@@ -141,8 +142,8 @@ public class SelectUsersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
-                showErrorSnackbar(R.string.select_users_get_users_error, errors,
+            public void onError(QBResponseException e) {
+                showErrorSnackbar(R.string.select_users_get_users_error, e.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

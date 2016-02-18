@@ -9,7 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
 import com.quickblox.sample.chat.utils.Consts;
@@ -54,7 +55,7 @@ public class LoginActivity extends CoreBaseActivity {
         List<String> tags = new ArrayList<>();
         tags.add(Consts.QB_USERS_TAG);
 
-        QBUsers.getUsersByTags(tags, null, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, null, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 UsersAdapter adapter = new UsersAdapter(LoginActivity.this, result);
@@ -62,8 +63,8 @@ public class LoginActivity extends CoreBaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
-                ErrorUtils.showSnackbar(userListView, R.string.login_cant_obtain_users, errors,
+            public void onError(QBResponseException e) {
+                ErrorUtils.showSnackbar(userListView, R.string.login_cant_obtain_users, e.getErrors(),
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -76,9 +77,9 @@ public class LoginActivity extends CoreBaseActivity {
 
     private void login(final QBUser user) {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
-        ChatHelper.getInstance().login(user, new QBEntityCallbackImpl<Void>() {
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void aVoid, Bundle bundle) {
                 SharedPreferencesUtil.saveQbUser(user);
 
                 DialogsActivity.start(LoginActivity.this);
@@ -88,9 +89,9 @@ public class LoginActivity extends CoreBaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                ErrorUtils.showSnackbar(userListView, R.string.login_chat_login_error, errors,
+                ErrorUtils.showSnackbar(userListView, R.string.login_chat_login_error, e.getErrors(),
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

@@ -18,7 +18,8 @@ import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
@@ -43,7 +44,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -298,16 +298,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private void joinGroupChat() {
         progressBar.setVisibility(View.VISIBLE);
 
-        ((GroupChatImpl) chat).joinGroupChat(qbDialog, new QBEntityCallbackImpl<String>() {
+        ((GroupChatImpl) chat).joinGroupChat(qbDialog, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void result, Bundle b) {
                 loadDialogUsers();
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_join_error, errors, new View.OnClickListener() {
+                showErrorSnackbar(R.string.chat_join_error, e.getErrors(), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         joinGroupChat();
@@ -335,7 +335,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
-                new QBEntityCallbackImpl<QBDialog>() {
+                new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         qbDialog = dialog;
@@ -343,8 +343,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
-                        showErrorSnackbar(R.string.chat_info_add_people_error, errors,
+                    public void onError(QBResponseException e) {
+                        showErrorSnackbar(R.string.chat_info_add_people_error, e.getErrors(),
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -357,7 +357,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void loadDialogUsers() {
-        ChatHelper.getInstance().getUsersFromDialog(qbDialog, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
+        ChatHelper.getInstance().getUsersFromDialog(qbDialog, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> users, Bundle bundle) {
                 setChatNameToActionBar();
@@ -365,8 +365,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             }
 
             @Override
-            public void onError(List<String> errors) {
-                showErrorSnackbar(R.string.chat_load_users_error, errors,
+            public void onError(QBResponseException e) {
+                showErrorSnackbar(R.string.chat_load_users_error, e.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -388,7 +388,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void loadChatHistory() {
-        ChatHelper.getInstance().loadChatHistory(qbDialog, new QBEntityCallbackImpl<ArrayList<QBChatMessage>>() {
+        ChatHelper.getInstance().loadChatHistory(qbDialog, new QBEntityCallback<ArrayList<QBChatMessage>>() {
             @Override
             public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                 // The newest messages should be in the end of list,
@@ -405,9 +405,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_load_history_error, errors,
+                showErrorSnackbar(R.string.chat_load_history_error, e.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -423,15 +423,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void deleteChat() {
-        ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallbackImpl<Void>() {
+        ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Void aVoid, Bundle bundle) {
                 finish();
             }
 
             @Override
-            public void onError(List<String> errors) {
-                showErrorSnackbar(R.string.dialogs_deletion_error, errors,
+            public void onError(QBResponseException e) {
+                showErrorSnackbar(R.string.dialogs_deletion_error, e.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

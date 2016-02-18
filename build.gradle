@@ -12,6 +12,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
     }
 }
 
@@ -28,16 +31,8 @@ ext {
 
     lintAbortOnError = false
 
-    // QB dependencies
-    def qb_sdk_jars_template_path = '../jars/quickblox-android-sdk'
-    def qb_sdk_version = '2.4'
-    core_jar_path = qb_sdk_jars_template_path + '-core-' + qb_sdk_version + '.jar'
-    location_jar_path = qb_sdk_jars_template_path + '-location-' + qb_sdk_version + '.jar'
-    chat_jar_path = qb_sdk_jars_template_path + '-chat-' + qb_sdk_version + '.jar'
-    content_jar_path = qb_sdk_jars_template_path + '-content-' + qb_sdk_version + '.jar'
-    customobjects_jar_path = qb_sdk_jars_template_path + '-customobjects-' + qb_sdk_version + '.jar'
-    messages_jar_path = qb_sdk_jars_template_path + '-messages-' + qb_sdk_version + '.jar'
-    videochat_webrtc_jar_path = qb_sdk_jars_template_path + '-videochat-webrtc-' + qb_sdk_version + '.jar'
+    // QuickBlox SDK version
+    qbSdkVersion = '2.5'
 
     // Dependency versions
     playServicesVersion = '8.4.0'
@@ -57,7 +52,7 @@ ext {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '2.10'
 }
 
 def makeJar(variant, project) {

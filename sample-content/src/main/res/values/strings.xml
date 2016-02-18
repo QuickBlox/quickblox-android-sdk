@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sample Content</string>
+    <string name="app_name">Content</string>
     <string name="splash_app_title">Content Sample</string>
 
     <string name="gallery_upload_file_error">Upload image errors: </string>
@@ -8,4 +8,9 @@
 
     <string name="gallery_title">Images</string>
     <string name="show_image_title">Show image</string>
+
+    <string name="no_photo">No photos</string>
+    <string name="press_button">Press plus button to add images</string>
+    <string name="problem">Houston, we have a problem</string>
+    <string name="no_connection">No Internet connection</string>
 </resources>
