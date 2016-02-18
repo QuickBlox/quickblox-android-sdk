@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.utils.chat;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -143,27 +144,30 @@ public class ChatHelper {
     }
 
     public void updateDialogUsers(QBDialog qbDialog,
-                                  final List<QBUser> currentDialogUsers,
+                                  final List<QBUser> newQbDialogUsersList,
                                   QBEntityCallback<QBDialog> callback) {
-        QbDialogUtils.logDialogUsers(qbDialog);
+        List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(qbDialog, newQbDialogUsersList);
+        List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(qbDialog, newQbDialogUsersList);
 
-        List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(qbDialog, currentDialogUsers);
-        List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(qbDialog, currentDialogUsers);
+        QbDialogUtils.logDialogUsers(qbDialog);
+        QbDialogUtils.logUsers(addedUsers);
+        Log.w(TAG, "=======================");
+        QbDialogUtils.logUsers(removedUsers);
 
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
-        // FIXME Replace with pushAll
-        qbRequestBuilder.push("occupants_ids", QbDialogUtils.getUserIds(addedUsers));
-        for (Integer id : QbDialogUtils.getUserIds(removedUsers)) {
-            // FIXME Replace with pullAll
-            qbRequestBuilder.pull("occupants_ids", id);
+        if (!addedUsers.isEmpty()) {
+            qbRequestBuilder.pushAll("occupants_ids", QbDialogUtils.getUserIds(addedUsers));
         }
-        qbDialog.setName(QbDialogUtils.createChatNameFromUserList(currentDialogUsers));
+        if (!removedUsers.isEmpty()) {
+            qbRequestBuilder.pullAll("occupants_ids", QbDialogUtils.getUserIds(removedUsers));
+        }
+        qbDialog.setName(QbDialogUtils.createChatNameFromUserList(newQbDialogUsersList));
 
         QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
                 new QbEntityCallbackWrapper<QBDialog>(callback) {
                     @Override
                     public void onSuccess(QBDialog qbDialog, Bundle bundle) {
-                        QbUsersHolder.getInstance().putUsers(currentDialogUsers);
+                        QbUsersHolder.getInstance().putUsers(newQbDialogUsersList);
                         QbDialogUtils.logDialogUsers(qbDialog);
                         super.onSuccess(qbDialog, bundle);
                     }
