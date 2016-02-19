@@ -397,6 +397,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
 
                 chatAdapter = new ChatAdapter(ChatActivity.this, messages);
+                chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
+                    @Override
+                    public void onItemInfoExpanded(int position) {
+                        messagesListView.smoothScrollToPosition(position);
+                    }
+                });
                 messagesListView.setAdapter(chatAdapter);
                 messagesListView.setAreHeadersSticky(false);
                 messagesListView.setDivider(null);

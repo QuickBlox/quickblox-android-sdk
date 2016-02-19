@@ -33,12 +33,18 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
+    private OnItemInfoExpandedListener onItemInfoExpandedListener;
+
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
     }
 
+    public void setOnItemInfoExpandedListener(OnItemInfoExpandedListener onItemInfoExpandedListener) {
+        this.onItemInfoExpandedListener = onItemInfoExpandedListener;
+    }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -69,6 +75,10 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             public void onClick(View v) {
                 boolean isMessageInfoVisible = holder.messageInfoTextView.getVisibility() == View.VISIBLE;
                 holder.messageInfoTextView.setVisibility(isMessageInfoVisible ? View.GONE : View.VISIBLE);
+
+                if (onItemInfoExpandedListener != null) {
+                    onItemInfoExpandedListener.onItemInfoExpanded(position);
+                }
             }
         });
         holder.messageInfoTextView.setVisibility(View.GONE);
@@ -224,5 +234,9 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         public RelativeLayout messageBodyContainerLayout;
         public MaskedImageView attachmentImageView;
         public ProgressBar attachmentProgressBar;
+    }
+
+    public static interface OnItemInfoExpandedListener {
+        void onItemInfoExpanded(int position);
     }
 }
