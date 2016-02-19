@@ -59,7 +59,8 @@
             style="@style/WeightWidth"
             android:layout_height="wrap_content"
             android:hint="@string/chat_edit_text_hint"
-            android:inputType="textShortMessage" />
+            android:inputType="textShortMessage"
+            android:maxLength="1024" />
 
         <ImageButton
             android:id="@+id/button_chat_send"
