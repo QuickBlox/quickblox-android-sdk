@@ -7,20 +7,28 @@
         android:id="@+id/user_avatar_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp"
         android:adjustViewBounds="true"
-        android:maxHeight="?android:attr/listPreferredItemHeight"
-        android:maxWidth="?android:attr/listPreferredItemHeight"
-        android:padding="@dimen/padding_small"
+        android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/user_avatar"
-        android:layout_alignParentLeft="true" />
+        android:src="@drawable/ic_action_timer_auto" />
+
+    <ImageView
+        android:id="@+id/user_avatar2_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_action_brightness_1" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_toRightOf="@id/user_avatar_imageview"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"

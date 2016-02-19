@@ -53,10 +53,9 @@ android {
 }
 
 dependencies {
-    compile (project(":sample-core")) {
+    compile(project(':sample-core')) {
         transitive = true;
     }
-
     compile('com.digits.sdk.android:digits:1.9.0@aar') {
         transitive = true;
     }
