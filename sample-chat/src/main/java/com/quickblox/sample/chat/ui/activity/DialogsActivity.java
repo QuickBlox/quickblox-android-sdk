@@ -77,6 +77,8 @@ public class DialogsActivity extends BaseActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+
+        loadDialogsFromQb(true);
     }
 
     @Override
@@ -208,7 +210,13 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void loadDialogsFromQb() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadDialogsFromQb(false);
+    }
+
+    private void loadDialogsFromQb(final boolean silentUpdate) {
+        if (!silentUpdate) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         ChatHelper.getInstance().getDialogs(new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -220,13 +228,15 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loadDialogsFromQb();
-                            }
-                        });
+                if (!silentUpdate) {
+                    showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    loadDialogsFromQb();
+                                }
+                            });
+                }
             }
         });
     }
@@ -302,7 +312,7 @@ public class DialogsActivity extends BaseActivity {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
             Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
-            loadDialogsFromQb();
+            loadDialogsFromQb(true);
         }
     }
 }
