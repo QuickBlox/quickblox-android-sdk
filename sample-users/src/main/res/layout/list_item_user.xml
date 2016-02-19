@@ -1,18 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/user_avatar_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:adjustViewBounds="true"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_action_timer_auto" />
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/user_avatar2_imageview"
@@ -20,58 +10,46 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="5dp"
-        android:padding="10dp"
-        android:src="@drawable/ic_action_brightness_1" />
+        android:padding="16dp"
+        android:src="@drawable/shape_circle" />
+
+    <ImageView
+        android:id="@+id/user_avatar_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        android:paddingLeft="23dp"
+        android:paddingTop="26dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_action_timer_auto" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@id/user_avatar_imageview"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="20dp">
 
-        <LinearLayout
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/user_name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:textSize="16sp"
+            android:textColor="@color/black_light"
+            android:paddingRight="@dimen/padding_small"
+            tools:text="@string/name"
+            app:typeface="roboto_medium"/>
 
-            <TextView
-                android:id="@+id/user_name_title_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/padding_small"
-                android:text="@string/name_with_colon"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/user_name_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tags_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tags_title_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/padding_small"
-                android:text="@string/tags_with_colon"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tags_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true" />
-        </LinearLayout>
+            android:textSize="14sp"
+            android:textColor="@color/brownish_gray"
+            android:paddingRight="@dimen/padding_small"
+            tools:text="@string/full_name" />
 
     </LinearLayout>
+
 </RelativeLayout>

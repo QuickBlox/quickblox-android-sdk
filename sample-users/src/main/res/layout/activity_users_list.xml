@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/users_listview"
-    style="@style/ListViewWithoutDividerStyle" />
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/WrapContent"
+    android:orientation="vertical">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/select_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingRight="@dimen/padding_small"
+        android:text="@string/select"
+        android:textColor="@color/warm_gray"
+        android:textSize="14sp"
+        app:typeface="roboto_medium" />
+
+    <ListView
+        android:id="@+id/users_listview"
+        style="@style/ListViewWithoutDividerStyle" />
+
+</LinearLayout>
