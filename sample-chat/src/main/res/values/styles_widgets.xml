@@ -39,6 +39,8 @@
     <style name="DialogLastMessageStyle" parent="MatchWidth">
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="DialogUnreadCounterStyle">
