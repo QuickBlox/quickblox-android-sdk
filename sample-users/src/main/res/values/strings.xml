@@ -13,7 +13,6 @@
     <string name="update_user">Update User</string>
     <string name="users">Users</string>
     <string name="login">Login</string>
-    <string name="full_name">Full Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="phone">Phone</string>
@@ -32,6 +31,8 @@
     <string name="save">save</string>
     <string name="three_dots">…</string>
 
+    <string name="select">Select User</string>
+
     <string name="menu">menu</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
@@ -39,4 +40,8 @@
     
     <string name="singed_in">Singed In</string>
     <string name="not_singed_in">Not Singed In</string>
+
+    <string name="user">User</string>
+    <string name="full_name">Full name</string>
+    
 </resources>
