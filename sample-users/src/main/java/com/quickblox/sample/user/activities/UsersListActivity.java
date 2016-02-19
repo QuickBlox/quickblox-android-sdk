@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -17,6 +18,8 @@ import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
+
+import java.lang.reflect.Field;
 
 import static com.quickblox.sample.user.definitions.Consts.POSITION;
 
@@ -34,7 +37,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
-
+        getOverflowMenu();
         initUsersList();
     }
 
@@ -137,6 +140,19 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void getOverflowMenu() {
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
