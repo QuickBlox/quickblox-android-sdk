@@ -66,6 +66,7 @@ public class ChatHelper {
 
     private ChatHelper() {
         qbChatService = QBChatService.getInstance();
+        qbChatService.setUseStreamManagement(true);
         addConnectionListener(new VerboseQbChatConnectionListener());
     }
 
