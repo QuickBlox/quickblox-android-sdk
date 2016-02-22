@@ -72,12 +72,12 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         List<String> years = new ArrayList<>();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int firstFilmYear = 1895;
-        for (int i = currentYear; i >= firstFilmYear; i--) {
+        for (int i = currentYear + 10; i >= firstFilmYear; i--) {
             years.add(Integer.toString(i));
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
-
         yearSpinner.setAdapter(adapter);
+        yearSpinner.setSelection(10);
     }
 
     private void createNewMovie() {
