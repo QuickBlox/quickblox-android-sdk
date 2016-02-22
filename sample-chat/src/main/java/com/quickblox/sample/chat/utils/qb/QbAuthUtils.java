@@ -23,8 +23,7 @@ public class QbAuthUtils {
             }
 
             return true;
-        } catch (BaseServiceException e) {
-            e.printStackTrace();
+        } catch (BaseServiceException ignored) {
         }
 
         return false;

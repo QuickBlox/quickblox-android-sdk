@@ -95,7 +95,7 @@ public class ChatHelper {
             return;
         }
 
-        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback));
+        qbChatService.login(user, new QbEntityCallbackWrapper<>(callback));
     }
 
     public void logout() {

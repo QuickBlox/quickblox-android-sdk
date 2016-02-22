@@ -19,6 +19,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChat;
+import com.quickblox.chat.QBPrivateChat;
+import com.quickblox.chat.listeners.QBGroupChatManagerListener;
+import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -54,6 +59,9 @@ public class DialogsActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    private QBPrivateChatManagerListener privateChatManagerListener;
+    private QBGroupChatManagerListener groupChatManagerListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,19 @@ public class DialogsActivity extends BaseActivity {
         }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
+
+        privateChatManagerListener = new QBPrivateChatManagerListener() {
+            @Override
+            public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
+        groupChatManagerListener = new QBGroupChatManagerListener() {
+            @Override
+            public void chatCreated(QBGroupChat qbGroupChat) {
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
 
         initUi();
     }
@@ -78,6 +99,10 @@ public class DialogsActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
 
+        if (isAppSessionActive) {
+            registerQbChatListeners();
+        }
+
         loadDialogsFromQb(true);
     }
 
@@ -86,6 +111,10 @@ public class DialogsActivity extends BaseActivity {
         super.onPause();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+
+        if (isAppSessionActive) {
+            unregisterQbChatListeners();
+        }
     }
 
     @Override
@@ -120,6 +149,7 @@ public class DialogsActivity extends BaseActivity {
                 actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
             }
 
+            registerQbChatListeners();
             loadDialogsFromQb();
         }
     }
@@ -186,6 +216,16 @@ public class DialogsActivity extends BaseActivity {
         });
     }
 
+    private void registerQbChatListeners() {
+        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
+        QBChatService.getInstance().getGroupChatManager().addGroupChatManagerListener(groupChatManagerListener);
+    }
+
+    private void unregisterQbChatListeners() {
+        QBChatService.getInstance().getPrivateChatManager().removePrivateChatManagerListener(privateChatManagerListener);
+        QBChatService.getInstance().getGroupChatManager().removeGroupChatManagerListener(groupChatManagerListener);
+    }
+
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
                 new QBEntityCallback<QBDialog>() {
@@ -211,6 +251,15 @@ public class DialogsActivity extends BaseActivity {
 
     private void loadDialogsFromQb() {
         loadDialogsFromQb(false);
+    }
+
+    private void loadDialogsFromQbInUiThread(final boolean silentUpdate) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadDialogsFromQb(silentUpdate);
+            }
+        });
     }
 
     private void loadDialogsFromQb(final boolean silentUpdate) {

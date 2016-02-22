@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.quickblox.chat.QBChat;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
@@ -28,6 +29,7 @@ import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
+import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.utils.ErrorUtils;
@@ -280,12 +282,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         switch (qbDialog.getType()) {
         case GROUP:
         case PUBLIC_GROUP:
-            chat = new GroupChatImpl(this);
+            chat = new GroupChatImpl(chatMessageListener);
             joinGroupChat();
             break;
 
         case PRIVATE:
-            chat = new PrivateChatImpl(this, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+            chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
             loadDialogUsers();
             break;
 
@@ -448,6 +450,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             }
         });
     }
+
+    private QBChatMessageListener chatMessageListener = new QBChatMessageListener() {
+        @Override
+        public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
+            showMessage(message);
+        }
+    };
 
     private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
         @Override

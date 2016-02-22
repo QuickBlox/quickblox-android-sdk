@@ -1,12 +1,13 @@
 package com.quickblox.sample.chat.utils.chat;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.sample.chat.ui.activity.ChatActivity;
 import com.quickblox.sample.core.utils.Toaster;
 
 import org.jivesoftware.smack.SmackException;
@@ -15,13 +16,14 @@ import org.jivesoftware.smack.XMPPException;
 public abstract class BaseChatImpl<T extends QBChat> implements Chat, QBMessageListener<T> {
     private static final String TAG = BaseChatImpl.class.getSimpleName();
 
-    protected ChatActivity chatActivity;
+    protected Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    protected QBChatMessageListener chatMessageListener;
     protected T qbChat;
 
-    public BaseChatImpl(ChatActivity chatActivity) {
+    public BaseChatImpl(QBChatMessageListener chatMessageListener) {
         // It's not a good practice to pass Activity to other classes as it may lead to memory leak
         // We're doing this only for chat sample simplicity, don't do this in your projects
-        this.chatActivity = chatActivity;
+        this.chatMessageListener = chatMessageListener;
         initManagerIfNeed();
     }
 
@@ -45,13 +47,13 @@ public abstract class BaseChatImpl<T extends QBChat> implements Chat, QBMessageL
     }
 
     @Override
-    public void processMessage(T qbChat, final QBChatMessage chatMessage) {
+    public void processMessage(final T qbChat, final QBChatMessage chatMessage) {
         // Show message in activity
         Log.i(TAG, "New incoming message: " + chatMessage);
-        chatActivity.runOnUiThread(new Runnable() {
+        mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                chatActivity.showMessage(chatMessage);
+                chatMessageListener.onQBChatMessageReceived(qbChat, chatMessage);
             }
         });
     }
