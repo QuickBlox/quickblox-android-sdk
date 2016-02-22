@@ -32,6 +32,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
     private static String SPACE = "\u0020";
     private static String OBJ = "\uFFFC";
+    private static String NEWLINE = "\n";
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Spinner yearSpinner;
@@ -111,11 +112,12 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     }
 
     private boolean isValidData() {
-
-        if (title.startsWith(SPACE) || title.endsWith(SPACE)) {
+        if (title.startsWith(SPACE) || title.startsWith(NEWLINE) ||
+                title.endsWith(SPACE) || title.endsWith(NEWLINE)) {
             title = cropSpace(title);
         }
-        if (description.startsWith(SPACE) || description.endsWith(SPACE)) {
+        if (description.startsWith(SPACE) || description.startsWith(NEWLINE) ||
+                description.endsWith(SPACE) || description.endsWith(NEWLINE)) {
             description = cropSpace(description);
         }
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
@@ -132,10 +134,10 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     }
 
     private String cropSpace(String field) {
-        while (field.startsWith(SPACE)) {
+        while (field.startsWith(SPACE) || field.startsWith(NEWLINE)) {
             field = field.substring(1);
         }
-        while (field.endsWith(SPACE)) {
+        while (field.endsWith(SPACE) || field.endsWith(NEWLINE)) {
             field = field.substring(0, field.length() - 1);
         }
         return field;
