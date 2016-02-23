@@ -54,6 +54,7 @@
     </style>
 
     <style name="UserIconStyle" parent="ListItemIconStyle">
+        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
         <item name="android:padding">@dimen/padding_common</item>
     </style>
 
