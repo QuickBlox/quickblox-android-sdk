@@ -227,8 +227,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void showMessage(QBChatMessage message) {
-        chatAdapter.add(message);
-        scrollMessageListDown();
+        if (chatAdapter != null) {
+            chatAdapter.add(message);
+            scrollMessageListDown();
+        }
     }
 
     private void initViews() {
