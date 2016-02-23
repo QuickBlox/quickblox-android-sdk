@@ -5,11 +5,9 @@
 
     <string name="app_name">Users</string>
     <string name="splash_app_title">Users Sample</string>
-    <string name="name">Name</string>
-    <string name="tags">Tags</string>
     <string name="name_with_colon">Name:</string>
     <string name="tags_with_colon">Tags:</string>
-    <string name="show_user">Show User</string>
+    <string name="user_details">User Details</string>
     <string name="update_user">Update User</string>
     <string name="users">Users</string>
     <string name="login">Login</string>
@@ -37,11 +35,18 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="logout">LogOut</string>
-    
+
     <string name="singed_in">Singed In</string>
     <string name="not_singed_in">Not Singed In</string>
 
     <string name="user">User</string>
     <string name="full_name">Full name</string>
-    
+    <string name="name">Name</string>
+    <string name="alex_bass">Alex Bass</string>
+    <string name="alex_full">Alex "the King" Bass</string>
+    <string name="alex_email">alex@bass.com</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="tags">Tags</string>
+
+
 </resources>

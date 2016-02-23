@@ -4,8 +4,8 @@
     package="com.quickblox.sample.user">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
         android:name=".App"
@@ -39,12 +39,13 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.ShowUserActivity"
-            android:label="@string/show_user"
+            android:label="@string/user_details"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.UpdateUserActivity"
             android:label="@string/update_user"
             android:screenOrientation="portrait" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="06afe5b32890416c317e719380d755a99dd2d5ba" />

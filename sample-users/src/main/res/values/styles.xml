@@ -10,4 +10,11 @@
         <item name="dgts__accentColor">@color/blue</item>
     </style>
 
+    <style name="EditTextTheme">
+        <item name="colorControlNormal">@color/white_two</item>
+        <item name="colorControlActivated">@color/white_two</item>
+        <item name="colorControlHighlight">@color/white_two</item>
+
+    </style>
+
 </resources>
