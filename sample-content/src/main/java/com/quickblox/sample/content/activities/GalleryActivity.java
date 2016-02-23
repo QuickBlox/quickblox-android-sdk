@@ -97,8 +97,9 @@ public class GalleryActivity extends BaseActivity
                 }
 
                 DataHolder.getInstance().addQbFiles(qbFiles);
-                progressDialog.dismiss();
-
+                if (progressDialog.isIndeterminate()) {
+                    progressDialog.dismiss();
+                }
                 updateData();
             }
 
@@ -127,6 +128,15 @@ public class GalleryActivity extends BaseActivity
         FAB.setClickable(false);
         FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_light)));
         emptyView.setVisibility(View.VISIBLE);
+//        Runnable myRunnable = new Runnable() {
+//            public void run() {
+//                getFileList();
+//            }
+//        };
+//        Handler handler = new Handler();
+//        handler.postDelayed(myRunnable, 30000);
+//        TODO remove handler when close app and fix trouble with progressDialog when reconnection
+//        handler.removeCallbacks(myRunnable);
     }
 
     private void existConnection() {
@@ -145,6 +155,8 @@ public class GalleryActivity extends BaseActivity
     private void uploadSelectedImage(File imageFile) {
         final int imageSize = (int) imageFile.length() / 1024;
         final float onePercent = (float) imageSize / 100;
+
+        progressDialog.dismiss();
         progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setMax(imageSize);
         progressDialog.setProgressNumberFormat("%1d/%2d kB");
@@ -154,7 +166,6 @@ public class GalleryActivity extends BaseActivity
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
                 progressDialog.dismiss();
-
                 updateData();
             }
 
