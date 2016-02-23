@@ -37,6 +37,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -204,6 +205,14 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
+                        Iterator<QBDialog> dialogIterator = dialogs.iterator();
+                        while (dialogIterator.hasNext()) {
+                            QBDialog dialog = dialogIterator.next();
+                            if (dialog.getType() == QBDialogType.PUBLIC_GROUP) {
+                                dialogIterator.remove();
+                            }
+                        }
+
                         for (QBDialog dialog : dialogs) {
                             // FIXME Fix for crash when using equals() or hashcode() methods on QBEntity
                             dialog.setId(dialog.getDialogId().hashCode());
