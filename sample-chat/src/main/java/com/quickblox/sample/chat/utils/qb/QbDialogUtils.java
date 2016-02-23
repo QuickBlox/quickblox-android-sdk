@@ -100,7 +100,12 @@ public class QbDialogUtils {
 
     public static Integer getOpponentIdForPrivateDialog(QBDialog dialog) {
         Integer opponentId = -1;
-        Integer currentUserId = ChatHelper.getCurrentUser().getId();
+        QBUser qbUser = ChatHelper.getCurrentUser();
+        if (qbUser == null) {
+            return opponentId;
+        }
+
+        Integer currentUserId = qbUser.getId();
 
         for (Integer userId : dialog.getOccupants()) {
             if (!userId.equals(currentUserId)) {
