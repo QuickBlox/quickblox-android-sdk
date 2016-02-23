@@ -1,6 +1,7 @@
 package com.quickblox.sample.content.activities;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -17,6 +18,10 @@ public class SplashActivity extends CoreSplashActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createSession();
+    }
+
+    private void createSession() {
 
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
         QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
@@ -27,7 +32,12 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.shortToast(e.getErrors().toString());
+                showSnackbarError(R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createSession();
+                    }
+                });
             }
         });
     }
