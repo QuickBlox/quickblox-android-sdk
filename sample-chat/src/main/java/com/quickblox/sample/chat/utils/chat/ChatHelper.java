@@ -21,6 +21,7 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
@@ -147,6 +148,19 @@ public class ChatHelper {
         } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         }
+    }
+
+    public void leaveDialog(QBDialog qbDialog, QBEntityCallback<QBDialog> callback) {
+        QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
+        qbRequestBuilder.pullAll("occupants_ids", SharedPreferencesUtil.getQbUser().getId());
+
+        QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
+                new QbEntityCallbackWrapper<QBDialog>(callback) {
+                    @Override
+                    public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                        super.onSuccess(qbDialog, bundle);
+                    }
+                });
     }
 
     public void updateDialogUsers(QBDialog qbDialog,

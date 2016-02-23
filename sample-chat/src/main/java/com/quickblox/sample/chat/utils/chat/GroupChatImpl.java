@@ -71,7 +71,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
         });
     }
 
-    public void leave() {
+    public void leaveChatRoom() {
         try {
             qbChat.leave();
         } catch (SmackException.NotConnectedException | XMPPException e) {
@@ -82,7 +82,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
     @Override
     public void release() throws XMPPException {
         if (qbChat != null) {
-            leave();
+            leaveChatRoom();
             qbChat.removeMessageListener(this);
         }
     }

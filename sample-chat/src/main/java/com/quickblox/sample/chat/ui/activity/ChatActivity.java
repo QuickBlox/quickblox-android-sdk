@@ -32,6 +32,7 @@ import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
@@ -152,8 +153,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             return true;
 
         case R.id.menu_chat_action_leave:
-            ((GroupChatImpl) chat).leave();
-            finish();
+            leaveGroupChat();
             return true;
 
         case R.id.menu_chat_action_delete:
@@ -163,6 +163,29 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void leaveGroupChat() {
+        ((GroupChatImpl) chat).leaveChatRoom();
+        ProgressDialogFragment.show(getSupportFragmentManager());
+        ChatHelper.getInstance().leaveDialog(qbDialog, new QBEntityCallback<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                showErrorSnackbar(R.string.error_leave_chat, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        leaveGroupChat();
+                    }
+                });
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -322,9 +345,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         });
     }
 
-    private void leaveGroupChat() {
+    private void leaveGroupChatRoom() {
         if (chat != null) {
-            ((GroupChatImpl) chat).leave();
+            ((GroupChatImpl) chat).leaveChatRoom();
         }
     }
 
@@ -470,7 +493,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        leaveGroupChat();
+                        leaveGroupChatRoom();
                     }
                 });
             }
