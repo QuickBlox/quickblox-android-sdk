@@ -236,7 +236,7 @@ public class DialogsActivity extends BaseActivity {
 
                     @Override
                     public void onError(QBResponseException e) {
-                        showErrorSnackbar(R.string.dialogs_creation_error, e.getErrors(),
+                        showErrorSnackbar(R.string.dialogs_creation_error, e,
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -277,7 +277,7 @@ public class DialogsActivity extends BaseActivity {
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
                 if (!silentUpdate) {
-                    showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
+                    showErrorSnackbar(R.string.dialogs_get_error, e,
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -342,7 +342,7 @@ public class DialogsActivity extends BaseActivity {
 
                 @Override
                 public void onError(QBResponseException e) {
-                    showErrorSnackbar(R.string.dialogs_deletion_error, e.getErrors(),
+                    showErrorSnackbar(R.string.dialogs_deletion_error, e,
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

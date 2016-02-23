@@ -178,7 +178,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(QBResponseException e) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                showErrorSnackbar(R.string.error_leave_chat, e.getErrors(), new View.OnClickListener() {
+                showErrorSnackbar(R.string.error_leave_chat, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         leaveGroupChat();
@@ -335,7 +335,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_join_error, e.getErrors(), new View.OnClickListener() {
+                showErrorSnackbar(R.string.chat_join_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         joinGroupChat();
@@ -372,7 +372,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
                     @Override
                     public void onError(QBResponseException e) {
-                        showErrorSnackbar(R.string.chat_info_add_people_error, e.getErrors(),
+                        showErrorSnackbar(R.string.chat_info_add_people_error, e,
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -394,7 +394,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.chat_load_users_error, e.getErrors(),
+                showErrorSnackbar(R.string.chat_load_users_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -441,7 +441,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_load_history_error, e.getErrors(),
+                showErrorSnackbar(R.string.chat_load_history_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -465,7 +465,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.dialogs_deletion_error, e.getErrors(),
+                showErrorSnackbar(R.string.dialogs_deletion_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

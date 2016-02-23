@@ -21,8 +21,6 @@ import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
 
-import java.util.List;
-
 public abstract class BaseActivity extends CoreBaseActivity implements QbSessionStateCallback {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
@@ -66,8 +64,9 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
     protected abstract View getSnackbarAnchorView();
 
-    protected void showErrorSnackbar(@StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
-        ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, errors,
+    protected void showErrorSnackbar(@StringRes int resId, QBResponseException e,
+                                     View.OnClickListener clickListener) {
+        ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                 com.quickblox.sample.core.R.string.dlg_retry, clickListener);
     }
 
@@ -96,11 +95,11 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             }
 
             @Override
-            public void onError(QBResponseException errors) {
+            public void onError(QBResponseException e) {
                 isAppSessionActive = false;
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                Log.w(TAG, "Chat login onError(): " + errors);
-                showErrorSnackbar(R.string.error_recreate_session, errors.getErrors(),
+                Log.w(TAG, "Chat login onError(): " + e);
+                showErrorSnackbar(R.string.error_recreate_session, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

@@ -16,15 +16,33 @@ import java.util.List;
 
 public class ErrorUtils {
 
+    private static final String NO_CONNECTION_ERROR = "Connection failed. Please check your internet connection.";
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     private ErrorUtils() {}
+
+    public static void showSnackbar(View view, @StringRes int errorMessage, QBResponseException e,
+                                    @StringRes int actionLabel, View.OnClickListener clickListener) {
+        if (NO_CONNECTION_ERROR.equals(e.getMessage())) {
+            showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
+        } else {
+            showSnackbar(view, errorMessage, e.getErrors(), actionLabel, clickListener);
+        }
+    }
 
     public static void showSnackbar(View view, @StringRes int errorMessage, List<String> errors,
                                     @StringRes int actionLabel, View.OnClickListener clickListener) {
         String errorMessageString = CoreApp.getInstance().getString(errorMessage);
         String message = String.format("%s: %s", errorMessageString, errors.toString());
         showSnackbar(view, message, actionLabel, clickListener);
+    }
+
+    private static void showSnackbar(View view, @StringRes int message,
+                                     @StringRes int actionLabel,
+                                     View.OnClickListener clickListener) {
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(actionLabel, clickListener);
+        snackbar.show();
     }
 
     private static void showSnackbar(View view, String message,
