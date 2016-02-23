@@ -101,9 +101,8 @@ public class DialogsActivity extends BaseActivity {
 
         if (isAppSessionActive) {
             registerQbChatListeners();
+            loadDialogsFromQb(true);
         }
-
-        loadDialogsFromQb(true);
     }
 
     @Override
