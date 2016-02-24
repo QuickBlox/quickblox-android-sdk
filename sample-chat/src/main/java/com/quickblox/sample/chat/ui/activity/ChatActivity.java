@@ -426,8 +426,22 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 chatAdapter = new ChatAdapter(ChatActivity.this, messages);
                 chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
                     @Override
-                    public void onItemInfoExpanded(int position) {
-                        messagesListView.smoothScrollToPosition(position);
+                    public void onItemInfoExpanded(final int position) {
+                        if (isLastItem(position)) {
+                            // HACK need to allow info textview visibility change so posting it via handler
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    messagesListView.setSelection(position);
+                                }
+                            });
+                        } else {
+                            messagesListView.smoothScrollToPosition(position);
+                        }
+                    }
+
+                    private boolean isLastItem(int position) {
+                        return position == chatAdapter.getCount() - 1;
                     }
                 });
                 messagesListView.setAdapter(chatAdapter);
