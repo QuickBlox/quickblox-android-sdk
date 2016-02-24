@@ -21,7 +21,9 @@ import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
+import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBPrivateChat;
+import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBDialog;
@@ -216,13 +218,29 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void registerQbChatListeners() {
-        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
-        QBChatService.getInstance().getGroupChatManager().addGroupChatManagerListener(groupChatManagerListener);
+        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
+
+        if (privateChatManager != null) {
+            privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
+        }
+
+        if (groupChatManager != null) {
+            groupChatManager.addGroupChatManagerListener(groupChatManagerListener);
+        }
     }
 
     private void unregisterQbChatListeners() {
-        QBChatService.getInstance().getPrivateChatManager().removePrivateChatManagerListener(privateChatManagerListener);
-        QBChatService.getInstance().getGroupChatManager().removeGroupChatManagerListener(groupChatManagerListener);
+        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
+
+        if (privateChatManager != null) {
+            privateChatManager.removePrivateChatManagerListener(privateChatManagerListener);
+        }
+
+        if (groupChatManager != null) {
+            groupChatManager.removeGroupChatManagerListener(groupChatManagerListener);
+        }
     }
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
