@@ -20,6 +20,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.activity.AttachmentImageActivity;
 import com.quickblox.sample.chat.ui.widget.MaskedImageView;
+import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -154,6 +155,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
                         @Override
                         public boolean onException(Exception e, String model,
                                                    Target<GlideDrawable> target, boolean isFirstResource) {
+                            e.printStackTrace();
                             holder.attachmentImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             holder.attachmentProgressBar.setVisibility(View.GONE);
                             return false;
@@ -168,6 +170,8 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
                             return false;
                         }
                     })
+                    .override(Consts.PREFERRED_IMAGE_SIZE_PREVIEW, Consts.PREFERRED_IMAGE_SIZE_PREVIEW)
+                    .dontTransform()
                     .error(R.drawable.ic_error)
                     .into(holder.attachmentImageView);
         } else {

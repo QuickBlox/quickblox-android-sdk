@@ -14,11 +14,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.core.utils.ResourceUtils;
+import com.quickblox.sample.chat.utils.Consts;
 
 public class AttachmentImageActivity extends BaseActivity {
 
-    private static final int PREFERRED_IMAGE_SIZE_FULL = ResourceUtils.dpToPx(320);
     private static final String EXTRA_URL = "url";
 
     private ImageView imageView;
@@ -72,6 +71,7 @@ public class AttachmentImageActivity extends BaseActivity {
                     @Override
                     public boolean onException(Exception e, String model,
                                                Target<GlideDrawable> target, boolean isFirstResource) {
+                        e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                         return false;
                     }
@@ -86,7 +86,7 @@ public class AttachmentImageActivity extends BaseActivity {
                 })
                 .error(R.drawable.ic_error_white)
                 .dontTransform()
-                .override(PREFERRED_IMAGE_SIZE_FULL, PREFERRED_IMAGE_SIZE_FULL)
+                .override(Consts.PREFERRED_IMAGE_SIZE_FULL, Consts.PREFERRED_IMAGE_SIZE_FULL)
                 .into(imageView);
     }
 
