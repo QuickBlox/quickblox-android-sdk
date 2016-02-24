@@ -7,18 +7,17 @@
 
     <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/select_user"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingRight="@dimen/padding_small"
+        style="@style/MatchParent"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_small"
         android:text="@string/select"
         android:textColor="@color/warm_gray"
-        android:textSize="14sp"
+        android:textSize="@dimen/text_size_middle"
         app:typeface="roboto_medium" />
 
     <ListView
         android:id="@+id/users_listview"
-        style="@style/ListViewWithoutDividerStyle" />
+        style="@style/ListViewWithoutDividerStyle"
+        android:dividerHeight="@dimen/margin_negative" />
 
 </LinearLayout>

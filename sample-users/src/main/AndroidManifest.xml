@@ -41,10 +41,6 @@
             android:name=".activities.ShowUserActivity"
             android:label="@string/user_details"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.UpdateUserActivity"
-            android:label="@string/update_user"
-            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

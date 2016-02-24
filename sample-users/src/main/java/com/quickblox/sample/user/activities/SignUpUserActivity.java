@@ -1,7 +1,9 @@
 package com.quickblox.sample.user.activities;
 
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallback;
@@ -30,37 +32,51 @@ public class SignUpUserActivity extends BaseActivity {
         passwordEditText = (EditText) findViewById(R.id.password_edittext);
     }
 
-    public void onClick(View view) {
-        switch (view.getId()) {
-        case R.id.sign_up_button:
-            progressDialog.show();
+    public void signUp() {
+        progressDialog.show();
 
-            // Sign Up user
-            //
-            QBUser qbUser = new QBUser();
-            qbUser.setLogin(loginEditText.getText().toString());
-            qbUser.setPassword(passwordEditText.getText().toString());
-            QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
-                @Override
-                public void onSuccess(QBUser qbUser, Bundle bundle) {
-                    progressDialog.hide();
+        // Sign Up user
+        //
+        QBUser qbUser = new QBUser();
+        qbUser.setLogin(loginEditText.getText().toString());
+        qbUser.setPassword(passwordEditText.getText().toString());
+        QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
+            @Override
+            public void onSuccess(QBUser qbUser, Bundle bundle) {
+                progressDialog.hide();
 
-                    DataHolder.getDataHolder().addQbUserToList(qbUser);
-                    DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                    DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
+                DataHolder.getDataHolder().addQbUserToList(qbUser);
+                DataHolder.getDataHolder().setSignInQbUser(qbUser);
+                DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
 
-                    finish();
-                }
+                finish();
+            }
 
-                @Override
-                public void onError(QBResponseException error) {
-                    progressDialog.hide();
+            @Override
+            public void onError(QBResponseException error) {
+                progressDialog.hide();
 
-                    Toaster.longToast(error.getErrors().toString());
-                }
-            });
+                Toaster.longToast(error.getErrors().toString());
+            }
+        });
+    }
 
-            break;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_sign_in_up, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_sign_in_up:
+                signUp();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

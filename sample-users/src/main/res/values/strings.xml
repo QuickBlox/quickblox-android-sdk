@@ -48,5 +48,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="tags">Tags</string>
 
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm password</string>
 
 </resources>
