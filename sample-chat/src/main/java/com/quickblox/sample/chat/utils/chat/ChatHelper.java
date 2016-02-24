@@ -103,6 +103,7 @@ public class ChatHelper {
     public void logout() {
         try {
             qbChatService.logout();
+            qbChatService.destroy();
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
