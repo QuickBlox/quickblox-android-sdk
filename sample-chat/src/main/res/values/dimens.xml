@@ -17,9 +17,5 @@
     <dimen name="chat_message_attachment_username_margin">12dp</dimen>
     <dimen name="chat_message_attachment_size">160dp</dimen>
 
-    <!-- Fix for wrong FAB margin on v21+-->
-    <dimen name="fab_margin_right">0dp</dimen>
-    <dimen name="fab_margin_bottom">0dp</dimen>
-
     <dimen name="list_item_side_margin">@dimen/padding_common_twice</dimen>
 </resources>
