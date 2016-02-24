@@ -135,7 +135,7 @@ public class ChatHelper {
             });
         }
 
-        // TODO Implement callback logic to get triggered only after deletion of all dialogs
+        // TODO ANDSAMPLES-69 Implement callback logic to get triggered only after deletion of all dialogs
         callback.onSuccess(null, null);
     }
 
