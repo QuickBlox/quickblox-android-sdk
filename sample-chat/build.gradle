@@ -9,7 +9,7 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 200
-        versionName "2.0.2"
+        versionName "2.0.3"
     }
 
     productFlavors {
