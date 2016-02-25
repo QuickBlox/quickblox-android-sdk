@@ -1,15 +1,19 @@
 package com.quickblox.sample.user.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
-
-import static com.quickblox.sample.user.definitions.Consts.POSITION;
+import com.quickblox.users.model.QBUser;
 
 public class ShowUserActivity extends BaseActivity {
+
+    private static final String POSITION = "position";
+    private static final int NO_ID = -1;
 
     private EditText loginTextView;
     private TextView emailTextView;
@@ -17,7 +21,11 @@ public class ShowUserActivity extends BaseActivity {
     private TextView phoneTextView;
     private TextView tagsTextView;
 
-    private int position;
+    public static void start(Context context, int id) {
+        Intent intent = new Intent(context, ShowUserActivity.class);
+        intent.putExtra(POSITION, id);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -33,15 +41,16 @@ public class ShowUserActivity extends BaseActivity {
         emailTextView = (TextView) findViewById(R.id.email_textview);
         fullNameTextView = (TextView) findViewById(R.id.full_name_textview);
         phoneTextView = (TextView) findViewById(R.id.phone_textview);
-        tagsTextView = (TextView) findViewById(R.id.tags_textview);
+        tagsTextView = (TextView) findViewById(R.id.tag_textview);
     }
 
     private void fillAllFields() {
-        position = getIntent().getIntExtra(POSITION, 0);
-        fillField(loginTextView, DataHolder.getDataHolder().getQBUser(position).getLogin());
-        fillField(emailTextView, DataHolder.getDataHolder().getQBUser(position).getEmail());
-        fillField(fullNameTextView, DataHolder.getDataHolder().getQBUser(position).getFullName());
-        fillField(phoneTextView, DataHolder.getDataHolder().getQBUser(position).getPhone());
-        fillField(tagsTextView, DataHolder.getDataHolder().getQBUser(position).getTags().toString());
+        int position = getIntent().getIntExtra(POSITION, NO_ID);
+        QBUser qbUser = DataHolder.getInstance().getQBUser(position);
+        fillField(loginTextView, qbUser.getLogin());
+        fillField(emailTextView, qbUser.getEmail());
+        fillField(fullNameTextView, qbUser.getFullName());
+        fillField(phoneTextView, qbUser.getPhone());
+        fillField(tagsTextView, qbUser.getTags().toString());
     }
 }

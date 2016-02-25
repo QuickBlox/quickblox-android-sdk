@@ -18,13 +18,14 @@ import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import java.lang.reflect.Field;
-
-import static com.quickblox.sample.user.definitions.Consts.POSITION;
+import java.util.ArrayList;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
+    private static final String PERMANENT_MENU_KEY = "sHasPermanentMenuKey";
     private UserListAdapter usersListAdapter;
     private ListView usersList;
 
@@ -38,13 +39,14 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
         getOverflowMenu();
-        initUsersList();
+        initUI();
+        getAllUsers();
     }
 
-    private void initUsersList() {
-        usersList = (ListView) findViewById(R.id.users_listview);
+    private void initUI() {
+        usersList = _findViewById(R.id.users_listview);
 
-        usersListAdapter = new UserListAdapter(this);
+        usersListAdapter = new UserListAdapter(this, DataHolder.getInstance().getQBUsers());
         usersList.setAdapter(usersListAdapter);
         usersList.setOnItemClickListener(this);
     }
@@ -60,32 +62,26 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(DataHolder.getDataHolder().getSignInQbUser() != null);
+        setTitle(DataHolder.getInstance().getSignInQbUser() != null);
 
-        usersListAdapter.notifyDataSetChanged();
+        usersListAdapter.updateData(DataHolder.getInstance().getQBUsers());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // destroy session after app close
-        DataHolder.getDataHolder().setSignInQbUser(null);
+        DataHolder.getInstance().setSignInQbUser(null);
     }
 
     private void updateDataAfterLogOut() {
-        DataHolder.getDataHolder().setSignInQbUser(null);
+        DataHolder.getInstance().setSignInQbUser(null);
         invalidateOptionsMenu();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        startShowUserActivity(position);
-    }
-
-    private void startShowUserActivity(int position) {
-        Intent intent = new Intent(this, ShowUserActivity.class);
-        intent.putExtra(POSITION, position);
-        startActivity(intent);
+        QBUser qbUser = (QBUser) adapterView.getItemAtPosition(position);
+        ShowUserActivity.start(this, qbUser.getId());
     }
 
     @Override
@@ -97,7 +93,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (DataHolder.getDataHolder().getSignInQbUser() == null) {
+        if (DataHolder.getInstance().getSignInQbUser() == null) {
             menu.getItem(2).setEnabled(false);
             setTitle(false);
         } else {
@@ -124,14 +120,14 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 QBUsers.signOut(new QBEntityCallback<Void>() {
                     @Override
                     public void onSuccess(Void result, Bundle bundle) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toaster.longToast(R.string.user_log_out_msg);
                         updateDataAfterLogOut();
                     }
 
                     @Override
                     public void onError(QBResponseException e) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
 
                         Toaster.longToast(e.getErrors().toString());
                     }
@@ -143,10 +139,32 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
+    private void getAllUsers() {
+        progressDialog.show();
+        QBUsers.getUsers(null, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                DataHolder.getInstance().addQbUsers(qbUsers);
+                if (!DataHolder.getInstance().isEmpty()) {
+                    DataHolder.getInstance().clear();
+                }
+                DataHolder.getInstance().addQbUsers(qbUsers);
+                progressDialog.dismiss();
+                usersListAdapter.updateData(DataHolder.getInstance().getQBUsers());
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Toaster.longToast(e.getErrors().toString());
+                progressDialog.dismiss();
+            }
+        });
+    }
+
     private void getOverflowMenu() {
         try {
             ViewConfiguration config = ViewConfiguration.get(this);
-            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField(PERMANENT_MENU_KEY);
             if (menuKeyField != null) {
                 menuKeyField.setAccessible(true);
                 menuKeyField.setBoolean(config, false);

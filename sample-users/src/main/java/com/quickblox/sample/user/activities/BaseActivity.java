@@ -22,6 +22,7 @@ public class BaseActivity extends CoreBaseActivity {
 
         actionBar = getSupportActionBar();
         progressDialog = DialogUtils.getProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
 
     protected void fillField(TextView textView, String value) {

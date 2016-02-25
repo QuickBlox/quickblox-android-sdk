@@ -40,7 +40,7 @@
             tools:text="@string/user" />
 
         <TextView
-            android:id="@+id/tags_textview"
+            android:id="@+id/full_name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"

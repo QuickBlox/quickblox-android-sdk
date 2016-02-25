@@ -86,7 +86,7 @@
                 android:theme="@style/EditTextNotEditableTheme" />
 
             <EditText
-                android:id="@+id/tags_textview"
+                android:id="@+id/tag_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_negative"

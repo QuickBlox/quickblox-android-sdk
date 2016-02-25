@@ -45,9 +45,9 @@ public class SignUpUserActivity extends BaseActivity {
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 progressDialog.hide();
 
-                DataHolder.getDataHolder().addQbUserToList(qbUser);
-                DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
+                DataHolder.getInstance().addQbUser(qbUser);
+                DataHolder.getInstance().setSignInQbUser(qbUser);
+//                DataHolder.getInstance().setSignInUserPassword(passwordEditText.getText().toString());
 
                 finish();
             }

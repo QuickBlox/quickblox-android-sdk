@@ -44,9 +44,9 @@ public class SignInActivity extends BaseActivity {
 
                 setResult(RESULT_OK);
 
-                DataHolder.getDataHolder().setSignInQbUser(qbUser);
+                DataHolder.getInstance().setSignInQbUser(qbUser);
                 // password does not come, so if you want use it somewhere else, try something like this:
-                DataHolder.getDataHolder().setSignInUserPassword(passwordEditText.getText().toString());
+//                DataHolder.getInstance().setSignInUserPassword(passwordEditText.getText().toString());
                 Toaster.longToast(R.string.user_successfully_sign_in);
 
                 finish();

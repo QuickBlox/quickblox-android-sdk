@@ -7,7 +7,6 @@ public interface Consts {
     String AUTH_SECRET = "KBA8tPCPFpsXFCw";
     String ACCOUNT_KEY = "zKQrk7gkoqQsFhY1pNzv";
 
-    String POSITION = "position";
     String EMPTY_STRING = "";
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.

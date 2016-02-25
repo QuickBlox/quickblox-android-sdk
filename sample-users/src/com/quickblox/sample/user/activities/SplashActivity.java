@@ -66,7 +66,7 @@ public class SplashActivity extends Activity{
         QBUsers.getUsers(null, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                DataHolder.getDataHolder().setQbUsersList(qbUsers);
+                DataHolder.getInstance().addQbUsers(qbUsers);
                 startGetAllUsersActivity();
             }
 
