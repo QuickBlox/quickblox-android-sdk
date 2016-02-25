@@ -33,7 +33,6 @@ import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
 import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
@@ -213,7 +212,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     @Override
     public void onImagePickError(int requestCode, Exception e) {
-        ErrorUtils.showErrorDialog(this, R.string.chat_attachment_error, e.toString());
+        showErrorSnackbar(0, e, null);
     }
 
     @Override
@@ -269,6 +268,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     @Override
                     public void onAttachmentCountChanged(int count) {
                         attachmentPreviewContainerLayout.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+                    }
+                },
+                new AttachmentPreviewAdapter.OnAttachmentUploadErrorListener() {
+                    @Override
+                    public void onAttachmentUploadError(QBResponseException e) {
+                        showErrorSnackbar(0, e, null);
                     }
                 });
         AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);

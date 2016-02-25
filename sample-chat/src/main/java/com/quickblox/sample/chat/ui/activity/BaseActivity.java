@@ -64,7 +64,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
     protected abstract View getSnackbarAnchorView();
 
-    protected void showErrorSnackbar(@StringRes int resId, QBResponseException e,
+    protected void showErrorSnackbar(@StringRes int resId, Exception e,
                                      View.OnClickListener clickListener) {
         ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                 com.quickblox.sample.core.R.string.dlg_retry, clickListener);
