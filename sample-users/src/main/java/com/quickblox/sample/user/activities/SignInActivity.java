@@ -28,8 +28,9 @@ public class SignInActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        loginEditText = (EditText) findViewById(R.id.login_edittext);
-        passwordEditText = (EditText) findViewById(R.id.password_edittext);
+
+        loginEditText = _findViewById(R.id.login_edittext);
+        passwordEditText = _findViewById(R.id.password_edittext);
     }
 
     public void signIn() {
@@ -40,13 +41,11 @@ public class SignInActivity extends BaseActivity {
         QBUsers.signIn(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
-                progressDialog.hide();
+                progressDialog.dismiss();
 
                 setResult(RESULT_OK);
 
                 DataHolder.getInstance().setSignInQbUser(qbUser);
-                // password does not come, so if you want use it somewhere else, try something like this:
-//                DataHolder.getInstance().setSignInUserPassword(passwordEditText.getText().toString());
                 Toaster.longToast(R.string.user_successfully_sign_in);
 
                 finish();
@@ -54,7 +53,7 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException errors) {
-                progressDialog.hide();
+                progressDialog.dismiss();
                 Toaster.longToast(errors.getErrors().toString());
             }
         });

@@ -37,19 +37,20 @@ public class ShowUserActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        loginTextView = _findViewById(R.id.login_textview);
-        emailTextView = (TextView) findViewById(R.id.email_textview);
-        fullNameTextView = (TextView) findViewById(R.id.full_name_textview);
-        phoneTextView = (TextView) findViewById(R.id.phone_textview);
-        tagsTextView = (TextView) findViewById(R.id.tag_textview);
-    }
 
+        loginTextView = _findViewById(R.id.login_textview);
+        fullNameTextView = _findViewById(R.id.full_name_textview);
+        emailTextView = _findViewById(R.id.email_textview);
+        phoneTextView = _findViewById(R.id.phone_textview);
+        tagsTextView = _findViewById(R.id.tag_textview);
+    }
+//TODO FIXME wrong fields
     private void fillAllFields() {
         int position = getIntent().getIntExtra(POSITION, NO_ID);
         QBUser qbUser = DataHolder.getInstance().getQBUser(position);
         fillField(loginTextView, qbUser.getLogin());
-        fillField(emailTextView, qbUser.getEmail());
         fillField(fullNameTextView, qbUser.getFullName());
+        fillField(emailTextView, qbUser.getEmail());
         fillField(phoneTextView, qbUser.getPhone());
         fillField(tagsTextView, qbUser.getTags().toString());
     }

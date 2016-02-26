@@ -30,7 +30,7 @@
         android:orientation="vertical">
 
         <com.devspark.robototextview.widget.RobotoTextView
-            android:id="@+id/user_name_textview"
+            android:id="@+id/user_name_text_item_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -40,14 +40,14 @@
             tools:text="@string/user" />
 
         <TextView
-            android:id="@+id/full_name_textview"
+            android:id="@+id/full_name_text_item_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
+            android:hint="@string/full_name"
             android:singleLine="true"
             android:textColor="@color/brownish_gray"
-            android:textSize="@dimen/text_size_middle"
-            tools:text="@string/full_name" />
+            android:textSize="@dimen/text_size_middle" />
 
     </LinearLayout>
 

@@ -42,8 +42,8 @@ public class UserListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.list_item_user, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.userName = (TextView) convertView.findViewById(R.id.user_name_textview);
-            viewHolder.fullName = (TextView) convertView.findViewById(R.id.full_name_textview);
+            viewHolder.userName = (TextView) convertView.findViewById(R.id.user_name_text_item_view);
+            viewHolder.fullName = (TextView) convertView.findViewById(R.id.full_name_text_item_view);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

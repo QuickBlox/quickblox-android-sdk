@@ -3,13 +3,14 @@ package com.quickblox.sample.user.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -20,14 +21,12 @@ import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    private static final String PERMANENT_MENU_KEY = "sHasPermanentMenuKey";
     private UserListAdapter usersListAdapter;
-    private ListView usersList;
+    private ListView usersListView;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, UsersListActivity.class);
@@ -38,24 +37,30 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
-        getOverflowMenu();
         initUI();
         getAllUsers();
     }
 
     private void initUI() {
-        usersList = _findViewById(R.id.users_listview);
+        usersListView = _findViewById(R.id.users_listview);
 
+        TextView listHeader = (TextView) LayoutInflater.from(this)
+                .inflate(R.layout.include_list_header, usersListView, false);
+
+        usersListView.addHeaderView(listHeader, null, false);
         usersListAdapter = new UserListAdapter(this, DataHolder.getInstance().getQBUsers());
-        usersList.setAdapter(usersListAdapter);
-        usersList.setOnItemClickListener(this);
+        usersListView.setAdapter(usersListAdapter);
+        usersListView.setOnItemClickListener(this);
     }
 
     private void setTitle(boolean signIn) {
-        if (signIn) {
-            getSupportActionBar().setTitle(R.string.singed_in);
-        } else {
-            getSupportActionBar().setTitle(R.string.not_singed_in);
+        if (getSupportActionBar() != null) {
+
+            if (signIn) {
+                getSupportActionBar().setTitle(R.string.singed_in);
+            } else {
+                getSupportActionBar().setTitle(R.string.not_singed_in);
+            }
         }
     }
 
@@ -103,6 +108,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         return true;
     }
 
+    //TODO SignInActivity & SignUpUserActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -111,10 +117,12 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 intent = new Intent(this, SignInActivity.class);
                 startActivity(intent);
                 return true;
+
             case R.id.sign_up:
                 intent = new Intent(this, SignUpUserActivity.class);
                 startActivity(intent);
                 return true;
+
             case R.id.logout:
                 progressDialog.show();
                 QBUsers.signOut(new QBEntityCallback<Void>() {
@@ -144,7 +152,6 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         QBUsers.getUsers(null, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                DataHolder.getInstance().addQbUsers(qbUsers);
                 if (!DataHolder.getInstance().isEmpty()) {
                     DataHolder.getInstance().clear();
                 }
@@ -159,18 +166,5 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 progressDialog.dismiss();
             }
         });
-    }
-
-    private void getOverflowMenu() {
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);
-            Field menuKeyField = ViewConfiguration.class.getDeclaredField(PERMANENT_MENU_KEY);
-            if (menuKeyField != null) {
-                menuKeyField.setAccessible(true);
-                menuKeyField.setBoolean(config, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
