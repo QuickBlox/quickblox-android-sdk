@@ -82,6 +82,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     }
 
     private void createNewMovie() {
+        //TODO replace cropSpace with String.trim(); for delete spaces
         title = titleEditText.getText().toString();
         description = descriptionEditText.getText().toString();
         year = yearSpinner.getSelectedItem().toString();
@@ -110,7 +111,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             }
         });
     }
-
+//TODO delete check for spaces
     private boolean isValidData() {
         if (title.startsWith(SPACE) || title.startsWith(NEWLINE) ||
                 title.endsWith(SPACE) || title.endsWith(NEWLINE)) {
