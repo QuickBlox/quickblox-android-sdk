@@ -6,7 +6,7 @@
     android:padding="@dimen/padding_small">
 
     <EditText
-        android:id="@+id/login_edittext"
+        android:id="@+id/login_up_edittext"
         style="@style/MatchWidth"
         android:hint="@string/username"
         android:singleLine="true"
@@ -16,7 +16,7 @@
         android:theme="@style/EditTextTheme" />
 
     <com.devspark.robototextview.widget.RobotoEditText
-        android:id="@+id/password_edittext"
+        android:id="@+id/password_up_edittext"
         style="@style/MatchWidth"
         android:layout_marginTop="@dimen/margin_middle"
         android:hint="@string/password"

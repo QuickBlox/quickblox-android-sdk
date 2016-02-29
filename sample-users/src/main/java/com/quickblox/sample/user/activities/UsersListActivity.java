@@ -108,7 +108,6 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         return true;
     }
 
-    //TODO SignInActivity & SignUpUserActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;

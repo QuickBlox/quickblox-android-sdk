@@ -51,5 +51,8 @@
 
     <string name="username">Username</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="error">error</string>
+    <string name="error_field_is_empty">Field(s) is empty!</string>
+    <string name="confirm_error">Passwords does not match!</string>
 
 </resources>

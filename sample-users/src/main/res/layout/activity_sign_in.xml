@@ -4,9 +4,9 @@
     android:background="@color/background_color"
     android:orientation="vertical"
     android:padding="@dimen/padding_small">
-
+<!--TODO add defaulf user, add -->
     <EditText
-        android:id="@+id/login_edittext"
+        android:id="@+id/login_in_edittext"
         style="@style/MatchWidth"
         android:hint="@string/username"
         android:singleLine="true"
@@ -16,7 +16,7 @@
         android:theme="@style/EditTextTheme" />
 
     <com.devspark.robototextview.widget.RobotoEditText
-        android:id="@+id/password_edittext"
+        android:id="@+id/password_in_edittext"
         style="@style/MatchWidth"
         android:layout_marginTop="@dimen/margin_middle"
         android:hint="@string/password"

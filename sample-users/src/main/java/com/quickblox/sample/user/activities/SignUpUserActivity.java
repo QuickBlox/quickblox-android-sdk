@@ -1,10 +1,12 @@
 package com.quickblox.sample.user.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -18,6 +20,8 @@ public class SignUpUserActivity extends BaseActivity {
 
     private EditText loginEditText;
     private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
+    private Toast toast;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,18 +32,29 @@ public class SignUpUserActivity extends BaseActivity {
 
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
-        loginEditText = (EditText) findViewById(R.id.login_edittext);
-        passwordEditText = (EditText) findViewById(R.id.password_edittext);
+
+        toast = Toast.makeText(this, R.string.error, Toast.LENGTH_LONG);
+        loginEditText = _findViewById(R.id.login_up_edittext);
+        passwordEditText = _findViewById(R.id.password_up_edittext);
+        confirmPasswordEditText = _findViewById(R.id.password_confirm_edittext);
     }
 
     public void signUp() {
+        String login = loginEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String confirmPassword = confirmPasswordEditText.getText().toString();
+
+        if (!isValidData(login, password, confirmPassword)) {
+            return;
+        }
+
         progressDialog.show();
 
         // Sign Up user
         //
         QBUser qbUser = new QBUser();
-        qbUser.setLogin(loginEditText.getText().toString());
-        qbUser.setPassword(passwordEditText.getText().toString());
+        qbUser.setLogin(login);
+        qbUser.setPassword(password);
         QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
@@ -59,6 +74,26 @@ public class SignUpUserActivity extends BaseActivity {
                 Toaster.longToast(error.getErrors().toString());
             }
         });
+    }
+
+    private boolean isValidData(String login, String password, String confirm) {
+        if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirm)) {
+            toast.setText(R.string.error_field_is_empty);
+            toast.show();
+            return false;
+        }
+        if (!TextUtils.equals(password, confirm)) {
+            toast.setText(R.string.confirm_error);
+            toast.show();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        toast.cancel();
     }
 
     @Override
