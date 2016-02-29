@@ -1,38 +1,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    style="@style/MatchParent">
 
     <ImageView
         android:id="@+id/user_avatar2_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
-        android:src="@drawable/shape_circle" />
+        android:src="@drawable/shape_circle"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/user_avatar_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:adjustViewBounds="true"
         android:paddingLeft="@dimen/padding_middle"
         android:paddingTop="@dimen/padding_large"
-        android:src="@drawable/ic_action_timer_auto" />
-    <!--android:scaleType="fitCenter"-->
+        android:src="@drawable/ic_action_timer_auto"
+        tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:layout_marginLeft="@dimen/margin_very_large"
         android:layout_marginTop="@dimen/margin_large"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="RtlHardcoded">
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/user_name_text_item_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/WrapContent"
             android:singleLine="true"
             android:textColor="@color/black_light"
             android:textSize="@dimen/text_size_large"
@@ -41,8 +38,7 @@
 
         <TextView
             android:id="@+id/full_name_text_item_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/WrapContent"
             android:layout_marginTop="@dimen/margin_small"
             android:hint="@string/full_name"
             android:singleLine="true"

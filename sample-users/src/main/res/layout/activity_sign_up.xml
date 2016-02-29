@@ -1,15 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MatchParent"
     android:background="@color/background_color"
     android:orientation="vertical"
     android:padding="@dimen/padding_small">
 
     <EditText
         android:id="@+id/login_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:hint="@string/username"
         android:singleLine="true"
         android:textColor="@color/black_light"
@@ -19,8 +17,7 @@
 
     <com.devspark.robototextview.widget.RobotoEditText
         android:id="@+id/password_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:layout_marginTop="@dimen/margin_middle"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -33,8 +30,7 @@
 
     <com.devspark.robototextview.widget.RobotoEditText
         android:id="@+id/password_confirm_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:layout_marginTop="@dimen/margin_middle"
         android:hint="@string/confirm_password"
         android:imeOptions="actionSend"

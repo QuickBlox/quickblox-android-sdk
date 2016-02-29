@@ -44,7 +44,7 @@ public class ShowUserActivity extends BaseActivity {
         phoneTextView = _findViewById(R.id.phone_textview);
         tagsTextView = _findViewById(R.id.tag_textview);
     }
-//TODO FIXME wrong fields
+
     private void fillAllFields() {
         int position = getIntent().getIntExtra(POSITION, NO_ID);
         QBUser qbUser = DataHolder.getInstance().getQBUser(position);

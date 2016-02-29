@@ -7,8 +7,7 @@
 
     <EditText
         android:id="@+id/login_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:hint="@string/username"
         android:singleLine="true"
         android:textColor="@color/black_light"
@@ -18,8 +17,7 @@
 
     <com.devspark.robototextview.widget.RobotoEditText
         android:id="@+id/password_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:layout_marginTop="@dimen/margin_middle"
         android:hint="@string/password"
         android:imeOptions="actionSend"
