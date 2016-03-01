@@ -60,6 +60,7 @@ dependencies {
         transitive = true;
     }
     compile 'io.fabric.sdk.android:fabric:1.2.0'
+    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
 }
 
 apply from: "../artifacts.gradle"

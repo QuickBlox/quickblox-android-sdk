@@ -4,10 +4,7 @@ import android.util.SparseArray;
 
 import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
 
 public class DataHolder {
 
@@ -60,69 +57,4 @@ public class DataHolder {
         this.signInQbUser = singInQbUser;
     }
 
-
-
-
-
-//    public int getQBUserListSize() {
-//        return qbUsersList.size();
-//    }
-//
-//    public String getQBUserName(int index) {
-//        return qbUsersList.get(index).getFullName();
-//    }
-//
-//    public List<String> getQbUserTags(int index) {
-//        return qbUsersList.get(index).getTags();
-//    }
-//
-//    public QBUser getLastQBUser() {
-//        return qbUsersList.get(qbUsersList.size() - 1);
-//    }
-//
-//    public void addQbUserToList(QBUser qbUser) {
-//        qbUsersList.add(qbUser);
-//    }
-//
-
-//
-//    public String getSignInUserOldPassword() {
-//        return signInQbUser.getOldPassword();
-//    }
-//
-//    public int getSignInUserId() {
-//        return signInQbUser.getId();
-//    }
-//
-//    public void setSignInUserPassword(String singInUserPassword) {
-//        signInQbUser.setOldPassword(singInUserPassword);
-//    }
-//
-//    public String getSignInUserLogin() {
-//        return signInQbUser.getLogin();
-//    }
-//
-//    public String getSignInUserEmail() {
-//        return signInQbUser.getEmail();
-//    }
-//
-//    public String getSignInUserFullName() {
-//        return signInQbUser.getFullName();
-//    }
-//
-//    public String getSignInUserPhone() {
-//        return signInQbUser.getPhone();
-//    }
-//
-//    public String getSignInUserWebSite() {
-//        return signInQbUser.getWebsite();
-//    }
-//
-//    public String getSignInUserTags() {
-//        if (signInQbUser.getTags() != null) {
-//            return signInQbUser.getTags().getItemsAsString();
-//        } else {
-//            return EMPTY_STRING;
-//        }
-//    }
 }

@@ -3,6 +3,7 @@ package com.quickblox.sample.user.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -43,6 +44,12 @@ public class ShowUserActivity extends BaseActivity {
         emailTextView = _findViewById(R.id.email_textview);
         phoneTextView = _findViewById(R.id.phone_textview);
         tagsTextView = _findViewById(R.id.tag_textview);
+    }
+
+    protected void fillField(TextView textView, String value) {
+        if (!TextUtils.isEmpty(value)) {
+            textView.setText(value);
+        }
     }
 
     private void fillAllFields() {

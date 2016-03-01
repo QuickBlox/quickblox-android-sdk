@@ -1,5 +1,6 @@
 package com.quickblox.sample.user.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -30,6 +31,7 @@ public class SignUpUserActivity extends BaseActivity {
         initUI();
     }
 
+    @SuppressLint("ShowToast")
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -50,8 +52,6 @@ public class SignUpUserActivity extends BaseActivity {
 
         progressDialog.show();
 
-        // Sign Up user
-        //
         QBUser qbUser = new QBUser();
         qbUser.setLogin(login);
         qbUser.setPassword(password);
@@ -62,7 +62,6 @@ public class SignUpUserActivity extends BaseActivity {
 
                 DataHolder.getInstance().addQbUser(qbUser);
                 DataHolder.getInstance().setSignInQbUser(qbUser);
-//                DataHolder.getInstance().setSignInUserPassword(passwordEditText.getText().toString());
 
                 finish();
             }

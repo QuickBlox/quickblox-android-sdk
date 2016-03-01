@@ -12,8 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
@@ -25,8 +28,11 @@ import java.util.ArrayList;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
+    private static int LIMIT_USERS = 3;
+    private int currentPage = 1;
     private UserListAdapter usersListAdapter;
-    private ListView usersListView;
+    private QBPagedRequestBuilder qbPagedBuilder;
+    private SwipyRefreshLayout setOnRefreshListener;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, UsersListActivity.class);
@@ -37,12 +43,14 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
+        DataHolderClear();
         initUI();
-        getAllUsers();
+        getAllUsers(true);
     }
 
     private void initUI() {
-        usersListView = _findViewById(R.id.users_listview);
+        ListView usersListView = _findViewById(R.id.users_listview);
+        setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
 
         TextView listHeader = (TextView) LayoutInflater.from(this)
                 .inflate(R.layout.include_list_header, usersListView, false);
@@ -51,6 +59,16 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         usersListAdapter = new UserListAdapter(this, DataHolder.getInstance().getQBUsers());
         usersListView.setAdapter(usersListAdapter);
         usersListView.setOnItemClickListener(this);
+
+        qbPagedBuilder = new QBPagedRequestBuilder();
+        qbPagedBuilder.setPerPage(LIMIT_USERS);
+        setOnRefreshListener.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                qbPagedBuilder.setPage(++currentPage);
+                getAllUsers(false);
+            }
+        });
     }
 
     private void setTitle(boolean signIn) {
@@ -146,16 +164,24 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-    private void getAllUsers() {
-        progressDialog.show();
-        QBUsers.getUsers(null, new QBEntityCallback<ArrayList<QBUser>>() {
+    private void DataHolderClear() {
+        if (!DataHolder.getInstance().isEmpty()) {
+            DataHolder.getInstance().clear();
+        }
+    }
+
+    private void getAllUsers(boolean progress) {
+        if (progress) {
+            progressDialog.show();
+        }
+
+        QBUsers.getUsers(qbPagedBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                if (!DataHolder.getInstance().isEmpty()) {
-                    DataHolder.getInstance().clear();
-                }
+
                 DataHolder.getInstance().addQbUsers(qbUsers);
                 progressDialog.dismiss();
+                setOnRefreshListener.setRefreshing(false);
                 usersListAdapter.updateData(DataHolder.getInstance().getQBUsers());
             }
 
@@ -163,6 +189,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
             public void onError(QBResponseException e) {
                 Toaster.longToast(e.getErrors().toString());
                 progressDialog.dismiss();
+                setOnRefreshListener.setRefreshing(false);
             }
         });
     }
