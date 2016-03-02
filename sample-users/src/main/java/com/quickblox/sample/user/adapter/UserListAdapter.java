@@ -1,7 +1,6 @@
 package com.quickblox.sample.user.adapter;
 
 import android.content.Context;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,29 +10,33 @@ import android.widget.TextView;
 import com.quickblox.sample.user.R;
 import com.quickblox.users.model.QBUser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class UserListAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private SparseArray<QBUser> qbUsersSparseArray;
+    private List<QBUser> qbUsersList;
 
-    public UserListAdapter(Context context, SparseArray<QBUser> qbUsersSparseArray) {
+    public UserListAdapter(Context context, Map<Integer, QBUser> qbUsersMap) {
         layoutInflater = LayoutInflater.from(context);
-        this.qbUsersSparseArray = qbUsersSparseArray;
+        updateData(qbUsersMap);
     }
 
     @Override
     public int getCount() {
-        return qbUsersSparseArray.size();
+        return qbUsersList.size();
     }
 
     @Override
     public QBUser getItem(int position) {
-        return qbUsersSparseArray.valueAt(position);
+        return qbUsersList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return qbUsersSparseArray.keyAt(position);
+        return position;
     }
 
     @Override
@@ -54,8 +57,8 @@ public class UserListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void updateData(SparseArray<QBUser> qbUsersSparseArray) {
-        this.qbUsersSparseArray = qbUsersSparseArray;
+    public void updateData(Map<Integer, QBUser> qbUsersMap) {
+        this.qbUsersList = new ArrayList<>(qbUsersMap.values());
         notifyDataSetChanged();
     }
 

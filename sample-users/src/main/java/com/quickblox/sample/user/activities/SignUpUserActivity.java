@@ -58,7 +58,7 @@ public class SignUpUserActivity extends BaseActivity {
         QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
-                progressDialog.hide();
+                progressDialog.dismiss();
 
                 DataHolder.getInstance().addQbUser(qbUser);
                 DataHolder.getInstance().setSignInQbUser(qbUser);
@@ -68,7 +68,7 @@ public class SignUpUserActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException error) {
-                progressDialog.hide();
+                progressDialog.dismiss();
 
                 Toaster.longToast(error.getErrors().toString());
             }

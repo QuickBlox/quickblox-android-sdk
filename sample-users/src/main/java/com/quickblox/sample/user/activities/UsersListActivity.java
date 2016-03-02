@@ -16,6 +16,7 @@ import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.GenericQueryRule;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private static int LIMIT_USERS = 3;
+    private static String RULE_PARAM = "order";
+    private static String RULE_VALUE = "desc date created_at";
     private int currentPage = 1;
     private UserListAdapter usersListAdapter;
     private QBPagedRequestBuilder qbPagedBuilder;
@@ -174,11 +177,15 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         if (progress) {
             progressDialog.show();
         }
+        GenericQueryRule genericQueryRule = new GenericQueryRule(RULE_PARAM, RULE_VALUE);
+
+        ArrayList<GenericQueryRule> rule = new ArrayList<>();
+        rule.add(genericQueryRule);
+        qbPagedBuilder.setRules(rule);
 
         QBUsers.getUsers(qbPagedBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-
                 DataHolder.getInstance().addQbUsers(qbUsers);
                 progressDialog.dismiss();
                 setOnRefreshListener.setRefreshing(false);

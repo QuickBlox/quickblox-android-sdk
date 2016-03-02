@@ -1,19 +1,19 @@
 package com.quickblox.sample.user.helper;
 
-import android.util.SparseArray;
-
 import com.quickblox.users.model.QBUser;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataHolder {
 
     private static DataHolder instance;
-    private SparseArray<QBUser> qbUsers;
+    private Map<Integer, QBUser> qbUsers;
     private QBUser signInQbUser;
 
     private DataHolder() {
-        qbUsers = new SparseArray<>();
+        qbUsers = new LinkedHashMap<>();
     }
 
     public static synchronized DataHolder getInstance() {
@@ -33,7 +33,7 @@ public class DataHolder {
         qbUsers.put(qbUser.getId(), qbUser);
     }
 
-    public SparseArray<QBUser> getQBUsers() {
+    public Map<Integer, QBUser> getQBUsers() {
         return qbUsers;
     }
 
