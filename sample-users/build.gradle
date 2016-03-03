@@ -1,19 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
-
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -56,10 +41,6 @@ dependencies {
     compile(project(':sample-core')) {
         transitive = true;
     }
-    compile('com.digits.sdk.android:digits:1.9.0@aar') {
-        transitive = true;
-    }
-    compile 'io.fabric.sdk.android:fabric:1.2.0'
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
 }
 

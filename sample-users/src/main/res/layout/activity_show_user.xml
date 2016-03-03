@@ -5,7 +5,7 @@
     style="@style/MatchWidth"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/margin_middle"
-    android:background="@color/background_color"
+    android:background="@color/background_app_color"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout

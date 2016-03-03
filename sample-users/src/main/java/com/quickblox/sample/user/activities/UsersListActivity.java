@@ -29,9 +29,9 @@ import java.util.ArrayList;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    private static int LIMIT_USERS = 3;
-    private static String RULE_PARAM = "order";
-    private static String RULE_VALUE = "desc date created_at";
+    private static final int LIMIT_USERS = 50;
+    private static final String RULE_PARAM = "order";
+    private static final String RULE_VALUE = "desc date created_at";
     private int currentPage = 1;
     private UserListAdapter usersListAdapter;
     private QBPagedRequestBuilder qbPagedBuilder;
@@ -63,8 +63,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         usersListView.setAdapter(usersListAdapter);
         usersListView.setOnItemClickListener(this);
 
-        qbPagedBuilder = new QBPagedRequestBuilder();
-        qbPagedBuilder.setPerPage(LIMIT_USERS);
+        setQBPagedBuilder();
         setOnRefreshListener.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
@@ -78,9 +77,9 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         if (getSupportActionBar() != null) {
 
             if (signIn) {
-                getSupportActionBar().setTitle(R.string.singed_in);
+                getSupportActionBar().setTitle(R.string.signed_in);
             } else {
-                getSupportActionBar().setTitle(R.string.not_singed_in);
+                getSupportActionBar().setTitle(R.string.not_signed_in);
             }
         }
     }
@@ -97,11 +96,6 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onDestroy() {
         super.onDestroy();
         DataHolder.getInstance().setSignInQbUser(null);
-    }
-
-    private void updateDataAfterLogOut() {
-        DataHolder.getInstance().setSignInQbUser(null);
-        invalidateOptionsMenu();
     }
 
     @Override
@@ -173,15 +167,26 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-    private void getAllUsers(boolean progress) {
-        if (progress) {
-            progressDialog.show();
-        }
+    private void updateDataAfterLogOut() {
+        DataHolder.getInstance().setSignInQbUser(null);
+        invalidateOptionsMenu();
+    }
+
+    private void setQBPagedBuilder() {
+        qbPagedBuilder = new QBPagedRequestBuilder();
         GenericQueryRule genericQueryRule = new GenericQueryRule(RULE_PARAM, RULE_VALUE);
 
         ArrayList<GenericQueryRule> rule = new ArrayList<>();
         rule.add(genericQueryRule);
+
+        qbPagedBuilder.setPerPage(LIMIT_USERS);
         qbPagedBuilder.setRules(rule);
+    }
+
+    private void getAllUsers(boolean progress) {
+        if (progress) {
+            progressDialog.show();
+        }
 
         QBUsers.getUsers(qbPagedBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override

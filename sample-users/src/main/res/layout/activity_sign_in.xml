@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent"
-    android:background="@color/background_color"
+    android:background="@color/background_app_color"
     android:orientation="vertical"
     android:padding="@dimen/padding_small">
-<!--TODO add defaulf user, add -->
+
     <EditText
         android:id="@+id/login_in_edittext"
         style="@style/MatchWidth"
