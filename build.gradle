@@ -20,7 +20,7 @@ allprojects {
 
 // QuickBlox SDK version
 //
-ext.qbSdkVersion = '2.5'
+ext.qbSdkVersion = '2.5.1'
 //
 //
 
