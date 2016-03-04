@@ -3,9 +3,7 @@ package com.quickblox.sample.content.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,7 +40,6 @@ public class GalleryActivity extends BaseActivity
     private LinearLayout emptyView;
     private TextView problemView;
     private TextView descriptionView;
-    private FloatingActionButton FAB;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -75,7 +72,6 @@ public class GalleryActivity extends BaseActivity
         emptyView = _findViewById(R.id.empty_view);
         problemView = _findViewById(R.id.problem);
         descriptionView = _findViewById(R.id.description);
-        FAB = _findViewById(R.id.fab_upload_image);
 
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
@@ -121,30 +117,6 @@ public class GalleryActivity extends BaseActivity
         galleryAdapter.updateData(DataHolder.getInstance().getQBFiles());
     }
 
-    private void noConnection() {
-        problemView.setText(getResources().getString(R.string.problem));
-        descriptionView.setText(getResources().getString(R.string.no_connection));
-        descriptionView.setTextColor(ContextCompat.getColor(this, R.color.red));
-        FAB.setClickable(false);
-        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_light)));
-        emptyView.setVisibility(View.VISIBLE);
-//        Runnable myRunnable = new Runnable() {
-//            public void run() {
-//                getFileList();
-//            }
-//        };
-//        Handler handler = new Handler();
-//        handler.postDelayed(myRunnable, 30000);
-//        TODO remove handler when close app and fix trouble with progressDialog when reconnection
-//        handler.removeCallbacks(myRunnable);
-    }
-
-    private void existConnection() {
-        FAB.setClickable(true);
-        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_green_qb)));
-        emptyView.setVisibility(View.GONE);
-    }
-
     private void noPhoto() {
         problemView.setText(getResources().getString(R.string.no_photo));
         descriptionView.setText(getResources().getString(R.string.press_button));
@@ -161,6 +133,7 @@ public class GalleryActivity extends BaseActivity
         progressDialog.setMax(imageSize);
         progressDialog.setProgressNumberFormat("%1d/%2d kB");
         progressDialog.show();
+
         QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
@@ -172,7 +145,7 @@ public class GalleryActivity extends BaseActivity
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
+                Toaster.longToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
             }
         }, new QBProgressCallback() {
             @Override
