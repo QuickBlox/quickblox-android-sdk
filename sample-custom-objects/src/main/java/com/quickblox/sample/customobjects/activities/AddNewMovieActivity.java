@@ -1,5 +1,6 @@
 package com.quickblox.sample.customobjects.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,9 +31,7 @@ import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
-    private static String SPACE = "\u0020";
     private static String OBJ = "\uFFFC";
-    private static String NEWLINE = "\n";
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Spinner yearSpinner;
@@ -54,6 +53,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
         initSpinner();
     }
 
+    @SuppressLint("ShowToast")
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -82,9 +82,8 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     }
 
     private void createNewMovie() {
-        //TODO replace cropSpace with String.trim(); for delete spaces
-        title = titleEditText.getText().toString();
-        description = descriptionEditText.getText().toString();
+        title = titleEditText.getText().toString().trim();
+        description = descriptionEditText.getText().toString().trim();
         year = yearSpinner.getSelectedItem().toString();
         rating = ratingBar.getRating();
 
@@ -111,16 +110,8 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             }
         });
     }
-//TODO delete check for spaces
+
     private boolean isValidData() {
-        if (title.startsWith(SPACE) || title.startsWith(NEWLINE) ||
-                title.endsWith(SPACE) || title.endsWith(NEWLINE)) {
-            title = cropSpace(title);
-        }
-        if (description.startsWith(SPACE) || description.startsWith(NEWLINE) ||
-                description.endsWith(SPACE) || description.endsWith(NEWLINE)) {
-            description = cropSpace(description);
-        }
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
             toast.setText(R.string.error_fields_is_empty);
             toast.show();
@@ -132,16 +123,6 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             return false;
         }
         return true;
-    }
-
-    private String cropSpace(String field) {
-        while (field.startsWith(SPACE) || field.startsWith(NEWLINE)) {
-            field = field.substring(1);
-        }
-        while (field.endsWith(SPACE) || field.endsWith(NEWLINE)) {
-            field = field.substring(0, field.length() - 1);
-        }
-        return field;
     }
 
     @Override

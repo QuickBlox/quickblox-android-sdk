@@ -35,6 +35,9 @@ android {
             keyPassword "android"
         }
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {

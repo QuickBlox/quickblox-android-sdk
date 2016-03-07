@@ -1,13 +1,14 @@
 package com.quickblox.sample.customobjects.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.quickblox.sample.customobjects.R;
+import com.quickblox.sample.customobjects.databinding.ListItemMovieBinding;
 import com.quickblox.sample.customobjects.model.Movie;
 
 import java.util.ArrayList;
@@ -45,10 +46,7 @@ public class MovieListAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_movie, parent, false);
-            holder = new ViewHolder();
-
-            holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
-            holder.descriptionTextView = (TextView) convertView.findViewById(R.id.text_description);
+            holder = new ViewHolder(convertView);
 
             convertView.setTag(holder);
         } else {
@@ -56,8 +54,7 @@ public class MovieListAdapter extends BaseAdapter {
         }
 
         Movie movie = (Movie) getItem(position);
-        holder.titleTextView.setText(movie.getName());
-        holder.descriptionTextView.setText(movie.getDescription());
+        holder.movieBinding.setMovie(movie);
 
         return convertView;
     }
@@ -69,7 +66,10 @@ public class MovieListAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        public TextView titleTextView;
-        public TextView descriptionTextView;
+        ListItemMovieBinding movieBinding;
+
+        public ViewHolder(View v) {
+            movieBinding = DataBindingUtil.bind(v);
+        }
     }
 }

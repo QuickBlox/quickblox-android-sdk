@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MovieListStyle">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/text_title"
-        style="@style/TextPrimaryStyle"
-        android:singleLine="true"
-        tools:text="@string/movie" />
+    <data>
 
-    <TextView
-        android:id="@+id/text_description"
-        style="@style/TextSecondaryStyle"
-        android:singleLine="true"
-        tools:text="@string/comment" />
+        <variable
+            name="movie"
+            type="com.quickblox.sample.customobjects.model.Movie" />
+    </data>
 
-</LinearLayout>
+    <LinearLayout style="@style/MovieListStyle">
+
+        <TextView
+            android:id="@+id/text_title"
+            style="@style/TextPrimaryStyle"
+            android:singleLine="true"
+            android:text="@{movie.name}" />
+
+        <TextView
+            android:id="@+id/text_description"
+            style="@style/TextSecondaryStyle"
+            android:singleLine="true"
+            android:text="@{movie.description}" />
+
+    </LinearLayout>
+
+</layout>

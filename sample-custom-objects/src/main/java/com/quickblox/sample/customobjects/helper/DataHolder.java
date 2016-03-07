@@ -42,8 +42,7 @@ public class DataHolder {
 
     public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
         for (QBCustomObject customObject : qbCustomObjects) {
-            Movie movie = new Movie(customObject);
-            movieMap.put(movie.getId(), movie);
+            addMovieToList(customObject);
         }
     }
 }
