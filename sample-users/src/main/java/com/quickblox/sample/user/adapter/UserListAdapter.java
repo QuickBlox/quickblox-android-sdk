@@ -19,6 +19,7 @@ public class UserListAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private List<QBUser> qbUsersList;
 
+    //TODO if we need List<QBUser> it's better to receive List as parameter to don't do unnecessary work
     public UserListAdapter(Context context, Map<Integer, QBUser> qbUsersMap) {
         layoutInflater = LayoutInflater.from(context);
         updateData(qbUsersMap);

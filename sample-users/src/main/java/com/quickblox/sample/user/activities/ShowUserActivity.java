@@ -46,7 +46,10 @@ public class ShowUserActivity extends BaseActivity {
         tagsTextView = _findViewById(R.id.tag_textview);
     }
 
+    //TODO seems like we can move this method to baseActivity or even core
     protected void fillField(TextView textView, String value) {
+        //TODO it's ok, but TextView already has check if value is null inside setText(value) method
+        // It can be meaningful if we don't want to reset value if it's empty
         if (!TextUtils.isEmpty(value)) {
             textView.setText(value);
         }

@@ -30,7 +30,10 @@ import java.util.ArrayList;
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private static final int LIMIT_USERS = 50;
+
+    //TODO It's better to name param by its meaning, as for ex - ORDER_RULE
     private static final String RULE_PARAM = "order";
+    //TODO the same
     private static final String RULE_VALUE = "desc date created_at";
     private int currentPage = 1;
     private UserListAdapter usersListAdapter;
@@ -73,7 +76,11 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
+    //TODO It seems like we can move this method to BaseActivity or even core
+    //if we need to set another title How can we solve this?
     private void setTitle(boolean signIn) {
+        //TODO
+        //you already have actionBar variable in BaseActivity
         if (getSupportActionBar() != null) {
 
             if (signIn) {
@@ -81,6 +88,9 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
             } else {
                 getSupportActionBar().setTitle(R.string.not_signed_in);
             }
+            //TODO Usually it's better to use boolean ternary operation
+            // getSupportActionBar().setTitle( signIn ?  R.string.signed_in : R.string.not_signed_in);
+            // as it's more clear
         }
     }
 
@@ -100,6 +110,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        //TODO How about header position ?
         QBUser qbUser = (QBUser) adapterView.getItemAtPosition(position);
         ShowUserActivity.start(this, qbUser.getId());
     }
@@ -113,6 +124,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        //TODO Seems like there are many times we call (DataHolder.getInstance().getSignInQbUser() == null) in Activity
+        //It's good idea to create some method to check if we "signed in"
         if (DataHolder.getInstance().getSignInQbUser() == null) {
             menu.getItem(2).setEnabled(false);
             setTitle(false);
@@ -161,7 +174,13 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
+    //TODO method name only in lowercase
+    //TODO Better to move this method in DataHolder in addUsers logic to clear previous one
     private void DataHolderClear() {
+        //TODO
+        //if need you can insert isEmpty() inside clear,
+        // but contract 'clear' just clears your collections
+        // in any case if it full or empty. Look at ArrayList.clear() forexample
         if (!DataHolder.getInstance().isEmpty()) {
             DataHolder.getInstance().clear();
         }
@@ -183,6 +202,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         qbPagedBuilder.setRules(rule);
     }
 
+
+    //TODO Better to name parameter as "showProgress" as it more understandable
     private void getAllUsers(boolean progress) {
         if (progress) {
             progressDialog.show();

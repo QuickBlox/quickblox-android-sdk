@@ -16,6 +16,9 @@ public class BaseActivity extends CoreBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //TODO setContentView should be called in actual activity
+        //good idea to mark thia activity as abstract to prevent instantiate it
         setContentView(R.layout.activity_users_list);
 
         actionBar = getSupportActionBar();
