@@ -1,6 +1,7 @@
 package com.quickblox.sample.core.ui.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,11 +10,14 @@ import android.view.ViewConfiguration;
 import java.lang.reflect.Field;
 
 public class CoreBaseActivity extends AppCompatActivity {
+    protected ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
+        actionBar = getSupportActionBar();
+
         // Hack. Forcing overflow button on actionbar on devices with hardware menu button
         try {
             ViewConfiguration config = ViewConfiguration.get(this);
@@ -30,6 +34,12 @@ public class CoreBaseActivity extends AppCompatActivity {
     @SuppressWarnings("unchecked")
     public <T extends View> T _findViewById(int viewId) {
         return (T) findViewById(viewId);
+    }
+
+    public void setActionBarTitle(int title) {
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
     }
 
     @Override
