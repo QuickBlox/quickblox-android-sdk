@@ -10,19 +10,16 @@ import android.widget.TextView;
 import com.quickblox.sample.user.R;
 import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserListAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private List<QBUser> qbUsersList;
 
-    //TODO if we need List<QBUser> it's better to receive List as parameter to don't do unnecessary work
-    public UserListAdapter(Context context, Map<Integer, QBUser> qbUsersMap) {
+    public UserListAdapter(Context context, List<QBUser> qbUsersList) {
         layoutInflater = LayoutInflater.from(context);
-        updateData(qbUsersMap);
+        updateData(qbUsersList);
     }
 
     @Override
@@ -58,8 +55,8 @@ public class UserListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void updateData(Map<Integer, QBUser> qbUsersMap) {
-        this.qbUsersList = new ArrayList<>(qbUsersMap.values());
+    public void updateData(List<QBUser> qbUsersList) {
+        this.qbUsersList = qbUsersList;
         notifyDataSetChanged();
     }
 

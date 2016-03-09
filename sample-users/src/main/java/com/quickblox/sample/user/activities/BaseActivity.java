@@ -6,9 +6,8 @@ import android.support.v7.app.ActionBar;
 
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.DialogUtils;
-import com.quickblox.sample.user.R;
 
-public class BaseActivity extends CoreBaseActivity {
+public abstract class BaseActivity extends CoreBaseActivity {
 
     protected ProgressDialog progressDialog;
     protected ActionBar actionBar;
@@ -16,10 +15,6 @@ public class BaseActivity extends CoreBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //TODO setContentView should be called in actual activity
-        //good idea to mark thia activity as abstract to prevent instantiate it
-        setContentView(R.layout.activity_users_list);
 
         actionBar = getSupportActionBar();
         progressDialog = DialogUtils.getProgressDialog(this);

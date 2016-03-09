@@ -26,6 +26,7 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
@@ -39,6 +40,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     private UserListAdapter usersListAdapter;
     private QBPagedRequestBuilder qbPagedBuilder;
     private SwipyRefreshLayout setOnRefreshListener;
+    private List<QBUser> qbUsersList;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, UsersListActivity.class);
@@ -62,7 +64,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 .inflate(R.layout.include_list_header, usersListView, false);
 
         usersListView.addHeaderView(listHeader, null, false);
-        usersListAdapter = new UserListAdapter(this, DataHolder.getInstance().getQBUsers());
+        qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+        usersListAdapter = new UserListAdapter(this, qbUsersList);
         usersListView.setAdapter(usersListAdapter);
         usersListView.setOnItemClickListener(this);
 
@@ -98,8 +101,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onResume() {
         super.onResume();
         setTitle(DataHolder.getInstance().getSignInQbUser() != null);
-
-        usersListAdapter.updateData(DataHolder.getInstance().getQBUsers());
+        qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+        usersListAdapter.updateData(qbUsersList);
     }
 
     @Override
@@ -215,7 +218,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 DataHolder.getInstance().addQbUsers(qbUsers);
                 progressDialog.dismiss();
                 setOnRefreshListener.setRefreshing(false);
-                usersListAdapter.updateData(DataHolder.getInstance().getQBUsers());
+                qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+                usersListAdapter.updateData(qbUsersList);
             }
 
             @Override
