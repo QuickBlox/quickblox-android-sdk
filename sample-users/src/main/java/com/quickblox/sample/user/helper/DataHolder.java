@@ -24,6 +24,7 @@ public class DataHolder {
     }
 
     public void addQbUsers(List<QBUser> qbUsersList) {
+        clear();
         for (QBUser qbUser : qbUsersList) {
             addQbUser(qbUser);
         }
@@ -35,10 +36,6 @@ public class DataHolder {
 
     public Map<Integer, QBUser> getQBUsers() {
         return qbUsers;
-    }
-
-    public boolean isEmpty() {
-        return qbUsers.size() == 0;
     }
 
     public void clear() {
@@ -56,5 +53,4 @@ public class DataHolder {
     public void setSignInQbUser(QBUser singInQbUser) {
         this.signInQbUser = singInQbUser;
     }
-
 }
