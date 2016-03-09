@@ -24,7 +24,6 @@ public class DataHolder {
     }
 
     public void addQbUsers(List<QBUser> qbUsersList) {
-        clear();
         for (QBUser qbUser : qbUsersList) {
             addQbUser(qbUser);
         }

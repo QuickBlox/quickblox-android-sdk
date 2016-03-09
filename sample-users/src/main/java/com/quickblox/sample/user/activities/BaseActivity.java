@@ -10,13 +10,11 @@ import com.quickblox.sample.core.utils.DialogUtils;
 public abstract class BaseActivity extends CoreBaseActivity {
 
     protected ProgressDialog progressDialog;
-    protected ActionBar actionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        actionBar = getSupportActionBar();
         progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }

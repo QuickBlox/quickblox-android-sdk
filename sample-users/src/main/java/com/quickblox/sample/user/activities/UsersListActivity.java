@@ -49,6 +49,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
+        DataHolder.getInstance().clear();
         initUI();
         getAllUsers(true);
     }
@@ -76,14 +77,6 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    //TODO It seems like we can move this method to BaseActivity or even core
-    //if we need to set another title How can we solve this?
-    private void setTitle(boolean signIn) {
-        if (actionBar != null) {
-            actionBar.setTitle(signIn ? R.string.signed_in : R.string.not_signed_in);
-        }
-    }
-
     public boolean isSignedIn() {
         return DataHolder.getInstance().getSignInQbUser() != null;
     }
@@ -91,7 +84,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(isSignedIn());
+        setActionBarTitle(isSignedIn() ? R.string.signed_in : R.string.not_signed_in);
         qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
         usersListAdapter.updateData(qbUsersList);
     }
@@ -119,9 +112,9 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!isSignedIn()) {
             menu.getItem(2).setEnabled(false);
-            setTitle(false);
+            setActionBarTitle(R.string.not_signed_in);
         } else {
-            setTitle(true);
+            setActionBarTitle(R.string.signed_in);
             menu.getItem(2).setEnabled(true);
         }
         return true;
