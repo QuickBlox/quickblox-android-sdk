@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
@@ -40,6 +41,10 @@ public class CoreBaseActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle(title);
         }
+    }
+
+    protected void fillField(TextView textView, String value) {
+        textView.setText(value);
     }
 
     @Override
