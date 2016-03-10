@@ -1,6 +1,7 @@
 package com.quickblox.sample.user.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -63,6 +64,7 @@ public class SignUpUserActivity extends BaseActivity {
                 DataHolder.getInstance().addQbUser(qbUser);
                 DataHolder.getInstance().setSignInQbUser(qbUser);
 
+                setResult(RESULT_OK, new Intent());
                 finish();
             }
 

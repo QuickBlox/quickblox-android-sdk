@@ -8,13 +8,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quickblox.sample.user.R;
-import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.model.QBUser;
 
 public class ShowUserActivity extends BaseActivity {
 
-    private static final String QB_USER_ID = "qbUserId";
-    private static final int NO_ID = -1;
+    private static final String QB_USER = "qbUser";
 
     private EditText loginTextView;
     private TextView emailTextView;
@@ -22,9 +20,9 @@ public class ShowUserActivity extends BaseActivity {
     private TextView phoneTextView;
     private TextView tagsTextView;
 
-    public static void start(Context context, int id) {
+    public static void start(Context context, QBUser qbUser) {
         Intent intent = new Intent(context, ShowUserActivity.class);
-        intent.putExtra(QB_USER_ID, id);
+        intent.putExtra(QB_USER, qbUser);
         context.startActivity(intent);
     }
 
@@ -56,8 +54,7 @@ public class ShowUserActivity extends BaseActivity {
     }
 
     private void fillAllFields() {
-        int id = getIntent().getIntExtra(QB_USER_ID, NO_ID);
-        QBUser qbUser = DataHolder.getInstance().getQBUser(id);
+        QBUser qbUser = (QBUser) getIntent().getSerializableExtra(QB_USER);
         fillField(loginTextView, qbUser.getLogin());
         fillField(fullNameTextView, qbUser.getFullName());
         fillField(emailTextView, qbUser.getEmail());

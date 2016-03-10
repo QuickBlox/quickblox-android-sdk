@@ -26,12 +26,13 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UsersListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private static final int LIMIT_USERS = 50;
-
+    private static final int REQUEST_CODE_SIGN_UP = 100;
     private static final String ORDER_RULE = "order";
     private static final String ORDER_VALUE = "desc date created_at";
     private int currentPage = 1;
@@ -62,7 +63,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 .inflate(R.layout.include_list_header, usersListView, false);
 
         usersListView.addHeaderView(listHeader, null, false);
-        qbUsersList = DataHolder.getInstance().getQBUsersList();
+        qbUsersList = DataHolder.getInstance().getQBUsers();
         usersListAdapter = new UserListAdapter(this, qbUsersList);
         usersListView.setAdapter(usersListAdapter);
         usersListView.setOnItemClickListener(this);
@@ -82,11 +83,21 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_SIGN_UP) {
+                qbUsersList = DataHolder.getInstance().getQBUsers();
+                Collections.rotate(qbUsersList, 1);
+                usersListAdapter.updateData(qbUsersList);
+            }
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         setActionBarTitle(isSignedIn() ? R.string.signed_in : R.string.not_signed_in);
-        qbUsersList = DataHolder.getInstance().getQBUsersList();
-        usersListAdapter.updateData(qbUsersList);
     }
 
     @Override
@@ -98,7 +109,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         QBUser qbUser = (QBUser) adapterView.getItemAtPosition(position);
-        ShowUserActivity.start(this, qbUser.getId());
+        ShowUserActivity.start(this, qbUser);
     }
 
     @Override
@@ -131,7 +142,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
             case R.id.sign_up:
                 intent = new Intent(this, SignUpUserActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
                 return true;
 
             case R.id.logout:
@@ -185,7 +196,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 DataHolder.getInstance().addQbUsers(qbUsers);
                 progressDialog.dismiss();
                 setOnRefreshListener.setRefreshing(false);
-                qbUsersList = DataHolder.getInstance().getQBUsersList();
+                qbUsersList = DataHolder.getInstance().getQBUsers();
                 usersListAdapter.updateData(qbUsersList);
             }
 
