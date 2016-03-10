@@ -3,7 +3,6 @@ package com.quickblox.sample.user.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,15 +41,6 @@ public class ShowUserActivity extends BaseActivity {
         emailTextView = _findViewById(R.id.email_textview);
         phoneTextView = _findViewById(R.id.phone_textview);
         tagsTextView = _findViewById(R.id.tag_textview);
-    }
-
-    //TODO seems like we can move this method to baseActivity or even core
-    protected void fillField(TextView textView, String value) {
-        //TODO it's ok, but TextView already has check if value is null inside setText(value) method
-        // It can be meaningful if we don't want to reset value if it's empty
-        if (!TextUtils.isEmpty(value)) {
-            textView.setText(value);
-        }
     }
 
     private void fillAllFields() {

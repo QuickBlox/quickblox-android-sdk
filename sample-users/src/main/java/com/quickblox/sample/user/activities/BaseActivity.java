@@ -2,7 +2,6 @@ package com.quickblox.sample.user.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.DialogUtils;
