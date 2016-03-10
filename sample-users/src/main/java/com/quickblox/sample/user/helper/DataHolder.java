@@ -2,9 +2,11 @@ package com.quickblox.sample.user.helper;
 
 import com.quickblox.users.model.QBUser;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class DataHolder {
 
@@ -13,7 +15,7 @@ public class DataHolder {
     private QBUser signInQbUser;
 
     private DataHolder() {
-        qbUsers = new LinkedHashMap<>();
+        qbUsers = new TreeMap<>(Collections.reverseOrder());
     }
 
     public static synchronized DataHolder getInstance() {
@@ -33,8 +35,8 @@ public class DataHolder {
         qbUsers.put(qbUser.getId(), qbUser);
     }
 
-    public Map<Integer, QBUser> getQBUsers() {
-        return qbUsers;
+    public ArrayList<QBUser> getQBUsersList() {
+        return new ArrayList<>(qbUsers.values());
     }
 
     public void clear() {

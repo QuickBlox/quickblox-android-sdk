@@ -62,7 +62,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 .inflate(R.layout.include_list_header, usersListView, false);
 
         usersListView.addHeaderView(listHeader, null, false);
-        qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+        qbUsersList = DataHolder.getInstance().getQBUsersList();
         usersListAdapter = new UserListAdapter(this, qbUsersList);
         usersListView.setAdapter(usersListAdapter);
         usersListView.setOnItemClickListener(this);
@@ -85,7 +85,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onResume() {
         super.onResume();
         setActionBarTitle(isSignedIn() ? R.string.signed_in : R.string.not_signed_in);
-        qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+        qbUsersList = DataHolder.getInstance().getQBUsersList();
         usersListAdapter.updateData(qbUsersList);
     }
 
@@ -185,7 +185,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
                 DataHolder.getInstance().addQbUsers(qbUsers);
                 progressDialog.dismiss();
                 setOnRefreshListener.setRefreshing(false);
-                qbUsersList = new ArrayList<>(DataHolder.getInstance().getQBUsers().values());
+                qbUsersList = DataHolder.getInstance().getQBUsersList();
                 usersListAdapter.updateData(qbUsersList);
             }
 

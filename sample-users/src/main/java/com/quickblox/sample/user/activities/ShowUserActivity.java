@@ -13,7 +13,7 @@ import com.quickblox.users.model.QBUser;
 
 public class ShowUserActivity extends BaseActivity {
 
-    private static final String POSITION = "position";
+    private static final String QB_USER_ID = "qbUserId";
     private static final int NO_ID = -1;
 
     private EditText loginTextView;
@@ -24,7 +24,7 @@ public class ShowUserActivity extends BaseActivity {
 
     public static void start(Context context, int id) {
         Intent intent = new Intent(context, ShowUserActivity.class);
-        intent.putExtra(POSITION, id);
+        intent.putExtra(QB_USER_ID, id);
         context.startActivity(intent);
     }
 
@@ -56,8 +56,8 @@ public class ShowUserActivity extends BaseActivity {
     }
 
     private void fillAllFields() {
-        int position = getIntent().getIntExtra(POSITION, NO_ID);
-        QBUser qbUser = DataHolder.getInstance().getQBUser(position);
+        int id = getIntent().getIntExtra(QB_USER_ID, NO_ID);
+        QBUser qbUser = DataHolder.getInstance().getQBUser(id);
         fillField(loginTextView, qbUser.getLogin());
         fillField(fullNameTextView, qbUser.getFullName());
         fillField(emailTextView, qbUser.getEmail());
