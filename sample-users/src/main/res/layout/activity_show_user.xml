@@ -1,93 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/user_info_scrollview"
-    style="@style/MatchWidth"
-    android:layout_marginLeft="@dimen/padding_small"
-    android:layout_marginTop="@dimen/margin_middle"
-    android:background="@color/background_app_color"
-    tools:ignore="RtlHardcoded">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="userFull"
+            type="com.quickblox.users.model.QBUser" />
+    </data>
+
+    <ScrollView xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/user_info_scrollview"
         style="@style/MatchWidth"
-        android:orientation="vertical">
+        android:layout_marginLeft="@dimen/padding_small"
+        android:layout_marginTop="@dimen/margin_middle"
+        android:background="@color/background_app_color"
+        tools:ignore="RtlHardcoded">
 
-        <TextView
+        <LinearLayout
             style="@style/MatchWidth"
-            android:layout_marginTop="@dimen/padding_small"
-            android:text="@string/name"
-            android:textColor="@color/brownish_gray"
-            android:textSize="@dimen/text_size_small" />
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/login_textview"
-            style="@style/MatchWidth"
-            android:layout_marginLeft="@dimen/margin_negative"
-            android:layout_marginTop="@dimen/margin_negative"
-            android:editable="false"
-            android:focusable="false"
-            android:textColor="@color/black_light"
-            android:textSize="@dimen/text_size_large"
-            tools:ignore="Deprecated,TextFields"
-            tools:text="@string/alex_bass" />
+            <TextView
+                style="@style/MatchWidth"
+                android:layout_marginTop="@dimen/padding_small"
+                android:text="@string/name"
+                android:textColor="@color/brownish_gray"
+                android:textSize="@dimen/text_size_small" />
 
-        <TextView
-            style="@style/MatchWidth"
-            android:layout_marginTop="@dimen/margin_full_name"
-            android:text="@string/full_name"
-            android:textColor="@color/black_light"
-            android:textSize="@dimen/text_size_large" />
+            <EditText
+                android:id="@+id/login_textview"
+                style="@style/MatchWidth"
+                android:layout_marginLeft="@dimen/margin_negative"
+                android:layout_marginTop="@dimen/margin_negative"
+                android:editable="false"
+                android:focusable="false"
+                android:text="@{userFull.login}"
+                android:textColor="@color/black_light"
+                android:textSize="@dimen/text_size_large"
+                tools:ignore="Deprecated,TextFields"
+                tools:text="@string/alex_bass" />
 
-        <TextView
-            android:id="@+id/full_name_textview"
-            style="@style/MatchWidth"
-            android:layout_marginTop="@dimen/margin_very_small"
-            android:textColor="@color/warm_gray"
-            android:textSize="@dimen/text_size_middle"
-            tools:text="@string/alex_full" />
+            <TextView
+                style="@style/MatchWidth"
+                android:layout_marginTop="@dimen/margin_full_name"
+                android:text="@string/full_name"
+                android:textColor="@color/black_light"
+                android:textSize="@dimen/text_size_large" />
 
-        <TextView
-            style="@style/MatchWidth"
-            android:layout_marginTop="@dimen/margin_email"
-            android:text="@string/email"
-            android:textColor="@color/black_light"
-            android:textSize="@dimen/text_size_large" />
+            <TextView
+                android:id="@+id/full_name_textview"
+                style="@style/MatchWidth"
+                android:layout_marginTop="@dimen/margin_very_small"
+                android:text="@{userFull.fullName}"
+                android:textColor="@color/warm_gray"
+                android:textSize="@dimen/text_size_middle"
+                tools:text="@string/alex_full" />
 
-        <TextView
-            android:id="@+id/email_textview"
-            style="@style/MatchWidth"
-            android:layout_marginTop="@dimen/margin_very_small"
-            android:textColor="@color/warm_gray"
-            android:textSize="@dimen/text_size_middle"
-            tools:text="@string/alex_email" />
+            <TextView
+                style="@style/MatchWidth"
+                android:layout_marginTop="@dimen/margin_email"
+                android:text="@string/email"
+                android:textColor="@color/black_light"
+                android:textSize="@dimen/text_size_large" />
 
-        <EditText
-            android:id="@+id/phone_textview"
-            style="@style/MatchWidth"
-            android:layout_marginLeft="@dimen/margin_negative"
-            android:layout_marginTop="@dimen/margin_large"
-            android:editable="false"
-            android:focusable="false"
-            android:hint="@string/phone_number"
-            android:textColor="@color/warm_gray"
-            android:textColorHint="@color/warm_gray_two"
-            android:textSize="@dimen/text_size_large"
-            android:theme="@style/EditTextNotEditableTheme"
-            tools:ignore="Deprecated,TextFields" />
+            <TextView
+                android:id="@+id/email_textview"
+                style="@style/MatchWidth"
+                android:layout_marginTop="@dimen/margin_very_small"
+                android:text="@{userFull.email}"
+                android:textColor="@color/warm_gray"
+                android:textSize="@dimen/text_size_middle"
+                tools:text="@string/alex_email" />
 
-        <EditText
-            android:id="@+id/tag_textview"
-            style="@style/MatchWidth"
-            android:layout_marginLeft="@dimen/margin_negative"
-            android:layout_marginTop="@dimen/margin_tags"
-            android:editable="false"
-            android:focusable="false"
-            android:hint="@string/tags"
-            android:textColor="@color/warm_gray"
-            android:textColorHint="@color/warm_gray_two"
-            android:textSize="@dimen/text_size_large"
-            android:theme="@style/EditTextNotEditableTheme"
-            tools:ignore="Deprecated" />
+            <EditText
+                android:id="@+id/phone_textview"
+                style="@style/MatchWidth"
+                android:layout_marginLeft="@dimen/margin_negative"
+                android:layout_marginTop="@dimen/margin_large"
+                android:editable="false"
+                android:focusable="false"
+                android:hint="@string/phone_number"
+                android:text="@{userFull.phone}"
+                android:textColor="@color/warm_gray"
+                android:textColorHint="@color/warm_gray_two"
+                android:textSize="@dimen/text_size_large"
+                android:theme="@style/EditTextNotEditableTheme"
+                tools:ignore="Deprecated,TextFields" />
 
-    </LinearLayout>
-</ScrollView>
+            <EditText
+                android:id="@+id/tag_textview"
+                style="@style/MatchWidth"
+                android:layout_marginLeft="@dimen/margin_negative"
+                android:layout_marginTop="@dimen/margin_tags"
+                android:editable="false"
+                android:focusable="false"
+                android:hint="@string/tags"
+                android:text="@{userFull.tags.toString}"
+                android:textColor="@color/warm_gray"
+                android:textColorHint="@color/warm_gray_two"
+                android:textSize="@dimen/text_size_large"
+                android:theme="@style/EditTextNotEditableTheme"
+                tools:ignore="Deprecated" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</layout>
