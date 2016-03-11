@@ -95,7 +95,7 @@
                 android:editable="false"
                 android:focusable="false"
                 android:hint="@string/tags"
-                android:text="@{userFull.tags.toString}"
+                android:text="@{userFull.tags.toString.equals(@string/braces) ? @string/empty : userFull.tags.toString}"
                 android:textColor="@color/warm_gray"
                 android:textColorHint="@color/warm_gray_two"
                 android:textSize="@dimen/text_size_large"

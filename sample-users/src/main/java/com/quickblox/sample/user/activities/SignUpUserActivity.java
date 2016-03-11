@@ -43,7 +43,7 @@ public class SignUpUserActivity extends BaseActivity {
     }
 
     public void signUp() {
-        String login = loginEditText.getText().toString();
+        String login = loginEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
