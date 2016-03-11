@@ -1,13 +1,14 @@
 package com.quickblox.sample.user.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.quickblox.sample.user.R;
+import com.quickblox.sample.user.databinding.ListItemUserBinding;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
@@ -42,16 +43,13 @@ public class UserListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.list_item_user, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.userName = (TextView) convertView.findViewById(R.id.user_name_text_item_view);
-            viewHolder.fullName = (TextView) convertView.findViewById(R.id.full_name_text_item_view);
+            viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         QBUser qbUser = getItem(position);
-        viewHolder.userName.setText(qbUser.getLogin());
-        viewHolder.fullName.setText(qbUser.getFullName());
+        viewHolder.userBinding.setUser(qbUser);
         return convertView;
     }
 
@@ -61,7 +59,10 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        TextView userName;
-        TextView fullName;
+        ListItemUserBinding userBinding;
+
+        public ViewHolder(View v) {
+            userBinding = DataBindingUtil.bind(v);
+        }
     }
 }
