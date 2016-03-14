@@ -6,6 +6,8 @@ import com.quickblox.sample.core.CoreApp;
 public class App extends CoreApp {
 
     private static App instance;
+    private static boolean activityVisible;
+
     private int currentUserId;
 
     @Override
@@ -28,5 +30,17 @@ public class App extends CoreApp {
 
     public void setCurrentUserId(int currentUserId) {
         this.currentUserId = currentUserId;
+    }
+
+    public static boolean isMessagesActivityVisible() {
+        return activityVisible;
+    }
+
+    public static void activityResumed() {
+        activityVisible = true;
+    }
+
+    public static void activityPaused() {
+        activityVisible = false;
     }
 }

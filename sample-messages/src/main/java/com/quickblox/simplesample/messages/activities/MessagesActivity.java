@@ -78,6 +78,7 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        App.activityResumed();
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -87,6 +88,7 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        App.activityPaused();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
@@ -100,11 +102,11 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_send_message:
-            sendPushMessage();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.menu_send_message:
+                sendPushMessage();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
