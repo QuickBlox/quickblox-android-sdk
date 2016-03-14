@@ -56,8 +56,9 @@ public class MessagesActivity extends CoreBaseActivity {
         }
     };
 
-    public static void start(Context context) {
+    public static void start(Context context, String message) {
         Intent intent = new Intent(context, MessagesActivity.class);
+        intent.putExtra(GcmConsts.EXTRA_GCM_MESSAGE, message);
         context.startActivity(intent);
     }
 
@@ -65,14 +66,20 @@ public class MessagesActivity extends CoreBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+
         receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
             googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
         }
-
         initUI();
+
+        String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+
+        if (message != null) {
+            retrieveMessage(message);
+        }initUI();
     }
 
     @Override

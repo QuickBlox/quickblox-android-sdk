@@ -10,12 +10,15 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.NotificationCompat;
 
+import com.quickblox.sample.core.utils.constant.GcmConsts;
+
 public class NotificationUtils {
 
     public static void showNotification(Context context, Class<? extends Activity> activityClass,
                                         String title, String message, @DrawableRes int icon,
                                         int notificationId) {
         Intent intent = new Intent(context, activityClass);
+        intent.putExtra(GcmConsts.EXTRA_GCM_MESSAGE, message);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
