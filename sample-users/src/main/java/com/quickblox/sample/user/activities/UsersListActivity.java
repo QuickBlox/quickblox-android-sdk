@@ -8,14 +8,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.adapter.UserListAdapter;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
-
-import java.util.List;
 
 import static com.quickblox.sample.user.definitions.Consts.POSITION;
 
@@ -86,41 +85,43 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
-            case R.id.sign_in_button:
-                intent = new Intent(this, SignInActivity.class);
-                startActivityForResult(intent, 0);
-                break;
-            case R.id.sign_up_button:
-                intent = new Intent(this, SignUpUserActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.logout_button:
-                progressDialog.show();
+        case R.id.sign_in_button:
+            intent = new Intent(this, SignInActivity.class);
+            startActivityForResult(intent, 0);
+            break;
 
-                // Logout
-                //
-                QBUsers.signOut(new QBEntityCallbackImpl<String>() {
-                    @Override
-                    public void onSuccess() {
-                        progressDialog.hide();
+        case R.id.sign_up_button:
+            intent = new Intent(this, SignUpUserActivity.class);
+            startActivity(intent);
+            break;
 
-                        Toaster.longToast(R.string.user_log_out_msg);
-                        updateDataAfterLogOut();
-                    }
+        case R.id.logout_button:
+            progressDialog.show();
 
-                    @Override
-                    public void onError(List<String> errors) {
-                        progressDialog.hide();
+            // Logout
+            //
+            QBUsers.signOut(new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void result, Bundle bundle) {
+                    progressDialog.hide();
 
-                        Toaster.longToast(errors.get(0));
-                    }
-                });
+                    Toaster.longToast(R.string.user_log_out_msg);
+                    updateDataAfterLogOut();
+                }
 
-                break;
-            case R.id.self_edit_button:
-                intent = new Intent(this, UpdateUserActivity.class);
-                startActivity(intent);
-                break;
+                @Override
+                public void onError(QBResponseException e) {
+                    progressDialog.hide();
+
+                    Toaster.longToast(e.getErrors().toString());
+                }
+            });
+            break;
+
+        case R.id.self_edit_button:
+            intent = new Intent(this, UpdateUserActivity.class);
+            startActivity(intent);
+            break;
         }
     }
 

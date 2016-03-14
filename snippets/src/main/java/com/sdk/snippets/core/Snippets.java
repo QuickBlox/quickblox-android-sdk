@@ -5,12 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.quickblox.core.QBSettings;
-import com.quickblox.core.TransferProtocol;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.Toaster;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Snippets {
 
@@ -31,8 +29,9 @@ public class Snippets {
         Log.i(TAG, data);
     }
 
-    public void handleErrors(List<String> errors) {
-        String message = String.format("[ERROR] Request has been completed with errors: %s", errors);
+    public void handleErrors(QBResponseException exc) {
+        String message = String.format("[ERROR] Request has been completed with errors: %s", exc.getErrors()
+                + ", code: " + exc.getHttpStatusCode());
         Toaster.shortToast(message);
 
         // print
@@ -42,19 +41,6 @@ public class Snippets {
 
     public Snippets(Context context) {
         this.context = context;
-
-        ApplicationConfig.init(context);
-
-        // App credentials from QB Admin Panel
-        QBSettings.getInstance().fastConfigInit(ApplicationConfig.getInstance().getAppId(),
-                ApplicationConfig.getInstance().getAuthKey(), ApplicationConfig.getInstance().getAuthSecret());
-//
-        // specify custom domains
-        QBSettings.getInstance().setServerApiDomain(ApplicationConfig.getInstance().getApiDomain());
-        QBSettings.getInstance().setChatServerDomain(ApplicationConfig.getInstance().getChatDomain());
-        QBSettings.getInstance().setContentBucketName(ApplicationConfig.getInstance().getBucketName());
-
-        QBSettings.getInstance().setTransferProtocol(TransferProtocol.HTTP);
     }
 
     public ArrayList<Snippet> getSnippets() {

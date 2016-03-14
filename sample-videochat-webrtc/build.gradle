@@ -55,7 +55,12 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files(rootProject.core_jar_path, rootProject.chat_jar_path, rootProject.videochat_webrtc_jar_path)
+
+    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
+        transitive=true
+    }
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion@aar"
+
     compile (project(":sample-core")) {
         transitive = true;
     }

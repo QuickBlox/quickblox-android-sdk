@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">QuickBlox Sample Chat</string>
+    <string name="app_name">Chat</string>
     <string name="chat_sample">Chat Sample</string>
 
     <string name="menu_new_chat">New Chat</string>

@@ -9,8 +9,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
@@ -18,14 +20,13 @@ import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
-import java.util.List;
-
 public class AddNewMovieActivity extends BaseActivity {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
     private EditText yearEditText;
     private RatingBar ratingBar;
+    private Toast toast;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, AddNewMovieActivity.class);
@@ -42,6 +43,7 @@ public class AddNewMovieActivity extends BaseActivity {
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        toast = Toast.makeText(this, R.string.error, Toast.LENGTH_LONG);
         titleEditText = _findViewById(R.id.add_movie_title_textview);
         descriptionEditText = _findViewById(R.id.add_movie_description_textview);
         yearEditText = _findViewById(R.id.add_movie_year_textview);
@@ -61,7 +63,7 @@ public class AddNewMovieActivity extends BaseActivity {
 
         QBCustomObject qbCustomObject = QBCustomObjectsUtils.createCustomObject(title, description, year, rating);
 
-        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallbackImpl<QBCustomObject>() {
+        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();
@@ -71,9 +73,9 @@ public class AddNewMovieActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.longToast(errors.get(0));
+                Toaster.longToast(e.getErrors().toString());
             }
         });
     }
@@ -83,14 +85,27 @@ public class AddNewMovieActivity extends BaseActivity {
 
         if (title.startsWith(space) || description.startsWith(space)
                 || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
-            Toaster.longToast(R.string.error_fields_is_empty);
+            toast.setText(R.string.error_fields_is_empty);
+            toast.show();
             return false;
         }
         if (rating == 0) {
-            Toaster.longToast(R.string.error_rating_is_empty);
+            toast.setText(R.string.error_rating_is_empty);
+            toast.show();
+            return false;
+        }
+        if (year.length() != 4) {
+            toast.setText(R.string.error_year_is_empty);
+            toast.show();
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        toast.cancel();
     }
 
     @Override

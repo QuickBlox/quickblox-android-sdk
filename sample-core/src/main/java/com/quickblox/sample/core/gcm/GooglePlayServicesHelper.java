@@ -10,9 +10,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.messages.QBMessages;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
+import com.quickblox.messages.model.QBNotificationChannel;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.DeviceUtils;
@@ -21,7 +23,6 @@ import com.quickblox.sample.core.utils.VersionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GooglePlayServicesHelper {
     private static final String TAG = GooglePlayServicesHelper.class.getSimpleName();
@@ -106,10 +107,14 @@ public class GooglePlayServicesHelper {
                 } else {
                     Log.i(TAG, "Device registered in GCM, regId=" + gcmRegId);
 
-                    QBMessages.subscribeToPushNotificationsTask(gcmRegId,
-                            DeviceUtils.getDeviceUid(),
-                            QBEnvironment.DEVELOPMENT, // Don't forget to change QBEnvironment to PRODUCTION when releasing application
-                            new QBEntityCallbackImpl<ArrayList<QBSubscription>>() {
+                    QBSubscription qbSubscription = new QBSubscription();
+                    qbSubscription.setNotificationChannel(QBNotificationChannel.GCM);
+                    qbSubscription.setDeviceUdid(DeviceUtils.getDeviceUid());
+                    qbSubscription.setRegistrationID(gcmRegId);
+                    qbSubscription.setEnvironment(QBEnvironment.DEVELOPMENT); // Don't forget to change QBEnvironment to PRODUCTION when releasing application
+
+                    QBPushNotifications.createSubscription(qbSubscription,
+                            new QBEntityCallback<ArrayList<QBSubscription>>() {
                                 @Override
                                 public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {
                                     Log.i(TAG, "Successfully subscribed for QB push messages");
@@ -117,8 +122,8 @@ public class GooglePlayServicesHelper {
                                 }
 
                                 @Override
-                                public void onError(List<String> errors) {
-                                    Log.w(TAG, "Unable to subscribe for QB push messages; " + errors.toString());
+                                public void onError(QBResponseException error) {
+                                    Log.w(TAG, "Unable to subscribe for QB push messages; " + error.toString());
                                 }
                             });
                 }

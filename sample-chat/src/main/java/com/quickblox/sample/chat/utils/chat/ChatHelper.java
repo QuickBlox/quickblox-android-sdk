@@ -1,9 +1,6 @@
 package com.quickblox.sample.chat.utils.chat;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -14,10 +11,11 @@ import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
+import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
-import com.quickblox.core.exception.BaseServiceException;
+import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
@@ -35,15 +33,12 @@ import org.jivesoftware.smack.SmackException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
-
-    private static final int AUTO_PRESENCE_INTERVAL_IN_SECONDS = 30;
 
     private static final int DIALOG_ITEMS_PER_PAGE = 100;
     private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
@@ -55,6 +50,8 @@ public class ChatHelper {
 
     public static synchronized ChatHelper getInstance() {
         if (instance == null) {
+            QBSettings.getInstance().setLogLevel(LogLevel.DEBUG);
+            QBChatService.setDebugEnabled(true);
             instance = new ChatHelper();
         }
         return instance;
@@ -62,41 +59,6 @@ public class ChatHelper {
 
     public static QBUser getCurrentUser() {
         return QBChatService.getInstance().getUser();
-    }
-
-    /**
-     * Starts QBChatService initialization
-     *
-     * @param ctx any Context instance
-     * @return true if QuickBlox session needs to be created
-     */
-    public static boolean initIfNeed(Context ctx) {
-        if (!QBChatService.isInitialized()) {
-            Log.d(TAG, "Initialise QBChatService");
-            QBChatService.init(ctx);
-
-            return true;
-        }
-
-        try {
-            String token = QBAuth.getBaseService().getToken();
-            Date tokenExpireDate = QBAuth.getBaseService().getTokenExpirationDate();
-            boolean isTokenExpired = tokenExpireDate != null
-                    && System.currentTimeMillis() >= tokenExpireDate.getTime();
-            if (TextUtils.isEmpty(token) || isTokenExpired) {
-                Log.d(TAG, "Token is either empty or expired");
-                return true;
-            }
-        } catch (BaseServiceException e) {
-            Log.w(TAG, e);
-            return true;
-        }
-
-        if (getCurrentUser() == null) {
-            return true;
-        }
-
-        return false;
     }
 
     private ChatHelper() {
@@ -125,21 +87,11 @@ public class ChatHelper {
 
     private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
         if (qbChatService.isLoggedIn()) {
-            callback.onSuccess();
+            callback.onSuccess(null, null);
             return;
         }
 
-        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess() {
-                try {
-                    qbChatService.startAutoSendPresence(AUTO_PRESENCE_INTERVAL_IN_SECONDS);
-                } catch (SmackException.NotLoggedInException e) {
-                    e.printStackTrace();
-                }
-                super.onSuccess();
-            }
-        });
+        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback));
     }
 
     public void logout() {
@@ -151,7 +103,7 @@ public class ChatHelper {
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
-                                              final QBEntityCallbackImpl<QBDialog> callback) {
+                                              final QBEntityCallback<QBDialog> callback) {
         QBChatService.getInstance().getGroupChatManager().createDialog(QbDialogUtils.createDialog(users),
                 new QbEntityCallbackWrapper<QBDialog>(callback) {
                     @Override
@@ -165,11 +117,19 @@ public class ChatHelper {
 
     public void deleteDialogs(Collection<QBDialog> dialogs, QBEntityCallback<Void> callback) {
         for (QBDialog dialog : dialogs) {
-            // TODO Implement callback logic to get triggered only after deletion of all dialogs
-            deleteDialog(dialog, new QBEntityCallbackImpl<Void>());
+            deleteDialog(dialog, new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                }
+            });
         }
 
-        callback.onSuccess();
+        // TODO Implement callback logic to get triggered only after deletion of all dialogs
+        callback.onSuccess(null, null);
     }
 
     public void deleteDialog(QBDialog qbDialog, QBEntityCallback<Void> callback) {
@@ -184,7 +144,7 @@ public class ChatHelper {
 
     public void updateDialogUsers(QBDialog qbDialog,
                                   final List<QBUser> currentDialogUsers,
-                                  QBEntityCallbackImpl<QBDialog> callback) {
+                                  QBEntityCallback<QBDialog> callback) {
         QbDialogUtils.logDialogUsers(qbDialog);
 
         List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(qbDialog, currentDialogUsers);
@@ -211,9 +171,9 @@ public class ChatHelper {
     }
 
     public void loadChatHistory(QBDialog dialog,
-                                final QBEntityCallbackImpl<ArrayList<QBChatMessage>> callback) {
+                                final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
+        customObjectRequestBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
         customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
 
         QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
@@ -229,7 +189,7 @@ public class ChatHelper {
 
     public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setPagesLimit(DIALOG_ITEMS_PER_PAGE);
+        customObjectRequestBuilder.setLimit(DIALOG_ITEMS_PER_PAGE);
 
         QBChatService.getChatDialogs(null, customObjectRequestBuilder,
                 new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {

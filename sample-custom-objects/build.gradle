@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.customobjects_jar_path)
+    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
     compile (project(":sample-core")) {
         transitive = true;
     }

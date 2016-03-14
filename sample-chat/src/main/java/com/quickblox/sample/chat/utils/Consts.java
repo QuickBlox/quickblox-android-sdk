@@ -7,6 +7,7 @@ public class Consts {
     public static final String QB_APP_ID = "92";
     public static final String QB_AUTH_KEY = "wJHdOcQSxXQGWx5";
     public static final String QB_AUTH_SECRET = "BTFsj7Rtt27DAmT";
+    public static final String QB_ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
     public static final String QB_USERS_TAG = "webrtcusers";
     public static final String QB_USERS_PASSWORD = "x6Bt0VDy5";

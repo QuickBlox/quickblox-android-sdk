@@ -3,15 +3,21 @@ package com.quickblox.sample.content.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
@@ -25,7 +31,6 @@ import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GalleryActivity extends BaseActivity
         implements AdapterView.OnItemClickListener, OnImagePickedListener {
@@ -34,6 +39,10 @@ public class GalleryActivity extends BaseActivity
 
     private GalleryAdapter galleryAdapter;
     private ImagePickHelper imagePickHelper;
+    private LinearLayout emptyView;
+    private TextView problemView;
+    private TextView descriptionView;
+    private FloatingActionButton FAB;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -63,6 +72,11 @@ public class GalleryActivity extends BaseActivity
         galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFiles());
 
         GridView galleryGridView = _findViewById(R.id.gallery_gridview);
+        emptyView = _findViewById(R.id.empty_view);
+        problemView = _findViewById(R.id.problem);
+        descriptionView = _findViewById(R.id.description);
+        FAB = _findViewById(R.id.fab_upload_image);
+
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
     }
@@ -75,7 +89,7 @@ public class GalleryActivity extends BaseActivity
         builder.setPerPage(Consts.IMAGES_PER_PAGE);
         builder.setPage(Consts.START_PAGE);
 
-        QBContent.getFiles(builder, new QBEntityCallbackImpl<ArrayList<QBFile>>() {
+        QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 if (!DataHolder.getInstance().isEmpty()) {
@@ -84,32 +98,67 @@ public class GalleryActivity extends BaseActivity
 
                 DataHolder.getInstance().addQbFiles(qbFiles);
                 progressDialog.dismiss();
-                galleryAdapter.updateData(DataHolder.getInstance().getQBFiles());
+
+                updateData();
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(errors.get(0));
+                Toaster.shortToast(e.getErrors().toString());
             }
         });
+    }
+
+    private void updateData() {
+        if (DataHolder.getInstance().isEmpty()) {
+            noPhoto();
+        } else {
+            emptyView.setVisibility(View.GONE);
+        }
+
+        galleryAdapter.updateData(DataHolder.getInstance().getQBFiles());
+    }
+
+    private void noConnection() {
+        problemView.setText(getResources().getString(R.string.problem));
+        descriptionView.setText(getResources().getString(R.string.no_connection));
+        descriptionView.setTextColor(ContextCompat.getColor(this, R.color.red));
+        FAB.setClickable(false);
+        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_light)));
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void existConnection() {
+        FAB.setClickable(true);
+        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_green_qb)));
+        emptyView.setVisibility(View.GONE);
+    }
+
+    private void noPhoto() {
+        problemView.setText(getResources().getString(R.string.no_photo));
+        descriptionView.setText(getResources().getString(R.string.press_button));
+        descriptionView.setTextColor(ContextCompat.getColor(this, R.color.text_color_light_grey));
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     private void uploadSelectedImage(File imageFile) {
         progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setMax((int) imageFile.length() / 1024);
         progressDialog.show();
-        QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallbackImpl<QBFile>() {
+        QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
                 progressDialog.dismiss();
+
+                updateData();
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(R.string.gallery_upload_file_error + errors.get(0));
+                Toaster.shortToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
             }
         }, new QBProgressCallback() {
             @Override

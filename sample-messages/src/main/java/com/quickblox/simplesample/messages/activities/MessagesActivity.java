@@ -17,9 +17,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.messages.QBMessages;
+import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
@@ -142,7 +143,7 @@ public class MessagesActivity extends CoreBaseActivity {
         userIds.add(App.getInstance().getCurrentUserId());
         qbEvent.setUserIds(userIds);
 
-        QBMessages.createEvent(qbEvent, new QBEntityCallbackImpl<QBEvent>() {
+        QBPushNotifications.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -151,8 +152,8 @@ public class MessagesActivity extends CoreBaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
-                Toaster.longToast(errors.toString());
+            public void onError(QBResponseException e) {
+                Toaster.longToast(e.getErrors().toString());
 
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);

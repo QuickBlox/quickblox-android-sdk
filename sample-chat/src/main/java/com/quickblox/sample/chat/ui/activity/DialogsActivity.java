@@ -20,7 +20,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
@@ -183,7 +185,7 @@ public class DialogsActivity extends BaseActivity {
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
-                new QBEntityCallbackImpl<QBDialog>() {
+                new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         ChatActivity.start(DialogsActivity.this, dialog);
@@ -191,8 +193,8 @@ public class DialogsActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(List<String> errors) {
-                        showErrorSnackbar(R.string.dialogs_creation_error, errors,
+                    public void onError(QBResponseException e) {
+                        showErrorSnackbar(R.string.dialogs_creation_error, e.getErrors(),
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -207,7 +209,7 @@ public class DialogsActivity extends BaseActivity {
     private void loadDialogsFromQb() {
         progressBar.setVisibility(View.VISIBLE);
 
-        ChatHelper.getInstance().getDialogs(new QBEntityCallbackImpl<ArrayList<QBDialog>>() {
+        ChatHelper.getInstance().getDialogs(new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
                 progressBar.setVisibility(View.GONE);
@@ -215,9 +217,9 @@ public class DialogsActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(List<String> errors) {
+            public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.dialogs_get_error, errors,
+                showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -273,15 +275,15 @@ public class DialogsActivity extends BaseActivity {
 
         private void deleteSelectedDialogs() {
             Collection<QBDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
-            ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallbackImpl<Void>() {
+            ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallback<Void>() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(Void aVoid, Bundle bundle) {
                     loadDialogsFromQb();
                 }
 
                 @Override
-                public void onError(List<String> errors) {
-                    showErrorSnackbar(R.string.dialogs_deletion_error, errors,
+                public void onError(QBResponseException e) {
+                    showErrorSnackbar(R.string.dialogs_deletion_error, e.getErrors(),
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -291,15 +293,15 @@ public class DialogsActivity extends BaseActivity {
                 }
             });
         }
-
     }
 
-    private static class PushBroadcastReceiver extends BroadcastReceiver {
+    private class PushBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
             Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
+            loadDialogsFromQb();
         }
     }
 }

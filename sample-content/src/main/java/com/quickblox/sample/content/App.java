@@ -10,6 +10,7 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
 
-        QBSettings.getInstance().fastConfigInit(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().init(this, Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
     }
 }

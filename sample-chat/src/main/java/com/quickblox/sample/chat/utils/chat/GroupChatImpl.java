@@ -1,22 +1,23 @@
 package com.quickblox.sample.chat.utils.chat;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
+import com.quickblox.chat.listeners.QBMessageSentListener;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.ui.activity.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
-import java.util.List;
-
-public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
+public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessageSentListener<QBGroupChat> {
     private static final String TAG = GroupChatImpl.class.getSimpleName();
 
     private QBGroupChatManager qbGroupChatManager;
@@ -32,7 +33,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
         }
     }
 
-    public void joinGroupChat(QBDialog dialog, QBEntityCallback callback) {
+    public void joinGroupChat(QBDialog dialog, QBEntityCallback<Void> callback) {
         initManagerIfNeed();
         if (qbChat == null) {
             qbChat = qbGroupChatManager.createGroupChat(dialog.getRoomJid());
@@ -40,30 +41,31 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
         join(callback);
     }
 
-    private void join(final QBEntityCallback callback) {
+    private void join(final QBEntityCallback<Void> callback) {
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        qbChat.join(history, new QBEntityCallbackImpl<String>() {
+        qbChat.join(history, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(final Void result, final Bundle bundle) {
                 qbChat.addMessageListener(GroupChatImpl.this);
+                qbChat.addMessageSentListener(GroupChatImpl.this);
 
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onSuccess();
+                        callback.onSuccess(result, bundle);
                     }
                 });
                 Log.i(TAG, "Join successful");
             }
 
             @Override
-            public void onError(final List<String> list) {
+            public void onError(final QBResponseException e) {
                 chatActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onError(list);
+                        callback.onError(e);
                     }
                 });
             }
@@ -84,5 +86,15 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> {
             leave();
             qbChat.removeMessageListener(this);
         }
+    }
+
+    @Override
+    public void processMessageSent(QBGroupChat qbGroupChat, QBChatMessage qbChatMessage) {
+
+    }
+
+    @Override
+    public void processMessageFailed(QBGroupChat qbGroupChat, QBChatMessage qbChatMessage) {
+
     }
 }

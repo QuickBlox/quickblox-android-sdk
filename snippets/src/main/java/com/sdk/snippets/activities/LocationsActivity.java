@@ -1,20 +1,13 @@
 package com.sdk.snippets.activities;
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.sdk.snippets.R;
-import com.sdk.snippets.core.SnippetsList;
+import android.content.Context;
+import com.sdk.snippets.core.Snippets;
 import com.sdk.snippets.modules.SnippetsLocation;
 
-public class LocationsActivity extends Activity {
+public class LocationsActivity extends BaseSnippetsActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.snippets_list);
-
-        SnippetsLocation snippets = new SnippetsLocation(this);
-        SnippetsList list = (SnippetsList) findViewById(R.id.list);
-        list.initialize(snippets);
+    public Snippets onCreateSnippets(Context context) {
+        return new SnippetsLocation(this);
     }
 }

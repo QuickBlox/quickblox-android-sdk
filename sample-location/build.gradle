@@ -38,11 +38,12 @@ android {
 }
 
 dependencies {
-    compile files(rootProject.core_jar_path, rootProject.location_jar_path)
+    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
     compile (project(":sample-core")) {
         transitive = true;
     }
 
+    compile "com.google.android.gms:play-services-location:${rootProject.playServicesVersion}"
     compile "com.google.android.gms:play-services-maps:${rootProject.playServicesVersion}"
 }
 

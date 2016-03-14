@@ -3,8 +3,6 @@ package com.quickblox.sample.content.utils;
 import android.text.TextUtils;
 
 import com.quickblox.content.model.QBFile;
-import com.quickblox.core.exception.BaseServiceException;
-import com.quickblox.core.server.BaseService;
 
 public class QBContentUtils {
 
@@ -19,13 +17,6 @@ public class QBContentUtils {
             }
         }
 
-        String sessionToken = null;
-        try {
-            sessionToken = BaseService.getBaseService().getToken();
-        } catch (BaseServiceException e) {
-            e.printStackTrace();
-        }
-        return BaseService.getServiceEndpointURL() + "/blobs/" + qbFile.getUid() +
-                "?token=" + sessionToken;
+        return qbFile.getPrivateUrl();
     }
 }
