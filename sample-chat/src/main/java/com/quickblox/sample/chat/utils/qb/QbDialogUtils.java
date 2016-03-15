@@ -9,6 +9,7 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QbDialogUtils {
@@ -25,7 +26,7 @@ public class QbDialogUtils {
         } else {
             dialogToCreate.setType(QBDialogType.GROUP);
         }
-        dialogToCreate.setOccupantsIds(QbDialogUtils.getUserIds(users));
+        dialogToCreate.setOccupantsIds(new ArrayList<>(Arrays.asList(QbDialogUtils.getUserIds(users))));
         return dialogToCreate;
     }
 
@@ -81,9 +82,19 @@ public class QbDialogUtils {
 
     public static void logDialogUsers(QBDialog qbDialog) {
         Log.v(TAG, "Dialog " + getDialogName(qbDialog));
-        for (Integer id : qbDialog.getOccupants()) {
+        logUsersByIds(qbDialog.getOccupants());
+    }
+
+    public static void logUsers(List<QBUser> users) {
+        for (QBUser user : users) {
+            Log.i(TAG, user.getId() + " " + user.getFullName());
+        }
+    }
+
+    private static void logUsersByIds(List<Integer> users) {
+        for (Integer id : users) {
             QBUser user = QbUsersHolder.getInstance().getUserById(id);
-            Log.v(TAG, user.getId() + " " + user.getFullName());
+            Log.i(TAG, user.getId() + " " + user.getFullName());
         }
     }
 
@@ -100,12 +111,12 @@ public class QbDialogUtils {
         return opponentId;
     }
 
-    public static ArrayList<Integer> getUserIds(List<QBUser> users) {
+    public static Integer[] getUserIds(List<QBUser> users) {
         ArrayList<Integer> ids = new ArrayList<>();
         for (QBUser user : users) {
             ids.add(user.getId());
         }
-        return ids;
+        return ids.toArray(new Integer[ids.size()]);
     }
 
     public static String createChatNameFromUserList(List<QBUser> users) {

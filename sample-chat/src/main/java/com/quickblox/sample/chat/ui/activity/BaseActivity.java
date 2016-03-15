@@ -14,6 +14,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.QbAuthUtils;
 import com.quickblox.sample.chat.utils.qb.QbSessionStateCallback;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -28,24 +29,30 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
     private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     protected ActionBar actionBar;
+    protected boolean isAppSessionActive;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
 
-        final boolean wasAppRestored = savedInstanceState != null;
+        boolean wasAppRestored = savedInstanceState != null;
+        boolean isQbSessionActive = QbAuthUtils.isSessionActive();
+        final boolean needToRestoreSession = wasAppRestored || !isQbSessionActive;
         Log.v(TAG, "wasAppRestored = " + wasAppRestored);
+        Log.v(TAG, "isQbSessionActive = " + isQbSessionActive);
 
         // Triggering callback via Handler#post() method
         // to let child's code in onCreate() to execute first
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (wasAppRestored) {
+                if (needToRestoreSession) {
                     recreateChatSession();
+                    isAppSessionActive = false;
                 } else {
                     onSessionCreated(true);
+                    isAppSessionActive = true;
                 }
             }
         });
@@ -82,6 +89,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 Log.v(TAG, "Chat login onSuccess()");
+                isAppSessionActive = true;
                 onSessionCreated(true);
 
                 ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -89,6 +97,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
             @Override
             public void onError(QBResponseException errors) {
+                isAppSessionActive = false;
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 Log.w(TAG, "Chat login onError(): " + errors);
                 showErrorSnackbar(R.string.error_recreate_session, errors.getErrors(),

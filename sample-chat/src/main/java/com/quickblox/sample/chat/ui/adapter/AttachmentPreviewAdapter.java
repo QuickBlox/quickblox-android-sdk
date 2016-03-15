@@ -15,6 +15,7 @@ import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
@@ -101,7 +102,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         }
 
         final File attachmentFile = getItem(position);
-        Glide.with(context)
+        Glide.with(App.getInstance())
                 .load(attachmentFile)
                 .override(ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size),
                         ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size))

@@ -79,7 +79,7 @@ public class LoginActivity extends CoreBaseActivity {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
+            public void onSuccess(Void result, Bundle bundle) {
                 SharedPreferencesUtil.saveQbUser(user);
 
                 DialogsActivity.start(LoginActivity.this);

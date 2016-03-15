@@ -11,7 +11,6 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.chat.ui.activity.ChatActivity;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -22,8 +21,8 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
 
     private QBGroupChatManager qbGroupChatManager;
 
-    public GroupChatImpl(ChatActivity chatActivity) {
-        super(chatActivity);
+    public GroupChatImpl(QBChatMessageListener chatMessageListener) {
+        super(chatMessageListener);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
                 qbChat.addMessageListener(GroupChatImpl.this);
                 qbChat.addMessageSentListener(GroupChatImpl.this);
 
-                chatActivity.runOnUiThread(new Runnable() {
+                mainThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onSuccess(result, bundle);
@@ -62,7 +61,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
 
             @Override
             public void onError(final QBResponseException e) {
-                chatActivity.runOnUiThread(new Runnable() {
+                mainThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onError(e);
