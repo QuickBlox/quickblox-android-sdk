@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
+import com.quickblox.sample.content.helper.DownloadMoreListener;
 import com.quickblox.sample.content.utils.Consts;
 
 public class GalleryAdapter extends BaseAdapter {
@@ -24,6 +25,8 @@ public class GalleryAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private SparseArray<QBFile> qbFileSparseArray;
     private Context context;
+    private DownloadMoreListener downloadListener;
+    private int previousGetCount = 0;
 
     public GalleryAdapter(Context context, SparseArray<QBFile> qbFileSparseArray) {
         this.context = context;
@@ -60,7 +63,18 @@ public class GalleryAdapter extends BaseAdapter {
         }
         QBFile qbFile = getItem(position);
         loadImage(holder, qbFile);
+
+        downloadMore(position);
         return convertView;
+    }
+
+    private void downloadMore(int position) {
+        if (getCount() - 1 == position) {
+            if (getCount() != previousGetCount) {
+                downloadListener.downloadMore();
+                previousGetCount = getCount();
+            }
+        }
     }
 
     public void updateData(SparseArray<QBFile> qbFileSparseArray) {
@@ -102,6 +116,10 @@ public class GalleryAdapter extends BaseAdapter {
                 .dontTransform()
                 .override(Consts.PREFERRED_IMAGE_WIDTH_PREVIEW, Consts.PREFERRED_IMAGE_HEIGHT_PREVIEW)
                 .into(holder.imageView);
+    }
+
+    public void setDownloadMoreListener(DownloadMoreListener downloadListener) {
+        this.downloadListener = downloadListener;
     }
 
     private static class ViewHolder {
