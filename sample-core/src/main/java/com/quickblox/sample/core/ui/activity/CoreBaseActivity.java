@@ -1,6 +1,7 @@
 package com.quickblox.sample.core.ui.activity;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -8,7 +9,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.quickblox.sample.core.R;
+import com.quickblox.sample.core.utils.ErrorUtils;
+
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class CoreBaseActivity extends AppCompatActivity {
     protected ActionBar actionBar;
@@ -45,6 +50,10 @@ public class CoreBaseActivity extends AppCompatActivity {
 
     protected void fillField(TextView textView, String value) {
         textView.setText(value);
+    }
+
+    protected void showSnackBarError(View rootLayout, @StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
+        ErrorUtils.showSnackbar(rootLayout, resId, errors, R.string.dlg_retry, clickListener);
     }
 
     @Override
