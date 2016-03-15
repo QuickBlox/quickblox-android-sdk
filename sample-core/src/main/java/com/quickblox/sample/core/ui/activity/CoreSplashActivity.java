@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.VersionUtils;
+
+import java.util.List;
 
 public abstract class CoreSplashActivity extends CoreBaseActivity {
     private static final int SPLASH_DELAY = 1500;
@@ -48,8 +49,9 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         }, SPLASH_DELAY);
     }
 
-    protected void showSnackbarError(@StringRes int resId, QBResponseException e, View.OnClickListener clickListener) {
-        View rootLayout = findViewById(R.id.layout_root);
-        ErrorUtils.showSnackbar(rootLayout, resId, e, R.string.dlg_retry, clickListener);
+    @Override
+    protected void showSnackBarError(View rootLayout, @StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
+        rootLayout = findViewById(R.id.layout_root);
+        ErrorUtils.showSnackbar(rootLayout, resId, errors, R.string.dlg_retry, clickListener);
     }
 }
