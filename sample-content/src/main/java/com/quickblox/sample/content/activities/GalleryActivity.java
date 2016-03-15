@@ -20,7 +20,7 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.Consts;
+import com.quickblox.sample.content.helper.DownloadMoreListener;
 import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
@@ -31,9 +31,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class GalleryActivity extends BaseActivity
-        implements AdapterView.OnItemClickListener, OnImagePickedListener {
+        implements AdapterView.OnItemClickListener, OnImagePickedListener, DownloadMoreListener {
 
     public static final int GALLERY_REQUEST_CODE = 183;
+
+    private static final int IMAGES_PER_PAGE = 50;
+    private int startPage = 1;
 
     private GalleryAdapter galleryAdapter;
     private ImagePickHelper imagePickHelper;
@@ -50,6 +53,7 @@ public class GalleryActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        DataHolder.getInstance().clear();
         initUI();
         getFileList();
         imagePickHelper = new ImagePickHelper();
@@ -67,6 +71,7 @@ public class GalleryActivity extends BaseActivity
 
     private void initUI() {
         galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFiles());
+        galleryAdapter.setDownloadMoreListener(this);
 
         GridView galleryGridView = _findViewById(R.id.gallery_gridview);
         emptyView = _findViewById(R.id.empty_view);
@@ -78,21 +83,22 @@ public class GalleryActivity extends BaseActivity
     }
 
     private void getFileList() {
+        progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
         QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
-        builder.setPerPage(Consts.IMAGES_PER_PAGE);
-        builder.setPage(Consts.START_PAGE);
+        builder.setPerPage(IMAGES_PER_PAGE);
+        builder.setPage(startPage++);
 
         QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
-                if (!DataHolder.getInstance().isEmpty()) {
-                    DataHolder.getInstance().clear();
+                if (qbFiles.isEmpty()) {
+                    startPage -= 2;
+                } else {
+                    DataHolder.getInstance().addQbFiles(qbFiles);
                 }
-
-                DataHolder.getInstance().addQbFiles(qbFiles);
                 if (progressDialog.isIndeterminate()) {
                     progressDialog.dismiss();
                 }
@@ -168,5 +174,10 @@ public class GalleryActivity extends BaseActivity
     @Override
     public void onImagePickClosed(int requestCode) {
         // ignored
+    }
+
+    @Override
+    public void downloadMore() {
+        getFileList();
     }
 }

@@ -8,8 +8,8 @@ android {
         applicationId "com.quickblox.sample.content"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 200
+        versionName "2.0.0"
     }
 
     productFlavors {
