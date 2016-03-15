@@ -10,6 +10,7 @@ import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.definition.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 public class ShowMovieActivity extends BaseActivity {
 
@@ -38,6 +39,7 @@ public class ShowMovieActivity extends BaseActivity {
         yearTextView = _findViewById(R.id.text_movie_year);
         descriptionTextView = _findViewById(R.id.movie_description_textview);
         ratingBar = _findViewById(R.id.rating_movie);
+        QBCustomObjectsUtils.setTintRatingBar(this, ratingBar);
     }
 
     private void fillFields() {

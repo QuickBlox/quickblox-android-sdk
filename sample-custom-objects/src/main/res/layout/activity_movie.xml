@@ -38,7 +38,6 @@
         <RatingBar
             android:id="@+id/rating_movie"
             style="@style/MovieRatingBarStyle"
-            android:layout_marginTop="@dimen/margin_rating_bar_details"
             android:isIndicator="true" />
 
     </LinearLayout>

@@ -67,6 +67,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
         yearSpinner = _findViewById(R.id.year_spinner);
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
+        QBCustomObjectsUtils.setTintRatingBar(this, ratingBar);
     }
 
     private void initSpinner() {

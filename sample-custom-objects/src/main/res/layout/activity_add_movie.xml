@@ -41,8 +41,7 @@
 
         <RatingBar
             android:id="@+id/add_movie_ratingBar"
-            style="@style/MovieRatingBarStyle"
-            android:layout_marginTop="@dimen/margin_rating_bar_add" />
+            style="@style/MovieRatingBarStyle" />
 
     </LinearLayout>
 </ScrollView>
