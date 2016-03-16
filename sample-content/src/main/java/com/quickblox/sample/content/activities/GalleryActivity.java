@@ -35,8 +35,9 @@ public class GalleryActivity extends BaseActivity
 
     public static final int GALLERY_REQUEST_CODE = 183;
 
+    private static final int IMAGE_SIZE_LIMIT_KB = 1024 * 100;
     private static final int IMAGES_PER_PAGE = 50;
-    private int startPage = 1;
+    private int current_page = 1;
 
     private GalleryAdapter galleryAdapter;
     private ImagePickHelper imagePickHelper;
@@ -89,13 +90,13 @@ public class GalleryActivity extends BaseActivity
 
         QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
         builder.setPerPage(IMAGES_PER_PAGE);
-        builder.setPage(startPage++);
+        builder.setPage(current_page++);
 
         QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 if (qbFiles.isEmpty()) {
-                    startPage -= 2;
+                    current_page--;
                 } else {
                     DataHolder.getInstance().addQbFiles(qbFiles);
                 }
@@ -108,7 +109,14 @@ public class GalleryActivity extends BaseActivity
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(e.getErrors().toString());
+                View view = findViewById(R.id.activity_gallery);
+                showSnackBarError(view, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        current_page--;
+                        getFileList();
+                    }
+                });
             }
         });
     }
@@ -130,13 +138,17 @@ public class GalleryActivity extends BaseActivity
         emptyView.setVisibility(View.VISIBLE);
     }
 
-    private void uploadSelectedImage(File imageFile) {
-        final int imageSize = (int) imageFile.length() / 1024;
-        final float onePercent = (float) imageSize / 100;
+    private void uploadSelectedImage(final File imageFile) {
+        final int imageSizeKb = (int) imageFile.length() / 1024;
+        final float onePercent = (float) imageSizeKb / 100;
+        if (imageSizeKb >= IMAGE_SIZE_LIMIT_KB) {
+            Toaster.longToast(R.string.image_size_error);
+            return;
+        }
 
         progressDialog.dismiss();
         progressDialog = DialogUtils.getProgressDialog(this);
-        progressDialog.setMax(imageSize);
+        progressDialog.setMax(imageSizeKb);
         progressDialog.setProgressNumberFormat("%1d/%2d kB");
         progressDialog.show();
 
@@ -151,7 +163,13 @@ public class GalleryActivity extends BaseActivity
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.longToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
+                View view = findViewById(R.id.activity_gallery);
+                showSnackBarError(view, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        uploadSelectedImage(imageFile);
+                    }
+                });
             }
         }, new QBProgressCallback() {
             @Override

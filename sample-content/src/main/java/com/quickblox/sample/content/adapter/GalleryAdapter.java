@@ -19,6 +19,7 @@ import com.quickblox.content.model.QBFile;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.helper.DownloadMoreListener;
 import com.quickblox.sample.content.utils.Consts;
+import com.quickblox.sample.content.utils.QBContentUtils;
 
 public class GalleryAdapter extends BaseAdapter {
 
