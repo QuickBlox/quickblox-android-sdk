@@ -113,6 +113,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         QBCustomObjects.getObjects(Consts.CLASS_NAME, builder, new QBEntityCallback<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
+                setOnRefreshListener.setEnabled(true);
                 Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 progressDialog.dismiss();
@@ -122,7 +123,14 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.shortToast(e.getErrors().toString());
+                setOnRefreshListener.setEnabled(false);
+                View rootLayout = findViewById(R.id.swipy_refresh_layout);
+                showSnackBarError(rootLayout, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getMovieList(false);
+                    }
+                });
                 progressDialog.dismiss();
                 setOnRefreshListener.setRefreshing(false);
             }

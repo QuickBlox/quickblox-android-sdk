@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -106,7 +107,13 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.longToast(e.getErrors().toString());
+                View rootLayout = findViewById(R.id.activity_add_movie);
+                showSnackBarError(rootLayout, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createNewMovie();
+                    }
+                });
             }
         });
     }

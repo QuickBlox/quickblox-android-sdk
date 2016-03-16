@@ -32,7 +32,7 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                showSnackbarError(R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                showSnackBarError(null, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createSession();

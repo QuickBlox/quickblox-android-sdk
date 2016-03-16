@@ -2,6 +2,7 @@
     style="@style/MatchParent">
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_add_movie"
         style="@style/MatchParent"
         android:orientation="vertical"
         android:paddingLeft="@dimen/padding_large"
