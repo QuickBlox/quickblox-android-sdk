@@ -8,7 +8,6 @@ import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.sample.chat.ui.activity.ChatActivity;
 
 public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
         implements QBPrivateChatManagerListener, QBMessageSentListener<QBPrivateChat> {
@@ -16,8 +15,8 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
 
     private QBPrivateChatManager qbPrivateChatManager;
 
-    public PrivateChatImpl(ChatActivity chatActivity, Integer opponentId) {
-        super(chatActivity);
+    public PrivateChatImpl(QBChatMessageListener chatMessageListener, Integer opponentId) {
+        super(chatMessageListener);
 
         qbChat = qbPrivateChatManager.getChat(opponentId);
         if (qbChat == null) {
@@ -31,7 +30,6 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
     protected void initManagerIfNeed() {
         if (qbPrivateChatManager == null) {
             qbPrivateChatManager = QBChatService.getInstance().getPrivateChatManager();
-            qbPrivateChatManager.addPrivateChatManagerListener(this);
             qbPrivateChatManager.addPrivateChatManagerListener(this);
         }
     }

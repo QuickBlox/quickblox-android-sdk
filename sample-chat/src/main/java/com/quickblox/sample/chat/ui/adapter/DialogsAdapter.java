@@ -56,7 +56,14 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
         } else {
             holder.lastMessageTextView.setText(dialog.getLastMessage());
         }
-        holder.unreadCounterTextView.setText(String.valueOf(dialog.getUnreadMessageCount()));
+
+        int unreadMessagesCount = dialog.getUnreadMessageCount();
+        if (unreadMessagesCount == 0) {
+            holder.unreadCounterTextView.setVisibility(View.GONE);
+        } else {
+            holder.unreadCounterTextView.setVisibility(View.VISIBLE);
+            holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount));
+        }
 
         if (isItemSelected(position)) {
             holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(R.color.selected_list_item_color));

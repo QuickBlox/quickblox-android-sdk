@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.ui.activity.AttachmentImageActivity;
 import com.quickblox.sample.chat.ui.widget.MaskedImageView;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
@@ -33,12 +34,18 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
+    private OnItemInfoExpandedListener onItemInfoExpandedListener;
+
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
     }
 
+    public void setOnItemInfoExpandedListener(OnItemInfoExpandedListener onItemInfoExpandedListener) {
+        this.onItemInfoExpandedListener = onItemInfoExpandedListener;
+    }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -57,7 +64,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QBChatMessage chatMessage = getItem(position);
+        final QBChatMessage chatMessage = getItem(position);
 
         setIncomingOrOutgoingMessageAttributes(holder, chatMessage);
         setMessageBody(holder, chatMessage);
@@ -67,13 +74,38 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         holder.messageContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isMessageInfoVisible = holder.messageInfoTextView.getVisibility() == View.VISIBLE;
-                holder.messageInfoTextView.setVisibility(isMessageInfoVisible ? View.GONE : View.VISIBLE);
+                if (hasAttachments(chatMessage)) {
+                    Collection<QBAttachment> attachments = chatMessage.getAttachments();
+                    QBAttachment attachment = attachments.iterator().next();
+                    AttachmentImageActivity.start(context, attachment.getUrl());
+                } else {
+                    toggleItemInfo(holder, position);
+                }
+            }
+        });
+        holder.messageContainerLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (hasAttachments(chatMessage)) {
+                    toggleItemInfo(holder, position);
+                    return true;
+                }
+
+                return false;
             }
         });
         holder.messageInfoTextView.setVisibility(View.GONE);
 
         return convertView;
+    }
+
+    private void toggleItemInfo(ViewHolder holder, int position) {
+        boolean isMessageInfoVisible = holder.messageInfoTextView.getVisibility() == View.VISIBLE;
+        holder.messageInfoTextView.setVisibility(isMessageInfoVisible ? View.GONE : View.VISIBLE);
+
+        if (onItemInfoExpandedListener != null) {
+            onItemInfoExpandedListener.onItemInfoExpanded(position);
+        }
     }
 
     @Override
@@ -224,5 +256,9 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         public RelativeLayout messageBodyContainerLayout;
         public MaskedImageView attachmentImageView;
         public ProgressBar attachmentProgressBar;
+    }
+
+    public static interface OnItemInfoExpandedListener {
+        void onItemInfoExpanded(int position);
     }
 }

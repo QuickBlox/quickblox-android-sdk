@@ -15,6 +15,13 @@ public class SharedPreferencesUtil {
         helper.save(QB_USER_FULL_NAME, qbUser.getFullName());
     }
 
+    public static void removeQbUser() {
+        SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
+        helper.delete(QB_USER_LOGIN);
+        helper.delete(QB_USER_PASSWORD);
+        helper.delete(QB_USER_FULL_NAME);
+    }
+
     public static boolean hasQbUser() {
         SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
         return helper.has(QB_USER_LOGIN) && helper.has(QB_USER_PASSWORD);

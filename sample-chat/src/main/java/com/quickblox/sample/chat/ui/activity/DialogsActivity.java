@@ -19,13 +19,18 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChat;
+import com.quickblox.chat.QBPrivateChat;
+import com.quickblox.chat.listeners.QBGroupChatManagerListener;
+import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
+import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
@@ -54,6 +59,9 @@ public class DialogsActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    private QBPrivateChatManagerListener privateChatManagerListener;
+    private QBGroupChatManagerListener groupChatManagerListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +74,19 @@ public class DialogsActivity extends BaseActivity {
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
+        privateChatManagerListener = new QBPrivateChatManagerListener() {
+            @Override
+            public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
+        groupChatManagerListener = new QBGroupChatManagerListener() {
+            @Override
+            public void chatCreated(QBGroupChat qbGroupChat) {
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
+
         initUi();
     }
 
@@ -77,6 +98,11 @@ public class DialogsActivity extends BaseActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+
+        if (isAppSessionActive) {
+            registerQbChatListeners();
+            loadDialogsFromQb(true);
+        }
     }
 
     @Override
@@ -84,6 +110,10 @@ public class DialogsActivity extends BaseActivity {
         super.onPause();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+
+        if (isAppSessionActive) {
+            unregisterQbChatListeners();
+        }
     }
 
     @Override
@@ -100,6 +130,7 @@ public class DialogsActivity extends BaseActivity {
             if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
                 googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
             }
+            SharedPreferencesUtil.removeQbUser();
             LoginActivity.start(this);
             finish();
             return true;
@@ -117,6 +148,7 @@ public class DialogsActivity extends BaseActivity {
                 actionBar.setTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
             }
 
+            registerQbChatListeners();
             loadDialogsFromQb();
         }
     }
@@ -183,6 +215,16 @@ public class DialogsActivity extends BaseActivity {
         });
     }
 
+    private void registerQbChatListeners() {
+        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
+        QBChatService.getInstance().getGroupChatManager().addGroupChatManagerListener(groupChatManagerListener);
+    }
+
+    private void unregisterQbChatListeners() {
+        QBChatService.getInstance().getPrivateChatManager().removePrivateChatManagerListener(privateChatManagerListener);
+        QBChatService.getInstance().getGroupChatManager().removeGroupChatManagerListener(groupChatManagerListener);
+    }
+
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
                 new QBEntityCallback<QBDialog>() {
@@ -207,7 +249,22 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void loadDialogsFromQb() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadDialogsFromQb(false);
+    }
+
+    private void loadDialogsFromQbInUiThread(final boolean silentUpdate) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadDialogsFromQb(silentUpdate);
+            }
+        });
+    }
+
+    private void loadDialogsFromQb(final boolean silentUpdate) {
+        if (!silentUpdate) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         ChatHelper.getInstance().getDialogs(new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -219,13 +276,15 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loadDialogsFromQb();
-                            }
-                        });
+                if (!silentUpdate) {
+                    showErrorSnackbar(R.string.dialogs_get_error, e.getErrors(),
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    loadDialogsFromQb();
+                                }
+                            });
+                }
             }
         });
     }
@@ -301,7 +360,7 @@ public class DialogsActivity extends BaseActivity {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
             Log.i(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
-            loadDialogsFromQb();
+            loadDialogsFromQb(true);
         }
     }
 }

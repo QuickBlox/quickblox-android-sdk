@@ -49,8 +49,9 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         }, SPLASH_DELAY);
     }
 
-    protected void showSnackbarError(@StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
-        View rootLayout = findViewById(R.id.layout_root);
+    @Override
+    protected void showSnackBarError(View rootLayout, @StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
+        rootLayout = findViewById(R.id.layout_root);
         ErrorUtils.showSnackbar(rootLayout, resId, errors, R.string.dlg_retry, clickListener);
     }
 }

@@ -60,4 +60,5 @@
     <string name="chat_info_add_people_error">Add people errors</string>
 
     <string name="group_chat_join_error">Could not join chat, errors:</string>
+    <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
 </resources>
