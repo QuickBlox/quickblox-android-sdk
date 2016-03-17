@@ -79,7 +79,8 @@ public class MessagesActivity extends CoreBaseActivity {
 
         if (message != null) {
             retrieveMessage(message);
-        }initUI();
+        }
+        initUI();
     }
 
     @Override
@@ -162,7 +163,13 @@ public class MessagesActivity extends CoreBaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.longToast(e.getErrors().toString());
+                View rootView = findViewById(R.id.activity_messages);
+                showSnackBarError(rootView, R.string.connection_error, e.getErrors(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendPushMessage();
+                    }
+                });
 
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);
