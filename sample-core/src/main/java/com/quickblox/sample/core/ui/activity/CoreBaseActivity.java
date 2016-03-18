@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 public class CoreBaseActivity extends AppCompatActivity {
     protected ActionBar actionBar;
@@ -52,8 +52,8 @@ public class CoreBaseActivity extends AppCompatActivity {
         textView.setText(value);
     }
 
-    protected void showSnackBarError(View rootLayout, @StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
-        ErrorUtils.showSnackbar(rootLayout, resId, errors, R.string.dlg_retry, clickListener);
+    protected void showSnackbarError(View rootLayout, @StringRes int resId, QBResponseException e, View.OnClickListener clickListener) {
+        ErrorUtils.showSnackbar(rootLayout, resId, e, R.string.dlg_retry, clickListener);
     }
 
     @Override
