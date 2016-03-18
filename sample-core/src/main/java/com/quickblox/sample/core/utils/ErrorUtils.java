@@ -30,6 +30,8 @@ public class ErrorUtils {
         boolean timeout = error.startsWith(NO_RESPONSE_TIMEOUT);
         if (noConnection || timeout) {
             showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
+        } else if (errorMessage == 0) {
+            showSnackbar(view, error, actionLabel, clickListener);
         } else {
             showSnackbar(view, errorMessage, error, actionLabel, clickListener);
         }
@@ -53,7 +55,7 @@ public class ErrorUtils {
     private static void showSnackbar(View view, String message,
                                      @StringRes int actionLabel,
                                      View.OnClickListener clickListener) {
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
+        Snackbar snackbar = Snackbar.make(view, message.trim(), Snackbar.LENGTH_INDEFINITE);
         if (clickListener != null) {
             snackbar.setAction(actionLabel, clickListener);
         }
