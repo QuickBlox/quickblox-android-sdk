@@ -129,7 +129,7 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void retrieveMessage(String message) {
-        receivedPushes.add(message);
+        receivedPushes.add(0, message);
         adapter.notifyDataSetChanged();
 
         progressBar.setVisibility(View.INVISIBLE);
