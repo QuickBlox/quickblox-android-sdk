@@ -20,7 +20,8 @@ public class ErrorUtils {
     private static final String NO_RESPONSE_TIMEOUT = "No response received within reply timeout.";
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    private ErrorUtils() {}
+    private ErrorUtils() {
+    }
 
     public static void showSnackbar(View view, @StringRes int errorMessage, Exception e,
                                     @StringRes int actionLabel, View.OnClickListener clickListener) {
@@ -50,8 +51,8 @@ public class ErrorUtils {
     }
 
     private static void showSnackbar(View view, String message,
-                                    @StringRes int actionLabel,
-                                    View.OnClickListener clickListener) {
+                                     @StringRes int actionLabel,
+                                     View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         if (clickListener != null) {
             snackbar.setAction(actionLabel, clickListener);
