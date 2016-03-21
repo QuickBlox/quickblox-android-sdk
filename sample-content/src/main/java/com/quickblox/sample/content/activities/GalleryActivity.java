@@ -109,11 +109,11 @@ public class GalleryActivity extends BaseActivity
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
+                current_page--;
                 View view = findViewById(R.id.activity_gallery);
-                showSnackBarError(view, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(view, R.string.splash_create_session_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        current_page--;
                         getFileList();
                     }
                 });
@@ -164,7 +164,7 @@ public class GalleryActivity extends BaseActivity
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
                 View view = findViewById(R.id.activity_gallery);
-                showSnackBarError(view, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(view, R.string.splash_create_session_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         uploadSelectedImage(imageFile);
