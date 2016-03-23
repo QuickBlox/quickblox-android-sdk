@@ -101,6 +101,12 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(0).setEnabled(true);
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_messages, menu);
@@ -111,6 +117,7 @@ public class MessagesActivity extends CoreBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_send_message:
+                item.setEnabled(false);
                 sendPushMessage();
                 return true;
             default:
@@ -139,6 +146,7 @@ public class MessagesActivity extends CoreBaseActivity {
         String outMessage = outgoingMessageEditText.getText().toString();
         if (!isValidData(outMessage)) {
             Toaster.longToast(R.string.error_fields_is_empty);
+            invalidateOptionsMenu();
             return;
         }
 
@@ -159,6 +167,7 @@ public class MessagesActivity extends CoreBaseActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);
                 outgoingMessageEditText.setText(null);
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -170,9 +179,9 @@ public class MessagesActivity extends CoreBaseActivity {
                         sendPushMessage();
                     }
                 });
-
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);
+                invalidateOptionsMenu();
             }
         });
 
