@@ -143,7 +143,7 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void sendPushMessage() {
-        String outMessage = outgoingMessageEditText.getText().toString();
+        String outMessage = outgoingMessageEditText.getText().toString().trim();
         if (!isValidData(outMessage)) {
             Toaster.longToast(R.string.error_fields_is_empty);
             invalidateOptionsMenu();
@@ -173,7 +173,7 @@ public class MessagesActivity extends CoreBaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 View rootView = findViewById(R.id.activity_messages);
-                showSnackBarError(rootView, R.string.connection_error, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(rootView, R.string.connection_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sendPushMessage();
@@ -189,6 +189,6 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private boolean isValidData(String message) {
-        return !TextUtils.isEmpty(message.trim());
+        return !TextUtils.isEmpty(message);
     }
 }
