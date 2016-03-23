@@ -4,27 +4,33 @@
     style="@style/MatchParent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edit_message_out"
-            style="@style/MatchWidth"
-            android:background="@android:color/transparent"
-            android:hint="@string/hint_enter_your_message"
-            android:padding="@dimen/padding_large"
-            android:textSize="@dimen/text_size_medium" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/WrapContent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/edit_message_out"
+                style="@style/MatchWidth"
+                android:background="@android:color/transparent"
+                android:hint="@string/hint_enter_your_message"
+                android:padding="@dimen/padding_large"
+                android:textSize="@dimen/text_size_medium" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/WrapContent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
