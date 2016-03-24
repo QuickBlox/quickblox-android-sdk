@@ -4,33 +4,29 @@
     style="@style/MatchParent"
     android:orientation="vertical">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <EditText
+            android:id="@+id/edit_message_out"
+            style="@style/MatchWidth"
+            android:background="@android:color/transparent"
+            android:hint="@string/hint_enter_your_message"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/push_max_length"
+            android:padding="@dimen/padding_large"
+            android:textSize="@dimen/text_size_medium" />
 
-            <EditText
-                android:id="@+id/edit_message_out"
-                style="@style/MatchWidth"
-                android:background="@android:color/transparent"
-                android:hint="@string/hint_enter_your_message"
-                android:padding="@dimen/padding_large"
-                android:textSize="@dimen/text_size_medium" />
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@style/WrapContent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:visibility="invisible" />
-        </RelativeLayout>
-    </ScrollView>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/WrapContent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

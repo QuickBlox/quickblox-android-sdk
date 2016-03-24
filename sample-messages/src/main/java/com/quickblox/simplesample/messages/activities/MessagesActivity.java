@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +38,7 @@ import com.quickblox.simplesample.messages.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesActivity extends CoreBaseActivity {
+public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -80,7 +82,6 @@ public class MessagesActivity extends CoreBaseActivity {
         if (message != null) {
             retrieveMessage(message);
         }
-        initUI();
     }
 
     @Override
@@ -128,6 +129,7 @@ public class MessagesActivity extends CoreBaseActivity {
     private void initUI() {
         progressBar = _findViewById(R.id.progress_bar);
         outgoingMessageEditText = _findViewById(R.id.edit_message_out);
+        outgoingMessageEditText.addTextChangedListener(this);
 
         ListView incomingMessagesListView = _findViewById(R.id.list_messages);
         adapter = new ArrayAdapter<>(this, R.layout.list_item_message, R.id.item_message, receivedPushes);
@@ -190,5 +192,22 @@ public class MessagesActivity extends CoreBaseActivity {
 
     private boolean isValidData(String message) {
         return !TextUtils.isEmpty(message);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        //ignore
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        //ignore
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.length() >= getResources().getInteger(R.integer.push_max_length)) {
+            Toaster.shortToast(R.string.error_too_long_push);
+        }
     }
 }
