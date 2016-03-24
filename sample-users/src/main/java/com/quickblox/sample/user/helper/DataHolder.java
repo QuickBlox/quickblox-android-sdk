@@ -34,6 +34,10 @@ public class DataHolder {
         }
     }
 
+    public void setQbUser(int location, QBUser qbUser) {
+        qbUsers.set(location, qbUser);
+    }
+
     public List<QBUser> getQBUsers() {
         return qbUsers;
     }
@@ -48,6 +52,10 @@ public class DataHolder {
 
     public void setSignInQbUser(QBUser singInQbUser) {
         this.signInQbUser = singInQbUser;
+    }
+
+    public boolean isSignedIn() {
+        return signInQbUser != null;
     }
 
 }

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/menu_sign_in_up"
         android:icon="@drawable/ic_action_check"
-        android:title="@string/sign_in"
+        android:title="@string/check"
         app:showAsAction="always" />
 </menu>

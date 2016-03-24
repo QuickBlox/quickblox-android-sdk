@@ -78,10 +78,6 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         });
     }
 
-    public boolean isSignedIn() {
-        return DataHolder.getInstance().getSignInQbUser() != null;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -97,7 +93,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        setActionBarTitle(isSignedIn() ? R.string.signed_in : R.string.not_signed_in);
+        actionBar.setTitle(DataHolder.getInstance().isSignedIn() ? DataHolder.getInstance().getSignInQbUser().getLogin()
+                : getString(R.string.not_signed_in));
     }
 
     @Override
@@ -121,13 +118,20 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!isSignedIn()) {
-            menu.getItem(2).setEnabled(false);
+        if (!DataHolder.getInstance().isSignedIn()) {
             setActionBarTitle(R.string.not_signed_in);
+            menu.getItem(0).setVisible(true);
+            menu.getItem(1).setVisible(true);
+            menu.getItem(2).setVisible(false);
+            menu.getItem(3).setEnabled(false);
         } else {
-            setActionBarTitle(R.string.signed_in);
-            menu.getItem(2).setEnabled(true);
+            actionBar.setTitle(DataHolder.getInstance().getSignInQbUser().getLogin());
+            menu.getItem(0).setVisible(false);
+            menu.getItem(1).setVisible(false);
+            menu.getItem(2).setVisible(true);
+            menu.getItem(3).setEnabled(true);
         }
+
         return true;
     }
 
@@ -143,6 +147,10 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
             case R.id.sign_up:
                 intent = new Intent(this, SignUpUserActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
+                return true;
+
+            case R.id.profile:
+                ShowUserActivity.start(this, DataHolder.getInstance().getSignInQbUser());
                 return true;
 
             case R.id.logout:

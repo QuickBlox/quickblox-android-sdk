@@ -8,7 +8,6 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 
 public class SplashActivity extends CoreSplashActivity {
@@ -40,8 +39,7 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.longToast(e.getErrors().toString());
-                showSnackbarError(R.string.errors, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(null, R.string.errors, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createSession();

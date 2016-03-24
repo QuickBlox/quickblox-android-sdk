@@ -17,12 +17,14 @@
     <string name="select">Select User</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="check">Check</string>
+    <string name="profile">Profile</string>
     <string name="logout">LogOut</string>
+    <string name="update">Updated!</string>
 
     <string name="user">User</string>
     <string name="username">Username</string>
     <string name="full_name">Full name</string>
-    <string name="name">Name</string>
     <string name="alex_bass">Alex Bass</string>
     <string name="alex_full">Alex "the King" Bass</string>
     <string name="alex_email">alex@bass.com</string>
@@ -30,6 +32,8 @@
     <string name="tags">Tags</string>
 
     <string name="braces">[]</string>
+    <string name="brace_left">[</string>
+    <string name="brace_right">]</string>
     <string name="confirm_password">Confirm password</string>
     <string name="confirm_error">Passwords does not match!</string>
     <string name="empty"> </string>

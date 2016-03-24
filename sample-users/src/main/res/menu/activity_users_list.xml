@@ -8,6 +8,9 @@
         android:id="@+id/sign_up"
         android:title="@string/sign_up" />
     <item
+        android:id="@+id/profile"
+        android:title="@string/profile" />
+    <item
         android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>
