@@ -108,7 +108,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
                 View rootLayout = findViewById(R.id.activity_add_movie);
-                showSnackBarError(rootLayout, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createNewMovie();

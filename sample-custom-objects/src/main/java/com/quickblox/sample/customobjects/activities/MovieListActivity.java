@@ -125,7 +125,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
             public void onError(QBResponseException e) {
                 setOnRefreshListener.setEnabled(false);
                 View rootLayout = findViewById(R.id.swipy_refresh_layout);
-                showSnackBarError(rootLayout, R.string.splash_create_session_error, e.getErrors(), new View.OnClickListener() {
+                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getMovieList(false);
