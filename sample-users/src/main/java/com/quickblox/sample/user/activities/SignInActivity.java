@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.quickblox.core.QBEntityCallback;
@@ -54,7 +55,13 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException errors) {
                 progressDialog.dismiss();
-                Toaster.longToast(errors.getErrors().toString());
+                View rootLayout = findViewById(R.id.activity_sign_in);
+                showSnackbarError(rootLayout, R.string.errors, errors, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signIn();
+                    }
+                });
             }
         });
     }

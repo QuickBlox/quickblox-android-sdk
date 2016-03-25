@@ -12,7 +12,6 @@
         xmlns:tools="http://schemas.android.com/tools"
         style="@style/MatchParent">
 
-        <!--TODO let's use common material paddings-->
         <ImageView
             android:id="@+id/user_avatar2_imageview"
             style="@style/WrapContent"

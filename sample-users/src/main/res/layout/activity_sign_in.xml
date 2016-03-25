@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_sign_in"
     style="@style/MatchParent"
     android:background="@color/background_app_color"
     android:orientation="vertical"

@@ -7,7 +7,7 @@
     <dimen name="margin_large">20dp</dimen>
     <dimen name="margin_very_large">80dp</dimen>
 
-    <dimen name="margin_tags">10dp</dimen>
+    <dimen name="margin_tags">8dp</dimen>
     <dimen name="margin_full_name">17dp</dimen>
     <dimen name="margin_email">34dp</dimen>
 

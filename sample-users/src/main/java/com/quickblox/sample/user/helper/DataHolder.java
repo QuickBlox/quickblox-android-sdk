@@ -36,6 +36,7 @@ public class DataHolder {
 
     public void setQbUser(int location, QBUser qbUser) {
         qbUsers.set(location, qbUser);
+        setSignInQbUser(qbUser);
     }
 
     public List<QBUser> getQBUsers() {

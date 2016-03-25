@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -122,7 +121,7 @@ public class ShowUserActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException errors) {
                 progressDialog.dismiss();
-                View rootLayout = findViewById(R.id.user_info_scrollview);
+                View rootLayout = findViewById(R.id.activity_show_user);
                 showSnackbarError(rootLayout, R.string.errors, errors, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

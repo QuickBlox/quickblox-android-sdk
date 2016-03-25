@@ -11,7 +11,7 @@
     <android.support.design.widget.CoordinatorLayout style="@style/MatchParent">
 
         <ScrollView xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/user_info_scrollview"
+            android:id="@+id/activity_show_user"
             style="@style/MatchWidth"
             android:layout_marginLeft="@dimen/padding_small"
             android:layout_marginTop="@dimen/margin_middle"

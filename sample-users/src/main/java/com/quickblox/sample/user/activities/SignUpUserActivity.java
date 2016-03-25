@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -71,8 +72,13 @@ public class SignUpUserActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException error) {
                 progressDialog.dismiss();
-
-                Toaster.longToast(error.getErrors().toString());
+                View rootLayout = findViewById(R.id.activity_sign_up);
+                showSnackbarError(rootLayout, R.string.errors, error, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signUp();
+                    }
+                });
             }
         });
     }

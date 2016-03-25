@@ -201,18 +201,28 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         QBUsers.getUsers(qbPagedBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                DataHolder.getInstance().addQbUsers(qbUsers);
-                progressDialog.dismiss();
+                setOnRefreshListener.setEnabled(true);
                 setOnRefreshListener.setRefreshing(false);
+
+                DataHolder.getInstance().addQbUsers(qbUsers);
                 qbUsersList = DataHolder.getInstance().getQBUsers();
+                progressDialog.dismiss();
                 usersListAdapter.updateData(qbUsersList);
             }
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.longToast(e.getErrors().toString());
                 progressDialog.dismiss();
+                setOnRefreshListener.setEnabled(false);
                 setOnRefreshListener.setRefreshing(false);
+
+                View rootLayout = findViewById(R.id.swipy_refresh_layout);
+                showSnackbarError(rootLayout, R.string.errors, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getAllUsers(false);
+                    }
+                });
             }
         });
     }
