@@ -27,11 +27,11 @@ dependencies {
 
     // online dependencies, from maven repository, jar files
     //
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
-    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.versionName@aar"
+    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.versionName@aar") {
         transitive=true
     }
-    compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.versionName@aar"
 
     compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
     compile('vc908.stickers:stickerfactory:0.2.2@aar') {

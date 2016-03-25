@@ -36,11 +36,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
-    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.versionName@aar"
+    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.versionName@aar") {
         transitive=true
     }
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.versionName@aar"
 
     compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
     compile 'com.android.support:recyclerview-v7:23.1.1'

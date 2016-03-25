@@ -26,8 +26,8 @@ dependencies {
 
     // online dependencies, from maven repository, jar files
     //
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.versionName@aar"
+    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.versionName@aar"
 
     compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
     compile "com.nostra13.universalimageloader:universal-image-loader:1.9.0"

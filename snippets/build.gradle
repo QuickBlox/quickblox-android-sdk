@@ -56,36 +56,36 @@ dependencies {
 
     // online dependencies, from maven repository, jar files
     //
-    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion"
-    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion") {
+    onlineCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.versionName"
+    onlineCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.versionName") {
         exclude group: 'de.measite.minidns'
         exclude group: 'org.jxmpp'
     }
-    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
-    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.versionName"
+    onlineCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.versionName"
+    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.versionName"
+    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.versionName"
 
 
     // online dependencies, from remote repository, aar files
     //
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar"){
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-core:$rootProject.versionName@aar"
+    onlineAarCompile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.versionName@aar"){
         transitive=true
     }
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.versionName@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-messages:$rootProject.versionName@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.versionName@aar"
+    onlineAarCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.versionName@aar"
 
-//    // offline dependencies, from 'SDK-android' dir, for debug
-//    //
-//    offlineDevCompile project(':quickblox-android-sdk-core')
-//    offlineDevCompile project(':quickblox-android-sdk-chat')
-//    offlineDevCompile project(':quickblox-android-sdk-content')
-//    offlineDevCompile project(':quickblox-android-sdk-messages')
-//    offlineDevCompile project(':quickblox-android-sdk-location')
-//    offlineDevCompile project(':quickblox-android-sdk-customobjects')
+    // offline dependencies, from 'SDK-android' dir, for debug
+    //
+    offlineDevCompile project(':quickblox-android-sdk-core')
+    offlineDevCompile project(':quickblox-android-sdk-chat')
+    offlineDevCompile project(':quickblox-android-sdk-content')
+    offlineDevCompile project(':quickblox-android-sdk-messages')
+    offlineDevCompile project(':quickblox-android-sdk-location')
+    offlineDevCompile project(':quickblox-android-sdk-customobjects')
 
     // twitter digits
     compile('com.digits.sdk.android:digits:1.9.0@aar') {

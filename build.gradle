@@ -20,7 +20,7 @@ allprojects {
 
 // QuickBlox SDK version
 //
-ext.qbSdkVersion = '2.5'
+ext.versionName = '2.5.1'
 //
 //
 
@@ -37,6 +37,8 @@ ext.playServiceGCMVersion = "8.3.0"
 
 ext.sourceCompatibility = JavaVersion.VERSION_1_7
 ext.targetCompatibility = JavaVersion.VERSION_1_7
+
+ext.testRunnerVersion = "0.4.1"
 
 ext.lintAbortOnError = false
 
