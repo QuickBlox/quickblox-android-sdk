@@ -45,7 +45,7 @@ import java.util.Set;
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
-    private static final int DIALOG_ITEMS_PER_PAGE = 100;
+    public static final int DIALOG_ITEMS_PER_PAGE = 50;
     private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
@@ -146,7 +146,7 @@ public class ChatHelper {
         } else if (qbDialog.getType() == QBDialogType.PRIVATE) {
             QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(),
                     new QbEntityCallbackWrapper<>(callback));
-        } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+        } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         }
     }
@@ -212,8 +212,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
+    public void getDialogs(QBRequestGetBuilder customObjectRequestBuilder, final QBEntityCallback<ArrayList<QBDialog>> callback) {
         customObjectRequestBuilder.setLimit(DIALOG_ITEMS_PER_PAGE);
 
         QBChatService.getChatDialogs(null, customObjectRequestBuilder,

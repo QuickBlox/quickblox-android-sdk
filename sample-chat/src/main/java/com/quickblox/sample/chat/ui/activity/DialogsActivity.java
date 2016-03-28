@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
@@ -29,28 +31,30 @@ import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
     private static final int REQUEST_SELECT_PEOPLE = 174;
 
-    private ListView dialogsListView;
-    private LinearLayout emptyHintLayout;
     private ProgressBar progressBar;
     private FloatingActionButton fab;
     private ActionMode currentActionMode;
+    private SwipyRefreshLayout setOnRefreshListener;
+    private QBRequestGetBuilder requestBuilder;
+    private int skipRecords = 0;
 
     private BroadcastReceiver pushBroadcastReceiver;
     private GooglePlayServicesHelper googlePlayServicesHelper;
@@ -95,7 +99,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        QbDialogHolder.getInstance().clear();
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -103,6 +107,8 @@ public class DialogsActivity extends BaseActivity {
 
         if (isAppSessionActive) {
             registerQbChatListeners();
+            requestBuilder.setSkip(skipRecords = 0);
+
             loadDialogsFromQb(true);
         }
     }
@@ -127,18 +133,18 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_dialogs_action_logout:
-            ChatHelper.getInstance().logout();
-            if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
-                googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
-            }
-            SharedPreferencesUtil.removeQbUser();
-            LoginActivity.start(this);
-            finish();
-            return true;
+            case R.id.menu_dialogs_action_logout:
+                ChatHelper.getInstance().logout();
+                if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
+                    googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+                }
+                SharedPreferencesUtil.removeQbUser();
+                LoginActivity.start(this);
+                finish();
+                return true;
 
-        default:
-            return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -185,10 +191,15 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void initUi() {
-        emptyHintLayout = _findViewById(R.id.layout_chat_empty);
-        dialogsListView = _findViewById(R.id.list_dialogs_chats);
+        LinearLayout emptyHintLayout = _findViewById(R.id.layout_chat_empty);
+        ListView dialogsListView = _findViewById(R.id.list_dialogs_chats);
         progressBar = _findViewById(R.id.progress_dialogs);
         fab = _findViewById(R.id.fab_dialogs_new_chat);
+        setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
+
+        dialogsAdapter = new DialogsAdapter(this, QbDialogHolder.getInstance().getDialogList());
+        dialogsListView.setEmptyView(emptyHintLayout);
+        dialogsListView.setAdapter(dialogsAdapter);
 
         TextView listHeader = (TextView) LayoutInflater.from(this)
                 .inflate(R.layout.include_list_hint_header, dialogsListView, false);
@@ -213,6 +224,15 @@ public class DialogsActivity extends BaseActivity {
                 startSupportActionMode(new DeleteActionModeCallback());
                 dialogsAdapter.selectItem(selectedDialog);
                 return true;
+            }
+        });
+        requestBuilder = new QBRequestGetBuilder();
+
+        setOnRefreshListener.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                requestBuilder.setSkip(skipRecords += ChatHelper.DIALOG_ITEMS_PER_PAGE);
+                loadDialogsFromQb(true);
             }
         });
     }
@@ -249,7 +269,6 @@ public class DialogsActivity extends BaseActivity {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         ChatActivity.start(DialogsActivity.this, dialog);
-                        loadDialogsFromQb();
                     }
 
                     @Override
@@ -284,16 +303,22 @@ public class DialogsActivity extends BaseActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        ChatHelper.getInstance().getDialogs(new QBEntityCallback<ArrayList<QBDialog>>() {
+        ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
                 progressBar.setVisibility(View.GONE);
-                fillListView(dialogs);
+                setOnRefreshListener.setEnabled(true);
+                setOnRefreshListener.setRefreshing(false);
+                QbDialogHolder.getInstance().addDialogs(dialogs);
+
+                dialogsAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
+                setOnRefreshListener.setEnabled(false);
+                setOnRefreshListener.setRefreshing(false);
                 if (!silentUpdate) {
                     showErrorSnackbar(R.string.dialogs_get_error, e,
                             new View.OnClickListener() {
@@ -305,12 +330,6 @@ public class DialogsActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void fillListView(List<QBDialog> dialogs) {
-        dialogsAdapter = new DialogsAdapter(this, dialogs);
-        dialogsListView.setEmptyView(emptyHintLayout);
-        dialogsListView.setAdapter(dialogsAdapter);
     }
 
     private class DeleteActionModeCallback implements ActionMode.Callback {
@@ -333,12 +352,12 @@ public class DialogsActivity extends BaseActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-            case R.id.menu_dialogs_action_delete:
-                deleteSelectedDialogs();
-                if (currentActionMode != null) {
-                    currentActionMode.finish();
-                }
-                return true;
+                case R.id.menu_dialogs_action_delete:
+                    deleteSelectedDialogs();
+                    if (currentActionMode != null) {
+                        currentActionMode.finish();
+                    }
+                    return true;
             }
             return false;
         }
@@ -351,11 +370,11 @@ public class DialogsActivity extends BaseActivity {
         }
 
         private void deleteSelectedDialogs() {
-            Collection<QBDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+            final Collection<QBDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
             ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid, Bundle bundle) {
-                    loadDialogsFromQb();
+                    QbDialogHolder.getInstance().deleteDialogs(selectedDialogs);
                 }
 
                 @Override
