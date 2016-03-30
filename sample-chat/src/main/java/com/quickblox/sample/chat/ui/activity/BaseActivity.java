@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
@@ -64,9 +65,9 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
     protected abstract View getSnackbarAnchorView();
 
-    protected void showErrorSnackbar(@StringRes int resId, Exception e,
-                                     View.OnClickListener clickListener) {
-        ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
+    protected Snackbar showErrorSnackbar(@StringRes int resId, Exception e,
+                                         View.OnClickListener clickListener) {
+        return ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                 com.quickblox.sample.core.R.string.dlg_retry, clickListener);
     }
 
