@@ -46,6 +46,8 @@ public class ShowUserActivity extends BaseActivity {
         initUI();
 
         qbUser = (QBUser) getIntent().getSerializableExtra(QB_USER);
+
+        //TODO userFull sounds a little bit strange, why is it full ? Name it just User.
         showUserBinding.setUserFull(qbUser);
 
         setFieldsFocusable(qbUser);
@@ -71,6 +73,7 @@ public class ShowUserActivity extends BaseActivity {
         }
     }
 
+    //TODO seems like this method can be moved to base activity, it appears almost in each activity
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
         showUserBinding = DataBindingUtil.setContentView(this, R.layout.activity_show_user);
@@ -100,6 +103,7 @@ public class ShowUserActivity extends BaseActivity {
         StringifyArrayList<String> tagsArray = new StringifyArrayList<>();
         tagsArray.add(tags);
 
+        //TODO I think if some editText is empty it isn't necessary to update this field in user
         qbUser.setFullName(fullName);
         qbUser.setEmail(email);
         qbUser.setPhone(phoneNumber);

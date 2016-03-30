@@ -8,6 +8,8 @@
             type="com.quickblox.users.model.QBUser" />
     </data>
 
+    <!--TODO Why is here CoordinatorLayout ? What purposes does it perform ? -->
+
     <android.support.design.widget.CoordinatorLayout style="@style/MatchParent">
 
         <ScrollView xmlns:tools="http://schemas.android.com/tools"
@@ -90,6 +92,10 @@
                     android:textSize="@dimen/text_size_large"
                     android:theme="@style/EditTextNotEditableTheme"
                     tools:ignore="Deprecated,TextFields" />
+
+                <!--TODO It is more convenient to check if userFull.tags is empty rather then invent bicycle and check toString!-->
+
+                <!--TODO userFull.tags.toString.replace logic we can replace with some method in util class to make layout be responsible only for filling views-->
 
                 <EditText
                     android:id="@+id/tag_textview"

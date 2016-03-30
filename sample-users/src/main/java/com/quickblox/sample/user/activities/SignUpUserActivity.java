@@ -85,6 +85,7 @@ public class SignUpUserActivity extends BaseActivity {
 
     private boolean isValidData(String login, String password, String confirm) {
         if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirm)) {
+            //TODO We can show prompt on EditText via setError method to point which field is empty
             toast.setText(R.string.error_field_is_empty);
             toast.show();
             return false;

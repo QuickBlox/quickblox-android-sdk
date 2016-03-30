@@ -34,6 +34,7 @@ public class DataHolder {
         }
     }
 
+    //TODO each method should perform only one action and be named by action it actually do
     public void setQbUser(int location, QBUser qbUser) {
         qbUsers.set(location, qbUser);
         setSignInQbUser(qbUser);
