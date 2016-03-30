@@ -88,6 +88,7 @@ public class ShowUserActivity extends BaseActivity {
         if (DataHolder.getInstance().isSignedIn()) {
             currentUserSignIn = DataHolder.getInstance().getSignInQbUser().equals(qbUser);
         }
+        //TODO it's better to use setEnabled method to enable/disable view for editing
         fullNameEditText.setFocusableInTouchMode(currentUserSignIn);
         emailEditText.setFocusableInTouchMode(currentUserSignIn);
         phoneNumberEditText.setFocusableInTouchMode(currentUserSignIn);
