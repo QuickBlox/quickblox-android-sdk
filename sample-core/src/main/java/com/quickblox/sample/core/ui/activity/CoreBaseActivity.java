@@ -48,6 +48,12 @@ public class CoreBaseActivity extends AppCompatActivity {
         }
     }
 
+    public void setActionBarTitle(CharSequence title) {
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
     protected void fillField(TextView textView, String value) {
         textView.setText(value);
     }

@@ -23,43 +23,45 @@ public class ErrorUtils {
     private ErrorUtils() {
     }
 
-    public static void showSnackbar(View view, @StringRes int errorMessage, Exception e,
-                                    @StringRes int actionLabel, View.OnClickListener clickListener) {
+    public static Snackbar showSnackbar(View view, @StringRes int errorMessage, Exception e,
+                                        @StringRes int actionLabel, View.OnClickListener clickListener) {
         String error = e.getMessage();
         boolean noConnection = NO_CONNECTION_ERROR.equals(error);
         boolean timeout = error.startsWith(NO_RESPONSE_TIMEOUT);
         if (noConnection || timeout) {
-            showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
+            return showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
         } else if (errorMessage == 0) {
-            showSnackbar(view, error, actionLabel, clickListener);
+            return showSnackbar(view, error, actionLabel, clickListener);
         } else {
-            showSnackbar(view, errorMessage, error, actionLabel, clickListener);
+            return showSnackbar(view, errorMessage, error, actionLabel, clickListener);
         }
     }
 
-    public static void showSnackbar(View view, @StringRes int errorMessage, String error,
-                                    @StringRes int actionLabel, View.OnClickListener clickListener) {
+    public static Snackbar showSnackbar(View view, @StringRes int errorMessage, String error,
+                                        @StringRes int actionLabel, View.OnClickListener clickListener) {
         String errorMessageString = CoreApp.getInstance().getString(errorMessage);
         String message = String.format("%s: %s", errorMessageString, error);
-        showSnackbar(view, message, actionLabel, clickListener);
+        return showSnackbar(view, message, actionLabel, clickListener);
     }
 
-    private static void showSnackbar(View view, @StringRes int message,
-                                     @StringRes int actionLabel,
-                                     View.OnClickListener clickListener) {
+    private static Snackbar showSnackbar(View view, @StringRes int message,
+                                         @StringRes int actionLabel,
+                                         View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(actionLabel, clickListener);
         snackbar.show();
+        return snackbar;
     }
 
-    private static void showSnackbar(View view, String message,
-                                     @StringRes int actionLabel,
-                                     View.OnClickListener clickListener) {
+    private static Snackbar showSnackbar(View view, String message,
+                                         @StringRes int actionLabel,
+                                         View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message.trim(), Snackbar.LENGTH_INDEFINITE);
         if (clickListener != null) {
             snackbar.setAction(actionLabel, clickListener);
         }
         snackbar.show();
+        return snackbar;
     }
 
     public static void showErrorToast(QBResponseException exception) {
