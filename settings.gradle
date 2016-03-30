@@ -22,5 +22,3 @@ include ':quickblox-android-sdk-location'
 project(':quickblox-android-sdk-location').projectDir = new File('../SDK-android/quickblox-android-sdk-location')
 include ':quickblox-android-sdk-customobjects'
 project(':quickblox-android-sdk-customobjects').projectDir = new File('../SDK-android/quickblox-android-sdk-customobjects')
-//include ':quickblox-android-sdk-videochat-webrtc'
-//project(':quickblox-android-sdk-videochat-webrtc').projectDir = new File('../SDK-android/quickblox-android-sdk-videochat-webrtc')
