@@ -32,6 +32,7 @@ import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
@@ -49,6 +50,7 @@ import java.util.Collection;
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
     private static final int REQUEST_SELECT_PEOPLE = 174;
+    private static final int REQUEST_MARK_READ = 165;
 
     private ProgressBar progressBar;
     private FloatingActionButton fab;
@@ -84,7 +86,6 @@ public class DialogsActivity extends BaseActivity {
         privateChatManagerListener = new QBPrivateChatManagerListener() {
             @Override
             public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
-                Log.d("DialogsActiv", "qbPrivateChat");
                 loadDialogsFromQbInUiThread(true);
             }
         };
@@ -92,7 +93,6 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void chatCreated(QBGroupChat qbGroupChat) {
                 loadDialogsFromQbInUiThread(true);
-                Log.d("DialogsActiv", "qbGroupChat");
             }
         };
 
@@ -109,9 +109,6 @@ public class DialogsActivity extends BaseActivity {
 
         if (isAppSessionActive) {
             registerQbChatListeners();
-            requestBuilder.setSkip(skipRecords = 0);
-
-            loadDialogsFromQb(true, true);
         }
     }
 
@@ -177,6 +174,16 @@ public class DialogsActivity extends BaseActivity {
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
                 createDialog(selectedUsers);
+            } else if (requestCode == REQUEST_MARK_READ) {
+
+                ArrayList<String> chatMessageIds = (ArrayList<String>) data
+                        .getSerializableExtra(ChatActivity.EXTRA_MARK_READ);
+                final StringifyArrayList<String> messagesIds = new StringifyArrayList<>();
+                messagesIds.addAll(chatMessageIds);
+
+                String dialogId = (String) data.getSerializableExtra(ChatActivity.EXTRA_DIALOG_ID);
+
+                markMessagesRead(messagesIds, dialogId);
             }
         }
     }
@@ -190,6 +197,32 @@ public class DialogsActivity extends BaseActivity {
     public ActionMode startSupportActionMode(ActionMode.Callback callback) {
         currentActionMode = super.startSupportActionMode(callback);
         return currentActionMode;
+    }
+
+    private void markMessagesRead(StringifyArrayList<String> messagesIds, String dialogId) {
+        if (messagesIds.size() > 0) {
+            QBChatService.markMessagesAsRead(dialogId, messagesIds, new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    updateDialogsList();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+
+                }
+            });
+        } else {
+            updateDialogsList();
+        }
+    }
+
+    private void updateDialogsList() {
+        if (isAppSessionActive) {
+            requestBuilder.setSkip(skipRecords = 0);
+
+            loadDialogsFromQb(true, true);
+        }
     }
 
     public void onStartNewChatClick(View view) {
@@ -218,7 +251,7 @@ public class DialogsActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
                 if (currentActionMode == null) {
-                    ChatActivity.start(DialogsActivity.this, selectedDialog);
+                    ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, selectedDialog);
                 } else {
                     dialogsAdapter.toggleSelection(selectedDialog);
                 }
@@ -275,7 +308,7 @@ public class DialogsActivity extends BaseActivity {
                 new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
-                        ChatActivity.start(DialogsActivity.this, dialog);
+                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, dialog);
                     }
 
                     @Override

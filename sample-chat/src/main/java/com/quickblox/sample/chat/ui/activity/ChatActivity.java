@@ -1,6 +1,6 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -57,6 +57,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
+    public static final String EXTRA_MARK_READ = "markRead";
+    public static final String EXTRA_DIALOG_ID = "dialogId";
+
     private ProgressBar progressBar;
     private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
@@ -68,11 +71,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private Chat chat;
     private QBDialog qbDialog;
+    private ArrayList<String> chatMessageIds;
 
-    public static void start(Context context, QBDialog dialog) {
-        Intent intent = new Intent(context, ChatActivity.class);
+    public static void startForResult(Activity activity, int code, QBDialog dialog) {
+        Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_DIALOG, dialog);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, code);
     }
 
     @Override
@@ -81,6 +85,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         setContentView(R.layout.activity_chat);
 
         qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
+        chatMessageIds = new ArrayList<>();
         initViews();
     }
 
@@ -115,6 +120,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     public void onBackPressed() {
         releaseChat();
+        sendReadMessageId();
+
         super.onBackPressed();
     }
 
@@ -143,25 +150,36 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-        case R.id.menu_chat_action_info:
-            ChatInfoActivity.start(this, qbDialog);
-            return true;
+            case R.id.menu_chat_action_info:
+                ChatInfoActivity.start(this, qbDialog);
+                return true;
 
-        case R.id.menu_chat_action_add:
-            SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
-            return true;
+            case R.id.menu_chat_action_add:
+                SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
+                return true;
 
-        case R.id.menu_chat_action_leave:
-            leaveGroupChat();
-            return true;
+            case R.id.menu_chat_action_leave:
+                leaveGroupChat();
+                return true;
 
-        case R.id.menu_chat_action_delete:
-            deleteChat();
-            return true;
+            case R.id.menu_chat_action_delete:
+                deleteChat();
+                return true;
 
-        default:
-            return super.onOptionsItemSelected(item);
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void sendReadMessageId() {
+        Intent result = new Intent();
+        result.putExtra(EXTRA_MARK_READ, chatMessageIds);
+        result.putExtra(EXTRA_DIALOG_ID, qbDialog.getDialogId());
+        setResult(RESULT_OK, result);
     }
 
     private void leaveGroupChat() {
@@ -204,9 +222,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
-        case REQUEST_CODE_ATTACHMENT:
-            attachmentPreviewAdapter.add(file);
-            break;
+            case REQUEST_CODE_ATTACHMENT:
+                attachmentPreviewAdapter.add(file);
+                break;
         }
     }
 
@@ -310,21 +328,21 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void initChat() {
         switch (qbDialog.getType()) {
-        case GROUP:
-        case PUBLIC_GROUP:
-            chat = new GroupChatImpl(chatMessageListener);
-            joinGroupChat();
-            break;
+            case GROUP:
+            case PUBLIC_GROUP:
+                chat = new GroupChatImpl(chatMessageListener);
+                joinGroupChat();
+                break;
 
-        case PRIVATE:
-            chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
-            loadDialogUsers();
-            break;
+            case PRIVATE:
+                chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+                loadDialogUsers();
+                break;
 
-        default:
-            Toaster.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbDialog.getType().name()));
-            finish();
-            break;
+            default:
+                Toaster.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbDialog.getType().name()));
+                finish();
+                break;
         }
     }
 
@@ -498,6 +516,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private QBChatMessageListener chatMessageListener = new QBChatMessageListener() {
         @Override
         public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
+            chatMessageIds.add(message.getId());
             showMessage(message);
         }
     };
