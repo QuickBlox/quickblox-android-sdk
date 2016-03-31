@@ -41,6 +41,8 @@ import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
 
@@ -133,13 +135,7 @@ public class DialogsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_dialogs_action_logout:
-                ChatHelper.getInstance().logout();
-                if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
-                    googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
-                }
-                SharedPreferencesUtil.removeQbUser();
-                LoginActivity.start(this);
-                finish();
+                userLogout();
                 return true;
 
             default:
@@ -197,6 +193,43 @@ public class DialogsActivity extends BaseActivity {
     public ActionMode startSupportActionMode(ActionMode.Callback callback) {
         currentActionMode = super.startSupportActionMode(callback);
         return currentActionMode;
+    }
+
+    private void userLogout() {
+        if (ChatHelper.getInstance().logout()) {
+            if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
+                googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+            }
+            SharedPreferencesUtil.removeQbUser();
+            LoginActivity.start(this);
+            finish();
+        } else {
+            reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+        }
+    }
+
+    private void reconnectToChatLogout(final QBUser user) {
+        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session_logout);
+
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                userLogout();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.no_internet_connection,
+                        R.string.dlg_retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+                            }
+                        });
+            }
+        });
     }
 
     private void markMessagesRead(StringifyArrayList<String> messagesIds, String dialogId) {
@@ -280,7 +313,6 @@ public class DialogsActivity extends BaseActivity {
     private void registerQbChatListeners() {
         QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
         QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
-
         if (privateChatManager != null) {
             privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
         }
@@ -293,7 +325,6 @@ public class DialogsActivity extends BaseActivity {
     private void unregisterQbChatListeners() {
         QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
         QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
-
         if (privateChatManager != null) {
             privateChatManager.removePrivateChatManagerListener(privateChatManagerListener);
         }

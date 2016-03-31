@@ -44,7 +44,7 @@ public class ErrorUtils {
         return showSnackbar(view, message, actionLabel, clickListener);
     }
 
-    private static Snackbar showSnackbar(View view, @StringRes int message,
+    public static Snackbar showSnackbar(View view, @StringRes int message,
                                          @StringRes int actionLabel,
                                          View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);

@@ -100,13 +100,15 @@ public class ChatHelper {
         qbChatService.login(user, new QbEntityCallbackWrapper<>(callback));
     }
 
-    public void logout() {
+    public boolean logout() {
         try {
             qbChatService.logout();
             qbChatService.destroy();
+            return true;
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
