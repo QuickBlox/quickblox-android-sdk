@@ -27,8 +27,11 @@ import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
+import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
+import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -88,7 +91,7 @@ public class DialogsActivity extends BaseActivity {
         privateChatManagerListener = new QBPrivateChatManagerListener() {
             @Override
             public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
-                loadDialogsFromQbInUiThread(true);
+                qbPrivateChat.addMessageListener(privateChatMessageListener);
             }
         };
         groupChatManagerListener = new QBGroupChatManagerListener() {
@@ -309,6 +312,18 @@ public class DialogsActivity extends BaseActivity {
             }
         });
     }
+
+    QBMessageListener<QBPrivateChat> privateChatMessageListener = new QBMessageListener<QBPrivateChat>() {
+        @Override
+        public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
+            loadDialogsFromQbInUiThread(true);
+        }
+
+        @Override
+        public void processError(QBPrivateChat privateChat, QBChatException error, QBChatMessage originMessage) {
+
+        }
+    };
 
     private void registerQbChatListeners() {
         QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
