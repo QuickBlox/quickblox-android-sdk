@@ -169,6 +169,7 @@ public class DialogsActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PEOPLE) {
+                ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_chat);
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
@@ -205,6 +206,7 @@ public class DialogsActivity extends BaseActivity {
             }
             SharedPreferencesUtil.removeQbUser();
             LoginActivity.start(this);
+            ProgressDialogFragment.hide(getSupportFragmentManager());
             finish();
         } else {
             reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
@@ -217,7 +219,6 @@ public class DialogsActivity extends BaseActivity {
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
                 userLogout();
             }
 
@@ -316,6 +317,7 @@ public class DialogsActivity extends BaseActivity {
     QBMessageListener<QBPrivateChat> privateChatMessageListener = new QBMessageListener<QBPrivateChat>() {
         @Override
         public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
+            requestBuilder.setSkip(skipRecords = 0);
             loadDialogsFromQbInUiThread(true);
         }
 
@@ -355,6 +357,7 @@ public class DialogsActivity extends BaseActivity {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, dialog);
+                        ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
 
                     @Override
