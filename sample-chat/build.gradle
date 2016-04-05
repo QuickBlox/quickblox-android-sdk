@@ -34,7 +34,7 @@ dependencies {
     compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@aar"
 
     compile 'com.navercorp.pulltorefresh:library:3.2.3@aar'
-    compile('vc908.stickers:stickerfactory:0.10.6@aar') {
+    compile('vc908.stickers:stickerfactory:0.10.13@aar') {
         transitive = true;
     }
     compile "com.google.android.gms:play-services-gcm:7.5.0"
