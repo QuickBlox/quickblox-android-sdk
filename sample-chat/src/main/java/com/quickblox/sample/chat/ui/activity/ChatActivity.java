@@ -291,7 +291,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 new AttachmentPreviewAdapter.OnAttachmentUploadErrorListener() {
                     @Override
                     public void onAttachmentUploadError(QBResponseException e) {
-                        showErrorSnackbar(0, e, null);
+                        showErrorSnackbar(0, e, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onAttachmentsClick(v);
+                            }
+                        });
                     }
                 });
         AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
