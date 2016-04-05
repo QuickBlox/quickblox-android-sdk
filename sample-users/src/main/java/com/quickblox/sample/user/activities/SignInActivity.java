@@ -43,7 +43,7 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 progressDialog.dismiss();
-
+// Is it need setResult(RESULT_OK)?;
                 setResult(RESULT_OK);
 
                 DataHolder.getInstance().setSignInQbUser(qbUser);

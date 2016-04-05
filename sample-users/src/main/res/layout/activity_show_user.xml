@@ -16,6 +16,7 @@
             android:id="@+id/activity_show_user"
             style="@style/MatchWidth"
             android:layout_marginLeft="@dimen/padding_small"
+            android:layout_marginRight="@dimen/margin_middle"
             android:layout_marginTop="@dimen/margin_middle"
             android:background="@color/background_app_color"
             tools:ignore="RtlHardcoded">
