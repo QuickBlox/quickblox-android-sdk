@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +38,7 @@ import com.quickblox.simplesample.messages.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesActivity extends CoreBaseActivity {
+public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -56,8 +58,9 @@ public class MessagesActivity extends CoreBaseActivity {
         }
     };
 
-    public static void start(Context context) {
+    public static void start(Context context, String message) {
         Intent intent = new Intent(context, MessagesActivity.class);
+        intent.putExtra(GcmConsts.EXTRA_GCM_MESSAGE, message);
         context.startActivity(intent);
     }
 
@@ -65,19 +68,26 @@ public class MessagesActivity extends CoreBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+
         receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
             googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
         }
-
         initUI();
+
+        String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+
+        if (message != null) {
+            retrieveMessage(message);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        App.activityResumed();
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -87,7 +97,14 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        App.activityPaused();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(0).setEnabled(true);
+        return true;
     }
 
     @Override
@@ -100,17 +117,19 @@ public class MessagesActivity extends CoreBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_send_message:
-            sendPushMessage();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.menu_send_message:
+                item.setEnabled(false);
+                sendPushMessage();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
     private void initUI() {
         progressBar = _findViewById(R.id.progress_bar);
         outgoingMessageEditText = _findViewById(R.id.edit_message_out);
+        outgoingMessageEditText.addTextChangedListener(this);
 
         ListView incomingMessagesListView = _findViewById(R.id.list_messages);
         adapter = new ArrayAdapter<>(this, R.layout.list_item_message, R.id.item_message, receivedPushes);
@@ -119,16 +138,17 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private void retrieveMessage(String message) {
-        receivedPushes.add(message);
+        receivedPushes.add(0, message);
         adapter.notifyDataSetChanged();
 
         progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void sendPushMessage() {
-        String outMessage = outgoingMessageEditText.getText().toString();
+        String outMessage = outgoingMessageEditText.getText().toString().trim();
         if (!isValidData(outMessage)) {
             Toaster.longToast(R.string.error_fields_is_empty);
+            invalidateOptionsMenu();
             return;
         }
 
@@ -149,14 +169,21 @@ public class MessagesActivity extends CoreBaseActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);
                 outgoingMessageEditText.setText(null);
+                invalidateOptionsMenu();
             }
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.longToast(e.getErrors().toString());
-
+                View rootView = findViewById(R.id.activity_messages);
+                showSnackbarError(rootView, R.string.connection_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendPushMessage();
+                    }
+                });
                 progressBar.setVisibility(View.INVISIBLE);
                 KeyboardUtils.hideKeyboard(outgoingMessageEditText);
+                invalidateOptionsMenu();
             }
         });
 
@@ -164,6 +191,23 @@ public class MessagesActivity extends CoreBaseActivity {
     }
 
     private boolean isValidData(String message) {
-        return !TextUtils.isEmpty(message.trim());
+        return !TextUtils.isEmpty(message);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        //ignore
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        //ignore
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.length() >= getResources().getInteger(R.integer.push_max_length)) {
+            Toaster.shortToast(R.string.error_too_long_push);
+        }
     }
 }

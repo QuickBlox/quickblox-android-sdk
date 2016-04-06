@@ -2,13 +2,13 @@
 <resources>
 
     <style name="PushMessageItemStyle" parent="ListItem">
-        <item name="android:layout_height">?android:attr/listPreferredItemHeightSmall</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">@dimen/padding_large</item>
         <item name="android:paddingRight">@dimen/padding_large</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/text_color_primary</item>
         <item name="android:gravity">left|center</item>
-        <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
 

@@ -11,5 +11,8 @@
     <string name="no_messages">No messages received yet</string>
     <string name="notification_title">GCM Notification</string>
     <string name="error_fields_is_empty">Field(s) is empty!</string>
+    <string name="splash_create_session_error">Create session errors:</string>
+    <string name="connection_error">Connection errors:</string>
+    <string name="error_too_long_push">You can enter only 1000 characters!</string>
 
 </resources>

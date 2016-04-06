@@ -9,6 +9,7 @@ import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.NotificationUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.simplesample.messages.App;
 import com.quickblox.simplesample.messages.R;
 import com.quickblox.simplesample.messages.activities.SplashActivity;
 
@@ -22,7 +23,9 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
         Log.v(TAG, "From: " + from);
         Log.v(TAG, "Message: " + message);
 
-        showNotification(message);
+        if (!App.isMessagesActivityVisible()) {
+            showNotification(message);
+        }
         sendPushMessageBroadcast(message);
     }
 
@@ -40,4 +43,5 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(gcmBroadcastIntent);
     }
+
 }
