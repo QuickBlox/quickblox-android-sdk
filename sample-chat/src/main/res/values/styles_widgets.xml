@@ -18,7 +18,6 @@
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
         <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
         <item name="android:scaleType">centerInside</item>
     </style>
@@ -48,13 +47,14 @@
         <item name="android:layout_height">20dp</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
+        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
         <item name="android:background">@drawable/shape_rectangle</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text_color_white</item>
     </style>
 
     <style name="UserIconStyle" parent="ListItemIconStyle">
+        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
         <item name="android:padding">@dimen/padding_common</item>
     </style>
 

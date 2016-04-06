@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +21,6 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.users.model.QBUser;
-
-import java.util.List;
 
 public abstract class BaseActivity extends CoreBaseActivity implements QbSessionStateCallback {
     private static final String TAG = BaseActivity.class.getSimpleName();
@@ -66,8 +65,9 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
     protected abstract View getSnackbarAnchorView();
 
-    protected void showErrorSnackbar(@StringRes int resId, List<String> errors, View.OnClickListener clickListener) {
-        ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, errors,
+    protected Snackbar showErrorSnackbar(@StringRes int resId, Exception e,
+                                         View.OnClickListener clickListener) {
+        return ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                 com.quickblox.sample.core.R.string.dlg_retry, clickListener);
     }
 
@@ -96,11 +96,11 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             }
 
             @Override
-            public void onError(QBResponseException errors) {
+            public void onError(QBResponseException e) {
                 isAppSessionActive = false;
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                Log.w(TAG, "Chat login onError(): " + errors);
-                showErrorSnackbar(R.string.error_recreate_session, errors.getErrors(),
+                Log.w(TAG, "Chat login onError(): " + e);
+                showErrorSnackbar(R.string.error_recreate_session, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

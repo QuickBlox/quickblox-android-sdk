@@ -72,9 +72,9 @@ public class SelectUsersActivity extends BaseActivity {
         usersListView.addHeaderView(listHeader, null, false);
 
         if (isEditingChat()) {
-            actionBar.setTitle(R.string.select_users_edit_chat);
+            setActionBarTitle(R.string.select_users_edit_chat);
         } else {
-            actionBar.setTitle(R.string.select_users_create_chat);
+            setActionBarTitle(R.string.select_users_create_chat);
         }
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -143,7 +143,7 @@ public class SelectUsersActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.select_users_get_users_error, e.getErrors(),
+                showErrorSnackbar(R.string.select_users_get_users_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

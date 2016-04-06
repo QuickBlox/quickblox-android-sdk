@@ -1,6 +1,6 @@
 package com.quickblox.sample.chat.ui.activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -32,7 +32,7 @@ import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
-import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
 import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
@@ -57,6 +57,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private static final String EXTRA_DIALOG = "dialog";
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
+    public static final String EXTRA_MARK_READ = "markRead";
+    public static final String EXTRA_DIALOG_ID = "dialogId";
+
     private ProgressBar progressBar;
     private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
@@ -68,11 +71,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private Chat chat;
     private QBDialog qbDialog;
+    private ArrayList<String> chatMessageIds;
 
-    public static void start(Context context, QBDialog dialog) {
-        Intent intent = new Intent(context, ChatActivity.class);
+    public static void startForResult(Activity activity, int code, QBDialog dialog) {
+        Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_DIALOG, dialog);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, code);
     }
 
     @Override
@@ -81,6 +85,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         setContentView(R.layout.activity_chat);
 
         qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
+        chatMessageIds = new ArrayList<>();
         initViews();
     }
 
@@ -115,6 +120,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     public void onBackPressed() {
         releaseChat();
+        sendReadMessageId();
+
         super.onBackPressed();
     }
 
@@ -143,26 +150,59 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-        case R.id.menu_chat_action_info:
-            ChatInfoActivity.start(this, qbDialog);
-            return true;
+            case R.id.menu_chat_action_info:
+                ChatInfoActivity.start(this, qbDialog);
+                return true;
 
-        case R.id.menu_chat_action_add:
-            SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
-            return true;
+            case R.id.menu_chat_action_add:
+                SelectUsersActivity.startForResult(this, REQUEST_CODE_SELECT_PEOPLE, qbDialog);
+                return true;
 
-        case R.id.menu_chat_action_leave:
-            ((GroupChatImpl) chat).leave();
-            finish();
-            return true;
+            case R.id.menu_chat_action_leave:
+                leaveGroupChat();
+                return true;
 
-        case R.id.menu_chat_action_delete:
-            deleteChat();
-            return true;
+            case R.id.menu_chat_action_delete:
+                deleteChat();
+                return true;
 
-        default:
-            return super.onOptionsItemSelected(item);
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void sendReadMessageId() {
+        Intent result = new Intent();
+        result.putExtra(EXTRA_MARK_READ, chatMessageIds);
+        result.putExtra(EXTRA_DIALOG_ID, qbDialog.getDialogId());
+        setResult(RESULT_OK, result);
+    }
+
+    private void leaveGroupChat() {
+        ((GroupChatImpl) chat).leaveChatRoom();
+        ProgressDialogFragment.show(getSupportFragmentManager());
+        ChatHelper.getInstance().leaveDialog(qbDialog, new QBEntityCallback<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                showErrorSnackbar(R.string.error_leave_chat, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        leaveGroupChat();
+                    }
+                });
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -182,15 +222,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
-        case REQUEST_CODE_ATTACHMENT:
-            attachmentPreviewAdapter.add(file);
-            break;
+            case REQUEST_CODE_ATTACHMENT:
+                attachmentPreviewAdapter.add(file);
+                break;
         }
     }
 
     @Override
     public void onImagePickError(int requestCode, Exception e) {
-        ErrorUtils.showErrorDialog(this, R.string.chat_attachment_error, e.toString());
+        showErrorSnackbar(0, e, null);
     }
 
     @Override
@@ -227,8 +267,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void showMessage(QBChatMessage message) {
-        chatAdapter.add(message);
-        scrollMessageListDown();
+        if (chatAdapter != null) {
+            chatAdapter.add(message);
+            scrollMessageListDown();
+        }
     }
 
     private void initViews() {
@@ -244,6 +286,17 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     @Override
                     public void onAttachmentCountChanged(int count) {
                         attachmentPreviewContainerLayout.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+                    }
+                },
+                new AttachmentPreviewAdapter.OnAttachmentUploadErrorListener() {
+                    @Override
+                    public void onAttachmentUploadError(QBResponseException e) {
+                        showErrorSnackbar(0, e, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onAttachmentsClick(v);
+                            }
+                        });
                     }
                 });
         AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
@@ -280,21 +333,21 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void initChat() {
         switch (qbDialog.getType()) {
-        case GROUP:
-        case PUBLIC_GROUP:
-            chat = new GroupChatImpl(chatMessageListener);
-            joinGroupChat();
-            break;
+            case GROUP:
+            case PUBLIC_GROUP:
+                chat = new GroupChatImpl(chatMessageListener);
+                joinGroupChat();
+                break;
 
-        case PRIVATE:
-            chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
-            loadDialogUsers();
-            break;
+            case PRIVATE:
+                chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+                loadDialogUsers();
+                break;
 
-        default:
-            Toaster.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbDialog.getType().name()));
-            finish();
-            break;
+            default:
+                Toaster.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbDialog.getType().name()));
+                finish();
+                break;
         }
     }
 
@@ -310,7 +363,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_join_error, e.getErrors(), new View.OnClickListener() {
+                showErrorSnackbar(R.string.chat_join_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         joinGroupChat();
@@ -320,9 +373,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         });
     }
 
-    private void leaveGroupChat() {
+    private void leaveGroupChatRoom() {
         if (chat != null) {
-            ((GroupChatImpl) chat).leave();
+            ((GroupChatImpl) chat).leaveChatRoom();
         }
     }
 
@@ -347,7 +400,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
                     @Override
                     public void onError(QBResponseException e) {
-                        showErrorSnackbar(R.string.chat_info_add_people_error, e.getErrors(),
+                        showErrorSnackbar(R.string.chat_info_add_people_error, e,
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -369,7 +422,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.chat_load_users_error, e.getErrors(),
+                showErrorSnackbar(R.string.chat_load_users_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -401,8 +454,22 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 chatAdapter = new ChatAdapter(ChatActivity.this, messages);
                 chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
                     @Override
-                    public void onItemInfoExpanded(int position) {
-                        messagesListView.smoothScrollToPosition(position);
+                    public void onItemInfoExpanded(final int position) {
+                        if (isLastItem(position)) {
+                            // HACK need to allow info textview visibility change so posting it via handler
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    messagesListView.setSelection(position);
+                                }
+                            });
+                        } else {
+                            messagesListView.smoothScrollToPosition(position);
+                        }
+                    }
+
+                    private boolean isLastItem(int position) {
+                        return position == chatAdapter.getCount() - 1;
                     }
                 });
                 messagesListView.setAdapter(chatAdapter);
@@ -416,7 +483,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_load_history_error, e.getErrors(),
+                showErrorSnackbar(R.string.chat_load_history_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -440,7 +507,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.dialogs_deletion_error, e.getErrors(),
+                showErrorSnackbar(R.string.dialogs_deletion_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -454,6 +521,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private QBChatMessageListener chatMessageListener = new QBChatMessageListener() {
         @Override
         public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
+            chatMessageIds.add(message.getId());
             showMessage(message);
         }
     };
@@ -468,7 +536,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        leaveGroupChat();
+                        leaveGroupChatRoom();
                     }
                 });
             }

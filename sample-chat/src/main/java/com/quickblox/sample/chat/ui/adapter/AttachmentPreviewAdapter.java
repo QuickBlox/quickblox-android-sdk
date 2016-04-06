@@ -20,7 +20,6 @@ import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
-import com.quickblox.sample.core.utils.Toaster;
 
 import java.io.File;
 import java.util.Collection;
@@ -37,12 +36,16 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
     private Map<File, Integer> fileUploadProgressMap;
 
     private OnAttachmentCountChangedListener onAttachmentCountChangedListener;
+    private OnAttachmentUploadErrorListener onAttachmentUploadErrorListener;
 
-    public AttachmentPreviewAdapter(Context context, OnAttachmentCountChangedListener listener) {
+    public AttachmentPreviewAdapter(Context context,
+                                    OnAttachmentCountChangedListener countChangedListener,
+                                    OnAttachmentUploadErrorListener errorListener) {
         super(context);
         fileQBAttachmentMap = Collections.synchronizedMap(new HashMap<File, QBAttachment>());
         fileUploadProgressMap = Collections.synchronizedMap(new HashMap<File, Integer>());
-        onAttachmentCountChangedListener = listener;
+        onAttachmentCountChangedListener = countChangedListener;
+        onAttachmentUploadErrorListener = errorListener;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.shortToast(R.string.chat_attachment_error);
+                onAttachmentUploadErrorListener.onAttachmentUploadError(e);
                 remove(item);
             }
         }, new QBProgressCallback() {
@@ -157,5 +160,9 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
 
     public static interface OnAttachmentCountChangedListener {
         void onAttachmentCountChanged(int count);
+    }
+
+    public static interface OnAttachmentUploadErrorListener {
+        void onAttachmentUploadError(QBResponseException e);
     }
 }

@@ -6,9 +6,16 @@
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
-    <ListView
-        android:id="@+id/list_dialogs_chats"
-        style="@style/ListViewWithoutDividerStyle" />
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/swipy_refresh_layout"
+        style="@style/MatchParent"
+        app:srl_direction="bottom">
+
+        <ListView
+            android:id="@+id/list_dialogs_chats"
+            style="@style/ListViewWithoutDividerStyle" />
+
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
     <LinearLayout
         android:id="@+id/layout_chat_empty"

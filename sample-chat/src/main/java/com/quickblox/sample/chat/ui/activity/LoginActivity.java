@@ -64,7 +64,7 @@ public class LoginActivity extends CoreBaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                ErrorUtils.showSnackbar(userListView, R.string.login_cant_obtain_users, e.getErrors(),
+                ErrorUtils.showSnackbar(userListView, R.string.login_cant_obtain_users, e,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -91,7 +91,7 @@ public class LoginActivity extends CoreBaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                ErrorUtils.showSnackbar(userListView, R.string.login_chat_login_error, e.getErrors(),
+                ErrorUtils.showSnackbar(userListView, R.string.login_chat_login_error, e,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

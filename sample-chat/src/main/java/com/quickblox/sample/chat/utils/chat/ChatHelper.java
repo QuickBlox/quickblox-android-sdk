@@ -21,6 +21,7 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
@@ -37,13 +38,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
-    private static final int DIALOG_ITEMS_PER_PAGE = 100;
+    public static final int DIALOG_ITEMS_PER_PAGE = 50;
     private static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
@@ -98,12 +100,15 @@ public class ChatHelper {
         qbChatService.login(user, new QbEntityCallbackWrapper<>(callback));
     }
 
-    public void logout() {
+    public boolean logout() {
         try {
             qbChatService.logout();
+            qbChatService.destroy();
+            return true;
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
@@ -132,7 +137,7 @@ public class ChatHelper {
             });
         }
 
-        // TODO Implement callback logic to get triggered only after deletion of all dialogs
+        // TODO ANDSAMPLES-69 Implement callback logic to get triggered only after deletion of all dialogs
         callback.onSuccess(null, null);
     }
 
@@ -143,9 +148,22 @@ public class ChatHelper {
         } else if (qbDialog.getType() == QBDialogType.PRIVATE) {
             QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(),
                     new QbEntityCallbackWrapper<>(callback));
-        } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+        } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         }
+    }
+
+    public void leaveDialog(QBDialog qbDialog, QBEntityCallback<QBDialog> callback) {
+        QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
+        qbRequestBuilder.pullAll("occupants_ids", SharedPreferencesUtil.getQbUser().getId());
+
+        QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
+                new QbEntityCallbackWrapper<QBDialog>(callback) {
+                    @Override
+                    public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                        super.onSuccess(qbDialog, bundle);
+                    }
+                });
     }
 
     public void updateDialogUsers(QBDialog qbDialog,
@@ -196,14 +214,21 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogs(final QBEntityCallback<ArrayList<QBDialog>> callback) {
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
+    public void getDialogs(QBRequestGetBuilder customObjectRequestBuilder, final QBEntityCallback<ArrayList<QBDialog>> callback) {
         customObjectRequestBuilder.setLimit(DIALOG_ITEMS_PER_PAGE);
 
         QBChatService.getChatDialogs(null, customObjectRequestBuilder,
                 new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
+                        Iterator<QBDialog> dialogIterator = dialogs.iterator();
+                        while (dialogIterator.hasNext()) {
+                            QBDialog dialog = dialogIterator.next();
+                            if (dialog.getType() == QBDialogType.PUBLIC_GROUP) {
+                                dialogIterator.remove();
+                            }
+                        }
+
                         for (QBDialog dialog : dialogs) {
                             // FIXME Fix for crash when using equals() or hashcode() methods on QBEntity
                             dialog.setId(dialog.getDialogId().hashCode());

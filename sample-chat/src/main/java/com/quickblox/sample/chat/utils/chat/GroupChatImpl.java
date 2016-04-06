@@ -1,5 +1,6 @@
 package com.quickblox.sample.chat.utils.chat;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -44,7 +45,8 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        qbChat.join(history, new QBEntityCallback<Void>() {
+        QBEntityCallback<Void> qbEntityCallback = new QBEntityCallback<Void>() {
+
             @Override
             public void onSuccess(final Void result, final Bundle bundle) {
                 qbChat.addMessageListener(GroupChatImpl.this);
@@ -68,10 +70,12 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
                     }
                 });
             }
-        });
+        };
+
+        new JoinRoomTask(qbEntityCallback).execute(history);
     }
 
-    public void leave() {
+    public void leaveChatRoom() {
         try {
             qbChat.leave();
         } catch (SmackException.NotConnectedException | XMPPException e) {
@@ -82,7 +86,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
     @Override
     public void release() throws XMPPException {
         if (qbChat != null) {
-            leave();
+            leaveChatRoom();
             qbChat.removeMessageListener(this);
         }
     }
@@ -95,5 +99,25 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
     @Override
     public void processMessageFailed(QBGroupChat qbGroupChat, QBChatMessage qbChatMessage) {
 
+    }
+
+    class JoinRoomTask extends AsyncTask {
+        private QBEntityCallback qbEntityCallback;
+
+        public JoinRoomTask(QBEntityCallback qbEntityCallback) {
+            this.qbEntityCallback = qbEntityCallback;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            DiscussionHistory history = (DiscussionHistory) params[0];
+            try {
+                qbChat.join(history);
+                qbEntityCallback.onSuccess(null, Bundle.EMPTY);
+            } catch (XMPPException | SmackException e) {
+                qbEntityCallback.onError(new QBResponseException(e.getMessage()));
+            }
+            return qbEntityCallback;
+        }
     }
 }

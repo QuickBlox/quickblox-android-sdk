@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/ListItem"
     android:id="@+id/root"
+    android:paddingLeft="@dimen/list_item_side_margin"
+    android:paddingRight="@dimen/list_item_side_margin"
     tools:ignore="RtlHardcoded">
 
     <ImageView
@@ -24,11 +26,12 @@
         <TextView
             android:id="@+id/text_dialog_last_message"
             style="@style/DialogLastMessageStyle"
-            tools:text="Last message" />
+            tools:text="Long last message to see how margin on the right side works" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/text_dialog_unread_count"
         style="@style/DialogUnreadCounterStyle"
+        android:visibility="visible"
         tools:text="4" />
 </LinearLayout>

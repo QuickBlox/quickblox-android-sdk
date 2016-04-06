@@ -94,7 +94,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        actionBar.setTitle(DataHolder.getInstance().isSignedIn() ? DataHolder.getInstance().getSignInQbUser().getLogin()
+        setActionBarTitle(DataHolder.getInstance().isSignedIn() ? DataHolder.getInstance().getSignInQbUser().getLogin()
                 : getString(R.string.not_signed_in));
     }
 
@@ -126,7 +126,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
             menu.getItem(2).setVisible(false);
             menu.getItem(3).setEnabled(false);
         } else {
-            actionBar.setTitle(DataHolder.getInstance().getSignInQbUser().getLogin());
+            setActionBarTitle(DataHolder.getInstance().getSignInQbUser().getLogin());
             menu.getItem(0).setVisible(false);
             menu.getItem(1).setVisible(false);
             menu.getItem(2).setVisible(true);

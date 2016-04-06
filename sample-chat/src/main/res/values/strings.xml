@@ -14,6 +14,8 @@
 
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+    <string name="dlg_restoring_chat_session_logout">Restoring session and logout</string>
+    <string name="create_chat">Creating chat…</string>
     <string name="dlg_login">Login…</string>
 
     <string name="placeholder_username_you">%s (you)</string>
@@ -61,4 +63,5 @@
 
     <string name="group_chat_join_error">Could not join chat, errors:</string>
     <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
+    <string name="error_leave_chat">Error leaving room</string>
 </resources>
