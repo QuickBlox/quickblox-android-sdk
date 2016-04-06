@@ -38,7 +38,8 @@
         <activity
             android:name=".activities.ShowUserActivity"
             android:label="@string/user_details"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
 
     </application>
 </manifest>

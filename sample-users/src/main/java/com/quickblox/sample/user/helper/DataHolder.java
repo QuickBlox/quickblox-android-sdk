@@ -34,10 +34,10 @@ public class DataHolder {
         }
     }
 
-    //TODO each method should perform only one action and be named by action it actually do
-    public void setQbUser(int location, QBUser qbUser) {
-        qbUsers.set(location, qbUser);
-        setSignInQbUser(qbUser);
+    public void updateQbUserList(int location, QBUser qbUser) {
+        if (location != -1) {
+            qbUsers.set(location, qbUser);
+        }
     }
 
     public List<QBUser> getQBUsers() {

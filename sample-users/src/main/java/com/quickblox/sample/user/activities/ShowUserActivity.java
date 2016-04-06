@@ -47,8 +47,7 @@ public class ShowUserActivity extends BaseActivity {
 
         qbUser = (QBUser) getIntent().getSerializableExtra(QB_USER);
 
-        //TODO userFull sounds a little bit strange, why is it full ? Name it just User.
-        showUserBinding.setUserFull(qbUser);
+        showUserBinding.setUser(qbUser);
 
         setFieldsFocusable(qbUser);
     }
@@ -73,8 +72,8 @@ public class ShowUserActivity extends BaseActivity {
         }
     }
 
-    //TODO seems like this method can be moved to base activity, it appears almost in each activity
-    private void initUI() {
+    @Override
+    protected void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
         showUserBinding = DataBindingUtil.setContentView(this, R.layout.activity_show_user);
 
@@ -88,11 +87,10 @@ public class ShowUserActivity extends BaseActivity {
         if (DataHolder.getInstance().isSignedIn()) {
             currentUserSignIn = DataHolder.getInstance().getSignInQbUser().equals(qbUser);
         }
-        //TODO it's better to use setEnabled method to enable/disable view for editing
-        fullNameEditText.setFocusableInTouchMode(currentUserSignIn);
-        emailEditText.setFocusableInTouchMode(currentUserSignIn);
-        phoneNumberEditText.setFocusableInTouchMode(currentUserSignIn);
-        tagsEditText.setFocusableInTouchMode(currentUserSignIn);
+        fullNameEditText.setEnabled(currentUserSignIn);
+        emailEditText.setEnabled(currentUserSignIn);
+        phoneNumberEditText.setEnabled(currentUserSignIn);
+        tagsEditText.setEnabled(currentUserSignIn);
     }
 
     private void updateProfile() {
@@ -104,7 +102,6 @@ public class ShowUserActivity extends BaseActivity {
         StringifyArrayList<String> tagsArray = new StringifyArrayList<>();
         tagsArray.add(tags);
 
-        //TODO I think if some editText is empty it isn't necessary to update this field in user
         qbUser.setFullName(fullName);
         qbUser.setEmail(email);
         qbUser.setPhone(phoneNumber);
@@ -115,7 +112,8 @@ public class ShowUserActivity extends BaseActivity {
             public void onSuccess(QBUser user, Bundle args) {
 
                 int location = DataHolder.getInstance().getQBUsers().indexOf(user);
-                DataHolder.getInstance().setQbUser(location, user);
+                DataHolder.getInstance().updateQbUserList(location, user);
+                DataHolder.getInstance().setSignInQbUser(user);
 
                 Toaster.shortToast(R.string.update);
                 progressDialog.dismiss();

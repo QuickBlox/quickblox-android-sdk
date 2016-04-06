@@ -27,7 +27,8 @@ public class SignInActivity extends BaseActivity {
         initUI();
     }
 
-    private void initUI() {
+    @Override
+    protected void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         loginEditText = _findViewById(R.id.login_in_edittext);

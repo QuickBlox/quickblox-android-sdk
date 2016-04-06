@@ -4,11 +4,9 @@
     <data>
 
         <variable
-            name="userFull"
+            name="user"
             type="com.quickblox.users.model.QBUser" />
     </data>
-
-    <!--TODO Why is here CoordinatorLayout ? What purposes does it perform ? -->
 
     <android.support.design.widget.CoordinatorLayout style="@style/MatchParent">
 
@@ -39,7 +37,7 @@
                     android:layout_marginTop="@dimen/margin_negative"
                     android:editable="false"
                     android:focusable="false"
-                    android:text="@{userFull.login}"
+                    android:text="@{user.login}"
                     android:textColor="@color/black_light"
                     android:textSize="@dimen/text_size_large"
                     tools:ignore="Deprecated,TextFields"
@@ -58,7 +56,7 @@
                     android:layout_marginTop="@dimen/margin_very_small"
                     android:background="@android:color/transparent"
                     android:inputType="text"
-                    android:text="@{userFull.fullName}"
+                    android:text="@{user.fullName}"
                     android:textColor="@color/warm_gray"
                     android:textSize="@dimen/text_size_middle"
                     tools:text="@string/alex_full" />
@@ -76,7 +74,7 @@
                     android:layout_marginTop="@dimen/margin_very_small"
                     android:background="@android:color/transparent"
                     android:inputType="textEmailAddress"
-                    android:text="@{userFull.email}"
+                    android:text="@{user.email}"
                     android:textColor="@color/warm_gray"
                     android:textSize="@dimen/text_size_middle"
                     tools:text="@string/alex_email" />
@@ -87,16 +85,12 @@
                     android:layout_marginLeft="@dimen/margin_negative"
                     android:layout_marginTop="@dimen/margin_large"
                     android:hint="@string/phone_number"
-                    android:text="@{userFull.phone}"
+                    android:text="@{user.phone}"
                     android:textColor="@color/warm_gray"
                     android:textColorHint="@color/warm_gray_two"
                     android:textSize="@dimen/text_size_large"
                     android:theme="@style/EditTextNotEditableTheme"
                     tools:ignore="Deprecated,TextFields" />
-
-                <!--TODO It is more convenient to check if userFull.tags is empty rather then invent bicycle and check toString!-->
-
-                <!--TODO userFull.tags.toString.replace logic we can replace with some method in util class to make layout be responsible only for filling views-->
 
                 <EditText
                     android:id="@+id/tag_textview"
@@ -104,7 +98,7 @@
                     android:layout_marginLeft="@dimen/margin_negative"
                     android:layout_marginTop="@dimen/margin_tags"
                     android:hint="@string/tags"
-                    android:text="@{userFull.tags.toString.equals(@string/braces) ? @string/empty : userFull.tags.toString.replace(@string/brace_left, @string/empty).replace(@string/brace_right, @string/empty)}"
+                    android:text="@{com.quickblox.sample.user.helper.Utils.removeBraces(user.tags)}"
                     android:textColor="@color/warm_gray"
                     android:textColorHint="@color/warm_gray_two"
                     android:textSize="@dimen/text_size_large"

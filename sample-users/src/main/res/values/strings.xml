@@ -31,14 +31,10 @@
     <string name="phone_number">Phone Number</string>
     <string name="tags">Tags</string>
 
-    <string name="braces">[]</string>
-    <string name="brace_left">[</string>
-    <string name="brace_right">]</string>
     <string name="confirm_password">Confirm password</string>
     <string name="confirm_error">Passwords does not match!</string>
-    <string name="empty"> </string>
     <string name="error">error</string>
     <string name="errors">Errors</string>
-    <string name="error_field_is_empty">Field(s) is empty!</string>
+    <string name="error_field_is_empty">Field is empty!</string>
 
 </resources>

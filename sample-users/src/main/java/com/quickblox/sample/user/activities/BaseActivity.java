@@ -17,4 +17,6 @@ public abstract class BaseActivity extends CoreBaseActivity {
         progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
+
+    protected abstract void initUI();
 }

@@ -34,7 +34,8 @@ public class SignUpUserActivity extends BaseActivity {
     }
 
     @SuppressLint("ShowToast")
-    private void initUI() {
+    @Override
+    protected void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         toast = Toast.makeText(this, R.string.error, Toast.LENGTH_LONG);
@@ -84,15 +85,22 @@ public class SignUpUserActivity extends BaseActivity {
     }
 
     private boolean isValidData(String login, String password, String confirm) {
+
         if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirm)) {
-            //TODO We can show prompt on EditText via setError method to point which field is empty
-            toast.setText(R.string.error_field_is_empty);
-            toast.show();
+            if (TextUtils.isEmpty(login)) {
+                loginEditText.setError(getResources().getString(R.string.error_field_is_empty));
+            }
+            if (TextUtils.isEmpty(password)) {
+                passwordEditText.setError(getResources().getString(R.string.error_field_is_empty));
+            }
+            if (TextUtils.isEmpty(confirm)) {
+                confirmPasswordEditText.setError(getResources().getString(R.string.error_field_is_empty));
+            }
             return false;
         }
+
         if (!TextUtils.equals(password, confirm)) {
-            toast.setText(R.string.confirm_error);
-            toast.show();
+            confirmPasswordEditText.setError(getResources().getString(R.string.confirm_error));
             return false;
         }
         return true;

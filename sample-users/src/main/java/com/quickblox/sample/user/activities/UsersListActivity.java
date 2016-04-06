@@ -55,7 +55,8 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
         getAllUsers(true);
     }
 
-    private void initUI() {
+    @Override
+    protected void initUI() {
         ListView usersListView = _findViewById(R.id.users_listview);
         setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
 
