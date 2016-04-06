@@ -5,47 +5,47 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.quickblox.sample.user.definitions.Consts.EMPTY_STRING;
-
 public class DataHolder {
 
-    private static DataHolder dataHolder;
-    private List<QBUser> qbUsersList = new ArrayList<>();
+    private static DataHolder instance;
+    private List<QBUser> qbUsers;
     private QBUser signInQbUser;
 
-    public static synchronized DataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new DataHolder();
+    private DataHolder() {
+        qbUsers = new ArrayList<>();
+    }
+
+    public static synchronized DataHolder getInstance() {
+        if (instance == null) {
+            instance = new DataHolder();
         }
-        return dataHolder;
+        return instance;
     }
 
-    public void setQbUsersList(List<QBUser> qbUsersList) {
-        this.qbUsersList = qbUsersList;
+    public void addQbUsers(List<QBUser> qbUsers) {
+        for (QBUser qbUser : qbUsers) {
+            addQbUser(qbUser);
+        }
     }
 
-    public int getQBUserListSize() {
-        return qbUsersList.size();
+    public void addQbUser(QBUser qbUser) {
+        if (!qbUsers.contains(qbUser)) {
+            qbUsers.add(qbUser);
+        }
     }
 
-    public String getQBUserName(int index) {
-        return qbUsersList.get(index).getFullName();
+    public void updateQbUserList(int location, QBUser qbUser) {
+        if (location != -1) {
+            qbUsers.set(location, qbUser);
+        }
     }
 
-    public List<String> getQbUserTags(int index) {
-        return qbUsersList.get(index).getTags();
+    public List<QBUser> getQBUsers() {
+        return qbUsers;
     }
 
-    public QBUser getQBUser(int index) {
-        return qbUsersList.get(index);
-    }
-
-    public QBUser getLastQBUser() {
-        return qbUsersList.get(qbUsersList.size() - 1);
-    }
-
-    public void addQbUserToList(QBUser qbUser) {
-        qbUsersList.add(qbUser);
+    public void clear() {
+        qbUsers.clear();
     }
 
     public QBUser getSignInQbUser() {
@@ -56,43 +56,8 @@ public class DataHolder {
         this.signInQbUser = singInQbUser;
     }
 
-    public String getSignInUserOldPassword() {
-        return signInQbUser.getOldPassword();
+    public boolean isSignedIn() {
+        return signInQbUser != null;
     }
 
-    public int getSignInUserId() {
-        return signInQbUser.getId();
-    }
-
-    public void setSignInUserPassword(String singInUserPassword) {
-        signInQbUser.setOldPassword(singInUserPassword);
-    }
-
-    public String getSignInUserLogin() {
-        return signInQbUser.getLogin();
-    }
-
-    public String getSignInUserEmail() {
-        return signInQbUser.getEmail();
-    }
-
-    public String getSignInUserFullName() {
-        return signInQbUser.getFullName();
-    }
-
-    public String getSignInUserPhone() {
-        return signInQbUser.getPhone();
-    }
-
-    public String getSignInUserWebSite() {
-        return signInQbUser.getWebsite();
-    }
-
-    public String getSignInUserTags() {
-        if (signInQbUser.getTags() != null) {
-            return signInQbUser.getTags().getItemsAsString();
-        } else {
-            return EMPTY_STRING;
-        }
-    }
 }

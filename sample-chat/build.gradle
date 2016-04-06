@@ -39,17 +39,18 @@ android {
 
 dependencies {
     compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
-        transitive=true
+        transitive = true
     }
     compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
 
-    compile (project(":sample-core")) {
+    compile(project(":sample-core")) {
         transitive = true;
     }
 
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
     compile "se.emilsjolander:stickylistheaders:${rootProject.stickyListHeaders}"
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 
 apply from: "../artifacts.gradle"

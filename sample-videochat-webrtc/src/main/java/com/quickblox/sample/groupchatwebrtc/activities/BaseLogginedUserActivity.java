@@ -3,6 +3,8 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
@@ -17,16 +19,16 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseLogginedUserActivity extends Activity {
+public class BaseLogginedUserActivity extends AppCompatActivity {
 
     private static final String APP_VERSION = "App version";
-    static android.app.ActionBar mActionBar;
+    private ActionBar mActionBar;
     private Chronometer timerABWithTimer;
     private boolean isStarted = false;
 
     public void initActionBar() {
 
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -65,7 +67,7 @@ public class BaseLogginedUserActivity extends Activity {
     }
 
     public void initActionBarWithTimer() {
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 

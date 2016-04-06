@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background_color">#fff</color>
-    <color name="black">#111</color>
-    <color name="green">#1cba48</color>
-    <color name="blue">#0073b9</color>
-    <color name="gray">#ff5a5b5f</color>
-    <color name="white">#fff</color>
-    <color name="blue_highlight">#990073b9</color>
+    <color name="black_light">#1f1f1f</color>
+    <color name="brownish_gray">#6e6e6e</color>
+    <color name="gray_light">#d3d3d3</color>
+    <color name="warm_gray">#757575</color>
+    <color name="warm_gray_two">#9e9e9e</color>
+    <color name="warm_white">#e0e0e0</color>
+
 </resources>
