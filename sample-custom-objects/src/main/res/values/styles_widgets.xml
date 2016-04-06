@@ -23,6 +23,7 @@
     </style>
 
     <style name="MovieRatingBarStyle" parent="WrapContent">
+        <item name="android:layout_marginTop">@dimen/margin_rating_bar</item>
         <item name="android:numStars">5</item>
     </style>
 

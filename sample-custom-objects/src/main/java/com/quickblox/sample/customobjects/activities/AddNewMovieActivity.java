@@ -1,14 +1,20 @@
 package com.quickblox.sample.customobjects.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallback;
@@ -20,13 +26,20 @@ import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
-public class AddNewMovieActivity extends BaseActivity {
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
+public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
+
+    private static String OBJ = "\uFFFC";
     private EditText titleEditText;
     private EditText descriptionEditText;
-    private EditText yearEditText;
+    private Spinner yearSpinner;
     private RatingBar ratingBar;
     private Toast toast;
+    private String title, description, year;
+    private float rating;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, AddNewMovieActivity.class);
@@ -38,25 +51,44 @@ public class AddNewMovieActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_movie);
         initUI();
+        initSpinner();
     }
 
+    @SuppressLint("ShowToast")
     private void initUI() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         toast = Toast.makeText(this, R.string.error, Toast.LENGTH_LONG);
+
         titleEditText = _findViewById(R.id.add_movie_title_textview);
+        titleEditText.addTextChangedListener(this);
+
         descriptionEditText = _findViewById(R.id.add_movie_description_textview);
-        yearEditText = _findViewById(R.id.add_movie_year_textview);
+        descriptionEditText.addTextChangedListener(this);
+
+        yearSpinner = _findViewById(R.id.year_spinner);
         ratingBar = _findViewById(R.id.add_movie_ratingBar);
     }
 
-    private void createNewMovie() {
-        String title = titleEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-        String year = yearEditText.getText().toString();
-        float rating = ratingBar.getRating();
+    private void initSpinner() {
+        List<String> years = new ArrayList<>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int firstFilmYear = 1895;
+        for (int i = currentYear + 10; i >= firstFilmYear; i--) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+        yearSpinner.setAdapter(adapter);
+        yearSpinner.setSelection(10);
+    }
 
-        if (!isValidData(title, description, year, rating)) {
+    private void createNewMovie() {
+        title = titleEditText.getText().toString().trim();
+        description = descriptionEditText.getText().toString().trim();
+        year = yearSpinner.getSelectedItem().toString();
+        rating = ratingBar.getRating();
+
+        if (!isValidData()) {
             return;
         }
         progressDialog.show();
@@ -75,16 +107,19 @@ public class AddNewMovieActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.longToast(e.getErrors().toString());
+                View rootLayout = findViewById(R.id.activity_add_movie);
+                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createNewMovie();
+                    }
+                });
             }
         });
     }
 
-    private boolean isValidData(String title, String description, String year, float rating) {
-        String space = Character.toString((char) 0x20);
-
-        if (title.startsWith(space) || description.startsWith(space)
-                || TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(year)) {
+    private boolean isValidData() {
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
             toast.setText(R.string.error_fields_is_empty);
             toast.show();
             return false;
@@ -94,17 +129,12 @@ public class AddNewMovieActivity extends BaseActivity {
             toast.show();
             return false;
         }
-        if (year.length() != 4) {
-            toast.setText(R.string.error_year_is_empty);
-            toast.show();
-            return false;
-        }
         return true;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         toast.cancel();
     }
 
@@ -124,6 +154,28 @@ public class AddNewMovieActivity extends BaseActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        //ignore
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        //ignore
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.length() >= getResources().getInteger(R.integer.field_max_length)) {
+            toast.setText(R.string.error_too_long_text);
+            toast.show();
+        }
+        if (s.toString().contains(OBJ)) {
+            int index = s.toString().indexOf(OBJ);
+            s.replace(index, index + 1, "");
         }
     }
 }

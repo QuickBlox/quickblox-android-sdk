@@ -43,9 +43,9 @@ public class ShowMovieActivity extends BaseActivity {
     private void fillFields() {
         String id = getIntent().getStringExtra(Consts.EXTRA_MOVIE_ID);
         Movie movie = DataHolder.getInstance().getMovieObject(id);
-        nameTextView.setText(movie.getName());
-        yearTextView.setText(movie.getYear());
-        descriptionTextView.setText(movie.getDescription());
+        fillField(nameTextView, movie.getName());
+        fillField(yearTextView, movie.getYear());
+        fillField(descriptionTextView, movie.getDescription());
         ratingBar.setRating(movie.getRating());
     }
 }

@@ -58,7 +58,7 @@ public class Movie {
 
         @Override
         public int compare(Movie lhs, Movie rhs) {
-            return Long.valueOf(rhs.getDate()).compareTo(Long.valueOf(lhs.getDate()));
+            return Long.valueOf(rhs.getDate()).compareTo(lhs.getDate());
         }
     }
 }

@@ -35,11 +35,15 @@ android {
             keyPassword "android"
         }
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-    compile (project(":sample-core")) {
+    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
+    compile(project(":sample-core")) {
         transitive = true;
     }
 }

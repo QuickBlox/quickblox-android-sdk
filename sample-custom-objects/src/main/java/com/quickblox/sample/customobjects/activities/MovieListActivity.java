@@ -10,8 +10,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.core.utils.Toaster;
@@ -28,6 +31,10 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
 
     private ListView moviesListView;
     private MovieListAdapter movieListAdapter;
+    private SwipyRefreshLayout setOnRefreshListener;
+    private QBRequestGetBuilder builder;
+    private String createDateField = "created_at";
+    private int skipRecords = 0;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MovieListActivity.class);
@@ -38,8 +45,9 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies_list);
+        DataHolderClear();
         initUI();
-        getMovieList();
+        getMovieList(true);
     }
 
     @Override
@@ -48,11 +56,27 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         movieListAdapter.updateData(DataHolder.getInstance().getMovieMap());
     }
 
+    private void DataHolderClear() {
+        if (!DataHolder.getInstance().getMovieMap().isEmpty()) {
+            DataHolder.getInstance().clear();
+        }
+    }
+
     private void initUI() {
         moviesListView = _findViewById(R.id.list_movies);
         moviesListView.setOnItemClickListener(this);
         movieListAdapter = new MovieListAdapter(this, DataHolder.getInstance().getMovieMap());
         moviesListView.setAdapter(movieListAdapter);
+
+        builder = new QBRequestGetBuilder();
+        setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
+        setOnRefreshListener.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                builder.setSkip(skipRecords += Consts.LIMIT_RECORDS);
+                getMovieList(false);
+            }
+        });
     }
 
     @Override
@@ -80,24 +104,35 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         }
     }
 
-    private void getMovieList() {
-        progressDialog.show();
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+    private void getMovieList(boolean progress) {
+        if (progress) {
+            progressDialog.show();
+        }
+        builder.setLimit(Consts.LIMIT_RECORDS);
+        builder.sortDesc(createDateField);
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, builder, new QBEntityCallback<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
+                setOnRefreshListener.setEnabled(true);
                 Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
-                if (!movieMap.isEmpty()) {
-                    DataHolder.getInstance().clear();
-                }
                 DataHolder.getInstance().addQBCustomObject(qbCustomObjects);
                 progressDialog.dismiss();
+                setOnRefreshListener.setRefreshing(false);
                 movieListAdapter.updateData(movieMap);
             }
 
             @Override
             public void onError(QBResponseException e) {
-                Toaster.shortToast(e.getErrors().toString());
+                setOnRefreshListener.setEnabled(false);
+                View rootLayout = findViewById(R.id.swipy_refresh_layout);
+                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getMovieList(false);
+                    }
+                });
                 progressDialog.dismiss();
+                setOnRefreshListener.setRefreshing(false);
             }
         });
     }
