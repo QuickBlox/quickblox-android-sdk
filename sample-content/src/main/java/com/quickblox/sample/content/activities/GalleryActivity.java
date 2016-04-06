@@ -3,9 +3,7 @@ package com.quickblox.sample.content.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +20,7 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.adapter.GalleryAdapter;
 import com.quickblox.sample.content.helper.DataHolder;
-import com.quickblox.sample.content.utils.Consts;
+import com.quickblox.sample.content.helper.DownloadMoreListener;
 import com.quickblox.sample.core.utils.DialogUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.Toaster;
@@ -33,16 +31,19 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class GalleryActivity extends BaseActivity
-        implements AdapterView.OnItemClickListener, OnImagePickedListener {
+        implements AdapterView.OnItemClickListener, OnImagePickedListener, DownloadMoreListener {
 
     public static final int GALLERY_REQUEST_CODE = 183;
+
+    private static final int IMAGE_SIZE_LIMIT_KB = 1024 * 100;
+    private static final int IMAGES_PER_PAGE = 50;
+    private int current_page = 1;
 
     private GalleryAdapter galleryAdapter;
     private ImagePickHelper imagePickHelper;
     private LinearLayout emptyView;
     private TextView problemView;
     private TextView descriptionView;
-    private FloatingActionButton FAB;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GalleryActivity.class);
@@ -53,6 +54,7 @@ public class GalleryActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        DataHolder.getInstance().clear();
         initUI();
         getFileList();
         imagePickHelper = new ImagePickHelper();
@@ -70,42 +72,51 @@ public class GalleryActivity extends BaseActivity
 
     private void initUI() {
         galleryAdapter = new GalleryAdapter(this, DataHolder.getInstance().getQBFiles());
+        galleryAdapter.setDownloadMoreListener(this);
 
         GridView galleryGridView = _findViewById(R.id.gallery_gridview);
         emptyView = _findViewById(R.id.empty_view);
         problemView = _findViewById(R.id.problem);
         descriptionView = _findViewById(R.id.description);
-        FAB = _findViewById(R.id.fab_upload_image);
 
         galleryGridView.setAdapter(galleryAdapter);
         galleryGridView.setOnItemClickListener(this);
     }
 
     private void getFileList() {
+        progressDialog = DialogUtils.getProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
         QBPagedRequestBuilder builder = new QBPagedRequestBuilder();
-        builder.setPerPage(Consts.IMAGES_PER_PAGE);
-        builder.setPage(Consts.START_PAGE);
+        builder.setPerPage(IMAGES_PER_PAGE);
+        builder.setPage(current_page++);
 
         QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
-                if (!DataHolder.getInstance().isEmpty()) {
-                    DataHolder.getInstance().clear();
+                if (qbFiles.isEmpty()) {
+                    current_page--;
+                } else {
+                    DataHolder.getInstance().addQbFiles(qbFiles);
                 }
-
-                DataHolder.getInstance().addQbFiles(qbFiles);
-                progressDialog.dismiss();
-
+                if (progressDialog.isIndeterminate()) {
+                    progressDialog.dismiss();
+                }
                 updateData();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(e.getErrors().toString());
+                current_page--;
+                View view = findViewById(R.id.activity_gallery);
+                showSnackbarError(view, R.string.splash_create_session_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getFileList();
+                    }
+                });
             }
         });
     }
@@ -120,21 +131,6 @@ public class GalleryActivity extends BaseActivity
         galleryAdapter.updateData(DataHolder.getInstance().getQBFiles());
     }
 
-    private void noConnection() {
-        problemView.setText(getResources().getString(R.string.problem));
-        descriptionView.setText(getResources().getString(R.string.no_connection));
-        descriptionView.setTextColor(ContextCompat.getColor(this, R.color.red));
-        FAB.setClickable(false);
-        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_light)));
-        emptyView.setVisibility(View.VISIBLE);
-    }
-
-    private void existConnection() {
-        FAB.setClickable(true);
-        FAB.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_green_qb)));
-        emptyView.setVisibility(View.GONE);
-    }
-
     private void noPhoto() {
         problemView.setText(getResources().getString(R.string.no_photo));
         descriptionView.setText(getResources().getString(R.string.press_button));
@@ -142,28 +138,43 @@ public class GalleryActivity extends BaseActivity
         emptyView.setVisibility(View.VISIBLE);
     }
 
-    private void uploadSelectedImage(File imageFile) {
+    private void uploadSelectedImage(final File imageFile) {
+        final int imageSizeKb = (int) imageFile.length() / 1024;
+        final float onePercent = (float) imageSizeKb / 100;
+        if (imageSizeKb >= IMAGE_SIZE_LIMIT_KB) {
+            Toaster.longToast(R.string.image_size_error);
+            return;
+        }
+
+        progressDialog.dismiss();
         progressDialog = DialogUtils.getProgressDialog(this);
-        progressDialog.setMax((int) imageFile.length() / 1024);
+        progressDialog.setMax(imageSizeKb);
+        progressDialog.setProgressNumberFormat("%1d/%2d kB");
         progressDialog.show();
+
         QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
                 progressDialog.dismiss();
-
                 updateData();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.dismiss();
-                Toaster.shortToast(getString(R.string.gallery_upload_file_error) + e.getErrors());
+                View view = findViewById(R.id.activity_gallery);
+                showSnackbarError(view, R.string.splash_create_session_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        uploadSelectedImage(imageFile);
+                    }
+                });
             }
         }, new QBProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
-                progressDialog.incrementProgressBy(progress);
+                progressDialog.setProgress((int) (onePercent * progress));
             }
         });
     }
@@ -181,5 +192,10 @@ public class GalleryActivity extends BaseActivity
     @Override
     public void onImagePickClosed(int requestCode) {
         // ignored
+    }
+
+    @Override
+    public void downloadMore() {
+        getFileList();
     }
 }

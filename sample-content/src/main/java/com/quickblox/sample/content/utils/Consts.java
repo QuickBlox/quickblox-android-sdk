@@ -13,9 +13,6 @@ public interface Consts {
     String USER_LOGIN = "supersample-ios";
     String USER_PASSWORD = "supersample-ios";
 
-    int IMAGES_PER_PAGE = 80;
-    int START_PAGE = 1;
-
     int PREFERRED_IMAGE_WIDTH_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_width);
     int PREFERRED_IMAGE_HEIGHT_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_height);
 
