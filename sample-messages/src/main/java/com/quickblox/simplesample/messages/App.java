@@ -1,6 +1,5 @@
 package com.quickblox.simplesample.messages;
 
-import com.quickblox.core.QBSettings;
 import com.quickblox.sample.core.CoreApp;
 
 public class App extends CoreApp {
@@ -15,9 +14,7 @@ public class App extends CoreApp {
         super.onCreate();
         instance = this;
 
-        QBSettings.getInstance().init(getApplicationContext(), Consts.QB_APP_ID, Consts.QB_AUTH_KEY,
-                Consts.QB_AUTH_SECRET);
-        QBSettings.getInstance().setAccountKey(Consts.QB_ACCOUNT_KEY);
+        super.initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
     }
 
     public static synchronized App getInstance() {

@@ -11,7 +11,7 @@ import java.util.List;
 public class DataHolder {
 
     public static ArrayList<QBUser> usersList;
-    public static final String PASSWORD = "testing2015";
+    public static final String PASSWORD = "x6Bt0VDy5";
 
     private static QBUser currentUser;
 

@@ -17,7 +17,6 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
 import com.quickblox.sample.customobjects.definition.Consts;
@@ -29,11 +28,11 @@ import java.util.Map;
 
 public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    private ListView moviesListView;
+    private static final String createDateField = "created_at";
+
     private MovieListAdapter movieListAdapter;
     private SwipyRefreshLayout setOnRefreshListener;
     private QBRequestGetBuilder builder;
-    private String createDateField = "created_at";
     private int skipRecords = 0;
 
     public static void start(Context context) {
@@ -63,7 +62,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
     }
 
     private void initUI() {
-        moviesListView = _findViewById(R.id.list_movies);
+        ListView moviesListView = _findViewById(R.id.list_movies);
         moviesListView.setOnItemClickListener(this);
         movieListAdapter = new MovieListAdapter(this, DataHolder.getInstance().getMovieMap());
         moviesListView.setAdapter(movieListAdapter);

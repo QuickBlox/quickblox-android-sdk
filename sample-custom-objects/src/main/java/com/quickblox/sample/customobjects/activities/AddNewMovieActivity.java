@@ -32,7 +32,7 @@ import java.util.List;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
-    private static String OBJ = "\uFFFC";
+    private static final String OBJ = "\uFFFC";
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Spinner yearSpinner;

@@ -45,7 +45,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        QBEntityCallback<Void> qbEntityCallback = new QBEntityCallback<Void>() {
+        new JoinRoomTask(new QBEntityCallback<Void>() {
 
             @Override
             public void onSuccess(final Void result, final Bundle bundle) {
@@ -70,9 +70,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
                     }
                 });
             }
-        };
-
-        new JoinRoomTask(qbEntityCallback).execute(history);
+        }).execute(history);
     }
 
     public void leaveChatRoom() {
@@ -101,10 +99,10 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
 
     }
 
-    class JoinRoomTask extends AsyncTask {
-        private QBEntityCallback qbEntityCallback;
+    class JoinRoomTask extends AsyncTask<Object, Void, Object> {
+        private QBEntityCallback<Void> qbEntityCallback;
 
-        public JoinRoomTask(QBEntityCallback qbEntityCallback) {
+        public JoinRoomTask(QBEntityCallback<Void> qbEntityCallback) {
             this.qbEntityCallback = qbEntityCallback;
         }
 

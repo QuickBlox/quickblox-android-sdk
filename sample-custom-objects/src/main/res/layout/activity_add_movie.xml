@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent">
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -30,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/margin_spinner"
             android:layout_marginTop="@dimen/margin_year_add"
-            android:hint="@string/year" />
+            android:hint="@string/year"
+            tools:ignore="RtlHardcoded" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/add_movie_rating_textview"
@@ -38,7 +40,8 @@
             android:layout_marginTop="@dimen/margin_rating_add"
             android:paddingLeft="@dimen/padding_small"
             android:text="@string/rating"
-            app:typeface="roboto_medium" />
+            app:typeface="roboto_medium"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         <RatingBar
             android:id="@+id/add_movie_ratingBar"

@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat;
 
-import com.quickblox.core.QBSettings;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.core.CoreApp;
 
@@ -10,8 +9,6 @@ public class App extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        QBSettings.getInstance().init(this, Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET);
-        QBSettings.getInstance().setAccountKey(Consts.QB_ACCOUNT_KEY);
+        super.initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
     }
 }

@@ -8,7 +8,7 @@ android {
         applicationId "com.quickblox.simplesample.messages"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 2
+        versionCode 200
         versionName "2.0.0"
     }
 
