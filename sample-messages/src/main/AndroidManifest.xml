@@ -36,7 +36,7 @@
             android:name=".activities.MessagesActivity"
             android:label="@string/activity_title"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

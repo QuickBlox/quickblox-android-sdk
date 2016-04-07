@@ -77,12 +77,12 @@ dependencies {
 
     // online dependencies, from remote repository, aar files
     //
-    onlineAarCompile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
+    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
         transitive = true
     }
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-    onlineAarCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
 
 //    // offline dependencies, from 'SDK-android' dir, for debug
 //    //

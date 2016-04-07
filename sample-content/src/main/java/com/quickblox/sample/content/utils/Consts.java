@@ -10,8 +10,8 @@ public interface Consts {
     String QB_AUTH_SECRET = "BTFsj7Rtt27DAmT";
     String QB_ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
-    String USER_LOGIN = "igorquickblox44";
-    String USER_PASSWORD = "igorquickblox44";
+    String USER_LOGIN = "bobbobbob";
+    String USER_PASSWORD = "bobbobbob";
 
     int PREFERRED_IMAGE_WIDTH_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_width);
     int PREFERRED_IMAGE_HEIGHT_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_height);

@@ -136,11 +136,14 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_chat, menu);
 
-        MenuItem menuItem = menu.findItem(R.id.menu_chat_action_leave);
+        MenuItem menuItemLeave = menu.findItem(R.id.menu_chat_action_leave);
+        MenuItem menuItemAdd = menu.findItem(R.id.menu_chat_action_add);
         if (qbDialog.getType() == QBDialogType.PRIVATE) {
-            menuItem.setVisible(false);
+            menuItemLeave.setVisible(false);
+            menuItemAdd.setVisible(false);
         } else {
-            menuItem.setVisible(true);
+            menuItemLeave.setVisible(true);
+            menuItemAdd.setVisible(true);
         }
 
         return true;

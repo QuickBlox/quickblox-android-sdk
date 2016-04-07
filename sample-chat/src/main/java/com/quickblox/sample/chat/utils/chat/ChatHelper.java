@@ -137,7 +137,6 @@ public class ChatHelper {
             });
         }
 
-        // TODO ANDSAMPLES-69 Implement callback logic to get triggered only after deletion of all dialogs
         callback.onSuccess(null, null);
     }
 
@@ -230,7 +229,6 @@ public class ChatHelper {
                         }
 
                         for (QBDialog dialog : dialogs) {
-                            // FIXME Fix for crash when using equals() or hashcode() methods on QBEntity
                             dialog.setId(dialog.getDialogId().hashCode());
                         }
                         getUsersFromDialogs(dialogs, callback);

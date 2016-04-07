@@ -23,7 +23,6 @@ ext {
     buildToolsVersion = "23.0.2"
 
     minSdkVersion = 14
-    // FIXME Change to 23 after fixing up runtime permissions (at least in Location sample)
     targetSdkVersion = 22
 
     sourceCompatibility = JavaVersion.VERSION_1_7

@@ -262,7 +262,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         public ProgressBar attachmentProgressBar;
     }
 
-    public static interface OnItemInfoExpandedListener {
+    public interface OnItemInfoExpandedListener {
         void onItemInfoExpanded(int position);
     }
 }

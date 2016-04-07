@@ -158,11 +158,11 @@ public class AttachmentPreviewAdapter extends BaseListAdapter<File> {
         ImageButton deleteButton;
     }
 
-    public static interface OnAttachmentCountChangedListener {
+    public interface OnAttachmentCountChangedListener {
         void onAttachmentCountChanged(int count);
     }
 
-    public static interface OnAttachmentUploadErrorListener {
+    public interface OnAttachmentUploadErrorListener {
         void onAttachmentUploadError(QBResponseException e);
     }
 }

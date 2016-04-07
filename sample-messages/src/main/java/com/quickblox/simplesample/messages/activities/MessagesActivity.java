@@ -82,22 +82,25 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         if (message != null) {
             retrieveMessage(message);
         }
+
+        registerReceiver();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         App.activityResumed();
-        googlePlayServicesHelper.checkPlayServicesAvailable(this);
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         App.activityPaused();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
@@ -137,6 +140,13 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         incomingMessagesListView.setEmptyView(_findViewById(R.id.text_empty_messages));
     }
 
+    private void registerReceiver() {
+        googlePlayServicesHelper.checkPlayServicesAvailable(this);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+    }
+
     private void retrieveMessage(String message) {
         receivedPushes.add(0, message);
         adapter.notifyDataSetChanged();
@@ -147,7 +157,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     private void sendPushMessage() {
         String outMessage = outgoingMessageEditText.getText().toString().trim();
         if (!isValidData(outMessage)) {
-            Toaster.longToast(R.string.error_fields_is_empty);
+            Toaster.longToast(R.string.error_field_is_empty);
             invalidateOptionsMenu();
             return;
         }
