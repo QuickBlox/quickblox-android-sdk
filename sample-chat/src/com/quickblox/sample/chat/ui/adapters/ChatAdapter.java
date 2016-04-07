@@ -96,7 +96,6 @@ public class ChatAdapter extends BaseAdapter {
         if (StickersManager.isSticker(chatMessage.getBody())) {
             StickersManager.with(convertView.getContext())
                     .loadSticker(chatMessage.getBody())
-                    .setPlaceholderColorFilterRes(android.R.color.darker_gray)
                     .into(holder.stickerView);
         } else if (holder.txtMessage != null) {
             holder.txtMessage.setText(chatMessage.getBody());

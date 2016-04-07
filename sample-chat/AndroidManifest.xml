@@ -41,6 +41,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".ui.activities.ShopActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
         <!-- GCM (Push Notifications) setup: http://developer.android.com/google/gcm/gs.html#android-app -->
 
         <!-- 1. Add the following broadcast receiver.
