@@ -75,7 +75,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private boolean closeByWifiStateAllow = true;
     private String hangUpReason;
     private boolean isInCommingCall;
-    private boolean isInFront;
     private QBRTCClient rtcClient;
     private QBRTCSessionUserCallback sessionUserCallback;
     private boolean wifiEnabled = true;
@@ -220,8 +219,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     protected void onResume() {
-        isInFront = true;
-
         if (currentSession == null) {
             addOpponentsFragment();
         }
@@ -230,7 +227,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     protected void onPause() {
-        isInFront = false;
         super.onPause();
     }
 
@@ -250,12 +246,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 
     public void initCurrentSession(QBRTCSession sesion) {
+        Log.d(TAG, "Init new QBRTCSession");
         this.currentSession = sesion;
         this.currentSession.addSessionCallbacksListener(CallActivity.this);
         this.currentSession.addSignalingCallback(CallActivity.this);
     }
 
     public void releaseCurrentSession() {
+        Log.d(TAG, "Release current session");
         this.currentSession.removeSessionnCallbacksListener(CallActivity.this);
         this.currentSession.removeSignalingCallback(CallActivity.this);
         this.currentSession = null;
@@ -503,9 +501,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     private void addIncomeCallFragment(QBRTCSession session) {
-
         Log.d(TAG, "QBRTCSession in addIncomeCallFragment is " + session);
-        if (session != null && isInFront) {
+
+        if (session != null) {
             Fragment fragment = new IncomeCallFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("sessionDescription", session.getSessionDescription());
