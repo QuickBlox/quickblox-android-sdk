@@ -75,7 +75,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private boolean closeByWifiStateAllow = true;
     private String hangUpReason;
     private boolean isInCommingCall;
-    private boolean isInFront;
     private QBRTCClient rtcClient;
     private QBRTCSessionUserCallback sessionUserCallback;
     private boolean wifiEnabled = true;
@@ -220,8 +219,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     protected void onResume() {
-        isInFront = true;
-
         if (currentSession == null) {
             addOpponentsFragment();
         }
@@ -230,7 +227,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     @Override
     protected void onPause() {
-        isInFront = false;
         super.onPause();
     }
 
@@ -505,13 +501,8 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     private void addIncomeCallFragment(QBRTCSession session) {
-
-        if (!isInFront){
-            Log.d(TAG, "Start CallActivity from background");
-            startActivity(getIntent());
-        }
-
         Log.d(TAG, "QBRTCSession in addIncomeCallFragment is " + session);
+
         if (session != null) {
             Fragment fragment = new IncomeCallFragment();
             Bundle bundle = new Bundle();

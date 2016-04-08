@@ -309,7 +309,6 @@ public class ListUsersActivity extends Activity {
 
     private void startCallActivity(String login) {
         Intent intent = new Intent(ListUsersActivity.this, CallActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("login", login);
         startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
     }
