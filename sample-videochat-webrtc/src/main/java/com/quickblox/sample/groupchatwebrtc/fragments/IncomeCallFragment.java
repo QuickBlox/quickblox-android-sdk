@@ -127,6 +127,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     public void startCallNotification() {
+        Log.d(TAG, "startCallNotification()");
 
         ringtonePlayer.play(false);
 
@@ -140,6 +141,8 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void stopCallNotification() {
+        Log.d(TAG, "stopCallNotification()");
+
         if (ringtonePlayer != null) {
             ringtonePlayer.stop();
         }
