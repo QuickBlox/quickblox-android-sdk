@@ -17,12 +17,13 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <ImageView
+            <vc908.stickerfactory.ui.view.BadgedStickersButton
                 android:id="@+id/stickers_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/ic_action_insert_emoticon"
+                android:background="?android:attr/selectableItemBackground"
                 android:padding="8dp"/>
 
             <EditText
