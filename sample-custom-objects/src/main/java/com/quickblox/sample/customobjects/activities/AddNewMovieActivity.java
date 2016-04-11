@@ -38,7 +38,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
     private Spinner yearSpinner;
     private RatingBar ratingBar;
     private Toast toast;
-    private String title, description, year;
+    private String title, description, year; //TODO each variable on separate line
     private float rating;
 
     public static void start(Context context) {
