@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import vc908.stickerfactory.StickersManager;
+import vc908.stickerfactory.analytics.AnalyticsManager;
 import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
 import vc908.stickerfactory.ui.OnStickerSelectedListener;
 import vc908.stickerfactory.ui.fragment.StickersFragment;
@@ -209,6 +210,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         try {
             chat.sendMessage(chatMessage);
+            AnalyticsManager.getInstance().onUserMessageSent(StickersManager.isSticker(messageText));
         } catch (XMPPException e) {
             Log.e(TAG, "failed to send a message", e);
         } catch (SmackException sme) {
