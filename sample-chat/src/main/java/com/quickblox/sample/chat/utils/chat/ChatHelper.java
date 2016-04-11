@@ -97,7 +97,9 @@ public class ChatHelper {
             return;
         }
 
+        qbChatService.startAutoSendPresence();
         qbChatService.login(user, new QbEntityCallbackWrapper<>(callback));
+        //TODO add qbChatService.startAutoSendPresence() to keep permanent connection.
     }
 
     public boolean logout() {
@@ -137,6 +139,7 @@ public class ChatHelper {
             });
         }
 
+        //TODO delete such todo from master
         // TODO ANDSAMPLES-69 Implement callback logic to get triggered only after deletion of all dialogs
         callback.onSuccess(null, null);
     }
