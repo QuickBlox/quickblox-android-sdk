@@ -103,10 +103,6 @@ public class DialogsActivity extends BaseActivity {
         };
 
         initUi();
-
-        if (isAppSessionActive) {
-            registerQbChatListeners();
-        }
     }
 
     @Override
@@ -218,6 +214,7 @@ public class DialogsActivity extends BaseActivity {
             }
             SharedPreferencesUtil.removeQbUser();
             LoginActivity.start(this);
+            QbDialogHolder.getInstance().clear();
             ProgressDialogFragment.hide(getSupportFragmentManager());
             finish();
         } else {
