@@ -534,7 +534,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         @Override
         public void connectionClosedOnError(final Exception e) {
             super.connectionClosedOnError(e);
-
+            //TODO add snack bar with message 'Connection disconnected' or else
             // Leave active room if we're in Group Chat
             if (qbDialog.getType() == QBDialogType.GROUP) {
                 runOnUiThread(new Runnable() {
@@ -549,7 +549,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         @Override
         public void reconnectionSuccessful() {
             super.reconnectionSuccessful();
-
+            //TODO remove snack bar
             // Join active room if we're in Group Chat
             if (qbDialog.getType() == QBDialogType.GROUP) {
                 runOnUiThread(new Runnable() {

@@ -5,6 +5,7 @@ import com.quickblox.sample.core.CoreApp;
 public class App extends CoreApp {
 
     private static App instance;
+    //TODO Don't use static variable for changeable behaviour, Use static only for util class.
     private static boolean activityVisible;
 
     private int currentUserId;
@@ -33,6 +34,7 @@ public class App extends CoreApp {
         return activityVisible;
     }
 
+    //TODO Use ActivityLifecycleCallbacks to determine activity's state
     public static void activityResumed() {
         activityVisible = true;
     }

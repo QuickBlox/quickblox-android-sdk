@@ -35,11 +35,14 @@ public class DataHolder {
         movieMap.clear();
     }
 
+    //TODO if DataHolder stores movies, logically it should work with movie.
+    // It's better to create movie outside and pass movie here
     public void addMovieToList(QBCustomObject customObject) {
         Movie movie = new Movie(customObject);
         movieMap.put(movie.getId(), movie);
     }
 
+    //TODO the same
     public void addQBCustomObject(ArrayList<QBCustomObject> qbCustomObjects) {
         for (QBCustomObject customObject : qbCustomObjects) {
             addMovieToList(customObject);

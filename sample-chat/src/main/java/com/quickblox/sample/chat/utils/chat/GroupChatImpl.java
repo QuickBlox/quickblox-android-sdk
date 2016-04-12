@@ -112,6 +112,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
             try {
                 qbChat.join(history);
                 qbEntityCallback.onSuccess(null, Bundle.EMPTY);
+                //TODO if qbEntityCallback is null ?
             } catch (XMPPException | SmackException e) {
                 qbEntityCallback.onError(new QBResponseException(e.getMessage()));
             }

@@ -70,6 +70,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
         } else {
             holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(android.R.color.transparent));
         }
+        //TODO how about ternary operation and more clear code : holder.rootLayout.setBackgroundColor ( isItemSelected(position) ? trueAction : falseAction )
 
         return convertView;
     }

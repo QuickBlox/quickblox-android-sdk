@@ -71,6 +71,8 @@ public class GalleryAdapter extends BaseAdapter {
 
     private void downloadMore(int position) {
         if (getCount() - 1 == position) {
+            //TODO you already get Count, don't call methods for returning the same variable. Just save value as variable and reuse it.
+            //TODO As when you call method again you perform unnecessary actions
             if (getCount() != previousGetCount) {
                 downloadListener.downloadMore();
                 previousGetCount = getCount();
