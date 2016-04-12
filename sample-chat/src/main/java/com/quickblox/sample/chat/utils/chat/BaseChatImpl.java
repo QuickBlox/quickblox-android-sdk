@@ -33,6 +33,7 @@ public abstract class BaseChatImpl<T extends QBChat> implements Chat, QBMessageL
     public void sendMessage(QBChatMessage message) throws XMPPException, SmackException.NotConnectedException {
         if (qbChat != null) {
             try {
+                Log.d("ChatActiv", "BaseChatImpl sendMessage "+message);
                 qbChat.sendMessage(message);
             } catch (SmackException.NotConnectedException e) {
                 Log.w(TAG, e);

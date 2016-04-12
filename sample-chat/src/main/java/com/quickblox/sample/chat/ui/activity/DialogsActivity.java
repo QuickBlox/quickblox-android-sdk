@@ -62,6 +62,7 @@ public class DialogsActivity extends BaseActivity {
     private ActionMode currentActionMode;
     private SwipyRefreshLayout setOnRefreshListener;
     private QBRequestGetBuilder requestBuilder;
+    private Menu menu;
     private int skipRecords = 0;
 
     private BroadcastReceiver pushBroadcastReceiver;
@@ -102,6 +103,10 @@ public class DialogsActivity extends BaseActivity {
         };
 
         initUi();
+
+        if (isAppSessionActive) {
+            registerQbChatListeners();
+        }
     }
 
     @Override
@@ -111,10 +116,6 @@ public class DialogsActivity extends BaseActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
-
-        if (isAppSessionActive) {
-            registerQbChatListeners();
-        }
     }
 
     @Override
@@ -122,6 +123,11 @@ public class DialogsActivity extends BaseActivity {
         super.onPause();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
         if (isAppSessionActive) {
             unregisterQbChatListeners();
@@ -131,6 +137,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_dialogs, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -139,6 +146,8 @@ public class DialogsActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.menu_dialogs_action_logout:
                 userLogout();
+                item.setEnabled(false);
+                invalidateOptionsMenu();
                 return true;
 
             default:
@@ -175,15 +184,18 @@ public class DialogsActivity extends BaseActivity {
 
                 createDialog(selectedUsers);
             } else if (requestCode == REQUEST_MARK_READ) {
+                if (data != null) {
+                    ArrayList<String> chatMessageIds = (ArrayList<String>) data
+                            .getSerializableExtra(ChatActivity.EXTRA_MARK_READ);
+                    final StringifyArrayList<String> messagesIds = new StringifyArrayList<>();
+                    messagesIds.addAll(chatMessageIds);
 
-                ArrayList<String> chatMessageIds = (ArrayList<String>) data
-                        .getSerializableExtra(ChatActivity.EXTRA_MARK_READ);
-                final StringifyArrayList<String> messagesIds = new StringifyArrayList<>();
-                messagesIds.addAll(chatMessageIds);
+                    String dialogId = (String) data.getSerializableExtra(ChatActivity.EXTRA_DIALOG_ID);
 
-                String dialogId = (String) data.getSerializableExtra(ChatActivity.EXTRA_DIALOG_ID);
-
-                markMessagesRead(messagesIds, dialogId);
+                    markMessagesRead(messagesIds, dialogId);
+                } else {
+                    updateDialogsList();
+                }
             }
         }
     }
@@ -225,6 +237,8 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
+                menu.findItem(R.id.menu_dialogs_action_logout).setEnabled(true);
+                invalidateOptionsMenu();
                 ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.no_internet_connection,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override

@@ -505,6 +505,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         ChatHelper.getInstance().deleteDialog(qbDialog, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
+                setResult(RESULT_OK);
                 finish();
             }
 
