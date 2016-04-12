@@ -91,6 +91,7 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
     }
 
     public void startTimer() {
+
         if (!isStarted) {
             timerABWithTimer.setBase(SystemClock.elapsedRealtime());
             timerABWithTimer.start();
