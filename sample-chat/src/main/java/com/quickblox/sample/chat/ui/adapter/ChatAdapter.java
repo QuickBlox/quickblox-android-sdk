@@ -23,6 +23,7 @@ import com.quickblox.sample.chat.ui.widget.MaskedImageView;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.TimeUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -36,6 +37,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
     private OnItemInfoExpandedListener onItemInfoExpandedListener;
+    private PaginationHistoryListener paginationListener;
 
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
@@ -97,7 +99,19 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         });
         holder.messageInfoTextView.setVisibility(View.GONE);
 
+        downloadMore(position);
+
         return convertView;
+    }
+
+    private void downloadMore(int position) {
+        if (position == 0) {
+            paginationListener.downloadMore();
+        }
+    }
+
+    public void setPaginationHistoryListener(PaginationHistoryListener paginationListener) {
+        this.paginationListener = paginationListener;
     }
 
     private void toggleItemInfo(ViewHolder holder, int position) {

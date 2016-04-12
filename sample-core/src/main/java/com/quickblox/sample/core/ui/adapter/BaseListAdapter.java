@@ -48,6 +48,13 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addList(List<T> items) {
+        for (T item : items) {
+            objectsList.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
     public void remove(T item) {
         objectsList.remove(item);
         notifyDataSetChanged();

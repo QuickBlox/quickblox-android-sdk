@@ -30,6 +30,7 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
+import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -453,8 +454,21 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // The newest messages should be in the end of list,
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
+                if (chatAdapter == null) {
+                    Log.d("ChatActiv", "chatAdapter == null");
+                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
+                } else {
+                    Log.d("ChatActiv", "chatAdapter.addList(messages)");
+                    chatAdapter.addList(messages);
+                }
 
-                chatAdapter = new ChatAdapter(ChatActivity.this, messages);
+                chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
+                    @Override
+                    public void downloadMore() {
+                        Log.d("ChatActiv", "loadChatHistory downloadMore");
+                        loadChatHistory();
+                    }
+                });
                 chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
                     @Override
                     public void onItemInfoExpanded(final int position) {
