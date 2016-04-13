@@ -105,6 +105,12 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
             isStarted = false;
         }
     }
+
+    public void setActionbarTitle(String title){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(title);
+    }
 }
 
 

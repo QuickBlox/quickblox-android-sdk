@@ -9,6 +9,8 @@ public interface Consts {
     String AUTH_SECRET = "BTFsj7Rtt27DAmT";
     String ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
+    String DEFAULT_USER_PASSWORD = "x6Bt0VDy5";
+
     String VERSION_NUMBER = "1.0";
 
     int CALL_ACTIVITY_CLOSE = 1000;
@@ -19,4 +21,5 @@ public interface Consts {
 
     String OPPONENTS = "opponents";
     String CONFERENCE_TYPE = "conference_type";
+    String EXTRA_TAG = "currentRoomName";
 }
