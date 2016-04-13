@@ -10,7 +10,6 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
 
-        //TODO Why super ? We don't override this method at all
-        super.initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
+        initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
     }
 }

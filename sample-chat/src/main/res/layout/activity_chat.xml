@@ -10,8 +10,7 @@
         style="@style/ListViewWithoutDividerStyle"
         android:layout_above="@+id/layout_attachment_preview_container"
         android:listSelector="@android:color/transparent"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll" />
+        android:stackFromBottom="true" />
 
     <ProgressBar
         android:id="@+id/progress_chat"

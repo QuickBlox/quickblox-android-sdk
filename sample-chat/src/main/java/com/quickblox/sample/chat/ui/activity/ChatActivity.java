@@ -73,6 +73,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private Chat chat;
     private QBDialog qbDialog;
     private ArrayList<String> chatMessageIds;
+    private int skipPagination = 0;
 
     public static void startForResult(Activity activity, int code, QBDialog dialog) {
         Intent intent = new Intent(activity, ChatActivity.class);
@@ -448,58 +449,55 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void loadChatHistory() {
-        ChatHelper.getInstance().loadChatHistory(qbDialog, new QBEntityCallback<ArrayList<QBChatMessage>>() {
+        ChatHelper.getInstance().loadChatHistory(qbDialog, skipPagination, new QBEntityCallback<ArrayList<QBChatMessage>>() {
             @Override
             public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                 // The newest messages should be in the end of list,
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
-                    Log.d("ChatActiv", "chatAdapter == null");
                     chatAdapter = new ChatAdapter(ChatActivity.this, messages);
-                } else {
-                    Log.d("ChatActiv", "chatAdapter.addList(messages)");
-                    chatAdapter.addList(messages);
-                }
-
-                chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
-                    @Override
-                    public void downloadMore() {
-                        Log.d("ChatActiv", "loadChatHistory downloadMore");
-                        loadChatHistory();
-                    }
-                });
-                chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
-                    @Override
-                    public void onItemInfoExpanded(final int position) {
-                        if (isLastItem(position)) {
-                            // HACK need to allow info textview visibility change so posting it via handler
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    messagesListView.setSelection(position);
-                                }
-                            });
-                        } else {
-                            messagesListView.smoothScrollToPosition(position);
+                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
+                        @Override
+                        public void downloadMore() {
+                            loadChatHistory();
                         }
-                    }
+                    });
+                    chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
+                        @Override
+                        public void onItemInfoExpanded(final int position) {
+                            if (isLastItem(position)) {
+                                // HACK need to allow info textview visibility change so posting it via handler
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        messagesListView.setSelection(position);
+                                    }
+                                });
+                            } else {
+                                messagesListView.smoothScrollToPosition(position);
+                            }
+                        }
 
-                    private boolean isLastItem(int position) {
-                        return position == chatAdapter.getCount() - 1;
-                    }
-                });
-                messagesListView.setAdapter(chatAdapter);
-                messagesListView.setAreHeadersSticky(false);
-                messagesListView.setDivider(null);
-                scrollMessageListDown();
+                        private boolean isLastItem(int position) {
+                            return position == chatAdapter.getCount() - 1;
+                        }
+                    });
+                    messagesListView.setAdapter(chatAdapter);
+                    messagesListView.setAreHeadersSticky(false);
+                    messagesListView.setDivider(null);
+                    progressBar.setVisibility(View.GONE);
 
-                progressBar.setVisibility(View.GONE);
+                } else {
+                    chatAdapter.addList(messages);
+                    messagesListView.setSelection(messages.size());
+                }
             }
 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
+                skipPagination -= ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
                 showErrorSnackbar(R.string.chat_load_history_error, e,
                         new View.OnClickListener() {
                             @Override
@@ -509,6 +507,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                         });
             }
         });
+        skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
 
     private void scrollMessageListDown() {

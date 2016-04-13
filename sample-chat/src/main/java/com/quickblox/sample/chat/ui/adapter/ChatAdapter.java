@@ -38,6 +38,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
 
     private OnItemInfoExpandedListener onItemInfoExpandedListener;
     private PaginationHistoryListener paginationListener;
+    private int previousGetCount = 0;
 
     public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
@@ -106,7 +107,10 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
 
     private void downloadMore(int position) {
         if (position == 0) {
-            paginationListener.downloadMore();
+            if (getCount() != previousGetCount) {
+                paginationListener.downloadMore();
+                previousGetCount = getCount();
+            }
         }
     }
 

@@ -19,7 +19,6 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
         super(chatMessageListener);
 
         qbChat = qbPrivateChatManager.getChat(opponentId);
-        Log.d("ChatActiv", "PrivateChatImpl opponentId= "+opponentId);
         if (qbChat == null) {
             qbChat = qbPrivateChatManager.createChat(opponentId, this);
         } else {

@@ -46,9 +46,8 @@ public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
     public static final int DIALOG_ITEMS_PER_PAGE = 50;
-    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 20;
+    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
-    private int skipPagination = 0;
 
     private static ChatHelper instance;
 
@@ -201,13 +200,13 @@ public class ChatHelper {
                 });
     }
 
-    public void loadChatHistory(QBDialog dialog,
+    public void loadChatHistory(QBDialog dialog, int skipPagination,
                                 final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
         customObjectRequestBuilder.setSkip(skipPagination);
         customObjectRequestBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
         customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
-        skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
+
         QBChatService.getDialogMessages(dialog, customObjectRequestBuilder,
                 new QbEntityCallbackWrapper<ArrayList<QBChatMessage>>(callback) {
                     @Override

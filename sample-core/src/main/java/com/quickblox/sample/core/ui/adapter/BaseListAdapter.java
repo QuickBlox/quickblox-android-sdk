@@ -49,9 +49,7 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
     }
 
     public void addList(List<T> items) {
-        for (T item : items) {
-            objectsList.add(item);
-        }
+        objectsList.addAll(0, items);
         notifyDataSetChanged();
     }
 
