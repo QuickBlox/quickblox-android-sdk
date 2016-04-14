@@ -31,6 +31,7 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.simplesample.messages.ActivityLifecycle;
 import com.quickblox.simplesample.messages.App;
 import com.quickblox.simplesample.messages.Consts;
 import com.quickblox.simplesample.messages.R;
@@ -68,6 +69,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        ActivityLifecycle.init(App.getInstance());
 
         receivedPushes = new ArrayList<>();
 
@@ -84,18 +86,6 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         }
 
         registerReceiver();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        App.activityResumed();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        App.activityPaused();
     }
 
     @Override

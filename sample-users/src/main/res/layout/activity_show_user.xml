@@ -98,7 +98,7 @@
                     android:layout_marginLeft="@dimen/margin_negative"
                     android:layout_marginTop="@dimen/margin_tags"
                     android:hint="@string/tags"
-                    android:text="@{com.quickblox.sample.user.helper.Utils.removeBraces(user.tags)}"
+                    android:text="@{com.quickblox.sample.user.helper.Utils.ListToString(user.tags)}"
                     android:textColor="@color/warm_gray"
                     android:textColorHint="@color/warm_gray_two"
                     android:textSize="@dimen/text_size_large"

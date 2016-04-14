@@ -64,6 +64,7 @@ public class DialogsActivity extends BaseActivity {
     private QBRequestGetBuilder requestBuilder;
     private Menu menu;
     private int skipRecords = 0;
+    private boolean isActivityForeground;
 
     private BroadcastReceiver pushBroadcastReceiver;
     private GooglePlayServicesHelper googlePlayServicesHelper;
@@ -108,6 +109,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityForeground = true;
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -117,7 +119,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
+        isActivityForeground = false;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
@@ -329,7 +331,9 @@ public class DialogsActivity extends BaseActivity {
         @Override
         public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
             requestBuilder.setSkip(skipRecords = 0);
-            loadDialogsFromQbInUiThread(true);
+            if (isActivityForeground) {
+                loadDialogsFromQbInUiThread(true);
+            }
         }
 
         @Override
