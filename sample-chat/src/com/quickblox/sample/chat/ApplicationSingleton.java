@@ -6,8 +6,11 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.quickblox.core.QBSettings;
+import com.quickblox.sample.chat.ui.activities.ShopActivity;
 
 import vc908.stickerfactory.StickersManager;
+import vc908.stickerfactory.billing.Prices;
+import vc908.stickerfactory.utils.Utils;
 
 public class ApplicationSingleton extends Application {
     private static final String TAG = ApplicationSingleton.class.getSimpleName();
@@ -44,6 +47,17 @@ public class ApplicationSingleton extends Application {
         // Initialise Stickers sdk
         //
         StickersManager.initialize(STICKER_API_KEY, this);
+
+        // set current user id
+        // now it device id, and it means,
+        // that all purchases will be bound to current device
+        StickersManager.setUserID(Utils.getDeviceId(this));
+        // register our shop activity for inner currency payment
+        StickersManager.setShopClass(ShopActivity.class);
+        // set prices
+        StickersManager.setPrices(new Prices()
+                .setPricePointB("$0.99", 0.99f)
+                .setPricePointC("$1.99", 1.99f));
     }
 
     public int getAppVersion() {

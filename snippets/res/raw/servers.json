@@ -14,21 +14,6 @@
             "test_user_login2": "supersample-ios1",
             "test_user_password2": "supersample-ios1",
             "dialog_id": "561cffc2a28f9a97ec0001d9"
-        }, "stage8": {
-            "app_id": "2",
-            "auth_key": "KZDRDAgj6w-Fz5V",
-            "auth_secret": "V4rArqPLZz-NFPM",
-            "api_domain": "https://apistage8.quickblox.com",
-            "chat_domain": "chatstage8.quickblox.com",
-            "test_user_id1": 4,
-            "test_user_email1": "",
-            "test_user_login1": "igorquickbloxI1",
-            "test_user_password1": "igorquickbloxI1",
-            "test_user_id2": 6,
-            "test_user_login2": "igorquickbloxI3",
-            "test_user_password2": "igorquickbloxI3",
-            "test_user_email2": "",
-            "dialog_id": "56fcd9ca17d7a55f03000010"
         }
     },
     "active": "production",

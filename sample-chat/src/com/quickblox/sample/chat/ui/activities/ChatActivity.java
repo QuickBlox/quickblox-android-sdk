@@ -23,7 +23,6 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
@@ -42,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import vc908.stickerfactory.StickersManager;
+import vc908.stickerfactory.analytics.AnalyticsManager;
 import vc908.stickerfactory.ui.OnEmojiBackspaceClickListener;
 import vc908.stickerfactory.ui.OnStickerSelectedListener;
 import vc908.stickerfactory.ui.fragment.StickersFragment;
@@ -153,7 +153,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         // Stickers
         keyboardHandleLayout = (KeyboardHandleRelativeLayout) findViewById(R.id.sizeNotifierLayout);
-        keyboardHandleLayout.listener = this;
+        keyboardHandleLayout.setKeyboardSizeChangeListener(this);
         stickersFrame = findViewById(R.id.frame);
         stickerButton = (ImageView) findViewById(R.id.stickers_button);
 
@@ -165,7 +165,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
                     stickerButton.setImageResource(R.drawable.ic_action_insert_emoticon);
                 } else {
                     if (keyboardHandleLayout.isKeyboardVisible()) {
-                        keyboardHandleLayout.hideKeyboard(ChatActivity.this, new KeyboardHandleRelativeLayout.OnKeyboardHideCallback() {
+                        keyboardHandleLayout.hideKeyboard(ChatActivity.this, new KeyboardHandleRelativeLayout.KeyboardHideCallback() {
                             @Override
                             public void onKeyboardHide() {
                                 stickerButton.setImageResource(R.drawable.ic_action_keyboard);
@@ -183,9 +183,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
         updateStickersFrameParams();
         StickersFragment stickersFragment = (StickersFragment) getSupportFragmentManager().findFragmentById(R.id.frame);
         if (stickersFragment == null) {
-            stickersFragment = new StickersFragment.Builder()
-                    .setStickerPlaceholderColorFilterRes(android.R.color.darker_gray)
-                    .build();
+            stickersFragment = new StickersFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, stickersFragment).commit();
         }
         stickersFragment.setOnStickerSelectedListener(stickerSelectedListener);
@@ -212,6 +210,7 @@ public class ChatActivity extends BaseActivity implements KeyboardHandleRelative
 
         try {
             chat.sendMessage(chatMessage);
+            AnalyticsManager.getInstance().onUserMessageSent(StickersManager.isSticker(messageText));
         } catch (XMPPException e) {
             Log.e(TAG, "failed to send a message", e);
         } catch (SmackException sme) {
