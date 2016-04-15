@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,6 +67,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private EditText messageEditText;
 
     private LinearLayout attachmentPreviewContainerLayout;
+    private Snackbar snackbar;
 
     private ChatAdapter chatAdapter;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
@@ -547,7 +549,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         @Override
         public void connectionClosedOnError(final Exception e) {
             super.connectionClosedOnError(e);
-            //TODO add snack bar with message 'Connection disconnected' or else
+
+            snackbar = showErrorSnackbar(R.string.connection_error, e, null);
             // Leave active room if we're in Group Chat
             if (qbDialog.getType() == QBDialogType.GROUP) {
                 runOnUiThread(new Runnable() {
@@ -562,7 +565,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         @Override
         public void reconnectionSuccessful() {
             super.reconnectionSuccessful();
-            //TODO remove snack bar
+            if (snackbar != null) {
+                snackbar.dismiss();
+            }
             // Join active room if we're in Group Chat
             if (qbDialog.getType() == QBDialogType.GROUP) {
                 runOnUiThread(new Runnable() {

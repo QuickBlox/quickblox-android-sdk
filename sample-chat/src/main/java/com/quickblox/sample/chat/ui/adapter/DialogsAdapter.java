@@ -65,12 +65,8 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
             holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount));
         }
 
-        if (isItemSelected(position)) {
-            holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(R.color.selected_list_item_color));
-        } else {
-            holder.rootLayout.setBackgroundColor(ResourceUtils.getColor(android.R.color.transparent));
-        }
-        //TODO how about ternary operation and more clear code : holder.rootLayout.setBackgroundColor ( isItemSelected(position) ? trueAction : falseAction )
+        holder.rootLayout.setBackgroundColor(isItemSelected(position) ? ResourceUtils.getColor(R.color.selected_list_item_color) :
+                ResourceUtils.getColor(android.R.color.transparent));
 
         return convertView;
     }

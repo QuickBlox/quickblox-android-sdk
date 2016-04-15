@@ -45,6 +45,8 @@ import java.util.Set;
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
+    private static final int AUTO_PRESENCE_INTERVAL_IN_SECONDS = 30;
+
     public static final int DIALOG_ITEMS_PER_PAGE = 50;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
@@ -69,6 +71,8 @@ public class ChatHelper {
     private ChatHelper() {
         qbChatService = QBChatService.getInstance();
         qbChatService.setUseStreamManagement(true);
+        Log.d("ChatHelpe", "qbChatService" + qbChatService.isReconnectionAllowed());
+
         addConnectionListener(new VerboseQbChatConnectionListener());
     }
 
@@ -97,9 +101,23 @@ public class ChatHelper {
             return;
         }
 
-//        qbChatService.startAutoSendPresence();
-        qbChatService.login(user, new QbEntityCallbackWrapper<>(callback));
-        //TODO add qbChatService.startAutoSendPresence() to keep permanent connection.
+        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
+            @Override
+            public void onSuccess(Void o, Bundle bundle) {
+                super.onSuccess(o, bundle);
+
+                try {
+                    QBChatService.getInstance().startAutoSendPresence(AUTO_PRESENCE_INTERVAL_IN_SECONDS);
+                } catch (SmackException.NotLoggedInException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                super.onError(e);
+            }
+        });
     }
 
     public boolean logout() {
@@ -139,8 +157,6 @@ public class ChatHelper {
             });
         }
 
-        //TODO delete such todo from master
-        // TODO ANDSAMPLES-69 Implement callback logic to get triggered only after deletion of all dialogs
         callback.onSuccess(null, null);
     }
 
