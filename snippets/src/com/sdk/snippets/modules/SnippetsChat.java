@@ -209,6 +209,9 @@ public class SnippetsChat extends Snippets {
         snippets.add(createMessage);
         snippets.add(createMessageSynchronous);
         //
+        snippets.add(getTotalUnreadMessages);
+        snippets.add(getTotalUnreadMessagesSynchronous);
+        //
         //
         snippets.add(sendPresence);
         snippets.add(getRosterUsers);
@@ -1110,25 +1113,31 @@ public class SnippetsChat extends Snippets {
 
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
-            requestBuilder.addRule("data[class_name]", QueryRule.EQ, "Advert");
+//            requestBuilder.addRule("data[class_name]", QueryRule.EQ, "Advert");
 
             QBChatService.getChatDialogs(null, requestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
                 @Override
                 public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
                     Log.i(TAG, "dialogs: " + dialogs);
 
-                    QBDialog dialog = dialogs.get(0);
-                    Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
-                    Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
-                    Log.i(TAG, "fff: " + dialog.getCustomData().getFloat("fff"));
-                    Log.i(TAG, "fff2: " + dialog.getCustomData().get("fff"));
-                    Log.i(TAG, "iii: " + dialog.getCustomData().getInteger("iii"));
-                    Log.i(TAG, "name: " + dialog.getCustomData().getString("name"));
-                    try {
-                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-                        Log.i(TAG, "ddd: " + dialog.getCustomData().getDate("ddd", format));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    QBDialog dialog = dialogs.get(5);
+                    if(dialog != null) {
+                        QBDialogCustomData customData = dialog.getCustomData();
+                        if(customData != null) {
+                            Log.i(TAG, "arr: " + customData.getArray("arr"));
+                            Log.i(TAG, "bbb: " + customData.getBoolean("bbb"));
+                            Log.i(TAG, "fff: " + customData.getFloat("fff"));
+                            Log.i(TAG, "fff2: " + customData.get("fff"));
+                            Log.i(TAG, "iii: " + customData.getInteger("iii"));
+                            Log.i(TAG, "name: " + customData.getString("name"));
+                            Log.i(TAG, "loc: " + customData.getLocation("loc"));
+                            try {
+                                SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                                Log.i(TAG, "ddd: " + customData.getDate("ddd", format));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
 
@@ -1651,6 +1660,59 @@ public class SnippetsChat extends Snippets {
             }
         }
     };
+
+
+    //
+    ////////////////////////////////////////// Total unread /////////////////////////////////////////
+    //
+
+
+    Snippet getTotalUnreadMessages = new Snippet("Get total unread Messages") {
+        @Override
+        public void execute() {
+            Set<String> dialogsIds = new HashSet<String>() {{
+                add("56f3fac3a0eb4786ae00003f"); add("56f3f546a28f9affc0000033");
+            }};
+
+            QBChatService.getTotalUnreadMessagesCount(dialogsIds, new QBEntityCallback<Integer>() {
+                @Override
+                public void onSuccess(Integer total, Bundle params) {
+                    Log.i(TAG, "total unread messages: " + total);
+                    Log.i(TAG, "params: " + params);
+                }
+
+                @Override
+                public void onError(QBResponseException responseException) {
+                    handleErrors(responseException);
+                }
+            });
+        }
+    };
+
+    Snippet getTotalUnreadMessagesSynchronous = new SnippetAsync("Get total unread Messages (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            Set<String> dialogsIds = new HashSet<String>() {{
+                add("56f3fac3a0eb4786ae00003f"); add("56f3f546a28f9affc0000033");
+            }};
+
+            Integer total = null;
+            Bundle bundle = new Bundle();
+            try {
+                total = QBChatService.getTotalUnreadMessagesCount(dialogsIds, bundle);
+            } catch (QBResponseException e) {
+                e.printStackTrace();
+            }
+
+            if(total != null){
+                Log.i(TAG, "total unread messages: " + total);
+                Log.i(TAG, "params: " + bundle);
+            }
+
+        }
+    };
+
+
 
 
     //

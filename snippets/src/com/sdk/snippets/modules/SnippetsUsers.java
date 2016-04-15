@@ -551,9 +551,9 @@ public class SnippetsUsers extends Snippets{
 //            user.setFullName("galog");
 //            user.setPhone("+123123123");
 //            user.setCustomData("my new custom data");
-//            StringifyArrayQBResponseException tags = new StringifyArrayQBResponseException();
-//            tags.add("man");
-//            user.setTags(tags);
+            StringifyArrayList<String> tags = new StringifyArrayList();
+            tags.add("man");
+            user.setTags(tags);
 //            user.setWebsite("google.com");
 //            user.setFileId(-1);
 
