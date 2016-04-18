@@ -33,6 +33,7 @@ import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -43,11 +44,14 @@ import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
+import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
+
+import org.jivesoftware.smack.ConnectionListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,6 +67,7 @@ public class DialogsActivity extends BaseActivity {
     private SwipyRefreshLayout setOnRefreshListener;
     private QBRequestGetBuilder requestBuilder;
     private Menu menu;
+    private Snackbar snackbar;
     private int skipRecords = 0;
     private boolean isActivityForeground;
 
@@ -93,7 +98,9 @@ public class DialogsActivity extends BaseActivity {
         privateChatManagerListener = new QBPrivateChatManagerListener() {
             @Override
             public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
-                qbPrivateChat.addMessageListener(privateChatMessageListener);
+                if(!createdLocally) {
+                    qbPrivateChat.addMessageListener(privateChatMessageListener);
+                }
             }
         };
         groupChatManagerListener = new QBGroupChatManagerListener() {
@@ -109,6 +116,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
         isActivityForeground = true;
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
@@ -119,6 +127,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
         isActivityForeground = false;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
@@ -518,6 +527,23 @@ public class DialogsActivity extends BaseActivity {
             });
         }
     }
+
+    private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
+        @Override
+        public void connectionClosedOnError(final Exception e) {
+            super.connectionClosedOnError(e);
+            snackbar = showErrorSnackbar(R.string.connection_error, e, null);
+        }
+
+        @Override
+        public void reconnectionSuccessful() {
+            super.reconnectionSuccessful();
+            if (snackbar != null) {
+                snackbar.dismiss();
+            }
+            loadDialogsFromQbInUiThread(true);
+        }
+    };
 
     private class PushBroadcastReceiver extends BroadcastReceiver {
         @Override

@@ -568,14 +568,26 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             if (snackbar != null) {
                 snackbar.dismiss();
             }
-            // Join active room if we're in Group Chat
-            if (qbDialog.getType() == QBDialogType.GROUP) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        joinGroupChat();
-                    }
-                });
+            switch (qbDialog.getType()) {
+                case PRIVATE:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            skipPagination = 0;
+                            chatAdapter = null;
+                            loadChatHistory();
+                        }
+                    });
+                    break;
+                case GROUP:
+                    // Join active room if we're in Group Chat
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            joinGroupChat();
+                        }
+                    });
+                    break;
             }
         }
     };

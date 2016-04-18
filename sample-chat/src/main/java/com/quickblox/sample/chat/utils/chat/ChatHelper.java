@@ -48,7 +48,7 @@ public class ChatHelper {
     private static final int AUTO_PRESENCE_INTERVAL_IN_SECONDS = 30;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 50;
-    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
+    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 100;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
     private static ChatHelper instance;
@@ -71,9 +71,6 @@ public class ChatHelper {
     private ChatHelper() {
         qbChatService = QBChatService.getInstance();
         qbChatService.setUseStreamManagement(true);
-        Log.d("ChatHelpe", "qbChatService" + qbChatService.isReconnectionAllowed());
-
-        addConnectionListener(new VerboseQbChatConnectionListener());
     }
 
     public void addConnectionListener(ConnectionListener listener) {
