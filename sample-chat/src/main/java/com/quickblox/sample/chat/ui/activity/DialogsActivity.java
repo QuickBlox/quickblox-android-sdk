@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
@@ -19,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -33,7 +33,6 @@ import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -67,7 +66,6 @@ public class DialogsActivity extends BaseActivity {
     private SwipyRefreshLayout setOnRefreshListener;
     private QBRequestGetBuilder requestBuilder;
     private Menu menu;
-    private Snackbar snackbar;
     private int skipRecords = 0;
     private boolean isActivityForeground;
 
@@ -82,6 +80,7 @@ public class DialogsActivity extends BaseActivity {
 
     private QBPrivateChatManagerListener privateChatManagerListener;
     private QBGroupChatManagerListener groupChatManagerListener;
+    private ConnectionListener chatConnectionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +97,7 @@ public class DialogsActivity extends BaseActivity {
         privateChatManagerListener = new QBPrivateChatManagerListener() {
             @Override
             public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
-                if(!createdLocally) {
+                if (!createdLocally) {
                     qbPrivateChat.addMessageListener(privateChatMessageListener);
                 }
             }
@@ -106,6 +105,17 @@ public class DialogsActivity extends BaseActivity {
         groupChatManagerListener = new QBGroupChatManagerListener() {
             @Override
             public void chatCreated(QBGroupChat qbGroupChat) {
+                requestBuilder.setSkip(skipRecords = 0);
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
+        chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
+
+            @Override
+            public void reconnectionSuccessful() {
+                super.reconnectionSuccessful();
+
+                requestBuilder.setSkip(skipRecords = 0);
                 loadDialogsFromQbInUiThread(true);
             }
         };
@@ -247,7 +257,7 @@ public class DialogsActivity extends BaseActivity {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 menu.findItem(R.id.menu_dialogs_action_logout).setEnabled(true);
                 invalidateOptionsMenu();
-                ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.no_internet_connection,
+                ErrorUtils.showSnackbar(getSnackbarAnchorView(), R.string.no_internet_connection,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -433,38 +443,7 @@ public class DialogsActivity extends BaseActivity {
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
                 setOnRefreshListener.setRefreshing(false);
-                if (!silentUpdate || !clearDialogHolder) {
-                    showErrorSnackbar(R.string.dialogs_get_error, e,
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (!silentUpdate) {
-                                        loadDialogsFromQb();
-                                    } else {
-                                        setOnRefreshListener.setRefreshing(true);
-                                        loadDialogsFromQb(true, false);
-                                    }
-                                }
-                            }).setCallback(new Snackbar.Callback() {
-
-                        @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            setOnRefreshListener.setEnabled(true);
-                            switch (event) {
-                                case Snackbar.Callback.DISMISS_EVENT_SWIPE:
-                                    if (!clearDialogHolder) {
-                                        skipRecords -= ChatHelper.DIALOG_ITEMS_PER_PAGE;
-                                    }
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onShown(Snackbar snackbar) {
-                            setOnRefreshListener.setEnabled(false);
-                        }
-                    });
-                }
+                Toast.makeText(DialogsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -527,23 +506,6 @@ public class DialogsActivity extends BaseActivity {
             });
         }
     }
-
-    private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
-        @Override
-        public void connectionClosedOnError(final Exception e) {
-            super.connectionClosedOnError(e);
-            snackbar = showErrorSnackbar(R.string.connection_error, e, null);
-        }
-
-        @Override
-        public void reconnectionSuccessful() {
-            super.reconnectionSuccessful();
-            if (snackbar != null) {
-                snackbar.dismiss();
-            }
-            loadDialogsFromQbInUiThread(true);
-        }
-    };
 
     private class PushBroadcastReceiver extends BroadcastReceiver {
         @Override
