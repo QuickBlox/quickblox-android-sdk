@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,16 +24,19 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SelectUsersActivity extends BaseActivity {
     public static final String EXTRA_QB_USERS = "qb_users";
     public static final int MINIMUM_CHAT_OCCUPANTS_SIZE = 2;
+    private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
 
     private static final String EXTRA_QB_DIALOG = "qb_dialog";
 
     private ListView usersListView;
     private ProgressBar progressBar;
     private CheckboxUsersAdapter usersAdapter;
+    private long lastClickTime = 0l;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SelectUsersActivity.class);
@@ -87,6 +91,11 @@ public class SelectUsersActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if ((SystemClock.uptimeMillis() - lastClickTime) < CLICK_DELAY) {
+            return super.onOptionsItemSelected(item);
+        }
+        lastClickTime = SystemClock.uptimeMillis();
+
         switch (item.getItemId()) {
         case R.id.menu_select_people_action_done:
             if (usersAdapter != null) {

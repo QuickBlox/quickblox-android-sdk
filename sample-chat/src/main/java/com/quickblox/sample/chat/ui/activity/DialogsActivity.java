@@ -65,6 +65,7 @@ public class DialogsActivity extends BaseActivity {
     private Menu menu;
     private int skipRecords = 0;
     private boolean isActivityForeground;
+    private boolean isProcessingResultInProgress;
 
     private BroadcastReceiver pushBroadcastReceiver;
     private GooglePlayServicesHelper googlePlayServicesHelper;
@@ -141,6 +142,10 @@ public class DialogsActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (isProcessingResultInProgress){
+            return super.onOptionsItemSelected(item);
+        }
+
         switch (item.getItemId()) {
             case R.id.menu_dialogs_action_logout:
                 userLogout();
@@ -174,6 +179,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        isProcessingResultInProgress = true;
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PEOPLE) {
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_chat);
@@ -254,6 +260,7 @@ public class DialogsActivity extends BaseActivity {
             QBChatService.markMessagesAsRead(dialogId, messagesIds, new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid, Bundle bundle) {
+                    isProcessingResultInProgress = false;
                     updateDialogsList();
                 }
 
@@ -263,6 +270,7 @@ public class DialogsActivity extends BaseActivity {
                 }
             });
         } else {
+            isProcessingResultInProgress = false;
             updateDialogsList();
         }
     }
@@ -371,12 +379,14 @@ public class DialogsActivity extends BaseActivity {
                 new QBEntityCallback<QBDialog>() {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle args) {
+                        isProcessingResultInProgress = false;
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, dialog);
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
 
                     @Override
                     public void onError(QBResponseException e) {
+                        isProcessingResultInProgress = false;
                         showErrorSnackbar(R.string.dialogs_creation_error, e,
                                 new View.OnClickListener() {
                                     @Override
