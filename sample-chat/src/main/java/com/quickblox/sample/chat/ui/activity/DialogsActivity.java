@@ -396,13 +396,8 @@ public class DialogsActivity extends BaseActivity {
 
                     @Override
                     public void onError(QBResponseException e) {
-                        showErrorSnackbar(R.string.dialogs_creation_error, e,
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        createDialog(selectedUsers);
-                                    }
-                                });
+                        ProgressDialogFragment.hide(getSupportFragmentManager());
+                        showErrorSnackbar(R.string.dialogs_creation_error, null, null);
                     }
                 }
         );

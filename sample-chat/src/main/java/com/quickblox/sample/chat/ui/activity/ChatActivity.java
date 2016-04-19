@@ -145,12 +145,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         MenuItem menuItemLeave = menu.findItem(R.id.menu_chat_action_leave);
         MenuItem menuItemAdd = menu.findItem(R.id.menu_chat_action_add);
+        MenuItem menuItemDelete = menu.findItem(R.id.menu_chat_action_delete);
         if (qbDialog.getType() == QBDialogType.PRIVATE) {
             menuItemLeave.setVisible(false);
             menuItemAdd.setVisible(false);
         } else {
-            menuItemLeave.setVisible(true);
-            menuItemAdd.setVisible(true);
+            menuItemDelete.setVisible(false);
         }
 
         return true;
