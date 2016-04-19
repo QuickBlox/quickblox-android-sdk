@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
@@ -19,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -43,11 +43,14 @@ import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
+import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
+
+import org.jivesoftware.smack.ConnectionListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,6 +81,7 @@ public class DialogsActivity extends BaseActivity {
 
     private QBPrivateChatManagerListener privateChatManagerListener;
     private QBGroupChatManagerListener groupChatManagerListener;
+    private ConnectionListener chatConnectionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +98,25 @@ public class DialogsActivity extends BaseActivity {
         privateChatManagerListener = new QBPrivateChatManagerListener() {
             @Override
             public void chatCreated(QBPrivateChat qbPrivateChat, boolean createdLocally) {
-                qbPrivateChat.addMessageListener(privateChatMessageListener);
+                if (!createdLocally) {
+                    qbPrivateChat.addMessageListener(privateChatMessageListener);
+                }
             }
         };
         groupChatManagerListener = new QBGroupChatManagerListener() {
             @Override
             public void chatCreated(QBGroupChat qbGroupChat) {
+                requestBuilder.setSkip(skipRecords = 0);
+                loadDialogsFromQbInUiThread(true);
+            }
+        };
+        chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
+
+            @Override
+            public void reconnectionSuccessful() {
+                super.reconnectionSuccessful();
+
+                requestBuilder.setSkip(skipRecords = 0);
                 loadDialogsFromQbInUiThread(true);
             }
         };
@@ -110,6 +127,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
         isActivityForeground = true;
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
@@ -120,6 +138,7 @@ public class DialogsActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
         isActivityForeground = false;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
@@ -244,7 +263,7 @@ public class DialogsActivity extends BaseActivity {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 menu.findItem(R.id.menu_dialogs_action_logout).setEnabled(true);
                 invalidateOptionsMenu();
-                ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.no_internet_connection,
+                ErrorUtils.showSnackbar(getSnackbarAnchorView(), R.string.no_internet_connection,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -387,13 +406,8 @@ public class DialogsActivity extends BaseActivity {
                     @Override
                     public void onError(QBResponseException e) {
                         isProcessingResultInProgress = false;
-                        showErrorSnackbar(R.string.dialogs_creation_error, e,
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        createDialog(selectedUsers);
-                                    }
-                                });
+                        ProgressDialogFragment.hide(getSupportFragmentManager());
+                        showErrorSnackbar(R.string.dialogs_creation_error, null, null);
                     }
                 }
         );
@@ -434,38 +448,7 @@ public class DialogsActivity extends BaseActivity {
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
                 setOnRefreshListener.setRefreshing(false);
-                if (!silentUpdate || !clearDialogHolder) {
-                    showErrorSnackbar(R.string.dialogs_get_error, e,
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (!silentUpdate) {
-                                        loadDialogsFromQb();
-                                    } else {
-                                        setOnRefreshListener.setRefreshing(true);
-                                        loadDialogsFromQb(true, false);
-                                    }
-                                }
-                            }).setCallback(new Snackbar.Callback() {
-
-                        @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            setOnRefreshListener.setEnabled(true);
-                            switch (event) {
-                                case Snackbar.Callback.DISMISS_EVENT_SWIPE:
-                                    if (!clearDialogHolder) {
-                                        skipRecords -= ChatHelper.DIALOG_ITEMS_PER_PAGE;
-                                    }
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onShown(Snackbar snackbar) {
-                            setOnRefreshListener.setEnabled(false);
-                        }
-                    });
-                }
+                Toast.makeText(DialogsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

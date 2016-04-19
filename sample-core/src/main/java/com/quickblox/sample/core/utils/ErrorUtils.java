@@ -20,17 +20,20 @@ public class ErrorUtils {
     private static final String NO_RESPONSE_TIMEOUT = "No response received within reply timeout.";
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    private ErrorUtils() {}
+    private ErrorUtils() {
+    }
 
     public static Snackbar showSnackbar(View view, @StringRes int errorMessage, Exception e,
                                         @StringRes int actionLabel, View.OnClickListener clickListener) {
-        String error = e.getMessage();
+        String error = (e == null) ? "" : e.getMessage();
         boolean noConnection = NO_CONNECTION_ERROR.equals(error);
         boolean timeout = error.startsWith(NO_RESPONSE_TIMEOUT);
         if (noConnection || timeout) {
             return showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
         } else if (errorMessage == 0) {
             return showSnackbar(view, error, actionLabel, clickListener);
+        } else if (error.equals("")) {
+            return showSnackbar(view, errorMessage, CoreApp.getInstance().getString(R.string.no_internet_connection), actionLabel, clickListener);
         } else {
             return showSnackbar(view, errorMessage, error, actionLabel, clickListener);
         }
@@ -44,8 +47,8 @@ public class ErrorUtils {
     }
 
     public static Snackbar showSnackbar(View view, @StringRes int message,
-                                         @StringRes int actionLabel,
-                                         View.OnClickListener clickListener) {
+                                        @StringRes int actionLabel,
+                                        View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(actionLabel, clickListener);
         snackbar.show();

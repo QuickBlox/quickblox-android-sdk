@@ -57,7 +57,8 @@
     <string name="chat_unsupported_type">Unsupported dialog type</string>
     <string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>
     <string name="notification_title">Quickblox Chat Notification</string>
-    <string name="connection_error">Connection disconnected</string>
+    <string name="connection_error">Chat connection has been dropped</string>
+    <string name="reconnect_alert">Reconnecting in %s seconds</string>
 
     <string name="chat_info">Chat info</string>
     <string name="chat_info_add_people_error">Add people errors</string>

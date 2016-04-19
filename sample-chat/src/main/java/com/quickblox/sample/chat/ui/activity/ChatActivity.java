@@ -71,6 +71,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private ChatAdapter chatAdapter;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
+    private ConnectionListener chatConnectionListener;
 
     private Chat chat;
     private QBDialog qbDialog;
@@ -90,6 +91,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
         chatMessageIds = new ArrayList<>();
+        initChatConnectionListener();
+
         initViews();
     }
 
@@ -142,12 +145,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         MenuItem menuItemLeave = menu.findItem(R.id.menu_chat_action_leave);
         MenuItem menuItemAdd = menu.findItem(R.id.menu_chat_action_add);
+        MenuItem menuItemDelete = menu.findItem(R.id.menu_chat_action_delete);
         if (qbDialog.getType() == QBDialogType.PRIVATE) {
             menuItemLeave.setVisible(false);
             menuItemAdd.setVisible(false);
         } else {
-            menuItemLeave.setVisible(true);
-            menuItemAdd.setVisible(true);
+            menuItemDelete.setVisible(false);
         }
 
         return true;
@@ -364,18 +367,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         ((GroupChatImpl) chat).joinGroupChat(qbDialog, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle b) {
+                if (snackbar != null) {
+                    snackbar.dismiss();
+                }
                 loadDialogUsers();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_join_error, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        joinGroupChat();
-                    }
-                });
+                snackbar = showErrorSnackbar(R.string.connection_error, e, null);
             }
         });
     }
@@ -500,13 +501,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
                 skipPagination -= ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
-                showErrorSnackbar(R.string.chat_load_history_error, e,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loadChatHistory();
-                            }
-                        });
+                snackbar = showErrorSnackbar(R.string.connection_error, e, null);
             }
         });
         skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
@@ -537,46 +532,56 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         });
     }
 
+    private void initChatConnectionListener() {
+        chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
+            @Override
+            public void connectionClosedOnError(final Exception e) {
+                super.connectionClosedOnError(e);
+
+                // Leave active room if we're in Group Chat
+                if (qbDialog.getType() == QBDialogType.GROUP) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            leaveGroupChatRoom();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void reconnectionSuccessful() {
+                super.reconnectionSuccessful();
+                skipPagination = 0;
+                chatAdapter = null;
+                switch (qbDialog.getType()) {
+                    case PRIVATE:
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadChatHistory();
+                            }
+                        });
+                        break;
+                    case GROUP:
+                        // Join active room if we're in Group Chat
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                joinGroupChat();
+                            }
+                        });
+                        break;
+                }
+            }
+        };
+    }
+
     private QBChatMessageListener chatMessageListener = new QBChatMessageListener() {
         @Override
         public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
             chatMessageIds.add(message.getId());
             showMessage(message);
-        }
-    };
-
-    private ConnectionListener chatConnectionListener = new VerboseQbChatConnectionListener() {
-        @Override
-        public void connectionClosedOnError(final Exception e) {
-            super.connectionClosedOnError(e);
-
-            snackbar = showErrorSnackbar(R.string.connection_error, e, null);
-            // Leave active room if we're in Group Chat
-            if (qbDialog.getType() == QBDialogType.GROUP) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        leaveGroupChatRoom();
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void reconnectionSuccessful() {
-            super.reconnectionSuccessful();
-            if (snackbar != null) {
-                snackbar.dismiss();
-            }
-            // Join active room if we're in Group Chat
-            if (qbDialog.getType() == QBDialogType.GROUP) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        joinGroupChat();
-                    }
-                });
-            }
         }
     };
 }
