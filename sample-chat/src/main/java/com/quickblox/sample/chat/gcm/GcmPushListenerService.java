@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.ui.activity.DialogsActivity;
+import com.quickblox.sample.chat.ui.activity.SplashActivity;
 import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.NotificationUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -15,7 +15,7 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
 
     @Override
     protected void showNotification(String message) {
-        NotificationUtils.showNotification(this, DialogsActivity.class,
+        NotificationUtils.showNotification(this, SplashActivity.class,
                 ResourceUtils.getString(R.string.notification_title), message,
                 R.mipmap.ic_launcher, NOTIFICATION_ID);
     }
