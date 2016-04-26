@@ -70,6 +70,7 @@ public class ListUsersActivity extends Activity {
         }
 
         QBChatService.setDebugEnabled(true);
+        QBChatService.setDefaultAutoSendPresenceInterval(60); //seconds
         chatService = QBChatService.getInstance();
 
         createAppSession();
