@@ -171,13 +171,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.log_out:
-                try {
-                    QBRTCClient.getInstance(getActivity()).destroy();
-                    QBChatService.getInstance().logout();
-                } catch (SmackException.NotConnectedException e) {
-                    e.printStackTrace();
-                }
-                getActivity().finish();
+                ((CallActivity)getActivity()).logout();
                 return true;
             case R.id.settings:
                 ((CallActivity)getActivity()).showSettings();

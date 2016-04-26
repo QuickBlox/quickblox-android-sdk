@@ -32,8 +32,10 @@ import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
 import com.quickblox.sample.groupchatwebrtc.fragments.OpponentsFragment;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
+import com.quickblox.sample.groupchatwebrtc.util.ChatPingAlarmManager;
 import com.quickblox.sample.groupchatwebrtc.util.DialogUtil;
 import com.quickblox.sample.groupchatwebrtc.util.FragmentExecuotr;
+import com.quickblox.sample.groupchatwebrtc.util.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.util.SettingsUtil;
 import com.quickblox.users.model.QBUser;
@@ -52,6 +54,7 @@ import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.webrtc.VideoCapturerAndroid;
 
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ import java.util.Map;
  * QuickBlox team
  */
 public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback,
-        OnCallEventsController {
+        OnCallEventsController, NetworkConnectionChecker.OnConnectivityChangedListener {
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -79,7 +82,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     public  List<QBUser> opponentsList;
     private Runnable showIncomingCallWindowTask;
     private Handler showIncomingCallWindowTaskHandler;
-    private BroadcastReceiver wifiStateReceiver;
     private boolean closeByWifiStateAllow = true;
     private String hangUpReason;
     private boolean isInCommingCall;
@@ -90,6 +92,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private RingtonePlayer ringtonePlayer;
     private LinearLayout connectionView;
     private AppRTCAudioManager audioManager;
+    private NetworkConnectionChecker networkConnectionChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,9 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         initQBRTCClient();
         initAudioManager();
         initWiFiManagerListener();
+
+        initPingListener(); // comment if you don't want to start pinging server in background by alarm manager
+
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
     }
@@ -184,6 +190,11 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         });
     }
 
+    @Override
+    public void connectivityChanged(boolean availableNow) {
+        showToast("Internet connection " + (availableNow ? "available" : " unavailable"));
+    }
+
     private void showNotificationPopUp(final int text,final boolean show){
         runOnUiThread(new Runnable() {
             @Override
@@ -198,22 +209,19 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         });
 
     }
+
     private void initWiFiManagerListener() {
-        wifiStateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "WIFI was changed");
-                processCurrentWifiState(context);
-            }
-        };
+        networkConnectionChecker = new NetworkConnectionChecker(getApplication());
     }
 
-    private void processCurrentWifiState(Context context) {
-        WifiManager wifi = (WifiManager) context.getSystemService(WIFI_SERVICE);
-        if (wifiEnabled != wifi.isWifiEnabled()) {
-            wifiEnabled = wifi.isWifiEnabled();
-            showToast("Wifi " + (wifiEnabled ? "enabled" : "disabled"));
-        }
+    private void initPingListener(){
+        ChatPingAlarmManager.onCreate(this);
+        ChatPingAlarmManager.getInstanceFor().addPingListener(new PingFailedListener() {
+            @Override
+            public void pingFailed() {
+                showToast("Ping chat server failed");
+            }
+        });
     }
 
     private void disableConversationFragmentButtons() {
@@ -268,31 +276,23 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(wifiStateReceiver, intentFilter);
-    }
-
-    @Override
     protected void onResume() {
         if (currentSession == null) {
             addOpponentsFragment();
         }
         super.onResume();
+        networkConnectionChecker.registerListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        networkConnectionChecker.unregisterListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(wifiStateReceiver);
     }
 
     public QBRTCSession getCurrentSession() {
@@ -605,6 +605,23 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         return ids;
     }
 
+    public void logout() {
+        logoutSession();
+        finish();
+    }
+
+    private void logoutSession(){
+        try {
+            DataHolder.setLoggedUser(null);
+            QBRTCClient.getInstance(this).destroy();
+
+            //comment if you haven't started ping alarm
+            ChatPingAlarmManager.onDestroy();
+            QBChatService.getInstance().logout();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void addConversationFragmentReceiveCall() {
 
@@ -705,14 +722,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         Fragment fragment = getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
         if (fragment == null) {
             super.onBackPressed();
-            if (QBChatService.isInitialized()) {
-                try {
-                    rtcClient.destroy();
-                    QBChatService.getInstance().logout();
-                } catch (SmackException.NotConnectedException e) {
-                    e.printStackTrace();
-                }
-            }
+            logoutSession();
         }
     }
 
