@@ -66,12 +66,12 @@ public class LoginActivity extends BaseLogginedUserActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //TODO VT need to add advanced validator for release
         if (TextUtils.isEmpty(userNameEditText.getText())) {
-            userNameEditText.setError("Login can not be empty");
+            userNameEditText.setError(getString(R.string.error_empty_login));
             return super.onOptionsItemSelected(item);
         }
 
         if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
-            chatRoomNameEditText.setError("Chat room name can not be empty");
+            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
             return super.onOptionsItemSelected(item);
         }
         //TODO end
@@ -119,7 +119,9 @@ public class LoginActivity extends BaseLogginedUserActivity {
         if (isUserCorrect(qbUserFromServer)){
             loginToChat(qbUserFromServer);
         } else {
-            startUpdateUser(qbUserFromServer);
+            QBUser userForUpdate = createUserWithEnteredData();
+            userForUpdate.setId(qbUserFromServer.getId());
+            startUpdateUser(userForUpdate);
         }
     }
 
