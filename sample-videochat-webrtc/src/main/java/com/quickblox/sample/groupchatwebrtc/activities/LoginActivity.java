@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -21,7 +20,7 @@ import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.users.QBUsers;
+import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
 import com.quickblox.users.model.QBUser;
 
 /**
@@ -29,7 +28,7 @@ import com.quickblox.users.model.QBUser;
  */
 public class LoginActivity extends BaseLogginedUserActivity {
 
-    private EditText usetNameEditText;
+    private EditText userNameEditText;
     private EditText chatRoomNameEditText;
     private String TAG = LoginActivity.class.getSimpleName();
 
@@ -48,7 +47,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     private void initUI() {
         setActionbarTitle(getResources().getString(R.string.title_login_activity));
-        usetNameEditText = (EditText) findViewById(R.id.user_name);
+        userNameEditText = (EditText) findViewById(R.id.user_name);
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
     }
 
@@ -66,8 +65,8 @@ public class LoginActivity extends BaseLogginedUserActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(usetNameEditText.getText())) {
-            usetNameEditText.setError("Login can not be empty");
+        if (TextUtils.isEmpty(userNameEditText.getText())) {
+            userNameEditText.setError("Login can not be empty");
             return super.onOptionsItemSelected(item);
         }
 
@@ -75,12 +74,11 @@ public class LoginActivity extends BaseLogginedUserActivity {
             chatRoomNameEditText.setError("Chat room name can not be empty");
             return super.onOptionsItemSelected(item);
         }
-
         //TODO end
 
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                KeyboardUtils.hideKeyboard(usetNameEditText);
+                KeyboardUtils.hideKeyboard(userNameEditText);
                 KeyboardUtils.hideKeyboard(chatRoomNameEditText);
                 signInToQB(new QBUser(DeviceUtils.getDeviceUid(), Consts.DEFAULT_USER_PASSWORD));
                 return true;
@@ -91,11 +89,11 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     private void signInToQB(final QBUser currentQbUser){
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_sign_in);
-        QBUsers.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
+        QBRestUtils.getInstance().signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                updateUserIfNeed(qbUser);
+                processSigninedUser(qbUser);
             }
 
             @Override
@@ -103,7 +101,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
                 Log.d(TAG, e.getMessage());
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 if (e.getMessage().equals("Unauthorized")){
-                    signUpNewUser(currentQbUser);
+                    QBRestUtils.getInstance().signUpNewUser(currentQbUser);
                 } else {
                     ErrorUtils.showSnackbar(getCurrentFocus(), R.string.sign_in_error, e,
                             R.string.dlg_retry, new View.OnClickListener() {
@@ -117,20 +115,17 @@ public class LoginActivity extends BaseLogginedUserActivity {
         });
     }
 
-    private void updateUserIfNeed(final QBUser qbUser){
-        QBUser currentUser = getCurrentUser();
-        if (qbUser.getTags().contains(chatRoomNameEditText.getText())
-                && qbUser.getFullName().equals(currentUser.getFullName())){
-            loginToChat(qbUser);
+    private void processSigninedUser(final QBUser qbUserFromServer){
+        if (isUserCorrect(qbUserFromServer)){
+            loginToChat(qbUserFromServer);
         } else {
-            startUpdateUser(qbUser);
+            startUpdateUser(qbUserFromServer);
         }
     }
 
     private void startUpdateUser(final QBUser qbUser){
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_updating_user);
-        qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
-        QBUsers.updateUser(qbUser, new QBEntityCallback<QBUser>() {
+        QBRestUtils.getInstance().updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -152,70 +147,43 @@ public class LoginActivity extends BaseLogginedUserActivity {
         });
     }
 
-    private void signUpNewUser(final QBUser newQbUser){
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_creating_new_user);
-        QBUsers.signUp(newQbUser, new QBEntityCallback<QBUser>() {
-            @Override
-            public void onSuccess(QBUser qbUser, Bundle bundle) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-//                newQbUser.setId(qbUser.getId());
-                loginToChat(qbUser);
-            }
+    private boolean isUserCorrect(QBUser qbUserFromServer){
+        if (qbUserFromServer.getTags() == null || qbUserFromServer.getFullName() == null){
+            return false;
+        }
 
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                Log.d(TAG, e.getMessage());
-            }
-        });
+        QBUser currentUser = createUserWithEnteredData();
+
+        boolean isCurrentUserCorrect = currentUser != null && qbUserFromServer.getTags().contains(currentUser.getTags().get(0))
+                && qbUserFromServer.getFullName().equals(currentUser.getFullName());
+
+        return isCurrentUserCorrect;
     }
 
+    //TODO этот метод я переименую согласной той логики, кторую он будет выполнять
     private void loginToChat(final QBUser qbUser){
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
-        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-        QBChatService.getInstance().login(qbUser, new QBEntityCallback<QBUser>() {
-            @Override
-            public void onSuccess(QBUser loginedQbUser, Bundle bundle) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                startCallActivity(qbUser.getLogin());
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Log.d(TAG, e.getMessage());
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.login_chat_login_error, e,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loginToChat(qbUser);
-                            }
-                        });
-            }
-        });
-
+        //TODO здесь будет логика запуска сервиса с логином в чат и переходом на следующее активити
+        Log.d(TAG, "success signIn to QB");
     }
 
-    private QBUser getCurrentUser(){
-        StringifyArrayList <String> userTags = new StringifyArrayList<>();
-        userTags.add(String.valueOf(chatRoomNameEditText.getText()));
+    private QBUser createUserWithEnteredData(){
+        return createQBUserWithCurrentData(String.valueOf(userNameEditText.getText()),
+                String.valueOf(chatRoomNameEditText.getText()));
+    }
 
-        QBUser qbUser = new QBUser();
-        qbUser.setFullName(String.valueOf(usetNameEditText.getText()));
-        qbUser.setLogin(DeviceUtils.getDeviceUid());
-        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-        qbUser.setTags(userTags);
+    private QBUser createQBUserWithCurrentData(String userName, String chatRoomName){
+        QBUser qbUser = null;
+        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(chatRoomName)) {
+            StringifyArrayList<String> userTags = new StringifyArrayList<>();
+            userTags.add(String.valueOf(chatRoomName));
+
+            qbUser = new QBUser();
+            qbUser.setFullName(String.valueOf(userName));
+            qbUser.setLogin(DeviceUtils.getDeviceUid());
+            qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+            qbUser.setTags(userTags);
+        }
 
         return qbUser;
     }
-
-    private void startCallActivity(String login) {
-        Intent intent = new Intent(LoginActivity.this, CallActivity.class);
-        intent.putExtra("login", login);
-        intent.putExtra(Consts.EXTRA_TAG, chatRoomNameEditText.getText());
-        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
-        finish();
-    }
-
-
 }
