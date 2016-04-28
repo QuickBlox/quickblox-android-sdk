@@ -18,6 +18,7 @@ import com.quickblox.sample.core.utils.DeviceUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
@@ -64,22 +65,9 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(userNameEditText.getText())) {
-            userNameEditText.setError(getString(R.string.error_empty_login));
-            return super.onOptionsItemSelected(item);
-        }
-
-        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
-            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
-            return super.onOptionsItemSelected(item);
-        }
-        //TODO end
 
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                KeyboardUtils.hideKeyboard(userNameEditText);
-                KeyboardUtils.hideKeyboard(chatRoomNameEditText);
                 signInToQB(createUserWithEnteredData());
                 return true;
             default:
@@ -88,8 +76,22 @@ public class LoginActivity extends BaseLogginedUserActivity {
     }
 
     private void signInToQB(final QBUser currentQbUser){
+        //TODO VT need to add advanced validator for release
+        if (TextUtils.isEmpty(userNameEditText.getText())) {
+            userNameEditText.setError(getString(R.string.error_empty_login));
+            return;
+        }
+
+        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
+            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
+            return;
+        }
+        //TODO end
+
+        hideKeyboard();
+
         showProgressDialog(R.string.dlg_sign_in);
-        QBRestUtils.getInstance().signIn(currentQbUser, new QBEntityCallback<QBUser>() {
+        App.getInstance().qbRestUtils.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 hideProgressDialog();
@@ -116,8 +118,13 @@ public class LoginActivity extends BaseLogginedUserActivity {
         });
     }
 
+    private void hideKeyboard() {
+        KeyboardUtils.hideKeyboard(userNameEditText);
+        KeyboardUtils.hideKeyboard(chatRoomNameEditText);
+    }
+
     private void processSigninedUser(final QBUser qbUserFromServer){
-        if (!needUpdateUser(qbUserFromServer)){
+        if (!isNeedUpdateUser(qbUserFromServer)){
             loginToChat(qbUserFromServer);
         } else {
             QBUser userForUpdate = createUserWithEnteredData();
@@ -128,6 +135,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     private void startUpdateUser(final QBUser qbUser){
         showProgressDialog(R.string.dlg_updating_user);
+        qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
         QBRestUtils.getInstance().updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
@@ -168,7 +176,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
         );
     }
 
-    private boolean needUpdateUser(QBUser qbUserFromServer){
+    private boolean isNeedUpdateUser(QBUser qbUserFromServer){
         if (qbUserFromServer.getTags() == null || qbUserFromServer.getFullName() == null){
             return true;
         }

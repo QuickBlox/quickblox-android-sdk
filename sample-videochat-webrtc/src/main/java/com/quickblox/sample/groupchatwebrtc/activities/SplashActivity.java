@@ -9,6 +9,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
 
 /**
  * Created by tereha on 12.04.16.
@@ -33,9 +34,9 @@ public class SplashActivity extends CoreSplashActivity {
     }
 
     private void createSession() {
-        QBAuth.createSession(new QBEntityCallback<QBSession>() {
+        QBRestUtils.getInstance().createSession(new QBEntityCallback<QBSession>() {
             @Override
-            public void onSuccess(QBSession result, Bundle params) {
+            public void onSuccess(QBSession qbSession, Bundle params) {
                 proceedToTheNextActivity();
             }
 

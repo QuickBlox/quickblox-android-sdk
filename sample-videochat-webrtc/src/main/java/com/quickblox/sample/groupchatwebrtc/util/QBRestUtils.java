@@ -1,12 +1,9 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
-import android.os.Bundle;
-import android.util.Log;
-
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -18,19 +15,10 @@ import java.util.List;
  * Created by tereha on 26.04.16.
  */
 public class QBRestUtils {
-    private static QBRestUtils instance;
     private String TAG = QBRestUtils.class.getSimpleName();
 
-    public QBRestUtils() {
-
-    }
-
-    public static synchronized QBRestUtils getInstance(){
-        if (instance == null) {
-            instance = new QBRestUtils();
-        }
-
-        return instance;
+    public void createSession(QBEntityCallback<QBSession> callback){
+        QBAuth.createSession(callback);
     }
 
     public void signIn(final QBUser currentQbUser, QBEntityCallback<QBUser> callback){
@@ -38,7 +26,6 @@ public class QBRestUtils {
     }
 
     public void updateUserOnQBServer(QBUser qbUser, QBEntityCallback<QBUser> callback){
-        qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
         QBUsers.updateUser(qbUser, callback);
     }
 
