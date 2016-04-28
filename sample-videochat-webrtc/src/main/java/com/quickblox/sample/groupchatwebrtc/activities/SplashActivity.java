@@ -3,13 +3,13 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.os.Bundle;
 import android.view.View;
 
-import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
+import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 
 /**
  * Created by tereha on 12.04.16.
@@ -34,7 +34,7 @@ public class SplashActivity extends CoreSplashActivity {
     }
 
     private void createSession() {
-        QBRestUtils.getInstance().createSession(new QBEntityCallback<QBSession>() {
+        App.getInstance().getQbResRequestExecutor().createSession(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle params) {
                 proceedToTheNextActivity();

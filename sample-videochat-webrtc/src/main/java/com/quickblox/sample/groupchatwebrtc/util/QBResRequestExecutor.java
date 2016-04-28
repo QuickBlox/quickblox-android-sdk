@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * Created by tereha on 26.04.16.
  */
-public class QBRestUtils {
-    private String TAG = QBRestUtils.class.getSimpleName();
+public class QBResRequestExecutor {
+    private String TAG = QBResRequestExecutor.class.getSimpleName();
 
     public void createSession(QBEntityCallback<QBSession> callback){
         QBAuth.createSession(callback);
@@ -41,6 +41,4 @@ public class QBRestUtils {
 
         QBUsers.getUsersByTags(tags, requestBuilder, callback);
     }
-
-
 }

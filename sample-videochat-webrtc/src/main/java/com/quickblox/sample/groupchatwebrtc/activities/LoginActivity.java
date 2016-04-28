@@ -21,7 +21,7 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
+import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.users.model.QBUser;
 
 /**
@@ -29,9 +29,12 @@ import com.quickblox.users.model.QBUser;
  */
 public class LoginActivity extends BaseLogginedUserActivity {
 
+    private String TAG = LoginActivity.class.getSimpleName();
+
     private EditText userNameEditText;
     private EditText chatRoomNameEditText;
-    private String TAG = LoginActivity.class.getSimpleName();
+
+    private QBResRequestExecutor requestExecutor;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -42,6 +45,8 @@ public class LoginActivity extends BaseLogginedUserActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        requestExecutor = App.getInstance().getQbResRequestExecutor();
 
         initUI();
     }
@@ -91,7 +96,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
         hideKeyboard();
 
         showProgressDialog(R.string.dlg_sign_in);
-        App.getInstance().qbRestUtils.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
+        requestExecutor.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 hideProgressDialog();
@@ -136,7 +141,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
     private void startUpdateUser(final QBUser qbUser){
         showProgressDialog(R.string.dlg_updating_user);
         qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
-        QBRestUtils.getInstance().updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
+        requestExecutor.updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 hideProgressDialog();
@@ -160,7 +165,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     private void startSignUpNewUser(QBUser newUser){
         showProgressDialog(R.string.dlg_creating_new_user);
-        QBRestUtils.getInstance().signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
+        requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser result, Bundle params) {
                         hideProgressDialog();

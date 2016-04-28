@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MatchParent"
     android:orientation="vertical"
     android:paddingStart="@dimen/padding_start"
     >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:paddingTop="@dimen/padding_actionbar"
         android:text="@string/welcoming_message"
         />
 
     <EditText
         android:id="@+id/user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:paddingTop="@dimen/padding_top"
         android:hint="@string/hint_user_name"
         android:textSize="16sp"
@@ -24,13 +21,10 @@
 
     <EditText
         android:id="@+id/chat_room_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MatchWidth"
         android:paddingTop="@dimen/padding_top"
         android:hint="@string/hint_chat_room_name"
         android:textSize="16sp"
         />
-
-
 
 </LinearLayout>

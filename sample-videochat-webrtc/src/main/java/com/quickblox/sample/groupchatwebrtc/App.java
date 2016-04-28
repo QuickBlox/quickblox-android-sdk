@@ -2,20 +2,31 @@ package com.quickblox.sample.groupchatwebrtc;
 
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
+import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 
 public class App extends CoreApp {
-    QBRestUtils qbRestUtils;
+    private static App instance;
+    private QBResRequestExecutor qbResRequestExecutor;
+
+    public static App getInstance() {
+        return instance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        super.initCredentials(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET, Consts.ACCOUNT_KEY);
-        initQbRestUtils();
+        initApplication();
     }
 
-    private void initQbRestUtils(){
-        this.qbRestUtils = new QBRestUtils();
+    private void initApplication(){
+        instance = new App();
+        super.initCredentials(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET, Consts.ACCOUNT_KEY);
+
+    }
+
+    public synchronized QBResRequestExecutor getQbResRequestExecutor() {
+        return qbResRequestExecutor == null
+                ? qbResRequestExecutor = new QBResRequestExecutor()
+                : qbResRequestExecutor;
     }
 }
