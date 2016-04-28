@@ -5,14 +5,18 @@
     <string name="splash_app_title">Video &amp; Audio \nChat Sample</string>
     <string name="splash_create_session_error">Create session errors:</string>
     <string name="title_login_activity">Enter to chat</string>
+
     <string name="dlg_login">Login…</string>
     <string name="dlg_sign_in">Sign In…</string>
     <string name="dlg_updating_user">Updating user…</string>
     <string name="dlg_creating_new_user">Creating new user…</string>
 
+    <string name="sign_up_error">Error creating new user, please try again</string>
+    <string name="sign_in_error_with_error">Sign In error. Error</string>
+    <string name="sign_in_error_without_error">Sign In error</string>
+
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
     <string name="update_user_error">Update user error. Error</string>
-    <string name="sign_in_error">Sign In error. Error</string>
 
 
     <!--menu-->

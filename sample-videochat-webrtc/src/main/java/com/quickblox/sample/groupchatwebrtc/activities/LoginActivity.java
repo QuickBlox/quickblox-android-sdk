@@ -14,10 +14,10 @@ import android.widget.EditText;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.DeviceUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.util.QBRestUtils;
@@ -80,7 +80,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
             case R.id.menu_login_user_done:
                 KeyboardUtils.hideKeyboard(userNameEditText);
                 KeyboardUtils.hideKeyboard(chatRoomNameEditText);
-                signInToQB(new QBUser(DeviceUtils.getDeviceUid(), Consts.DEFAULT_USER_PASSWORD));
+                signInToQB(createUserWithEnteredData());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -88,22 +88,23 @@ public class LoginActivity extends BaseLogginedUserActivity {
     }
 
     private void signInToQB(final QBUser currentQbUser){
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_sign_in);
+        showProgressDialog(R.string.dlg_sign_in);
         QBRestUtils.getInstance().signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
+                hideProgressDialog();
                 processSigninedUser(qbUser);
             }
 
             @Override
             public void onError(QBResponseException e) {
-                Log.d(TAG, e.getMessage());
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                if (e.getMessage().equals("Unauthorized")){
-                    QBRestUtils.getInstance().signUpNewUser(currentQbUser);
+                String errorMessage = e.getMessage();
+                Log.d(TAG, errorMessage != null ? errorMessage : getString(R.string.sign_in_error_without_error));
+                hideProgressDialog();
+                if (Consts.UNAUTHORIZED_ERROR_CODE == e.getHttpStatusCode()){
+                    startSignUpNewUser(currentQbUser);
                 } else {
-                    ErrorUtils.showSnackbar(getCurrentFocus(), R.string.sign_in_error, e,
+                    ErrorUtils.showSnackbar(getCurrentFocus(), R.string.sign_in_error_with_error, e,
                             R.string.dlg_retry, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -116,7 +117,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
     }
 
     private void processSigninedUser(final QBUser qbUserFromServer){
-        if (isUserCorrect(qbUserFromServer)){
+        if (!needUpdateUser(qbUserFromServer)){
             loginToChat(qbUserFromServer);
         } else {
             QBUser userForUpdate = createUserWithEnteredData();
@@ -126,18 +127,18 @@ public class LoginActivity extends BaseLogginedUserActivity {
     }
 
     private void startUpdateUser(final QBUser qbUser){
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_updating_user);
+        showProgressDialog(R.string.dlg_updating_user);
         QBRestUtils.getInstance().updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
+                hideProgressDialog();
                 loginToChat(qbUser);
             }
 
             @Override
             public void onError(QBResponseException e) {
                 Log.d(TAG, e.getMessage());
-                ProgressDialogFragment.hide(getSupportFragmentManager());
+                hideProgressDialog();
                 ErrorUtils.showSnackbar(getCurrentFocus(), R.string.update_user_error, e,
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
@@ -149,17 +150,35 @@ public class LoginActivity extends BaseLogginedUserActivity {
         });
     }
 
-    private boolean isUserCorrect(QBUser qbUserFromServer){
+    private void startSignUpNewUser(QBUser newUser){
+        showProgressDialog(R.string.dlg_creating_new_user);
+        QBRestUtils.getInstance().signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
+                    @Override
+                    public void onSuccess(QBUser result, Bundle params) {
+                        hideProgressDialog();
+                        loginToChat(result);
+                    }
+
+                    @Override
+                    public void onError(QBResponseException responseException) {
+                        hideProgressDialog();
+                        Toaster.longToast(R.string.sign_up_error);
+                    }
+                }
+        );
+    }
+
+    private boolean needUpdateUser(QBUser qbUserFromServer){
         if (qbUserFromServer.getTags() == null || qbUserFromServer.getFullName() == null){
-            return false;
+            return true;
         }
 
         QBUser currentUser = createUserWithEnteredData();
 
-        boolean isCurrentUserCorrect = currentUser != null && qbUserFromServer.getTags().contains(currentUser.getTags().get(0))
-                && qbUserFromServer.getFullName().equals(currentUser.getFullName());
+        boolean needUpdateUser = currentUser != null && (!qbUserFromServer.getTags().contains(currentUser.getTags().get(0))
+                || !qbUserFromServer.getFullName().equals(currentUser.getFullName()));
 
-        return isCurrentUserCorrect;
+        return needUpdateUser;
     }
 
     //TODO этот метод я переименую согласной той логики, кторую он будет выполнять

@@ -42,17 +42,8 @@ public class QBRestUtils {
         QBUsers.updateUser(qbUser, callback);
     }
 
-    public void signUpNewUser(final QBUser newQbUser){
-        QBUsers.signUp(newQbUser, new QBEntityCallback<QBUser>() {
-            @Override
-            public void onSuccess(QBUser qbUser, Bundle bundle) {
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Log.d(TAG, e.getMessage());
-            }
-        });
+    public void signUpNewUser(QBUser newQbUser,  QBEntityCallback<QBUser> callback){
+        QBUsers.signUp(newQbUser, callback);
     }
 
     public void loadUsersByTag(String tag, QBEntityCallback<ArrayList<QBUser>> callback){
