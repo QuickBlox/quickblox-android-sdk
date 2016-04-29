@@ -86,9 +86,9 @@ public class ListUsersActivity extends Activity {
     }
 
     private void initUI() {
-        usersList = (ListView) findViewById(R.id.usersListView);
-        progressBar = (ProgressBar) findViewById(R.id.loginPB);
-        progressBar.setVisibility(View.INVISIBLE);
+//        usersList = (ListView) findViewById(R.id.usersListView);
+//        progressBar = (ProgressBar) findViewById(R.id.loginPB);
+//        progressBar.setVisibility(View.INVISIBLE);
 
     }
 

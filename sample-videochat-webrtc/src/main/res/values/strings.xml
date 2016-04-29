@@ -2,6 +2,26 @@
 <resources>
 
     <string name="app_name">Video chat sample</string>
+    <string name="splash_app_title">Video &amp; Audio \nChat Sample</string>
+    <string name="splash_create_session_error">Create session errors:</string>
+    <string name="title_login_activity">Enter to chat</string>
+
+    <string name="dlg_login">Login…</string>
+    <string name="dlg_sign_in">Sign In…</string>
+    <string name="dlg_updating_user">Updating user…</string>
+    <string name="dlg_creating_new_user">Creating new user…</string>
+
+    <string name="sign_up_error">Error creating new user, please try again</string>
+    <string name="sign_in_error_with_error">Sign In error. Error</string>
+    <string name="sign_in_error_without_error">Sign In error</string>
+
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
+    <string name="update_user_error">Update user error. Error</string>
+
+
+    <!--menu-->
+    <string name="menu_login_user_done">Done</string>
+
     <string name="action_log_out">Log out</string>
     <string name="login_as">Login as</string>
     <string name="logged_in_as">Logged In as</string>
@@ -18,8 +38,14 @@
 
     <string name="users_tag">webrtcusers</string>
 
-    <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
+    <string name="welcoming_message">Please enter username and chat room name. \nYou can join existed chat room.</string>
+    <string name="hint_user_name">User name</string>
+    <string name="hint_chat_room_name">Chat room name</string>
+
     <string name="select_user_to_call">Select Users You Want to Call</string>
+
+    <string name="error_empty_login">Login can not be empty</string>
+    <string name="error_empty_chat_room_name">Chat room name can not be empty</string>
 
     
     <string name="btn_audio_call">AUDIO CALL</string>
@@ -61,6 +87,8 @@
     <color name="black_transparent_30">#30000000</color>
     <color name="black_transparent_50">#50000000</color>
     <color name="white_transparent_80">#80FFFFFF</color>
+    <color name="background_chat_color">#f5f6f5</color>
+    <color name="blue_accent">#0088e7</color>
 
     <!-- Settings strings. -->
     <string name="pref_default_value">Default</string>
