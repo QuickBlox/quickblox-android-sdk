@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class OpponentsAdapter extends BaseAdapter {
 
-
     private List<QBUser> opponents;
     private LayoutInflater inflater;
     public static int i;
