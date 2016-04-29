@@ -3,6 +3,7 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
@@ -104,6 +106,20 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
             timerABWithTimer.stop();
             isStarted = false;
         }
+    }
+
+    public void setActionbarTitle(String title){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(title);
+    }
+
+    void showProgressDialog(@StringRes int messageId){
+        ProgressDialogFragment.show(getSupportFragmentManager(), messageId);
+    }
+
+    void hideProgressDialog(){
+        ProgressDialogFragment.hide(getSupportFragmentManager());
     }
 }
 
