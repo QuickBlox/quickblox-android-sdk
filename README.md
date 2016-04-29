@@ -6,7 +6,7 @@ This project contains QuickBlox Android SDK, that includes
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
   * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
   * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
-  * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-messages)
+  * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-pushnotifications)
   * [Location Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-location)
   * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-custom-objects)
   * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-content)
