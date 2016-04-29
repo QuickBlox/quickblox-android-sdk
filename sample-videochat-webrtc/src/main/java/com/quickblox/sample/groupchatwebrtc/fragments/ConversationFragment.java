@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -97,6 +98,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private Handler mainHandler;
+    private OnCallEventsController callEvents;
 
     public static ConversationFragment newInstance(List<QBUser> opponents, String callerName,
                                                    QBRTCTypes.QBConferenceType qbConferenceType,
@@ -183,6 +185,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        callEvents = (OnCallEventsController) activity;
+    }
 
     @Override
     public void onStart() {
@@ -344,10 +351,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CallActivity) getActivity()).getCurrentSession() != null) {
-                    Log.d(TAG, "Dynamic switched!");
-                    ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
-                }
+                callEvents.onSwitchAudio();
             }
         });
 
@@ -412,7 +416,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         };
     }
 
-    private void toggleCamerainternal(QBMediaStreamManager mediaStreamManager){
+    private void toggleCamerainternal(QBMediaStreamManager mediaStreamManager) {
         toggleCameraOnUiThread(false);
         int currentCameraId = mediaStreamManager.getCurrentCameraId();
         Log.d(TAG, "Camera was switched!");
@@ -428,7 +432,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }, TOGGLE_CAMERA_DELAY);
     }
 
-    private void toggleCameraOnUiThread(final boolean toggle){
+    private void toggleCameraOnUiThread(final boolean toggle) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -437,13 +441,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
     }
 
-    private void runOnUiThread(Runnable runnable){
+    private void runOnUiThread(Runnable runnable) {
         mainHandler.post(runnable);
     }
 
     private void toggleCamera(boolean isNeedEnableCam) {
         QBRTCSession currentSession = ((CallActivity) getActivity()).getCurrentSession();
-        if (currentSession != null && currentSession.getMediaStreamManager() != null){
+        if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setVideoEnabled(isNeedEnableCam);
             if (myCameraOff != null) {
                 myCameraOff.setVisibility(isNeedEnableCam ? View.INVISIBLE : View.VISIBLE);
@@ -563,7 +567,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     @Override
-    public void onConnectedToUser(QBRTCSession qbrtcSession,final Integer userId) {
+    public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -619,6 +623,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         setStatusForOpponent(userId, getString(R.string.hungUp));
     }
 
+    public void enableDinamicToggle(boolean plugged) {
+        dynamicToggleVideoCall.setChecked(plugged);
+    }
+
     private class AudioStreamReceiver extends BroadcastReceiver {
 
         @Override
@@ -641,7 +649,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         ENABLED_FROM_USER
     }
 
-    class FragmentLifeCycleHandler extends Handler{
+    class FragmentLifeCycleHandler extends Handler {
 
         @Override
         public void dispatchMessage(Message msg) {

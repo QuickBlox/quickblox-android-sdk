@@ -1,6 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -15,6 +16,7 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.core.utils.ErrorUtils;
@@ -41,12 +43,12 @@ public class ListUsersActivity extends Activity {
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
 
-    private static QBChatService chatService;
-    private static ArrayList<QBUser> users = new ArrayList<>();
-
     private UsersAdapter usersListAdapter;
     private ListView usersList;
     private ProgressBar progressBar;
+    private Context context;
+    private static QBChatService chatService;
+    private static ArrayList<QBUser> users = new ArrayList<>();
     private volatile boolean resultReceived = true;
 
     @Override
@@ -57,11 +59,17 @@ public class ListUsersActivity extends Activity {
 
         initUI();
 
+        // Initialize QuickBlox application with credentials.
+        //
+        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
+
         if (getActionBar() != null) {
             getActionBar().setTitle(R.string.opponentsListActionBarTitle);
         }
 
         QBChatService.setDebugEnabled(true);
+        QBChatService.setDefaultAutoSendPresenceInterval(60); //seconds
         chatService = QBChatService.getInstance();
 
         createAppSession();
@@ -190,11 +198,11 @@ public class ListUsersActivity extends Activity {
         usersList.setOnItemClickListener(clicklistener);
     }
 
-    private void loadUsers(){
+    private void loadUsers() {
         loadUsers(getString(R.string.users_tag));
     }
 
-    private void loadUsers(String tag){
+    private void loadUsers(String tag) {
         showProgress(true);
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
@@ -221,7 +229,7 @@ public class ListUsersActivity extends Activity {
         });
     }
 
-    private void showProgress(boolean show){
+    private void showProgress(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -230,7 +238,7 @@ public class ListUsersActivity extends Activity {
     private QBUser currentUser;
     AdapterView.OnItemClickListener clicklistener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (!resultReceived || (SystemClock.uptimeMillis() - upTime) < ON_ITEM_CLICK_DELAY){
+            if (!resultReceived || (SystemClock.uptimeMillis() - upTime) < ON_ITEM_CLICK_DELAY) {
                 return;
             }
             resultReceived = false;
@@ -254,7 +262,7 @@ public class ListUsersActivity extends Activity {
                 user.setId(session.getUserId());
 
                 DataHolder.setLoggedUser(currentUser);
-                if (chatService.isLoggedIn()){
+                if (chatService.isLoggedIn()) {
                     resultReceived = true;
                     startCallActivity(login);
                 } else {
@@ -314,7 +322,7 @@ public class ListUsersActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Consts.CALL_ACTIVITY_CLOSE) {
             if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
-                Toaster.longToast(R.string.call_was_stopped_connection_lost);
+                Toaster.longToast(R.string.WIFI_DISABLED);
             }
         }
     }

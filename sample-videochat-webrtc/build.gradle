@@ -12,6 +12,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
+    mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -54,8 +55,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
     compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
         transitive=true
     }

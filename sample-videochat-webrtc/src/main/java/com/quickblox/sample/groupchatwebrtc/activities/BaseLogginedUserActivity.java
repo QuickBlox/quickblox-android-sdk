@@ -1,9 +1,9 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
@@ -18,7 +18,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseLogginedUserActivity extends AppCompatActivity {
+public class BaseLogginedUserActivity extends Activity {
 
     private static final String APP_VERSION = "App version";
     private ActionBar mActionBar;
@@ -27,7 +27,7 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
 
     public void initActionBar() {
 
-        mActionBar = getSupportActionBar();
+        mActionBar = getActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -37,16 +37,16 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
 
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
         QBUser loggedUser = DataHolder.getLoggedUser();
-        if (loggedUser != null ) {
+        if (loggedUser != null) {
             int number = DataHolder.getUserIndexByID(loggedUser.getId());
             numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(number));
-            numberOfListAB.setText(String.valueOf(number+1));
+            numberOfListAB.setText(String.valueOf(number + 1));
 
             TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
             loginAsAB.setText(R.string.logged_in_as);
             //
             TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-            userNameAB.setText(String.valueOf(number+1));
+            userNameAB.setText(String.valueOf(number + 1));
         }
 
         numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
@@ -57,7 +57,8 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
                 dialog.setMessage(Consts.VERSION_NUMBER);
                 dialog.show();
                 return true;
-            }});
+            }
+        });
 
 
         mActionBar.setCustomView(mCustomView);
@@ -66,7 +67,7 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
     }
 
     public void initActionBarWithTimer() {
-        mActionBar = getSupportActionBar();
+        mActionBar = getActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -97,8 +98,8 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
         }
     }
 
-    public void stopTimer(){
-        if (timerABWithTimer != null){
+    public void stopTimer() {
+        if (timerABWithTimer != null) {
             timerABWithTimer.stop();
             isStarted = false;
         }
