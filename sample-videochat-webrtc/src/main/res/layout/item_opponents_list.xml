@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ListItem"
+    android:paddingLeft="@dimen/list_item_side_margin"
+    android:paddingRight="@dimen/list_item_side_margin"
+    >
+
+    <ImageView
+        android:id="@+id/image_opponent_icon"
+        style="@style/ListItemIconStyle"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_person"
+        android:padding="@dimen/padding_user_icon"
+        />
+
+    <TextView
+        android:id="@+id/opponentsName"
+        style="@style/MatchWidth"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="User Name"
+        />
+
+</LinearLayout>
