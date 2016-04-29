@@ -15,4 +15,4 @@ Go to project page on QuickBlox Developers Section -- <http://quickblox.com/deve
 
 Or clone project here and start to work with the code.
 
-<img src="http://files.quickblox.com/Sample_Messages_1.png" width=200 />&nbsp;<img src="http://files.quickblox.com/android_messages_1.png" width=200 />
+<img src="screenshots/Push1.png" width=200 />&nbsp;<img src="screenshots/Push2.png" width=200 />&nbsp;<img src="screenshots/Push3.png" width=200 />&nbsp;<img src="screenshots/Push4.png" width=200 />
