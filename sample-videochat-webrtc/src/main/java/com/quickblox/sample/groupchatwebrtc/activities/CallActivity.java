@@ -19,6 +19,9 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
@@ -30,6 +33,7 @@ import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.util.FragmentExecuotr;
 import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.util.SettingsUtil;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -48,6 +52,7 @@ import org.webrtc.VideoCapturerAndroid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -571,6 +576,25 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     }
 
     public List<QBUser> getOpponentsList() {
+        opponentsList = new ArrayList<>();
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
+        requestBuilder.setPerPage(getResources().getInteger(R.integer.users_count));
+        List<String> tags = new LinkedList<>();
+        tags.add(getIntent().getStringExtra(Consts.EXTRA_TAG));
+        QBUsers.getUsersByTags(tags, requestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+
+                opponentsList.addAll(qbUsers);
+            }
+
+            @Override
+            public void onError(QBResponseException exc) {
+
+                Toaster.shortToast("Error while loading users");
+                Log.d(TAG, "onError()");
+            }
+        });
         return opponentsList;
     }
 

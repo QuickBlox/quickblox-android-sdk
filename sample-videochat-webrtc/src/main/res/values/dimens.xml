@@ -2,4 +2,8 @@
     <dimen name="grid_item_divider">4dp</dimen>
 
     <integer name="users_count">10</integer>
+
+    <dimen name="padding_start">16dp</dimen>
+    <dimen name="padding_top">16dp</dimen>
+    <dimen name="padding_actionbar">24dp</dimen>
 </resources>
