@@ -1,34 +1,49 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    mavenCentral()
-}
-
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
+        applicationId "com.quickblox.sample.content"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
+        versionCode 200
+        versionName "2.0.0"
     }
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
+    productFlavors {
+        speedDev {
+            minSdkVersion 21
+        }
+        dev {
+            minSdkVersion rootProject.minSdkVersion
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
     }
 }
 
 dependencies {
-
-    // online dependencies, from maven repository, jar files
-    //
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
     compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
+    compile(project(":sample-core")) {
+        transitive = true;
+    }
 
-    compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
-    compile "com.nostra13.universalimageloader:universal-image-loader:1.9.0"
+    compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
 }
+
+apply from: "../artifacts.gradle"

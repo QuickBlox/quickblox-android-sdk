@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Content</string>
+    <string name="splash_app_title">Content Sample</string>
+    <string name="splash_create_session_error">Errors</string>
+
+    <string name="gallery_upload_file_error">Upload image errors: </string>
+    <string name="gallery_pick_error">Pick image errors: </string>
+    <string name="image_size_error">File mustn\'t be more than 100 MB</string>
+
+    <string name="gallery_title">Images</string>
+    <string name="show_image_title">Show image</string>
+
+    <string name="no_photo">No photos</string>
+    <string name="press_button">Press plus button to add images</string>
+</resources>

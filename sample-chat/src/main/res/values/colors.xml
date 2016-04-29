@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_grey">#d3d3d3</color>
+
+    <color name="background_chat_color">#f5f6f5</color>
+
+    <color name="divider_color">#e0e0e0</color>
+    <color name="selected_list_item_color">#e0e0e0</color>
+
+    <color name="random_color_1">#ff9500</color>
+    <color name="random_color_2">#007aff</color>
+    <color name="random_color_3">#ff0091</color>
+    <color name="random_color_4">#4cd964</color>
+    <color name="random_color_5">#c3c1f2</color>
+    <color name="random_color_6">#a727a5</color>
+    <color name="random_color_7">#77a6d0</color>
+    <color name="random_color_8">#d0021b</color>
+    <color name="random_color_9">#166642</color>
+    <color name="random_color_10">#bdbdbd</color>
+
+</resources>

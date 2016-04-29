@@ -5,24 +5,47 @@ android {
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
+        applicationId "com.quickblox.sample.customobjects"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
+        versionCode 200
+        versionName "2.0.0"
     }
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
+    productFlavors {
+        speedDev {
+            minSdkVersion 21
         }
+        dev {
+            minSdkVersion rootProject.minSdkVersion
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+    dataBinding {
+        enabled = true
     }
 }
 
 dependencies {
-    // online dependencies, from maven repository, jar files
-    //
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-
-    compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
+    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
+    compile(project(":sample-core")) {
+        transitive = true;
+    }
 }
+
+apply from: "../artifacts.gradle"

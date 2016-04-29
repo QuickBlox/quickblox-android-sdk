@@ -2,6 +2,7 @@
 
 This project contains QuickBlox Android SDK, that includes
 
+  * [Core module](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-core) contains base classes and util components
   * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat)
   * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-webrtc)
   * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-users)
@@ -13,6 +14,10 @@ This project contains QuickBlox Android SDK, that includes
 # Overview 
 
 QuickBlox  is Communication as a Service provider. The platform provides chat using the XMPP protocol, WebRTC signalling for video/voice calling and an API for sending push notifications. It provides a user management system, data storage and more. 
+
+# Sample structure
+
+Each sample depends from core module, which contains mutual dependencies such as CoreApp, BaseActivity, BaseListAdapter and other useful utils like a ImagePicker, KeyboardUtils, NotificationUtils, etc. Also core module keeps common resources  colors, strings, dimens and others. It makes code more clean and clear, and also more object-oriented. In addition the Samples have renewed up-to-date design.
 
 # How to run samples
 

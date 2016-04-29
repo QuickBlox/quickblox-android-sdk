@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_chat_message_container"
+    style="@style/MessageContainerStyle"
+    tools:gravity="right"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/layout_message_content_container"
+        style="@style/MessageContentContainerStyle"
+        tools:background="@drawable/outgoing_message_bg">
+
+        <TextView
+            android:id="@+id/text_image_message"
+            style="@style/MessageTextStyle"
+            android:layout_below="@+id/text_message_author"
+            tools:text="Test message" />
+
+        <com.quickblox.sample.chat.ui.widget.MaskedImageView
+            android:id="@+id/image_message_attachment"
+            android:layout_width="@dimen/chat_message_attachment_size"
+            android:layout_height="@dimen/chat_message_attachment_size"
+            android:scaleType="centerCrop"
+            app:mask="@drawable/outgoing_message_bg" />
+
+        <ProgressBar
+            android:id="@+id/progress_message_attachment"
+            style="@style/CenterProgressBarStyle"
+            android:theme="@style/AppTheme.BlueAccent"/>
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/text_message_author"
+            style="@style/MessageAuthorStyle"
+            android:layout_alignParentTop="true"
+            tools:text="User 2" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_message_info"
+        style="@style/MessageInfoStyle"
+        tools:text="10:50" />
+</LinearLayout>

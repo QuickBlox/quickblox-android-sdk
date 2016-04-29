@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.quickblox.users.model.QBUser" />
+    </data>
+
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/MatchParent">
+
+        <ImageView
+            android:id="@+id/user_avatar2_imageview"
+            style="@style/WrapContent"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/padding_small"
+            android:src="@drawable/shape_circle"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/user_avatar_imageview"
+            style="@style/WrapContent"
+            android:adjustViewBounds="true"
+            android:paddingLeft="@dimen/padding_middle"
+            android:paddingTop="@dimen/padding_large"
+            android:src="@drawable/ic_action_timer_auto"
+            tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
+
+        <LinearLayout
+            style="@style/WrapContent"
+            android:layout_marginLeft="@dimen/margin_very_large"
+            android:layout_marginTop="@dimen/margin_large"
+            android:orientation="vertical"
+            tools:ignore="RtlHardcoded">
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/user_name_text_item_view"
+                style="@style/WrapContent"
+                android:hint="@string/user"
+                android:singleLine="true"
+                android:text="@{user.login}"
+                android:textColor="@color/black_light"
+                android:textSize="@dimen/text_size_large"
+                app:typeface="roboto_medium" />
+
+            <TextView
+                android:id="@+id/full_name_text_item_view"
+                style="@style/WrapContent"
+                android:layout_marginTop="@dimen/margin_small"
+                android:hint="@string/full_name"
+                android:singleLine="true"
+                android:text="@{user.fullName}"
+                android:textColor="@color/brownish_gray"
+                android:textSize="@dimen/text_size_middle" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FabStyle" parent="WrapContent">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginBottom">@dimen/fab_margin_bottom</item>
+        <item name="android:layout_marginRight">@dimen/fab_margin_right</item>
+        <item name="android:layout_gravity">right|bottom</item>
+        <item name="borderWidth">0dp</item>
+        <item name="fabSize">normal</item>
+    </style>
+
+    <style name="ListViewWithoutDividerStyle" parent="MatchParent">
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="BorderlessImageButtonStyle" parent="WrapContent">
+        <item name="android:background">@null</item>
+        <item name="android:padding">@dimen/padding_common</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="CenterProgressBarStyle" parent="@style/Widget.AppCompat.ProgressBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="SplashAppTitleStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_black</item>
+        <item name="android:textSize">@dimen/splash_main_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_common</item>
+        <item name="typeface">roboto_light</item>
+    </style>
+
+    <style name="SplashAppVersionStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_light_grey</item>
+        <item name="android:textSize">@dimen/splash_version_text_size</item>
+        <item name="typeface">roboto_light</item>
+    </style>
+
+    <style name="SplashLogoStyle" parent="WrapContent">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:src">@drawable/qb_logo</item>
+    </style>
+
+
+</resources>

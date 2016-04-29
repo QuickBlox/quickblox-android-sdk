@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_chat_container"
+    style="@style/MatchParent"
+    tools:ignore="RtlHardcoded">
+
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+        android:id="@+id/list_chat_messages"
+        style="@style/ListViewWithoutDividerStyle"
+        android:layout_above="@+id/layout_attachment_preview_container"
+        android:listSelector="@android:color/transparent"
+        android:stackFromBottom="true" />
+
+    <ProgressBar
+        android:id="@+id/progress_chat"
+        style="@style/CenterProgressBarStyle" />
+
+    <LinearLayout
+        android:id="@+id/layout_attachment_preview_container"
+        style="@style/MatchWidth"
+        android:layout_height="96dp"
+        android:layout_above="@+id/layout_chat_send_container"
+        android:background="?attr/colorPrimary"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/divider_chat_attachments"
+            style="@style/HorizontalDividerStyle" />
+
+        <com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView
+            android:id="@+id/adapter_view_attachment_preview"
+            style="@style/MatchWidth" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_chat"
+        style="@style/HorizontalDividerStyle"
+        android:layout_above="@+id/layout_chat_send_container" />
+
+    <LinearLayout
+        android:id="@+id/layout_chat_send_container"
+        style="@style/MatchWidth"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_chat_attachment"
+            style="@style/BorderlessImageButtonStyle"
+            android:layout_gravity="center_vertical"
+            android:onClick="onAttachmentsClick"
+            android:src="@drawable/ic_action_attachment" />
+
+        <EditText
+            android:id="@+id/edit_chat_message"
+            style="@style/WeightWidth"
+            android:layout_height="wrap_content"
+            android:hint="@string/chat_edit_text_hint"
+            android:inputType="textShortMessage"
+            android:maxLength="1024" />
+
+        <ImageButton
+            android:id="@+id/button_chat_send"
+            style="@style/BorderlessImageButtonStyle"
+            android:layout_gravity="center_vertical"
+            android:onClick="onSendChatClick"
+            android:src="@drawable/ic_send"
+            android:text="@string/chat_send" />
+    </LinearLayout>
+</RelativeLayout>

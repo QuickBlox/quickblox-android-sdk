@@ -1,7 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -10,19 +9,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
+import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.UsersAdapter;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -38,19 +37,17 @@ import io.fabric.sdk.android.Fabric;
  * QuickBlox team
  */
 public class ListUsersActivity extends Activity {
-
-    private static final String TAG = "ListUsersActivity";
+    private static final String TAG = ListUsersActivity.class.getSimpleName();
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
+
+    private static QBChatService chatService;
+    private static ArrayList<QBUser> users = new ArrayList<>();
 
     private UsersAdapter usersListAdapter;
     private ListView usersList;
     private ProgressBar progressBar;
-    private Context context;
-    private static QBChatService chatService;
-    private static ArrayList<QBUser> users = new ArrayList<>();
     private volatile boolean resultReceived = true;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,17 +57,11 @@ public class ListUsersActivity extends Activity {
 
         initUI();
 
-        // Initialize QuickBlox application with credentials.
-        //
-        QBSettings.getInstance().init(getApplicationContext(), Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET);
-        QBSettings.getInstance().setAccountKey(Consts.ACCOUNT_KEY);
-
         if (getActionBar() != null) {
-            getActionBar().setTitle(getResources().getString(R.string.opponentsListActionBarTitle));
+            getActionBar().setTitle(R.string.opponentsListActionBarTitle);
         }
 
         QBChatService.setDebugEnabled(true);
-        QBChatService.setDefaultAutoSendPresenceInterval(60); //seconds
         chatService = QBChatService.getInstance();
 
         createAppSession();
@@ -88,7 +79,7 @@ public class ListUsersActivity extends Activity {
 
             @Override
             public void onError(QBResponseException exc) {
-                Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
+                ErrorUtils.showErrorToast(exc);
                 showProgress(false);
             }
         });
@@ -224,7 +215,7 @@ public class ListUsersActivity extends Activity {
             public void onError(QBResponseException exc) {
                 showProgress(false);
 
-                Toast.makeText(ListUsersActivity.this, "Error while loading users", Toast.LENGTH_SHORT).show();
+                Toaster.shortToast("Error while loading users");
                 Log.d(TAG, "onError()");
             }
         });
@@ -289,8 +280,7 @@ public class ListUsersActivity extends Activity {
                             resultReceived = true;
 
                             showProgress(false);
-
-                            Toast.makeText(ListUsersActivity.this, "Error when login", Toast.LENGTH_SHORT).show();
+                            ErrorUtils.showErrorToast(exc);
                         }
                     });
                 }
@@ -303,7 +293,7 @@ public class ListUsersActivity extends Activity {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                Toast.makeText(ListUsersActivity.this, "Error when login, check test users login and password", Toast.LENGTH_SHORT).show();
+                Toaster.shortToast("Error when login, check test users login and password");
             }
         });
     }
@@ -322,9 +312,9 @@ public class ListUsersActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == Consts.CALL_ACTIVITY_CLOSE){
+        if (requestCode == Consts.CALL_ACTIVITY_CLOSE) {
             if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
-                Toast.makeText(this, getString(R.string.WIFI_DISABLED),Toast.LENGTH_LONG).show();
+                Toaster.longToast(R.string.call_was_stopped_connection_lost);
             }
         }
     }

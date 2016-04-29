@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="@dimen/margin_medium">
+        <shape android:shape="line">
+            <stroke
+                android:width="@dimen/line_width"
+                android:color="@color/color_primary_dark" />
+        </shape>
+    </item>
+
+</layer-list>

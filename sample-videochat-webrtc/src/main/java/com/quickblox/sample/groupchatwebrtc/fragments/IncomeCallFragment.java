@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.util.RingtonePlayer;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
@@ -127,7 +127,6 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     public void startCallNotification() {
-        Log.d(TAG, "startCallNotification()");
 
         ringtonePlayer.play(false);
 
@@ -141,8 +140,6 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void stopCallNotification() {
-        Log.d(TAG, "stopCallNotification()");
-
         if (ringtonePlayer != null) {
             ringtonePlayer.stop();
         }

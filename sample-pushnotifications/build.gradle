@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.pushnotifications"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 200
+        versionName "2.0.0"
+    }
+
+    productFlavors {
+        speedDev {
+            minSdkVersion 21
+        }
+        dev {
+            minSdkVersion rootProject.minSdkVersion
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+}
+
+dependencies {
+    compile(project(":sample-core")) {
+        transitive = true;
+    }
+
+    compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
+}
+
+apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'

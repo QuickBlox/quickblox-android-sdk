@@ -1,0 +1,51 @@
+{
+    "servers":{
+        "production": {
+            "app_id": 92,
+            "auth_key": "wJHdOcQSxXQGWx5",
+            "auth_secret": "BTFsj7Rtt27DAmT",
+            "account_key": "rz2sXxBt5xgSxGjALDW6",
+            "api_domain": "https://api.quickblox.com",
+            "chat_domain": "chat.quickblox.com",
+            "test_user_id1": 5179218,
+            "test_user_login1": "igorquickblox711",
+            "test_user_password1": "igorquickblox711",
+            "test_user_id2": 5179221,
+            "test_user_login2": "igorquickblox712",
+            "test_user_password2": "igorquickblox712",
+            "dialog_id": "561cffc2a28f9a97ec0001d9"
+        },
+        "dekhdekh": {
+            "app_id": 1,
+            "auth_key": "L-DWNzHvUrcVYMW",
+            "auth_secret": "S2sYOsNC4GEFKYK",
+            "account_key": "",
+            "api_domain": "https://qbapi.dekhdekh.com",
+            "chat_domain": "qbchat.dekhdekh.com",
+            "test_user_id1": 15,
+            "test_user_login1": "test1",
+            "test_user_password1": "11111111",
+            "test_user_id2": 16,
+            "test_user_login2": "test2",
+            "test_user_password2": "11111111",
+            "dialog_id": "..."
+        },
+        "stage1": {
+            "app_id": 1,
+            "auth_key": "zUZXVVatAhfGjZB",
+            "auth_secret": "wqPafgpvOr-mC4u",
+            "account_key": "",
+            "api_domain": "https://apistage1.quickblox.com",
+            "chat_domain": "chatstage1.quickblox.com",
+            "test_user_id1": 2,
+            "test_user_login1": "igorquickblox711",
+            "test_user_password1": "igorquickblox711",
+            "test_user_id2": 3,
+            "test_user_login2": "igorquickblox712",
+            "test_user_password2": "igorquickblox712",
+            "dialog_id": "..."
+        }
+    },
+    "active": "production",
+    "use_first_user": false
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="unread_counter_text_size">13sp</dimen>
+
+    <dimen name="chat_date_text_size">13sp</dimen>
+    <dimen name="chat_date_header_top_margin">30dp</dimen>
+
+    <dimen name="chat_author_text_size">16sp</dimen>
+    <dimen name="chat_attachment_preview_size">80dp</dimen>
+
+    <dimen name="chat_message_body_text_size">16sp</dimen>
+    <dimen name="chat_message_info_text_size">13sp</dimen>
+    <dimen name="chat_message_content_margin">4dp</dimen>
+    <dimen name="chat_message_username_margin">@dimen/chat_message_content_margin</dimen>
+
+    <dimen name="chat_message_attachment_username_margin">12dp</dimen>
+    <dimen name="chat_message_attachment_size">160dp</dimen>
+
+    <dimen name="list_item_side_margin">@dimen/padding_common_twice</dimen>
+</resources>

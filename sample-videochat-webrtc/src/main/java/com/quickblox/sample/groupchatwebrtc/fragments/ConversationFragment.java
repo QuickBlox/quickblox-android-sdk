@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,9 +31,9 @@ import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
-import com.quickblox.sample.groupchatwebrtc.util.CameraUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -98,7 +97,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private Handler mainHandler;
-    private OnCallEventsController callEvents;
 
     public static ConversationFragment newInstance(List<QBUser> opponents, String callerName,
                                                    QBRTCTypes.QBConferenceType qbConferenceType,
@@ -185,11 +183,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        callEvents = (OnCallEventsController) activity;
-    }
 
     @Override
     public void onStart() {
@@ -351,7 +344,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callEvents.onSwitchAudio();
+                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                    Log.d(TAG, "Dynamic switched!");
+                    ((CallActivity) getActivity()).getCurrentSession().switchAudioOutput();
+                }
             }
         });
 
@@ -621,10 +617,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.hungUp));
-    }
-
-    public void enableDinamicToggle(boolean plugged) {
-        dynamicToggleVideoCall.setChecked(plugged);
     }
 
     private class AudioStreamReceiver extends BroadcastReceiver {

@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_gallery"
+    style="@style/MatchParent">
+
+    <GridView
+        android:id="@+id/gallery_gridview"
+        style="@style/GalleryGridStyle" />
+
+    <LinearLayout
+        android:id="@+id/empty_view"
+        style="@style/WrapContent"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/problem"
+            style="@style/SplashAppTitleStyle" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/description"
+            style="@style/SplashAppVersionStyle"
+            android:layout_marginTop="@dimen/press_button_padding"
+            android:textSize="@dimen/press_button_text_size" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_upload_image"
+        style="@style/FabStyle"
+        android:onClick="onStartUploadImageClick"
+        android:src="@drawable/ic_action_add" />
+
+</RelativeLayout>
