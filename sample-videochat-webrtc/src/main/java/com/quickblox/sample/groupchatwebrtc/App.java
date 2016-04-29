@@ -19,7 +19,7 @@ public class App extends CoreApp {
     }
 
     private void initApplication(){
-        instance = new App();
+        instance = this;
         super.initCredentials(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET, Consts.ACCOUNT_KEY);
 
     }
