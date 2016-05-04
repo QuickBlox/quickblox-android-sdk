@@ -27,5 +27,6 @@
     <color name="blue_accent">#0088e7</color>
 
     <color name="selected_user_item_background_color">#eeeeee</color>
+    <color name="selected_user_icon_background_color">#959595</color>
     <color name="normal_user_item_background_color">#ffffff</color>
 </resources>

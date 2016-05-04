@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickblox.sample.core.ui.adapter.BaseSelectableListAdapter;
+import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.users.model.QBUser;
@@ -43,22 +44,12 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         final QBUser user = getItem(position);
 
         if (user != null) {
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (selectedItems.contains(user)) {
-                        selectedItems.remove(user);
-                    } else {
-                        selectedItems.add(user);
-                    }
-                }
-            });
-
             holder.opponentName.setText(user.getFullName());
 
             if (selectedItems.contains(user)){
                 convertView.setBackgroundColor(context.getColor(R.color.selected_user_item_background_color));
-                holder.opponentIcon.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
+                holder.opponentIcon.setBackgroundDrawable(
+                        UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.selected_user_icon_background_color)));
                 holder.opponentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_checkmark));
             } else {
                 convertView.setBackgroundColor(context.getColor(R.color.normal_user_item_background_color));

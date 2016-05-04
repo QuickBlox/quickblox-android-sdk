@@ -32,7 +32,7 @@ public class UiUtils {
         return getColoredCircleDrawable(getCircleColor(colorPosition % RANDOM_COLOR_END_RANGE));
     }
 
-    private static Drawable getColoredCircleDrawable(@ColorInt int color) {
+    public static Drawable getColoredCircleDrawable(@ColorInt int color) {
         GradientDrawable drawable = (GradientDrawable) ResourceUtils.getDrawable(R.drawable.shape_circle);
         drawable.setColor(color);
         return drawable;

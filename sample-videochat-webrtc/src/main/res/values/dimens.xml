@@ -9,4 +9,6 @@
     <dimen name="padding_user_icon">16dp</dimen>
 
     <dimen name="list_item_side_margin">@dimen/padding_common_twice</dimen>
+    <dimen name="list_item_padding_top">8dp</dimen>
+    <dimen name="list_item_padding_bottom">8dp</dimen>
 </resources>

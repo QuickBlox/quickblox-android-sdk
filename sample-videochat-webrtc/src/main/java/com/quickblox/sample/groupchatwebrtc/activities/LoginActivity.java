@@ -17,6 +17,7 @@ import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.sample.core.utils.DeviceUtils;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -59,7 +60,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.login_menu, menu);
+        getMenuInflater().inflate(R.menu.activity_login, menu);
         return true;
     }
 
@@ -196,6 +197,12 @@ public class LoginActivity extends BaseLogginedUserActivity {
 
     //TODO этот метод я переименую согласной той логики, кторую он будет выполнять
     private void loginToChat(final QBUser qbUser){
+        SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
+        sharedPrefsHelper.save(Consts.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
+        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+        sharedPrefsHelper.saveQbUser(qbUser);
+
+        OpponentsActivity.start(LoginActivity.this);
         //TODO здесь будет логика запуска сервиса с логином в чат и переходом на следующее активити
         Log.d(TAG, "success signIn to QB");
     }

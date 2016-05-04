@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/ListItem"
-    android:paddingLeft="@dimen/list_item_side_margin"
-    android:paddingRight="@dimen/list_item_side_margin"
+    android:paddingTop="@dimen/list_item_padding_top"
+    android:paddingBottom="@dimen/list_item_padding_bottom"
     >
 
     <ImageView
         android:id="@+id/image_opponent_icon"
         style="@style/ListItemIconStyle"
-        tools:ignore="ContentDescription"
+        android:layout_marginStart="@dimen/padding_start"
+        tools:ignore="ContentDescription,RtlCompat"
         tools:src="@drawable/ic_person"
-        android:padding="@dimen/padding_user_icon"
         />
 
     <TextView

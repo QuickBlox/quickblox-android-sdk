@@ -10,6 +10,7 @@
     <string name="dlg_sign_in">Sign In…</string>
     <string name="dlg_updating_user">Updating user…</string>
     <string name="dlg_creating_new_user">Creating new user…</string>
+    <string name="dlg_loading_opponents">Loading opponents…</string>
 
     <string name="sign_up_error">Error creating new user, please try again</string>
     <string name="sign_in_error_with_error">Sign In error. Error</string>
@@ -17,14 +18,26 @@
 
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
     <string name="update_user_error">Update user error. Error</string>
+    <string name="loading_users_error">Loading users error. Error</string>
 
 
     <!--menu-->
     <string name="menu_login_user_done">Done</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_update_opponens_list">Update opponents list</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_start_video_call">Video call</string>
+    <string name="action_start_audio_call">Audio call</string>
 
-    <string name="action_log_out">Log out</string>
+
+
+    <!--action bar-->
     <string name="login_as">Login as</string>
-    <string name="logged_in_as">Logged In as</string>
+    <string name="logged_in_as">Logged in as %s</string>
+    <string name="user_selected">%s user selected</string>
+    <string name="users_selected">%s users selected</string>
+
+    
     <string name="outputing_audio_call">Outputing Audio Call - </string>
     <string name="incoming_call">Incoming Call</string>
     <string name="also_on_call">Also on call:</string>
@@ -110,7 +123,6 @@
     <string name="pref_displayhud_title">Display call statistics.</string>
     <string name="pref_displayhud_dlg">Display call statistics.</string>
     <string name="pref_displayhud_default" translatable="false">false</string>
-    <string name="action_settings">Settings</string>
     <string name="pref_audiocodec_key">pref_audio_codec</string>
     <string name="pref_audiocodec_title">Default audio codec</string>
     <string name="pref_audiocodec_def">ISAC</string>
