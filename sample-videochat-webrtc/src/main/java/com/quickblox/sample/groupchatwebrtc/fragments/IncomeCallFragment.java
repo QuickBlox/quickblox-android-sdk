@@ -56,6 +56,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         if (getArguments() != null) {
             opponents = getArguments().getIntegerArrayList("opponents");
             sessionDescription = (QBRTCSessionDescription) getArguments().getSerializable("sessionDescription");
