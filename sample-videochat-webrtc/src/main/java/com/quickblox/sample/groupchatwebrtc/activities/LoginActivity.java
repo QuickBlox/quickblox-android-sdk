@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -36,6 +37,7 @@ public class LoginActivity extends BaseLogginedUserActivity {
     private EditText chatRoomNameEditText;
 
     private QBResRequestExecutor requestExecutor;
+    private QBChatService chatService;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -195,16 +197,49 @@ public class LoginActivity extends BaseLogginedUserActivity {
         return needUpdateUser;
     }
 
-    //TODO этот метод я переименую согласной той логики, кторую он будет выполнять
-    private void loginToChat(final QBUser qbUser){
+    private void loginToChat(final QBUser qbUser) {
+        showProgressDialog(R.string.dlg_login);
+        initQbChatServiceIfNeed();
+        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+        chatService.login(qbUser, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle params) {
+                hideProgressDialog();
+                qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+                saveUserData(qbUser);
+                startOpponentsActivity();
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.login_chat_login_error, responseException,
+                        R.string.dlg_retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loginToChat(qbUser);
+                            }
+                        });
+            }
+        });
+    }
+
+    private void startOpponentsActivity() {
+        OpponentsActivity.start(LoginActivity.this);
+    }
+
+    private void initQbChatServiceIfNeed() {
+        if (chatService == null){
+            QBChatService.setDebugEnabled(true);
+            //QBChatService.setDefaultAutoSendPresenceInterval(60); set this parameter after updating SDK
+            chatService = QBChatService.getInstance();
+        }
+    }
+
+    private void saveUserData(QBUser qbUser){
         SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
         sharedPrefsHelper.save(Consts.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
-        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
         sharedPrefsHelper.saveQbUser(qbUser);
-
-        OpponentsActivity.start(LoginActivity.this);
-        //TODO здесь будет логика запуска сервиса с логином в чат и переходом на следующее активити
-        Log.d(TAG, "success signIn to QB");
     }
 
     private QBUser createUserWithEnteredData(){

@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
@@ -37,17 +36,13 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
 
-    private static QBChatService chatService;
-
-
     private static ArrayList<QBUser> opponentsList = new ArrayList<>();
 
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
-    private ProgressBar progressBar;
-    private volatile boolean resultReceived = true;
     private QBUser currenUser;
     private String currentRoomName;
+    private SharedPrefsHelper sharedPrefsHelper;
 
     public static void start(Context context){
         Intent intent = new Intent(context, OpponentsActivity.class);
@@ -70,7 +65,7 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
     }
 
     private void initFields() {
-        SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
+        sharedPrefsHelper = SharedPrefsHelper.getInstance();
         currenUser = sharedPrefsHelper.getQbUser();
         currentRoomName = sharedPrefsHelper.get(Consts.PREF_CURREN_ROOM_NAME);
     }
@@ -108,36 +103,23 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
         OpponentsActivity.opponentsList = opponentsList;
     }
 
-
     private void initUi() {
         opponentsListView = (ListView) findViewById(R.id.list_opponents);
     }
 
     private void initUsersList() {
-        opponentsAdapter = new OpponentsAdapter(this, opponentsList);
-        opponentsListView.setAdapter(opponentsAdapter);
+        opponentsAdapter = new OpponentsAdapter(this, getOpponentsList());
 
+        opponentsListView.setAdapter(opponentsAdapter);
         opponentsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 opponentsAdapter.toggleSelection(position);
-
-
                 view.invalidate();
                 updateActionBar(opponentsAdapter.getSelectedItems().size());
-                Log.d(TAG, "item " + position + "clicked");
+                Log.d(TAG, "item " + position + " clicked");
             }
         });
-    }
-
-        private void showProgress(boolean show){
-        progressBar.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    private void startCallActivity(String login) {
-        Intent intent = new Intent(OpponentsActivity.this, CallActivity.class);
-        intent.putExtra("login", login);
-        startActivityForResult(intent, Consts.CALL_ACTIVITY_CLOSE);
     }
 
     @Override
@@ -171,11 +153,11 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
                 return true;
 
             case R.id.settings:
-                //start settings activity
+                showSettings();
                 return true;
 
             case R.id.log_out:
-                //logout from chat and application
+                logOut();
                 return true;
 
             case R.id.start_video_call:
@@ -192,16 +174,6 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Consts.CALL_ACTIVITY_CLOSE) {
-            if (resultCode == Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED) {
-                Toaster.longToast(R.string.call_was_stopped_connection_lost);
-            }
         }
     }
 
@@ -227,5 +199,43 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
         }
 
         invalidateOptionsMenu();
+    }
+
+    private void logOut() {
+        showProgressDialog(R.string.dlg_logout);
+        QBChatService.getInstance().logout(new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle params) {
+                removeUserData();
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                hideProgressDialog();
+                Toaster.longToast(R.string.sign_up_error);
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        logOut();
+        removeUserData();
+        super.onBackPressed();
+    }
+
+    private void removeUserData(){
+        if (sharedPrefsHelper == null) {
+            sharedPrefsHelper = SharedPrefsHelper.getInstance();
+        }
+
+        sharedPrefsHelper.removeQbUser();
+        sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
+    }
+
+    public void showSettings() {
+        SettingsActivity.start(this);
     }
 }

@@ -13,7 +13,6 @@ public class SharedPrefsHelper {
     private static final String QB_USER_LOGIN = "qb_user_login";
     private static final String QB_USER_PASSWORD = "qb_user_password";
     private static final String QB_USER_FULL_NAME = "qb_user_full_name";
-    private static final String QB_USER_TAGS = "qb_user_tags";
 
     private static SharedPrefsHelper instance;
 
@@ -80,7 +79,6 @@ public class SharedPrefsHelper {
         save(QB_USER_LOGIN, qbUser.getLogin());
         save(QB_USER_PASSWORD, qbUser.getPassword());
         save(QB_USER_FULL_NAME, qbUser.getFullName());
-        save(QB_USER_TAGS, qbUser.getFullName());
     }
 
     public void removeQbUser() {
@@ -108,6 +106,11 @@ public class SharedPrefsHelper {
 
     public boolean hasQbUser() {
         return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD);
+    }
+
+    public void clearAllData(){
+        SharedPreferences.Editor editor = getEditor();
+        editor.clear();
     }
 
     private SharedPreferences.Editor getEditor() {
