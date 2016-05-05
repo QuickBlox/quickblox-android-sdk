@@ -27,7 +27,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private static final String TAG = OpponentsFromCallAdapter.class.getSimpleName();
     private final int itemHeight;
     private final int itemWidth;
-    private int paddingLeft = 0;
+    private final int paddingLeft = 0;
 
     private Context context;
     private List<QBUser> opponents;
@@ -49,14 +49,14 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         this.inflater = LayoutInflater.from(context);
         itemWidth = width;
         itemHeight = height;
-        setPadding(itemMargin);
+//        setPadding(itemMargin);
         Log.d(TAG, "item width=" + itemWidth + ", item height=" + itemHeight);
     }
 
     private void setPadding(int itemMargin) {
         int allCellWidth = (itemWidth + (itemMargin * 2)) * columns;
         if ((allCellWidth < gridWidth) && ((gridWidth - allCellWidth) > (itemMargin * 2))) { //set padding if it makes sense to do it
-            paddingLeft = (gridWidth - allCellWidth) / 2;
+//            paddingLeft = (gridWidth - allCellWidth) / 2;
         }
     }
 

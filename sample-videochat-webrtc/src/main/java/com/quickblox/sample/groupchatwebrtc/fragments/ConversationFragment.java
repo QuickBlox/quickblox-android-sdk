@@ -228,11 +228,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         opponentViewHolders = new SparseArray<>(opponents.size());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
+
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.dimen.grid_item_divider));
         recyclerView.setHasFixedSize(true);
         final int columnsCount = defineColumnsCount();
         final int rowsCount = defineRowCount();
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnsCount));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnsCount, GridLayoutManager.HORIZONTAL, false));
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -270,6 +271,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 cellSize, gridWidth, columnsCount, (int) itemMargin,
                 isVideoEnabled);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
+        ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
+        params.height=400;
+//        recyclerView.setLayoutParams(params);
         recyclerView.setAdapter(opponentsAdapter);
     }
 

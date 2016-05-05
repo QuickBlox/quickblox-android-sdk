@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:id = "@+id/fragmentOpponents"
     android:layout_width="fill_parent"
@@ -35,15 +36,15 @@
             android:background="@color/black"
             android:layout_height="match_parent"/>
     </FrameLayout>
-
+<!--TODO set actual layout_height-->
     <android.support.v7.widget.RecyclerView android:id="@+id/grid_opponents"
         android:horizontalSpacing="5dp"
         android:verticalSpacing="5dp"
-        android:layout_below="@+id/localView"
         android:layout_above="@+id/element_set_video_buttons"
         android:numColumns="3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp"
+        tools:listitem="@layout/list_item_opponent_from_call">
     </android.support.v7.widget.RecyclerView>
 
     <include
