@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
 import android.support.annotation.StringRes;
@@ -42,7 +41,7 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
         QBUser loggedUser = DataHolder.getLoggedUser();
         if (loggedUser != null ) {
             int number = DataHolder.getUserIndexByID(loggedUser.getId());
-            numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(number));
+//            numberOfListAB.setBackgroundResource(OpponentsActivity.resourceSelector(number));
             numberOfListAB.setText(String.valueOf(number+1));
 
             TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
@@ -113,6 +112,20 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
         if (actionBar != null)
             actionBar.setTitle(title);
     }
+
+    public void setActionbarSubTitle(String subTitle){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setSubtitle(subTitle);
+    }
+
+    public void removeActionbarSubTitle(){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setSubtitle(null);
+    }
+
+
 
     void showProgressDialog(@StringRes int messageId){
         ProgressDialogFragment.show(getSupportFragmentManager(), messageId);

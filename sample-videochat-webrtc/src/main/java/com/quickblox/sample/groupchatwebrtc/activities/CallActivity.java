@@ -666,7 +666,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     protected void onDestroy() {
         super.onDestroy();
         opponentsList = null;
-        OpponentsAdapter.i = 0;
+//        OpponentsAdapter.i = 0;
     }
 
     public interface QBRTCSessionUserCallback {

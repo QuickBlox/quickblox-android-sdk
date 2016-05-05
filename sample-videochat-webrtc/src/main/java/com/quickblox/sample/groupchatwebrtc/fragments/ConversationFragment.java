@@ -28,7 +28,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
-import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
+import com.quickblox.sample.groupchatwebrtc.activities.OpponentsActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
@@ -246,8 +246,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         incUserName = (TextView) view.findViewById(R.id.incUserName);
         incUserName.setText(callerName);
-        incUserName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((
-                DataHolder.getUserIndexByFullName(callerName)) + 1));
+//        incUserName.setBackgroundResource(OpponentsActivity.selectBackgrounForOpponent((
+//                DataHolder.getUserIndexByFullName(callerName)) + 1));
 
         actionButtonsEnabled(false);
     }
