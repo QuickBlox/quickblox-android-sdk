@@ -1,114 +1,68 @@
 package com.quickblox.sample.groupchatwebrtc.adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
+import com.quickblox.sample.core.ui.adapter.BaseSelectableListAdapter;
+import com.quickblox.sample.core.utils.ResourceUtils;
+import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * QuickBlox team
  */
-public class OpponentsAdapter extends BaseAdapter {
-
-
-    private List<QBUser> opponents;
-    private LayoutInflater inflater;
-    public static int i;
-    public List<QBUser> selected = new ArrayList<>();
+public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
 
     public OpponentsAdapter(Context context, List<QBUser> users) {
-        this.opponents = users;
-        this.inflater = LayoutInflater.from(context);
+        super(context, users);
     }
 
-    public List<QBUser> getSelected() {
-        return selected;
-    }
-
-    public int getCount() {
-        return opponents.size();
-    }
-
-    public QBUser getItem(int position) {
-        return opponents.get(position);
-    }
-
-    public long getItemId(int position) {
-        return position;
-    }
-
-    private int getNumber(List<QBUser> opponents, QBUser user) {
-        return opponents.indexOf(user);
-    }
-
+    @TargetApi(Build.VERSION_CODES.M)
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         final ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_opponents, null);
+            convertView = inflater.inflate(R.layout.item_opponents_list, null);
             holder = new ViewHolder();
-            holder.opponentsNumber = (TextView) convertView.findViewById(R.id.opponentsNumber);
-            holder.opponentsName = (TextView) convertView.findViewById(R.id.opponentsName);
-            holder.opponentsRadioButton = (CheckBox) convertView.findViewById(R.id.opponentsCheckBox);
+            holder.opponentIcon = (ImageView) convertView.findViewById(R.id.image_opponent_icon);
+            holder.opponentName = (TextView) convertView.findViewById(R.id.opponentsName);
 
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final QBUser user = opponents.get(position);
-
+        final QBUser user = getItem(position);
 
         if (user != null) {
+            holder.opponentName.setText(user.getFullName());
 
-            int number = DataHolder.getUserIndexByID(user.getId());
-
-            holder.opponentsNumber.setText(String.valueOf(number+1));
-
-            holder.opponentsNumber.setBackgroundResource(ListUsersActivity.resourceSelector
-                    (number));
-            holder.opponentsName.setText(user.getFullName());
-
-            holder.opponentsRadioButton.setOnCheckedChangeListener(null);
-            holder.opponentsRadioButton.setChecked(selected.contains(user));
-
-            holder.opponentsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    if (isChecked) {
-                        i = user.getId();
-                        selected.add(user);
-                    } else {
-                        if (i == user.getId()) {
-                            i = 0;
-                        }
-                        selected.remove(user);
-                    }
-                }
-            });
+            if (selectedItems.contains(user)){
+                convertView.setBackgroundColor(context.getColor(R.color.selected_user_item_background_color));
+                holder.opponentIcon.setBackgroundDrawable(
+                        UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.selected_user_icon_background_color)));
+                holder.opponentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_checkmark));
+            } else {
+                convertView.setBackgroundColor(context.getColor(R.color.normal_user_item_background_color));
+                holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
+                holder.opponentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_person));
+            }
         }
 
         return convertView;
     }
 
     public static class ViewHolder {
-        TextView opponentsNumber;
-        TextView opponentsName;
-        CheckBox opponentsRadioButton;
+        ImageView opponentIcon;
+        TextView opponentName;
     }
 }

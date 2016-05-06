@@ -10,6 +10,8 @@
     <string name="dlg_sign_in">Sign In…</string>
     <string name="dlg_updating_user">Updating user…</string>
     <string name="dlg_creating_new_user">Creating new user…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="dlg_loading_opponents">Loading opponents…</string>
 
     <string name="sign_up_error">Error creating new user, please try again</string>
     <string name="sign_in_error_with_error">Sign In error. Error</string>
@@ -17,14 +19,27 @@
 
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
     <string name="update_user_error">Update user error. Error</string>
+    <string name="loading_users_error">Loading users error. Error</string>
+    <string name="logout_error">Logout error. Please try again</string>
 
 
     <!--menu-->
     <string name="menu_login_user_done">Done</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_update_opponens_list">Update opponents list</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_start_video_call">Video call</string>
+    <string name="action_start_audio_call">Audio call</string>
 
-    <string name="action_log_out">Log out</string>
+
+
+    <!--action bar-->
     <string name="login_as">Login as</string>
-    <string name="logged_in_as">Logged In as</string>
+    <string name="logged_in_as">Logged in as %s</string>
+    <string name="user_selected">%s user selected</string>
+    <string name="users_selected">%s users selected</string>
+
+    
     <string name="outputing_audio_call">Outputing Audio Call - </string>
     <string name="incoming_call">Incoming Call</string>
     <string name="also_on_call">Also on call:</string>
@@ -42,7 +57,7 @@
     <string name="hint_user_name">User name</string>
     <string name="hint_chat_room_name">Chat room name</string>
 
-    <string name="select_user_to_call">Select Users You Want to Call</string>
+    <string name="select_user_to_call">Select users you want to call</string>
 
     <string name="error_empty_login">Login can not be empty</string>
     <string name="error_empty_chat_room_name">Chat room name can not be empty</string>
@@ -64,31 +79,6 @@
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
 
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="blue_green">#008080</color>
-    <color name="grey">#606060</color>
-    <color name="gold">#FFD700</color>
-    <color name="spring_bud">#A7FC00</color>
-    <color name="water_bondi_beach">#0095B6</color>
-    <color name="coral">#FF4040</color>
-    <color name="lime">#00FF00</color>
-    <color name="may_green">#4C9141</color>
-    <color name="mauveine">#EF0097</color>
-    <color name="blue">#1FCECB</color>
-    <color name="orange">#FFA500</color>
-    <color name="gentianaceae_blue">#2A6478</color>
-    <color name="blue_krayola">#1F75FE</color>
-    <color name="red">#FF0000</color>
-    <color name="white_blue">#00BFFF</color>
-    <color name="pink">#FF7A7A</color>
-    <color name="green">#45D100</color>
-    <color name="white_green">#A9FF80</color>
-    <color name="black_transparent_30">#30000000</color>
-    <color name="black_transparent_50">#50000000</color>
-    <color name="white_transparent_80">#80FFFFFF</color>
-    <color name="background_chat_color">#f5f6f5</color>
-    <color name="blue_accent">#0088e7</color>
 
     <!-- Settings strings. -->
     <string name="pref_default_value">Default</string>
@@ -135,7 +125,6 @@
     <string name="pref_displayhud_title">Display call statistics.</string>
     <string name="pref_displayhud_dlg">Display call statistics.</string>
     <string name="pref_displayhud_default" translatable="false">false</string>
-    <string name="action_settings">Settings</string>
     <string name="pref_audiocodec_key">pref_audio_codec</string>
     <string name="pref_audiocodec_title">Default audio codec</string>
     <string name="pref_audiocodec_def">ISAC</string>

@@ -75,7 +75,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initOpponentListAdapter() {
-        final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+//        final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
 
         List<QBUser> userList = new ArrayList<>(((CallActivity) getActivity()).getOpponentsList());
         prepareUserList(opponentsList, userList);
@@ -106,49 +106,49 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         login = getActivity().getIntent().getStringExtra("login");
 
-        btnAudioCall = (Button)view.findViewById(R.id.btnAudioCall);
-        btnVideoCall = (Button)view.findViewById(R.id.btnVideoCall);
+//        btnAudioCall = (Button)view.findViewById(R.id.btnAudioCall);
+//        btnVideoCall = (Button)view.findViewById(R.id.btnVideoCall);
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
 
-        opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+//        opponentsList = (ListView) view.findViewById(R.id.opponentsList);
     }
 
     @Override
     public void onClick(View v) {
 
-        if (opponentsAdapter.getSelected().isEmpty()){
-            Toaster.longToast("Choose one opponent");
-            return;
-        }
-
-        if (opponentsAdapter.getSelected().size() > QBRTCConfig.getMaxOpponentsCount()){
-            Toaster.longToast("Max number of opponents is 6");
-            return;
-        }
-            QBRTCTypes.QBConferenceType qbConferenceType = null;
-
-            //Init conference type
-            switch (v.getId()) {
-                case R.id.btnAudioCall:
-                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
-                    break;
-
-                case R.id.btnVideoCall:
-                    // get call type
-                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
-
-                    break;
-            }
-
-        Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("any_custom_data", "some data");
-            userInfo.put("my_avatar_url", "avatar_reference");
-
-            ((CallActivity) getActivity())
-                    .addConversationFragmentStartCall(opponentsAdapter.getSelected(),
-                            qbConferenceType, userInfo);
+//        if (opponentsAdapter.getSelected().isEmpty()){
+//            Toaster.longToast("Choose one opponent");
+//            return;
+//        }
+//
+//        if (opponentsAdapter.getSelected().size() > QBRTCConfig.getMaxOpponentsCount()){
+//            Toaster.longToast("Max number of opponents is 6");
+//            return;
+//        }
+//            QBRTCTypes.QBConferenceType qbConferenceType = null;
+//
+//            //Init conference type
+//            switch (v.getId()) {
+//                case R.id.btnAudioCall:
+//                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+//                    break;
+//
+//                case R.id.btnVideoCall:
+//                    // get call type
+//                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+//
+//                    break;
+//            }
+//
+//        Map<String, String> userInfo = new HashMap<>();
+//            userInfo.put("any_custom_data", "some data");
+//            userInfo.put("my_avatar_url", "avatar_reference");
+//
+//            ((CallActivity) getActivity())
+//                    .addConversationFragmentStartCall(opponentsAdapter.getSelected(),
+//                            qbConferenceType, userInfo);
 
     }
 
@@ -162,7 +162,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_opponents, menu);
+        inflater.inflate(R.menu.activity_opponents, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
     }

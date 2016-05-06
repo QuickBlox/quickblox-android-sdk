@@ -24,4 +24,6 @@ public interface Consts {
     String OPPONENTS = "opponents";
     String CONFERENCE_TYPE = "conference_type";
     String EXTRA_TAG = "currentRoomName";
+
+    String PREF_CURREN_ROOM_NAME = "current_room_name";
 }
