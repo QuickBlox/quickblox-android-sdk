@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
-import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -36,12 +35,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
     private static final String TAG = IncomeCallFragment.class.getSimpleName();
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
-    private TextView incVideoCall;
-    private TextView incAudioCall;
-    private TextView callerName;
-    private TextView otherIncUsers;
-    private ImageButton rejectBtn;
-    private ImageButton takeBtn;
+    private TextView callTypeTextView;
+    private TextView callerNameTextView;
+    private TextView otherIncUsersTextView;
+    private ImageButton rejectButton;
+    private ImageButton takeButton;
 
     private ArrayList<Integer> opponents;
     private List<QBUser> opponentsFromCall = new ArrayList<>();
@@ -100,31 +98,31 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void initButtonsListener() {
-        rejectBtn.setOnClickListener(this);
-        takeBtn.setOnClickListener(this);
+        rejectButton.setOnClickListener(this);
+        takeButton.setOnClickListener(this);
     }
 
     private void initUI(View view) {
 
-        incAudioCall = (TextView) view.findViewById(R.id.incAudioCall);
-        incVideoCall = (TextView) view.findViewById(R.id.incVideoCall);
+        callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
-        callerName = (TextView) view.findViewById(R.id.callerName);
-        callerName.setText(getCallerName(((CallActivity) getActivity()).getCurrentSession()));
-        callerName.setBackgroundResource(
-                ListUsersActivity.selectBackgrounForOpponent((DataHolder.getUserIndexByID((
-                        ((CallActivity) getActivity()).getCurrentSession().getCallerID()))) + 1));
+        callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
+        callerNameTextView.setText(getCallerName(((CallActivity) getActivity()).getCurrentSession()));
 
-        otherIncUsers = (TextView) view.findViewById(R.id.otherIncUsers);
-        otherIncUsers.setText(getOtherIncUsersNames(opponents));
+        //TODO VT need fix after merge with branch master.refactoring.videochat_webrtc.lead_reviewed
+        //callerNameTextView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponentIndexInList));
 
-        rejectBtn = (ImageButton) view.findViewById(R.id.rejectBtn);
-        takeBtn = (ImageButton) view.findViewById(R.id.takeBtn);
+        otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
+        //TODO VT need fix after merge with branch master.refactoring.videochat_webrtc.lead_reviewed
+        //otherIncUsersTextView.setText(getOtherIncUsersNames(opponents));
+
+        rejectButton = (ImageButton) view.findViewById(R.id.reject_call);
+        takeButton = (ImageButton) view.findViewById(R.id.take_call);
     }
 
     private void enableButtons(boolean enable) {
-        takeBtn.setEnabled(enable);
-        rejectBtn.setEnabled(enable);
+        takeButton.setEnabled(enable);
+        rejectButton.setEnabled(enable);
     }
 
     public void startCallNotification() {
@@ -187,13 +185,10 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
-        if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO) {
-            incVideoCall.setVisibility(View.VISIBLE);
-            incAudioCall.setVisibility(View.INVISIBLE);
-        } else if (conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
-            incVideoCall.setVisibility(View.INVISIBLE);
-            incAudioCall.setVisibility(View.VISIBLE);
-        }
+        boolean isVideoCall = conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+
+        callTypeTextView.setText(getString(isVideoCall ? R.string.incoming_video_call : R.string.incoming_audio_call));
+        takeButton.setImageResource(isVideoCall ? R.drawable.ic_video_white : R.drawable.ic_call);
     }
 
     public void onStop() {
@@ -209,22 +204,23 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             return;
         }
         lastCliclTime = SystemClock.uptimeMillis();
+
         switch (v.getId()) {
-            case R.id.rejectBtn:
+            case R.id.reject_call:
                 reject();
                 break;
-            case R.id.takeBtn:
+
+            case R.id.take_call:
                 accept();
                 break;
+
             default:
                 break;
         }
     }
 
-    ;
-
     private void accept() {
-        takeBtn.setClickable(false);
+        takeButton.setClickable(false);
         stopCallNotification();
 
         ((CallActivity) getActivity())
@@ -234,7 +230,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void reject() {
-        rejectBtn.setClickable(false);
+        rejectButton.setClickable(false);
         Log.d(TAG, "Call is rejected");
 
         stopCallNotification();

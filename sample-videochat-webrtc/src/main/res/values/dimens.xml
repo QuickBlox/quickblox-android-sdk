@@ -11,7 +11,7 @@
     <dimen name="also_on_call_text_size">16sp</dimen>
     <dimen name="other_inc_users_text_size">16sp</dimen>
 
-    <dimen name="call_buttons_diameter">56dp</dimen>
+    <dimen name="call_buttons_diameter">64dp</dimen>
     <dimen name="call_buttons_padding">16dp</dimen>
     <dimen name="call_caller_name_top_avatar_margin">16dp</dimen>
     <dimen name="call_buttons_margin">32dp</dimen>
@@ -22,7 +22,7 @@
     <dimen name="call_avatar_top_margin_plus_height_actionbar">112dp</dimen>
     <dimen name="income_call_buttons_margin">88dp</dimen>
 
-    <dimen name="call_avatar_diameter">72dp</dimen>
+    <dimen name="call_avatar_diameter">78dp</dimen>
     <dimen name="call_margin_top">50dp</dimen>
     <dimen name="call_name_size">25sp</dimen>
     <dimen name="call_end_button_width">200dp</dimen>
