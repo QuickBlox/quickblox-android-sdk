@@ -1,8 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.adapters;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,7 +23,6 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         super(context, users);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         final ViewHolder holder;
@@ -47,14 +44,14 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
             holder.opponentName.setText(user.getFullName());
 
             if (selectedItems.contains(user)){
-                convertView.setBackgroundColor(context.getColor(R.color.selected_user_item_background_color));
+                convertView.setBackgroundResource(R.color.selected_user_item_background_color);
                 holder.opponentIcon.setBackgroundDrawable(
                         UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.selected_user_icon_background_color)));
-                holder.opponentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_checkmark));
+                holder.opponentIcon.setImageResource(R.drawable.ic_checkmark);
             } else {
-                convertView.setBackgroundColor(context.getColor(R.color.normal_user_item_background_color));
+                convertView.setBackgroundResource(R.color.normal_user_item_background_color);
                 holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
-                holder.opponentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_person));
+                holder.opponentIcon.setImageResource(R.drawable.ic_person);
             }
         }
 
