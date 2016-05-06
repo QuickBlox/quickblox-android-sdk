@@ -1,15 +1,18 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
+import android.support.annotation.StringRes;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
@@ -18,7 +21,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseLogginedUserActivity extends Activity {
+public class BaseLogginedUserActivity extends AppCompatActivity {
 
     private static final String APP_VERSION = "App version";
     private ActionBar mActionBar;
@@ -27,7 +30,7 @@ public class BaseLogginedUserActivity extends Activity {
 
     public void initActionBar() {
 
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -37,16 +40,16 @@ public class BaseLogginedUserActivity extends Activity {
 
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
         QBUser loggedUser = DataHolder.getLoggedUser();
-        if (loggedUser != null) {
+        if (loggedUser != null ) {
             int number = DataHolder.getUserIndexByID(loggedUser.getId());
             numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(number));
-            numberOfListAB.setText(String.valueOf(number + 1));
+            numberOfListAB.setText(String.valueOf(number+1));
 
             TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
             loginAsAB.setText(R.string.logged_in_as);
             //
             TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-            userNameAB.setText(String.valueOf(number + 1));
+            userNameAB.setText(String.valueOf(number+1));
         }
 
         numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
@@ -57,8 +60,7 @@ public class BaseLogginedUserActivity extends Activity {
                 dialog.setMessage(Consts.VERSION_NUMBER);
                 dialog.show();
                 return true;
-            }
-        });
+            }});
 
 
         mActionBar.setCustomView(mCustomView);
@@ -67,7 +69,7 @@ public class BaseLogginedUserActivity extends Activity {
     }
 
     public void initActionBarWithTimer() {
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -91,6 +93,7 @@ public class BaseLogginedUserActivity extends Activity {
     }
 
     public void startTimer() {
+
         if (!isStarted) {
             timerABWithTimer.setBase(SystemClock.elapsedRealtime());
             timerABWithTimer.start();
@@ -98,11 +101,25 @@ public class BaseLogginedUserActivity extends Activity {
         }
     }
 
-    public void stopTimer() {
-        if (timerABWithTimer != null) {
+    public void stopTimer(){
+        if (timerABWithTimer != null){
             timerABWithTimer.stop();
             isStarted = false;
         }
+    }
+
+    public void setActionbarTitle(String title){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(title);
+    }
+
+    void showProgressDialog(@StringRes int messageId){
+        ProgressDialogFragment.show(getSupportFragmentManager(), messageId);
+    }
+
+    void hideProgressDialog(){
+        ProgressDialogFragment.hide(getSupportFragmentManager());
     }
 }
 
