@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id = "@+id/fragmentIncomeCall"
     style="@style/MatchParent"
     >
@@ -14,10 +15,7 @@
 
         <ImageView
             android:id="@+id/caller_avatar"
-            android:layout_width="@dimen/call_avatar_diameter"
-            android:layout_height="@dimen/call_avatar_diameter"
-            android:padding="40dp"
-            android:scaleType="centerCrop"
+            style="@style/CallerAvatar"
             />
 
         <TextView
@@ -35,18 +33,18 @@
             android:id="@+id/call_type"
             style="@style/WrapContent"
             android:textColor="@color/call_type_text_color"
-            android:textSize="@dimen/incomming_call_type_text_size"
+            android:textSize="@dimen/incoming_call_type_text_size"
             android:text="@string/incoming_audio_call"
-            android:paddingTop="8dp"
+            android:layout_marginTop="8dp"
             />
 
         <TextView
             android:id="@+id/also_on_call"
             style="@style/WrapContent"
-            android:textColor="@color/also_on_coll_text_color"
+            android:textColor="@color/also_on_call_text_color"
             android:textSize="@dimen/also_on_call_text_size"
             android:text="@string/also_on_call"
-            android:paddingTop="48dp"
+            android:layout_marginTop="48dp"
             />
 
         <TextView
@@ -54,7 +52,7 @@
             style="@style/WrapContent"
             android:textColor="@color/other_inc_users_text_color"
             android:textSize="@dimen/other_inc_users_text_size"
-            android:paddingTop="10dp"
+            android:layout_marginTop="10dp"
             android:text="User 1, User 2, User 3"
             />
 
@@ -65,30 +63,21 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:paddingBottom="@dimen/padding_bottom"
+        android:layout_marginBottom="@dimen/padding_bottom"
         >
 
         <ImageButton
             android:id="@+id/reject_call"
-            android:layout_width="@dimen/call_buttons_diameter"
-            android:layout_height="@dimen/call_buttons_diameter"
-            android:padding="@dimen/call_buttons_padding"
-            android:background="@drawable/selector_call_end"
-            android:src="@drawable/ic_call_end"
-            android:scaleType="centerCrop"
+            style="@style/EndCallImageButton"
             />
 
         <ImageButton
             android:id="@+id/take_call"
-            android:layout_width="@dimen/call_buttons_diameter"
-            android:layout_height="@dimen/call_buttons_diameter"
-            android:padding="@dimen/call_buttons_padding"
-            android:scaleType="centerCrop"
+            style="@style/TakeCallImageButton"
             android:src="@drawable/ic_call"
-            android:background="@drawable/selector_call_take"
-            android:layout_toRightOf="@id/reject_call"
-            android:layout_marginLeft="@dimen/income_call_buttons_margin"
-            />
+            android:layout_toEndOf="@id/reject_call"
+            android:layout_marginStart="@dimen/income_call_buttons_margin"
+            tools:ignore="RtlCompat" />
 
     </RelativeLayout>
 </RelativeLayout>

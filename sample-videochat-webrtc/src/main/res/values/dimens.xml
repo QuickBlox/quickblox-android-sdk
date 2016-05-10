@@ -7,7 +7,7 @@
     <integer name="users_count">10</integer>
 
     <dimen name="caller_name_text_size">22sp</dimen>
-    <dimen name="incomming_call_type_text_size">16sp</dimen>
+    <dimen name="incoming_call_type_text_size">16sp</dimen>
     <dimen name="also_on_call_text_size">16sp</dimen>
     <dimen name="other_inc_users_text_size">16sp</dimen>
 

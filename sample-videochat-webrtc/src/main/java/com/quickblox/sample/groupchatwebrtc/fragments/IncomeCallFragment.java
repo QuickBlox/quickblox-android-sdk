@@ -187,7 +187,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
         boolean isVideoCall = conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
 
-        callTypeTextView.setText(getString(isVideoCall ? R.string.incoming_video_call : R.string.incoming_audio_call));
+        callTypeTextView.setText(isVideoCall ? R.string.incoming_video_call : R.string.incoming_audio_call);
         takeButton.setImageResource(isVideoCall ? R.drawable.ic_video_white : R.drawable.ic_call);
     }
 
