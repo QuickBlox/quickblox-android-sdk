@@ -52,8 +52,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ((CallActivity)getActivity()).initActionBar();
-
         view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
         initUI(view);

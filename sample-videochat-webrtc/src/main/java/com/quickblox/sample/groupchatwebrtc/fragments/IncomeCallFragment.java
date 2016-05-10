@@ -72,8 +72,6 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
             view = inflater.inflate(R.layout.fragment_income_call, container, false);
 
-            ((CallActivity) getActivity()).initActionBar();
-
             initUI(view);
             setDisplayedTypeCall(conferenceType);
             initButtonsListener();

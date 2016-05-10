@@ -31,7 +31,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * QuickBlox team
  */
-public class OpponentsActivity extends BaseLogginedUserActivity {
+public class OpponentsActivity extends BaseActivity {
     private static final String TAG = OpponentsActivity.class.getSimpleName();
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
@@ -178,12 +178,12 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
     }
 
     private void initDefaultActionBar(){
-        setActionbarTitle(currentRoomName);
+        setActionBarTitle(currentRoomName);
         setActionbarSubTitle(String.format(getString(R.string.logged_in_as), currenUser.getFullName()));
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){
-        setActionbarTitle(String.format(getString(
+        setActionBarTitle(String.format(getString(
                 countSelectedUsers > 1
                     ? R.string.users_selected
                     : R.string.user_selected),
@@ -213,7 +213,6 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
             @Override
             public void onError(QBResponseException responseException) {
                 hideProgressDialog();
-                hideProgressDialog();
                 Toaster.longToast(R.string.sign_up_error);
             }
         });
@@ -235,7 +234,7 @@ public class OpponentsActivity extends BaseLogginedUserActivity {
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
     }
 
-    public void showSettings() {
+    private void showSettings() {
         SettingsActivity.start(this);
     }
 }

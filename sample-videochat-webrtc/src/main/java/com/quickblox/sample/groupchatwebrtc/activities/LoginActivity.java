@@ -29,7 +29,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * Created by tereha on 12.04.16.
  */
-public class LoginActivity extends BaseLogginedUserActivity {
+public class LoginActivity extends BaseActivity {
 
     private String TAG = LoginActivity.class.getSimpleName();
 

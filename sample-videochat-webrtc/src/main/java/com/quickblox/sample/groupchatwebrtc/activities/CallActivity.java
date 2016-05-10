@@ -21,7 +21,6 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
@@ -60,7 +59,7 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseLogginedUserActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback,
+public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback,
         OnCallEventsController, NetworkConnectionChecker.OnConnectivityChangedListener {
 
     private static final String TAG = CallActivity.class.getSimpleName();
@@ -93,7 +92,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        opponentsList = DataHolder.getUsers();
+        opponentsList = DataHolder.getUsersList();
 
         Log.d(TAG, "Activity. Thread id: " + Thread.currentThread().getId());
 
@@ -613,7 +612,6 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
     private void logoutSession() {
         try {
-            DataHolder.setLoggedUser(null);
             QBRTCClient.getInstance(this).destroy();
 
             //comment if you haven't started ping alarm
