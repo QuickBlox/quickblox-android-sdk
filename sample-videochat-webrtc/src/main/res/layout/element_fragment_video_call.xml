@@ -8,44 +8,39 @@
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="7dp"
     android:gravity="center_horizontal"
-    >
+    android:background="@color/text_color_light_grey">
 
     <ToggleButton
         android:id="@+id/cameraToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:textOff=""
         android:textOn=""
-        android:background="@drawable/ic_toggle_camera"
+        android:background="@drawable/call_cam_toggle_background"
         android:layout_gravity="center_vertical"
         android:checked="true"/>
 
-    <ToggleButton
-        android:id="@+id/dynamicToggleVideoCall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textOff=""
-        android:textOn=""
-        android:background="@drawable/ic_toggle_dynamic"
-        android:layout_gravity="center_vertical"
-        android:checked="true"/>
 
     <ToggleButton
         android:id="@+id/micToggleVideoCall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:textOff=""
         android:textOn=""
-        android:background="@drawable/ic_toggle_mic"
+        android:background="@drawable/call_mic_toggle_background"
         android:gravity="center_vertical|center_horizontal"
         android:layout_gravity="center_vertical"
         android:checked="true"/>
 
     <ImageButton
         android:id="@+id/handUpVideoCall"
-        android:layout_width="100dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_call_end"
-        android:background="@drawable/btn_background_call_end"/>
+        android:background="@drawable/shape_oval_red"/>
 
 </LinearLayout>

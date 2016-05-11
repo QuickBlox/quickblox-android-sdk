@@ -43,7 +43,8 @@
         android:layout_above="@+id/element_set_video_buttons"
         android:numColumns="3"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         tools:listitem="@layout/list_item_opponent_from_call">
     </android.support.v7.widget.RecyclerView>
 
@@ -54,9 +55,7 @@
         layout="@layout/element_fragment_video_call"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"/>
-
-
+        android:layout_marginBottom="16dp"/>
 
     <TextView
         android:id="@+id/incUserName"

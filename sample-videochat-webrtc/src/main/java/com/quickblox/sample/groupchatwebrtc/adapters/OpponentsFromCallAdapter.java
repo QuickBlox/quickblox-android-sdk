@@ -76,8 +76,10 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
+//        TODO maybe it's no reason to do this
         v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
         if (paddingLeft != 0) {
+            Log.d(TAG, "paddingLeft1=" + paddingLeft + ", v.getPaddingRight()1=" + v.getPaddingRight());
             v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
         }
         ViewHolder vh = new ViewHolder(v);

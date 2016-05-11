@@ -14,6 +14,7 @@ import android.os.Message;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -52,6 +53,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static android.support.v7.widget.LinearLayoutManager.*;
 
 
 /**
@@ -172,12 +175,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         cameraToggle.setEnabled(enability);
         micToggleVideoCall.setEnabled(enability);
-        dynamicToggleVideoCall.setEnabled(enability);
+//        dynamicToggleVideoCall.setEnabled(enability);
 
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
         micToggleVideoCall.setActivated(enability);
-        dynamicToggleVideoCall.setActivated(enability);
+//        dynamicToggleVideoCall.setActivated(enability);
 
         if (switchCameraToggle != null) {
             switchCameraToggle.setEnabled(enability);
@@ -233,7 +236,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         recyclerView.setHasFixedSize(true);
         final int columnsCount = defineColumnsCount();
         final int rowsCount = defineRowCount();
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnsCount, GridLayoutManager.HORIZONTAL, false));
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -246,7 +251,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         if (!isPeerToPeerCall) {
             initLocalViewUI(view);
         }
-        dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
+//        dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
 
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
@@ -262,13 +267,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private void setGrid(int columnsCount, int rowsCount) {
         int gridWidth = recyclerView.getMeasuredWidth();
+        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth+" recyclerView.getMeasuredHeight()= "+recyclerView.getMeasuredHeight());
         float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
         int cellSize = defineMinSize(gridWidth, recyclerView.getMeasuredHeight(),
                 columnsCount, rowsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSize);
 
-        OpponentsFromCallAdapter opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, cellSize,
-                cellSize, gridWidth, columnsCount, (int) itemMargin,
+        OpponentsFromCallAdapter opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, 400,
+                400, gridWidth, columnsCount, (int) itemMargin,
                 isVideoEnabled);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
         ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
@@ -352,12 +358,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             }
         });
 
-        dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callEvents.onSwitchAudio();
-            }
-        });
+//        dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                callEvents.onSwitchAudio();
+//            }
+//        });
 
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -628,7 +634,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     public void enableDinamicToggle(boolean plugged) {
-        dynamicToggleVideoCall.setChecked(plugged);
+//        dynamicToggleVideoCall.setChecked(plugged);
     }
 
     private class AudioStreamReceiver extends BroadcastReceiver {
@@ -642,7 +648,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
             }
 
-            dynamicToggleVideoCall.setChecked(intent.getIntExtra("state", -1) == 1);
+//            dynamicToggleVideoCall.setChecked(intent.getIntExtra("state", -1) == 1);
 
         }
     }
