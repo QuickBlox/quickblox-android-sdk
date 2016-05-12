@@ -39,7 +39,7 @@
     <string name="user_selected">%s user selected</string>
     <string name="users_selected">%s users selected</string>
 
-    
+
     <string name="outputing_audio_call">Outputing Audio Call - </string>
     <string name="incoming_call">Incoming Call</string>
     <string name="also_on_call">Also on call:</string>
@@ -78,6 +78,7 @@
 
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
+
 
 
     <!-- Settings strings. -->
@@ -125,6 +126,7 @@
     <string name="pref_displayhud_title">Display call statistics.</string>
     <string name="pref_displayhud_dlg">Display call statistics.</string>
     <string name="pref_displayhud_default" translatable="false">false</string>
+    <string name="action_settings">Settings</string>
     <string name="pref_audiocodec_key">pref_audio_codec</string>
     <string name="pref_audiocodec_title">Default audio codec</string>
     <string name="pref_audiocodec_def">ISAC</string>
