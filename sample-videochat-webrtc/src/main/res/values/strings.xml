@@ -126,7 +126,6 @@
     <string name="pref_displayhud_title">Display call statistics.</string>
     <string name="pref_displayhud_dlg">Display call statistics.</string>
     <string name="pref_displayhud_default" translatable="false">false</string>
-    <string name="action_settings">Settings</string>
     <string name="pref_audiocodec_key">pref_audio_codec</string>
     <string name="pref_audiocodec_title">Default audio codec</string>
     <string name="pref_audiocodec_def">ISAC</string>

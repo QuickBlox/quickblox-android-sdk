@@ -29,4 +29,13 @@
     <color name="selected_user_item_background_color">#eeeeee</color>
     <color name="selected_user_icon_background_color">#959595</color>
     <color name="normal_user_item_background_color">#ffffff</color>
+
+    <color name="button_end_call_normal">#ff2744</color>
+    <color name="button_end_call_pressed">#FC5876</color>
+    <color name="toggle_button_background_normal">#cc212121</color>
+    <color name="toggle_button_background_checked">#ccffffff</color>
+    <color name="call_type_text_color">#6e6e6e</color>
+    <color name="also_on_call_text_color">@color/call_type_text_color</color>
+    <color name="other_inc_users_text_color">#1f1f1f</color>
+    <color name="caller_name_text_color">#1f1f1f</color>
 </resources>
