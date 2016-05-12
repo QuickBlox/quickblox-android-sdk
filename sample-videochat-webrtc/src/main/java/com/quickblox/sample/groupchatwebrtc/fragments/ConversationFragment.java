@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
@@ -257,10 +258,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
-        incUserName = (TextView) view.findViewById(R.id.incUserName);
-        incUserName.setText(callerName);
-        incUserName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((
-                DataHolder.getUserIndexByFullName(callerName)) + 1));
+//        incUserName = (TextView) view.findViewById(R.id.incUserName);
+//        incUserName.setText(callerName);
+//        incUserName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((
+//                DataHolder.getUserIndexByFullName(callerName)) + 1));
 
         actionButtonsEnabled(false);
     }
@@ -273,13 +274,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 columnsCount, rowsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSize);
 
-        OpponentsFromCallAdapter opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, 400,
-                400, gridWidth, columnsCount, (int) itemMargin,
+        OpponentsFromCallAdapter opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, ResourceUtils.dpToPx(82),
+                ResourceUtils.dpToPx(137), gridWidth, columnsCount, (int) itemMargin,
                 isVideoEnabled);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
         ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
-        params.height=400;
-//        recyclerView.setLayoutParams(params);
+        params.height=ResourceUtils.dpToPx(137);
+        recyclerView.setLayoutParams(params);
         recyclerView.setAdapter(opponentsAdapter);
     }
 
