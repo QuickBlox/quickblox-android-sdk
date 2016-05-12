@@ -226,6 +226,7 @@ public class LoginActivity extends BaseActivity {
 
     private void startOpponentsActivity() {
         OpponentsActivity.start(LoginActivity.this);
+        finish();
     }
 
     private void initQbChatServiceIfNeed() {
