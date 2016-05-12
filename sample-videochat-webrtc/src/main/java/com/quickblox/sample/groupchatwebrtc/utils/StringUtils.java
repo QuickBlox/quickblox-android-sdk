@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -9,21 +10,24 @@ import java.util.ArrayList;
  */
 public class StringUtils {
 
-    public static String makeStringFromUsersFullNames(ArrayList<QBUser> allUsers, ArrayList<Integer> selectedUsers){
-        StringBuffer s = new StringBuffer("");
+    public static String makeStringFromUsersFullNames(ArrayList<QBUser> allUsers, ArrayList<Integer> selectedUsers) {
+        StringifyArrayList<String> usersNames = new StringifyArrayList<>();
 
         for (Integer i : selectedUsers) {
+
             for (QBUser usr : allUsers) {
+                String userName;
+
                 if (usr.getId().equals(i)) {
-                    if (selectedUsers.indexOf(i) == (selectedUsers.size() - 1)) {
-                        s.append(usr.getFullName() + " ");
-                        break;
-                    } else {
-                        s.append(usr.getFullName() + ", ");
-                    }
+                    userName = usr.getFullName();
+                } else {
+                    userName = String.valueOf(i);
                 }
+
+                usersNames.add(userName);
             }
         }
-        return s.toString();
+
+        return usersNames.getItemsAsString();
     }
 }

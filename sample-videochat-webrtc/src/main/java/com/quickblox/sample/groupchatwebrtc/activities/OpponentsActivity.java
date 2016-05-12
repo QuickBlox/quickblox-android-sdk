@@ -181,6 +181,7 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onSuccess(Void result, Bundle params) {
                 removeUserData();
+                startLoginActivity();
                 finish();
             }
 
@@ -194,8 +195,6 @@ public class OpponentsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        logOut();
-        removeUserData();
         super.onBackPressed();
     }
 
@@ -210,5 +209,9 @@ public class OpponentsActivity extends BaseActivity {
 
     private void showSettings() {
         SettingsActivity.start(this);
+    }
+
+    private void startLoginActivity(){
+        LoginActivity.start(this);
     }
 }
