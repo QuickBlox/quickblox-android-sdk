@@ -13,13 +13,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+
+import org.jivesoftware.smack.SmackException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +41,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public static String login;
     private Button btnAudioCall;
     private Button btnVideoCall;
-    private View view = null;
+    private View view=null;
     private ProgressDialog progresDialog;
     private ListView opponentsList;
 
@@ -47,8 +51,6 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        ((CallActivity) getActivity()).initActionBar();
 
         view = inflater.inflate(R.layout.fragment_opponents, container, false);
 
@@ -71,7 +73,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initOpponentListAdapter() {
-        final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+//        final ListView opponentsList = (ListView) view.findViewById(R.id.opponentsList);
 
         List<QBUser> userList = new ArrayList<>(((CallActivity) getActivity()).getOpponentsList());
         prepareUserList(opponentsList, userList);
@@ -102,63 +104,63 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
 
         login = getActivity().getIntent().getStringExtra("login");
 
-        btnAudioCall = (Button) view.findViewById(R.id.btnAudioCall);
-        btnVideoCall = (Button) view.findViewById(R.id.btnVideoCall);
+//        btnAudioCall = (Button)view.findViewById(R.id.btnAudioCall);
+//        btnVideoCall = (Button)view.findViewById(R.id.btnVideoCall);
 
         btnAudioCall.setOnClickListener(this);
         btnVideoCall.setOnClickListener(this);
 
-        opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+//        opponentsList = (ListView) view.findViewById(R.id.opponentsList);
     }
 
     @Override
     public void onClick(View v) {
 
-        if (opponentsAdapter.getSelected().isEmpty()) {
-            Toaster.longToast("Choose one opponent");
-            return;
-        }
-
-        if (opponentsAdapter.getSelected().size() > QBRTCConfig.getMaxOpponentsCount()) {
-            Toaster.longToast("Max number of opponents is 6");
-            return;
-        }
-        QBRTCTypes.QBConferenceType qbConferenceType = null;
-
-        //Init conference type
-        switch (v.getId()) {
-            case R.id.btnAudioCall:
-                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
-                break;
-
-            case R.id.btnVideoCall:
-                // get call type
-                qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
-
-                break;
-        }
-
-        Map<String, String> userInfo = new HashMap<>();
-        userInfo.put("any_custom_data", "some data");
-        userInfo.put("my_avatar_url", "avatar_reference");
-
-        ((CallActivity) getActivity())
-                .addConversationFragmentStartCall(opponentsAdapter.getSelected(),
-                        qbConferenceType, userInfo);
+//        if (opponentsAdapter.getSelected().isEmpty()){
+//            Toaster.longToast("Choose one opponent");
+//            return;
+//        }
+//
+//        if (opponentsAdapter.getSelected().size() > QBRTCConfig.getMaxOpponentsCount()){
+//            Toaster.longToast("Max number of opponents is 6");
+//            return;
+//        }
+//            QBRTCTypes.QBConferenceType qbConferenceType = null;
+//
+//            //Init conference type
+//            switch (v.getId()) {
+//                case R.id.btnAudioCall:
+//                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+//                    break;
+//
+//                case R.id.btnVideoCall:
+//                    // get call type
+//                    qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+//
+//                    break;
+//            }
+//
+//        Map<String, String> userInfo = new HashMap<>();
+//            userInfo.put("any_custom_data", "some data");
+//            userInfo.put("my_avatar_url", "avatar_reference");
+//
+//            ((CallActivity) getActivity())
+//                    .addConversationFragmentStartCall(opponentsAdapter.getSelected(),
+//                            qbConferenceType, userInfo);
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (progresDialog.isShowing()) {
+        if(progresDialog.isShowing()) {
             progresDialog.dismiss();
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_opponents, menu);
+        inflater.inflate(R.menu.activity_opponents, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
     }
@@ -167,10 +169,16 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.log_out:
-                ((CallActivity) getActivity()).logout();
+                try {
+                    QBRTCClient.getInstance(getActivity()).destroy();
+                    QBChatService.getInstance().logout();
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                }
+                getActivity().finish();
                 return true;
             case R.id.settings:
-                ((CallActivity) getActivity()).showSettings();
+                ((CallActivity)getActivity()).showSettings();
             default:
                 return super.onOptionsItemSelected(item);
         }

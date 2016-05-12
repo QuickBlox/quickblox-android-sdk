@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="blue_green">#008080</color>
+    <color name="grey">#606060</color>
+    <color name="gold">#FFD700</color>
+    <color name="spring_bud">#A7FC00</color>
+    <color name="water_bondi_beach">#0095B6</color>
+    <color name="coral">#FF4040</color>
+    <color name="lime">#00FF00</color>
+    <color name="may_green">#4C9141</color>
+    <color name="mauveine">#EF0097</color>
+    <color name="blue">#1FCECB</color>
+    <color name="orange">#FFA500</color>
+    <color name="gentianaceae_blue">#2A6478</color>
+    <color name="blue_krayola">#1F75FE</color>
+    <color name="red">#FF0000</color>
+    <color name="white_blue">#00BFFF</color>
+    <color name="pink">#FF7A7A</color>
+    <color name="green">#45D100</color>
+    <color name="white_green">#A9FF80</color>
+    <color name="black_transparent_30">#30000000</color>
+    <color name="black_transparent_50">#50000000</color>
+    <color name="white_transparent_80">#80FFFFFF</color>
+    <color name="background_chat_color">#f5f6f5</color>
+    <color name="blue_accent">#0088e7</color>
+
+    <color name="selected_user_item_background_color">#eeeeee</color>
+    <color name="selected_user_icon_background_color">#959595</color>
+    <color name="normal_user_item_background_color">#ffffff</color>
+
+    <color name="button_end_call_normal">#ff2744</color>
+    <color name="button_end_call_pressed">#FC5876</color>
+    <color name="toggle_button_background_normal">#cc212121</color>
+    <color name="toggle_button_background_checked">#ccffffff</color>
+    <color name="call_type_text_color">#6e6e6e</color>
+    <color name="also_on_call_text_color">@color/call_type_text_color</color>
+    <color name="other_inc_users_text_color">#1f1f1f</color>
+    <color name="caller_name_text_color">#1f1f1f</color>
+</resources>
