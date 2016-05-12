@@ -2,6 +2,7 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -13,11 +14,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
+import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
+import com.quickblox.sample.groupchatwebrtc.utils.StringUtils;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCSessionDescription;
@@ -104,14 +107,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
         callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
-        callerNameTextView.setText(getCallerName(((CallActivity) getActivity()).getCurrentSession()));
-
-        //TODO VT need fix after merge with branch master.refactoring.videochat_webrtc.lead_reviewed
-        //callerNameTextView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponentIndexInList));
+        callerNameTextView.setText(DataHolder.getUserNameByID(sessionDescription.getCallerID()));
+        callerNameTextView.setBackgroundDrawable(getBackgroundForCallerAvatar(sessionDescription.getCallerID()));
 
         otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
-        //TODO VT need fix after merge with branch master.refactoring.videochat_webrtc.lead_reviewed
-        //otherIncUsersTextView.setText(getOtherIncUsersNames(opponents));
+        otherIncUsersTextView.setText(getOtherIncUsersNames());
 
         rejectButton = (ImageButton) view.findViewById(R.id.reject_call);
         takeButton = (ImageButton) view.findViewById(R.id.take_call);
@@ -120,6 +120,20 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void enableButtons(boolean enable) {
         takeButton.setEnabled(enable);
         rejectButton.setEnabled(enable);
+    }
+
+    private Drawable getBackgroundForCallerAvatar(int callerId){
+        int position = DataHolder.getUserIndexByID(callerId);
+
+        Drawable drawableBackground;
+
+        if (position != -1){
+            drawableBackground = UiUtils.getColorCircleDrawable(position);
+        } else {
+            drawableBackground = UiUtils.getRandomColorCircleDrawable();
+        }
+
+        return drawableBackground;
     }
 
     public void startCallNotification() {
@@ -148,37 +162,13 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         }
     }
 
-    private String getOtherIncUsersNames(ArrayList<Integer> opponents) {
-        StringBuffer s = new StringBuffer("");
-        opponents.remove(QBChatService.getInstance().getUser().getId());
+    private String getOtherIncUsersNames() {
+        ArrayList<QBUser> allUsers = DataHolder.getUsersList();
 
-        for (Integer i : opponents) {
-            for (QBUser usr : opponentsFromCall) {
-                if (usr.getId().equals(i)) {
-                    if (opponents.indexOf(i) == (opponents.size() - 1)) {
-                        s.append(usr.getFullName() + " ");
-                        break;
-                    } else {
-                        s.append(usr.getFullName() + ", ");
-                    }
-                }
-            }
-        }
-        return s.toString();
-    }
+        ArrayList<Integer> selectedUsers = opponents;
+        selectedUsers.remove(QBChatService.getInstance().getUser().getId());
 
-    private String getCallerName(QBRTCSession session) {
-        String s = new String();
-        int i = session.getCallerID();
-
-        opponentsFromCall.addAll(DataHolder.getUsersList());
-
-        for (QBUser usr : opponentsFromCall) {
-            if (usr.getId().equals(i)) {
-                s = usr.getFullName();
-            }
-        }
-        return s;
+        return StringUtils.makeStringFromUsersFullNames(allUsers, selectedUsers);
     }
 
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
