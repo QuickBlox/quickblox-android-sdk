@@ -3,11 +3,9 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
@@ -21,6 +19,7 @@ import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -36,13 +35,10 @@ public class OpponentsActivity extends BaseActivity {
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
 
-    private static ArrayList<QBUser> opponentsList = new ArrayList<>();
-
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
-    private QBUser currenUser;
-    private String currentRoomName;
-    private SharedPrefsHelper sharedPrefsHelper;
+    private QBUser currentUser;
+
 
     public static void start(Context context){
         Intent intent = new Intent(context, OpponentsActivity.class);
@@ -65,9 +61,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initFields() {
-        sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        currenUser = sharedPrefsHelper.getQbUser();
-        currentRoomName = sharedPrefsHelper.get(Consts.PREF_CURREN_ROOM_NAME);
+        currentUser = sharedPrefsHelper.getQbUser();
     }
 
     private void startLoadUsers() {
@@ -77,7 +71,7 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
-                setOpponentsList(result);
+                DataHolder.setUsersList(result);
                 initUsersList();
             }
 
@@ -95,31 +89,20 @@ public class OpponentsActivity extends BaseActivity {
         });
     }
 
-    public static ArrayList<QBUser> getOpponentsList() {
-        return opponentsList;
-    }
-
-    public static void setOpponentsList(ArrayList<QBUser> opponentsList) {
-        OpponentsActivity.opponentsList = opponentsList;
-    }
-
     private void initUi() {
         opponentsListView = (ListView) findViewById(R.id.list_opponents);
     }
 
     private void initUsersList() {
-        opponentsAdapter = new OpponentsAdapter(this, getOpponentsList());
-
-        opponentsListView.setAdapter(opponentsAdapter);
-        opponentsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        opponentsAdapter = new OpponentsAdapter(this, DataHolder.getUsersListWithoutSelectedUser(currentUser));
+        opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                opponentsAdapter.toggleSelection(position);
-                view.invalidate();
-                updateActionBar(opponentsAdapter.getSelectedItems().size());
-                Log.d(TAG, "item " + position + " clicked");
+            public void onCountSelectedItemsChanged(int count) {
+                updateActionBar(count);
             }
         });
+
+        opponentsListView.setAdapter(opponentsAdapter);
     }
 
     @Override
@@ -175,11 +158,6 @@ public class OpponentsActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void initDefaultActionBar(){
-        setActionBarTitle(currentRoomName);
-        setActionbarSubTitle(String.format(getString(R.string.logged_in_as), currenUser.getFullName()));
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){

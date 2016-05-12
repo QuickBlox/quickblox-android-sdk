@@ -49,4 +49,10 @@ public class DataHolder {
         }
         return result;
     }
+
+    public static ArrayList<QBUser> getUsersListWithoutSelectedUser(QBUser qbUser){
+        ArrayList<QBUser> opponentsWithoutSelectedUser = getUsersList();
+        opponentsWithoutSelectedUser.remove(qbUser);
+        return opponentsWithoutSelectedUser;
+    }
 }

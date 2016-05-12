@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
 
+    private SelectedItemsCountsChangedListener selectedItemsCountChangedListener;
+
     public OpponentsAdapter(Context context, List<QBUser> users) {
         super(context, users);
     }
@@ -55,11 +57,29 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
             }
         }
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleSelection(position);
+                selectedItemsCountChangedListener.onCountSelectedItemsChanged(selectedItems.size());
+            }
+        });
+
         return convertView;
     }
 
     public static class ViewHolder {
         ImageView opponentIcon;
         TextView opponentName;
+    }
+
+    public void setSelectedItemsCountsChangedListener(SelectedItemsCountsChangedListener selectedItemsCountsChanged){
+        if (selectedItemsCountsChanged != null) {
+            this.selectedItemsCountChangedListener = selectedItemsCountsChanged;
+        }
+    }
+
+    public interface SelectedItemsCountsChangedListener{
+        void onCountSelectedItemsChanged(int count);
     }
 }

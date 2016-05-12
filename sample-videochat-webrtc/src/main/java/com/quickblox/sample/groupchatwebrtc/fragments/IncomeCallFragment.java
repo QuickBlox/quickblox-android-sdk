@@ -166,7 +166,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         String s = new String();
         int i = session.getCallerID();
 
-        opponentsFromCall.addAll(DataHolder.getUsers());
+        opponentsFromCall.addAll(DataHolder.getUsersList());
 
         for (QBUser usr : opponentsFromCall) {
             if (usr.getId().equals(i)) {

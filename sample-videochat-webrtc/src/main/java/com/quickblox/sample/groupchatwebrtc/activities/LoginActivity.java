@@ -55,7 +55,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initUI() {
-        setActionbarTitle(getResources().getString(R.string.title_login_activity));
+        setActionBarTitle(getResources().getString(R.string.title_login_activity));
         userNameEditText = (EditText) findViewById(R.id.user_name);
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
     }
