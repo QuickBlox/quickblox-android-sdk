@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
@@ -18,7 +19,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseLogginedUserActivity extends Activity {
+public class BaseLogginedUserActivity extends AppCompatActivity {
 
     private static final String APP_VERSION = "App version";
     private ActionBar mActionBar;
@@ -27,9 +28,9 @@ public class BaseLogginedUserActivity extends Activity {
 
     public void initActionBar() {
 
-        mActionBar = getActionBar();
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowTitleEnabled(false);
+//        mActionBar = getActionBar();
+//        mActionBar.setDisplayShowHomeEnabled(false);
+//        mActionBar.setDisplayShowTitleEnabled(false);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
 
@@ -61,15 +62,15 @@ public class BaseLogginedUserActivity extends Activity {
         });
 
 
-        mActionBar.setCustomView(mCustomView);
-        mActionBar.setDisplayShowCustomEnabled(true);
+//        mActionBar.setCustomView(mCustomView);
+//        mActionBar.setDisplayShowCustomEnabled(true);
 
     }
 
     public void initActionBarWithTimer() {
-        mActionBar = getActionBar();
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setDisplayShowTitleEnabled(false);
+//        mActionBar = getActionBar();
+//        mActionBar.setDisplayShowHomeEnabled(false);
+//        mActionBar.setDisplayShowTitleEnabled(false);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
 
@@ -86,8 +87,8 @@ public class BaseLogginedUserActivity extends Activity {
             userNameAB.setText(user.getFullName());
         }
 
-        mActionBar.setCustomView(mCustomView);
-        mActionBar.setDisplayShowCustomEnabled(true);
+//        mActionBar.setCustomView(mCustomView);
+//        mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     public void startTimer() {

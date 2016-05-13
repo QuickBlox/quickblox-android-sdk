@@ -1,28 +1,40 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -158,6 +170,23 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     }
 
+    public void initActionBarInner() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        if (toolbar != null) {
+
+            toolbar.setTitle("WTF!");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_w);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Conversation", "back clicked");
+                }
+            });
+        }
+    }
+
     private void initSessionListener() {
         ((CallActivity) getActivity()).addVideoTrackCallbacksListener(this);
     }
@@ -219,7 +248,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
-
+        initActionBarInner();
+        setHasOptionsMenu(true);
         intentFilter = new IntentFilter();
         intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
         intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
@@ -268,7 +298,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private void setGrid(int columnsCount, int rowsCount) {
         int gridWidth = recyclerView.getMeasuredWidth();
-        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth+" recyclerView.getMeasuredHeight()= "+recyclerView.getMeasuredHeight());
+        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth + " recyclerView.getMeasuredHeight()= " + recyclerView.getMeasuredHeight());
         float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
         int cellSize = defineMinSize(gridWidth, recyclerView.getMeasuredHeight(),
                 columnsCount, rowsCount, itemMargin);
@@ -278,8 +308,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 ResourceUtils.dpToPx(137), gridWidth, columnsCount, (int) itemMargin,
                 isVideoEnabled);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
-        ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
-        params.height=ResourceUtils.dpToPx(137);
+        ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+        params.height = ResourceUtils.dpToPx(137);
         recyclerView.setLayoutParams(params);
         recyclerView.setAdapter(opponentsAdapter);
     }
@@ -636,6 +666,26 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     public void enableDinamicToggle(boolean plugged) {
 //        dynamicToggleVideoCall.setChecked(plugged);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.conversation_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.audio_switch:
+                Log.d("Conversation", "audio_switch");
+                return true;
+            case R.id.camera_switch:
+                Log.d("Conversation", "camera_switch");
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private class AudioStreamReceiver extends BroadcastReceiver {
