@@ -76,6 +76,8 @@
     <string name="call_was_stopped_connection_lost">Call was stopped because connection was lost</string>
     <string name="connection_lost">Connection lost</string>
 
+    <string name="push_notification_message">"%s is calling you"</string>
+
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
 

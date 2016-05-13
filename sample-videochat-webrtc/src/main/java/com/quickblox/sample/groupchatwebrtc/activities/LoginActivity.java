@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.users.model.QBUser;
 
@@ -38,6 +40,7 @@ public class LoginActivity extends BaseActivity {
 
     private QBResRequestExecutor requestExecutor;
     private QBChatService chatService;
+    private QBUser userForSave;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -199,29 +202,11 @@ public class LoginActivity extends BaseActivity {
 
     private void loginToChat(final QBUser qbUser) {
         showProgressDialog(R.string.dlg_login);
-        initQbChatServiceIfNeed();
-        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-        chatService.login(qbUser, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle params) {
-                hideProgressDialog();
-                qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-                saveUserData(qbUser);
-                startOpponentsActivity();
-            }
 
-            @Override
-            public void onError(QBResponseException responseException) {
-                hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.login_chat_login_error, responseException,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loginToChat(qbUser);
-                            }
-                        });
-            }
-        });
+        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+
+        userForSave = qbUser;
+        startLogineService(qbUser);
     }
 
     private void startOpponentsActivity() {
@@ -262,5 +247,36 @@ public class LoginActivity extends BaseActivity {
         }
 
         return qbUser;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Consts.EXTRA_LOGIN_RESULT_CODE){
+            hideProgressDialog();
+            boolean isLoginSuccess = data.getBooleanExtra(Consts.EXTRA_LOGIN_RESULT, false);
+            String errorMessage = data.getStringExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE);
+
+            if (isLoginSuccess){
+                saveUserData(userForSave);
+                startOpponentsActivity();
+            } else {
+                Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
+            }
+
+        }
+    }
+
+    private void startLogineService(QBUser qbUser){
+        Intent tempIntent = new Intent(this, LoginToChatAndCallListenerService.class);
+        PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
+        Intent intent;
+
+        intent = new Intent(this, LoginToChatAndCallListenerService.class);
+        intent.putExtra(Consts.EXTRA_USER_ID, qbUser.getId());
+        intent.putExtra(Consts.EXTRA_USER_LOGIN, qbUser.getLogin());
+        intent.putExtra(Consts.EXTRA_USER_PASSWORD, Consts.DEFAULT_USER_PASSWORD);
+        intent.putExtra(Consts.EXTRA_PENDING_INTENT, pendingIntent);
+        startService(intent);
     }
 }

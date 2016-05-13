@@ -12,6 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
@@ -20,7 +21,9 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
+import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +41,7 @@ public class OpponentsActivity extends BaseActivity {
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
     private QBUser currentUser;
+    private GooglePlayServicesHelper googlePlayServicesHelper;
 
 
     public static void start(Context context){
@@ -50,6 +54,11 @@ public class OpponentsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.fragment_opponents);
+
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
 
         initFields();
 
@@ -145,15 +154,30 @@ public class OpponentsActivity extends BaseActivity {
 
             case R.id.start_video_call:
                 //start video call
+                startCall(true);
                 return true;
 
             case R.id.start_audio_call:
                 //start audio call
+                startCall(false);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void startCall(boolean isVideoCall) {
+        ArrayList<QBUser> opponentsList = (ArrayList<QBUser>) opponentsAdapter.getSelectedItems();
+        QBRTCTypes.QBConferenceType conferenceType = isVideoCall
+                ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+                : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+
+        CallActivity.StartConversetionReason startConversetionReason = CallActivity.StartConversetionReason.OUTCOME_CALL_MADE;
+
+        PushNotificationSender.sendPushMessage(opponentsAdapter.getIdsSelectedOpponents(), currentUser.getFullName());
+
+        CallActivityTemp.start(this, opponentsList, conferenceType, false);
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){
