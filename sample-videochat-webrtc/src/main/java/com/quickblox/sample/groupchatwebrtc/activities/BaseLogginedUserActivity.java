@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
@@ -31,6 +32,9 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
 //        mActionBar = getActionBar();
 //        mActionBar.setDisplayShowHomeEnabled(false);
 //        mActionBar.setDisplayShowTitleEnabled(false);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_call);
+
 
         LayoutInflater mInflater = LayoutInflater.from(this);
 
@@ -60,7 +64,9 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
                 return true;
             }
         });
+        timerABWithTimer = (Chronometer) findViewById(R.id.timer_chronometer);
 
+        setSupportActionBar(toolbar);
 
 //        mActionBar.setCustomView(mCustomView);
 //        mActionBar.setDisplayShowCustomEnabled(true);
@@ -68,9 +74,10 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
     }
 
     public void initActionBarWithTimer() {
-//        mActionBar = getActionBar();
-//        mActionBar.setDisplayShowHomeEnabled(false);
-//        mActionBar.setDisplayShowTitleEnabled(false);
+
+        mActionBar = getActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
 
@@ -87,12 +94,13 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
             userNameAB.setText(user.getFullName());
         }
 
-//        mActionBar.setCustomView(mCustomView);
-//        mActionBar.setDisplayShowCustomEnabled(true);
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     public void startTimer() {
         if (!isStarted) {
+            timerABWithTimer.setVisibility(View.VISIBLE);
             timerABWithTimer.setBase(SystemClock.elapsedRealtime());
             timerABWithTimer.start();
             isStarted = true;
@@ -101,6 +109,7 @@ public class BaseLogginedUserActivity extends AppCompatActivity {
 
     public void stopTimer() {
         if (timerABWithTimer != null) {
+            timerABWithTimer.setVisibility(View.INVISIBLE);
             timerABWithTimer.stop();
             isStarted = false;
         }

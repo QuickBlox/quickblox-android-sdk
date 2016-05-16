@@ -8,7 +8,7 @@
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="7dp"
     android:gravity="center_horizontal"
-    android:background="@color/text_color_light_grey">
+    android:background="@android:color/transparent">
 
     <ToggleButton
         android:id="@+id/cameraToggle"

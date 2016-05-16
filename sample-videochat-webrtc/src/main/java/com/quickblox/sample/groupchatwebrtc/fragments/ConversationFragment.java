@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -116,11 +117,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private Handler mainHandler;
     private OnCallEventsController callEvents;
 
+    private Chronometer timerABWithTimer;
+    private static int amountOpponents;
+
     public static ConversationFragment newInstance(List<QBUser> opponents, String callerName,
                                                    QBRTCTypes.QBConferenceType qbConferenceType,
                                                    Map<String, String> userInfo, CallActivity.StartConversetionReason reason,
                                                    String sesionnId) {
-
+        amountOpponents = opponents.size();
         ConversationFragment fragment = new ConversationFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(Consts.CONFERENCE_TYPE, qbConferenceType.getValue());
@@ -144,7 +148,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
-        ((CallActivity) getActivity()).initActionBarWithTimer();
+//        ((CallActivity) getActivity()).initActionBarWithTimer();
 
         if (getArguments() != null) {
             opponents = (ArrayList<QBUser>) getArguments().getSerializable(Consts.OPPONENTS);
@@ -173,8 +177,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void initActionBarInner() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
         if (toolbar != null) {
+            QBUser user = DataHolder.getLoggedUser();
+            if (user != null) {
+                toolbar.setTitle(user.getFullName());
+                toolbar.setSubtitle(getString(R.string.opponents, amountOpponents));
+            }
 
-            toolbar.setTitle("WTF!");
+            timerABWithTimer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
+
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_w);

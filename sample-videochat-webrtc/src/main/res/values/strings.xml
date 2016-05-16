@@ -118,4 +118,6 @@
     <string name="accepted">Accepted</string>
     <string name="connection_was_lost">Connection was lost</string>
 
+    <string name="opponents">and %s other</string>
+
 </resources>
