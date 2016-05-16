@@ -94,12 +94,12 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
 
     public static void start(Context context,
                         ArrayList<QBUser> opponentsList,
-                        QBRTCTypes.QBConferenceType conferenceType,
+                        boolean isVideoCall,
                         boolean isIncomingCall){
 
         Intent intent = new Intent(context, CallActivityTemp.class);
         intent.putExtra(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_OPPONENTS_LIST, opponentsList);
-        intent.putExtra(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONFERENCE_TYPE, conferenceType);
+        intent.putExtra(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONFERENCE_TYPE, isVideoCall);
         intent.putExtra(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONVERSATION_REASON, isIncomingCall);
         context.startActivity(intent);
     }
@@ -155,7 +155,12 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
             opponentsList = (List<QBUser>) incomingExtras.getSerializable(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_OPPONENTS_LIST);
             isInCommingCall = incomingExtras.getBoolean(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONVERSATION_REASON);
             opponentsIdsList = incomingExtras.getIntegerArrayList(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_OPPONENTS_LIST);
-            conferencType  = incomingExtras.getParcelable(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONFERENCE_TYPE);
+
+            boolean isVideoCall = incomingExtras.getBoolean(com.quickblox.sample.groupchatwebrtc.definitions.Consts.EXTRA_CONFERENCE_TYPE);
+
+            conferencType = isVideoCall
+                    ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+                    : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
         }
     }
 
@@ -325,7 +330,8 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
     @Override
     protected void onResume() {
         if (currentSession == null) {
-            addOpponentsFragment();
+            OpponentsActivity.start(CallActivityTemp.this);
+//            addOpponentsFragment();
         }
         super.onResume();
         networkConnectionChecker.registerListener(this);
@@ -521,7 +527,8 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
 
                     Log.d(TAG, "Stop session");
                     if (!(currentFragment instanceof OpponentsFragment)) {
-                        addOpponentsFragment();
+//                        addOpponentsFragment();
+                        OpponentsActivity.start(CallActivityTemp.this);
                     }
 
                     if (audioManager != null) {
@@ -637,7 +644,7 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
         initCurrentSession(newSessionWithOpponents);
         ConversationFragment fragment = ConversationFragment.newInstance(opponents, "Caller Name",
                 qbConferenceType, userInfo,
-                CallActivity.StartConversetionReason.OUTCOME_CALL_MADE, getCurrentSession().getSessionID());
+                com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason.OUTCOME_CALL_MADE, getCurrentSession().getSessionID());
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
         audioManager.init();
         ringtonePlayer.play(true);
@@ -684,7 +691,7 @@ public class CallActivityTemp extends BaseActivity implements QBRTCClientSession
             ConversationFragment fragment = ConversationFragment.newInstance(opponents,
                     DataHolder.getUserNameByID(session.getCallerID()),
                     session.getConferenceType(), session.getUserInfo(),
-                    CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION, getCurrentSession().getSessionID());
+                    com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason.INCOME_CALL_FOR_ACCEPTION, getCurrentSession().getSessionID());
             // Start conversation fragment
             audioManager.init();
             FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);

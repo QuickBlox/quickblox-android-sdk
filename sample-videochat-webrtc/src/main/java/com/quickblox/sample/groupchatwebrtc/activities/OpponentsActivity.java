@@ -3,6 +3,7 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,6 +169,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startCall(boolean isVideoCall) {
+        Log.d(TAG, "startCall()");
         ArrayList<QBUser> opponentsList = (ArrayList<QBUser>) opponentsAdapter.getSelectedItems();
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
@@ -177,7 +179,8 @@ public class OpponentsActivity extends BaseActivity {
 
         PushNotificationSender.sendPushMessage(opponentsAdapter.getIdsSelectedOpponents(), currentUser.getFullName());
 
-        CallActivityTemp.start(this, opponentsList, conferenceType, false);
+        CallActivityTemp.start(this, opponentsList, isVideoCall, false);
+        Log.d(TAG, "conferenceType = " + conferenceType);
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){

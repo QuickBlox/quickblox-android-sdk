@@ -28,7 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivityTemp;
 import com.quickblox.sample.groupchatwebrtc.activities.OpponentsActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -57,7 +57,7 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class ConversationFragment extends Fragment implements Serializable, QBRTCClientVideoTracksCallbacks, QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+public class ConversationFragment extends Fragment implements Serializable, QBRTCClientVideoTracksCallbacks, QBRTCSessionConnectionCallbacks, CallActivityTemp.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     public static final String CALLER_NAME = "caller_name";
     public static final String SESSION_ID = "sessionID";
@@ -102,7 +102,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     public static ConversationFragment newInstance(List<QBUser> opponents, String callerName,
                                                    QBRTCTypes.QBConferenceType qbConferenceType,
-                                                   Map<String, String> userInfo, CallActivity.StartConversetionReason reason,
+                                                   Map<String, String> userInfo, com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason reason,
                                                    String sesionnId) {
 
         ConversationFragment fragment = new ConversationFragment();
@@ -128,14 +128,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         view = inflater.inflate(R.layout.fragment_conversation, container, false);
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
-        ((CallActivity) getActivity()).initActionBarWithTimer();
+        ((CallActivityTemp) getActivity()).initActionBarWithTimer();
 
         if (getArguments() != null) {
             opponents = (ArrayList<QBUser>) getArguments().getSerializable(Consts.OPPONENTS);
             qbConferenceType = getArguments().getInt(Consts.CONFERENCE_TYPE);
-            startReason = getArguments().getInt(CallActivity.START_CONVERSATION_REASON);
-            sessionID = getArguments().getString(CallActivity.SESSION_ID);
-            callerName = getArguments().getString(CallActivity.CALLER_NAME);
+            startReason = getArguments().getInt(CallActivityTemp.START_CONVERSATION_REASON);
+            sessionID = getArguments().getString(CallActivityTemp.SESSION_ID);
+            callerName = getArguments().getString(CallActivityTemp.CALLER_NAME);
 
             isPeerToPeerCall = opponents.size() == 1;
             isVideoEnabled = (qbConferenceType ==
@@ -155,7 +155,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private void initSessionListener() {
-        ((CallActivity) getActivity()).addVideoTrackCallbacksListener(this);
+        ((CallActivityTemp) getActivity()).addVideoTrackCallbacksListener(this);
     }
 
     private void setUpUiByCallType(int qbConferenceType) {
@@ -197,17 +197,17 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         getActivity().registerReceiver(audioStreamReceiver, intentFilter);
 
         super.onStart();
-        QBRTCSession session = ((CallActivity) getActivity()).getCurrentSession();
+        QBRTCSession session = ((CallActivityTemp) getActivity()).getCurrentSession();
         if (!isMessageProcessed) {
-            if (startReason == CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
+            if (startReason == com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason.INCOME_CALL_FOR_ACCEPTION.ordinal()) {
                 session.acceptCall(session.getUserInfo());
             } else {
                 session.startCall(session.getUserInfo());
             }
             isMessageProcessed = true;
         }
-        ((CallActivity) getActivity()).addTCClientConnectionCallback(this);
-        ((CallActivity) getActivity()).addRTCSessionUserCallback(this);
+        ((CallActivityTemp) getActivity()).addTCClientConnectionCallback(this);
+        ((CallActivityTemp) getActivity()).addRTCSessionUserCallback(this);
     }
 
 
@@ -327,8 +327,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onStop() {
         super.onStop();
         getActivity().unregisterReceiver(audioStreamReceiver);
-        ((CallActivity) getActivity()).removeRTCClientConnectionCallback(this);
-        ((CallActivity) getActivity()).removeRTCSessionUserCallback(this);
+        ((CallActivityTemp) getActivity()).removeRTCClientConnectionCallback(this);
+        ((CallActivityTemp) getActivity()).removeRTCSessionUserCallback(this);
     }
 
     private void initSwitchCameraButton(View view) {
@@ -358,14 +358,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CallActivity) getActivity()).getCurrentSession() != null) {
+                if (((CallActivityTemp) getActivity()).getCurrentSession() != null) {
                     if (isAudioEnabled) {
                         Log.d(TAG, "Mic is off!");
-                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(false);
+                        ((CallActivityTemp) getActivity()).getCurrentSession().setAudioEnabled(false);
                         isAudioEnabled = false;
                     } else {
                         Log.d(TAG, "Mic is on!");
-                        ((CallActivity) getActivity()).getCurrentSession().setAudioEnabled(true);
+                        ((CallActivityTemp) getActivity()).getCurrentSession().setAudioEnabled(true);
                         isAudioEnabled = true;
                     }
                 }
@@ -379,7 +379,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 handUpVideoCall.setEnabled(false);
                 Log.d(TAG, "Call is stopped");
 
-                ((CallActivity) getActivity()).hangUpCurrentSession();
+                ((CallActivityTemp) getActivity()).hangUpCurrentSession();
                 handUpVideoCall.setEnabled(false);
                 handUpVideoCall.setActivated(false);
 
@@ -392,7 +392,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             @Override
             public void onClick(View v) {
 
-                QBRTCSession currentSession = ((CallActivity) getActivity()).getCurrentSession();
+                QBRTCSession currentSession = ((CallActivityTemp) getActivity()).getCurrentSession();
                 if (currentSession == null) {
                     return;
                 }
@@ -446,7 +446,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private void toggleCamera(boolean isNeedEnableCam) {
-        QBRTCSession currentSession = ((CallActivity) getActivity()).getCurrentSession();
+        QBRTCSession currentSession = ((CallActivityTemp) getActivity()).getCurrentSession();
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setVideoEnabled(isNeedEnableCam);
             if (myCameraOff != null) {

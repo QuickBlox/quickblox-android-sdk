@@ -590,7 +590,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         initCurrentSession(newSessionWithOpponents);
         ConversationFragment fragment = ConversationFragment.newInstance(opponents, opponents.get(0).getFullName(),
                 qbConferenceType, userInfo,
-                StartConversetionReason.OUTCOME_CALL_MADE, getCurrentSession().getSessionID());
+                com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason.OUTCOME_CALL_MADE, getCurrentSession().getSessionID());
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
         audioManager.init();
         ringtonePlayer.play(true);
@@ -637,7 +637,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             ConversationFragment fragment = ConversationFragment.newInstance(opponents,
                     DataHolder.getUserNameByID(session.getCallerID()),
                     session.getConferenceType(), session.getUserInfo(),
-                    StartConversetionReason.INCOME_CALL_FOR_ACCEPTION, getCurrentSession().getSessionID());
+                    com.quickblox.sample.groupchatwebrtc.definitions.Consts.StartConversationReason.INCOME_CALL_FOR_ACCEPTION, getCurrentSession().getSessionID());
             // Start conversation fragment
             audioManager.init();
             FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
