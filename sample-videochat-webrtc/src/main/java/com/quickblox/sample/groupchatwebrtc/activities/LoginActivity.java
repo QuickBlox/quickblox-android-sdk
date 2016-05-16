@@ -54,11 +54,20 @@ public class LoginActivity extends BaseActivity {
 
         requestExecutor = App.getInstance().getQbResRequestExecutor();
 
+        if (sharedPrefsHelper.hasQbUser()){
+            startWithRestoredUser();
+        }
+
         initUI();
     }
 
+    private void startWithRestoredUser() {
+        QBUser restoredUser = sharedPrefsHelper.getQbUser();
+        signInToQB(restoredUser, false);
+    }
+
     private void initUI() {
-        setActionBarTitle(getResources().getString(R.string.title_login_activity));
+        setActionBarTitle(R.string.title_login_activity);
         userNameEditText = (EditText) findViewById(R.id.user_name);
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
     }
@@ -79,34 +88,29 @@ public class LoginActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                signInToQB(createUserWithEnteredData());
+                if (isEnteredRoomNameValid() && isEnteredUserNameValid()) {
+                    hideKeyboard();
+                    signInToQB(createUserWithEnteredData(), true);
+                }
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void signInToQB(final QBUser currentQbUser){
-        //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(userNameEditText.getText())) {
-            userNameEditText.setError(getString(R.string.error_empty_login));
-            return;
-        }
-
-        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
-            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
-            return;
-        }
-        //TODO end
-
-        hideKeyboard();
-
+    private void signInToQB(final QBUser currentQbUser, final boolean isFirstSignin){
         showProgressDialog(R.string.dlg_sign_in);
         requestExecutor.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 hideProgressDialog();
-                processSigninedUser(qbUser);
+
+                if (isFirstSignin) {
+                    processSigninedUser(qbUser);
+                } else {
+                    loginToChat(qbUser);
+                }
             }
 
             @Override
@@ -121,12 +125,32 @@ public class LoginActivity extends BaseActivity {
                             R.string.dlg_retry, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    signInToQB(currentQbUser);
+                                    signInToQB(currentQbUser, isFirstSignin);
                                 }
                             });
                 }
             }
         });
+    }
+
+    private boolean isEnteredRoomNameValid() {
+        //TODO VT need to add advanced validator for release
+        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
+            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isEnteredUserNameValid() {
+        //TODO VT need to add advanced validator for release
+        if (TextUtils.isEmpty(userNameEditText.getText())) {
+            userNameEditText.setError(getString(R.string.error_empty_login));
+            return false;
+        }
+
+        return true;
     }
 
     private void hideKeyboard() {
