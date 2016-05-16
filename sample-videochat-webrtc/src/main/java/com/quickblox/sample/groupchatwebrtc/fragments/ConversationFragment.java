@@ -324,6 +324,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         recyclerView.setAdapter(opponentsAdapter);
     }
 
+
+
     private int defineMinSize(int measuredWidth, int measuredHeight, int columnsCount, int rowsCount, float padding) {
         int cellWidth = measuredWidth / columnsCount - (int) (padding * 2);
         int cellHeight = measuredHeight / rowsCount - (int) (padding * 2);
@@ -550,7 +552,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    localVideoView = (RTCGLVideoView) ((ViewStub) getView().findViewById(R.id.localViewStub)).inflate();
+                    if (localVideoView != null) {
+                        return;
+                    }
+                    localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, !isPeerToPeerCall);
                     }
