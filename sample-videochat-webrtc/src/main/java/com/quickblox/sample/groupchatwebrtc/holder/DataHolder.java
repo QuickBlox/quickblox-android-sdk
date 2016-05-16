@@ -21,18 +21,22 @@ public class DataHolder {
     }
 
     public static String getUserNameByID(Integer callerID) {
-        for (QBUser user : getUsersList()) {
-            if (user.getId().equals(callerID)) {
-                return user.getFullName();
+        if (getUsersList()!= null) {   //TODO VT падает при бекграунд звонках
+            for (QBUser user : getUsersList()) {
+                if (user.getId().equals(callerID)) {
+                    return user.getFullName();
+                }
             }
         }
         return callerID.toString();
     }
 
     public static int getUserIndexByID(Integer callerID) {
-        for (QBUser user : getUsersList()) {
-            if (user.getId().equals(callerID)) {
-                return usersList.indexOf(user);
+        if (getUsersList()!= null) {   //TODO VT падает при бекграунд звонках
+            for (QBUser user : getUsersList()) {
+                if (user.getId().equals(callerID)) {
+                    return usersList.indexOf(user);
+                }
             }
         }
         return -1;
@@ -54,5 +58,22 @@ public class DataHolder {
         ArrayList<QBUser> opponentsWithoutSelectedUser = getUsersList();
         opponentsWithoutSelectedUser.remove(qbUser);
         return opponentsWithoutSelectedUser;
+    }
+
+    public static ArrayList<QBUser> getQBUsersByIds(List<Integer> usersIds){
+        ArrayList<QBUser> result = new ArrayList<>();
+        for (Integer userId: usersIds){
+            for (QBUser qbUser : getUsersList()){
+                if (userId.equals(qbUser.getId())){
+                    result.add(qbUser);
+                } else {
+                    QBUser newUser = new QBUser(userId);
+                    newUser.setFullName(String.valueOf(userId));
+                    result.add(newUser);
+                }
+            }
+        }
+
+        return result;
     }
 }

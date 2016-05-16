@@ -20,10 +20,13 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
+import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
+import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
@@ -170,16 +173,20 @@ public class OpponentsActivity extends BaseActivity {
 
     private void startCall(boolean isVideoCall) {
         Log.d(TAG, "startCall()");
-        ArrayList<QBUser> opponentsList = (ArrayList<QBUser>) opponentsAdapter.getSelectedItems();
+        ArrayList<Integer> opponentsList = opponentsAdapter.getIdsSelectedOpponents();
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
                 : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
-        CallActivity.StartConversetionReason startConversetionReason = CallActivity.StartConversetionReason.OUTCOME_CALL_MADE;
+        QBRTCClient qbrtcClient = QBRTCClient.getInstance(getApplicationContext());
 
-        PushNotificationSender.sendPushMessage(opponentsAdapter.getIdsSelectedOpponents(), currentUser.getFullName());
+        QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
 
-        CallActivityTemp.start(this, opponentsList, isVideoCall, false);
+        WebRtcSessionManager.setCurrentSession(newQbRtcSession);
+
+        PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
+
+        CallActivity.start(this, false);
         Log.d(TAG, "conferenceType = " + conferenceType);
     }
 

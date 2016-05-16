@@ -23,7 +23,7 @@ import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.users.model.QBUser;

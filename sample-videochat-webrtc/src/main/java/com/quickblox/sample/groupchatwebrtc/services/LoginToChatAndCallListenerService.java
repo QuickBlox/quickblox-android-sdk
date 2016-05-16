@@ -14,7 +14,9 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -184,7 +186,14 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
 
     @Override
     public void onReceiveNewSession(QBRTCSession qbrtcSession) {
-//        CallActivity.start(qbrtcSession, CallActivity.StartConversetionReason.INCOME_CALL_FOR_ACCEPTION);
+        QBRTCSession currentSession = WebRtcSessionManager.getCurrentSession();
+        if (currentSession == null) {
+            WebRtcSessionManager.setCurrentSession(qbrtcSession);
+
+            CallActivity.start(getApplicationContext(), true);
+        } else {
+            qbrtcSession.rejectCall(null);
+        }
     }
 
     @Override

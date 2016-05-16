@@ -7,4 +7,15 @@ public interface OnCallEventsController {
 
     void onUseHeadSet(boolean use);
 
+    void onAcceptCurrentSession();
+
+    void onRejectCurrentSession();
+
+    void onHangUpCurrentSession();
+
+    void onSetAudioEnabled(boolean isAudioEnabled);
+
+
+
+
 }
