@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.core.utils.UiUtils;
+import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.StringUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
@@ -117,7 +117,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
         callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
-        callerNameTextView.setText(DataHolder.getUserNameByID(currentSession.getCallerID()));
+        callerNameTextView.setText(QbUsersDbManager.getUserNameById(getActivity().getApplicationContext(), currentSession.getCallerID()));
 
         otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
@@ -127,17 +127,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private Drawable getBackgroundForCallerAvatar(int callerId){
-        int position = DataHolder.getUserIndexByID(callerId);
-
-        Drawable drawableBackground;
-
-        if (position != -1){
-            drawableBackground = UiUtils.getColorCircleDrawable(position);
-        } else {
-            drawableBackground = UiUtils.getRandomColorCircleDrawable();
-        }
-
-        return drawableBackground;
+        return UiUtils.getColorCircleDrawable(callerId);
     }
 
     public void startCallNotification() {
@@ -167,11 +157,12 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private String getOtherIncUsersNames() {
-        ArrayList<QBUser> allUsers = DataHolder.getUsersList();
+        ArrayList<QBUser> allUsers = QbUsersDbManager.getAllUsers(getActivity().getApplicationContext());
 
-        List<Integer> selectedUsers = opponents;
+        List<Integer> selectedUsers = new ArrayList<>();
+        selectedUsers.addAll(opponents);
         selectedUsers.remove(QBChatService.getInstance().getUser().getId());
-
+        Log.d(TAG, "opponents = " + opponents);
         return StringUtils.makeStringFromUsersFullNames(allUsers, selectedUsers);
     }
 

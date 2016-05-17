@@ -26,6 +26,7 @@ public class GcmPushListenerService extends GcmListenerService {
 
         SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
         if (sharedPrefsHelper.hasQbUser()) {
+            Log.d(TAG, "App have logined user");
             QBUser qbUser = sharedPrefsHelper.getQbUser();
             startLogineService(qbUser);
         }
@@ -37,6 +38,7 @@ public class GcmPushListenerService extends GcmListenerService {
         intent = new Intent(this, LoginToChatAndCallListenerService.class);
         intent.putExtra(Consts.EXTRA_USER_LOGIN, qbUser.getLogin());
         intent.putExtra(Consts.EXTRA_USER_PASSWORD, Consts.DEFAULT_USER_PASSWORD);
+        intent.putExtra(Consts.EXTRA_USER_ID, qbUser.getId());
         startService(intent);
     }
 }

@@ -86,7 +86,7 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this);
         // Add signalling manager
-        QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
+        chatService.getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
             @Override
             public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
                 if (!createdLocally) {
@@ -123,11 +123,13 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
         chatService.login(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
+                Log.d(TAG, "login onSuccess");
                 startActionsOnSuccessLogin();
             }
 
             @Override
             public void onError(QBResponseException e) {
+                Log.d(TAG, "login onError " + e.getMessage());
                 sendResultToActivity(false, e.getMessage() != null
                         ? e.getMessage()
                         : "Login error");
@@ -141,8 +143,8 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
     }
 
     private void sendResultToActivity(boolean isSuccess, String errorMessage) {
-        Log.d(TAG, "sendResultToActivity()");
         if (pendingIntent != null) {
+            Log.d(TAG, "sendResultToActivity()");
             try {
                 Intent intent = new Intent();
                 intent.putExtra(Consts.EXTRA_LOGIN_RESULT, isSuccess);
@@ -186,6 +188,7 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
 
     @Override
     public void onReceiveNewSession(QBRTCSession qbrtcSession) {
+        Log.d(TAG, "onReceiveNewSession");
         QBRTCSession currentSession = WebRtcSessionManager.getCurrentSession();
         if (currentSession == null) {
             WebRtcSessionManager.setCurrentSession(qbrtcSession);
@@ -198,36 +201,46 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
 
     @Override
     public void onUserNotAnswer(QBRTCSession qbrtcSession, Integer integer) {
+        Log.d(TAG, "onUserNotAnswer");
 
     }
 
     @Override
     public void onCallRejectByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+        Log.d(TAG, "onCallRejectByUser");
 
     }
 
     @Override
     public void onCallAcceptByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+        Log.d(TAG, "onCallAcceptByUser");
 
     }
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+        Log.d(TAG, "onReceiveHangUpFromUser");
 
     }
 
     @Override
     public void onUserNoActions(QBRTCSession qbrtcSession, Integer integer) {
+        Log.d(TAG, "onUserNoActions");
 
     }
 
     @Override
     public void onSessionClosed(QBRTCSession qbrtcSession) {
-
+        Log.d(TAG, "onSessionClosed");
+        QBRTCSession currentSession = WebRtcSessionManager.getCurrentSession();
+        if (currentSession != null && currentSession.getSessionID().equals(qbrtcSession.getSessionID())){
+            WebRtcSessionManager.setCurrentSession(null);
+        }
     }
 
     @Override
     public void onSessionStartClose(QBRTCSession qbrtcSession) {
+        Log.d(TAG, "onSessionStartClose");
 
     }
 }

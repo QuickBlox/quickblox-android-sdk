@@ -31,8 +31,8 @@ import android.widget.ToggleButton;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
-import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
@@ -143,10 +143,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         ((CallActivity) getActivity()).initActionBarWithTimer();
 
-        if (getArguments() != null) {
-            isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
-        }
-
         initFields();
         initViews(view);
         initButtonsListener();
@@ -158,10 +154,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private void initFields() {
+        if (getArguments() != null) {
+            isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
+        }
+
         currentSession = WebRtcSessionManager.getCurrentSession();
-        opponents = DataHolder.getQBUsersByIds(currentSession.getOpponents());
+        opponents = QbUsersDbManager.getUsersByIds(getActivity().getApplicationContext(), currentSession.getOpponents());
         sessionID = currentSession.getSessionID();
-        callerName = DataHolder.getUserNameByID(currentSession.getCallerID());
+        callerName = QbUsersDbManager.getUserNameById(getActivity().getApplicationContext(), currentSession.getCallerID());
 
         startReason = isIncomingCall ? Consts.StartConversationReason.INCOME_CALL_FOR_ACCEPTION.ordinal()
                 : Consts.StartConversationReason.OUTCOME_CALL_MADE.ordinal();
@@ -171,6 +171,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.getValue());
         Log.d(TAG, "CALLER_NAME: " + callerName);
         Log.d(TAG, "opponents: " + opponents.toString());
+        Log.d(TAG, "currentSession " + currentSession.toString());
+
     }
 
     private void initSessionListener() {
@@ -218,6 +220,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onStart() {
+
+        initSessionListener();
 
         getActivity().registerReceiver(audioStreamReceiver, intentFilter);
 
@@ -278,8 +282,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         incUserName = (TextView) view.findViewById(R.id.incUserName);
         incUserName.setText(callerName);
-//        incUserName.setBackgroundResource(OpponentsActivity.selectBackgrounForOpponent((
-//                DataHolder.getUserIndexByFullName(callerName)) + 1));
 
         actionButtonsEnabled(false);
     }

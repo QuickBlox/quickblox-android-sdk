@@ -20,8 +20,8 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
+import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
-import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
@@ -46,10 +46,12 @@ public class OpponentsActivity extends BaseActivity {
     private ListView opponentsListView;
     private QBUser currentUser;
     private GooglePlayServicesHelper googlePlayServicesHelper;
+    private ArrayList<QBUser> currentOpponentsList;
 
 
     public static void start(Context context){
         Intent intent = new Intent(context, OpponentsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -84,7 +86,9 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
-                DataHolder.setUsersList(result);
+                QbUsersDbManager.clearDB(getApplicationContext());
+                result.remove(QBChatService.getInstance().getUser());
+                QbUsersDbManager.saveAllUsers(getApplicationContext(), result);
                 initUsersList();
             }
 
@@ -107,7 +111,9 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initUsersList() {
-        opponentsAdapter = new OpponentsAdapter(this, DataHolder.getUsersListWithoutSelectedUser(currentUser));
+        currentOpponentsList = QbUsersDbManager.getAllUsers(getApplicationContext());
+
+        opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
             @Override
             public void onCountSelectedItemsChanged(int count) {
@@ -239,6 +245,7 @@ public class OpponentsActivity extends BaseActivity {
 
         sharedPrefsHelper.removeQbUser();
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
+        QbUsersDbManager.clearDB(getApplicationContext());
     }
 
     private void showSettings() {
