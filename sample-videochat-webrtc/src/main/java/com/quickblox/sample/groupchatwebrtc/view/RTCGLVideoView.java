@@ -103,12 +103,14 @@ public class RTCGLVideoView extends GLSurfaceView{
                 (mainRenderer ? mainMirror : secondMirror));
     }
 
-    public void  release(){
+    public void release(){
         if (localRendererCallback != null) {
             VideoRendererGui.remove(localRendererCallback);
+            localRendererCallback = null;
         }
         if (mainRendererCallback != null) {
             VideoRendererGui.remove(mainRendererCallback);
+            mainRendererCallback = null;
         }
     }
 
