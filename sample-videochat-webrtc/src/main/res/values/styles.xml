@@ -2,12 +2,11 @@
 
     <!-- Base application theme. -->
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-         <!-- Customize your theme here. -->
+        <!-- Customize your theme here. -->
 
     </style>
 
-    <style name="ToolbarStyleCall">
-        <item name="android:minHeight">?actionBarSize</item>
+    <style name="ToolbarStyleCall" parent="Widget.AppCompat.Toolbar">
         <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
     </style>

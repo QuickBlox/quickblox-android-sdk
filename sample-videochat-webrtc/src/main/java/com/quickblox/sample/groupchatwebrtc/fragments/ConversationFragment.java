@@ -1,42 +1,32 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -44,9 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
-import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
@@ -296,9 +284,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
 
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
-        if (!isPeerToPeerCall) {
-            initLocalViewUI(view);
-        }
+//        if (!isPeerToPeerCall) {
+//            initLocalViewUI(view);
+//        }
 //        dynamicToggleVideoCall = (ToggleButton) view.findViewById(R.id.dynamicToggleVideoCall);
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
 
@@ -321,13 +309,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 columnsCount, rowsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSize);
 
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, ResourceUtils.dpToPx(82),
-                ResourceUtils.dpToPx(137), gridWidth, columnsCount, (int) itemMargin,
+        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, (int) getResources().getDimension(R.dimen.item_width),
+                (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount, (int) itemMargin,
                 isVideoEnabled);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
-        ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
-        params.height = ResourceUtils.dpToPx(137);
-        recyclerView.setLayoutParams(params);
         recyclerView.setAdapter(opponentsAdapter);
     }
 
@@ -413,13 +398,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             }
         });
 
-//        dynamicToggleVideoCall.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                callEvents.onSwitchAudio();
-//            }
-//        });
-
         micToggleVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -448,6 +426,28 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 handUpVideoCall.setEnabled(false);
                 handUpVideoCall.setActivated(false);
 
+            }
+        });
+    }
+
+    private void switchCamera(){
+        QBRTCSession currentSession = ((CallActivity) getActivity()).getCurrentSession();
+        if (currentSession == null) {
+            return;
+        }
+        final QBMediaStreamManager mediaStreamManager = currentSession.getMediaStreamManager();
+        if (mediaStreamManager == null) {
+            return;
+        }
+        boolean cameraSwitched = mediaStreamManager.switchCameraInput(new Runnable() {
+            @Override
+            public void run() {
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        toggleCamerainternal(mediaStreamManager);
+                    }
+                });
             }
         });
     }
@@ -569,7 +569,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
         if (isPeerToPeerCall) {
             localVideoView = holder.getOpponentView();
-            initLocalViewUI(holder.itemView);
+//            initLocalViewUI(holder.itemView);
         } else {
             //on group call we postpone initialization of localVideoView due to set it on Gui renderer.
             // Refer to RTCGlVIew
@@ -741,9 +741,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         switch (item.getItemId()) {
             case R.id.audio_switch:
                 Log.d("Conversation", "audio_switch");
+                callEvents.onSwitchAudio();
                 return true;
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
+                switchCamera();
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -84,11 +84,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
         }
         ViewHolder vh = new ViewHolder(v);
-        vh.setListener( new ViewHolder.ViewHolderClicks() {
+        vh.setListener( new ViewHolder.ViewHolderClickListener() {
             @Override
-            public void onRemoveOpponent(int caller) {
-                Log.d("OpponentsAdapter", "onRemoveOpponent onClick");
-                adapterListener.onItemClick(caller);
+            public void onShowOpponent(int callerId) {
+                Log.d("OpponentsAdapter", "onShowOpponent onClick");
+                adapterListener.onItemClick(callerId);
 //                vh.showOpponentView(false);
 //                opponents.remove(caller);
 ////                notifyItemRemoved(caller);
@@ -125,7 +125,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         TextView connectionStatus;
         RTCGLVideoView opponentView;
         private int userId;
-        private ViewHolderClicks viewHolderClicks;
+        private ViewHolderClickListener viewHolderClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -135,8 +135,8 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
         }
 
-        private void setListener(ViewHolderClicks viewHolderClicks){
-            this.viewHolderClicks = viewHolderClicks;
+        private void setListener(ViewHolderClickListener viewHolderClickListener){
+            this.viewHolderClickListener = viewHolderClickListener;
         }
 
         public void setStatus(String status) {
@@ -162,11 +162,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         @Override
         public void onClick(View v) {
-            viewHolderClicks.onRemoveOpponent(getAdapterPosition());
+            viewHolderClickListener.onShowOpponent(getAdapterPosition());
         }
 
-        public interface ViewHolderClicks {
-            void onRemoveOpponent(int caller);
+        public interface ViewHolderClickListener {
+            void onShowOpponent(int callerId);
         }
     }
 }
