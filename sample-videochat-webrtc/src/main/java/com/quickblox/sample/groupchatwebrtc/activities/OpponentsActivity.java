@@ -14,7 +14,6 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
@@ -47,11 +46,12 @@ public class OpponentsActivity extends BaseActivity {
     private QBUser currentUser;
     private GooglePlayServicesHelper googlePlayServicesHelper;
     private ArrayList<QBUser> currentOpponentsList;
+    private QbUsersDbManager dbManager;
 
 
     public static void start(Context context){
         Intent intent = new Intent(context, OpponentsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -75,8 +75,14 @@ public class OpponentsActivity extends BaseActivity {
         startLoadUsers();
     }
 
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.list_opponents);
+    }
+
     private void initFields() {
         currentUser = sharedPrefsHelper.getQbUser();
+        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
     }
 
     private void startLoadUsers() {
@@ -86,22 +92,19 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
-                QbUsersDbManager.clearDB(getApplicationContext());
-                result.remove(QBChatService.getInstance().getUser());
-                QbUsersDbManager.saveAllUsers(getApplicationContext(), result);
+                dbManager.saveAllUsers(result, true);
                 initUsersList();
             }
 
             @Override
             public void onError(QBResponseException responseException) {
                 hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.loading_users_error, responseException,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startLoadUsers();
-                            }
-                        });
+                showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startLoadUsers();
+                    }
+                });
             }
         });
     }
@@ -111,7 +114,8 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initUsersList() {
-        currentOpponentsList = QbUsersDbManager.getAllUsers(getApplicationContext());
+        currentOpponentsList = dbManager.getAllUsers();
+        currentOpponentsList.remove(QBChatService.getInstance().getUser());
 
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
@@ -188,7 +192,7 @@ public class OpponentsActivity extends BaseActivity {
 
         QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
 
-        WebRtcSessionManager.setCurrentSession(newQbRtcSession);
+        WebRtcSessionManager.getInstance().setCurrentSession(newQbRtcSession);
 
         PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
 
@@ -245,7 +249,7 @@ public class OpponentsActivity extends BaseActivity {
 
         sharedPrefsHelper.removeQbUser();
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
-        QbUsersDbManager.clearDB(getApplicationContext());
+        dbManager.clearDB();
     }
 
     private void showSettings() {
@@ -254,5 +258,6 @@ public class OpponentsActivity extends BaseActivity {
 
     private void startLoginActivity(){
         LoginActivity.start(this);
+        finish();
     }
 }

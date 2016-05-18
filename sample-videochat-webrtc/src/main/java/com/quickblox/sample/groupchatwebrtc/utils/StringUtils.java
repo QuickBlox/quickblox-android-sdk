@@ -11,23 +11,16 @@ import java.util.List;
  */
 public class StringUtils {
 
-    public static String makeStringFromUsersFullNames(ArrayList<QBUser> allUsers, List<Integer> selectedUsers) {
+    public static String makeStringFromUsersFullNames(ArrayList<QBUser> allUsers) {
         StringifyArrayList<String> usersNames = new StringifyArrayList<>();
 
-        for (Integer i : selectedUsers) {
-
             for (QBUser usr : allUsers) {
-                String userName;
-
-                if (usr.getId().equals(i)) {
-                    userName = usr.getFullName();
-                } else {
-                    userName = String.valueOf(i);
+                if (usr.getFullName() != null) {
+                    usersNames.add(usr.getFullName());
+                } else if (usr.getId() != null) {
+                    usersNames.add(String.valueOf(usr.getId()));
                 }
-
-                usersNames.add(userName);
             }
-        }
 
         return usersNames.getItemsAsString();
     }

@@ -45,13 +45,14 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private ImageButton rejectButton;
     private ImageButton takeButton;
 
-    private List<Integer> opponents;
+    private List<Integer> opponentsIds;
     private Vibrator vibrator;
     private QBRTCTypes.QBConferenceType conferenceType;
-    private long lastCliclTime = 0l;
+    private long lastClickTime = 0l;
     private RingtonePlayer ringtonePlayer;
     private OnCallEventsController callEvents;
     private QBRTCSession currentSession;
+    private QbUsersDbManager qbUserDbManager;
 
     @Override
     public void onAttach(Activity activity) {
@@ -90,10 +91,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void initFields() {
-        currentSession = WebRtcSessionManager.getCurrentSession();
+        currentSession = WebRtcSessionManager.getInstance().getCurrentSession();
+        qbUserDbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
 
         if (currentSession != null) {
-            opponents = currentSession.getOpponents();
+            opponentsIds = currentSession.getOpponents();
             conferenceType = currentSession.getConferenceType();
             Log.d(TAG, conferenceType.toString() + "From onCreateView()");
         }
@@ -117,7 +119,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
         callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
-        callerNameTextView.setText(QbUsersDbManager.getUserNameById(getActivity().getApplicationContext(), currentSession.getCallerID()));
+        callerNameTextView.setText(qbUserDbManager.getUserNameById(currentSession.getCallerID()));
 
         otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
@@ -157,13 +159,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private String getOtherIncUsersNames() {
-        ArrayList<QBUser> allUsers = QbUsersDbManager.getAllUsers(getActivity().getApplicationContext());
+        ArrayList<QBUser> opponents = qbUserDbManager.getUsersByIds(opponentsIds);
 
-        List<Integer> selectedUsers = new ArrayList<>();
-        selectedUsers.addAll(opponents);
-        selectedUsers.remove(QBChatService.getInstance().getUser().getId());
-        Log.d(TAG, "opponents = " + opponents);
-        return StringUtils.makeStringFromUsersFullNames(allUsers, selectedUsers);
+        opponents.remove(QBChatService.getInstance().getUser());
+        Log.d(TAG, "opponentsIds = " + opponentsIds);
+        return StringUtils.makeStringFromUsersFullNames(opponents);
     }
 
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
@@ -182,10 +182,10 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     @Override
     public void onClick(View v) {
 
-        if ((SystemClock.uptimeMillis() - lastCliclTime) < CLICK_DELAY) {
+        if ((SystemClock.uptimeMillis() - lastClickTime) < CLICK_DELAY) {
             return;
         }
-        lastCliclTime = SystemClock.uptimeMillis();
+        lastClickTime = SystemClock.uptimeMillis();
 
         switch (v.getId()) {
             case R.id.reject_call:

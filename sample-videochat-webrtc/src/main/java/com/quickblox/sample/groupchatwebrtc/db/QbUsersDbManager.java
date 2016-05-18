@@ -20,9 +20,24 @@ import java.util.List;
 public class QbUsersDbManager {
     private static String TAG = QbUsersDbManager.class.getSimpleName();
 
-    public static ArrayList<QBUser> getAllUsers(Context context) {
+    private static QbUsersDbManager instance;
+    private Context mContext;
+
+    private QbUsersDbManager(Context context){
+        this.mContext = context;
+    }
+
+    public static QbUsersDbManager getInstance(Context context){
+        if (instance == null){
+            instance = new QbUsersDbManager(context);
+        }
+
+        return instance;
+    }
+
+    public ArrayList<QBUser> getAllUsers() {
         ArrayList<QBUser> allUsers = new ArrayList<>();
-        DbHelper dbHelper = new DbHelper(context);
+        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor c = db.query(Consts.DB_TABLE_NAME, null, null, null, null, null, null);
 
@@ -57,9 +72,9 @@ public class QbUsersDbManager {
         return allUsers;
     }
 
-    public static QBUser getUserById(Context context, Integer userId) {
-        QBUser qbUser = new QBUser();
-        DbHelper dbHelper = new DbHelper(context);
+    public QBUser getUserById(Integer userId) {
+        QBUser qbUser = null;
+        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor c = db.query(Consts.DB_TABLE_NAME, null, null, null, null, null, null);
 
@@ -72,6 +87,7 @@ public class QbUsersDbManager {
 
             do {
                 if (c.getInt(userIdColIndex) == userId) {
+                    qbUser = new QBUser();
                     qbUser.setFullName(c.getString(userFullNameColIndex));
                     qbUser.setLogin(c.getString(userLoginColIndex));
                     qbUser.setId(c.getInt(userIdColIndex));
@@ -93,16 +109,20 @@ public class QbUsersDbManager {
         return qbUser;
     }
 
-    public static void saveAllUsers(Context context, ArrayList<QBUser> allUsers) {
+    public void saveAllUsers(ArrayList<QBUser> allUsers, boolean needRemoveOldData) {
+        if (needRemoveOldData) {
+            clearDB();
+        }
+
         for (QBUser qbUser : allUsers) {
-            saveUser(context, qbUser);
+            saveUser(qbUser);
         }
         Log.d(TAG, "saveAllUsers");
     }
 
-    public static void saveUser(Context context, QBUser qbUser) {
+    public void saveUser(QBUser qbUser) {
         ContentValues cv = new ContentValues();
-        DbHelper dbHelper = new DbHelper(context);
+        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         cv.put(Consts.DB_COLUMN_USER_FULL_NAME, qbUser.getFullName());
         cv.put(Consts.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
@@ -114,24 +134,36 @@ public class QbUsersDbManager {
         dbHelper.close();
     }
 
-    public static void clearDB(Context context) {
-        DbHelper dbHelper = new DbHelper(context);
+    public void clearDB() {
+        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(Consts.DB_TABLE_NAME, null, null);
         dbHelper.close();
     }
 
-    public static String getUserNameById(Context context, Integer userId){
-        QBUser userById = getUserById(context, userId);
+    public String getUserNameById(Integer userId){
+        QBUser userById = getUserById(userId);
+        if (userById == null){
+            return String.valueOf(userId);
+        }
+
         String fullName = userById.getFullName();
+
         return TextUtils.isEmpty(fullName) ? String.valueOf(userId) : fullName;
     }
 
-    public static ArrayList<QBUser> getUsersByIds(Context context, List<Integer> usersIds){
+    public ArrayList<QBUser> getUsersByIds(List<Integer> usersIds){
         ArrayList<QBUser> qbUsers = new ArrayList<>();
 
         for (Integer userId : usersIds){
-            qbUsers.add(getUserById(context, userId));
+            if (getUserById(userId) != null) {
+                qbUsers.add(getUserById(userId));
+            } else {
+                QBUser newUser = new QBUser();
+                newUser.setId(userId);
+                newUser.setFullName(String.valueOf(userId));
+                qbUsers.add(newUser);
+            }
         }
 
         return qbUsers;

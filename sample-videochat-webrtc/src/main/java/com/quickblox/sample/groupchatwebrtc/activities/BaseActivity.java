@@ -3,6 +3,7 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
@@ -21,7 +23,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseActivity extends CoreBaseActivity {
+public abstract class BaseActivity extends CoreBaseActivity {
 
     private static final String APP_VERSION = "App version";
     private Chronometer timerABWithTimer;
@@ -105,6 +107,16 @@ public class BaseActivity extends CoreBaseActivity {
     void hideProgressDialog(){
         ProgressDialogFragment.hide(getSupportFragmentManager());
     }
+
+    protected void showErrorSnackbar(@StringRes int resId, Exception e,
+                                         View.OnClickListener clickListener) {
+        if (getSnackbarAnchorView() != null) {
+            ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
+                    com.quickblox.sample.core.R.string.dlg_retry, clickListener);
+        }
+    }
+
+    protected abstract View getSnackbarAnchorView();
 }
 
 

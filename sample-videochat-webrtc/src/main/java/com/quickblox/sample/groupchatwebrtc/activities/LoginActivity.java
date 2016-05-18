@@ -12,12 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.sample.core.utils.DeviceUtils;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
@@ -39,7 +37,6 @@ public class LoginActivity extends BaseActivity {
     private EditText chatRoomNameEditText;
 
     private QBResRequestExecutor requestExecutor;
-    private QBChatService chatService;
     private QBUser userForSave;
 
     public static void start(Context context) {
@@ -59,6 +56,11 @@ public class LoginActivity extends BaseActivity {
         }
 
         initUI();
+    }
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.root_view_login_activity);
     }
 
     private void startWithRestoredUser() {
@@ -99,7 +101,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void signInToQB(final QBUser currentQbUser, final boolean isFirstSignin){
+    private void signInToQB(final QBUser currentQbUser, final boolean isFirstSignin) {
         showProgressDialog(R.string.dlg_sign_in);
         requestExecutor.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
@@ -118,16 +120,15 @@ public class LoginActivity extends BaseActivity {
                 String errorMessage = e.getMessage();
                 Log.d(TAG, errorMessage != null ? errorMessage : getString(R.string.sign_in_error_without_error));
                 hideProgressDialog();
-                if (Consts.UNAUTHORIZED_ERROR_CODE == e.getHttpStatusCode()){
+                if (Consts.UNAUTHORIZED_ERROR_CODE == e.getHttpStatusCode()) {
                     startSignUpNewUser(currentQbUser);
                 } else {
-                    ErrorUtils.showSnackbar(getCurrentFocus(), R.string.sign_in_error_with_error, e,
-                            R.string.dlg_retry, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    signInToQB(currentQbUser, isFirstSignin);
-                                }
-                            });
+                    showErrorSnackbar(R.string.sign_in_error_with_error, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            signInToQB(currentQbUser, isFirstSignin);
+                        }
+                    });
                 }
             }
         });
@@ -168,7 +169,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void startUpdateUser(final QBUser qbUser){
+    private void startUpdateUser(final QBUser qbUser) {
         showProgressDialog(R.string.dlg_updating_user);
         qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
         requestExecutor.updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
@@ -182,13 +183,12 @@ public class LoginActivity extends BaseActivity {
             public void onError(QBResponseException e) {
                 Log.d(TAG, e.getMessage());
                 hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.update_user_error, e,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startUpdateUser(qbUser);
-                            }
-                        });
+                showErrorSnackbar(R.string.update_user_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startUpdateUser(qbUser);
+                    }
+                });
             }
         });
     }
@@ -230,20 +230,12 @@ public class LoginActivity extends BaseActivity {
         qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
 
         userForSave = qbUser;
-        startLogineService(qbUser);
+        startLoginService(qbUser);
     }
 
     private void startOpponentsActivity() {
         OpponentsActivity.start(LoginActivity.this);
         finish();
-    }
-
-    private void initQbChatServiceIfNeed() {
-        if (chatService == null){
-            QBChatService.setDebugEnabled(true);
-            //QBChatService.setDefaultAutoSendPresenceInterval(60); set this parameter after updating SDK
-            chatService = QBChatService.getInstance();
-        }
     }
 
     private void saveUserData(QBUser qbUser){
@@ -286,21 +278,16 @@ public class LoginActivity extends BaseActivity {
                 startOpponentsActivity();
             } else {
                 Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
+                userNameEditText.setText(userForSave.getFullName());
+                chatRoomNameEditText.setText(userForSave.getTags().get(0));
             }
 
         }
     }
 
-    private void startLogineService(QBUser qbUser){
+    private void startLoginService(QBUser qbUser){
         Intent tempIntent = new Intent(this, LoginToChatAndCallListenerService.class);
         PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
-        Intent intent;
-
-        intent = new Intent(this, LoginToChatAndCallListenerService.class);
-        intent.putExtra(Consts.EXTRA_USER_ID, qbUser.getId());
-        intent.putExtra(Consts.EXTRA_USER_LOGIN, qbUser.getLogin());
-        intent.putExtra(Consts.EXTRA_USER_PASSWORD, Consts.DEFAULT_USER_PASSWORD);
-        intent.putExtra(Consts.EXTRA_PENDING_INTENT, pendingIntent);
-        startService(intent);
+        LoginToChatAndCallListenerService.start(this, qbUser, pendingIntent);
     }
 }

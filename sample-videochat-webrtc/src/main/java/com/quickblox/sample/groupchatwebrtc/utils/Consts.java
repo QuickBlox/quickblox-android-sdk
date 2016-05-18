@@ -45,7 +45,6 @@ public interface Consts {
     String EXTRA_LOGIN_ERROR_MESSAGE = "login_error_message";
     int EXTRA_LOGIN_RESULT_CODE = 1002;
 
-    String DB_NAME = "groupchatwebrtcDB";
     String DB_TABLE_NAME = "users";
     String DB_COLUMN_ID = "ID";
     String DB_COLUMN_USER_FULL_NAME = "title";

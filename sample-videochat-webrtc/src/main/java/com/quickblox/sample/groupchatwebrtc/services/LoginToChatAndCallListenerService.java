@@ -2,11 +2,13 @@ package com.quickblox.sample.groupchatwebrtc.services;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
@@ -14,7 +16,9 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
+import com.quickblox.sample.groupchatwebrtc.util.ChatPingAlarmManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
@@ -25,6 +29,7 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.ping.PingFailedListener;
 
 import java.io.IOException;
 import java.util.Map;
@@ -32,17 +37,23 @@ import java.util.Map;
 /**
  * Created by tereha on 13.05.16.
  */
-public class LoginToChatAndCallListenerService extends Service implements QBRTCClientSessionCallbacks{
+public class LoginToChatAndCallListenerService extends Service{
     private static final String TAG = LoginToChatAndCallListenerService.class.getSimpleName();
     private QBChatService chatService;
     private String login;
     private String password;
     private PendingIntent pendingIntent;
-    private int startServiceVariant;
-//    private BroadcastReceiver wifiStateReceiver;
-    private boolean needMaintainConnectivity;
     private QBRTCClient rtcClient;
     private Integer userId;
+
+    public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent){
+        Intent intent = new Intent(context, LoginToChatAndCallListenerService.class);
+        intent.putExtra(Consts.EXTRA_USER_ID, qbUser.getId());
+        intent.putExtra(Consts.EXTRA_USER_LOGIN, qbUser.getLogin());
+        intent.putExtra(Consts.EXTRA_USER_PASSWORD, Consts.DEFAULT_USER_PASSWORD);
+        intent.putExtra(Consts.EXTRA_PENDING_INTENT, pendingIntent);
+        context.startService(intent);
+    }
 
     @Override
     public void onCreate() {
@@ -57,8 +68,6 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
         if (!QBChatService.isInitialized()) {
             QBChatService.init(getApplicationContext());
         }
-
-        chatService = QBChatService.getInstance();
 
         if (intent != null && intent.getExtras()!= null) {
             parseIntentExtras(intent);
@@ -96,15 +105,10 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
         });
 
         // Configure
-        //
-//        QBRTCConfig.setMaxOpponentsCount(6);
-//        QBRTCConfig.setDisconnectTime(30);
-//        QBRTCConfig.setAnswerTimeInterval(30l);
         QBRTCConfig.setDebugEnabled(true);
 
-
-        // Add activity as callback to RTCClient
-        rtcClient.addSessionCallbacksListener(this);
+        // Add service as callback to RTCClient
+        rtcClient.addSessionCallbacksListener(new CurrentSessionStateCallback(this));
     }
 
     private void parseIntentExtras(Intent intent) {
@@ -116,7 +120,6 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
     }
 
     private void loginToChat(Integer id, final String login, final String password) {
-        Exception exception = null;
         QBUser qbUser = new QBUser(login, password);
         qbUser.setId(id);
 
@@ -137,7 +140,13 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
         });
     }
 
+    public static void logoutFromChat(){
+//        chatService.logout();
+
+    }
+
     private void startActionsOnSuccessLogin() {
+        initPingListener();
         initQBRTCClient();
         sendResultToActivity(true, null);
     }
@@ -152,9 +161,26 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
 
                 pendingIntent.send(LoginToChatAndCallListenerService.this, Consts.EXTRA_LOGIN_RESULT_CODE, intent);
             } catch (PendingIntent.CanceledException e) {
-                e.printStackTrace();
+                String errorMessageSendingResult = e.getMessage();
+                Log.d(TAG, errorMessageSendingResult != null
+                        ? errorMessageSendingResult
+                        : "Error sending result to activity");
             }
         }
+    }
+
+    private void initPingListener() {
+        ChatPingAlarmManager.onCreate(this);
+        ChatPingAlarmManager.getInstanceFor().addPingListener(new PingFailedListener() {
+            @Override
+            public void pingFailed() {
+                showToast("Ping chat server failed");
+            }
+        });
+    }
+
+    private void showToast(final String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -180,67 +206,23 @@ public class LoginToChatAndCallListenerService extends Service implements QBRTCC
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Log.d(TAG, "Service onTaskRemoved()");
+        ChatPingAlarmManager.onDestroy();
         super.onTaskRemoved(rootIntent);
     }
 
+    class CurrentSessionStateCallback extends WebRtcSessionManager{
+        private final Context context;
 
-    ////////////////////////////  === Call listening methods ===  ////////////////////////////
-
-    @Override
-    public void onReceiveNewSession(QBRTCSession qbrtcSession) {
-        Log.d(TAG, "onReceiveNewSession");
-        QBRTCSession currentSession = WebRtcSessionManager.getCurrentSession();
-        if (currentSession == null) {
-            WebRtcSessionManager.setCurrentSession(qbrtcSession);
-
-            CallActivity.start(getApplicationContext(), true);
-        } else {
-            qbrtcSession.rejectCall(null);
+        public CurrentSessionStateCallback (Context context){
+            this.context = context;
         }
-    }
 
-    @Override
-    public void onUserNotAnswer(QBRTCSession qbrtcSession, Integer integer) {
-        Log.d(TAG, "onUserNotAnswer");
-
-    }
-
-    @Override
-    public void onCallRejectByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
-        Log.d(TAG, "onCallRejectByUser");
-
-    }
-
-    @Override
-    public void onCallAcceptByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
-        Log.d(TAG, "onCallAcceptByUser");
-
-    }
-
-    @Override
-    public void onReceiveHangUpFromUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
-        Log.d(TAG, "onReceiveHangUpFromUser");
-
-    }
-
-    @Override
-    public void onUserNoActions(QBRTCSession qbrtcSession, Integer integer) {
-        Log.d(TAG, "onUserNoActions");
-
-    }
-
-    @Override
-    public void onSessionClosed(QBRTCSession qbrtcSession) {
-        Log.d(TAG, "onSessionClosed");
-        QBRTCSession currentSession = WebRtcSessionManager.getCurrentSession();
-        if (currentSession != null && currentSession.getSessionID().equals(qbrtcSession.getSessionID())){
-            WebRtcSessionManager.setCurrentSession(null);
+        @Override
+        public void onReceiveNewSession(QBRTCSession session) {
+            super.onReceiveNewSession(session);
+            if (getCurrentSession().equals(session)){
+                CallActivity.start(context, true);
+            }
         }
-    }
-
-    @Override
-    public void onSessionStartClose(QBRTCSession qbrtcSession) {
-        Log.d(TAG, "onSessionStartClose");
-
     }
 }
