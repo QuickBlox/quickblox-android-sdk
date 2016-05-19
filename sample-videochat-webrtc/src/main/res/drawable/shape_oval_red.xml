@@ -7,7 +7,7 @@
                 android:width="56dp"
                 android:height="56dp" />
             <solid
-                android:color="@color/pinky_red"/>
+                android:color="@color/red"/>
         </shape>
     </item>
 

@@ -23,6 +23,7 @@
     <color name="black_transparent_30">#30000000</color>
     <color name="black_transparent_50">#50000000</color>
     <color name="white_transparent_80">#80FFFFFF</color>
+    <color name="white_transparent_50">#50FFFFFF</color>
     <color name="background_chat_color">#f5f6f5</color>
     <color name="blue_accent">#0088e7</color>
 

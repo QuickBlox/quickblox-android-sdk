@@ -5,6 +5,7 @@
         <item name="colorControlActivated">@color/blue_accent</item>
         <item name="colorControlHighlight">@color/blue_accent</item>
         <item name="colorControlNormal">@color/blue_accent</item>
+    </style>
 
     <!-- Base application theme. -->
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
