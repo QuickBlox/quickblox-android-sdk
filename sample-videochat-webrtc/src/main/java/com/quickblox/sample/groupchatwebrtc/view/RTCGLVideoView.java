@@ -22,20 +22,19 @@ import org.webrtc.VideoRendererGui;
  * use {@link org.webrtc.VideoRendererGui VideoRendererGui}
  * to define your own behaviour.
  * </p>
- *
+ * <p/>
  * <p>
- *     Note that if you put multiple RTCGlVIew view in layout you can manage state only
- *     of the last inflated RTCGlVIew view, because VideoRendererGui works
- *     only with one GLSurfaceView at one time.
+ * Note that if you put multiple RTCGlVIew view in layout you can manage state only
+ * of the last inflated RTCGlVIew view, because VideoRendererGui works
+ * only with one GLSurfaceView at one time.
  * </p>
- *
+ * <p/>
  * Use xml attributes "mainCoords" and "secondCoords" to define start point,
  * width and height in percent of entire view to be held by particular frame in format
  * [x, y, width, height] as array resource.
  * Use xml attributes "mainMirror" and "secondMirror" to reflect frame by Y axis.
- *
  */
-public class RTCGLVideoView extends GLSurfaceView{
+public class RTCGLVideoView extends GLSurfaceView {
 
     private static final String TAG = RTCGLVideoView.class.getSimpleName();
     private static final int NUMBER_COORDINATES = 4;
@@ -63,14 +62,14 @@ public class RTCGLVideoView extends GLSurfaceView{
         init(a);
     }
 
-    public VideoRenderer.Callbacks obtainVideoRenderer(RendererSurface rendererSurface){
+    public VideoRenderer.Callbacks obtainVideoRenderer(RendererSurface rendererSurface) {
         Log.i(TAG, "obtainVideoRenderer");
 
         return RendererSurface.MAIN.equals(rendererSurface) ? obtainMainVideoRenderer() :
-                obtainSecondVideoRenderer() ;
+                obtainSecondVideoRenderer();
     }
 
-    private VideoRenderer.Callbacks obtainMainVideoRenderer(){
+    private VideoRenderer.Callbacks obtainMainVideoRenderer() {
         Log.i(TAG, "obtainMainVideoRenderer");
         if (mainRendererCallback == null) {
             mainRendererCallback = initRenderer(mainMirror, remoteCoords);
@@ -78,7 +77,7 @@ public class RTCGLVideoView extends GLSurfaceView{
         return mainRendererCallback;
     }
 
-    private VideoRenderer.Callbacks obtainSecondVideoRenderer(){
+    private VideoRenderer.Callbacks obtainSecondVideoRenderer() {
         Log.i(TAG, "obtainSecondVideoRenderer");
         if (localRendererCallback == null) {
             localRendererCallback = initRenderer(secondMirror, localCoords);
@@ -86,10 +85,10 @@ public class RTCGLVideoView extends GLSurfaceView{
         return localRendererCallback;
     }
 
-    public void updateRenderer(RendererSurface rendererSurface, RendererConfig config){
+    public void updateRenderer(RendererSurface rendererSurface, RendererConfig config) {
         boolean mainRenderer = RendererSurface.MAIN.equals(rendererSurface);
         VideoRenderer.Callbacks callbacks = mainRenderer ? mainRendererCallback
-                :localRendererCallback;
+                : localRendererCallback;
 
         if (config.coordinates != null) {
             setViewCoordinates((mainRenderer ? remoteCoords : localCoords),
@@ -103,7 +102,7 @@ public class RTCGLVideoView extends GLSurfaceView{
                 (mainRenderer ? mainMirror : secondMirror));
     }
 
-    public void release(){
+    public void release() {
         if (localRendererCallback != null) {
             VideoRendererGui.remove(localRendererCallback);
             localRendererCallback = null;
@@ -114,9 +113,16 @@ public class RTCGLVideoView extends GLSurfaceView{
         }
     }
 
-    private void setRendererMirror(boolean mirror, RendererSurface type){
-        Log.i(TAG, "setRendererMirror type="+type +", value= "+mirror);
-        if (RendererSurface.MAIN.equals(type)){
+    public void releaseLocalRendererCallback() {
+        if (localRendererCallback != null) {
+            VideoRendererGui.remove(localRendererCallback);
+            localRendererCallback = null;
+        }
+    }
+
+    private void setRendererMirror(boolean mirror, RendererSurface type) {
+        Log.i(TAG, "setRendererMirror type=" + type + ", value= " + mirror);
+        if (RendererSurface.MAIN.equals(type)) {
             mainMirror = mirror;
         } else {
             secondMirror = mirror;
@@ -125,9 +131,9 @@ public class RTCGLVideoView extends GLSurfaceView{
 
     private VideoRenderer.Callbacks initRenderer(boolean mirror, int[] viewCoordinates) {
         return VideoRendererGui.createGuiRenderer(
-                    viewCoordinates[0], viewCoordinates[1],
-                    viewCoordinates[2], viewCoordinates[3],
-                    VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, mirror);
+                viewCoordinates[0], viewCoordinates[1],
+                viewCoordinates[2], viewCoordinates[3],
+                VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, mirror);
 
     }
 
@@ -141,7 +147,7 @@ public class RTCGLVideoView extends GLSurfaceView{
         obtainMainVideoRenderer();
     }
 
-    private void setValuefromResources(TypedArray typedArray){
+    private void setValuefromResources(TypedArray typedArray) {
 
         Log.i(TAG, "setValuefromResources");
         setRendererMirror(typedArray.getBoolean(R.styleable.RTCGlView_mainMirror, false),
@@ -163,13 +169,13 @@ public class RTCGLVideoView extends GLSurfaceView{
         }
     }
 
-    private void setViewCoordinates(int[] coordinates, int[] resources){
+    private void setViewCoordinates(int[] coordinates, int[] resources) {
         if (resources.length >= NUMBER_COORDINATES) {
             System.arraycopy(resources, 0, coordinates, 0, NUMBER_COORDINATES);
         }
     }
 
-    public static class RendererConfig{
+    public static class RendererConfig {
         public int[] coordinates;
         public boolean mirror;
     }

@@ -18,6 +18,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout="@layout/local_videoview" />
+        <!--TODO refactor-->
+        <TextView
+            android:id="@+id/connectionStatusLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:gravity="center_horizontal"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic" />
 
         <View
             android:id="@+id/cameraOff"
