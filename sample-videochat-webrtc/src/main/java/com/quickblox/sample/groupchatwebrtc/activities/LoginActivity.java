@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.sample.core.utils.DeviceUtils;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.users.model.QBUser;
 
@@ -37,7 +37,7 @@ public class LoginActivity extends BaseActivity {
     private EditText chatRoomNameEditText;
 
     private QBResRequestExecutor requestExecutor;
-    private QBChatService chatService;
+    private QBUser userForSave;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -51,11 +51,25 @@ public class LoginActivity extends BaseActivity {
 
         requestExecutor = App.getInstance().getQbResRequestExecutor();
 
+        if (sharedPrefsHelper.hasQbUser()){
+            startWithRestoredUser();
+        }
+
         initUI();
     }
 
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.root_view_login_activity);
+    }
+
+    private void startWithRestoredUser() {
+        QBUser restoredUser = sharedPrefsHelper.getQbUser();
+        signInToQB(restoredUser, false);
+    }
+
     private void initUI() {
-        setActionBarTitle(getResources().getString(R.string.title_login_activity));
+        setActionBarTitle(R.string.title_login_activity);
         userNameEditText = (EditText) findViewById(R.id.user_name);
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
     }
@@ -76,34 +90,29 @@ public class LoginActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                signInToQB(createUserWithEnteredData());
+                if (isEnteredRoomNameValid() && isEnteredUserNameValid()) {
+                    hideKeyboard();
+                    signInToQB(createUserWithEnteredData(), true);
+                }
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void signInToQB(final QBUser currentQbUser){
-        //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(userNameEditText.getText())) {
-            userNameEditText.setError(getString(R.string.error_empty_login));
-            return;
-        }
-
-        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
-            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
-            return;
-        }
-        //TODO end
-
-        hideKeyboard();
-
+    private void signInToQB(final QBUser currentQbUser, final boolean isFirstSignin) {
         showProgressDialog(R.string.dlg_sign_in);
         requestExecutor.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 hideProgressDialog();
-                processSigninedUser(qbUser);
+
+                if (isFirstSignin) {
+                    processSigninedUser(qbUser);
+                } else {
+                    loginToChat(qbUser);
+                }
             }
 
             @Override
@@ -111,19 +120,38 @@ public class LoginActivity extends BaseActivity {
                 String errorMessage = e.getMessage();
                 Log.d(TAG, errorMessage != null ? errorMessage : getString(R.string.sign_in_error_without_error));
                 hideProgressDialog();
-                if (Consts.UNAUTHORIZED_ERROR_CODE == e.getHttpStatusCode()){
+                if (Consts.UNAUTHORIZED_ERROR_CODE == e.getHttpStatusCode()) {
                     startSignUpNewUser(currentQbUser);
                 } else {
-                    ErrorUtils.showSnackbar(getCurrentFocus(), R.string.sign_in_error_with_error, e,
-                            R.string.dlg_retry, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    signInToQB(currentQbUser);
-                                }
-                            });
+                    showErrorSnackbar(R.string.sign_in_error_with_error, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            signInToQB(currentQbUser, isFirstSignin);
+                        }
+                    });
                 }
             }
         });
+    }
+
+    private boolean isEnteredRoomNameValid() {
+        //TODO VT need to add advanced validator for release
+        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
+            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isEnteredUserNameValid() {
+        //TODO VT need to add advanced validator for release
+        if (TextUtils.isEmpty(userNameEditText.getText())) {
+            userNameEditText.setError(getString(R.string.error_empty_login));
+            return false;
+        }
+
+        return true;
     }
 
     private void hideKeyboard() {
@@ -141,7 +169,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void startUpdateUser(final QBUser qbUser){
+    private void startUpdateUser(final QBUser qbUser) {
         showProgressDialog(R.string.dlg_updating_user);
         qbUser.setOldPassword(Consts.DEFAULT_USER_PASSWORD);
         requestExecutor.updateUserOnQBServer(qbUser, new QBEntityCallback<QBUser>() {
@@ -155,13 +183,12 @@ public class LoginActivity extends BaseActivity {
             public void onError(QBResponseException e) {
                 Log.d(TAG, e.getMessage());
                 hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.update_user_error, e,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startUpdateUser(qbUser);
-                            }
-                        });
+                showErrorSnackbar(R.string.update_user_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startUpdateUser(qbUser);
+                    }
+                });
             }
         });
     }
@@ -199,42 +226,16 @@ public class LoginActivity extends BaseActivity {
 
     private void loginToChat(final QBUser qbUser) {
         showProgressDialog(R.string.dlg_login);
-        initQbChatServiceIfNeed();
-        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-        chatService.login(qbUser, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle params) {
-                hideProgressDialog();
-                qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
-                saveUserData(qbUser);
-                startOpponentsActivity();
-            }
 
-            @Override
-            public void onError(QBResponseException responseException) {
-                hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.login_chat_login_error, responseException,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loginToChat(qbUser);
-                            }
-                        });
-            }
-        });
+        qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+
+        userForSave = qbUser;
+        startLoginService(qbUser);
     }
 
     private void startOpponentsActivity() {
         OpponentsActivity.start(LoginActivity.this);
         finish();
-    }
-
-    private void initQbChatServiceIfNeed() {
-        if (chatService == null){
-            QBChatService.setDebugEnabled(true);
-            //QBChatService.setDefaultAutoSendPresenceInterval(60); set this parameter after updating SDK
-            chatService = QBChatService.getInstance();
-        }
     }
 
     private void saveUserData(QBUser qbUser){
@@ -262,5 +263,31 @@ public class LoginActivity extends BaseActivity {
         }
 
         return qbUser;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Consts.EXTRA_LOGIN_RESULT_CODE){
+            hideProgressDialog();
+            boolean isLoginSuccess = data.getBooleanExtra(Consts.EXTRA_LOGIN_RESULT, false);
+            String errorMessage = data.getStringExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE);
+
+            if (isLoginSuccess){
+                saveUserData(userForSave);
+                startOpponentsActivity();
+            } else {
+                Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
+                userNameEditText.setText(userForSave.getFullName());
+                chatRoomNameEditText.setText(userForSave.getTags().get(0));
+            }
+
+        }
+    }
+
+    private void startLoginService(QBUser qbUser){
+        Intent tempIntent = new Intent(this, LoginToChatAndCallListenerService.class);
+        PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
+        LoginToChatAndCallListenerService.start(this, qbUser, pendingIntent);
     }
 }

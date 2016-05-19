@@ -12,6 +12,7 @@ import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.users.model.QBUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
                 holder.opponentIcon.setImageResource(R.drawable.ic_checkmark);
             } else {
                 convertView.setBackgroundResource(R.color.normal_user_item_background_color);
-                holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
+                holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(user.getId()));
                 holder.opponentIcon.setImageResource(R.drawable.ic_person);
             }
         }
@@ -66,6 +67,17 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         });
 
         return convertView;
+    }
+
+    public ArrayList<Integer> getIdsSelectedOpponents(){
+        ArrayList<Integer> opponentsIds = new ArrayList<>();
+        if (!getSelectedItems().isEmpty()){
+            for (QBUser qbUser : getSelectedItems()){
+                opponentsIds.add(qbUser.getId());
+            }
+        }
+
+        return opponentsIds;
     }
 
     public static class ViewHolder {

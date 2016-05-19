@@ -3,6 +3,7 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,15 +13,21 @@ import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
-import com.quickblox.sample.groupchatwebrtc.definitions.Consts;
-import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
+import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
+import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
+import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -38,10 +45,14 @@ public class OpponentsActivity extends BaseActivity {
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
     private QBUser currentUser;
+    private GooglePlayServicesHelper googlePlayServicesHelper;
+    private ArrayList<QBUser> currentOpponentsList;
+    private QbUsersDbManager dbManager;
 
 
     public static void start(Context context){
         Intent intent = new Intent(context, OpponentsActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -53,6 +64,8 @@ public class OpponentsActivity extends BaseActivity {
 
         initFields();
 
+        subscribeToPushes();
+
         initDefaultActionBar();
 
         initUi();
@@ -60,8 +73,23 @@ public class OpponentsActivity extends BaseActivity {
         startLoadUsers();
     }
 
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return findViewById(R.id.list_opponents);
+    }
+
     private void initFields() {
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
         currentUser = sharedPrefsHelper.getQbUser();
+        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
+    }
+
+    private void subscribeToPushes() {
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            Log.d(TAG, "subscribeToPushes()");
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
     }
 
     private void startLoadUsers() {
@@ -71,20 +99,19 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
-                DataHolder.setUsersList(result);
+                dbManager.saveAllUsers(result, true);
                 initUsersList();
             }
 
             @Override
             public void onError(QBResponseException responseException) {
                 hideProgressDialog();
-                ErrorUtils.showSnackbar(getCurrentFocus(), R.string.loading_users_error, responseException,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startLoadUsers();
-                            }
-                        });
+                showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startLoadUsers();
+                    }
+                });
             }
         });
     }
@@ -94,7 +121,10 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initUsersList() {
-        opponentsAdapter = new OpponentsAdapter(this, DataHolder.getUsersListWithoutSelectedUser(currentUser));
+        currentOpponentsList = dbManager.getAllUsers();
+        currentOpponentsList.remove(QBChatService.getInstance().getUser());
+
+        opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
             @Override
             public void onCountSelectedItemsChanged(int count) {
@@ -145,15 +175,40 @@ public class OpponentsActivity extends BaseActivity {
 
             case R.id.start_video_call:
                 //start video call
+                startCall(true);
                 return true;
 
             case R.id.start_audio_call:
                 //start audio call
+                startCall(false);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showSettings() {
+        SettingsActivity.start(this);
+    }
+
+    private void startCall(boolean isVideoCall) {
+        Log.d(TAG, "startCall()");
+        ArrayList<Integer> opponentsList = opponentsAdapter.getIdsSelectedOpponents();
+        QBRTCTypes.QBConferenceType conferenceType = isVideoCall
+                ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+                : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+
+        QBRTCClient qbrtcClient = QBRTCClient.getInstance(getApplicationContext());
+
+        QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
+
+        WebRtcSessionManager.getInstance().setCurrentSession(newQbRtcSession);
+
+        PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
+
+        CallActivity.start(this, false);
+        Log.d(TAG, "conferenceType = " + conferenceType);
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){
@@ -176,27 +231,21 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void logOut() {
-        showProgressDialog(R.string.dlg_logout);
-        QBChatService.getInstance().logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle params) {
-                removeUserData();
-                finish();
-            }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-                hideProgressDialog();
-                Toaster.longToast(R.string.sign_up_error);
-            }
-        });
+        startLogoutCommand();
+        unsubscribeFromPushes();
+        removeUserData();
+        startLoginActivity();
     }
 
-    @Override
-    public void onBackPressed() {
-        logOut();
-        removeUserData();
-        super.onBackPressed();
+    private void startLogoutCommand(){
+        LoginToChatAndCallListenerService.start(this, null, null);
+    }
+
+    private void unsubscribeFromPushes() {
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            Log.d(TAG, "unsubscribeFromPushes()");
+            googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+        }
     }
 
     private void removeUserData(){
@@ -206,9 +255,11 @@ public class OpponentsActivity extends BaseActivity {
 
         sharedPrefsHelper.removeQbUser();
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
+        dbManager.clearDB();
     }
 
-    private void showSettings() {
-        SettingsActivity.start(this);
+    private void startLoginActivity(){
+        LoginActivity.start(this);
+        finish();
     }
 }
