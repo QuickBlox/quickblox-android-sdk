@@ -20,6 +20,7 @@ import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
+import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
@@ -61,12 +62,9 @@ public class OpponentsActivity extends BaseActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.fragment_opponents);
 
-        googlePlayServicesHelper = new GooglePlayServicesHelper();
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
-
         initFields();
+
+        subscribeToPushes();
 
         initDefaultActionBar();
 
@@ -75,14 +73,23 @@ public class OpponentsActivity extends BaseActivity {
         startLoadUsers();
     }
 
+
     @Override
     protected View getSnackbarAnchorView() {
         return findViewById(R.id.list_opponents);
     }
 
     private void initFields() {
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
         currentUser = sharedPrefsHelper.getQbUser();
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
+    }
+
+    private void subscribeToPushes() {
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            Log.d(TAG, "subscribeToPushes()");
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
     }
 
     private void startLoadUsers() {
@@ -181,6 +188,10 @@ public class OpponentsActivity extends BaseActivity {
         }
     }
 
+    private void showSettings() {
+        SettingsActivity.start(this);
+    }
+
     private void startCall(boolean isVideoCall) {
         Log.d(TAG, "startCall()");
         ArrayList<Integer> opponentsList = opponentsAdapter.getIdsSelectedOpponents();
@@ -220,26 +231,21 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void logOut() {
-        showProgressDialog(R.string.dlg_logout);
-        QBChatService.getInstance().logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle params) {
-                removeUserData();
-                startLoginActivity();
-                finish();
-            }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-                hideProgressDialog();
-                Toaster.longToast(R.string.sign_up_error);
-            }
-        });
+        startLogoutCommand();
+        unsubscribeFromPushes();
+        removeUserData();
+        startLoginActivity();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private void startLogoutCommand(){
+        LoginToChatAndCallListenerService.start(this, null, null);
+    }
+
+    private void unsubscribeFromPushes() {
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            Log.d(TAG, "unsubscribeFromPushes()");
+            googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+        }
     }
 
     private void removeUserData(){
@@ -250,10 +256,6 @@ public class OpponentsActivity extends BaseActivity {
         sharedPrefsHelper.removeQbUser();
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
         dbManager.clearDB();
-    }
-
-    private void showSettings() {
-        SettingsActivity.start(this);
     }
 
     private void startLoginActivity(){

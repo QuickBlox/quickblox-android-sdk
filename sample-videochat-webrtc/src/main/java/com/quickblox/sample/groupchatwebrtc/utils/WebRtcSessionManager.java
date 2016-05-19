@@ -1,5 +1,8 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
+import android.util.Log;
+
+import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 
@@ -32,6 +35,7 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
     @Override
     public void onReceiveNewSession(QBRTCSession session) {
         super.onReceiveNewSession(session);
+        Log.d(TAG, "onReceiveNewSession to WebRtcSessionManager");
 
         if (currentSession == null){
             setCurrentSession(session);
@@ -41,6 +45,7 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
     @Override
     public void onSessionClosed(QBRTCSession session) {
         super.onSessionClosed(session);
+        Log.d(TAG, "onSessionClosed WebRtcSessionManager");
 
         if (session.equals(getCurrentSession())){
             setCurrentSession(null);

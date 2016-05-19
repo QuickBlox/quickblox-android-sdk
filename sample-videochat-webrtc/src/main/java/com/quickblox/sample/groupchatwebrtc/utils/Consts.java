@@ -53,6 +53,11 @@ public interface Consts {
     String DB_COLUMN_USER_PASSWORD = "userPass";
     String DB_COLUMN_USER_TAG = "serverApiDomain";
 
+    String EXTRA_COMMAND_TO_SERVICE = "command_for_service";
+    int COMMAND_NOT_FOUND = 0;
+    int COMMAND_LOGIN = 1;
+    int COMMAND_LOGOUT = 2;
+
     enum StartConversationReason {
         INCOME_CALL_FOR_ACCEPTION,
         OUTCOME_CALL_MADE

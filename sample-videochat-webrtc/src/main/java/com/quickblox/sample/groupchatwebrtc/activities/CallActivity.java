@@ -332,10 +332,15 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
 
     public void initCurrentSession(QBRTCSession session) {
-        Log.d(TAG, "Init new QBRTCSession");
-        this.currentSession = session;
-        this.currentSession.addSessionCallbacksListener(CallActivity.this);
-        this.currentSession.addSignalingCallback(CallActivity.this);
+        if (session != null) {
+            Log.d(TAG, "Init new QBRTCSession");
+            this.currentSession = session;
+            this.currentSession.addSessionCallbacksListener(CallActivity.this);
+            this.currentSession.addSignalingCallback(CallActivity.this);
+        } else {
+            OpponentsActivity.start(this);
+            finish();
+        }
     }
 
     public void releaseCurrentSession() {
@@ -459,7 +464,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                     stopIncomeCallTimer();
                 }
 
-                startTimer();
+//                startTimer();
                 Log.d(TAG, "onConnectedToUser() is started");
 
             }
@@ -497,7 +502,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                     }
                     releaseCurrentSession();
 
-                    stopTimer();
+//                    stopTimer();
                     closeByWifiStateAllow = true;
                     finish();
                 }
