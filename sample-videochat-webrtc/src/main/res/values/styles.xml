@@ -6,6 +6,10 @@
         <item name="colorControlHighlight">@color/blue_accent</item>
         <item name="colorControlNormal">@color/blue_accent</item>
 
+    <!-- Base application theme. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
 
@@ -53,4 +57,8 @@
         <item name="android:background">@drawable/selector_call_take</item>
     </style>
 
+    <style name="ToolbarStyleCall" parent="Widget.AppCompat.Toolbar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+    </style>
 </resources>

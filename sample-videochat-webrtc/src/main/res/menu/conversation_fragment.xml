@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/audio_switch"
+        android:icon="@drawable/ic_volume_medium_white_24dp"
+        android:title="@string/action_log_out"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/camera_switch"
+        android:icon="@drawable/ic_camera_front"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+</menu>
