@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
@@ -27,7 +28,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private static final String TAG = OpponentsFromCallAdapter.class.getSimpleName();
     private final int itemHeight;
     private final int itemWidth;
-    private int paddingLeft = 0;
+    private final int paddingLeft = 0;
 
     private Context context;
     private List<QBUser> opponents;
@@ -49,14 +50,14 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         this.inflater = LayoutInflater.from(context);
         itemWidth = width;
         itemHeight = height;
-        setPadding(itemMargin);
+//        setPadding(itemMargin);
         Log.d(TAG, "item width=" + itemWidth + ", item height=" + itemHeight);
     }
 
     private void setPadding(int itemMargin) {
         int allCellWidth = (itemWidth + (itemMargin * 2)) * columns;
         if ((allCellWidth < gridWidth) && ((gridWidth - allCellWidth) > (itemMargin * 2))) { //set padding if it makes sense to do it
-            paddingLeft = (gridWidth - allCellWidth) / 2;
+//            paddingLeft = (gridWidth - allCellWidth) / 2;
         }
     }
 
@@ -76,12 +77,25 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
+//        TODO maybe it's no reason to do this
         v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
         if (paddingLeft != 0) {
+            Log.d(TAG, "paddingLeft1=" + paddingLeft + ", v.getPaddingRight()1=" + v.getPaddingRight());
             v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
         }
         ViewHolder vh = new ViewHolder(v);
-        vh.showOpponentView(showVideoView);
+        vh.setListener( new ViewHolder.ViewHolderClickListener() {
+            @Override
+            public void onShowOpponent(int callerId) {
+                Log.d("OpponentsAdapter", "onShowOpponent onClick");
+                adapterListener.onItemClick(callerId);
+//                vh.showOpponentView(false);
+//                opponents.remove(caller);
+////                notifyItemRemoved(caller);
+//                notifyItemRangeChanged(caller, opponents.size());
+            }
+        });
+        vh.showOpponentView(true);
         return vh;
     }
 
@@ -91,7 +105,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         holder.opponentsName.setText(user.getFullName());
         holder.setUserId(user.getId());
-        if (position == (opponents.size() -1 )) {
+        if (position == (opponents.size() - 1)) {
             adapterListener.OnBindLastViewHolder(holder, position);
         }
     }
@@ -102,26 +116,32 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     }
 
     public interface OnAdapterEventListener {
-        public void OnBindLastViewHolder(ViewHolder holder, int position);
+        void OnBindLastViewHolder(ViewHolder holder, int position);
+        void onItemClick(int position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView opponentsName;
         TextView connectionStatus;
         RTCGLVideoView opponentView;
         private int userId;
+        private ViewHolderClickListener viewHolderClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
             opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
         }
 
+        private void setListener(ViewHolderClickListener viewHolderClickListener){
+            this.viewHolderClickListener = viewHolderClickListener;
+        }
+
         public void setStatus(String status) {
             connectionStatus.setText(status);
         }
-
 
         public void setUserId(int userId) {
             this.userId = userId;
@@ -136,7 +156,17 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         }
 
         public void showOpponentView(boolean show) {
+            Log.d("OpponentsAdapter", "show? "+ show);
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+
+        @Override
+        public void onClick(View v) {
+            viewHolderClickListener.onShowOpponent(getAdapterPosition());
+        }
+
+        public interface ViewHolderClickListener {
+            void onShowOpponent(int callerId);
         }
     }
 }

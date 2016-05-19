@@ -4,10 +4,11 @@
         <shape
             android:shape="oval">
             <size
-                android:width="@dimen/call_buttons_diameter"
-                android:height="@dimen/call_buttons_diameter" />
+                android:width="56dp"
+                android:height="56dp" />
             <solid
-                android:color="@color/button_end_call_normal"/>
+                android:color="@color/pinky_red"/>
         </shape>
     </item>
+
 </selector>

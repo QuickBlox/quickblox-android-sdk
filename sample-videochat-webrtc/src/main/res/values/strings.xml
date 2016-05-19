@@ -78,9 +78,7 @@
 
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
-
-
-
+    
     <!-- Settings strings. -->
     <string name="pref_default_value">Default</string>
 
@@ -133,5 +131,7 @@
     <string name="btn_screen_capture">screenShot</string>
     <string name="accepted">Accepted</string>
     <string name="connection_was_lost">Connection was lost</string>
+
+    <string name="opponents">and %s other</string>
 
 </resources>
