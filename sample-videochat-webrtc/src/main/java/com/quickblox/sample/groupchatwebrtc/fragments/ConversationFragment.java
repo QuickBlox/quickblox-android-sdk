@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -120,6 +121,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
     private OpponentsFromCallAdapter opponentsAdapter;
     private boolean isRemoteShown;
+    private boolean isStarted;
 
     private Chronometer timerABWithTimer;
     private int amountOpponents;
@@ -190,6 +192,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     public void initActionBarInner() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        timerABWithTimer = (Chronometer)getActivity().findViewById(R.id.timer_chronometer);
+
         if (toolbar != null) {
             QBUser user = QBChatService.getInstance().getUser();
             Log.d(TAG, "user = "+ user.toString());
@@ -198,8 +202,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 toolbar.setTitle(user.getFullName());
                 toolbar.setSubtitle(getString(R.string.opponents, amountOpponents));
             }
-
-            timerABWithTimer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
 
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -709,6 +711,27 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     }
 
+    public void startTimer() {
+        if (!isStarted) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    timerABWithTimer.setVisibility(View.VISIBLE);
+                    timerABWithTimer.setBase(SystemClock.elapsedRealtime());
+                    timerABWithTimer.start();
+                    isStarted = true;
+                }
+            });
+        }
+    }
+
+    public void stopTimer(){
+        if (timerABWithTimer != null){
+            timerABWithTimer.stop();
+            isStarted = false;
+        }
+    }
+
     private void initLocalViewUI(View localView) {
         initSwitchCameraButton(localView);
         myCameraOff = localView.findViewById(R.id.cameraOff);
@@ -785,12 +808,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             }
         });
         setStatusForOpponent(userId, getString(R.string.connected));
+        startTimer();
     }
 
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer integer) {
         setStatusForOpponent(integer, getString(R.string.closed));
+        stopTimer();
     }
 
     @Override

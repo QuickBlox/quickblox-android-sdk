@@ -463,8 +463,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 if (isInCommingCall) {
                     stopIncomeCallTimer();
                 }
-
-//                startTimer();
                 Log.d(TAG, "onConnectedToUser() is started");
 
             }
