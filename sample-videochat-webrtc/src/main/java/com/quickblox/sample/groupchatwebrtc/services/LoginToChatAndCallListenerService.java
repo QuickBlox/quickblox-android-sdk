@@ -25,7 +25,6 @@ import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 
 /**
@@ -36,19 +35,15 @@ public class LoginToChatAndCallListenerService extends Service{
     private QBChatService chatService;
     private QBRTCClient rtcClient;
     private PendingIntent pendingIntent;
-    private Integer userId;
-    private String login;
-    private String password;
     private int currentCommand;
+    private QBUser currentUser;
 
     public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent){
         Intent intent = new Intent(context, LoginToChatAndCallListenerService.class);
 
         if (qbUser != null){
             intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGIN);
-            intent.putExtra(Consts.EXTRA_USER_ID, qbUser.getId());
-            intent.putExtra(Consts.EXTRA_USER_LOGIN, qbUser.getLogin());
-            intent.putExtra(Consts.EXTRA_USER_PASSWORD, Consts.DEFAULT_USER_PASSWORD);
+            intent.putExtra(Consts.EXTRA_QB_USER, qbUser);
         } else {
             intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGOUT);
         }
@@ -83,9 +78,11 @@ public class LoginToChatAndCallListenerService extends Service{
 
             pendingIntent = intent.getParcelableExtra(Consts.EXTRA_PENDING_INTENT);
 
-            userId = intent.getIntExtra(Consts.EXTRA_USER_ID, 0);
-            login = intent.getStringExtra(Consts.EXTRA_USER_LOGIN);
-            password = intent.getStringExtra(Consts.EXTRA_USER_PASSWORD);
+            currentUser = (QBUser) intent.getSerializableExtra(Consts.EXTRA_QB_USER);
+
+//            userId = intent.getIntExtra(Consts.EXTRA_USER_ID, 0);
+//            login = intent.getStringExtra(Consts.EXTRA_USER_LOGIN);
+//            password = intent.getStringExtra(Consts.EXTRA_USER_PASSWORD);
         }
     }
 
@@ -107,15 +104,15 @@ public class LoginToChatAndCallListenerService extends Service{
 
     private void startLoginToChat() {
         if(!chatService.isLoggedIn()){
-            loginToChat(userId, login, password);
+            loginToChat(currentUser);
         } else {
             startActionsOnSuccessLogin();
         }
     }
 
-    private void loginToChat(Integer id, final String login, final String password) {
-        QBUser qbUser = new QBUser(login, password);
-        qbUser.setId(id);
+    private void loginToChat(QBUser qbUser) {
+//        QBUser qbUser1 = new QBUser(login, password);
+//        qbUser1.setId(id);
 
         chatService.login(qbUser, new QBEntityCallback<QBUser>() {
             @Override

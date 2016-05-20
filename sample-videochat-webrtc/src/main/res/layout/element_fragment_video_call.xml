@@ -36,11 +36,10 @@
 
     <ImageButton
         android:id="@+id/handUpVideoCall"
-        android:layout_width="@dimen/toggle_button_params"
-        android:layout_height="@dimen/toggle_button_params"
+        style="@style/EndCallImageButton"
         android:layout_marginLeft="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/shape_oval_red"
-        android:src="@drawable/ic_call_end" />
+        />
 
 </LinearLayout>

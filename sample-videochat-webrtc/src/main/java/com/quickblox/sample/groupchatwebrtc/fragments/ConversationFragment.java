@@ -122,7 +122,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private boolean isRemoteShown;
 
     private Chronometer timerABWithTimer;
-    private static int AMOUNT_OPPONENTS;
+    private int amountOpponents;
 
     public static ConversationFragment newInstance(boolean isIncomingCall){
         ConversationFragment fragment = new ConversationFragment();
@@ -144,6 +144,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         initFields();
         initViews(view);
+        initActionBarInner();
         initButtonsListener();
         initSessionListener();
         setUpUiByCallType(qbConferenceType);
@@ -168,6 +169,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             opponents.remove(QBChatService.getInstance().getUser());
         }
 
+        amountOpponents = opponents.size();
+
+
         sessionID = currentSession.getSessionID();
         callerName = dbManager.getUserNameById(currentSession.getCallerID());
         qbConferenceType = currentSession.getConferenceType().ordinal();
@@ -187,10 +191,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void initActionBarInner() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
         if (toolbar != null) {
-            QBUser user = DataHolder.getLoggedUser();
+            QBUser user = QBChatService.getInstance().getUser();
+            Log.d(TAG, "user = "+ user.toString());
             if (user != null) {
+                Log.d(TAG, "userFullName = "+ user.getFullName() + "AMOUNT_OPPONENTS = " + amountOpponents);
                 toolbar.setTitle(user.getFullName());
-                toolbar.setSubtitle(getString(R.string.opponents, AMOUNT_OPPONENTS));
+                toolbar.setSubtitle(getString(R.string.opponents, amountOpponents));
             }
 
             timerABWithTimer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
@@ -273,7 +279,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
-        initActionBarInner();
+//        initActionBarInner();
         setHasOptionsMenu(true);
         intentFilter = new IntentFilter();
         intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);

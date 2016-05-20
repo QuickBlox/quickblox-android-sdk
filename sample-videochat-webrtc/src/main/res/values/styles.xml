@@ -9,6 +9,7 @@
 
     <!-- Base application theme. -->
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:windowActionBar">false</item>-->
         <!-- Customize your theme here. -->
 
         <item name="colorPrimary">@color/color_primary</item>
@@ -52,7 +53,7 @@
 
     <style name="EndCallImageButton" parent="RoundedImageButton">
         <item name="android:background">@drawable/selector_call_end</item>
-        <item name="android:src">@drawable/ic_call_end</item>
+        <item name="android:src">@drawable/ic_phone_hangup</item>
     </style>
 
     <style name="TakeCallImageButton" parent="RoundedImageButton">
