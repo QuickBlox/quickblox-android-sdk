@@ -32,7 +32,6 @@
     <string name="action_start_audio_call">Audio call</string>
 
 
-
     <!--action bar-->
     <string name="login_as">Login as</string>
     <string name="logged_in_as">Logged in as %s</string>
@@ -46,6 +45,7 @@
     <string name="edit_opponents_list">Edit opponents list</string>
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
+    <string name="outgoing_audio_video_call">%s \n\nRinging</string>
     <string name="connect">Connect...</string>
     <string name="checking">Checking...</string>
     <string name="connected">Connected</string>
@@ -62,7 +62,6 @@
     <string name="error_empty_login">Login can not be empty</string>
     <string name="error_empty_chat_room_name">Chat room name can not be empty</string>
 
-    
     <string name="btn_audio_call">AUDIO CALL</string>
     <string name="btn_video_call">VIDEO CALL</string>
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Group Chat Sample]]></string>
@@ -80,7 +79,7 @@
 
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
-    
+
     <!-- Settings strings. -->
     <string name="pref_default_value">Default</string>
 
