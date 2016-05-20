@@ -20,6 +20,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.services.CallListenerService;
+import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
@@ -193,7 +194,7 @@ public class OpponentsActivity extends BaseActivity {
 
     private void startCall(boolean isVideoCall) {
         Log.d(TAG, "startCall()");
-        ArrayList<Integer> opponentsList = opponentsAdapter.getIdsSelectedOpponents();
+        ArrayList<Integer> opponentsList = CollectionsUtils.getIdsSelectedOpponents(opponentsAdapter.getSelectedItems());
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
                 : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
