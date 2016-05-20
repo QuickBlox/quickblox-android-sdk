@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -28,18 +29,19 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 
 /**
- * Created by tereha on 13.05.16.
+ * QuickBlox team
  */
-public class LoginToChatAndCallListenerService extends Service{
-    private static final String TAG = LoginToChatAndCallListenerService.class.getSimpleName();
+public class CallListenerService extends Service{
+    private static final String TAG = CallListenerService.class.getSimpleName();
     private QBChatService chatService;
     private QBRTCClient rtcClient;
     private PendingIntent pendingIntent;
     private int currentCommand;
     private QBUser currentUser;
+    private Handler handler;
 
     public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent){
-        Intent intent = new Intent(context, LoginToChatAndCallListenerService.class);
+        Intent intent = new Intent(context, CallListenerService.class);
 
         if (qbUser != null){
             intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGIN);
@@ -56,6 +58,7 @@ public class LoginToChatAndCallListenerService extends Service{
     public void onCreate() {
         super.onCreate();
 
+        handler = new Handler();
         createChatService();
 
         Log.d(TAG, "Service onCreate()");
@@ -75,14 +78,8 @@ public class LoginToChatAndCallListenerService extends Service{
     private void parseIntentExtras(Intent intent) {
         if (intent != null && intent.getExtras() != null) {
             currentCommand = intent.getIntExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_NOT_FOUND);
-
             pendingIntent = intent.getParcelableExtra(Consts.EXTRA_PENDING_INTENT);
-
             currentUser = (QBUser) intent.getSerializableExtra(Consts.EXTRA_QB_USER);
-
-//            userId = intent.getIntExtra(Consts.EXTRA_USER_ID, 0);
-//            login = intent.getStringExtra(Consts.EXTRA_USER_LOGIN);
-//            password = intent.getStringExtra(Consts.EXTRA_USER_PASSWORD);
         }
     }
 
@@ -111,9 +108,6 @@ public class LoginToChatAndCallListenerService extends Service{
     }
 
     private void loginToChat(QBUser qbUser) {
-//        QBUser qbUser1 = new QBUser(login, password);
-//        qbUser1.setId(id);
-
         chatService.login(qbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
@@ -132,6 +126,7 @@ public class LoginToChatAndCallListenerService extends Service{
     }
 
     private void startActionsOnSuccessLogin() {
+        showToast("Login success");
         initPingListener();
         initQBRTCClient();
         sendResultToActivity(true, null);
@@ -174,7 +169,7 @@ public class LoginToChatAndCallListenerService extends Service{
                 intent.putExtra(Consts.EXTRA_LOGIN_RESULT, isSuccess);
                 intent.putExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE, errorMessage);
 
-                pendingIntent.send(LoginToChatAndCallListenerService.this, Consts.EXTRA_LOGIN_RESULT_CODE, intent);
+                pendingIntent.send(CallListenerService.this, Consts.EXTRA_LOGIN_RESULT_CODE, intent);
             } catch (PendingIntent.CanceledException e) {
                 String errorMessageSendingResult = e.getMessage();
                 Log.d(TAG, errorMessageSendingResult != null
@@ -185,7 +180,18 @@ public class LoginToChatAndCallListenerService extends Service{
     }
 
     private void showToast(final String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public static void logout(Context context){
+        Intent intent = new Intent(context, CallListenerService.class);
+        intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGOUT);
+        context.startService(intent);
     }
 
     public void logout(){
@@ -228,7 +234,7 @@ public class LoginToChatAndCallListenerService extends Service{
         @Override
         public void onReceiveNewSession(QBRTCSession session) {
             super.onReceiveNewSession(session);
-            Log.d(TAG, "onReceiveNewSession LoginToChatAndCallListenerService");
+            Log.d(TAG, "onReceiveNewSession CallListenerService");
             if (getCurrentSession().equals(session)){
                 CallActivity.start(context, true);
             }

@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -91,7 +92,15 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        }
+
         context.startActivity(intent);
     }
 
@@ -186,7 +195,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         //
         QBRTCConfig.setMaxOpponentsCount(6);
         QBRTCConfig.setDisconnectTime(30);
-        QBRTCConfig.setAnswerTimeInterval(60l);
+        QBRTCConfig.setAnswerTimeInterval(45l);
         QBRTCConfig.setDebugEnabled(true);
 
 

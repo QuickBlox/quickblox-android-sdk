@@ -7,7 +7,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
-import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
+import com.quickblox.sample.groupchatwebrtc.services.CallListenerService;
 import com.quickblox.users.model.QBUser;
 
 /**
@@ -31,6 +31,6 @@ public class GcmPushListenerService extends GcmListenerService {
     }
 
     private void startLoginService(QBUser qbUser){
-        LoginToChatAndCallListenerService.start(this, qbUser, null);
+        CallListenerService.start(this, qbUser, null);
     }
 }

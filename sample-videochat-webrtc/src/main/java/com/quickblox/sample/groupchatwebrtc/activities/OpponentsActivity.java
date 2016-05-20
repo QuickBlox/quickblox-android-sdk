@@ -15,12 +15,11 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
-import com.quickblox.sample.groupchatwebrtc.services.LoginToChatAndCallListenerService;
+import com.quickblox.sample.groupchatwebrtc.services.CallListenerService;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
@@ -238,7 +237,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startLogoutCommand(){
-        LoginToChatAndCallListenerService.start(this, null, null);
+        CallListenerService.logout(this);
     }
 
     private void unsubscribeFromPushes() {
