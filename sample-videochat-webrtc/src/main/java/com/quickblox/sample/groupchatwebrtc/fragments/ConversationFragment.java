@@ -56,6 +56,7 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
+import org.webrtc.PeerConnection;
 import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
@@ -311,8 +312,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         backgroundTextView = (TextView) view.findViewById(R.id.backgroundText);
         StringBuilder opponentsName = new StringBuilder();
-        for (QBUser user : opponents) {
-            opponentsName.append(user.getFullName());
+
+        for (int i = 0; i < opponents.size(); i++) {
+            opponentsName.append(opponents.get(i).getFullName());
+            if( i != opponents.size() - 1){
+                opponentsName.append(", ");
+            }
         }
 
         backgroundTextView.setText(getString(R.string.outgoing_audio_video_call, opponentsName.toString()));
@@ -571,6 +576,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     }
                     Log.i(TAG, "onLocalVideoTrackReceive init localView");
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
+                    localVideoView.setOnClickListener(localViewClickListener());
 
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, false);
@@ -646,41 +652,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     }
                     Log.i(TAG, "OnBindLastViewHolder init localView");
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
-                    localVideoView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.i(TAG, "Click! Click! Who is there?");
-                            ActionBar actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-                            if (actionBar.isShowing()) {
-                                Log.i(TAG, "Here's Johnny");
-                                actionBar.hide();
-                                localVideoView.releaseLocalRendererCallback();
-                                actionVideoButtonsLayout.setVisibility(View.GONE);
-
-                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                                params.setMargins(0, 0, 0, 0);
-
-//                              IMHO setLayoutParams not necessary to call
-                                recyclerView.setLayoutParams(params);
-                            } else {
-                                Log.i(TAG, "Johnny is out");
-                                actionBar.show();
-                                fillVideoView(localVideoView, localVideoTrack, false);
-                                RTCGLVideoView.RendererConfig config = new RTCGLVideoView.RendererConfig();
-                                config.mirror = true;
-                                config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-                                localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-                                actionVideoButtonsLayout.setVisibility(View.VISIBLE);
-
-                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-                                params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
-
-                                recyclerView.setLayoutParams(params);
-                            }
-                        }
-                    });
+                    localVideoView.setOnClickListener(localViewClickListener());
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, !isPeerToPeerCall);
                     }
@@ -709,7 +681,47 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     }
 
-    public void startTimer() {
+    private View.OnClickListener localViewClickListener(){
+
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActionBar actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
+                if (actionBar.isShowing()) {
+                    actionBar.hide();
+                    localVideoView.releaseLocalRendererCallback();
+                    actionVideoButtonsLayout.setVisibility(View.GONE);
+
+                    if(!isPeerToPeerCall) {
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                        params.setMargins(0, 0, 0, 0);
+
+//                      IMHO setLayoutParams not necessary to call, it works without this
+                        recyclerView.setLayoutParams(params);
+                    }
+                } else {
+                    Log.i(TAG, "Johnny is out");
+                    actionBar.show();
+                    fillVideoView(localVideoView, localVideoTrack, false);
+                    RendererConfig config = new RendererConfig();
+                    config.mirror = true;
+                    config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+                    actionVideoButtonsLayout.setVisibility(View.VISIBLE);
+                    if(!isPeerToPeerCall) {
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+                        params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
+
+                        recyclerView.setLayoutParams(params);
+                    }
+                }
+            }
+        };
+    }
+
+    private void startTimer() {
         if (!isStarted) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -723,7 +735,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
-    public void stopTimer() {
+    private void stopTimer() {
         if (timerABWithTimer != null) {
             timerABWithTimer.stop();
             isStarted = false;
