@@ -30,7 +30,6 @@ public abstract class BaseActivity extends CoreBaseActivity {
     private boolean isStarted = false;
     SharedPrefsHelper sharedPrefsHelper;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
