@@ -69,17 +69,6 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         return convertView;
     }
 
-    public ArrayList<Integer> getIdsSelectedOpponents(){
-        ArrayList<Integer> opponentsIds = new ArrayList<>();
-        if (!getSelectedItems().isEmpty()){
-            for (QBUser qbUser : getSelectedItems()){
-                opponentsIds.add(qbUser.getId());
-            }
-        }
-
-        return opponentsIds;
-    }
-
     public static class ViewHolder {
         ImageView opponentIcon;
         TextView opponentName;

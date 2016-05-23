@@ -490,6 +490,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
         localVideoTrack = videoTrack;
+        if (localVideoView != null) {
+            fillVideoView(localVideoView, videoTrack, false);
+        }
 
         if (isPeerToPeerCall) {
             mainHandler.postDelayed(new Runnable() {

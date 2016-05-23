@@ -4,12 +4,13 @@ import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by tereha on 12.05.16.
  */
-public class StringUtils {
+public class CollectionsUtils {
 
     public static String makeStringFromUsersFullNames(ArrayList<QBUser> allUsers) {
         StringifyArrayList<String> usersNames = new StringifyArrayList<>();
@@ -23,5 +24,16 @@ public class StringUtils {
             }
 
         return usersNames.getItemsAsString();
+    }
+
+    public static ArrayList<Integer> getIdsSelectedOpponents(Collection<QBUser> selectedUsers){
+        ArrayList<Integer> opponentsIds = new ArrayList<>();
+        if (!selectedUsers.isEmpty()){
+            for (QBUser qbUser : selectedUsers){
+                opponentsIds.add(qbUser.getId());
+            }
+        }
+
+        return opponentsIds;
     }
 }

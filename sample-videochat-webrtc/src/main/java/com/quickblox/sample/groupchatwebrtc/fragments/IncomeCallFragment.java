@@ -20,7 +20,7 @@ import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.utils.StringUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -163,7 +163,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
         opponents.remove(QBChatService.getInstance().getUser());
         Log.d(TAG, "opponentsIds = " + opponentsIds);
-        return StringUtils.makeStringFromUsersFullNames(opponents);
+        return CollectionsUtils.makeStringFromUsersFullNames(opponents);
     }
 
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
