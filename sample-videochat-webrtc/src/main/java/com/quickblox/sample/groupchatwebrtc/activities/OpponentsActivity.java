@@ -19,7 +19,7 @@ import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
-import com.quickblox.sample.groupchatwebrtc.services.CallListenerService;
+import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
@@ -203,7 +203,7 @@ public class OpponentsActivity extends BaseActivity {
 
         QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
 
-        WebRtcSessionManager.getInstance().setCurrentSession(newQbRtcSession);
+        WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
 
         PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
 
@@ -238,7 +238,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startLogoutCommand(){
-        CallListenerService.logout(this);
+        CallService.logout(this);
     }
 
     private void unsubscribeFromPushes() {

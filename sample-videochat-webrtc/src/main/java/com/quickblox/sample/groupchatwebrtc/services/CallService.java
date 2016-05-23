@@ -25,14 +25,15 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 
 import org.jivesoftware.smackx.ping.PingFailedListener;
 
 /**
  * QuickBlox team
  */
-public class CallListenerService extends Service{
-    private static final String TAG = CallListenerService.class.getSimpleName();
+public class CallService extends Service{
+    private static final String TAG = CallService.class.getSimpleName();
     private QBChatService chatService;
     private QBRTCClient rtcClient;
     private PendingIntent pendingIntent;
@@ -40,18 +41,18 @@ public class CallListenerService extends Service{
     private QBUser currentUser;
     private Handler handler;
 
-    public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent){
-        Intent intent = new Intent(context, CallListenerService.class);
+    public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent) {
+        Intent intent = new Intent(context, CallService.class);
 
-        if (qbUser != null){
-            intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGIN);
-            intent.putExtra(Consts.EXTRA_QB_USER, qbUser);
-        } else {
-            intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGOUT);
-        }
-
+        intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGIN);
+        intent.putExtra(Consts.EXTRA_QB_USER, qbUser);
         intent.putExtra(Consts.EXTRA_PENDING_INTENT, pendingIntent);
+
         context.startService(intent);
+    }
+
+    public static void start(Context context, QBUser qbUser){
+        start(context, qbUser, null);
     }
 
     @Override
@@ -126,7 +127,6 @@ public class CallListenerService extends Service{
     }
 
     private void startActionsOnSuccessLogin() {
-        showToast("Login success");
         initPingListener();
         initQBRTCClient();
         sendResultToActivity(true, null);
@@ -158,7 +158,7 @@ public class CallListenerService extends Service{
         QBRTCConfig.setDebugEnabled(true);
 
         // Add service as callback to RTCClient
-        rtcClient.addSessionCallbacksListener(new CurrentSessionStateCallback(this));
+        rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));
     }
 
     private void sendResultToActivity(boolean isSuccess, String errorMessage) {
@@ -169,7 +169,7 @@ public class CallListenerService extends Service{
                 intent.putExtra(Consts.EXTRA_LOGIN_RESULT, isSuccess);
                 intent.putExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE, errorMessage);
 
-                pendingIntent.send(CallListenerService.this, Consts.EXTRA_LOGIN_RESULT_CODE, intent);
+                pendingIntent.send(CallService.this, Consts.EXTRA_LOGIN_RESULT_CODE, intent);
             } catch (PendingIntent.CanceledException e) {
                 String errorMessageSendingResult = e.getMessage();
                 Log.d(TAG, errorMessageSendingResult != null
@@ -189,12 +189,12 @@ public class CallListenerService extends Service{
     }
 
     public static void logout(Context context){
-        Intent intent = new Intent(context, CallListenerService.class);
+        Intent intent = new Intent(context, CallService.class);
         intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGOUT);
         context.startService(intent);
     }
 
-    public void logout(){
+    private void logout(){
         destroyRtcClientAndChat();
     }
 
@@ -222,22 +222,5 @@ public class CallListenerService extends Service{
     public void onTaskRemoved(Intent rootIntent) {
         Log.d(TAG, "Service onTaskRemoved()");
         super.onTaskRemoved(rootIntent);
-    }
-
-    class CurrentSessionStateCallback extends WebRtcSessionManager{
-        private final Context context;
-
-        public CurrentSessionStateCallback (Context context){
-            this.context = context;
-        }
-
-        @Override
-        public void onReceiveNewSession(QBRTCSession session) {
-            super.onReceiveNewSession(session);
-            Log.d(TAG, "onReceiveNewSession CallListenerService");
-            if (getCurrentSession().equals(session)){
-                CallActivity.start(context, true);
-            }
-        }
     }
 }
