@@ -32,6 +32,7 @@
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 android:textColor="@color/white"
+                android:textSize="@dimen/text_size_call"
                 android:textStyle="normal|italic">
 
             </TextView>

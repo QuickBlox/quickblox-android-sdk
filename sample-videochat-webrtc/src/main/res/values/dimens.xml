@@ -15,6 +15,7 @@
     <dimen name="margin_small">8dp</dimen>
 
     <dimen name="text_size">20sp</dimen>
+    <dimen name="text_size_call">18sp</dimen>
 
 
     <integer name="users_count">10</integer>

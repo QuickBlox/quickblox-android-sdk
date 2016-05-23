@@ -185,6 +185,7 @@ public class LoginToChatAndCallListenerService extends Service{
     }
 
     private void showToast(final String message) {
+//        ToDo RuntimeException Can't create handler inside thread that has not called Looper.prepare()
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
