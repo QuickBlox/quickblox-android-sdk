@@ -630,7 +630,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     protected void onDestroy() {
-        rtcClient.destroy();
         super.onDestroy();
     }
 
