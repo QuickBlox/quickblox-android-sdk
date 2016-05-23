@@ -50,7 +50,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private QBRTCTypes.QBConferenceType conferenceType;
     private long lastClickTime = 0l;
     private RingtonePlayer ringtonePlayer;
-    private OnCallEventsController callEvents;
+    private IncomeCallFragmentCallbackListener incomeCallFragmentCallbackListener;
     private QBRTCSession currentSession;
     private QbUsersDbManager qbUserDbManager;
 
@@ -59,7 +59,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         super.onAttach(activity);
 
         try {
-            callEvents = (OnCallEventsController) activity;
+            incomeCallFragmentCallbackListener = (IncomeCallFragmentCallbackListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnCallEventsController");
@@ -91,7 +91,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void initFields() {
-        currentSession = WebRtcSessionManager.getInstance().getCurrentSession();
+        currentSession = WebRtcSessionManager.getInstance(getActivity()).getCurrentSession();
         qbUserDbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
 
         if (currentSession != null) {
@@ -205,7 +205,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         enableButtons(false);
         stopCallNotification();
 
-        callEvents.onAcceptCurrentSession();
+        incomeCallFragmentCallbackListener.onAcceptCurrentSession();
         Log.d(TAG, "Call is started");
     }
 
@@ -213,7 +213,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         enableButtons(false);
         stopCallNotification();
 
-        callEvents.onRejectCurrentSession();
+        incomeCallFragmentCallbackListener.onRejectCurrentSession();
         Log.d(TAG, "Call is rejected");
     }
 

@@ -1,7 +1,10 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
+import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
@@ -12,13 +15,18 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
     private static final String TAG = WebRtcSessionManager.class.getSimpleName();
 
-    public static WebRtcSessionManager instance;
+    private static WebRtcSessionManager instance;
+    private Context context;
 
     private static QBRTCSession currentSession;
 
-    public static WebRtcSessionManager getInstance(){
+    private WebRtcSessionManager(Context context) {
+        this.context = context;
+    }
+
+    public static WebRtcSessionManager getInstance(Context context){
         if (instance == null){
-            instance = new WebRtcSessionManager();
+            instance = new WebRtcSessionManager(context);
         }
 
         return instance;
@@ -34,17 +42,16 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
 
     @Override
     public void onReceiveNewSession(QBRTCSession session) {
-        super.onReceiveNewSession(session);
         Log.d(TAG, "onReceiveNewSession to WebRtcSessionManager");
 
         if (currentSession == null){
             setCurrentSession(session);
+            CallActivity.start(context, true);
         }
     }
 
     @Override
     public void onSessionClosed(QBRTCSession session) {
-        super.onSessionClosed(session);
         Log.d(TAG, "onSessionClosed WebRtcSessionManager");
 
         if (session.equals(getCurrentSession())){

@@ -13,7 +13,17 @@ import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 public class DbHelper extends SQLiteOpenHelper {
 
     private String TAG = DbHelper.class.getSimpleName();
+
     private static final String DB_NAME = "groupchatwebrtcDB";
+
+    public final String DB_TABLE_NAME = "users";
+    public final String DB_COLUMN_ID = "ID";
+    public final String DB_COLUMN_USER_FULL_NAME = "title";
+    public final String DB_COLUMN_USER_LOGIN = "userLogin";
+    public final String DB_COLUMN_USER_ID = "userID";
+    public final String DB_COLUMN_USER_PASSWORD = "userPass";
+    public final String DB_COLUMN_USER_TAG = "serverApiDomain";
+
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -22,13 +32,13 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "--- onCreate database ---");
-        db.execSQL("create table " + Consts.DB_TABLE_NAME + " ("
-                + Consts.DB_COLUMN_ID + " integer primary key autoincrement,"
-                + Consts.DB_COLUMN_USER_ID + " integer,"
-                + Consts.DB_COLUMN_USER_LOGIN + " text,"
-                + Consts.DB_COLUMN_USER_PASSWORD + " text,"
-                + Consts.DB_COLUMN_USER_FULL_NAME + " text,"
-                + Consts.DB_COLUMN_USER_TAG + " text"
+        db.execSQL("create table " + DB_TABLE_NAME + " ("
+                + DB_COLUMN_ID + " integer primary key autoincrement,"
+                + DB_COLUMN_USER_ID + " integer,"
+                + DB_COLUMN_USER_LOGIN + " text,"
+                + DB_COLUMN_USER_PASSWORD + " text,"
+                + DB_COLUMN_USER_FULL_NAME + " text,"
+                + DB_COLUMN_USER_TAG + " text"
                 + ");");
     }
 

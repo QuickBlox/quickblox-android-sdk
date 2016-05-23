@@ -47,13 +47,6 @@ public interface Consts {
     String EXTRA_LOGIN_ERROR_MESSAGE = "login_error_message";
     int EXTRA_LOGIN_RESULT_CODE = 1002;
 
-    String DB_TABLE_NAME = "users";
-    String DB_COLUMN_ID = "ID";
-    String DB_COLUMN_USER_FULL_NAME = "title";
-    String DB_COLUMN_USER_LOGIN = "userLogin";
-    String DB_COLUMN_USER_ID = "userID";
-    String DB_COLUMN_USER_PASSWORD = "userPass";
-    String DB_COLUMN_USER_TAG = "serverApiDomain";
 
     String EXTRA_COMMAND_TO_SERVICE = "command_for_service";
     int COMMAND_NOT_FOUND = 0;

@@ -53,7 +53,7 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".services.CallListenerService"/>
+            android:name=".services.CallService"/>
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
