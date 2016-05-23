@@ -486,11 +486,19 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
+    private RTCGLVideoView.RendererConfig setRTCCameraMirrorConfig(boolean mirror) {
+        RTCGLVideoView.RendererConfig config = new RTCGLVideoView.RendererConfig();
+        config.mirror = mirror;
+        return config;
+    }
+
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
+
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
+            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -503,6 +511,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     }
                     Log.i(TAG, "onLocalVideoTrackReceive init localView");
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
+
+                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
                     localVideoView.setOnClickListener(localViewClickListener());
 
                     if (localVideoTrack != null) {
@@ -525,10 +535,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
                     Log.d("onRemoteVideoTrackRe", "localVideoView==null?" + (localVideoView == null));
                     Log.d("onRemoteVideoTrackRe", "videoTrack==null?" + (videoTrack == null));
-                    RTCGLVideoView.RendererConfig config = new RTCGLVideoView.RendererConfig();
-                    config.mirror = true;
+                    RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
                     config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
                     localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+                    config = setRTCCameraMirrorConfig(false);
+                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
                     fillVideoView(localVideoView, videoTrack);
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
@@ -547,10 +558,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 if (!isRemoteShown) {
                     isRemoteShown = true;
 
-                    RTCGLVideoView.RendererConfig config = new RTCGLVideoView.RendererConfig();
-                    config.mirror = true;
+                    RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
                     config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
                     localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+                    config = setRTCCameraMirrorConfig(false);
+                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
                     fillVideoView(localVideoView, videoTrack);
                 }
             }
@@ -600,8 +612,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         Log.d(TAG, "fullscreen enabled");
 
         fillVideoView(localVideoView, localVideoTrack, false);
-        RTCGLVideoView.RendererConfig config = new RTCGLVideoView.RendererConfig();
-        config.mirror = true;
+        RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
         config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         Log.d(TAG, "preview screen enabled");
@@ -631,8 +642,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     Log.i(TAG, "Johnny is out");
                     actionBar.show();
                     fillVideoView(localVideoView, localVideoTrack, false);
-                    RendererConfig config = new RendererConfig();
-                    config.mirror = true;
+                    RendererConfig config = setRTCCameraMirrorConfig(true);
                     config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
                     localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
                     actionVideoButtonsLayout.setVisibility(View.VISIBLE);
