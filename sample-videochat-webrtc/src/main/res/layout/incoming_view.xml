@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/incomingView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_alignParentBottom="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/WrapContent"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/padding_bottom"
+    android:gravity="center"
+    >
 
     <ImageButton
-        android:id="@+id/callEndBtnInIncAction"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_call_end"
-        android:background="@drawable/btn_background_call_end"
-        android:gravity="center_vertical"
-        android:layout_marginStart="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="60dp"/>
+        android:id="@+id/reject_call"
+        style="@style/EndCallImageButton"
+        />
 
     <ImageButton
-        android:id="@+id/callTakeBtnInIncAction"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:id="@+id/take_call"
+        style="@style/TakeCallImageButton"
+        android:layout_marginStart="@dimen/income_call_buttons_margin"
+        android:layout_toEndOf="@id/reject_call"
         android:src="@drawable/ic_call"
-        android:background="@drawable/btn_background_call_take"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="60dp"/>
+        tools:ignore="RtlCompat"
+        />
 
 </RelativeLayout>

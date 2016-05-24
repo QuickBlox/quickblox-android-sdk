@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ViewStub
+        android:id="@+id/avatar_and_name_view"
+        style="@style/WrapContent"
+
+        />
+
+    <ViewStub
+        android:id="@+id/ligt_text_view"
+        style="@style/WrapContent" />
+
+    <ViewStub
+        android:id="@+id/opponents_view"
+        style="@style/WrapContent"
+        />
+
+    <ViewStub
+        android:id="@+id/action_buttons_view"
+        style="@style/WrapContent"
+        android:layout_marginBottom="@dimen/padding_bottom"
+        />
+
+</LinearLayout>

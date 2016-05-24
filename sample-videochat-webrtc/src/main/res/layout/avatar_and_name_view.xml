@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/WrapContent"
+    android:layout_gravity="center_horizontal|center_vertical"
+    >
+
+    <ImageView
+        android:id="@+id/caller_avatar"
+        style="@style/CallerAvatar"
+        />
+
+    <TextView
+        android:id="@+id/caller_name"
+        style="@style/WrapContent"
+        android:textColor="@color/caller_name_text_color"
+        android:textSize="@dimen/caller_name_text_size"
+        android:text="User Name"
+        android:maxLines="1"
+        android:maxLength="25"
+        android:paddingTop="20dp"
+        />
+
+</LinearLayout>
