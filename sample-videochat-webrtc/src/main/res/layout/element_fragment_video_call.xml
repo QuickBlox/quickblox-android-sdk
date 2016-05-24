@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/actionVideoButtons"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    style="@style/MatchWidth"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="@dimen/element_fragment_margin_small"
@@ -11,23 +10,10 @@
     android:orientation="horizontal">
 
     <ToggleButton
-        android:id="@+id/cameraToggle"
-        android:layout_width="@dimen/toggle_button_params"
-        android:layout_height="@dimen/toggle_button_params"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/call_cam_toggle_background"
-        android:checked="true"
-        android:textOff=""
-        android:textOn="" />
-
-
-    <ToggleButton
         android:id="@+id/micToggleVideoCall"
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/element_fragment_margin"
-        android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/call_mic_toggle_background"
         android:checked="true"
         android:gravity="center_vertical|center_horizontal"
@@ -39,7 +25,18 @@
         style="@style/EndCallImageButton"
         android:layout_marginLeft="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/element_fragment_margin"
-        android:background="@drawable/shape_oval_red"
-        />
+        android:background="@drawable/shape_oval_red" />
+
+    <ToggleButton
+        android:id="@+id/cameraToggle"
+        android:layout_width="@dimen/toggle_button_params"
+        android:layout_height="@dimen/toggle_button_params"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/element_fragment_margin"
+        android:layout_marginStart="@dimen/element_fragment_margin"
+        android:background="@drawable/call_cam_toggle_background"
+        android:checked="true"
+        android:textOff=""
+        android:textOn="" />
 
 </LinearLayout>

@@ -9,6 +9,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/camera_switch"
+        android:checkable="true"
         android:icon="@drawable/ic_camera_front"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
