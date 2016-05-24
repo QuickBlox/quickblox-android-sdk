@@ -107,6 +107,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
     private OpponentsFromCallAdapter opponentsAdapter;
+    private LocalViewOnClickListener localViewOnClickListener;
     private boolean isRemoteShown;
     private boolean isStarted;
 
@@ -143,6 +144,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private void initFields() {
         QbUsersDbManager dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
         WebRtcSessionManager sessionManager = WebRtcSessionManager.getInstance();
+
+        localViewOnClickListener = new LocalViewOnClickListener();
 
         if (getArguments() != null) {
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
@@ -292,7 +295,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             opponentName[i] = opponents.get(i).getFullName();
         }
 
-        backgroundTextView.setText(getString(R.string.outgoing_audio_video_call, TextUtils.join(", ", opponentName)));
+        backgroundTextView.setText(getString(R.string.outgoing_audio_video_call_title, TextUtils.join(", ", opponentName)));
 
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
@@ -513,7 +516,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
 
                     localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
-                    localVideoView.setOnClickListener(localViewClickListener());
+                    localVideoView.setOnClickListener(localViewOnClickListener);
 
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, false);
@@ -591,7 +594,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     }
                     Log.i(TAG, "OnBindLastViewHolder init localView");
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
-                    localVideoView.setOnClickListener(localViewClickListener());
+                    localVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, !isPeerToPeerCall);
                     }
@@ -617,45 +620,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         Log.d(TAG, "preview screen enabled");
 
-    }
-
-    private View.OnClickListener localViewClickListener() {
-
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-                if (actionBar.isShowing()) {
-                    actionBar.hide();
-                    localVideoView.releaseLocalRendererCallback();
-                    actionVideoButtonsLayout.setVisibility(View.GONE);
-
-                    if (!isPeerToPeerCall) {
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        params.setMargins(0, 0, 0, 0);
-
-//                      IMHO setLayoutParams not necessary to call, it works without this
-                        recyclerView.setLayoutParams(params);
-                    }
-                } else {
-                    Log.i(TAG, "Johnny is out");
-                    actionBar.show();
-                    fillVideoView(localVideoView, localVideoTrack, false);
-                    RendererConfig config = setRTCCameraMirrorConfig(true);
-                    config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-                    actionVideoButtonsLayout.setVisibility(View.VISIBLE);
-                    if (!isPeerToPeerCall) {
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-                        params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
-
-                        recyclerView.setLayoutParams(params);
-                    }
-                }
-            }
-        };
     }
 
     private void startTimer() {
@@ -869,6 +833,45 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             outRect.set(space, space, space, space);
+        }
+    }
+
+    class LocalViewOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            setFullScreenOnOff();
+        }
+
+        private void setFullScreenOnOff() {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
+            if (actionBar.isShowing()) {
+                actionBar.hide();
+                localVideoView.releaseLocalRendererCallback();
+                actionVideoButtonsLayout.setVisibility(View.GONE);
+
+                if (!isPeerToPeerCall) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    params.setMargins(0, 0, 0, 0);
+
+                    recyclerView.setLayoutParams(params);
+                }
+            } else {
+                actionBar.show();
+                fillVideoView(localVideoView, localVideoTrack, false);
+                RendererConfig config = setRTCCameraMirrorConfig(true);
+                config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+                localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+                actionVideoButtonsLayout.setVisibility(View.VISIBLE);
+                if (!isPeerToPeerCall) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+                    params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
+
+                    recyclerView.setLayoutParams(params);
+                }
+            }
         }
 
     }

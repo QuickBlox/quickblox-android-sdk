@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/actionVideoButtons"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    style="@style/MatchWidth"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="@dimen/element_fragment_margin_small"

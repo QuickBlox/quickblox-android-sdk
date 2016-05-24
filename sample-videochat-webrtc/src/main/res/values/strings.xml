@@ -45,7 +45,7 @@
     <string name="edit_opponents_list">Edit opponents list</string>
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
-    <string name="outgoing_audio_video_call">%s\n\nRinging</string>
+    <string name="outgoing_audio_video_call_title">%s\n\nRinging</string>
     <string name="connect">Connect...</string>
     <string name="checking">Checking...</string>
     <string name="connected">Connected</string>

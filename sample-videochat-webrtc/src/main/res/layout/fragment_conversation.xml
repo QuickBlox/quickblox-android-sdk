@@ -2,33 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentOpponents"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MatchParent"
     android:keepScreenOn="true">
 
     <FrameLayout
         android:id="@+id/localView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="@style/MatchParent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true">
 
         <ViewStub
             android:id="@+id/localViewStub"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            style="@style/MatchParent"
             android:layout="@layout/local_videoview" />
 
         <FrameLayout
             android:id="@+id/background_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            style="@style/MatchParent"
             android:background="@color/black_transparent_50">
 
             <TextView
                 android:id="@+id/backgroundText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/MatchWidth"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 android:textColor="@color/white"
@@ -41,9 +36,8 @@
 
         <TextView
             android:id="@+id/connectionStatusLocal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            style="@style/MatchWidth"
+            android:layout_marginBottom="@dimen/margin_very_small"
             android:gravity="center_horizontal"
             android:maxLength="13"
             android:maxLines="1"
@@ -54,8 +48,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid_opponents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:layout_above="@+id/element_set_video_buttons"
         android:layout_marginBottom="@dimen/margin_common"
         android:horizontalSpacing="@dimen/margin_small"
@@ -68,7 +61,7 @@
     <include
         android:id="@+id/element_set_video_buttons"
         layout="@layout/element_fragment_video_call"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
