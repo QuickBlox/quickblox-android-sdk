@@ -140,7 +140,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         initViews(view);
         initActionBarInner();
         initButtonsListener();
-        initVideoTrackSListener();
         setUpUiByCallType(qbConferenceType);
 
         mainHandler = new FragmentLifeCycleHandler();
@@ -245,13 +244,15 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             callEvents = (OnCallEventsController) activity;
             conversationFragmentCallbackListener = (ConversationFragmentCallbackListener) activity;
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            throw new ClassCastException(activity.toString()
+                     + " must implement OnCallEventsController and ConversationFragmentCallbackListener");
         }
     }
 
     @Override
     public void onStart() {
 
+        initVideoTrackSListener();
         getActivity().registerReceiver(audioStreamReceiver, intentFilter);
 
         super.onStart();
@@ -397,6 +398,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     @Override
     public void onStop() {
         super.onStop();
+        removeVideoTrackSListener();
         getActivity().unregisterReceiver(audioStreamReceiver);
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
@@ -861,12 +863,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        removeVideoTrackSListener();
-        super.onDestroyView();
     }
 
     private class AudioStreamReceiver extends BroadcastReceiver {

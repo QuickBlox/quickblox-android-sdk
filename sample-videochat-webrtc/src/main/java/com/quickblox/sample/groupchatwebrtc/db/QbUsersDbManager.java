@@ -39,14 +39,14 @@ public class QbUsersDbManager {
         ArrayList<QBUser> allUsers = new ArrayList<>();
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor c = db.query(dbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
+        Cursor c = db.query(DbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
 
         if (c.moveToFirst()) {
-            int userIdColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_ID);
-            int userLoginColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_LOGIN);
-            int userPassColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_PASSWORD);
-            int userFullNameColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_FULL_NAME);
-            int userTagColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_TAG);
+            int userIdColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_ID);
+            int userLoginColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_LOGIN);
+            int userPassColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_PASSWORD);
+            int userFullNameColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_FULL_NAME);
+            int userTagColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_TAG);
 
             do {
                 QBUser qbUser = new QBUser();
@@ -76,14 +76,14 @@ public class QbUsersDbManager {
         QBUser qbUser = null;
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor c = db.query(dbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
+        Cursor c = db.query(DbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
 
         if (c.moveToFirst()) {
-            int userIdColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_ID);
-            int userLoginColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_LOGIN);
-            int userPassColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_PASSWORD);
-            int userFullNameColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_FULL_NAME);
-            int userTagColIndex = c.getColumnIndex(dbHelper.DB_COLUMN_USER_TAG);
+            int userIdColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_ID);
+            int userLoginColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_LOGIN);
+            int userPassColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_PASSWORD);
+            int userFullNameColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_FULL_NAME);
+            int userTagColIndex = c.getColumnIndex(DbHelper.DB_COLUMN_USER_TAG);
 
             do {
                 if (c.getInt(userIdColIndex) == userId) {
@@ -124,20 +124,20 @@ public class QbUsersDbManager {
         ContentValues cv = new ContentValues();
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        cv.put(dbHelper.DB_COLUMN_USER_FULL_NAME, qbUser.getFullName());
-        cv.put(dbHelper.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
-        cv.put(dbHelper.DB_COLUMN_USER_ID, qbUser.getId());
-        cv.put(dbHelper.DB_COLUMN_USER_PASSWORD, qbUser.getPassword());
-        cv.put(dbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().get(0));
+        cv.put(DbHelper.DB_COLUMN_USER_FULL_NAME, qbUser.getFullName());
+        cv.put(DbHelper.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
+        cv.put(DbHelper.DB_COLUMN_USER_ID, qbUser.getId());
+        cv.put(DbHelper.DB_COLUMN_USER_PASSWORD, qbUser.getPassword());
+        cv.put(DbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().get(0));
 
-        db.insert(dbHelper.DB_TABLE_NAME, null, cv);
+        db.insert(DbHelper.DB_TABLE_NAME, null, cv);
         dbHelper.close();
     }
 
     public void clearDB() {
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(dbHelper.DB_TABLE_NAME, null, null);
+        db.delete(DbHelper.DB_TABLE_NAME, null, null);
         dbHelper.close();
     }
 

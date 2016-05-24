@@ -16,13 +16,13 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "groupchatwebrtcDB";
 
-    public final String DB_TABLE_NAME = "users";
-    public final String DB_COLUMN_ID = "ID";
-    public final String DB_COLUMN_USER_FULL_NAME = "title";
-    public final String DB_COLUMN_USER_LOGIN = "userLogin";
-    public final String DB_COLUMN_USER_ID = "userID";
-    public final String DB_COLUMN_USER_PASSWORD = "userPass";
-    public final String DB_COLUMN_USER_TAG = "serverApiDomain";
+    public static final String DB_TABLE_NAME = "users";
+    public static final String DB_COLUMN_ID = "ID";
+    public static final String DB_COLUMN_USER_FULL_NAME = "userFullName";
+    public static final String DB_COLUMN_USER_LOGIN = "userLogin";
+    public static final String DB_COLUMN_USER_ID = "userID";
+    public static final String DB_COLUMN_USER_PASSWORD = "userPass";
+    public static final String DB_COLUMN_USER_TAG = "userTag";
 
 
     public DbHelper(Context context) {
