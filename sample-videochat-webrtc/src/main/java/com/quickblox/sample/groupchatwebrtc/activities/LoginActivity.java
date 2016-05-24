@@ -15,14 +15,14 @@ import android.widget.EditText;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.sample.core.utils.DeviceUtils;
+import com.quickblox.core.helper.Utils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
-import com.quickblox.sample.groupchatwebrtc.services.CallListenerService;
+import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.users.model.QBUser;
 
@@ -257,7 +257,7 @@ public class LoginActivity extends BaseActivity {
 
             qbUser = new QBUser();
             qbUser.setFullName(String.valueOf(userName));
-            qbUser.setLogin(DeviceUtils.getDeviceUid());
+            qbUser.setLogin(getCurrentDeviceId());
             qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
             qbUser.setTags(userTags);
         }
@@ -286,8 +286,12 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void startLoginService(QBUser qbUser){
-        Intent tempIntent = new Intent(this, CallListenerService.class);
+        Intent tempIntent = new Intent(this, CallService.class);
         PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
-        CallListenerService.start(this, qbUser, pendingIntent);
+        CallService.start(this, qbUser, pendingIntent);
+    }
+
+    private String getCurrentDeviceId(){
+        return Utils.generateDeviceId(this);
     }
 }

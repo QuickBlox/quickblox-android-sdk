@@ -31,14 +31,6 @@ public class PushNotificationSender {
         StringifyArrayList<Integer> userIds = new StringifyArrayList<>(recipients);
         qbEvent.setUserIds(userIds);
 
-        QBPushNotifications.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
-            @Override
-            public void onSuccess(QBEvent qbEvent, Bundle bundle) {
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-            }
-        });
+        QBPushNotifications.createEvent(qbEvent, null);
     }
 }
