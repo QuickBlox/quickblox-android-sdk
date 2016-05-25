@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
@@ -84,7 +85,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
         }
         ViewHolder vh = new ViewHolder(v);
-        vh.setListener( new ViewHolder.ViewHolderClickListener() {
+        vh.setListener(new ViewHolder.ViewHolderClickListener() {
             @Override
             public void onShowOpponent(int callerId) {
                 Log.d("OpponentsAdapter", "onShowOpponent onClick");
@@ -124,6 +125,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         TextView opponentsName;
         TextView connectionStatus;
         RTCGLVideoView opponentView;
+        ProgressBar progressBar;
         private int userId;
         private ViewHolderClickListener viewHolderClickListener;
 
@@ -133,9 +135,10 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
             opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar_adapter);
         }
 
-        private void setListener(ViewHolderClickListener viewHolderClickListener){
+        private void setListener(ViewHolderClickListener viewHolderClickListener) {
             this.viewHolderClickListener = viewHolderClickListener;
         }
 
@@ -151,12 +154,16 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             return userId;
         }
 
+        public ProgressBar getProgressBar() {
+            return progressBar;
+        }
+
         public RTCGLVideoView getOpponentView() {
             return opponentView;
         }
 
         public void showOpponentView(boolean show) {
-            Log.d("OpponentsAdapter", "show? "+ show);
+            Log.d("OpponentsAdapter", "show? " + show);
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
 

@@ -193,6 +193,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         } else {
             actionBar.setSubtitle(getString(R.string.opponents, amountOpponents));
         }
+
+        actionButtonsEnabled(true);
     }
 
     private void initVideoTrackSListener() {
@@ -568,6 +570,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 if (!isRemoteShown) {
                     isRemoteShown = true;
 
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setDuringCallActionBar();
+                            backgroundTextView.setVisibility(View.INVISIBLE);
+                        }
+                    });
                     RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
                     config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
                     localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
@@ -708,6 +717,22 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
     }
 
+    private void setProgressBarForOpponentGone(int userId) {
+        if (isPeerToPeerCall) {
+            return;
+        }
+        final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
+        if (holder == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                holder.getProgressBar().setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
@@ -718,15 +743,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setDuringCallActionBar();
-                backgroundTextView.setVisibility(View.INVISIBLE);
-                actionButtonsEnabled(true);
-            }
-        });
         setStatusForOpponent(userId, getString(R.string.connected));
+        setProgressBarForOpponentGone(userId);
         startTimer();
     }
 
@@ -762,6 +780,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userId) {
+        setProgressBarForOpponentGone(userId);
         setStatusForOpponent(userId, getString(R.string.noAnswer));
     }
 
@@ -799,7 +818,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             case R.id.audio_switch:
                 Log.d("Conversation", "audio_switch");
                 callEvents.onSwitchAudio();
-                if(!headsetPlugged) {
+                if (!headsetPlugged) {
                     if (!item.isChecked()) {
                         item.setChecked(true);
                         item.setIcon(R.drawable.ic_speaker_phone);

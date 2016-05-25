@@ -90,4 +90,10 @@
 
     </RelativeLayout>
 
+    <ProgressBar
+        android:id="@+id/progress_bar_adapter"
+        style="@style/MatchWidth"
+        android:visibility="visible"
+        android:layout_gravity="center" />
+
 </FrameLayout>
