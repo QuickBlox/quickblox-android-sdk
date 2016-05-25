@@ -462,10 +462,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         toggleCameraOnUiThread(false);
         int currentCameraId = mediaStreamManager.getCurrentCameraId();
         Log.d(TAG, "Camera was switched!");
-        RendererConfig config = new RendererConfig();
-        config.mirror = CameraUtils.isCameraFront(currentCameraId);
-        localVideoView.updateRenderer(isPeerToPeerCall ? RTCGLVideoView.RendererSurface.SECOND :
-                RTCGLVideoView.RendererSurface.MAIN, config);
+        RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentCameraId));
+        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -801,6 +799,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             case R.id.audio_switch:
                 Log.d("Conversation", "audio_switch");
                 callEvents.onSwitchAudio();
+                if (!item.isChecked()) {
+                    item.setChecked(true);
+                    item.setIcon(R.drawable.ic_speaker_phone);
+                } else {
+                    item.setChecked(false);
+                    item.setIcon(R.drawable.ic_phonelink_ring);
+                }
                 return true;
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
