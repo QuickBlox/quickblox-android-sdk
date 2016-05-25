@@ -3,6 +3,7 @@
     android:orientation="vertical"
     style="@style/WrapContent"
     android:layout_gravity="center_horizontal|center_vertical"
+    android:layout_marginTop="@dimen/padding_actionbar"
     >
 
     <ImageView

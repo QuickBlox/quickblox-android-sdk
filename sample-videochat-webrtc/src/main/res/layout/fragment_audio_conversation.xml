@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id = "@+id/fragmentIncomeCall"
+    style="@style/MatchParent"
+    >
+
+    <LinearLayout
+        android:id="@+id/info_about_call"
+        style="@style/MatchWidth"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_actionbar"
+        >
+
+        <ImageView
+            android:id="@+id/caller_avatar"
+            style="@style/CallerAvatar"
+            />
+
+        <TextView
+            android:id="@+id/caller_name"
+            style="@style/WrapContent"
+            android:textColor="@color/caller_name_text_color"
+            android:textSize="@dimen/caller_name_text_size"
+            android:text="User Name"
+            android:maxLines="1"
+            android:maxLength="25"
+            android:paddingTop="20dp"
+            />
+
+        <Chronometer
+            android:id="@+id/timer_chronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_common"
+            android:textColor="@color/text_color_light_grey"
+            android:textSize="@dimen/text_size"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/also_on_call"
+            style="@style/WrapContent"
+            android:textColor="@color/also_on_call_text_color"
+            android:textSize="@dimen/also_on_call_text_size"
+            android:text="@string/also_on_call"
+            android:layout_marginTop="48dp"
+            />
+
+        <TextView
+            android:id="@+id/other_inc_users"
+            style="@style/WrapContent"
+            android:textColor="@color/other_inc_users_text_color"
+            android:textSize="@dimen/other_inc_users_text_size"
+            android:layout_marginTop="10dp"
+            android:text="User 1, User 2, User 3"
+            />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/element_fragment_video_call"
+        />
+</RelativeLayout>

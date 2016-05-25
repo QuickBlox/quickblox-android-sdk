@@ -18,7 +18,8 @@
         android:background="@drawable/call_cam_toggle_background"
         android:checked="true"
         android:textOff=""
-        android:textOn="" />
+        android:textOn=""
+        android:visibility="gone"/>
 
 
     <ToggleButton
@@ -41,5 +42,18 @@
         android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/shape_oval_red"
         />
+
+    <ToggleButton
+        android:id="@+id/speckerToggle"
+        android:layout_width="@dimen/toggle_button_params"
+        android:layout_height="@dimen/toggle_button_params"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/element_fragment_margin"
+        android:layout_marginStart="@dimen/element_fragment_margin"
+        android:background="@drawable/call_specker_toggle_background"
+        android:checked="true"
+        android:textOff=""
+        android:textOn=""
+        android:visibility="gone"/>
 
 </LinearLayout>

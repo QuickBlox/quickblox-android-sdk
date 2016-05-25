@@ -16,6 +16,8 @@ public interface ConversationFragmentCallbackListener {
 
     void onSetVideoEnabled(boolean isNeedEnableCam);
 
+    void onSwitchAudio();
+
     void onHangUpCurrentSession();
 
     void removeRTCClientConnectionCallback(QBRTCSessionConnectionCallbacks clientConnectionCallbacks);

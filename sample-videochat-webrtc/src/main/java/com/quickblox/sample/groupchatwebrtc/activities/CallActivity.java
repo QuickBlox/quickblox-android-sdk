@@ -23,6 +23,8 @@ import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
+import com.quickblox.sample.groupchatwebrtc.fragments.BaseConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.ConversationAudioCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
@@ -38,6 +40,7 @@ import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
@@ -121,11 +124,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
-        if (isInCommingCall){
+        startSuitableFragment(isInCommingCall);
+
+    }
+
+    private void startSuitableFragment(boolean isInComingCall) {
+        if (isInComingCall){
             initIncommingCallTask();
             addIncomeCallFragment();
         } else {
-            addConvrsationFragment(isInCommingCall);
+            addConvrsationFragment(isInComingCall);
         }
     }
 
@@ -156,9 +164,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
                 Toaster.longToast("Headset " + (plugged ? "plugged" : "unplugged"));
-                if (getCurrentFragment() instanceof ConversationFragment) {
-                    ((ConversationFragment) getCurrentFragment()).enableDinamicToggle(plugged);
-                }
             }
         });
     }
@@ -191,7 +196,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         // Configure
         //
         QBRTCConfig.setMaxOpponentsCount(6);
-        QBRTCConfig.setDisconnectTime(30);
+        QBRTCConfig.setDisconnectTime(2*60);
         QBRTCConfig.setAnswerTimeInterval(45l);
         QBRTCConfig.setDebugEnabled(true);
 
@@ -247,10 +252,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void disableConversationFragmentButtons() {
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment != null) {
-            fragment.actionButtonsEnabled(false);
-        }
+//        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+//        if (fragment != null) {
+//            fragment.actionButtonsEnabled(false);
+//        }
+
     }
 
     private void initIncommingCallTask() {
@@ -260,9 +266,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             public void run() {
                 IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
                 if (incomeCallFragment == null) {
-                    ConversationFragment conversationFragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                    BaseConversationFragment conversationFragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
                     if (conversationFragment != null) {
-                        disableConversationFragmentButtons();
+//                        disableConversationFragmentButtons();
                         ringtonePlayer.stop();
                         hangUpCurrentSession();
                     }
@@ -509,7 +515,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+                BaseConversationFragment fragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
                 if (fragment != null && session.equals(getCurrentSession())) {
                     fragment.actionButtonsEnabled(false);
                 }
@@ -575,8 +581,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void addConvrsationFragment(boolean isIncomingCall){
-        ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
-        FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
+        boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
+        BaseConversationFragment conversationFragment = isVideoCall ? new ConversationFragment() : new ConversationAudioCallFragment();
+//        ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
+        FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, conversationFragment, CONVERSATION_CALL_FRAGMENT);
     }
 
     public SharedPreferences getDefaultSharedPrefs() {
@@ -592,15 +600,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showToast(R.string.dlg_signal_error);
     }
 
-    @Override
-    public void onSwitchAudio() {
-        if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.WIRED_HEADSET
-                || audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.EARPIECE) {
-            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
-        } else {
-            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
-        }
-    }
+
 
     public void onUseHeadSet(boolean use) {
         audioManager.setManageHeadsetByDefault(use);
@@ -661,6 +661,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onSetVideoEnabled(boolean isNeedEnableCam) {
         setVideoEnabled(isNeedEnableCam);
+    }
+
+    @Override
+    public void onSwitchAudio() {
+        if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.WIRED_HEADSET
+                || audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.EARPIECE) {
+            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+        } else {
+            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+        }
     }
 
     @Override
