@@ -115,6 +115,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private ActionBar actionBar;
     private boolean isRemoteShown;
     private boolean isStarted;
+    private boolean headsetPlugged;
 
     private Chronometer timerABWithTimer;
     private int amountOpponents;
@@ -459,7 +460,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private void toggleCameraInternal(QBMediaStreamManager mediaStreamManager) {
-        toggleCameraOnUiThread(false);
         int currentCameraId = mediaStreamManager.getCurrentCameraId();
         Log.d(TAG, "Camera was switched!");
         RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentCameraId));
@@ -782,8 +782,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     //////////////////////////////////   end     //////////////////////////////////////////
 
 
-    public void enableDinamicToggle(boolean plugged) {
-
+    public void enableDynamicToggle(boolean plugged) {
+        headsetPlugged = plugged;
     }
 
     @Override
@@ -799,23 +799,25 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             case R.id.audio_switch:
                 Log.d("Conversation", "audio_switch");
                 callEvents.onSwitchAudio();
-                if (!item.isChecked()) {
-                    item.setChecked(true);
-                    item.setIcon(R.drawable.ic_speaker_phone);
-                } else {
-                    item.setChecked(false);
-                    item.setIcon(R.drawable.ic_phonelink_ring);
+                if(!headsetPlugged) {
+                    if (!item.isChecked()) {
+                        item.setChecked(true);
+                        item.setIcon(R.drawable.ic_speaker_phone);
+                    } else {
+                        item.setChecked(false);
+                        item.setIcon(R.drawable.ic_phonelink_ring);
+                    }
                 }
                 return true;
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
                 switchCamera();
-                if (!item.isChecked()) {
-                    item.setChecked(true);
-                    item.setIcon(R.drawable.ic_camera_rear);
-                } else {
-                    item.setChecked(false);
+                if (CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId())) {
+                    Log.d("Conversation", "CameraFront now!");
                     item.setIcon(R.drawable.ic_camera_front);
+                } else {
+                    Log.d("Conversation", "CameraRear now!");
+                    item.setIcon(R.drawable.ic_camera_rear);
                 }
             default:
                 return super.onOptionsItemSelected(item);
@@ -890,7 +892,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             } else {
                 actionBar.show();
                 fillVideoView(localVideoView, localVideoTrack, false);
-                RendererConfig config = setRTCCameraMirrorConfig(true);
+                RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
                 localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
                 actionVideoButtonsLayout.setVisibility(View.VISIBLE);

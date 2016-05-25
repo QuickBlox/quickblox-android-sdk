@@ -148,19 +148,20 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         audioManager = AppRTCAudioManager.create(this, new AppRTCAudioManager.OnAudioManagerStateListener() {
             @Override
             public void onAudioChangedState(AppRTCAudioManager.AudioDevice audioDevice) {
-                Toaster.longToast("Audio device swicthed to  " + audioDevice);
+                Toaster.shortToast("Audio device switched to  " + audioDevice);
             }
         });
         audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
-                Toaster.longToast("Headset " + (plugged ? "plugged" : "unplugged"));
+                Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
                 if (getCurrentFragment() instanceof ConversationFragment) {
-                    ((ConversationFragment) getCurrentFragment()).enableDinamicToggle(plugged);
+                    ((ConversationFragment) getCurrentFragment()).enableDynamicToggle(plugged);
                 }
             }
         });
+        audioManager.init();
     }
 
     private void initQBRTCClient() {
