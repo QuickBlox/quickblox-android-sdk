@@ -87,7 +87,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private QbUsersDbManager dbManager;
 
     public static void start(Context context,
-                             boolean isIncomingCall){
+                             boolean isIncomingCall) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
@@ -121,7 +121,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
-        if (isInCommingCall){
+        if (isInCommingCall) {
             initIncommingCallTask();
             addIncomeCallFragment();
         } else {
@@ -293,13 +293,13 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void setAudioEnabled(boolean isAudioEnabled){
+    private void setAudioEnabled(boolean isAudioEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setAudioEnabled(isAudioEnabled);
         }
     }
 
-    private void setVideoEnabled(boolean isVideoEnabled){
+    private void setVideoEnabled(boolean isVideoEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setVideoEnabled(isVideoEnabled);
         }
@@ -331,7 +331,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     protected void onStop() {
         super.onStop();
     }
-
 
 
     private void forbidenCloseByWifiState() {
@@ -493,8 +492,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                         audioManager.close();
                     }
                     releaseCurrentSession();
-
-//                    stopTimer();
+                    if (sessionUserCallback != null) {
+                        sessionUserCallback.onSessionClosed();
+                    }
                     closeByWifiStateAllow = true;
                     finish();
                 }
@@ -573,7 +573,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void addConvrsationFragment(boolean isIncomingCall){
+    private void addConvrsationFragment(boolean isIncomingCall) {
         ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
     }
@@ -618,9 +618,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         rejectCurrentSession();
     }
     //////////////////////////////////////////   end   /////////////////////////////////////////////
-
-
-
 
 
     @Override
@@ -677,6 +674,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
     public interface QBRTCSessionUserCallback {
+        void onSessionClosed();
+
         void onUserNotAnswer(QBRTCSession session, Integer userId);
 
         void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);

@@ -440,7 +440,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
     }
 
-    private void switchCamera() {
+    private void switchCamera(MenuItem item) {
         if (currentSession == null) {
             return;
         }
@@ -459,6 +459,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 });
             }
         });
+
+        if (CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId())) {
+            Log.d(TAG, "CameraFront now!");
+            item.setIcon(R.drawable.ic_camera_front);
+        } else {
+            Log.d(TAG, "CameraRear now!");
+            item.setIcon(R.drawable.ic_camera_rear);
+        }
     }
 
     private void toggleCameraInternal(QBMediaStreamManager mediaStreamManager) {
@@ -547,12 +555,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     if (localVideoView == null) {
                         localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     }
-                    RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
-                    config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-                    config = setRTCCameraMirrorConfig(false);
-                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
-                    fillVideoView(localVideoView, videoTrack);
+                    setLocalVideoView(videoTrack);
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
 
@@ -577,12 +580,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                             backgroundTextView.setVisibility(View.INVISIBLE);
                         }
                     });
-                    RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
-                    config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-                    config = setRTCCameraMirrorConfig(false);
-                    localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
-                    fillVideoView(localVideoView, videoTrack);
+                    setLocalVideoView(videoTrack);
                 }
             }
         }
@@ -639,17 +637,21 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     }
 
+    private void setLocalVideoView(QBRTCVideoTrack videoTrack) {
+        RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
+        config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+        config = setRTCCameraMirrorConfig(false);
+        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
+        fillVideoView(localVideoView, videoTrack);
+    }
+
     private void startTimer() {
         if (!isStarted) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    timerABWithTimer.setVisibility(View.VISIBLE);
-                    timerABWithTimer.setBase(SystemClock.elapsedRealtime());
-                    timerABWithTimer.start();
-                    isStarted = true;
-                }
-            });
+            timerABWithTimer.setVisibility(View.VISIBLE);
+            timerABWithTimer.setBase(SystemClock.elapsedRealtime());
+            timerABWithTimer.start();
+            isStarted = true;
         }
     }
 
@@ -745,13 +747,17 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
         setStatusForOpponent(userId, getString(R.string.connected));
         setProgressBarForOpponentGone(userId);
-        startTimer();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                startTimer();
+            }
+        });
     }
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer integer) {
         setStatusForOpponent(integer, getString(R.string.closed));
-        stopTimer();
     }
 
     @Override
@@ -777,6 +783,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
 
     /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
+
+    @Override
+    public void onSessionClosed() {
+        stopTimer();
+    }
 
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userId) {
@@ -820,24 +831,18 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 callEvents.onSwitchAudio();
                 if (!headsetPlugged) {
                     if (!item.isChecked()) {
-                        item.setChecked(true);
+                        item.setChecked(!item.isChecked());
                         item.setIcon(R.drawable.ic_speaker_phone);
                     } else {
-                        item.setChecked(false);
+                        item.setChecked(!item.isChecked());
                         item.setIcon(R.drawable.ic_phonelink_ring);
                     }
                 }
                 return true;
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
-                switchCamera();
-                if (CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId())) {
-                    Log.d("Conversation", "CameraFront now!");
-                    item.setIcon(R.drawable.ic_camera_front);
-                } else {
-                    Log.d("Conversation", "CameraRear now!");
-                    item.setIcon(R.drawable.ic_camera_rear);
-                }
+                switchCamera(item);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -897,32 +902,49 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         private void setFullScreenOnOff() {
             if (actionBar.isShowing()) {
-                actionBar.hide();
-                localVideoView.releaseLocalRendererCallback();
-                actionVideoButtonsLayout.setVisibility(View.GONE);
-
-                if (!isPeerToPeerCall) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    params.setMargins(0, 0, 0, 0);
-
-                    recyclerView.setLayoutParams(params);
-                }
+                hideToolBarAndButtons();
             } else {
-                actionBar.show();
-                fillVideoView(localVideoView, localVideoTrack, false);
-                RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-                config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-                localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-                actionVideoButtonsLayout.setVisibility(View.VISIBLE);
-                if (!isPeerToPeerCall) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-                    params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
-
-                    recyclerView.setLayoutParams(params);
-                }
+                showToolBarAndButtons();
             }
+        }
+
+        private void hideToolBarAndButtons() {
+            actionBar.hide();
+            localVideoView.releaseLocalRendererCallback();
+            actionVideoButtonsLayout.setVisibility(View.GONE);
+
+            if (!isPeerToPeerCall) {
+                shiftBottomListOpponents();
+            }
+        }
+
+        private void showToolBarAndButtons() {
+            actionBar.show();
+            fillVideoView(localVideoView, localVideoTrack, false);
+            RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
+            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+            actionVideoButtonsLayout.setVisibility(View.VISIBLE);
+
+            if (!isPeerToPeerCall) {
+                shiftMarginListOpponents();
+            }
+        }
+
+        private void shiftBottomListOpponents() {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            params.setMargins(0, 0, 0, 0);
+
+            recyclerView.setLayoutParams(params);
+        }
+
+        private void shiftMarginListOpponents() {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+            params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
+
+            recyclerView.setLayoutParams(params);
         }
 
     }
