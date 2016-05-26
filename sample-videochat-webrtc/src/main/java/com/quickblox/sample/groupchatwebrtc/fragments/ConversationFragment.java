@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -62,6 +63,7 @@ import org.webrtc.VideoRenderer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
@@ -193,7 +195,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         } else {
             actionBar.setSubtitle(getString(R.string.opponents, amountOpponents));
         }
-
+        backgroundTextView.setVisibility(View.INVISIBLE);
         actionButtonsEnabled(true);
     }
 
@@ -501,6 +503,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
+    private void setOpponentsVisibility(int visibility) {
+        for (OpponentsFromCallAdapter.ViewHolder RTCView : getAllOpponentsView()) {
+            RTCView.getOpponentView().setVisibility(visibility);
+        }
+    }
+
     ////////////////////////////  callbacks from QBRTCClientVideoTracksCallbacks ///////////////////
 
     private RTCGLVideoView.RendererConfig setRTCCameraMirrorConfig(boolean mirror) {
@@ -549,7 +557,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
+                    setDuringCallActionBar();
                     Log.d("onRemoteVideoTrackRe", "localVideoView==null?" + (localVideoView == null));
                     Log.d("onRemoteVideoTrackRe", "videoTrack==null?" + (videoTrack == null));
                     if (localVideoView == null) {
@@ -564,7 +572,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             if (itemHolder == null) {
                 return;
             }
-            RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
+            final RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
 
             getVideoTrackMap().put(userID, videoTrack);
             if (remoteVideoView != null) {
@@ -573,11 +581,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 if (!isRemoteShown) {
                     isRemoteShown = true;
 
-                    getActivity().runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             setDuringCallActionBar();
-                            backgroundTextView.setVisibility(View.INVISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            setOpponentsVisibility(View.VISIBLE);
                         }
                     });
                     setLocalVideoView(videoTrack);
@@ -607,6 +616,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     if (localVideoView != null) {
                         return;
                     }
+                    setOpponentsVisibility(View.GONE);
                     Log.i(TAG, "OnBindLastViewHolder init localView");
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     localVideoView.setOnClickListener(localViewOnClickListener);
@@ -673,11 +683,19 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         return holder;
     }
 
-    private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
+    private List<OpponentsFromCallAdapter.ViewHolder> getAllOpponentsView() {
         int childCount = recyclerView.getChildCount();
+        List<OpponentsFromCallAdapter.ViewHolder> holders = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
             View childView = recyclerView.getChildAt(i);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
+            holders.add(childViewHolder);
+        }
+        return holders;
+    }
+
+    private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
+        for (OpponentsFromCallAdapter.ViewHolder childViewHolder : getAllOpponentsView()) {
             Log.d(TAG, "getViewForOpponent holder user id is : " + childViewHolder.getUserId());
             if (userID.equals(childViewHolder.getUserId())) {
                 return childViewHolder;
@@ -733,6 +751,14 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 holder.getProgressBar().setVisibility(View.GONE);
             }
         });
+    }
+
+    private void setBackgroundOpponentView(Integer userId) {
+        OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
+        if (holder == null) {
+            return;
+        }
+        holder.getOpponentView().setBackgroundColor(Color.parseColor("#ffffff"));
     }
 
 
