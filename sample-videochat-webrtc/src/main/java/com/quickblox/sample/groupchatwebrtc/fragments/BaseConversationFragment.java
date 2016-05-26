@@ -3,6 +3,8 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.ToggleButton;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 /**
  * Created by tereha on 24.05.16.
  */
-public abstract class BaseConversationFragment extends Fragment {
+public abstract class BaseConversationFragment extends Fragment implements CallActivity.CurrentCallStateCallback {
 
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
     protected QbUsersDbManager dbManager;
@@ -43,6 +46,8 @@ public abstract class BaseConversationFragment extends Fragment {
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
     private Chronometer timerChronometer;
     private boolean isMessageProcessed;
+    private boolean isStarted;
+    protected FragmentLifeCycleHandler mainHandler;
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall){
         Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
@@ -70,6 +75,8 @@ public abstract class BaseConversationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        mainHandler = new FragmentLifeCycleHandler();
+        conversationFragmentCallbackListener.addCurrentCallStateCallback(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -139,6 +146,7 @@ public abstract class BaseConversationFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        conversationFragmentCallbackListener.removeCurrentCallStateCallback(this);
         super.onDestroy();
     }
 
@@ -179,15 +187,53 @@ public abstract class BaseConversationFragment extends Fragment {
     }
 
     public void startTimer() {
-        if (timerChronometer != null) {
+        if (!isStarted) {
+            timerChronometer.setVisibility(View.VISIBLE);
             timerChronometer.setBase(SystemClock.elapsedRealtime());
             timerChronometer.start();
+            isStarted = true;
         }
     }
 
-    public void stopTimer(){
-        if (timerChronometer != null){
+    public void stopTimer() {
+        if (timerChronometer != null) {
             timerChronometer.stop();
+            isStarted = false;
+        }
+    }
+
+    @Override
+    public void onCallStarted() {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                startTimer();
+                actionButtonsEnabled(true);
+            }
+        });
+
+    }
+
+    @Override
+    public void onCallStoped() {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                stopTimer();
+                actionButtonsEnabled(false);
+            }
+        });
+    }
+
+    class FragmentLifeCycleHandler extends Handler {
+
+        @Override
+        public void dispatchMessage(Message msg) {
+            if (isAdded() && getActivity() != null) {
+                super.dispatchMessage(msg);
+            } else {
+                Log.d(TAG, "Fragment under destroying");
+            }
         }
     }
 }

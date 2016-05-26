@@ -51,6 +51,7 @@ import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.webrtc.VideoCapturerAndroid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
     private QbUsersDbManager dbManager;
+    private ArrayList <CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -250,14 +252,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     private void initWiFiManagerListener() {
         networkConnectionChecker = new NetworkConnectionChecker(getApplication());
-    }
-
-    private void disableConversationFragmentButtons() {
-//        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-//        if (fragment != null) {
-//            fragment.actionButtonsEnabled(false);
-//        }
-
     }
 
     private void initIncommingCallTask() {
@@ -455,6 +449,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onConnectedToUser(QBRTCSession session, final Integer userID) {
+        notifyCallStateListenersCallStarted();
         forbidenCloseByWifiState();
         runOnUiThread(new Runnable() {
             @Override
@@ -511,14 +506,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onSessionStartClose(final QBRTCSession session) {
         session.removeSessionCallbacksListener(CallActivity.this);
+        notifyCallStateListenersCallStoped();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //TODO VT move this code to method onSessionClesi in fragment
-//                BaseConversationFragment fragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-//                if (fragment != null && session.equals(getCurrentSession())) {
-//                    fragment.actionButtonsEnabled(false);
-//                }
+
             }
         });
     }
@@ -686,6 +678,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         this.sessionUserCallback = null;
     }
 
+    @Override
+    public void addCurrentCallStateCallback(CurrentCallStateCallback currentCallStateCallback) {
+        currentCallStateCallbackList.add(currentCallStateCallback);
+    }
+
+    @Override
+    public void removeCurrentCallStateCallback(CurrentCallStateCallback currentCallStateCallback) {
+        currentCallStateCallbackList.remove(currentCallStateCallback);
+    }
+
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
     public interface QBRTCSessionUserCallback {
@@ -698,5 +700,23 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
 
         void onReceiveHangUpFromUser(QBRTCSession session, Integer userId);
+    }
+
+    public interface CurrentCallStateCallback{
+        void onCallStarted();
+
+        void onCallStoped();
+    }
+
+    private void notifyCallStateListenersCallStarted(){
+        for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+            callback.onCallStarted();
+        }
+    }
+
+    private void notifyCallStateListenersCallStoped(){
+        for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+            callback.onCallStarted();
+        }
     }
 }

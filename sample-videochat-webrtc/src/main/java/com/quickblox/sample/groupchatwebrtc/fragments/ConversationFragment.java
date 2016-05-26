@@ -1,16 +1,10 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Rect;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -39,11 +33,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
-import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
-import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
-import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -58,6 +48,7 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,16 +67,9 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
 
     private String TAG = ConversationFragment.class.getSimpleName();
-    private ArrayList<QBUser> opponents;
-    private int qbConferenceType;
-    private int startReason;
 
     private ToggleButton cameraToggle;
-    private ToggleButton micToggleVideoCall;
-    private ImageButton handUpVideoCall;
-    private View myCameraOff;
     private View view;
-    private boolean isVideoEnabled = false;
     private boolean isVideoCall = false;
     private LinearLayout actionVideoButtonsLayout;
     private RTCGLVideoView localVideoView;
@@ -94,11 +78,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
-    private Handler mainHandler;
-    private OnCallEventsController callEvents;
-    private ConversationFragmentCallbackListener conversationFragmentCallbackListener;
-    private boolean isIncomingCall;
-    private QBRTCSession currentSession;
     private TextView connectionStatusLocal;
     private TextView backgroundTextView;
 
@@ -120,7 +99,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
         initActionBarInner();
 
-        mainHandler = new FragmentLifeCycleHandler();
         return view;
     }
 
@@ -135,7 +113,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         amountOpponents = opponents.size();
 
         String callerName = dbManager.getUserNameById(currentSession.getCallerID());
-        qbConferenceType = currentSession.getConferenceType().ordinal();
 
         isPeerToPeerCall = opponents.size() == 1;
         isVideoCall = (QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType()));
@@ -143,7 +120,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
     public void initActionBarInner() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
-        timerABWithTimer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -174,14 +150,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         }
     }
 
-    private void setUpUiByCallType(int qbConferenceType) {
-        if (!isVideoCall) {
-            cameraToggle.setVisibility(View.GONE);
-        }
-    }
-
-    public void actionButtonsEnabled(boolean enability) {
-
     @Override
     protected void actionButtonsEnabled(boolean enability) {
         super.actionButtonsEnabled(enability);
@@ -189,11 +157,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
     @Override
@@ -338,6 +301,8 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     }
 
     protected void initButtonsListener() {
+        super.initButtonsListener();
+
         cameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -463,6 +428,8 @@ public class ConversationFragment extends BaseConversationFragment implements Se
                         localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     }
                     setLocalVideoView(videoTrack);
+                    setDuringCallActionBar();
+                    backgroundTextView.setVisibility(View.INVISIBLE);
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
 
@@ -551,22 +518,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
         fillVideoView(localVideoView, videoTrack);
-    }
-
-    private void startTimer() {
-        if (!isStarted) {
-            timerABWithTimer.setVisibility(View.VISIBLE);
-            timerABWithTimer.setBase(SystemClock.elapsedRealtime());
-            timerABWithTimer.start();
-            isStarted = true;
-        }
-    }
-
-    private void stopTimer() {
-        if (timerABWithTimer != null) {
-            timerABWithTimer.stop();
-            isStarted = false;
-        }
     }
 
     private OpponentsFromCallAdapter.ViewHolder getViewHolderForOpponent(Integer userID) {
@@ -761,17 +712,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         ENABLED_FROM_USER
     }
 
-    class FragmentLifeCycleHandler extends Handler {
 
-        @Override
-        public void dispatchMessage(Message msg) {
-            if (isAdded() && getActivity() != null) {
-                super.dispatchMessage(msg);
-            } else {
-                Log.d(TAG, "Fragment under destroying");
-            }
-        }
-    }
 
     class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -840,7 +781,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
             recyclerView.setLayoutParams(params);
         }
-
     }
 }
 

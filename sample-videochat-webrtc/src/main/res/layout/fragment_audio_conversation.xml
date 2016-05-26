@@ -9,7 +9,7 @@
         style="@style/MatchWidth"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/padding_actionbar"
+        android:layout_marginTop="@dimen/action_bar_height"
         >
 
         <ImageView
@@ -30,11 +30,10 @@
 
         <Chronometer
             android:id="@+id/timer_chronometer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/WrapContent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_common"
-            android:textColor="@color/text_color_light_grey"
+            android:textColor="@color/also_on_call_text_color"
             android:textSize="@dimen/text_size"
             android:visibility="invisible" />
 

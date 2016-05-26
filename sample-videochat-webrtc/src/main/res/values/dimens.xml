@@ -6,6 +6,7 @@
 
     <dimen name="item_width">80dp</dimen>
     <dimen name="item_height">136dp</dimen>
+    <dimen name="action_bar_height">80dp</dimen>
 
     <dimen name="toggle_button_params">60dp</dimen>
     <dimen name="element_fragment_margin">30dp</dimen>
