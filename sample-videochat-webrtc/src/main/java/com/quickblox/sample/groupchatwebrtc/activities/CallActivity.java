@@ -90,7 +90,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private QbUsersDbManager dbManager;
 
     public static void start(Context context,
-                             boolean isIncomingCall){
+                             boolean isIncomingCall) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
@@ -156,16 +156,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         audioManager = AppRTCAudioManager.create(this, new AppRTCAudioManager.OnAudioManagerStateListener() {
             @Override
             public void onAudioChangedState(AppRTCAudioManager.AudioDevice audioDevice) {
-                Toaster.longToast("Audio device swicthed to  " + audioDevice);
+                Toaster.shortToast("Audio device switched to  " + audioDevice);
             }
         });
         audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
-                Toaster.longToast("Headset " + (plugged ? "plugged" : "unplugged"));
+                Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
             }
         });
+        audioManager.init();
     }
 
     private void initQBRTCClient() {
@@ -196,7 +197,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         // Configure
         //
         QBRTCConfig.setMaxOpponentsCount(6);
-        QBRTCConfig.setDisconnectTime(2*60);
+        QBRTCConfig.setDisconnectTime(30);
         QBRTCConfig.setAnswerTimeInterval(45l);
         QBRTCConfig.setDebugEnabled(true);
 
@@ -298,13 +299,13 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void setAudioEnabled(boolean isAudioEnabled){
+    private void setAudioEnabled(boolean isAudioEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setAudioEnabled(isAudioEnabled);
         }
     }
 
-    private void setVideoEnabled(boolean isVideoEnabled){
+    private void setVideoEnabled(boolean isVideoEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             currentSession.getMediaStreamManager().setVideoEnabled(isVideoEnabled);
         }
@@ -336,7 +337,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     protected void onStop() {
         super.onStop();
     }
-
 
 
     private void forbidenCloseByWifiState() {
@@ -462,8 +462,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 if (isInCommingCall) {
                     stopIncomeCallTimer();
                 }
-
-//                startTimer();
                 Log.d(TAG, "onConnectedToUser() is started");
 
             }
@@ -500,8 +498,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                         audioManager.close();
                     }
                     releaseCurrentSession();
-
-//                    stopTimer();
+                    if (sessionUserCallback != null) {
+                        sessionUserCallback.onSessionClosed();
+                    }
                     closeByWifiStateAllow = true;
                     finish();
                 }
@@ -626,9 +625,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
 
-
-
-
     @Override
     public void onBackPressed() {
     }
@@ -693,6 +689,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
     public interface QBRTCSessionUserCallback {
+        void onSessionClosed();
+
         void onUserNotAnswer(QBRTCSession session, Integer userId);
 
         void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
