@@ -37,7 +37,6 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
@@ -77,15 +76,12 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private boolean isVideoCall = false;
     private LinearLayout actionVideoButtonsLayout;
     private RTCGLVideoView localVideoView;
-    private IntentFilter intentFilter;
-    private AudioStreamReceiver audioStreamReceiver;
     private CameraState cameraState = CameraState.NONE;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private Handler mainHandler;
-    private ConversationFragmentCallbackListener conversationFragmentCallbackListener;
     private TextView connectionStatusLocal;
 
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
@@ -94,26 +90,13 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
     private int amountOpponents;
 
-    public static ConversationFragment newInstance(boolean isIncomingCall){
-        ConversationFragment fragment = new ConversationFragment();
-
-        Bundle args = new Bundle();
-        args.putBoolean(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
-
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_conversation, container, false);
+        view = super.onCreateView(inflater,container,savedInstanceState);
         Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
 
-        initFields();
-        initViews(view);
         initActionBarInner();
-        initButtonsListener();
 
         mainHandler = new FragmentLifeCycleHandler();
         return view;
@@ -131,9 +114,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
         isPeerToPeerCall = opponents.size() == 1;
         isVideoCall = (QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType()));
-
-        Log.d(TAG, "opponents: " + opponents.toString());
-        Log.d(TAG, "currentSession " + currentSession.toString());
     }
 
     public void initActionBarInner() {
@@ -171,7 +151,9 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         }
     }
 
-    public void actionButtonsEnabled(boolean enability) {
+    @Override
+    protected void actionButtonsEnabled(boolean enability) {
+        super.actionButtonsEnabled(enability);
         cameraToggle.setEnabled(enability);
 
         // inactivate toggle buttons
@@ -181,40 +163,28 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        try {
-            conversationFragmentCallbackListener = (ConversationFragmentCallbackListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                     + " must implement ConversationFragmentCallbackListener");
-        }
     }
 
     @Override
     public void onStart() {
+        super.onStart();
 
         initVideoTrackSListener();
-        getActivity().registerReceiver(audioStreamReceiver, intentFilter);
-
 
         conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
-        intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
-
-        audioStreamReceiver = new AudioStreamReceiver();
     }
 
+    @Override
     protected void initViews(View view) {
+        super.initViews(view);
 
         opponentViewHolders = new SparseArray<>(opponents.size());
 
@@ -239,6 +209,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         connectionStatusLocal = (TextView)view.findViewById(R.id.connectionStatusLocal);
 
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
+        cameraToggle.setVisibility(View.VISIBLE);
 
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
@@ -320,12 +291,8 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     public void onStop() {
         super.onStop();
         removeVideoTrackSListener();
-        getActivity().unregisterReceiver(audioStreamReceiver);
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
-        if (currentSession != null){
-            currentSession.removeVideoTrackCallbacksListener(this);
-        }
     }
 
     protected void initButtonsListener() {
@@ -699,22 +666,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
                 switchCamera();
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private class AudioStreamReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().equals(AudioManager.ACTION_HEADSET_PLUG)) {
-                Log.d(TAG, "ACTION_HEADSET_PLUG " + intent.getIntExtra("state", -1));
-            } else if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)) {
-                Log.d(TAG, "ACTION_SCO_AUDIO_STATE_UPDATED " + intent.getIntExtra("EXTRA_SCO_AUDIO_STATE", -2));
-            }
-
-//            dynamicToggleVideoCall.setChecked(intent.getIntExtra("state", -1) == 1);
-
         }
     }
 

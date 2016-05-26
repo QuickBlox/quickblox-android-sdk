@@ -515,10 +515,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                BaseConversationFragment fragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-                if (fragment != null && session.equals(getCurrentSession())) {
-                    fragment.actionButtonsEnabled(false);
-                }
+                //TODO VT move this code to method onSessionClesi in fragment
+//                BaseConversationFragment fragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
+//                if (fragment != null && session.equals(getCurrentSession())) {
+//                    fragment.actionButtonsEnabled(false);
+//                }
             }
         });
     }
@@ -582,7 +583,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     private void addConvrsationFragment(boolean isIncomingCall){
         boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
-        BaseConversationFragment conversationFragment = isVideoCall ? new ConversationFragment() : new ConversationAudioCallFragment();
+        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
+                isVideoCall
+                        ? new ConversationFragment()
+                        : new ConversationAudioCallFragment(),
+                isIncomingCall);
 //        ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, conversationFragment, CONVERSATION_CALL_FRAGMENT);
     }

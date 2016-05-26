@@ -13,7 +13,6 @@ import android.widget.ToggleButton;
 import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -31,18 +30,6 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
     private TextView otherOpponentsTextView;
 
 
-    public static ConversationFragment newInstance(boolean isIncomingCall){
-        ConversationFragment fragment = new ConversationFragment();
-
-        Bundle args = new Bundle();
-        args.putBoolean(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
-
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +38,6 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-//        initViews(super.onCreateView(inflater, container, savedInstanceState));
-
-
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -75,6 +57,8 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
 
         audioSwichToggleButton = (ToggleButton) view.findViewById(R.id.speckerToggle);
         audioSwichToggleButton.setVisibility(View.VISIBLE);
+
+        actionButtonsEnabled(false);
     }
 
     private String getOtherOpponentsNames() {
@@ -95,6 +79,15 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
                 conversationFragmentCallbackListener.onSwitchAudio();
             }
         });
+    }
+
+    @Override
+    protected void actionButtonsEnabled(boolean enability) {
+        super.actionButtonsEnabled(enability);
+
+        audioSwichToggleButton.setEnabled(enability);
+
+        audioSwichToggleButton.setActivated(enability);
     }
 
     @Override

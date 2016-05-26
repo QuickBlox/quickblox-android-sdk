@@ -44,6 +44,16 @@ public abstract class BaseConversationFragment extends Fragment {
     private Chronometer timerChronometer;
     private boolean isMessageProcessed;
 
+    public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall){
+        Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
+        Bundle args = new Bundle();
+        args.putBoolean(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
+
+        baseConversationFragment.setArguments(args);
+
+        return baseConversationFragment;
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -80,18 +90,12 @@ public abstract class BaseConversationFragment extends Fragment {
     protected void initFields() {
         dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
+        currentSession = sessionManager.getCurrentSession();
+        opponents = dbManager.getUsersByIds(currentSession.getOpponents());
 
         if (getArguments() != null) {
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
         }
-
-        if (isIncomingCall){
-            opponents.add(dbManager.getUserById(currentSession.getCallerID()));
-            opponents.remove(QBChatService.getInstance().getUser());
-        }
-
-        currentSession = sessionManager.getCurrentSession();
-        opponents = dbManager.getUsersByIds(currentSession.getOpponents());
 
         if (isIncomingCall){
             opponents.add(dbManager.getUserById(currentSession.getCallerID()));
@@ -110,9 +114,9 @@ public abstract class BaseConversationFragment extends Fragment {
 
         if (!isMessageProcessed) {
             if (isIncomingCall) {
-                currentSession.acceptCall(currentSession.getUserInfo());
+                currentSession.acceptCall(null);
             } else {
-                currentSession.startCall(currentSession.getUserInfo());
+                currentSession.startCall(null);
             }
             isMessageProcessed = true;
         }
@@ -142,8 +146,6 @@ public abstract class BaseConversationFragment extends Fragment {
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
         timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
-
-        actionButtonsEnabled(false);
     }
 
     protected void initButtonsListener() {
@@ -168,7 +170,7 @@ public abstract class BaseConversationFragment extends Fragment {
         });
     }
 
-    public void actionButtonsEnabled(boolean enability) {
+    protected void actionButtonsEnabled(boolean enability) {
 
         micToggleVideoCall.setEnabled(enability);
 
