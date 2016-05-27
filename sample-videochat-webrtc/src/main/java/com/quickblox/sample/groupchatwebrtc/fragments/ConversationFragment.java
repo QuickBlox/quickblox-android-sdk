@@ -3,8 +3,6 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -23,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,6 +33,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -48,7 +48,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +78,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private TextView connectionStatusLocal;
-    private TextView backgroundTextView;
 
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
     private OpponentsFromCallAdapter opponentsAdapter;
@@ -112,6 +110,8 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         super.initFields();
         amountOpponents = opponents.size();
 
+        timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer_action_bar);
+
         String callerName = dbManager.getUserNameById(currentSession.getCallerID());
 
         isPeerToPeerCall = opponents.size() == 1;
@@ -120,6 +120,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
     public void initActionBarInner() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        toolbar.setVisibility(View.VISIBLE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -203,13 +204,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         connectionStatusLocal = (TextView) view.findViewById(R.id.connectionStatusLocal);
 
         backgroundTextView = (TextView) view.findViewById(R.id.backgroundText);
-
-        String[] opponentName = new String[opponents.size()];
-        for (int i = 0; i < opponents.size(); i++) {
-            opponentName[i] = opponents.get(i).getFullName();
-        }
-
-        backgroundTextView.setText(getString(R.string.outgoing_audio_video_call_title, TextUtils.join(", ", opponentName)));
+        backgroundTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
 
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 

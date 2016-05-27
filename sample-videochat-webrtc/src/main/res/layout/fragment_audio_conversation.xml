@@ -29,7 +29,7 @@
             />
 
         <Chronometer
-            android:id="@+id/timer_chronometer"
+            android:id="@+id/timer_chronometer_audio_call"
             style="@style/WrapContent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_common"
@@ -43,7 +43,7 @@
             android:textColor="@color/also_on_call_text_color"
             android:textSize="@dimen/also_on_call_text_size"
             android:text="@string/also_on_call"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="20dp"
             />
 
         <TextView
@@ -56,6 +56,40 @@
             />
 
     </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/background_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:id="@+id/backgroundText"
+            style="@style/MatchWidth"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:textColor="@color/text_opponent_names_out_audio_call"
+            android:textSize="@dimen/text_size_call"
+            android:textStyle="normal"
+            android:layout_marginTop="138dp"
+            >
+        </TextView>
+
+        <TextView
+            style="@style/MatchWidth"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:textColor="@color/call_type_text_color"
+            android:textSize="@dimen/text_size_ringing"
+            android:textStyle="normal"
+            android:text="@string/ringing"
+            android:layout_below="@+id/backgroundText"
+            android:layout_marginTop="14dp">
+        </TextView>
+
+    </RelativeLayout>
 
     <include
         layout="@layout/element_fragment_video_call"

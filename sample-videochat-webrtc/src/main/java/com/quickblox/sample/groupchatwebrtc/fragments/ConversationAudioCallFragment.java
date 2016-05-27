@@ -42,18 +42,22 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        initActionBarInner();
+        initActionBar();
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    public void initActionBarInner() {
+    public void initActionBar() {
         QBUser user = QBChatService.getInstance().getUser();
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        toolbar.setVisibility(View.VISIBLE);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_color));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.toolbar_subtitle_color));
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-        actionBar.setCustomView(R.layout.toolbar_audio_call);
         actionBar.setTitle(user.getTags().get(0));
         actionBar.setSubtitle(String.format(getString(R.string.logged_in_as), user.getFullName()));
     }
@@ -61,6 +65,11 @@ public class ConversationAudioCallFragment extends BaseConversationFragment {
     @Override
     protected void initViews(View view) {
         super.initViews(view);
+        backgroundTextView = (TextView) view.findViewById(R.id.backgroundText);
+        backgroundTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
+
+        timerChronometer = (Chronometer) view.findViewById(R.id.timer_chronometer_audio_call);
+
         firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.caller_avatar);
         firstOpponentAvatarImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponents.get(0).getId()));
 

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentOpponents"
-    style="@style/MatchParent"
-    android:keepScreenOn="true">
+    style="@style/MatchParent">
 
     <FrameLayout
         android:id="@+id/localView"
@@ -16,10 +15,11 @@
             style="@style/MatchParent"
             android:layout="@layout/local_videoview" />
 
-        <FrameLayout
+
+        <RelativeLayout
             android:id="@+id/background_frame"
             style="@style/MatchParent"
-            android:background="@color/black_transparent_50">
+            android:background="@color/white_transparent_50">
 
             <TextView
                 android:id="@+id/backgroundText"
@@ -28,11 +28,24 @@
                 android:gravity="center_horizontal"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_call"
-                android:textStyle="normal|italic">
-
+                android:textStyle="normal|italic"
+                android:layout_marginTop="138dp"
+                >
             </TextView>
 
-        </FrameLayout>
+            <TextView
+                style="@style/MatchWidth"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_ringing"
+                android:textStyle="normal"
+                android:text="@string/ringing"
+                android:layout_below="@+id/backgroundText"
+                android:layout_marginTop="14dp">
+            </TextView>
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/connectionStatusLocal"

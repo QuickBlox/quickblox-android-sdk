@@ -18,6 +18,7 @@
 
     <dimen name="text_size">20sp</dimen>
     <dimen name="text_size_call">18sp</dimen>
+    <dimen name="text_size_ringing">16sp</dimen>
 
 
     <integer name="users_count">10</integer>

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         View view = inflater.inflate(R.layout.fragment_income_call, container, false);
 
         initFields();
+        hideToolBar();
 
         if (currentSession != null) {
             initUI(view);
@@ -99,6 +101,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             conferenceType = currentSession.getConferenceType();
             Log.d(TAG, conferenceType.toString() + "From onCreateView()");
         }
+    }
+
+    public void hideToolBar() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        toolbar.setVisibility(View.GONE);
     }
 
     @Override

@@ -10,7 +10,7 @@
         style="@style/MatchWidth"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/padding_actionbar"
+        android:layout_marginTop="@dimen/action_bar_height"
         >
 
         <ImageView

@@ -135,5 +135,6 @@
 
     <string name="opponents">and %s other</string>
     <string name="opponent">and %s </string>
+    <string name="ringing">Ringing</string>
 
 </resources>

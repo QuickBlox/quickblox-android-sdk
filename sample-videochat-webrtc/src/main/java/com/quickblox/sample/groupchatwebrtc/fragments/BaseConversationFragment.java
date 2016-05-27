@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.chat.QBChatService;
@@ -44,10 +45,13 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
-    private Chronometer timerChronometer;
+    protected Chronometer timerChronometer;
     private boolean isMessageProcessed;
     private boolean isStarted;
     protected FragmentLifeCycleHandler mainHandler;
+    private View outgoingOpponentsRelativeLayout;
+    protected TextView backgroundTextView;
+
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall){
         Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
@@ -153,7 +157,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected void initViews(View view) {
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
-        timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer);
+        outgoingOpponentsRelativeLayout = view.findViewById(R.id.background_frame);
+        if (isIncomingCall){
+            outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
+        }
     }
 
     protected void initButtonsListener() {
@@ -202,16 +209,20 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         }
     }
 
+    private void hideOutgoingScreen(){
+        outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
+    }
+
     @Override
     public void onCallStarted() {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
+                hideOutgoingScreen();
                 startTimer();
                 actionButtonsEnabled(true);
             }
         });
-
     }
 
     @Override
