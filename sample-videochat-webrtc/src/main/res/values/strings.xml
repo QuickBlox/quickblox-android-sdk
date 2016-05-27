@@ -81,6 +81,9 @@
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
 
     <!-- Settings strings. -->
+    <string name="title_video_category">Video</string>
+    <string name="title_call_settings_category">Call Settings</string>
+
     <string name="pref_default_value">Default</string>
 
     <string name="pref_resolution_key">resolution_preference</string>

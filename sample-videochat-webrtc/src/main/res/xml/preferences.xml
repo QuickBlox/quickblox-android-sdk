@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory
+        android:title="@string/title_video_category">
+
     <ListPreference
         android:key="@string/pref_resolution_key"
         android:title="@string/pref_resolution_title"
@@ -33,6 +36,11 @@
         android:entries="@array/videoCodecs"
         android:entryValues="@array/videoCodecsValues" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_call_settings_category">
+
     <ListPreference
         android:key="@string/pref_audiocodec_key"
         android:title="@string/pref_audiocodec_title"
@@ -46,6 +54,9 @@
         android:title="@string/pref_hwcodec_title"
         android:dialogTitle="@string/pref_hwcodec_dlg"
         android:defaultValue="@string/pref_hwcodec_default" />
+
+    </PreferenceCategory>
+
 
 
 </PreferenceScreen>
