@@ -37,8 +37,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
     private Context context;
     private QBRTCSession session;
-    private List<QBUser> opponents;
-    public List<QBUser> opponentsAll = new ArrayList<>();
+    public List<QBUser> opponents;
     private int gridWidth;
     private boolean showVideoView;
     private LayoutInflater inflater;
@@ -51,7 +50,6 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
                                     boolean showVideoView) {
         this.context = context;
         this.session = session;
-        opponentsAll.addAll(users);
         this.opponents = users;
         this.gridWidth = gridWidth;
         this.columns = columns;

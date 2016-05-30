@@ -122,11 +122,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private Chronometer timerABWithTimer;
     private int amountOpponents;
     private boolean isUserRemoved;
-    private int oldqbUserID;
+    private int oldQbUserIDFullScreen;
     private boolean clicked;
     private QBRTCVideoTrack videoTrackFullScreen;
     RTCGLVideoView remoteVideoViewFromPreview;
     QBRTCVideoTrack lastclickedVideoTrackPreviewScreen;
+    int lastUserID;
+    QBUser currentQbUser;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
         ConversationFragment fragment = new ConversationFragment();
@@ -670,38 +672,36 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         Log.d(TAG, "USer onItemClick= " + userId);
 
 
-//        for(Map.Entry<Integer, QBRTCVideoTrack> entry: getVideoTrackMap().entrySet()) {
-//            System.out.println(entry.getKey());
-//            QBRTCVideoTrack userVideoTrack2 = entry.getValue();
-//            userVideoTrack2.removeRenderer(userVideoTrack2.getRenderer());
-//        }
+        if (lastUserID == userId) {
 
-        if (oldqbUserID != 0) {
-            userId = oldqbUserID;
+            if (oldQbUserIDFullScreen != 0) {
+                userId = oldQbUserIDFullScreen;
+            }
         }
+
 
         for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
             if (entry.getValue().equals(videoTrackFullScreen)) {
-                oldqbUserID = entry.getKey();
-                Log.d(TAG, "USer onItemClickentry.getValue()= " + oldqbUserID);
+                oldQbUserIDFullScreen = entry.getKey();
+                Log.d(TAG, "USer onItemClickentry.getValue()= " + oldQbUserIDFullScreen);
             }
         }
         QBRTCVideoTrack userVideoTrack = getVideoTrackMap().get(userId);
 
 
-//        if (userId == oldqbUserID) {
-//            if (lastclickedVideoTrackPreviewScreen != null) {
-//                userVideoTrack = lastclickedVideoTrackPreviewScreen;
-//            }
-//        }
-//        lastclickedVideoTrackPreviewScreen = videoTrackFullScreen;
-
         userVideoTrack.removeRenderer(userVideoTrack.getRenderer());
-//        remoteVideoViewFromPreview.release();
-//        localVideoView.release();
+
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
-        opponentsAdapter.notifyItemChanged(position);
+//не доделано
+//        for (QBUser qbUser : opponents) {
+//            if (qbUser.getId() == oldQbUserIDFullScreen) {
+//                opponentsAdapter.opponents.set(position, qbUser);
+//                Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
+//                break;
+//            }
+//        }
+//        opponentsAdapter.notifyItemChanged(position);
 
         fillVideoView(false, remoteVideoView, videoTrackFullScreen);
         Log.d(TAG, "remoteVideoView enabled");
@@ -714,8 +714,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         Log.d(TAG, "small screen enabled");
-//
-//        oldqbUserID = userId;
+
+        lastUserID = userId;
     }
 
     private void setLocalVideoView(QBRTCVideoTrack videoTrack) {
