@@ -3,6 +3,7 @@ package com.quickblox.sample.groupchatwebrtc.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,10 @@ import android.view.View.OnClickListener;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +36,9 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private final int paddingLeft = 0;
 
     private Context context;
+    private QBRTCSession session;
     private List<QBUser> opponents;
+    public List<QBUser> opponentsAll = new ArrayList<>();
     private int gridWidth;
     private boolean showVideoView;
     private LayoutInflater inflater;
@@ -40,10 +46,12 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private OnAdapterEventListener adapterListener;
 
 
-    public OpponentsFromCallAdapter(Context context, List<QBUser> users, int width, int height,
+    public OpponentsFromCallAdapter(Context context, QBRTCSession session, List<QBUser> users, int width, int height,
                                     int gridWidth, int columns, int itemMargin,
                                     boolean showVideoView) {
         this.context = context;
+        this.session = session;
+        opponentsAll.addAll(users);
         this.opponents = users;
         this.gridWidth = gridWidth;
         this.columns = columns;
@@ -105,7 +113,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         final QBUser user = opponents.get(position);
 
         holder.opponentsName.setText(user.getFullName());
+        Log.d(TAG, "opponentsName= " + user.getFullName());
+
         holder.setUserId(user.getId());
+        QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(user.getId()).getState();
+//        holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
         if (position == (opponents.size() - 1)) {
             adapterListener.OnBindLastViewHolder(holder, position);
         }
@@ -174,6 +186,30 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         public interface ViewHolderClickListener {
             void onShowOpponent(int callerId);
+        }
+    }
+    static class QBRTCSessionUtils {
+
+        private static final SparseArray<Integer> peerStateDescriptions = new SparseArray<>();
+        static {
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_HANG_UP.ordinal(), R.string.hungUp);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_REJECT.ordinal(), R.string.rejected);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_ANSWER.ordinal(), R.string.noAnswer);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_OFFER.ordinal(), R.string.noAnswer);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECT_TIMEOUT.ordinal(), R.string.disconnected);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTING.ordinal(), R.string.connect);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_PENDING.ordinal(), R.string.pending);
+        }
+
+        public static Integer getStatusDescriptionResource(QBRTCTypes.QBRTCConnectionState connectionState){
+            return peerStateDescriptions.get(connectionState.ordinal());
         }
     }
 }

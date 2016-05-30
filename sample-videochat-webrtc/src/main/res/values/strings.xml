@@ -50,6 +50,7 @@
     <string name="checking">Checking...</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
+    <string name="pending">Pending</string>
 
     <string name="users_tag">webrtcusers</string>
 

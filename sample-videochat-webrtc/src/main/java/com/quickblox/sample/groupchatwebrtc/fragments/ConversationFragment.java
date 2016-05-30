@@ -122,8 +122,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private Chronometer timerABWithTimer;
     private int amountOpponents;
     private boolean isUserRemoved;
-    private int qbUserID;
+    private int oldqbUserID;
     private boolean clicked;
+    private QBRTCVideoTrack videoTrackFullScreen;
+    RTCGLVideoView remoteVideoViewFromPreview;
+    QBRTCVideoTrack lastclickedVideoTrackPreviewScreen;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
         ConversationFragment fragment = new ConversationFragment();
@@ -289,6 +292,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
+
+//          for correct removing item in adapter
+            recyclerView.setItemAnimator(null);
             recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
@@ -327,7 +333,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 columnsCount, rowsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSize);
 
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, (int) getResources().getDimension(R.dimen.item_width),
+        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, (int) getResources().getDimension(R.dimen.item_width),
                 (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount, (int) itemMargin,
                 isVideoCall);
         opponentsAdapter.setAdapterListener(ConversationFragment.this);
@@ -571,7 +577,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             }, LOCAL_TRACk_INITIALIZE_DELAY);
 
         } else {
-            OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+            final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
             if (itemHolder == null) {
                 return;
             }
@@ -580,20 +586,23 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             getVideoTrackMap().put(userID, videoTrack);
 
 
-
             if (remoteVideoView != null) {
                 Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-                if(isRemoteShown){
-                    fillVideoView(remoteVideoView, videoTrack);
+                if (isRemoteShown) {
+                    Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
+                    remoteVideoViewFromPreview = remoteVideoView;
+                    fillVideoView(false, remoteVideoView, videoTrack);
                 }
 
                 if (!isRemoteShown) {
                     isRemoteShown = true;
-                    qbUserID = userID;
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            opponents.remove(itemHolder.getAdapterPosition());
+                            opponentsAdapter.notifyItemRemoved(itemHolder.getAdapterPosition());
+                            opponentsAdapter.notifyItemRangeChanged(itemHolder.getAdapterPosition(), opponents.size());
                             setDuringCallActionBar();
                             recyclerView.setVisibility(View.VISIBLE);
                             setOpponentsVisibility(View.VISIBLE);
@@ -654,9 +663,50 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
 
 
-        localVideoView.release();
-        QBRTCVideoTrack remoteVideoTrack = getVideoTrackMap().get(userId);
-        fillVideoView(localVideoView, remoteVideoTrack);
+//ToDo Something wrong here
+        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
+        RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
+        Log.d(TAG, "remoteVideoView = remoteVideoViewFromPreview? " + (remoteVideoView == remoteVideoViewFromPreview));
+        Log.d(TAG, "USer onItemClick= " + userId);
+
+
+//        for(Map.Entry<Integer, QBRTCVideoTrack> entry: getVideoTrackMap().entrySet()) {
+//            System.out.println(entry.getKey());
+//            QBRTCVideoTrack userVideoTrack2 = entry.getValue();
+//            userVideoTrack2.removeRenderer(userVideoTrack2.getRenderer());
+//        }
+
+        if (oldqbUserID != 0) {
+            userId = oldqbUserID;
+        }
+
+        for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
+            if (entry.getValue().equals(videoTrackFullScreen)) {
+                oldqbUserID = entry.getKey();
+                Log.d(TAG, "USer onItemClickentry.getValue()= " + oldqbUserID);
+            }
+        }
+        QBRTCVideoTrack userVideoTrack = getVideoTrackMap().get(userId);
+
+
+//        if (userId == oldqbUserID) {
+//            if (lastclickedVideoTrackPreviewScreen != null) {
+//                userVideoTrack = lastclickedVideoTrackPreviewScreen;
+//            }
+//        }
+//        lastclickedVideoTrackPreviewScreen = videoTrackFullScreen;
+
+        userVideoTrack.removeRenderer(userVideoTrack.getRenderer());
+//        remoteVideoViewFromPreview.release();
+//        localVideoView.release();
+        videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
+
+        opponentsAdapter.notifyItemChanged(position);
+
+        fillVideoView(false, remoteVideoView, videoTrackFullScreen);
+        Log.d(TAG, "remoteVideoView enabled");
+
+        fillVideoView(true, localVideoView, userVideoTrack);
         Log.d(TAG, "fullscreen enabled");
 
         fillVideoView(localVideoView, localVideoTrack, false);
@@ -664,42 +714,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         Log.d(TAG, "small screen enabled");
-
-//ToDo Something wrong here
-        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-        RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
-
-        QBRTCVideoTrack oldVideoTrack = getVideoTrackMap().get(qbUserID);
-        remoteVideoView.release();
-        fillVideoView(remoteVideoView, oldVideoTrack);
-
-//        if(!isUserRemoved) {
-//            isUserRemoved = true;
-//            clicked = true;
-//            OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-//            RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
-//            remoteVideoView.release();
 //
-//            qbUser = (opponents.get(position));
-//            opponents.remove(position);
-//            opponentsAdapter.notifyItemRemoved(position);
-//            opponentsAdapter.notifyItemRangeChanged(position, opponents.size());
-//
-//        } else {
-//            opponents.add(qbUser);
-//            opponentsAdapter.notifyItemInserted(opponents.size());
-//
-//            opponents.remove(position);
-//
-//            opponentsAdapter.notifyItemRemoved(position);
-//            opponentsAdapter.notifyItemRangeChanged(position, opponents.size());
-//
-//            OpponentsFromCallAdapter.ViewHolder itemHolderOld = getViewHolderForOpponent(userId);
-//            RTCGLVideoView remoteVideoViewOld = itemHolderOld.getOpponentView();
-//            remoteVideoViewOld.release();
-//
-//            qbUser = (opponents.get(position));
-//        }
+//        oldqbUserID = userId;
     }
 
     private void setLocalVideoView(QBRTCVideoTrack videoTrack) {
@@ -708,7 +724,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
-        fillVideoView(localVideoView, videoTrack);
+        fillVideoView(true, localVideoView, videoTrack);
     }
 
     private void startTimer() {
@@ -766,7 +782,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
-    private void fillVideoView(RTCGLVideoView videoView, QBRTCVideoTrack videoTrack) {
+    private void fillVideoView(boolean localView, RTCGLVideoView videoView, QBRTCVideoTrack videoTrack) {
+        if (localView) {
+            videoTrackFullScreen = videoTrack;
+        }
         fillVideoView(videoView, videoTrack, true);
     }
 
