@@ -732,6 +732,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private List<OpponentsFromCallAdapter.ViewHolder> getAllOpponentsView() {
+        if (recyclerView == null) {
+            return null;
+        }
         int childCount = recyclerView.getChildCount();
         List<OpponentsFromCallAdapter.ViewHolder> holders = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
@@ -743,6 +746,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
+        if (getAllOpponentsView() == null) {
+            return null;
+        }
         for (OpponentsFromCallAdapter.ViewHolder childViewHolder : getAllOpponentsView()) {
             Log.d(TAG, "getViewForOpponent holder user id is : " + childViewHolder.getUserId());
             if (userID.equals(childViewHolder.getUserId())) {
@@ -768,7 +774,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private void setStatusForOpponent(int userId, final String status) {
         if (isPeerToPeerCall) {
-            getActivity().runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     connectionStatusLocal.setText(status);
@@ -780,7 +786,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         if (holder == null) {
             return;
         }
-        getActivity().runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 holder.setStatus(status);
@@ -804,12 +810,23 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
     }
 
-    private void setBackgroundOpponentView(Integer userId) {
-        OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
+    private void setBackgroundOpponentView(final Integer userId) {
+        final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
         if (holder == null) {
             return;
         }
-        holder.getOpponentView().setBackgroundColor(Color.parseColor("#ffffff"));
+        Log.d(TAG, "setBackgroundOpponentView getUserIDFromFullScreen= " + getUserIDFromFullScreen());
+        Log.d(TAG, "setBackgroundOpponentView userId= " + userId);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getUserIDFromFullScreen() != userId) {
+                    holder.getOpponentView().setBackgroundColor(Color.parseColor("#000000"));
+                } else {
+                    Log.d(TAG, "switch to another online user");
+                }
+            }
+        });
     }
 
 
@@ -833,8 +850,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     @Override
-    public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.closed));
+    public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer userId) {
+        setStatusForOpponent(userId, getString(R.string.closed));
+        if (!isPeerToPeerCall) {
+            setBackgroundOpponentView(userId);
+        }
     }
 
     @Override
@@ -885,9 +905,38 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.hungUp));
+        if (!isPeerToPeerCall) {
+            if(userId == getUserIDFromFullScreen()) {
+                setAnotherUserToFullScreen();
+            }
+        }
     }
     //////////////////////////////////   end     //////////////////////////////////////////
 
+    @SuppressWarnings("ConstantConditions")
+    private void setAnotherUserToFullScreen() {
+        if (opponentsAdapter.getOpponents().size() == 0) {
+            return;
+        }
+        final int userId = opponentsAdapter.getItem(0);
+        QBRTCVideoTrack userVideoTrackPreview = getVideoTrackMap().get(userId);
+        if (userVideoTrackPreview == null) {
+            return;
+        }
+        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
+        fillVideoView(true, localVideoView, userVideoTrackPreview);
+        Log.d(TAG, "fullscreen enabled");
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
+                opponents.remove(itemHolder.getAdapterPosition());
+                opponentsAdapter.notifyItemRemoved(itemHolder.getAdapterPosition());
+                opponentsAdapter.notifyItemRangeChanged(itemHolder.getAdapterPosition(), opponents.size());
+            }
+        });
+    }
 
     public void enableDynamicToggle(boolean plugged) {
         headsetPlugged = plugged;
