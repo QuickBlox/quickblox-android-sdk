@@ -82,6 +82,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private String TAG = ConversationFragment.class.getSimpleName();
     private ArrayList<QBUser> opponents;
+    private ArrayList<QBUser> allOponents;
     private int qbConferenceType;
     private int startReason;
 
@@ -128,6 +129,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     RTCGLVideoView remoteVideoViewFromPreview;
     QBRTCVideoTrack lastclickedVideoTrackPreviewScreen;
     int lastUserID;
+    int lastPosition = -1;
     QBUser currentQbUser;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
@@ -175,6 +177,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
 
         amountOpponents = opponents.size();
+        allOponents = new ArrayList<>(opponents.size());
+        allOponents.addAll(opponents);
 
         String callerName = dbManager.getUserNameById(currentSession.getCallerID());
         qbConferenceType = currentSession.getConferenceType().ordinal();
@@ -666,18 +670,15 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
 
 //ToDo Something wrong here
-        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-        RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
-        Log.d(TAG, "remoteVideoView = remoteVideoViewFromPreview? " + (remoteVideoView == remoteVideoViewFromPreview));
-        Log.d(TAG, "USer onItemClick= " + userId);
 
 
-        if (lastUserID == userId) {
 
-            if (oldQbUserIDFullScreen != 0) {
-                userId = oldQbUserIDFullScreen;
-            }
-        }
+//        if (lastUserID == userId) {
+
+//            if (oldQbUserIDFullScreen != 0) {
+//                userId = oldQbUserIDFullScreen;
+//            }
+//        }
 
 
         for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
@@ -693,15 +694,16 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
-//не доделано
-//        for (QBUser qbUser : opponents) {
-//            if (qbUser.getId() == oldQbUserIDFullScreen) {
-//                opponentsAdapter.opponents.set(position, qbUser);
-//                Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
-//                break;
-//            }
-//        }
-//        opponentsAdapter.notifyItemChanged(position);
+        if(lastPosition == position) {
+            userId = lastUserID;
+
+        } else {
+            lastUserID = userId;
+        }
+        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
+        RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
+        Log.d(TAG, "remoteVideoView = remoteVideoViewFromPreview? " + (remoteVideoView == remoteVideoViewFromPreview));
+        Log.d(TAG, "USer onItemClick= " + userId);
 
         fillVideoView(false, remoteVideoView, videoTrackFullScreen);
         Log.d(TAG, "remoteVideoView enabled");
@@ -715,7 +717,17 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         Log.d(TAG, "small screen enabled");
 
-        lastUserID = userId;
+        for (QBUser qbUser : allOponents) {
+            if (qbUser.getId() == oldQbUserIDFullScreen) {
+                opponentsAdapter.opponents.set(position, qbUser);
+                Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
+                break;
+            }
+        }
+        opponentsAdapter.notifyItemChanged(position);
+
+
+        lastPosition = position;
     }
 
     private void setLocalVideoView(QBRTCVideoTrack videoTrack) {

@@ -115,7 +115,10 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         holder.setUserId(user.getId());
         QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(user.getId()).getState();
-//        holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
+        Log.d(TAG, "state = null " + (state == null));
+        Log.d(TAG, "QBRTCSessionUtils.getStatusDescriptionResource(state))= " + QBRTCSessionUtils.getStatusDescriptionResource(state));
+        Log.d(TAG, "state.ordinal()= " + state.ordinal());
+        holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
         if (position == (opponents.size() - 1)) {
             adapterListener.OnBindLastViewHolder(holder, position);
         }
@@ -202,6 +205,8 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
                     QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECT_TIMEOUT.ordinal(), R.string.disconnected);
             peerStateDescriptions.put(
                     QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTING.ordinal(), R.string.connect);
+            peerStateDescriptions.put(
+                    QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTED.ordinal(), R.string.connected);
             peerStateDescriptions.put(
                     QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_PENDING.ordinal(), R.string.pending);
         }
