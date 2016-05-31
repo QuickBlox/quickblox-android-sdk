@@ -1,62 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mSeekBar="http://schemas.android.com/tools">
 
-    <PreferenceCategory
-        android:title="@string/title_video_category">
+    <PreferenceCategory android:title="@string/title_video_category">
 
-    <ListPreference
-        android:key="@string/pref_resolution_key"
-        android:title="@string/pref_resolution_title"
-        android:defaultValue="@string/pref_resolution_default"
-        android:dialogTitle="@string/pref_resolution_dlg"
-        android:entries="@array/videoResolutions"
-        android:entryValues="@array/videoResolutionsValues" />
+        <ListPreference
+            android:defaultValue="@string/pref_default_camera_default"
+            android:dialogTitle="@string/pref_default_camera_dlg"
+            android:entries="@array/defaultCamera"
+            android:entryValues="@array/defaultCameraValues"
+            android:key="@string/pref_default_camera_key"
+            android:summary="%s"
+            android:title="@string/pref_default_camera_title" />
 
-    <ListPreference
-        android:key="@string/pref_startbitrate_key"
-        android:title="@string/pref_startbitrate_title"
-        android:defaultValue="@string/pref_startbitrate_default"
-        android:dialogTitle="@string/pref_startbitrate_dlg"
-        android:entries="@array/startBitrate"
-        android:entryValues="@array/startBitrate" />
 
-    <EditTextPreference
-        android:key="@string/pref_startbitratevalue_key"
-        android:title="@string/pref_startbitratevalue_title"
-        android:inputType="number"
-        android:maxLength="4"
-        android:defaultValue="@string/pref_startbitratevalue_default"
-        android:dialogTitle="@string/pref_startbitratevalue_dlg" />
+        <ListPreference
+            android:defaultValue="@string/pref_resolution_default"
+            android:dialogTitle="@string/pref_resolution_dlg"
+            android:entries="@array/videoResolutions"
+            android:entryValues="@array/videoResolutionsValues"
+            android:key="@string/pref_resolution_key"
+            android:summary="%s"
+            android:title="@string/pref_resolution_title" />
 
-    <ListPreference
-        android:key="@string/pref_videocodec_key"
-        android:title="@string/pref_videocodec_title"
-        android:defaultValue="@string/pref_videocodec_default"
-        android:dialogTitle="@string/pref_videocodec_dlg"
-        android:entries="@array/videoCodecs"
-        android:entryValues="@array/videoCodecsValues" />
+        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+            android:defaultValue="@string/pref_startbitratevalue_default"
+            android:key="@string/pref_startbitratevalue_key"
+            android:max="2000"
+            android:summary="%s"
+            android:title="@string/pref_startbitratevalue_title" />
+
+        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+            android:defaultValue="@string/pref_frame_rate_default"
+            android:key="@string/pref_frame_rate_key"
+            android:max="30"
+            android:summary="%s"
+            android:title="@string/pref_frame_rate_title" />
+
+
+        <ListPreference
+            android:defaultValue="@string/pref_audiocodec_def"
+            android:dialogTitle="@string/pref_audiocodec_dlg"
+            android:entries="@array/audioCodecs"
+            android:entryValues="@array/audioCodecs"
+            android:key="@string/pref_audiocodec_key"
+            android:summary="%s"
+            android:title="@string/pref_audiocodec_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_videocodec_default"
+            android:dialogTitle="@string/pref_videocodec_dlg"
+            android:entries="@array/videoCodecs"
+            android:entryValues="@array/videoCodecsValues"
+            android:key="@string/pref_videocodec_key"
+            android:summary="%s"
+            android:title="@string/pref_videocodec_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_stun_default"
+            android:title="@string/pref_stun_title"
+            android:entries="@array/stunServers"
+            android:entryValues="@array/stunServersValues"
+            android:key="@string/pref_stun_key"
+            android:summary="%s"
+            android:dialogTitle="@string/pref_stun_dlg"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/title_call_settings_category">
+    <PreferenceCategory android:title="@string/title_call_settings_category">
 
-    <ListPreference
-        android:key="@string/pref_audiocodec_key"
-        android:title="@string/pref_audiocodec_title"
-        android:defaultValue="@string/pref_audiocodec_def"
-        android:dialogTitle="@string/pref_audiocodec_dlg"
-        android:entries="@array/audioCodecs"
-        android:entryValues="@array/audioCodecs" />
+        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+            android:defaultValue="@string/pref_answer_time_interval_default_value"
+            android:key="@string/pref_answer_time_interval_key"
+            android:max="@string/pref_answer_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_answer_time_interval_title"
+            />
 
-    <CheckBoxPreference
-        android:key="@string/pref_hwcodec_key"
-        android:title="@string/pref_hwcodec_title"
-        android:dialogTitle="@string/pref_hwcodec_dlg"
-        android:defaultValue="@string/pref_hwcodec_default" />
+        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+            android:defaultValue="@string/pref_disconnect_time_interval_default_value"
+            android:key="@string/pref_disconnect_time_interval_key"
+            android:max="@string/pref_disconnect_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_disconnect_time_interval_title"
+            />
+
+        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+            android:defaultValue="@string/pref_dialing_time_interval_default_value"
+            android:key="@string/pref_dialing_time_interval_key"
+            android:max="@string/pref_dialing_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_dialing_time_interval_title"
+            />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_hwcodec_default"
+            android:dialogTitle="@string/pref_hwcodec_dlg"
+            android:key="@string/pref_hwcodec_key"
+            android:title="@string/pref_hwcodec_title" />
+
 
     </PreferenceCategory>
-
-
 
 </PreferenceScreen>
