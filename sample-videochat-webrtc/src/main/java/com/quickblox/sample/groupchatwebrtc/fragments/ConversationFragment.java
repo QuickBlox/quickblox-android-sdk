@@ -131,6 +131,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     int lastUserID;
     int lastPosition = -1;
     QBUser currentQbUser;
+    boolean wasBack;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
         ConversationFragment fragment = new ConversationFragment();
@@ -694,14 +695,21 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
-        if(lastPosition == position) {
-            userId = lastUserID;
 
-        } else {
-            lastUserID = userId;
-        }
-        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-        RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
+
+//        if(lastPosition == position) {
+//            userId = lastUserID;
+//            wasBack = !wasBack;
+//
+//        } else {
+//            lastUserID = userId;
+//        }
+//
+//        Log.d(TAG, "wasBack=" + wasBack);
+
+
+//        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
+        RTCGLVideoView remoteVideoView = findHolder(userId).getOpponentView();
         Log.d(TAG, "remoteVideoView = remoteVideoViewFromPreview? " + (remoteVideoView == remoteVideoViewFromPreview));
         Log.d(TAG, "USer onItemClick= " + userId);
 
