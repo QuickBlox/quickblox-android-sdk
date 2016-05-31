@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -17,7 +18,7 @@ import com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference;
 /**
  * QuickBlox team
  */
-public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private static final int MAX_VIDEO_START_BITRATE = 2000;
@@ -33,6 +34,8 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initActionBar();
+
         // Display the fragment as the main content.
         settingsFragment = new SettingsFragment();
         getFragmentManager().beginTransaction()
@@ -41,6 +44,14 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
         bitrateStringKey = getString(R.string.pref_startbitratevalue_key);
     }
 
+    private void initActionBar() {
+        actionBar.setTitle(R.string.actionbar_title_settings);
+    }
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return null;
+    }
 
     @Override
     protected void onResume() {

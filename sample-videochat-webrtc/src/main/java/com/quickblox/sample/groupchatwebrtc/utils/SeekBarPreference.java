@@ -12,12 +12,13 @@ import com.quickblox.sample.groupchatwebrtc.R;
 
 public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
-    private static final String androidns="http://schemas.android.com/apk/res/android";
+    private static final String androidns ="http://schemas.android.com/apk/res/android";
+    private static final String seekbarns ="http://schemas.android.com/apk/res-auto";
+
 
     private Context mContext;
     private SeekBar mSeekBar;
-    private int mProgress, mMax, mDefault;
-//    private int mMin = mMax;
+    private int mProgress, mMax, mMin, mStepSize;
 
     public SeekBarPreference(Context context) {
         this(context, null, 0);
@@ -33,30 +34,32 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
         mContext = context;
 
-//        final TypedArray a = context.obtainStyledAttributes(
-//                attrs, com.android.internal.R.styleable.Preference, defStyle, 0);
-//        for (int i = a.getIndexCount() - 1; i >= 0; i--) {
-//            int attr = a.getIndex(i);
-//
-//            Log.d("Attribute", "max = " + attr);
-//            String attrName = attrs.getAttributeName(i);
-//
-//            switch (attrName) {
-//                case "max":
-//                    int resourceId = a.getResourceId(attr, 0);
-//                    mMax = context.getResources().getInteger(resourceId);
-//                    Log.d("Attribute", "max = " + mMax);
-//                    break;
-//            }
+        final TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.SeekBarPreference, defStyle, 0);
 
-            Log.d("Attribute", "max = " + mMax);
+        for (int i = a.getIndexCount() - 1; i >= 0; i--) {
+            int attr = a.getIndex(i);
 
+            int resourceId;
 
-////            atributeMaxValue = attrs.getAttribute(androidns, "max");
-            mMax = attrs.getAttributeIntValue(androidns, "max", 100);
-            mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", 0);
+            switch (attr) {
+                case R.styleable.SeekBarPreference_min:
+                    resourceId = a.getResourceId(attr, 0);
+                    mMin = Integer.parseInt(context.getString(resourceId));
+                    break;
+                case R.styleable.SeekBarPreference_stepSize:
+                    resourceId = a.getResourceId(attr, 0);
+                    mStepSize = Integer.parseInt(context.getString(resourceId));
+            }
+        }
 
-//        }
+        int maxValueResourceId = attrs.getAttributeResourceValue(androidns, "max", R.integer.pref_default_int_value);
+        mMax = context.getResources().getInteger(maxValueResourceId);
+
+        Log.v("Attribute", "max = " + mMax);
+        Log.v("Attribute", "mMin = " + mMin);
+        Log.v("Attribute", "mStepSize = " + mStepSize);
+
     }
 
     @Override
@@ -72,6 +75,12 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (!fromUser)
             return;
+
+        progress = (progress / mStepSize) * mStepSize;
+
+//        if (progress <= mMin) {
+//            progress = mMin + progress;
+//        }
 
         setValue(progress);
     }

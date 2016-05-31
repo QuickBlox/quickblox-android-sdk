@@ -60,20 +60,6 @@
         <item>opus</item>
     </string-array>
 
-
-
-    <string-array name="stunServers">
-        <item>QuickBlox</item>
-        <item>Server 2</item>
-        <item>Server 3</item>
-    </string-array>
-
-    <string-array name="stunServersValues">
-        <item>turn.quickblox.com</item>
-        <item>turnsingapore.quickblox.com</item>
-        <item>turnireland.quickblox.com</item>
-    </string-array>
-
     <integer-array name="localViewCoordinates">
         <item>0</item>
         <item>0</item>

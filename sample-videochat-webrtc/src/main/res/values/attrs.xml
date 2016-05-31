@@ -4,6 +4,11 @@
         <attr name="mainMirror" format="boolean" />
         <attr name="secondMirror" format="boolean" />
         <attr name="mainCoords" format="reference" />
-        <attr name="secondCoords" format="reference"/>
+        <attr name="secondCoords" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SeekBarPreference">
+        <attr name="min" format="integer" />
+        <attr name="stepSize" format="integer" />
     </declare-styleable>
 </resources>

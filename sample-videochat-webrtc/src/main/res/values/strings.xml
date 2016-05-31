@@ -37,6 +37,7 @@
     <string name="logged_in_as">Logged in as %s</string>
     <string name="user_selected">%s user selected</string>
     <string name="users_selected">%s users selected</string>
+    <string name="actionbar_title_settings">Settings</string>
 
 
     <string name="outputing_audio_call">Outputing Audio Call - </string>
@@ -85,6 +86,7 @@
     <string name="title_call_settings_category">Call Settings</string>
 
     <string name="pref_default_value">Default</string>
+    <integer name="pref_default_int_value">0</integer>
 
     <string name="pref_default_camera_key">default_camera_preference</string>
     <string name="pref_default_camera_title">Default Camera</string>
@@ -93,7 +95,10 @@
     
     <string name="pref_frame_rate_key">frame_rate</string>
     <string name="pref_frame_rate_title">Frame Rate (0&#8211;30)</string>
-    <string name="pref_frame_rate_default">20</string>
+    <string name="pref_frame_rate_default">0</string>
+    <integer name="pref_frame_rate_min_value">0</integer>
+    <integer name="pref_frame_rate_max_value">30</integer>
+    <integer name="pref_frame_rate_stepSize">5</integer>
 
     <string name="pref_resolution_key">resolution_preference</string>
     <string name="pref_resolution_title">Video Format</string>
@@ -112,8 +117,11 @@
 
     <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
     <string name="pref_startbitratevalue_title">Bandwidht (0&#8211;2000)</string>
-    <string name="pref_startbitratevalue_default">1000</string>
-    
+    <string name="pref_startbitratevalue_default">0</string>
+    <integer name="pref_startbitratevalue_min_value">100</integer>
+    <integer name="pref_startbitratevalue_max_value">2000</integer>
+    <integer name="pref_startbitratevalue_step_size">100</integer>
+
     <!--Call Settings-->
     
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
@@ -138,11 +146,6 @@
     <string name="pref_videocodec_title">Default video codec.</string>
     <string name="pref_videocodec_dlg">Select default video codec.</string>
     <string name="pref_videocodec_default">0</string>
-
-    <string name="pref_stun_key">stun_server</string>
-    <string name="pref_stun_title">Stun</string>
-    <string name="pref_stun_dlg">Select Default Stun server</string>
-    <string name="pref_stun_default">0</string>
 
     <string name="pref_hwcodec_key">hwcodec_preference</string>
     <string name="pref_hwcodec_title">Video codec hardware acceleration.</string>
