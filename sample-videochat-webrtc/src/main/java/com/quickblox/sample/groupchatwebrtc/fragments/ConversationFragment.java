@@ -122,16 +122,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private Chronometer timerABWithTimer;
     private int amountOpponents;
-    private boolean isUserRemoved;
-    private int oldQbUserIDFullScreen;
-    private boolean clicked;
+    private int qbUserIDFullScreen;
     private QBRTCVideoTrack videoTrackFullScreen;
-    RTCGLVideoView remoteVideoViewFromPreview;
-    QBRTCVideoTrack lastclickedVideoTrackPreviewScreen;
-    int lastUserID;
-    int lastPosition = -1;
-    QBUser currentQbUser;
-    boolean wasBack;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
         ConversationFragment fragment = new ConversationFragment();
@@ -597,7 +589,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
                 if (isRemoteShown) {
                     Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
-                    remoteVideoViewFromPreview = remoteVideoView;
                     fillVideoView(false, remoteVideoView, videoTrack);
                 }
 
@@ -641,12 +632,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 @Override
                 public void run() {
 
-//                    if(clicked) {
-//
-//                        QBRTCVideoTrack videoTrack = getVideoTrackMap().get(opponentsAdapter.getItem(position));
-//                        fillVideoView(holder.getOpponentView(), videoTrack);
-//                        Log.i(TAG, " fillVideoView after click");
-//                    }
                     if (localVideoView != null) {
                         return;
                     }
@@ -662,80 +647,52 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onItemClick(int position) {
         int userId = opponentsAdapter.getItem(position);
-        if (!getVideoTrackMap().containsKey(userId)) {
+        Log.d(TAG, "USer onItemClick= " + userId);
+        if (!getVideoTrackMap().containsKey(userId) ||
+                currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
             return;
         }
+        notifyOpponentsAdapter(position);
 
-
-//ToDo Something wrong here
-
-
-
-//        if (lastUserID == userId) {
-
-//            if (oldQbUserIDFullScreen != 0) {
-//                userId = oldQbUserIDFullScreen;
-//            }
-//        }
-
-
-        for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
-            if (entry.getValue().equals(videoTrackFullScreen)) {
-                oldQbUserIDFullScreen = entry.getKey();
-                Log.d(TAG, "USer onItemClickentry.getValue()= " + oldQbUserIDFullScreen);
-            }
-        }
-        QBRTCVideoTrack userVideoTrack = getVideoTrackMap().get(userId);
-
-
-        userVideoTrack.removeRenderer(userVideoTrack.getRenderer());
+        QBRTCVideoTrack userVideoTrackPreview = getVideoTrackMap().get(userId);
+        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
 
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
-
-
-//        if(lastPosition == position) {
-//            userId = lastUserID;
-//            wasBack = !wasBack;
-//
-//        } else {
-//            lastUserID = userId;
-//        }
-//
-//        Log.d(TAG, "wasBack=" + wasBack);
-
-
-//        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
         RTCGLVideoView remoteVideoView = findHolder(userId).getOpponentView();
-        Log.d(TAG, "remoteVideoView = remoteVideoViewFromPreview? " + (remoteVideoView == remoteVideoViewFromPreview));
-        Log.d(TAG, "USer onItemClick= " + userId);
 
         fillVideoView(false, remoteVideoView, videoTrackFullScreen);
         Log.d(TAG, "remoteVideoView enabled");
 
-        fillVideoView(true, localVideoView, userVideoTrack);
+        fillVideoView(true, localVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
+    }
 
-        fillVideoView(localVideoView, localVideoTrack, false);
-        RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
-        config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
-        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
-        Log.d(TAG, "small screen enabled");
-
+    private void notifyOpponentsAdapter(int position) {
+        qbUserIDFullScreen = getUserIDFromFullScreen();
         for (QBUser qbUser : allOponents) {
-            if (qbUser.getId() == oldQbUserIDFullScreen) {
-                opponentsAdapter.opponents.set(position, qbUser);
+            if (qbUser.getId() == qbUserIDFullScreen) {
+                opponentsAdapter.getOpponents().set(position, qbUser);
                 Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
                 break;
             }
         }
         opponentsAdapter.notifyItemChanged(position);
+    }
 
-
-        lastPosition = position;
+    private int getUserIDFromFullScreen() {
+        int userId = 0;
+        for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
+            if (entry.getValue().equals(videoTrackFullScreen)) {
+                userId = entry.getKey();
+                Log.d(TAG, "USer onItemClickentry.getValue()= " + qbUserIDFullScreen);
+            }
+        }
+        return userId;
     }
 
     private void setLocalVideoView(QBRTCVideoTrack videoTrack) {
@@ -819,7 +776,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             });
             return;
         }
-        final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
+        final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
         if (holder == null) {
             return;
         }

@@ -37,7 +37,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
     private Context context;
     private QBRTCSession session;
-    public List<QBUser> opponents;
+    private List<QBUser> opponents;
     private int gridWidth;
     private boolean showVideoView;
     private LayoutInflater inflater;
@@ -79,6 +79,10 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
     public Integer getItem(int position) {
         return opponents.get(position).getId();
+    }
+
+    public List<QBUser> getOpponents(){
+        return opponents;
     }
 
     @Override
