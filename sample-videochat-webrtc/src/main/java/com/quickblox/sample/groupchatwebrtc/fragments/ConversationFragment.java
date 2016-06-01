@@ -122,8 +122,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     private Chronometer timerABWithTimer;
     private int amountOpponents;
-    private int qbUserIDFullScreen;
-    private QBRTCVideoTrack videoTrackFullScreen;
+    private int userIDFullScreen;
 
     public static ConversationFragment newInstance(boolean isIncomingCall) {
         ConversationFragment fragment = new ConversationFragment();
@@ -558,7 +557,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     @Override
-    public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, Integer userID) {
+    public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
         if (isPeerToPeerCall) {
@@ -569,7 +568,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                     if (localVideoView == null) {
                         localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     }
-                    setLocalVideoView(videoTrack);
+                    setLocalVideoView(userID, videoTrack);
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
 
@@ -628,23 +627,23 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     @SuppressWarnings("ConstantConditions")
     private void swapUsersFullscreenToPreview(int userId) {
         QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
+        QBRTCVideoTrack videoTrackFullScreen = getVideoTrackMap().get(userIDFullScreen);
         userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
 
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
         RTCGLVideoView remoteVideoView = findHolder(userId).getOpponentView();
 
-        fillVideoView(false, remoteVideoView, videoTrackFullScreen);
+        fillVideoView(0, remoteVideoView, videoTrackFullScreen);
         Log.d(TAG, "remoteVideoView enabled");
 
-        fillVideoView(true, localVideoView, userVideoTrackPreview);
+        fillVideoView(userId, localVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
     }
 
     private void replaceUsersInAdapter(int position) {
-        qbUserIDFullScreen = getUserIDFromFullScreen();
         for (QBUser qbUser : allOponents) {
-            if (qbUser.getId() == qbUserIDFullScreen) {
+            if (qbUser.getId() == userIDFullScreen) {
                 opponentsAdapter.replaceUsers(position, qbUser);
                 Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
                 break;
@@ -652,24 +651,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
-    private int getUserIDFromFullScreen() {
-        int userId = 0;
-        for (Map.Entry<Integer, QBRTCVideoTrack> entry : getVideoTrackMap().entrySet()) {
-            if (entry.getValue().equals(videoTrackFullScreen)) {
-                userId = entry.getKey();
-                Log.d(TAG, "USer onItemClickentry.getValue()= " + qbUserIDFullScreen);
-            }
-        }
-        return userId;
-    }
-
-    private void setLocalVideoView(QBRTCVideoTrack videoTrack) {
+    private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
         RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
         config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
-        fillVideoView(true, localVideoView, videoTrack);
+        fillVideoView(userId, localVideoView, videoTrack);
     }
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
@@ -685,7 +673,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
             if (isRemoteShown) {
                 Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
-                fillVideoView(false, remoteVideoView, videoTrack);
+                fillVideoView(0, remoteVideoView, videoTrack);
             }
 
             if (!isRemoteShown) {
@@ -700,7 +688,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                         setOpponentsVisibility(View.VISIBLE);
                     }
                 });
-                setLocalVideoView(videoTrack);
+                setLocalVideoView(userID, videoTrack);
             }
         }
     }
@@ -767,11 +755,11 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     /**
-     * @param localView to get actual videoTrack on full screen
+     * @param userId set userId if it from fullscreen videoTrack
      */
-    private void fillVideoView(boolean localView, RTCGLVideoView videoView, QBRTCVideoTrack videoTrack) {
-        if (localView) {
-            videoTrackFullScreen = videoTrack;
+    private void fillVideoView(int userId, RTCGLVideoView videoView, QBRTCVideoTrack videoTrack) {
+        if (userId != 0) {
+            userIDFullScreen = userId;
         }
         fillVideoView(videoView, videoTrack, true);
     }
@@ -819,14 +807,15 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         if (holder == null) {
             return;
         }
-        Log.d(TAG, "setBackgroundOpponentView getUserIDFromFullScreen= " + getUserIDFromFullScreen());
+        Log.d(TAG, "setBackgroundOpponentView userIDFullScreen= " + userIDFullScreen);
         Log.d(TAG, "setBackgroundOpponentView userId= " + userId);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (getUserIDFromFullScreen() != userId) {
+                if (userId != userIDFullScreen) {
                     holder.getOpponentView().setBackgroundColor(Color.parseColor("#000000"));
                 } else {
+//                    ToDo add switch!
                     Log.d(TAG, "switch to another online user");
                 }
             }
@@ -910,7 +899,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.hungUp));
         if (!isPeerToPeerCall) {
-            if (userId == getUserIDFromFullScreen()) {
+            if (userId == userIDFullScreen) {
                 setAnotherUserToFullScreen();
             }
         }
@@ -928,7 +917,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             return;
         }
         userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
-        fillVideoView(true, localVideoView, userVideoTrackPreview);
+        fillVideoView(userId, localVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
 
         runOnUiThread(new Runnable() {
