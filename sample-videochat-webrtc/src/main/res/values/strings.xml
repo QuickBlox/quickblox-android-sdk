@@ -118,7 +118,7 @@
     <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
     <string name="pref_startbitratevalue_title">Bandwidht (0&#8211;2000)</string>
     <string name="pref_startbitratevalue_default">0</string>
-    <integer name="pref_startbitratevalue_min_value">100</integer>
+    <integer name="pref_startbitratevalue_min_value">0</integer>
     <integer name="pref_startbitratevalue_max_value">2000</integer>
     <integer name="pref_startbitratevalue_step_size">100</integer>
 
@@ -127,20 +127,23 @@
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
     <string name="pref_answer_time_interval_title">Answer Time Interval (10&#8211;90s)</string>
     <string name="pref_answer_time_interval_default_value">60</string>
-    <string name="pref_answer_time_interval_min_value">10</string>
-    <string name="pref_answer_time_interval_max_value">90</string>
+    <integer name="pref_answer_time_interval_min_value">10</integer>
+    <integer name="pref_answer_time_interval_max_value">90</integer>
+    <integer name="pref_answer_time_interval_step_size">5</integer>
 
     <string name="pref_disconnect_time_interval_key">disconnect_time_interval</string>
     <string name="pref_disconnect_time_interval_title">Disconnect Time Interval (10&#8211;90s)</string>
     <string name="pref_disconnect_time_interval_default_value">10</string>
-    <string name="pref_disconnect_time_interval_min_value">10</string>
-    <string name="pref_disconnect_time_interval_max_value">90</string>
+    <integer name="pref_disconnect_time_interval_min_value">10</integer>
+    <integer name="pref_disconnect_time_interval_max_value">90</integer>
+    <integer name="pref_disconnect_time_interval_step_size">5</integer>
 
     <string name="pref_dialing_time_interval_key">Dialing_time_interval</string>
     <string name="pref_dialing_time_interval_title">Dialing Time Interval (3&#8211;15s)</string>
     <string name="pref_dialing_time_interval_default_value">5</string>
-    <string name="pref_dialing_time_interval_min_value">3</string>
-    <string name="pref_dialing_time_interval_max_value">15</string>
+    <integer name="pref_dialing_time_interval_min_value">3</integer>
+    <integer name="pref_dialing_time_interval_max_value">15</integer>
+    <integer name="pref_dialing_time_interval_step_size">1</integer>
 
     <string name="pref_videocodec_key">videocodec_preference</string>
     <string name="pref_videocodec_title">Default video codec.</string>

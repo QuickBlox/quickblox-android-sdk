@@ -75,7 +75,6 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             int bitrateValue = sharedPreferences.getInt(bitrateStringKey, Integer.parseInt(
                     getString(R.string.pref_startbitratevalue_default)));
             if (bitrateValue == 0){
-                Toaster.longToast("Value can't be \"0\"");
                 setDefaultstartingBitrate(sharedPreferences);
                 return;
             }

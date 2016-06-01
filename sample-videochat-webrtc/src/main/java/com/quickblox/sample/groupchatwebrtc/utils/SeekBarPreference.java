@@ -34,32 +34,22 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
         mContext = context;
 
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.SeekBarPreference, defStyle, 0);
+        initFields(context, attrs);
+    }
 
-        for (int i = a.getIndexCount() - 1; i >= 0; i--) {
-            int attr = a.getIndex(i);
-
-            int resourceId;
-
-            switch (attr) {
-                case R.styleable.SeekBarPreference_min:
-                    resourceId = a.getResourceId(attr, 0);
-                    mMin = Integer.parseInt(context.getString(resourceId));
-                    break;
-                case R.styleable.SeekBarPreference_stepSize:
-                    resourceId = a.getResourceId(attr, 0);
-                    mStepSize = Integer.parseInt(context.getString(resourceId));
-            }
-        }
-
+    private void initFields(Context context, AttributeSet attrs) {
         int maxValueResourceId = attrs.getAttributeResourceValue(androidns, "max", R.integer.pref_default_int_value);
         mMax = context.getResources().getInteger(maxValueResourceId);
 
-        Log.v("Attribute", "max = " + mMax);
+        int minValueResourceId = attrs.getAttributeResourceValue(seekbarns, "min", R.integer.pref_default_int_value);
+        mMin = context.getResources().getInteger(minValueResourceId);
+
+        int stepSizeValueResourceId = attrs.getAttributeResourceValue(seekbarns, "stepSize", R.integer.pref_default_int_value);
+        mStepSize = context.getResources().getInteger(stepSizeValueResourceId);
+
+        Log.v("Attribute", "mMax = " + mMax);
         Log.v("Attribute", "mMin = " + mMin);
         Log.v("Attribute", "mStepSize = " + mStepSize);
-
     }
 
     @Override
@@ -78,9 +68,9 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
         progress = (progress / mStepSize) * mStepSize;
 
-//        if (progress <= mMin) {
-//            progress = mMin + progress;
-//        }
+        if (progress <= mMin) {
+            progress = mMin + progress;
+        }
 
         setValue(progress);
     }
