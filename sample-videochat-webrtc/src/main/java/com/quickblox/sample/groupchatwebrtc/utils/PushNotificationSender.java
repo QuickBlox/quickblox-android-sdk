@@ -1,9 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
-import android.os.Bundle;
-
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;

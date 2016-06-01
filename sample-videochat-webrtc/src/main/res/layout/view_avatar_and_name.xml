@@ -7,19 +7,18 @@
     >
 
     <ImageView
-        android:id="@+id/caller_avatar"
+        android:id="@+id/image_caller_avatar"
         style="@style/CallerAvatar"
         />
 
     <TextView
-        android:id="@+id/caller_name"
+        android:id="@+id/text_caller_name"
         style="@style/WrapContent"
-        android:textColor="@color/caller_name_text_color"
+        android:textColor="@color/text_color_caller_name"
         android:textSize="@dimen/caller_name_text_size"
-        android:text="User Name"
         android:maxLines="1"
         android:maxLength="25"
-        android:paddingTop="20dp"
+        android:paddingTop="24dp"
         />
 
 </LinearLayout>

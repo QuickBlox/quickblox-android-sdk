@@ -4,10 +4,8 @@
     style="@style/ToolbarStyleCall"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black_transparent_50"
     android:elevation="6dp"
-    app:subtitleTextColor="@color/white"
-    app:titleTextColor="@color/white">
+    >
 
     <Chronometer
         android:id="@+id/timer_chronometer_action_bar"

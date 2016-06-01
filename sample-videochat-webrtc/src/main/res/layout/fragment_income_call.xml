@@ -6,7 +6,7 @@
     >
 
     <LinearLayout
-        android:id="@+id/info_about_call"
+        android:id="@+id/layout_info_about_call"
         style="@style/MatchWidth"
         android:orientation="vertical"
         android:gravity="center_horizontal"
@@ -14,14 +14,14 @@
         >
 
         <ImageView
-            android:id="@+id/caller_avatar"
+            android:id="@+id/image_caller_avatar"
             style="@style/CallerAvatar"
             />
 
         <TextView
-            android:id="@+id/caller_name"
+            android:id="@+id/text_caller_name"
             style="@style/WrapContent"
-            android:textColor="@color/caller_name_text_color"
+            android:textColor="@color/text_color_caller_name"
             android:textSize="@dimen/caller_name_text_size"
             android:text="User Name"
             android:maxLines="1"
@@ -32,25 +32,25 @@
         <TextView
             android:id="@+id/call_type"
             style="@style/WrapContent"
-            android:textColor="@color/call_type_text_color"
+            android:textColor="@color/text_color_call_type"
             android:textSize="@dimen/incoming_call_type_text_size"
             android:text="@string/incoming_audio_call"
             android:layout_marginTop="8dp"
             />
 
         <TextView
-            android:id="@+id/also_on_call"
+            android:id="@+id/text_also_on_call"
             style="@style/WrapContent"
-            android:textColor="@color/also_on_call_text_color"
+            android:textColor="@color/text_color_also_on_call"
             android:textSize="@dimen/also_on_call_text_size"
             android:text="@string/also_on_call"
             android:layout_marginTop="48dp"
             />
 
         <TextView
-            android:id="@+id/other_inc_users"
+            android:id="@+id/text_other_inc_users"
             style="@style/WrapContent"
-            android:textColor="@color/other_inc_users_text_color"
+            android:textColor="@color/text_color_other_inc_users"
             android:textSize="@dimen/other_inc_users_text_size"
             android:layout_marginTop="10dp"
             android:text="User 1, User 2, User 3"
@@ -67,15 +67,15 @@
         >
 
         <ImageButton
-            android:id="@+id/reject_call"
+            android:id="@+id/image_button_reject_call"
             style="@style/EndCallImageButton"
             />
 
         <ImageButton
-            android:id="@+id/take_call"
+            android:id="@+id/image_button_accept_call"
             style="@style/TakeCallImageButton"
             android:src="@drawable/ic_call"
-            android:layout_toEndOf="@id/reject_call"
+            android:layout_toEndOf="@id/image_button_reject_call"
             android:layout_marginStart="@dimen/income_call_buttons_margin"
             tools:ignore="RtlCompat" />
 

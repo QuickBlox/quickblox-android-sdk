@@ -2,22 +2,9 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="blue_green">#008080</color>
     <color name="grey">#606060</color>
-    <color name="gold">#FFD700</color>
-    <color name="spring_bud">#A7FC00</color>
-    <color name="water_bondi_beach">#0095B6</color>
-    <color name="coral">#FF4040</color>
-    <color name="lime">#00FF00</color>
-    <color name="may_green">#4C9141</color>
-    <color name="mauveine">#EF0097</color>
     <color name="blue">#1FCECB</color>
-    <color name="orange">#FFA500</color>
-    <color name="gentianaceae_blue">#2A6478</color>
-    <color name="blue_krayola">#1F75FE</color>
     <color name="red">#FF0000</color>
-    <color name="white_blue">#00BFFF</color>
-    <color name="pink">#FF7A7A</color>
     <color name="green">#45D100</color>
     <color name="white_green">#A9FF80</color>
     <color name="black_transparent_30">#30000000</color>
@@ -26,24 +13,23 @@
     <color name="white_transparent_50">#50FFFFFF</color>
     <color name="grey_transparent_50">#50606060</color>
     <color name="grey_transparent_10">#10606060</color>
-    <color name="background_chat_color">#f5f6f5</color>
-    <color name="blue_accent">#0088e7</color>
+    <color name="color_blue_accent">#0088e7</color>
     <color name="toolbar_dropshadow_end_color">#88333333</color>
     <color name="toolbar_subtitle_color">#6e6e6e</color>
     <color name="toolbar_title_color">#1f1f1f</color>
 
-    <color name="text_opponent_names_out_audio_call">#1f1f1f</color>
+    <color name="text_color_outgoing_opponents_names_audio_call">#1f1f1f</color>
 
-    <color name="selected_user_item_background_color">#eeeeee</color>
-    <color name="selected_user_icon_background_color">#959595</color>
-    <color name="normal_user_item_background_color">#ffffff</color>
+    <color name="background_color_selected_user_item">#eeeeee</color>
+    <color name="background_color_normal_user_item">#ffffff</color>
+    <color name="icon_background_color_selected_user">#959595</color>
 
-    <color name="button_end_call_normal">#ff2744</color>
-    <color name="button_end_call_pressed">#FC5876</color>
+    <color name="button_end_call_normal_color">#ff2744</color>
+    <color name="button_end_call_pressed_color">#FC5876</color>
     <color name="toggle_button_background_normal">#cc212121</color>
     <color name="toggle_button_background_checked">#ccffffff</color>
-    <color name="call_type_text_color">#6e6e6e</color>
-    <color name="also_on_call_text_color">@color/call_type_text_color</color>
-    <color name="other_inc_users_text_color">#1f1f1f</color>
-    <color name="caller_name_text_color">#1f1f1f</color>
+    <color name="text_color_call_type">#6e6e6e</color>
+    <color name="text_color_also_on_call">@color/text_color_call_type</color>
+    <color name="text_color_other_inc_users">#1f1f1f</color>
+    <color name="text_color_caller_name">#1f1f1f</color>
 </resources>

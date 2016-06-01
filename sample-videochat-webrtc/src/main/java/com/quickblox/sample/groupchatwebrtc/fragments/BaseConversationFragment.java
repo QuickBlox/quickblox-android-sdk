@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
+import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
@@ -49,11 +53,15 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     private boolean isMessageProcessed;
     private boolean isStarted;
     protected FragmentLifeCycleHandler mainHandler;
-    private View outgoingOpponentsRelativeLayout;
-    protected TextView backgroundTextView;
+    protected View outgoingOpponentsRelativeLayout;
+    protected TextView allOpponentsTextView;
+    protected TextView ringingTextView;
+    protected QBUser currentUser;
+    protected Toolbar toolbar;
+    protected ActionBar actionBar;
 
 
-    public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall){
+    public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall) {
         Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
         Bundle args = new Bundle();
         args.putBoolean(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
@@ -91,14 +99,39 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
         initFields();
         initViews(view);
+        initActionBar();
         initButtonsListener();
+        prepareAndShowOutgoingScreen();
 
         return view;
     }
 
+    private void prepareAndShowOutgoingScreen() {
+        configureOutgoingScreen();
+        allOpponentsTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
+    }
+
+    protected abstract void configureOutgoingScreen();
+
+    private void initActionBar() {
+        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+
+        configureToolbar();
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
+
+        configureActionBar();
+    }
+
+    protected abstract void configureActionBar();
+
+    protected abstract void configureToolbar();
+
     abstract int getFragmentLayout();
 
     protected void initFields() {
+        currentUser = QBChatService.getInstance().getUser();
         dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
@@ -108,7 +141,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
         }
 
-        if (isIncomingCall){
+        if (isIncomingCall) {
             opponents.add(dbManager.getUserById(currentSession.getCallerID()));
             opponents.remove(QBChatService.getInstance().getUser());
         }
@@ -134,21 +167,6 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
         conversationFragmentCallbackListener.removeCurrentCallStateCallback(this);
         super.onDestroy();
@@ -157,8 +175,11 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected void initViews(View view) {
         micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
         handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
-        outgoingOpponentsRelativeLayout = view.findViewById(R.id.background_frame);
-        if (isIncomingCall){
+        outgoingOpponentsRelativeLayout = view.findViewById(R.id.layout_background_outgoing_screen);
+        allOpponentsTextView = (TextView) view.findViewById(R.id.text_outgoing_opponents_names);
+        ringingTextView = (TextView) view.findViewById(R.id.text_ringing);
+
+        if (isIncomingCall) {
             outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
         }
     }
@@ -193,7 +214,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         micToggleVideoCall.setActivated(enability);
     }
 
-    public void startTimer() {
+    private void startTimer() {
         if (!isStarted) {
             timerChronometer.setVisibility(View.VISIBLE);
             timerChronometer.setBase(SystemClock.elapsedRealtime());
@@ -202,38 +223,28 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         }
     }
 
-    public void stopTimer() {
+    private void stopTimer() {
         if (timerChronometer != null) {
             timerChronometer.stop();
             isStarted = false;
         }
     }
 
-    private void hideOutgoingScreen(){
+    private void hideOutgoingScreen() {
         outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void onCallStarted() {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                hideOutgoingScreen();
-                startTimer();
-                actionButtonsEnabled(true);
-            }
-        });
+        hideOutgoingScreen();
+        startTimer();
+        actionButtonsEnabled(true);
     }
 
     @Override
     public void onCallStoped() {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                stopTimer();
-                actionButtonsEnabled(false);
-            }
-        });
+        stopTimer();
+        actionButtonsEnabled(false);
     }
 
     class FragmentLifeCycleHandler extends Handler {

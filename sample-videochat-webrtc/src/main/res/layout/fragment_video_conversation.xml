@@ -15,37 +15,7 @@
             style="@style/MatchParent"
             android:layout="@layout/local_videoview" />
 
-
-        <RelativeLayout
-            android:id="@+id/background_frame"
-            style="@style/MatchParent"
-            android:background="@color/white_transparent_50">
-
-            <TextView
-                android:id="@+id/backgroundText"
-                style="@style/MatchWidth"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_call"
-                android:textStyle="normal|italic"
-                android:layout_marginTop="138dp"
-                >
-            </TextView>
-
-            <TextView
-                style="@style/MatchWidth"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_ringing"
-                android:textStyle="normal"
-                android:text="@string/ringing"
-                android:layout_below="@+id/backgroundText"
-                android:layout_marginTop="14dp">
-            </TextView>
-
-        </RelativeLayout>
+        <include layout="@layout/view_outgoing_screen" />
 
         <TextView
             android:id="@+id/connectionStatusLocal"
@@ -73,7 +43,7 @@
 
     <include
         android:id="@+id/element_set_video_buttons"
-        layout="@layout/element_fragment_video_call"
+        layout="@layout/view_action_buttons_conversation_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

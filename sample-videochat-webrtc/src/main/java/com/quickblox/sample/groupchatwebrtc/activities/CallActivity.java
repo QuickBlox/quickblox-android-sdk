@@ -24,8 +24,8 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.fragments.BaseConversationFragment;
-import com.quickblox.sample.groupchatwebrtc.fragments.ConversationAudioCallFragment;
-import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.AudioConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.VideoConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
@@ -576,10 +576,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
-                        ? new ConversationFragment()
-                        : new ConversationAudioCallFragment(),
+                        ? new VideoConversationFragment()
+                        : new AudioConversationFragment(),
                 isIncomingCall);
-//        ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, conversationFragment, CONVERSATION_CALL_FRAGMENT);
     }
 
@@ -709,14 +708,24 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void notifyCallStateListenersCallStarted(){
-        for (CurrentCallStateCallback callback : currentCallStateCallbackList){
-            callback.onCallStarted();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                    callback.onCallStarted();
+                }
+            }
+        });
     }
 
     private void notifyCallStateListenersCallStoped(){
-        for (CurrentCallStateCallback callback : currentCallStateCallbackList){
-            callback.onCallStarted();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                    callback.onCallStoped();
+                }
+            }
+        });
     }
 }

@@ -12,7 +12,6 @@ import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,12 +46,12 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
             holder.opponentName.setText(user.getFullName());
 
             if (selectedItems.contains(user)){
-                convertView.setBackgroundResource(R.color.selected_user_item_background_color);
+                convertView.setBackgroundResource(R.color.background_color_selected_user_item);
                 holder.opponentIcon.setBackgroundDrawable(
-                        UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.selected_user_icon_background_color)));
+                        UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.icon_background_color_selected_user)));
                 holder.opponentIcon.setImageResource(R.drawable.ic_checkmark);
             } else {
-                convertView.setBackgroundResource(R.color.normal_user_item_background_color);
+                convertView.setBackgroundResource(R.color.background_color_normal_user_item);
                 holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(user.getId()));
                 holder.opponentIcon.setImageResource(R.drawable.ic_person);
             }

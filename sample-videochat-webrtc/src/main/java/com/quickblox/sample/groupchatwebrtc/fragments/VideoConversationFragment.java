@@ -5,12 +5,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -28,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
@@ -36,7 +32,6 @@ import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -57,7 +52,7 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 /**
  * QuickBlox team
  */
-public class ConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
+public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
         QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
@@ -65,7 +60,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private static final long TOGGLE_CAMERA_DELAY = 1000;
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
 
-    private String TAG = ConversationFragment.class.getSimpleName();
+    private String TAG = VideoConversationFragment.class.getSimpleName();
 
     private ToggleButton cameraToggle;
     private View view;
@@ -82,7 +77,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
     private OpponentsFromCallAdapter opponentsAdapter;
     private LocalViewOnClickListener localViewOnClickListener;
-    private ActionBar actionBar;
     private boolean isRemoteShown;
     private boolean isStarted;
     private boolean headsetPlugged;
@@ -92,17 +86,35 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = super.onCreateView(inflater,container,savedInstanceState);
-        Log.d(TAG, "Fragment. Thread id: " + Thread.currentThread().getId());
-
-        initActionBarInner();
+        view = super.onCreateView(inflater, container, savedInstanceState);
 
         return view;
     }
 
     @Override
+    protected void configureOutgoingScreen() {
+        outgoingOpponentsRelativeLayout.setBackgroundColor(getResources().getColor(R.color.grey_transparent_50));
+        allOpponentsTextView.setTextColor(getResources().getColor(R.color.white));
+        ringingTextView.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    @Override
+    protected void configureActionBar() {
+        actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+    }
+
+    @Override
+    protected void configureToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.black_transparent_50));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+    }
+
+    @Override
     int getFragmentLayout() {
-        return R.layout.fragment_conversation;
+        return R.layout.fragment_video_conversation;
     }
 
     @Override
@@ -118,18 +130,9 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         isVideoCall = (QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType()));
     }
 
-    public void initActionBarInner() {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
-        toolbar.setVisibility(View.VISIBLE);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-    }
-
     public void setDuringCallActionBar() {
         actionBar.setDisplayShowTitleEnabled(true);
-        QBUser user = QBChatService.getInstance().getUser();
-        actionBar.setTitle(user.getFullName());
+        actionBar.setTitle(currentUser.getFullName());
         if (isPeerToPeerCall) {
             actionBar.setSubtitle(getString(R.string.opponent, opponents.get(0).getFullName()));
         } else {
@@ -203,11 +206,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         }
         connectionStatusLocal = (TextView) view.findViewById(R.id.connectionStatusLocal);
 
-        backgroundTextView = (TextView) view.findViewById(R.id.backgroundText);
-        backgroundTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
-
-        actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
-
         cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
         cameraToggle.setVisibility(View.VISIBLE);
 
@@ -227,7 +225,7 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), opponents, (int) getResources().getDimension(R.dimen.item_width),
                 (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount, (int) itemMargin,
                 isVideoCall);
-        opponentsAdapter.setAdapterListener(ConversationFragment.this);
+        opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
         recyclerView.setAdapter(opponentsAdapter);
     }
 
@@ -409,50 +407,40 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     }
 
     @Override
-    public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, Integer userID) {
+    public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
-        if (isPeerToPeerCall) {
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isPeerToPeerCall) {
                     Log.d("onRemoteVideoTrackRe", "localVideoView==null?" + (localVideoView == null));
                     Log.d("onRemoteVideoTrackRe", "videoTrack==null?" + (videoTrack == null));
                     if (localVideoView == null) {
                         localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     }
                     setLocalVideoView(videoTrack);
-                    setDuringCallActionBar();
-                    backgroundTextView.setVisibility(View.INVISIBLE);
-                }
-            }, LOCAL_TRACk_INITIALIZE_DELAY);
+                } else {
+                    OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+                    if (itemHolder == null) {
+                        return;
+                    }
+                    RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
 
-        } else {
-            OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
-            if (itemHolder == null) {
-                return;
-            }
-            RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
-
-            getVideoTrackMap().put(userID, videoTrack);
-            if (remoteVideoView != null) {
-                Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-                fillVideoView(remoteVideoView, videoTrack);
-                if (!isRemoteShown) {
-                    isRemoteShown = true;
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setDuringCallActionBar();
-                            backgroundTextView.setVisibility(View.INVISIBLE);
+                    getVideoTrackMap().put(userID, videoTrack);
+                    if (remoteVideoView != null) {
+                        Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
+                        fillVideoView(remoteVideoView, videoTrack);
+                        if (!isRemoteShown) {
+                            isRemoteShown = true;
+                            setLocalVideoView(videoTrack);
                         }
-                    });
-                    setLocalVideoView(videoTrack);
+                    }
                 }
+                setDuringCallActionBar();
             }
-        }
+        }, LOCAL_TRACk_INITIALIZE_DELAY);
+
     }
     /////////////////////////////////////////    end    ////////////////////////////////////////////
 
@@ -600,12 +588,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
         setStatusForOpponent(userId, getString(R.string.connected));
         setProgressBarForOpponentGone(userId);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                startTimer();
-            }
-        });
     }
 
     @Override
@@ -639,7 +621,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
 
     @Override
     public void onSessionClosed() {
-        stopTimer();
     }
 
     @Override
@@ -706,7 +687,6 @@ public class ConversationFragment extends BaseConversationFragment implements Se
         DISABLED_FROM_USER,
         ENABLED_FROM_USER
     }
-
 
 
     class DividerItemDecoration extends RecyclerView.ItemDecoration {

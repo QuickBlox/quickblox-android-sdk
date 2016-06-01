@@ -60,7 +60,7 @@ public class OpponentsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.fragment_opponents);
+        setContentView(R.layout.activity_opponents);
 
         initFields();
 

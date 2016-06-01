@@ -9,15 +9,15 @@
     >
 
     <ImageButton
-        android:id="@+id/reject_call"
+        android:id="@+id/image_button_reject_call"
         style="@style/EndCallImageButton"
         />
 
     <ImageButton
-        android:id="@+id/take_call"
+        android:id="@+id/image_button_accept_call"
         style="@style/TakeCallImageButton"
         android:layout_marginStart="@dimen/income_call_buttons_margin"
-        android:layout_toEndOf="@id/reject_call"
+        android:layout_toEndOf="@id/image_button_reject_call"
         android:src="@drawable/ic_call"
         tools:ignore="RtlCompat"
         />

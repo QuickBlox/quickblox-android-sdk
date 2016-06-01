@@ -7,7 +7,7 @@
                 android:width="@dimen/call_buttons_diameter"
                 android:height="@dimen/call_buttons_diameter" />
             <solid
-                android:color="@color/button_end_call_pressed"/>
+                android:color="@color/button_end_call_pressed_color"/>
         </shape>
     </item>
 </selector>

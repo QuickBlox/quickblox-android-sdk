@@ -122,17 +122,17 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void initUI(View view) {
         callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
-        callerAvatarImageView = (ImageView) view.findViewById(R.id.caller_avatar);
+        callerAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
-        callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
+        callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
         callerNameTextView.setText(qbUserDbManager.getUserNameById(currentSession.getCallerID()));
 
-        otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
+        otherIncUsersTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
 
-        rejectButton = (ImageButton) view.findViewById(R.id.reject_call);
-        takeButton = (ImageButton) view.findViewById(R.id.take_call);
+        rejectButton = (ImageButton) view.findViewById(R.id.image_button_reject_call);
+        takeButton = (ImageButton) view.findViewById(R.id.image_button_accept_call);
     }
 
     private Drawable getBackgroundForCallerAvatar(int callerId){
@@ -195,11 +195,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         lastClickTime = SystemClock.uptimeMillis();
 
         switch (v.getId()) {
-            case R.id.reject_call:
+            case R.id.image_button_reject_call:
                 reject();
                 break;
 
-            case R.id.take_call:
+            case R.id.image_button_accept_call:
                 accept();
                 break;
 
