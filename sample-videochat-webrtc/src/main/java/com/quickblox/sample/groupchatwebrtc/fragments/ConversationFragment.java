@@ -566,8 +566,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 @Override
                 public void run() {
                     setDuringCallActionBar();
-                    Log.d("onRemoteVideoTrackRe", "localVideoView==null?" + (localVideoView == null));
-                    Log.d("onRemoteVideoTrackRe", "videoTrack==null?" + (videoTrack == null));
                     if (localVideoView == null) {
                         localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     }
@@ -576,40 +574,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             }, LOCAL_TRACk_INITIALIZE_DELAY);
 
         } else {
-            final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
-            if (itemHolder == null) {
-                return;
-            }
-            final RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
-
-            getVideoTrackMap().put(userID, videoTrack);
-
-
-            if (remoteVideoView != null) {
-                Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-                if (isRemoteShown) {
-                    Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
-                    fillVideoView(false, remoteVideoView, videoTrack);
-                }
-
-                if (!isRemoteShown) {
-                    isRemoteShown = true;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            opponents.remove(itemHolder.getAdapterPosition());
-                            opponentsAdapter.notifyItemRemoved(itemHolder.getAdapterPosition());
-                            opponentsAdapter.notifyItemRangeChanged(itemHolder.getAdapterPosition(), opponents.size());
-                            setDuringCallActionBar();
-                            recyclerView.setVisibility(View.VISIBLE);
-                            setOpponentsVisibility(View.VISIBLE);
-                        }
-                    });
-                    setLocalVideoView(videoTrack);
-
-                }
-            }
+            setRemoteViewMultiCall(userID, videoTrack);
         }
     }
     /////////////////////////////////////////    end    ////////////////////////////////////////////
@@ -647,7 +612,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
+
     @Override
     public void onItemClick(int position) {
         int userId = opponentsAdapter.getItem(position);
@@ -656,9 +621,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
             return;
         }
-        notifyOpponentsAdapter(position);
+        replaceUsersInAdapter(position);
+        swapUsersFullscreenToPreview(userId);
+    }
 
-        QBRTCVideoTrack userVideoTrackPreview = getVideoTrackMap().get(userId);
+    @SuppressWarnings("ConstantConditions")
+    private void swapUsersFullscreenToPreview(int userId) {
+        QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
 
         videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
@@ -672,16 +641,15 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         Log.d(TAG, "fullscreen enabled");
     }
 
-    private void notifyOpponentsAdapter(int position) {
+    private void replaceUsersInAdapter(int position) {
         qbUserIDFullScreen = getUserIDFromFullScreen();
         for (QBUser qbUser : allOponents) {
             if (qbUser.getId() == qbUserIDFullScreen) {
-                opponentsAdapter.getOpponents().set(position, qbUser);
+                opponentsAdapter.replaceUsers(position, qbUser);
                 Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
                 break;
             }
         }
-        opponentsAdapter.notifyItemChanged(position);
     }
 
     private int getUserIDFromFullScreen() {
@@ -702,6 +670,39 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
         fillVideoView(true, localVideoView, videoTrack);
+    }
+
+    private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
+        final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+        if (itemHolder == null) {
+            return;
+        }
+        final RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
+
+        getVideoTrackMap().put(userID, videoTrack);
+
+        if (remoteVideoView != null) {
+            Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
+            if (isRemoteShown) {
+                Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
+                fillVideoView(false, remoteVideoView, videoTrack);
+            }
+
+            if (!isRemoteShown) {
+                isRemoteShown = true;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+                        setDuringCallActionBar();
+                        recyclerView.setVisibility(View.VISIBLE);
+                        setOpponentsVisibility(View.VISIBLE);
+                    }
+                });
+                setLocalVideoView(videoTrack);
+            }
+        }
     }
 
     private void startTimer() {
@@ -765,6 +766,9 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
+    /**
+     * @param localView to get actual videoTrack on full screen
+     */
     private void fillVideoView(boolean localView, RTCGLVideoView videoView, QBRTCVideoTrack videoTrack) {
         if (localView) {
             videoTrackFullScreen = videoTrack;
@@ -834,12 +838,12 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onStartConnectToUser(QBRTCSession qbrtcSession, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.checking));
+        setStatusForOpponent(userId, getString(R.string.opponent_checking));
     }
 
     @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.connected));
+        setStatusForOpponent(userId, getString(R.string.opponent_connected));
         setProgressBarForOpponentGone(userId);
         runOnUiThread(new Runnable() {
             @Override
@@ -859,7 +863,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onDisconnectedFromUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.disconnected));
+        setStatusForOpponent(integer, getString(R.string.opponent_disconnected));
     }
 
     @Override
@@ -906,7 +910,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.hungUp));
         if (!isPeerToPeerCall) {
-            if(userId == getUserIDFromFullScreen()) {
+            if (userId == getUserIDFromFullScreen()) {
                 setAnotherUserToFullScreen();
             }
         }
@@ -919,7 +923,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             return;
         }
         final int userId = opponentsAdapter.getItem(0);
-        QBRTCVideoTrack userVideoTrackPreview = getVideoTrackMap().get(userId);
+        QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         if (userVideoTrackPreview == null) {
             return;
         }
@@ -931,9 +935,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             @Override
             public void run() {
                 OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
-                opponents.remove(itemHolder.getAdapterPosition());
-                opponentsAdapter.notifyItemRemoved(itemHolder.getAdapterPosition());
-                opponentsAdapter.notifyItemRangeChanged(itemHolder.getAdapterPosition(), opponents.size());
+                opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
             }
         });
     }

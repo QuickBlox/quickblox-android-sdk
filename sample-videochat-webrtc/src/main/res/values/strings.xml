@@ -46,11 +46,12 @@
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
     <string name="outgoing_audio_video_call_title">%s\n\nRinging</string>
-    <string name="connect">Connect...</string>
-    <string name="checking">Checking...</string>
-    <string name="connected">Connected</string>
-    <string name="disconnected">Disconnected</string>
-    <string name="pending">Pending</string>
+
+    <string name="opponent_connect">Connect…</string>
+    <string name="opponent_checking">Checking…</string>
+    <string name="opponent_connected">Connected</string>
+    <string name="opponent_disconnected">Disconnected</string>
+    <string name="opponent_pending">Pending</string>
 
     <string name="users_tag">webrtcusers</string>
 
