@@ -5,6 +5,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 <item
     android:id="@+id/menu_login_user_done"
     android:icon="@drawable/ic_group"
-    android:title="@string/menu_login_user_done"
+    android:title="@string/action_start_login"
     app:showAsAction="always" />
 </menu>

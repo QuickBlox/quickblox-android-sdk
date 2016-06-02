@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_actionbar"
+        android:layout_marginStart="@dimen/padding_start"
+        android:text="@string/text_select_user_to_call"
+        tools:ignore="RtlCompat" />
+
+    <ListView
+        android:id="@+id/list_opponents"
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_top"
+        android:divider="@android:color/transparent"
+        />
+
+</LinearLayout>
