@@ -102,6 +102,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private CameraState cameraState = CameraState.NONE;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
+    private List<OpponentsFromCallAdapter.ViewHolder> viewHolders;
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private Handler mainHandler;
@@ -595,7 +596,8 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
+                    if (viewHolders != null)
+                        Log.d(TAG, "USer childViewHolder.getUserId OnBindLastViewHolder= " + viewHolders.get(position).getUserId());
                     if (localVideoView != null) {
                         return;
                     }
@@ -620,8 +622,27 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
                 currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
             return;
         }
+
         replaceUsersInAdapter(position);
+
+        updateViewHolders(position);
+
         swapUsersFullscreenToPreview(userId);
+    }
+
+    private void replaceUsersInAdapter(int position) {
+        for (QBUser qbUser : allOponents) {
+            if (qbUser.getId() == userIDFullScreen) {
+                opponentsAdapter.replaceUsers(position, qbUser);
+                break;
+            }
+        }
+    }
+
+    private void updateViewHolders(int position) {
+        View childView = recyclerView.getChildAt(position);
+        OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
+        viewHolders.set(position, childViewHolder);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -639,16 +660,6 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
         fillVideoView(userId, localVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
-    }
-
-    private void replaceUsersInAdapter(int position) {
-        for (QBUser qbUser : allOponents) {
-            if (qbUser.getId() == userIDFullScreen) {
-                opponentsAdapter.replaceUsers(position, qbUser);
-                Log.d(TAG, "USer qbUser.getFullName= " + qbUser.getFullName());
-                break;
-            }
-        }
     }
 
     private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
@@ -721,24 +732,28 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     }
 
     private List<OpponentsFromCallAdapter.ViewHolder> getAllOpponentsView() {
-        if (recyclerView == null) {
-            return null;
+//        if (recyclerView == null) {
+//            return null;
+//        }
+
+        if (viewHolders != null) {
+            return viewHolders;
         }
         int childCount = recyclerView.getChildCount();
-        List<OpponentsFromCallAdapter.ViewHolder> holders = new ArrayList<>();
+        viewHolders = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
             View childView = recyclerView.getChildAt(i);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
-            holders.add(childViewHolder);
+            viewHolders.add(childViewHolder);
         }
-        return holders;
+        return viewHolders;
     }
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
-        if (getAllOpponentsView() == null) {
+        if (viewHolders == null) {
             return null;
         }
-        for (OpponentsFromCallAdapter.ViewHolder childViewHolder : getAllOpponentsView()) {
+        for (OpponentsFromCallAdapter.ViewHolder childViewHolder : viewHolders) {
             Log.d(TAG, "getViewForOpponent holder user id is : " + childViewHolder.getUserId());
             if (userID.equals(childViewHolder.getUserId())) {
                 return childViewHolder;
@@ -814,14 +829,10 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
             public void run() {
                 if (userId != userIDFullScreen) {
                     holder.getOpponentView().setBackgroundColor(Color.parseColor("#000000"));
-                } else {
-//                    ToDo add switch!
-                    Log.d(TAG, "switch to another online user");
                 }
             }
         });
     }
-
 
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
@@ -844,7 +855,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.closed));
+        setStatusForOpponent(userId, getString(R.string.opponent_closed));
         if (!isPeerToPeerCall) {
             setBackgroundOpponentView(userId);
         }

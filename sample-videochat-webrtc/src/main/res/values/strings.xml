@@ -52,6 +52,7 @@
     <string name="opponent_connected">Connected</string>
     <string name="opponent_disconnected">Disconnected</string>
     <string name="opponent_pending">Pending</string>
+    <string name="opponent_closed">Closed</string>
 
     <string name="users_tag">webrtcusers</string>
 
@@ -71,7 +72,6 @@
     <string name="rejected">Rejected</string>
     <string name="noAnswer">No answer</string>
     <string name="hungUp">Hung up</string>
-    <string name="closed">Closed</string>
     <string name="time_out">Time Out</string>
     <string name="failed">Failed</string>
     <string name="call_was_stopped_connection_lost">Call was stopped because connection was lost</string>

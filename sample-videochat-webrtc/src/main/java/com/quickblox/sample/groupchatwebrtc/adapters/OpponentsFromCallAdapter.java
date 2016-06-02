@@ -125,6 +125,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         holder.setUserId(userID);
         QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(userID).getState();
+        Log.d(TAG, "state ordinal= " + state.ordinal());
         holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
         if (position == (opponents.size() - 1)) {
             adapterListener.OnBindLastViewHolder(holder, position);

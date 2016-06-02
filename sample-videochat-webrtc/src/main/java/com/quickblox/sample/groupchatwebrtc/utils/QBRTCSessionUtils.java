@@ -11,15 +11,7 @@ public class QBRTCSessionUtils {
 
     static {
         peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_HANG_UP.ordinal(), R.string.hungUp);
-        peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_REJECT.ordinal(), R.string.rejected);
-        peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_ANSWER.ordinal(), R.string.noAnswer);
-        peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_OFFER.ordinal(), R.string.noAnswer);
-        peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECT_TIMEOUT.ordinal(), R.string.opponent_disconnected);
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_PENDING.ordinal(), R.string.opponent_pending);
         peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTING.ordinal(), R.string.opponent_connect);
         peerStateDescriptions.put(
@@ -27,7 +19,17 @@ public class QBRTCSessionUtils {
         peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECTED.ordinal(), R.string.opponent_disconnected);
         peerStateDescriptions.put(
-                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_PENDING.ordinal(), R.string.opponent_pending);
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal(), R.string.opponent_closed);
+        peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECT_TIMEOUT.ordinal(), R.string.opponent_disconnected);
+        peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_ANSWER.ordinal(), R.string.noAnswer);
+        peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NOT_OFFER.ordinal(), R.string.noAnswer);
+        peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_REJECT.ordinal(), R.string.rejected);
+        peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_HANG_UP.ordinal(), R.string.hungUp);
     }
 
     public static Integer getStatusDescriptionResource(QBRTCTypes.QBRTCConnectionState connectionState) {
