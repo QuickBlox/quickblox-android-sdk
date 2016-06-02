@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/start_video_call"
+        android:title="@string/action_start_video_call"
+        android:icon="@drawable/ic_videocam"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/start_audio_call"
+        android:title="@string/action_start_video_call"
+        android:icon="@drawable/ic_call_grey"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+</menu>

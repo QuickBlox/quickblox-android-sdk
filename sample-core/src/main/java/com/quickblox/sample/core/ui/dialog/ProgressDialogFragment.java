@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.quickblox.sample.core.R;
@@ -24,16 +25,21 @@ public class ProgressDialogFragment extends DialogFragment {
     public static void show(FragmentManager fm, @StringRes int messageId) {
         // We're not using dialogFragment.show() method because we may call this DialogFragment
         // in onActivityResult() method and there will be a state loss exception
+        Log.d(TAG, "show");
         if (fm.findFragmentByTag(TAG) == null) {
+            Log.d(TAG, "fm.findFragmentByTag(TAG) == null");
             fm.beginTransaction().add(newInstance(messageId), TAG).commitAllowingStateLoss();
         }
+        Log.d(TAG, "backstack = " + fm.getFragments());
     }
 
     public static void hide(FragmentManager fm) {
         DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(TAG);
         if (fragment != null) {
-            fragment.dismissAllowingStateLoss();
+            fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
+            Log.d(TAG, "fm.beginTransaction().remove(fragment)" + fragment);
         }
+        Log.d(TAG, "backstack = " + fm.getFragments());
     }
 
     public static ProgressDialogFragment newInstance(@StringRes int messageId) {
@@ -42,6 +48,7 @@ public class ProgressDialogFragment extends DialogFragment {
 
         ProgressDialogFragment dialog = new ProgressDialogFragment();
         dialog.setArguments(args);
+        Log.d(TAG, "newInstance = " + dialog);
         return dialog;
     }
 

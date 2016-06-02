@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view_login_activity"
+    style="@style/MatchParent"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_marginLeft="@dimen/padding_start"
+    >
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/welcoming_message"
-        android:id="@+id/welcomingMessage"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_margin="10dp"
-        android:textColor="@color/grey"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"/>
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_actionbar"
+        android:text="@string/text_welcoming_message"
+        />
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/welcomingMessage"
-        android:divider="@android:color/transparent"
-        android:id="@+id/usersListView"/>
+    <EditText
+        android:id="@+id/user_name"
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_top"
+        android:hint="@string/hint_user_name"
+        android:textSize="16sp"
+        />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/loginPB"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+    <EditText
+        android:id="@+id/chat_room_name"
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_top"
+        android:hint="@string/hint_chat_room_name"
+        android:textSize="16sp"
+        />
 
-</RelativeLayout>
+</LinearLayout>

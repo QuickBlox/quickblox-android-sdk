@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/audio_switch"
+        android:checkable="true"
+        android:icon="@drawable/ic_phonelink_ring"
+        android:title="@string/action_logout"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/camera_switch"
+        android:checkable="true"
+        android:icon="@drawable/ic_camera_front"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+</menu>
