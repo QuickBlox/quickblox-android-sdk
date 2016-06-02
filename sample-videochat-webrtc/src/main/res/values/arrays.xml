@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="defaultCamera">
+    <string-array name="cameras">
         <item>Front</item>
         <item>Back</item>
     </string-array>
 
-    <string-array name="defaultCameraValues">
+    <string-array name="camerasValues">
         <item>0</item>
         <item>1</item>
     </string-array>

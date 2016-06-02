@@ -13,7 +13,7 @@
             android:summary="%s"
             android:title="@string/pref_resolution_title" />
 
-        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
             android:defaultValue="@string/pref_startbitratevalue_default"
             android:key="@string/pref_startbitratevalue_key"
             android:max="@integer/pref_startbitratevalue_max_value"
@@ -22,7 +22,7 @@
             seekBar:min="@integer/pref_startbitratevalue_min_value"
             seekBar:stepSize="@integer/pref_startbitratevalue_step_size" />
 
-        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
             android:defaultValue="@string/pref_frame_rate_default"
             android:key="@string/pref_frame_rate_key"
             android:max="@integer/pref_frame_rate_max_value"
@@ -54,7 +54,7 @@
 
     <PreferenceCategory android:title="@string/title_call_settings_category">
 
-        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
             android:defaultValue="@string/pref_answer_time_interval_default_value"
             android:key="@string/pref_answer_time_interval_key"
             android:max="@integer/pref_answer_time_interval_max_value"
@@ -63,7 +63,7 @@
             seekBar:min="@integer/pref_answer_time_interval_min_value"
             seekBar:stepSize="@integer/pref_answer_time_interval_step_size" />
 
-        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
             android:defaultValue="@string/pref_disconnect_time_interval_default_value"
             android:key="@string/pref_disconnect_time_interval_key"
             android:max="@integer/pref_disconnect_time_interval_max_value"
@@ -72,7 +72,7 @@
             seekBar:min="@integer/pref_disconnect_time_interval_min_value"
             seekBar:stepSize="@integer/pref_disconnect_time_interval_step_size" />
 
-        <com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
             android:defaultValue="@string/pref_dialing_time_interval_default_value"
             android:key="@string/pref_dialing_time_interval_key"
             android:max="@integer/pref_dialing_time_interval_max_value"

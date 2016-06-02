@@ -1,4 +1,4 @@
-package com.quickblox.sample.groupchatwebrtc.utils;
+package com.quickblox.sample.groupchatwebrtc.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,13 +12,13 @@ import com.quickblox.sample.groupchatwebrtc.R;
 
 public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
-    private static final String androidns ="http://schemas.android.com/apk/res/android";
-    private static final String seekbarns ="http://schemas.android.com/apk/res-auto";
+    private static final String ANDROID_NS ="http://schemas.android.com/apk/res/android";
+    private static final String SEEKBAR_NS ="http://schemas.android.com/apk/res-auto";
 
 
-    private Context mContext;
-    private SeekBar mSeekBar;
-    private int mProgress, mMax, mMin, mStepSize;
+    private Context context;
+    private SeekBar seekBar;
+    private int progress, maxSeekBarValue, minSeekBarValue, seekBarStepSize;
 
     public SeekBarPreference(Context context) {
         this(context, null, 0);
@@ -32,33 +32,33 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         super(context, attrs, defStyle);
         setLayoutResource(R.layout.seekbar_preference);
 
-        mContext = context;
+        this.context = context;
 
         initFields(context, attrs);
     }
 
     private void initFields(Context context, AttributeSet attrs) {
-        int maxValueResourceId = attrs.getAttributeResourceValue(androidns, "max", R.integer.pref_default_int_value);
-        mMax = context.getResources().getInteger(maxValueResourceId);
+        int maxValueResourceId = attrs.getAttributeResourceValue(ANDROID_NS, "max", R.integer.pref_default_int_value);
+        maxSeekBarValue = context.getResources().getInteger(maxValueResourceId);
 
-        int minValueResourceId = attrs.getAttributeResourceValue(seekbarns, "min", R.integer.pref_default_int_value);
-        mMin = context.getResources().getInteger(minValueResourceId);
+        int minValueResourceId = attrs.getAttributeResourceValue(SEEKBAR_NS, "min", R.integer.pref_default_int_value);
+        minSeekBarValue = context.getResources().getInteger(minValueResourceId);
 
-        int stepSizeValueResourceId = attrs.getAttributeResourceValue(seekbarns, "stepSize", R.integer.pref_default_int_value);
-        mStepSize = context.getResources().getInteger(stepSizeValueResourceId);
+        int stepSizeValueResourceId = attrs.getAttributeResourceValue(SEEKBAR_NS, "stepSize", R.integer.pref_default_int_value);
+        seekBarStepSize = context.getResources().getInteger(stepSizeValueResourceId);
 
-        Log.v("Attribute", "mMax = " + mMax);
-        Log.v("Attribute", "mMin = " + mMin);
-        Log.v("Attribute", "mStepSize = " + mStepSize);
+        Log.v("Attribute", "max = " + maxSeekBarValue);
+        Log.v("Attribute", "min = " + minSeekBarValue);
+        Log.v("Attribute", "step = " + seekBarStepSize);
     }
 
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
-        mSeekBar.setMax(mMax);
-        mSeekBar.setProgress(mProgress);
-        mSeekBar.setOnSeekBarChangeListener(this);
+        seekBar = (SeekBar) view.findViewById(R.id.seekbar);
+        seekBar.setMax(maxSeekBarValue);
+        seekBar.setProgress(progress);
+        seekBar.setOnSeekBarChangeListener(this);
     }
 
     @Override
@@ -66,10 +66,10 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         if (!fromUser)
             return;
 
-        progress = (progress / mStepSize) * mStepSize;
+        progress = (progress / seekBarStepSize) * seekBarStepSize;
 
-        if (progress <= mMin) {
-            progress = mMin + progress;
+        if (progress <= minSeekBarValue) {
+            progress = minSeekBarValue + progress;
         }
 
         setValue(progress);
@@ -87,8 +87,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        Log.d("Attribute", "restoreValue = " + restoreValue + " defaultValue = "+ defaultValue);
-        setValue(restoreValue ? getPersistedInt(mProgress) : (Integer) defaultValue);
+        setValue(restoreValue ? getPersistedInt(progress) : (Integer) defaultValue);
     }
 
     public void setValue(int value) {
@@ -96,12 +95,12 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
             persistInt(value);
         }
 
-        if (value != mProgress) {
-            mProgress = value;
+        if (value != progress) {
+            progress = value;
             notifyChanged();
         }
 
-        setSummary(String.valueOf(mProgress));
+        setSummary(String.valueOf(progress));
     }
 
     @Override

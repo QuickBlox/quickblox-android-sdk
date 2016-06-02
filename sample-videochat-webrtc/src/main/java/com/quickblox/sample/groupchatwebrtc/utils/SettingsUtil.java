@@ -84,7 +84,7 @@ public class SettingsUtil {
         Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
     }
 
-    public static void configRtcClient(SharedPreferences sharedPref, Context context){
+    public static void configRTCTimers(SharedPreferences sharedPref, Context context){
         long answerTimeInterval = getPreferenceInt(sharedPref, context,
                 R.string.pref_answer_time_interval_key,
                 R.string.pref_answer_time_interval_default_value);
@@ -120,18 +120,18 @@ public class SettingsUtil {
         }
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int StrRes, int StrResDefValue) {
-        return sharedPref.getString(context.getString(StrRes),
-                context.getString(StrResDefValue));
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, int strResDefValue) {
+        return sharedPref.getString(context.getString(strRes),
+                context.getString(strResDefValue));
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int StrRes, String defValue) {
-        return sharedPref.getString(context.getString(StrRes),
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, String defValue) {
+        return sharedPref.getString(context.getString(strRes),
                 defValue);
     }
 
-    private static int getPreferenceInt(SharedPreferences sharedPref, Context context, int StrRes, int StrResDefValue) {
-        return sharedPref.getInt(context.getString(StrRes), sharedPref.getInt(context.getString(StrResDefValue), 0));
+    private static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strRes, int resDefValue) {
+        return sharedPref.getInt(context.getString(strRes), sharedPref.getInt(context.getString(resDefValue), 0));
     }
 
 }

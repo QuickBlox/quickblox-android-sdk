@@ -1,19 +1,17 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
-import com.quickblox.sample.groupchatwebrtc.utils.SeekBarPreference;
+import com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference;
 
 /**
  * QuickBlox team
