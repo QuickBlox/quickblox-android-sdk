@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/actionVideoButtons"
+    android:id="@+id/layout_action_buttons"
     style="@style/MatchWidth"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
@@ -10,7 +10,7 @@
     android:orientation="horizontal">
 
     <ToggleButton
-        android:id="@+id/micToggleVideoCall"
+        android:id="@+id/toggle_mic"
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
@@ -21,14 +21,14 @@
         android:textOn="" />
 
     <ImageButton
-        android:id="@+id/handUpVideoCall"
+        android:id="@+id/button_hangup_call"
         style="@style/EndCallImageButton"
         android:layout_marginLeft="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/shape_oval_red" />
 
     <ToggleButton
-        android:id="@+id/cameraToggle"
+        android:id="@+id/toggle_camera"
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
@@ -41,7 +41,7 @@
         android:textOn="" />
 
     <ToggleButton
-        android:id="@+id/speakerToggle"
+        android:id="@+id/toggle_speaker"
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"

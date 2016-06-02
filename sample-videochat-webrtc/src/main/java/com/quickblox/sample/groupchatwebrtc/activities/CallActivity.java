@@ -259,16 +259,12 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
-                if (incomeCallFragment == null) {
-                    BaseConversationFragment conversationFragment = (BaseConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-                    if (conversationFragment != null) {
-//                        disableConversationFragmentButtons();
-                        ringtonePlayer.stop();
-                        hangUpCurrentSession();
-                    }
-                } else {
+                QBRTCSession.QBRTCSessionState currentSessionState = currentSession.getState();
+                if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)){
                     rejectCurrentSession();
+                } else {
+                    ringtonePlayer.stop();
+                    hangUpCurrentSession();
                 }
                 Toaster.longToast("Call was stopped by timer");
             }
@@ -551,7 +547,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showToast("User " + participantName + " " + getString(R.string.hungUp) + " conversation");
+                    showToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
                 }
             });
         }

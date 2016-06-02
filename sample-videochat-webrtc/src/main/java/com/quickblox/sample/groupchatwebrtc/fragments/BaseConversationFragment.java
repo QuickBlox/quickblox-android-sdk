@@ -109,6 +109,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     private void prepareAndShowOutgoingScreen() {
         configureOutgoingScreen();
         allOpponentsTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
+        Log.d(TAG, "outgoing opponents = " + CollectionsUtils.makeStringFromUsersFullNames(opponents));
     }
 
     protected abstract void configureOutgoingScreen();
@@ -173,8 +174,8 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     }
 
     protected void initViews(View view) {
-        micToggleVideoCall = (ToggleButton) view.findViewById(R.id.micToggleVideoCall);
-        handUpVideoCall = (ImageButton) view.findViewById(R.id.handUpVideoCall);
+        micToggleVideoCall = (ToggleButton) view.findViewById(R.id.toggle_mic);
+        handUpVideoCall = (ImageButton) view.findViewById(R.id.button_hangup_call);
         outgoingOpponentsRelativeLayout = view.findViewById(R.id.layout_background_outgoing_screen);
         allOpponentsTextView = (TextView) view.findViewById(R.id.text_outgoing_opponents_names);
         ringingTextView = (TextView) view.findViewById(R.id.text_ringing);

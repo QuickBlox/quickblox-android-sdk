@@ -214,8 +214,8 @@ public class OpponentsActivity extends BaseActivity {
     private void initActionBarWithSelectedUsers(int countSelectedUsers){
         setActionBarTitle(String.format(getString(
                 countSelectedUsers > 1
-                    ? R.string.users_selected
-                    : R.string.user_selected),
+                    ? R.string.tile_many_users_selected
+                    : R.string.title_one_user_selected),
                 countSelectedUsers));
     }
 

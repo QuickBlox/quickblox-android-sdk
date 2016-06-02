@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_background_outgoing_screen"
-    style="@style/MatchParent" >
+    style="@style/MatchParent"
+    android:gravity="center_vertical|center_horizontal"
+    >
 
     <TextView
         android:id="@+id/text_outgoing_opponents_names"
         style="@style/MatchWidth"
         android:layout_gravity="center"
-        android:layout_marginTop="138dp"
         android:gravity="center_horizontal"
-        android:textColor="@color/text_color_call_type"
         android:textSize="@dimen/text_size_call"
         android:textStyle="normal"/>
 
@@ -20,6 +20,7 @@
         android:layout_below="@+id/text_outgoing_opponents_names"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="36dp"
         android:gravity="center_horizontal"
         android:text="@string/ringing"
         android:textSize="@dimen/text_size_ringing"

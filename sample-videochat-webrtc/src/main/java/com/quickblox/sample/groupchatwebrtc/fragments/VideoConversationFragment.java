@@ -29,7 +29,6 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
-import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
@@ -206,7 +205,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         connectionStatusLocal = (TextView) view.findViewById(R.id.connectionStatusLocal);
 
-        cameraToggle = (ToggleButton) view.findViewById(R.id.cameraToggle);
+        cameraToggle = (ToggleButton) view.findViewById(R.id.toggle_camera);
         cameraToggle.setVisibility(View.VISIBLE);
 
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
@@ -581,33 +580,33 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onStartConnectToUser(QBRTCSession qbrtcSession, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.checking));
+        setStatusForOpponent(userId, getString(R.string.text_status_checking));
     }
 
     @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.connected));
+        setStatusForOpponent(userId, getString(R.string.text_status_connected));
         setProgressBarForOpponentGone(userId);
     }
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.closed));
+        setStatusForOpponent(integer, getString(R.string.text_status_closed));
     }
 
     @Override
     public void onDisconnectedFromUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.disconnected));
+        setStatusForOpponent(integer, getString(R.string.text_status_disconnected));
     }
 
     @Override
     public void onDisconnectedTimeoutFromUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.time_out));
+        setStatusForOpponent(integer, getString(R.string.text_status_time_out));
     }
 
     @Override
     public void onConnectionFailedWithUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.failed));
+        setStatusForOpponent(integer, getString(R.string.text_status_failed));
     }
 
     @Override
@@ -626,12 +625,12 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userId) {
         setProgressBarForOpponentGone(userId);
-        setStatusForOpponent(userId, getString(R.string.noAnswer));
+        setStatusForOpponent(userId, getString(R.string.text_status_no_answer));
     }
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-        setStatusForOpponent(userId, getString(R.string.rejected));
+        setStatusForOpponent(userId, getString(R.string.text_status_rejected));
     }
 
     @Override
@@ -641,7 +640,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.hungUp));
+        setStatusForOpponent(userId, getString(R.string.text_status_hang_up));
     }
     //////////////////////////////////   end     //////////////////////////////////////////
 

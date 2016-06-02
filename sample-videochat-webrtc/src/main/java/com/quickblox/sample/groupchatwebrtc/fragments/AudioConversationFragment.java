@@ -58,7 +58,7 @@ public class AudioConversationFragment extends BaseConversationFragment {
     @Override
     protected void configureActionBar() {
         actionBar.setTitle(currentUser.getTags().get(0));
-        actionBar.setSubtitle(String.format(getString(R.string.logged_in_as), currentUser.getFullName()));
+        actionBar.setSubtitle(String.format(getString(R.string.subtitle_text_logged_in_as), currentUser.getFullName()));
     }
 
     @Override
@@ -75,14 +75,15 @@ public class AudioConversationFragment extends BaseConversationFragment {
         otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
 
-        audioSwichToggleButton = (ToggleButton) view.findViewById(R.id.speakerToggle);
+        audioSwichToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
         audioSwichToggleButton.setVisibility(View.VISIBLE);
 
         actionButtonsEnabled(false);
     }
 
     private String getOtherOpponentsNames() {
-        ArrayList<QBUser> otherOpponents = opponents;
+        ArrayList<QBUser> otherOpponents = new ArrayList<>();
+        otherOpponents.addAll(opponents);
         otherOpponents.remove(0);
 
         return CollectionsUtils.makeStringFromUsersFullNames(otherOpponents);

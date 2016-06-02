@@ -34,7 +34,7 @@
             style="@style/WrapContent"
             android:textColor="@color/text_color_call_type"
             android:textSize="@dimen/incoming_call_type_text_size"
-            android:text="@string/incoming_audio_call"
+            android:text="@string/text_incoming_audio_call"
             android:layout_marginTop="8dp"
             />
 

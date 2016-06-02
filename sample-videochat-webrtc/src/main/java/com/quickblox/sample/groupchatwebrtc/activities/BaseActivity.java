@@ -33,7 +33,7 @@ public abstract class BaseActivity extends CoreBaseActivity {
         }
 
         setActionBarTitle(currentRoomName);
-        setActionbarSubTitle(String.format(getString(R.string.logged_in_as), currentUserFullName));
+        setActionbarSubTitle(String.format(getString(R.string.subtitle_text_logged_in_as), currentUserFullName));
     }
 
 
