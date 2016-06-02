@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class SettingsUtil {
 
     private static final String TAG = SettingsUtil.class.getSimpleName();
 
-    private static void setSettingsForMultiCall(List<QBUser> users) {
+    private static void setSettingsForMultiCall(List<Integer> users) {
         if (users.size() <= 2) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
@@ -33,7 +33,7 @@ public class SettingsUtil {
         }
     }
 
-    public static void setSettingsStrategy(List<QBUser> users, SharedPreferences sharedPref, Context context) {
+    public static void setSettingsStrategy(List<Integer> users, SharedPreferences sharedPref, Context context) {
         if (users.size() == 1) {
             setSettingsFromPreferences(sharedPref, context);
         } else {
@@ -48,28 +48,28 @@ public class SettingsUtil {
                 Boolean.valueOf(context.getString(R.string.pref_hwcodec_default)));
 
         QBRTCMediaConfig.setVideoHWAcceleration(hwCodec);
+
         // Get video resolution from settings.
         int resolutionItem = Integer.parseInt(sharedPref.getString(context.getString(R.string.pref_resolution_key),
                 "0"));
         Log.e(TAG, "resolutionItem =: " + resolutionItem);
         setVideoQuality(resolutionItem);
+        Log.v(TAG, "resolution = " + QBRTCMediaConfig.getVideoHeight() + "x" + QBRTCMediaConfig.getVideoWidth());
 
         // Get start bitrate.
-        String bitrateTypeDefault = context.getString(R.string.pref_startbitrate_default);
-        String bitrateType = sharedPref.getString(
-                context.getString(R.string.pref_startbitrate_key), bitrateTypeDefault);
-        if (!bitrateType.equals(bitrateTypeDefault)) {
-            String bitrateValue = sharedPref.getString(context.getString(R.string.pref_startbitratevalue_key),
-                    context.getString(R.string.pref_startbitratevalue_default));
-            int startBitrate = Integer.parseInt(bitrateValue);
-            QBRTCMediaConfig.setVideoStartBitrate(startBitrate);
-        }
+        int startBitrate = getPreferenceInt(sharedPref, context,
+                R.string.pref_startbitratevalue_key,
+                R.string.pref_startbitratevalue_default);
+        Log.e(TAG, "videoStartBitrate =: " + startBitrate);
+        QBRTCMediaConfig.setVideoStartBitrate(startBitrate);
+        Log.v(TAG, "videoStartBitrate = " + QBRTCMediaConfig.getVideoStartBitrate());
 
         int videoCodecItem = Integer.parseInt(getPreferenceString(sharedPref, context, R.string.pref_videocodec_key, "0"));
         for (QBRTCMediaConfig.VideoCodec codec : QBRTCMediaConfig.VideoCodec.values()) {
             if (codec.ordinal() == videoCodecItem) {
                 Log.e(TAG, "videoCodecItem =: " + codec.getDescription());
                 QBRTCMediaConfig.setVideoCodec(codec);
+                Log.v(TAG, "videoCodecItem = " + QBRTCMediaConfig.getVideoCodec());
                 break;
             }
         }
@@ -81,6 +81,27 @@ public class SettingsUtil {
                 QBRTCMediaConfig.AudioCodec.ISAC : QBRTCMediaConfig.AudioCodec.OPUS;
         Log.e(TAG, "audioCodec =: " + audioCodec.getDescription());
         QBRTCMediaConfig.setAudioCodec(audioCodec);
+        Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
+    }
+
+    public static void configRTCTimers(SharedPreferences sharedPref, Context context){
+        long answerTimeInterval = getPreferenceInt(sharedPref, context,
+                R.string.pref_answer_time_interval_key,
+                R.string.pref_answer_time_interval_default_value);
+        QBRTCConfig.setAnswerTimeInterval(answerTimeInterval);
+        Log.e(TAG, "answerTimeInterval = " + answerTimeInterval);
+
+        int disconnectTimeInterval = getPreferenceInt(sharedPref, context,
+                R.string.pref_disconnect_time_interval_key,
+                R.string.pref_disconnect_time_interval_default_value);
+        QBRTCConfig.setDisconnectTime(disconnectTimeInterval);
+        Log.e(TAG, "disconnectTimeInterval = " + disconnectTimeInterval);
+
+        long dialingTimeInterval = getPreferenceInt(sharedPref, context,
+                R.string.pref_dialing_time_interval_key,
+                R.string.pref_dialing_time_interval_default_value);
+        QBRTCConfig.setDialingTimeInterval(dialingTimeInterval);
+        Log.e(TAG, "dialingTimeInterval = " + dialingTimeInterval);
     }
 
     private static void setVideoQuality(int resolutionItem) {
@@ -95,18 +116,22 @@ public class SettingsUtil {
                 Log.e(TAG, "resolution =: " + quality.height + ":" + quality.width);
                 QBRTCMediaConfig.setVideoHeight(quality.height);
                 QBRTCMediaConfig.setVideoWidth(quality.width);
-
             }
         }
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int StrRes, int StrResDefValue) {
-        return sharedPref.getString(context.getString(StrRes),
-                context.getString(StrResDefValue));
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, int strResDefValue) {
+        return sharedPref.getString(context.getString(strRes),
+                context.getString(strResDefValue));
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int StrRes, String defValue) {
-        return sharedPref.getString(context.getString(StrRes),
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, String defValue) {
+        return sharedPref.getString(context.getString(strRes),
                 defValue);
     }
+
+    private static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strRes, int resDefValue) {
+        return sharedPref.getInt(context.getString(strRes), sharedPref.getInt(context.getString(resDefValue), 0));
+    }
+
 }

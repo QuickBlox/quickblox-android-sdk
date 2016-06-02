@@ -32,6 +32,7 @@ import com.quickblox.sample.groupchatwebrtc.util.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
+import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
@@ -85,6 +86,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
     private QbUsersDbManager dbManager;
+    private List<Integer> opponentsIdsList;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -133,6 +135,12 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         sessionManager = WebRtcSessionManager.getInstance(this);
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
+        opponentsIdsList = currentSession.getOpponents();
+
+        if (isInCommingCall){
+            opponentsIdsList.remove(currentSession.getCallerID());
+            opponentsIdsList.add(QBChatService.getInstance().getUser().getId());
+        }
     }
 
     @Override
@@ -192,8 +200,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         // Configure
         //
         QBRTCConfig.setMaxOpponentsCount(6);
-        QBRTCConfig.setDisconnectTime(30);
-        QBRTCConfig.setAnswerTimeInterval(45l);
+        SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
+        SettingsUtil.configRTCTimers(sharedPref, CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);
 
 

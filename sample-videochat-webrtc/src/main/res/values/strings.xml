@@ -37,6 +37,7 @@
     <string name="logged_in_as">Logged in as %s</string>
     <string name="user_selected">%s user selected</string>
     <string name="users_selected">%s users selected</string>
+    <string name="actionbar_title_settings">Settings</string>
 
 
     <string name="outputing_audio_call">Outputing Audio Call - </string>
@@ -83,11 +84,27 @@
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
 
     <!-- Settings strings. -->
+    <string name="title_video_category">Video</string>
+    <string name="title_call_settings_category">Call Settings</string>
+
     <string name="pref_default_value">Default</string>
+    <integer name="pref_default_int_value">0</integer>
+
+    <string name="pref_default_camera_key">default_camera_preference</string>
+    <string name="pref_default_camera_title">Default Camera</string>
+    <string name="pref_default_camera_dlg">Select default camera</string>
+    <string name="pref_default_camera_default">0</string>
+    
+    <string name="pref_frame_rate_key">frame_rate</string>
+    <string name="pref_frame_rate_title">Frame Rate (0&#8211;30)</string>
+    <string name="pref_frame_rate_default">0</string>
+    <integer name="pref_frame_rate_min_value">0</integer>
+    <integer name="pref_frame_rate_max_value">30</integer>
+    <integer name="pref_frame_rate_stepSize">5</integer>
 
     <string name="pref_resolution_key">resolution_preference</string>
-    <string name="pref_resolution_title">Video resolution.</string>
-    <string name="pref_resolution_dlg">Enter RTC local video resolution.</string>
+    <string name="pref_resolution_title">Video Format</string>
+    <string name="pref_resolution_dlg">Enter RTC local video resolution</string>
     <string name="pref_resolution_default">-1</string>
 
     <string name="pref_fps_key">fps_preference</string>
@@ -96,14 +113,39 @@
     <string name="pref_fps_default">0</string>
 
     <string name="pref_startbitrate_key">startbitrate_preference</string>
-    <string name="pref_startbitrate_title">Start bitrate setting.</string>
-    <string name="pref_startbitrate_dlg">Start bitrate setting.</string>
+    <string name="pref_startbitrate_title">Start bitrate setting</string>
+    <string name="pref_startbitrate_dlg">Start bitrate setting</string>
     <string name="pref_startbitrate_default">Default</string>
 
     <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
-    <string name="pref_startbitratevalue_title">Video encoder start bitrate.</string>
-    <string name="pref_startbitratevalue_dlg">Enter video encoder start bitrate in kbps.(Max is 2000)</string>
-    <string name="pref_startbitratevalue_default">1000</string>
+    <string name="pref_startbitratevalue_title">Bandwidht (0&#8211;2000)</string>
+    <string name="pref_startbitratevalue_default">0</string>
+    <integer name="pref_startbitratevalue_min_value">0</integer>
+    <integer name="pref_startbitratevalue_max_value">2000</integer>
+    <integer name="pref_startbitratevalue_step_size">100</integer>
+
+    <!--Call Settings-->
+    
+    <string name="pref_answer_time_interval_key">answer_time_interval</string>
+    <string name="pref_answer_time_interval_title">Answer Time Interval (10&#8211;90s)</string>
+    <string name="pref_answer_time_interval_default_value">60</string>
+    <integer name="pref_answer_time_interval_min_value">10</integer>
+    <integer name="pref_answer_time_interval_max_value">90</integer>
+    <integer name="pref_answer_time_interval_step_size">5</integer>
+
+    <string name="pref_disconnect_time_interval_key">disconnect_time_interval</string>
+    <string name="pref_disconnect_time_interval_title">Disconnect Time Interval (10&#8211;90s)</string>
+    <string name="pref_disconnect_time_interval_default_value">10</string>
+    <integer name="pref_disconnect_time_interval_min_value">10</integer>
+    <integer name="pref_disconnect_time_interval_max_value">90</integer>
+    <integer name="pref_disconnect_time_interval_step_size">5</integer>
+
+    <string name="pref_dialing_time_interval_key">Dialing_time_interval</string>
+    <string name="pref_dialing_time_interval_title">Dialing Time Interval (3&#8211;15s)</string>
+    <string name="pref_dialing_time_interval_default_value">5</string>
+    <integer name="pref_dialing_time_interval_min_value">3</integer>
+    <integer name="pref_dialing_time_interval_max_value">15</integer>
+    <integer name="pref_dialing_time_interval_step_size">1</integer>
 
     <string name="pref_videocodec_key">videocodec_preference</string>
     <string name="pref_videocodec_title">Default video codec.</string>
