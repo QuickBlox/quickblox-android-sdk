@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentOpponents"
+    style="@style/MatchParent">
+
+    <FrameLayout
+        android:id="@+id/localView"
+        style="@style/MatchParent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+
+        <ViewStub
+            android:id="@+id/localViewStub"
+            style="@style/MatchParent"
+            android:layout="@layout/local_videoview" />
+
+        <include layout="@layout/view_outgoing_screen" />
+
+        <TextView
+            android:id="@+id/connectionStatusLocal"
+            style="@style/MatchWidth"
+            android:layout_marginBottom="@dimen/margin_very_small"
+            android:gravity="center_horizontal"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic" />
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/grid_opponents"
+        style="@style/WrapContent"
+        android:layout_above="@+id/element_set_video_buttons"
+        android:layout_marginBottom="@dimen/margin_common"
+        android:horizontalSpacing="@dimen/margin_small"
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/margin_small"
+        android:visibility="invisible"
+        tools:listitem="@layout/list_item_opponent_from_call">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <include
+        android:id="@+id/element_set_video_buttons"
+        layout="@layout/view_action_buttons_conversation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_common" />
+
+</RelativeLayout>

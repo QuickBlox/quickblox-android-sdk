@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/WrapContent"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/padding_bottom"
+    android:gravity="center"
+    >
+
+    <ImageButton
+        android:id="@+id/image_button_reject_call"
+        style="@style/EndCallImageButton"
+        />
+
+    <ImageButton
+        android:id="@+id/image_button_accept_call"
+        style="@style/TakeCallImageButton"
+        android:layout_marginStart="@dimen/income_call_buttons_margin"
+        android:layout_toEndOf="@id/image_button_reject_call"
+        android:src="@drawable/ic_call"
+        tools:ignore="RtlCompat"
+        />
+
+</RelativeLayout>

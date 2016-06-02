@@ -23,7 +23,9 @@ import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
-import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.BaseConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.AudioConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.VideoConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
@@ -39,6 +41,7 @@ import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
@@ -49,6 +52,7 @@ import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.webrtc.VideoCapturerAndroid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +90,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
     private QbUsersDbManager dbManager;
+    private ArrayList <CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
 
     public static void start(Context context,
@@ -123,11 +128,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
-        if (isInCommingCall) {
+        startSuitableFragment(isInCommingCall);
+
+    }
+
+    private void startSuitableFragment(boolean isInComingCall) {
+        if (isInComingCall){
             initIncommingCallTask();
             addIncomeCallFragment();
         } else {
-            addConvrsationFragment(isInCommingCall);
+            addConvrsationFragment(isInComingCall);
         }
     }
 
@@ -164,9 +174,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
                 Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
-                if (getCurrentFragment() instanceof ConversationFragment) {
-                    ((ConversationFragment) getCurrentFragment()).enableDynamicToggle(plugged);
-                }
             }
         });
         audioManager.init();
@@ -255,28 +262,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         networkConnectionChecker = new NetworkConnectionChecker(getApplication());
     }
 
-    private void disableConversationFragmentButtons() {
-        ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-        if (fragment != null) {
-            fragment.actionButtonsEnabled(false);
-        }
-    }
-
     private void initIncommingCallTask() {
         showIncomingCallWindowTaskHandler = new Handler(Looper.myLooper());
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                IncomeCallFragment incomeCallFragment = (IncomeCallFragment) getFragmentManager().findFragmentByTag(INCOME_CALL_FRAGMENT);
-                if (incomeCallFragment == null) {
-                    ConversationFragment conversationFragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-                    if (conversationFragment != null) {
-                        disableConversationFragmentButtons();
-                        ringtonePlayer.stop();
-                        hangUpCurrentSession();
-                    }
-                } else {
+                QBRTCSession.QBRTCSessionState currentSessionState = currentSession.getState();
+                if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)){
                     rejectCurrentSession();
+                } else {
+                    ringtonePlayer.stop();
+                    hangUpCurrentSession();
                 }
                 Toaster.longToast("Call was stopped by timer");
             }
@@ -457,6 +453,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onConnectedToUser(QBRTCSession session, final Integer userID) {
+        notifyCallStateListenersCallStarted();
         forbidenCloseByWifiState();
         runOnUiThread(new Runnable() {
             @Override
@@ -513,15 +510,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onSessionStartClose(final QBRTCSession session) {
         session.removeSessionCallbacksListener(CallActivity.this);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag(CONVERSATION_CALL_FRAGMENT);
-                if (fragment != null && session.equals(getCurrentSession())) {
-                    fragment.actionButtonsEnabled(false);
-                }
-            }
-        });
+        notifyCallStateListenersCallStoped();
     }
 
     @Override
@@ -560,7 +549,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showToast("User " + participantName + " " + getString(R.string.hungUp) + " conversation");
+                    showToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
                 }
             });
         }
@@ -581,9 +570,14 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void addConvrsationFragment(boolean isIncomingCall) {
-        ConversationFragment fragment = ConversationFragment.newInstance(isIncomingCall);
-        FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
+    private void addConvrsationFragment(boolean isIncomingCall){
+        boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
+        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
+                isVideoCall
+                        ? new VideoConversationFragment()
+                        : new AudioConversationFragment(),
+                isIncomingCall);
+        FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, conversationFragment, CONVERSATION_CALL_FRAGMENT);
     }
 
     public SharedPreferences getDefaultSharedPrefs() {
@@ -599,15 +593,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showToast(R.string.dlg_signal_error);
     }
 
-    @Override
-    public void onSwitchAudio() {
-        if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.WIRED_HEADSET
-                || audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.EARPIECE) {
-            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
-        } else {
-            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
-        }
-    }
+
 
     public void onUseHeadSet(boolean use) {
         audioManager.setManageHeadsetByDefault(use);
@@ -668,6 +654,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
+    public void onSwitchAudio() {
+        if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.WIRED_HEADSET
+                || audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.EARPIECE) {
+            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+        } else {
+            audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+        }
+    }
+
+    @Override
     public void removeRTCClientConnectionCallback(QBRTCSessionConnectionCallbacks clientConnectionCallbacks) {
         if (currentSession != null) {
             currentSession.removeSessionCallbacksListener(clientConnectionCallbacks);
@@ -677,6 +673,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void removeRTCSessionUserCallback(QBRTCSessionUserCallback sessionUserCallback) {
         this.sessionUserCallback = null;
+    }
+
+    @Override
+    public void addCurrentCallStateCallback(CurrentCallStateCallback currentCallStateCallback) {
+        currentCallStateCallbackList.add(currentCallStateCallback);
+    }
+
+    @Override
+    public void removeCurrentCallStateCallback(CurrentCallStateCallback currentCallStateCallback) {
+        currentCallStateCallbackList.remove(currentCallStateCallback);
     }
 
     //////////////////////////////////////////   end   /////////////////////////////////////////////
@@ -691,5 +697,33 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
 
         void onReceiveHangUpFromUser(QBRTCSession session, Integer userId);
+    }
+
+    public interface CurrentCallStateCallback{
+        void onCallStarted();
+
+        void onCallStoped();
+    }
+
+    private void notifyCallStateListenersCallStarted(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                    callback.onCallStarted();
+                }
+            }
+        });
+    }
+
+    private void notifyCallStateListenersCallStoped(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                    callback.onCallStoped();
+                }
+            }
+        });
     }
 }

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
-import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragment;
-import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 

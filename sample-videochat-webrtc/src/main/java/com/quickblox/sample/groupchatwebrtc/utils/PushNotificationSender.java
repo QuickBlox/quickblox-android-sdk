@@ -1,9 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
-import android.os.Bundle;
-
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
@@ -19,7 +15,7 @@ import java.util.ArrayList;
 public class PushNotificationSender {
 
     public static void sendPushMessage(ArrayList<Integer> recipients, String senderName) {
-        String outMessage = String.format(String.valueOf(R.string.push_notification_message), senderName);
+        String outMessage = String.format(String.valueOf(R.string.text_push_notification_message), senderName);
 
         // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();

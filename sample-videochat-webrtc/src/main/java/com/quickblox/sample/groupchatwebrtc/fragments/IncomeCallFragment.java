@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         View view = inflater.inflate(R.layout.fragment_income_call, container, false);
 
         initFields();
+        hideToolBar();
 
         if (currentSession != null) {
             initUI(view);
@@ -101,6 +103,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         }
     }
 
+    public void hideToolBar() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
+        toolbar.setVisibility(View.GONE);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -115,17 +122,17 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void initUI(View view) {
         callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
-        callerAvatarImageView = (ImageView) view.findViewById(R.id.caller_avatar);
+        callerAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
-        callerNameTextView = (TextView) view.findViewById(R.id.caller_name);
+        callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
         callerNameTextView.setText(qbUserDbManager.getUserNameById(currentSession.getCallerID()));
 
-        otherIncUsersTextView = (TextView) view.findViewById(R.id.other_inc_users);
+        otherIncUsersTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
 
-        rejectButton = (ImageButton) view.findViewById(R.id.reject_call);
-        takeButton = (ImageButton) view.findViewById(R.id.take_call);
+        rejectButton = (ImageButton) view.findViewById(R.id.image_button_reject_call);
+        takeButton = (ImageButton) view.findViewById(R.id.image_button_accept_call);
     }
 
     private Drawable getBackgroundForCallerAvatar(int callerId){
@@ -169,7 +176,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void setDisplayedTypeCall(QBRTCTypes.QBConferenceType conferenceType) {
         boolean isVideoCall = conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
 
-        callTypeTextView.setText(isVideoCall ? R.string.incoming_video_call : R.string.incoming_audio_call);
+        callTypeTextView.setText(isVideoCall ? R.string.text_incoming_video_call : R.string.text_incoming_audio_call);
         takeButton.setImageResource(isVideoCall ? R.drawable.ic_video_white : R.drawable.ic_call);
     }
 
@@ -188,11 +195,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         lastClickTime = SystemClock.uptimeMillis();
 
         switch (v.getId()) {
-            case R.id.reject_call:
+            case R.id.image_button_reject_call:
                 reject();
                 break;
 
-            case R.id.take_call:
+            case R.id.image_button_accept_call:
                 accept();
                 break;
 
