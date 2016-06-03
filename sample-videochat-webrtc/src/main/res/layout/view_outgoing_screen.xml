@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_background_outgoing_screen"
     style="@style/MatchParent"
-    android:gravity="center_vertical|center_horizontal"
-    >
+    android:orientation="vertical">
+
+    <View
+        style="@style/WeightWidth"
+        android:layout_height="0dp" />
 
     <TextView
         android:id="@+id/text_outgoing_opponents_names"
         style="@style/MatchWidth"
-        android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:textSize="@dimen/text_size_call"
-        android:textStyle="normal"/>
-
+        android:textStyle="normal"
+        tools:text="John, Bob, Merlin" />
 
     <TextView
         android:id="@+id/text_ringing"
         style="@style/MatchWidth"
-        android:layout_below="@+id/text_outgoing_opponents_names"
-        android:layout_gravity="center"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="36dp"
+        android:layout_weight="3"
         android:gravity="center_horizontal"
         android:text="@string/ringing"
         android:textSize="@dimen/text_size_ringing"
-        android:textStyle="normal"/>
+        android:textStyle="normal" />
 
-</RelativeLayout>
+</LinearLayout>

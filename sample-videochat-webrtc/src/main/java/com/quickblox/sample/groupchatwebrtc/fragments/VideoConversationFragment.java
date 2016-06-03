@@ -84,7 +84,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private OpponentsFromCallAdapter opponentsAdapter;
     private LocalViewOnClickListener localViewOnClickListener;
     private boolean isRemoteShown;
-    private boolean isStarted;
     private boolean headsetPlugged;
 
     private int amountOpponents;
@@ -169,7 +168,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     protected void actionButtonsEnabled(boolean enability) {
         super.actionButtonsEnabled(enability);
         cameraToggle.setEnabled(enability);
-
+//Todo add switch camera
         // inactivate toggle buttons
         cameraToggle.setActivated(enability);
     }
