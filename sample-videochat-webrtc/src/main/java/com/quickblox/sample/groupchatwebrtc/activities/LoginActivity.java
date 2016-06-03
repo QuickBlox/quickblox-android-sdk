@@ -24,6 +24,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
+import com.quickblox.sample.groupchatwebrtc.utils.ValidationUtils;
 import com.quickblox.users.model.QBUser;
 
 /**
@@ -90,7 +91,7 @@ public class LoginActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                if (isEnteredRoomNameValid() && isEnteredUserNameValid()) {
+                if (isEnteredUserNameValid() && isEnteredRoomNameValid()) {
                     hideKeyboard();
                     signInToQB(createUserWithEnteredData(), true);
                 }
@@ -135,23 +136,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     private boolean isEnteredRoomNameValid() {
-        //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(chatRoomNameEditText.getText())) {
-            chatRoomNameEditText.setError(getString(R.string.error_empty_chat_room_name));
-            return false;
-        }
-
-        return true;
+        return ValidationUtils.isEnteredDataValid(this, chatRoomNameEditText,
+                String.valueOf(chatRoomNameEditText.getText()), false);
     }
 
     private boolean isEnteredUserNameValid() {
-        //TODO VT need to add advanced validator for release
-        if (TextUtils.isEmpty(userNameEditText.getText())) {
-            userNameEditText.setError(getString(R.string.error_empty_login));
-            return false;
-        }
-
-        return true;
+        return ValidationUtils.isEnteredDataValid(this, userNameEditText,
+                String.valueOf(userNameEditText.getText()), true);
     }
 
     private void hideKeyboard() {
