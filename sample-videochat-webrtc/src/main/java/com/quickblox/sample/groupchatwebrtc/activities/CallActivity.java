@@ -146,11 +146,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
         opponentsIdsList = currentSession.getOpponents();
-
-        if (isInCommingCall) {
-            opponentsIdsList.remove(currentSession.getCallerID());
-            opponentsIdsList.add(QBChatService.getInstance().getUser().getId());
-        }
     }
 
     @Override
@@ -174,7 +169,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
                 Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
-                sessionUserCallback.enableDynamicToggle(plugged);
+                if (sessionUserCallback != null) {
+                    sessionUserCallback.enableDynamicToggle(plugged);
+                }
             }
         });
         audioManager.init();

@@ -8,8 +8,7 @@
         android:id="@+id/innerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/black_transparent_50">
+        android:layout_gravity="center">
 
         <com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView
             android:id="@+id/opponentView"
@@ -18,37 +17,6 @@
             android:layout_alignParentTop="true"
             custom:secondCoords="@array/localViewCoordinatesOnRemote"
             custom:secondMirror="true" />
-
-
-        <LinearLayout  android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_weight="0.7"
-                android:layout_height="match_parent">
-
-                <View
-                    android:layout_weight="0.3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <View android:id="@+id/cameraOff"
-                    android:visibility="invisible"
-                    android:layout_weight="0.7"
-                    android:layout_width="match_parent"
-                    android:background="@color/black"
-                    android:layout_height="match_parent"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
 
         <TextView
             android:id="@+id/connectionStatus"
