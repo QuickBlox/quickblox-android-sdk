@@ -90,7 +90,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
     private QbUsersDbManager dbManager;
-    private ArrayList <CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
+    private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
 
     public static void start(Context context,
@@ -133,7 +133,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void startSuitableFragment(boolean isInComingCall) {
-        if (isInComingCall){
+        if (isInComingCall) {
             initIncommingCallTask();
             addIncomeCallFragment();
         } else {
@@ -147,7 +147,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         currentSession = sessionManager.getCurrentSession();
         opponentsIdsList = currentSession.getOpponents();
 
-        if (isInCommingCall){
+        if (isInCommingCall) {
             opponentsIdsList.remove(currentSession.getCallerID());
             opponentsIdsList.add(QBChatService.getInstance().getUser().getId());
         }
@@ -174,6 +174,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
                 Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
+                sessionUserCallback.enableDynamicToggle(plugged);
             }
         });
         audioManager.init();
@@ -268,7 +269,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void run() {
                 QBRTCSession.QBRTCSessionState currentSessionState = currentSession.getState();
-                if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)){
+                if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)) {
                     rejectCurrentSession();
                 } else {
                     ringtonePlayer.stop();
@@ -497,9 +498,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                         audioManager.close();
                     }
                     releaseCurrentSession();
-                    if (sessionUserCallback != null) {
-                        sessionUserCallback.onSessionClosed();
-                    }
+
                     closeByWifiStateAllow = true;
                     finish();
                 }
@@ -570,7 +569,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void addConvrsationFragment(boolean isIncomingCall){
+    private void addConvrsationFragment(boolean isIncomingCall) {
         boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
@@ -592,7 +591,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public void onErrorSendingPacket(QBSignalingSpec.QBSignalCMD qbSignalCMD, Integer userId, QBRTCSignalException e) {
         showToast(R.string.dlg_signal_error);
     }
-
 
 
     public void onUseHeadSet(boolean use) {
@@ -688,7 +686,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
     public interface QBRTCSessionUserCallback {
-        void onSessionClosed();
+        void enableDynamicToggle(boolean plugged);
 
         void onUserNotAnswer(QBRTCSession session, Integer userId);
 
@@ -699,28 +697,28 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         void onReceiveHangUpFromUser(QBRTCSession session, Integer userId);
     }
 
-    public interface CurrentCallStateCallback{
+    public interface CurrentCallStateCallback {
         void onCallStarted();
 
         void onCallStoped();
     }
 
-    private void notifyCallStateListenersCallStarted(){
+    private void notifyCallStateListenersCallStarted() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStarted();
                 }
             }
         });
     }
 
-    private void notifyCallStateListenersCallStoped(){
+    private void notifyCallStateListenersCallStoped() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (CurrentCallStateCallback callback : currentCallStateCallbackList){
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStoped();
                 }
             }

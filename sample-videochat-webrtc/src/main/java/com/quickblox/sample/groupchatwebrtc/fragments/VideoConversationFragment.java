@@ -732,7 +732,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
 
     @Override
-    public void onSessionClosed() {
+    public void enableDynamicToggle(boolean plugged) {
+        headsetPlugged = plugged;
     }
 
     @Override
@@ -783,10 +784,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
             }
         });
-    }
-
-    public void enableDynamicToggle(boolean plugged) {
-        headsetPlugged = plugged;
     }
 
     @Override
