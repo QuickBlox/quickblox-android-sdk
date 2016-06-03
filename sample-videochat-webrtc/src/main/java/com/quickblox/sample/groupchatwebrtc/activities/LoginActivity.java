@@ -136,13 +136,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     private boolean isEnteredRoomNameValid() {
-        return ValidationUtils.isEnteredDataValid(this, chatRoomNameEditText,
-                String.valueOf(chatRoomNameEditText.getText()), false);
+        return ValidationUtils.isRoomNameValid(this, chatRoomNameEditText,
+                String.valueOf(chatRoomNameEditText.getText()));
     }
 
     private boolean isEnteredUserNameValid() {
-        return ValidationUtils.isEnteredDataValid(this, userNameEditText,
-                String.valueOf(userNameEditText.getText()), true);
+        return ValidationUtils.isUserNameValid(this, userNameEditText,
+                String.valueOf(userNameEditText.getText()));
     }
 
     private void hideKeyboard() {

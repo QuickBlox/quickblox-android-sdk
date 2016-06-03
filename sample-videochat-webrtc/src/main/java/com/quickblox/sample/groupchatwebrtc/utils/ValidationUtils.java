@@ -10,7 +10,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
  */
 public class ValidationUtils {
 
-    public static boolean isEnteredDataValid(Context context, EditText editText, String text, boolean isName) {
+    private static boolean isUserNameOrRoomNameValid(Context context, EditText editText, String text, boolean isName) {
 
         int counterSymbols = 0;
         char[] fullNameTextToCharArray = text.toCharArray();
@@ -58,5 +58,13 @@ public class ValidationUtils {
                             : R.string.field_name_chat_room_name)));
             return false;
         }
+    }
+
+    public static boolean isUserNameValid(Context context, EditText editText, String text){
+        return isUserNameOrRoomNameValid(context, editText, text, true);
+    }
+
+    public static boolean isRoomNameValid(Context context, EditText editText, String text){
+        return isUserNameOrRoomNameValid(context, editText, text, false);
     }
 }
