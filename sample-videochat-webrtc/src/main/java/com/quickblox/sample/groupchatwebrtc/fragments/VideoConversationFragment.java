@@ -128,6 +128,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void initFields() {
         super.initFields();
+        localViewOnClickListener = new LocalViewOnClickListener();
         amountOpponents = opponents.size();
         allOponents = new ArrayList<>(opponents.size());
         allOponents.addAll(opponents);
