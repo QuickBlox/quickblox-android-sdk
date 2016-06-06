@@ -41,7 +41,8 @@
         <activity
             android:name=".activities.OpponentsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activities.CallActivity"
             android:theme="@style/BaseAppTheme"

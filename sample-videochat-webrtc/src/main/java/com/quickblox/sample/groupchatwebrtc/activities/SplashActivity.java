@@ -3,22 +3,36 @@ package com.quickblox.sample.groupchatwebrtc.activities;
 import android.os.Bundle;
 import android.view.View;
 
+import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 
 /**
  * Created by tereha on 12.04.16.
  */
 public class SplashActivity extends CoreSplashActivity {
 
+    private SharedPrefsHelper sharedPrefsHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPrefsHelper = SharedPrefsHelper.getInstance();
+
+        if(sharedPrefsHelper.hasQbUser()){
+            proceedToTheNextActivity();
+            return;
+        }
+
         createSession();
     }
 
@@ -29,7 +43,12 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        LoginActivity.start(this);
+        if (sharedPrefsHelper.hasQbUser()) {
+            OpponentsActivity.start(this, false);
+        } else {
+            LoginActivity.start(this);
+        }
+
         finish();
     }
 

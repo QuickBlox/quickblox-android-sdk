@@ -1,8 +1,12 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.quickblox.auth.QBAuth;
@@ -11,6 +15,7 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 
@@ -24,14 +29,13 @@ public abstract class BaseActivity extends CoreBaseActivity {
     SharedPrefsHelper sharedPrefsHelper;
     private String TOKEN = "token";
     private String DATE = "date";
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        if (savedInstanceState != null) {
-            restoreSession(savedInstanceState);
-        }
     }
 
     //Todo Maybe set restore session logic to CoreBaseActivity?
@@ -70,11 +74,32 @@ public abstract class BaseActivity extends CoreBaseActivity {
     }
 
     void showProgressDialog(@StringRes int messageId) {
-        ProgressDialogFragment.show(getSupportFragmentManager(), messageId);
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+
+            // Disable the back button
+            DialogInterface.OnKeyListener keyListener = new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    return keyCode == KeyEvent.KEYCODE_BACK;
+                }
+            };
+            progressDialog.setOnKeyListener(keyListener);
+        }
+
+        progressDialog.setMessage(getString(messageId));
+
+        progressDialog.show();
+
     }
 
     void hideProgressDialog() {
-        ProgressDialogFragment.hide(getSupportFragmentManager());
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     protected void showErrorSnackbar(@StringRes int resId, Exception e,
@@ -82,18 +107,6 @@ public abstract class BaseActivity extends CoreBaseActivity {
         if (getSnackbarAnchorView() != null) {
             ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                     com.quickblox.sample.core.R.string.dlg_retry, clickListener);
-        }
-    }
-
-    public void restoreSession(Bundle savedInstanceState) {
-        try {
-            Log.d("BaseActivity", "restoreSession");
-            String token = savedInstanceState.getString(TOKEN);
-            Date date = (Date) savedInstanceState.getSerializable(DATE);
-
-            QBAuth.createFromExistentToken(token, date);
-        } catch (BaseServiceException e) {
-            e.printStackTrace();
         }
     }
 
