@@ -74,11 +74,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -232,10 +227,10 @@ public class LoginActivity extends BaseActivity {
         QBUser qbUser = null;
         if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(chatRoomName)) {
             StringifyArrayList<String> userTags = new StringifyArrayList<>();
-            userTags.add(String.valueOf(chatRoomName));
+            userTags.add(chatRoomName);
 
             qbUser = new QBUser();
-            qbUser.setFullName(String.valueOf(userName));
+            qbUser.setFullName(userName);
             qbUser.setLogin(getCurrentDeviceId());
             qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
             qbUser.setTags(userTags);

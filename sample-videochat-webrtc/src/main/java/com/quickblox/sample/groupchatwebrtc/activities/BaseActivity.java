@@ -27,8 +27,6 @@ import java.util.Date;
 public abstract class BaseActivity extends CoreBaseActivity {
 
     SharedPrefsHelper sharedPrefsHelper;
-    private String TOKEN = "token";
-    private String DATE = "date";
     private ProgressDialog progressDialog;
 
     @Override
@@ -36,18 +34,6 @@ public abstract class BaseActivity extends CoreBaseActivity {
         super.onCreate(savedInstanceState);
 
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
-    }
-
-    //Todo Maybe set restore session logic to CoreBaseActivity?
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        try {
-            savedInstanceState.putString(TOKEN, QBAuth.getBaseService().getToken());
-            savedInstanceState.putSerializable(DATE, QBAuth.getBaseService().getTokenExpirationDate());
-        } catch (BaseServiceException e) {
-            e.printStackTrace();
-        }
     }
 
     public void initDefaultActionBar() {

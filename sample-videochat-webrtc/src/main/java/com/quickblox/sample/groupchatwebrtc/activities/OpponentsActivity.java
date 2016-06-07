@@ -232,12 +232,10 @@ public class OpponentsActivity extends BaseActivity {
                 return true;
 
             case R.id.start_video_call:
-                //start video call
                 startCall(true);
                 return true;
 
             case R.id.start_audio_call:
-                //start audio call
                 startCall(false);
                 return true;
 
@@ -251,7 +249,6 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startCall(boolean isVideoCall) {
-        Log.d(TAG, "startCall()");
         ArrayList<Integer> opponentsList = CollectionsUtils.getIdsSelectedOpponents(opponentsAdapter.getSelectedItems());
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
@@ -266,7 +263,6 @@ public class OpponentsActivity extends BaseActivity {
         PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
 
         CallActivity.start(this, false);
-        Log.d(TAG, "conferenceType = " + conferenceType);
     }
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers){

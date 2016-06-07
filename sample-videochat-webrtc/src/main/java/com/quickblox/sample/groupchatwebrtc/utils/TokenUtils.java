@@ -52,11 +52,9 @@ public class TokenUtils {
         } catch (BaseServiceException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void restoreExistentQbSession() throws BaseServiceException {
         QBAuth.createFromExistentToken(getCurrentToken(), getTokenExpirationDate());
-
     }
 }
