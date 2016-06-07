@@ -24,6 +24,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
+import com.quickblox.sample.groupchatwebrtc.utils.TokenUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.ValidationUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -98,6 +99,7 @@ public class LoginActivity extends BaseActivity {
         requestExecutor.signIn(currentQbUser, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
+                TokenUtils.saveTokenData();
                 hideProgressDialog();
                 processSigninedUser(qbUser);
             }

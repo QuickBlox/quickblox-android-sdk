@@ -91,7 +91,6 @@ public class QBResRequestExecutor {
             createSessionWithUser(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession result, Bundle params) {
-                    TokenUtils.saveTokenData();
                     creatingSessionCallback.onSuccess(result, params);
                 }
 
@@ -105,7 +104,6 @@ public class QBResRequestExecutor {
             createSession(new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession result, Bundle params) {
-                    TokenUtils.saveTokenData();
                     creatingSessionCallback.onSuccess(result, params);
                 }
 
