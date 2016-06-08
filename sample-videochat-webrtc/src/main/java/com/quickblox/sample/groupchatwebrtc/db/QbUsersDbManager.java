@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class QbUsersDbManager {
                     qbUser.setPassword(c.getString(userPassColIndex));
 
                     StringifyArrayList<String> tags = new StringifyArrayList<>();
-                    tags.add(c.getString(userTagColIndex));
+                    tags.add(c.getString(userTagColIndex).split(","));
                     qbUser.setTags(tags);
                     break;
                 }
@@ -128,7 +127,7 @@ public class QbUsersDbManager {
         cv.put(DbHelper.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
         cv.put(DbHelper.DB_COLUMN_USER_ID, qbUser.getId());
         cv.put(DbHelper.DB_COLUMN_USER_PASSWORD, qbUser.getPassword());
-        cv.put(DbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().get(0));
+        cv.put(DbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().getItemsAsString());
 
         db.insert(DbHelper.DB_TABLE_NAME, null, cv);
         dbHelper.close();
@@ -159,14 +158,18 @@ public class QbUsersDbManager {
             if (getUserById(userId) != null) {
                 qbUsers.add(getUserById(userId));
             } else {
-                QBUser newUser = new QBUser();
-                newUser.setId(userId);
-                newUser.setFullName(String.valueOf(userId));
-                qbUsers.add(newUser);
+                qbUsers.add(createStubUser(userId));
             }
         }
 
         return qbUsers;
+    }
+
+    private QBUser createStubUser(Integer userId){
+        QBUser userStub = new QBUser();
+        userStub.setId(userId);
+        userStub.setFullName(String.valueOf(userId));
+        return userStub;
     }
 }
 

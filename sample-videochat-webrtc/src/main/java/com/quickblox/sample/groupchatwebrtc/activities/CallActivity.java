@@ -146,11 +146,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
         opponentsIdsList = currentSession.getOpponents();
-
-        if (isInCommingCall){
-            opponentsIdsList.remove(currentSession.getCallerID());
-            opponentsIdsList.add(QBChatService.getInstance().getUser().getId());
-        }
     }
 
     @Override
@@ -544,7 +539,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 sessionUserCallback.onReceiveHangUpFromUser(session, userID);
             }
 
-            final String participantName = dbManager.getUserNameById(userID);
+            QBUser participant = dbManager.getUserById(userID);
+            final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
 
             runOnUiThread(new Runnable() {
                 @Override

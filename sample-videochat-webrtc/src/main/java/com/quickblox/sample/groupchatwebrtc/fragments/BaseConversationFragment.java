@@ -142,8 +142,14 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
         }
 
+        QBUser caller = dbManager.getUserById(currentSession.getCallerID());
+        if (caller == null){
+            caller = new QBUser(currentSession.getCallerID());
+            caller.setFullName(String.valueOf(currentSession.getCallerID()));
+        }
+
         if (isIncomingCall) {
-            opponents.add(dbManager.getUserById(currentSession.getCallerID()));
+            opponents.add(caller);
             opponents.remove(QBChatService.getInstance().getUser());
         }
 
