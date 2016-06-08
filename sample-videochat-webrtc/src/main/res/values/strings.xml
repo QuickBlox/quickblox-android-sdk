@@ -119,7 +119,7 @@
     <string name="pref_startbitrate_default">Default</string>
 
     <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
-    <string name="pref_startbitratevalue_title">Bandwidht (0&#8211;2000)</string>
+    <string name="pref_startbitratevalue_title">Bandwidth (0&#8211;2000)</string>
     <string name="pref_startbitratevalue_default">0</string>
     <integer name="pref_startbitratevalue_min_value">0</integer>
     <integer name="pref_startbitratevalue_max_value">2000</integer>
