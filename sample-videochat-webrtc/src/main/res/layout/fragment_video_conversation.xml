@@ -43,8 +43,13 @@
         layout="@layout/view_action_buttons_conversation_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/empty_stub"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/margin_common" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/empty_stub"/>
 </RelativeLayout>

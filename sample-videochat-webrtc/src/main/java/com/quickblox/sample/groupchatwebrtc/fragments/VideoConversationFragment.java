@@ -1,8 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -532,7 +530,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
         RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
-        config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+        if(isPeerToPeerCall){
+            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
+        }else {
+            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
+        }
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
@@ -869,7 +871,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.show();
             fillVideoView(localVideoView, localVideoTrack, false);
             RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_my_screen);
+            if(isPeerToPeerCall){
+                config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
+            }else {
+                config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
+            }
             localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
             actionVideoButtonsLayout.setVisibility(View.VISIBLE);
 

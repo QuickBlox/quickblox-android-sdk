@@ -88,14 +88,14 @@
         <item>30</item>
     </integer-array>
 
-    <integer-array name="local_view_coordinates_full_screen">
-        <item>55</item>
-        <item>65</item>
-        <item>43</item>
-        <item>34</item>
+    <integer-array name="local_view_coordinates_local_preview_peer2peer_screen">
+        <item>4</item>
+        <item>20</item>
+        <item>22</item>
+        <item>27</item>
     </integer-array>
 
-    <integer-array name="local_view_coordinates_my_screen">
+    <integer-array name="local_view_coordinates_preview_multi_screen">
         <item>4</item><!--marginleft-->
         <item>20</item><!--margintop-->
         <item>22</item><!--width-->
