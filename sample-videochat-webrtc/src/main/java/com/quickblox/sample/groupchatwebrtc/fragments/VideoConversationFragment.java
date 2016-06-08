@@ -89,6 +89,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private int amountOpponents;
     private int userIDFullScreen;
     private ArrayList<QBUser> allOponents;
+    private boolean connectionEstablished;
 
 
     @Override
@@ -399,7 +400,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
-            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -553,9 +553,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             if (isRemoteShown) {
                 Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
                 fillVideoView(0, remoteVideoView, videoTrack);
-            }
-
-            if (!isRemoteShown) {
+            } else {
                 isRemoteShown = true;
 
                 runOnUiThread(new Runnable() {
@@ -695,6 +693,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
+        connectionEstablished = true;
         setStatusForOpponent(userId, getString(R.string.text_status_connected));
         setProgressBarForOpponentGone(userId);
     }
@@ -843,7 +842,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         @Override
         public void onClick(View v) {
-            setFullScreenOnOff();
+            if (connectionEstablished) {
+                setFullScreenOnOff();
+            }
         }
 
         private void setFullScreenOnOff() {

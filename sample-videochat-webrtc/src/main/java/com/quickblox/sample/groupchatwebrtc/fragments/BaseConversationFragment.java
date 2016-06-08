@@ -181,7 +181,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         ringingTextView = (TextView) view.findViewById(R.id.text_ringing);
 
         if (isIncomingCall) {
-            outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
+            hideOutgoingScreen();
         }
     }
 

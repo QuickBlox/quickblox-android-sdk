@@ -97,9 +97,9 @@
 
     <integer-array name="local_view_coordinates_my_screen">
         <item>4</item><!--marginleft-->
-        <item>10</item><!--margintop-->
+        <item>20</item><!--margintop-->
         <item>22</item><!--width-->
-        <item>22</item><!--height-->
+        <item>33</item><!--height-->
     </integer-array>
 
 </resources>
