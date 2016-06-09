@@ -38,7 +38,6 @@ public class LoginActivity extends BaseActivity {
     private EditText userNameEditText;
     private EditText chatRoomNameEditText;
 
-    private QBResRequestExecutor requestExecutor;
     private QBUser userForSave;
 
     public static void start(Context context) {
@@ -50,8 +49,6 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        requestExecutor = App.getInstance().getQbResRequestExecutor();
 
         initUI();
     }
@@ -120,12 +117,12 @@ public class LoginActivity extends BaseActivity {
 
     private boolean isEnteredRoomNameValid() {
         return ValidationUtils.isRoomNameValid(this, chatRoomNameEditText,
-                String.valueOf(chatRoomNameEditText.getText()));
+                chatRoomNameEditText.getText().toString());
     }
 
     private boolean isEnteredUserNameValid() {
         return ValidationUtils.isUserNameValid(this, userNameEditText,
-                String.valueOf(userNameEditText.getText()));
+                userNameEditText.getText().toString());
     }
 
     private void hideKeyboard() {
@@ -249,13 +246,13 @@ public class LoginActivity extends BaseActivity {
 
             if (isLoginSuccess) {
                 saveUserData(userForSave);
+                subscribeToPushes();
                 startOpponentsActivity();
             } else {
                 Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
                 userNameEditText.setText(userForSave.getFullName());
                 chatRoomNameEditText.setText(userForSave.getTags().get(0));
             }
-
         }
     }
 
@@ -263,6 +260,13 @@ public class LoginActivity extends BaseActivity {
         Intent tempIntent = new Intent(this, CallService.class);
         PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
         CallService.start(this, qbUser, pendingIntent);
+    }
+
+    private void subscribeToPushes() {
+        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
+            Log.d(TAG, "subscribeToPushes()");
+            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+        }
     }
 
     private String getCurrentDeviceId() {

@@ -3,6 +3,8 @@ package com.quickblox.sample.groupchatwebrtc.utils;
 import android.text.TextUtils;
 
 import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 
@@ -54,7 +56,17 @@ public class TokenUtils {
         }
     }
 
-    public static void restoreExistentQbSession() throws BaseServiceException {
-        QBAuth.createFromExistentToken(getCurrentToken(), getTokenExpirationDate());
+    public static void restoreExistentQbSessionWithResult(final QBEntityCallback<QBSession> creatingSessionCallback) {
+        if (isTokenValid()) {
+            try {
+                QBAuth.createFromExistentToken(getCurrentToken(), getTokenExpirationDate());
+                creatingSessionCallback.onSuccess(null, null);
+            } catch (BaseServiceException e) {
+                creatingSessionCallback.onError(null);
+                e.printStackTrace();
+            }
+        } else {
+            creatingSessionCallback.onError(null);
+        }
     }
 }

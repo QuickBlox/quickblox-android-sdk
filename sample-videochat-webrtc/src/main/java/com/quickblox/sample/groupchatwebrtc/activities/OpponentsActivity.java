@@ -48,7 +48,6 @@ public class OpponentsActivity extends BaseActivity {
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
     private QBUser currentUser;
-    private GooglePlayServicesHelper googlePlayServicesHelper;
     private ArrayList<QBUser> currentOpponentsList;
     private QbUsersDbManager dbManager;
     private boolean isRunedForCall;
@@ -70,49 +69,15 @@ public class OpponentsActivity extends BaseActivity {
 
         initFields();
 
-        subscribeToPushes();
-
         initDefaultActionBar();
 
         initUi();
 
-        startLoginToChat();
+        startLoadUsers();
 
         if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
             CallActivity.start(OpponentsActivity.this, true);
         }
-    }
-
-    private void startLoginToChat() {
-        showProgressDialog(R.string.dlg_login);
-        startLoginService(currentUser);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Consts.EXTRA_LOGIN_RESULT_CODE) {
-            hideProgressDialog();
-            boolean isLoginSuccess = data.getBooleanExtra(Consts.EXTRA_LOGIN_RESULT, false);
-            String errorMessage = data.getStringExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE);
-
-            if (isLoginSuccess || QBChatErrorsConstants.ALREADY_LOGGED_IN.equals(errorMessage)) {
-                startLoadUsers();
-            } else {
-                showErrorSnackbar(R.string.login_chat_login_error, new Exception(errorMessage), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startLoginToChat();
-                    }
-                });
-            }
-        }
-    }
-
-    private void startLoginService(QBUser qbUser){
-        Intent tempIntent = new Intent(this, CallService.class);
-        PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
-        CallService.start(this, qbUser, pendingIntent);
     }
 
     @Override
@@ -137,23 +102,15 @@ public class OpponentsActivity extends BaseActivity {
             isRunedForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
         }
 
-        googlePlayServicesHelper = new GooglePlayServicesHelper();
         currentUser = sharedPrefsHelper.getQbUser();
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         webRtcSessionManager = WebRtcSessionManager.getInstance(getApplicationContext());
     }
 
-    private void subscribeToPushes() {
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            Log.d(TAG, "subscribeToPushes()");
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
-    }
-
     private void startLoadUsers() {
         showProgressDialog(R.string.dlg_loading_opponents);
         String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
-        App.getInstance().getQbResRequestExecutor().loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
+        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
@@ -191,16 +148,6 @@ public class OpponentsActivity extends BaseActivity {
         });
 
         opponentsListView.setAdapter(opponentsAdapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

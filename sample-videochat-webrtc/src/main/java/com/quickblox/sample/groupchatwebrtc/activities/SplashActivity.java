@@ -1,5 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,8 +14,10 @@ import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.users.model.QBUser;
 
 /**
  * Created by tereha on 12.04.16.
@@ -29,7 +33,8 @@ public class SplashActivity extends CoreSplashActivity {
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
 
         if(sharedPrefsHelper.hasQbUser()){
-            proceedToTheNextActivity();
+            startLoginService(sharedPrefsHelper.getQbUser());
+            startOpponentsActivity();
             return;
         }
 
@@ -43,12 +48,7 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void proceedToTheNextActivity() {
-        if (sharedPrefsHelper.hasQbUser()) {
-            OpponentsActivity.start(this, false);
-        } else {
-            LoginActivity.start(this);
-        }
-
+        LoginActivity.start(this);
         finish();
     }
 
@@ -69,5 +69,14 @@ public class SplashActivity extends CoreSplashActivity {
                 });
             }
         });
+    }
+
+    protected void startLoginService(QBUser qbUser) {
+        CallService.start(this, qbUser);
+    }
+
+    private void startOpponentsActivity(){
+        OpponentsActivity.start(SplashActivity.this, false);
+        finish();
     }
 }

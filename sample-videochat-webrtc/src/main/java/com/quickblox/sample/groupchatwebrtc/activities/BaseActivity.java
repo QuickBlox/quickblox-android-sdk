@@ -1,7 +1,9 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
@@ -11,13 +13,17 @@ import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.core.exception.BaseServiceException;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.services.CallService;
+import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.users.model.QBUser;
 
 import java.util.Date;
 
@@ -28,12 +34,16 @@ public abstract class BaseActivity extends CoreBaseActivity {
 
     SharedPrefsHelper sharedPrefsHelper;
     private ProgressDialog progressDialog;
+    protected GooglePlayServicesHelper googlePlayServicesHelper;
+    protected QBResRequestExecutor requestExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestExecutor = App.getInstance().getQbResRequestExecutor();
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
+        googlePlayServicesHelper = new GooglePlayServicesHelper();
     }
 
     public void initDefaultActionBar() {
