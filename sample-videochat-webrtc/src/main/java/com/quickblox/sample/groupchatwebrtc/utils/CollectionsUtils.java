@@ -5,7 +5,6 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by tereha on 12.05.16.
@@ -22,8 +21,7 @@ public class CollectionsUtils {
                     usersNames.add(String.valueOf(usr.getId()));
                 }
             }
-
-        return usersNames.getItemsAsString();
+        return usersNames.getItemsAsString().replace(",",", ");
     }
 
     public static ArrayList<Integer> getIdsSelectedOpponents(Collection<QBUser> selectedUsers){

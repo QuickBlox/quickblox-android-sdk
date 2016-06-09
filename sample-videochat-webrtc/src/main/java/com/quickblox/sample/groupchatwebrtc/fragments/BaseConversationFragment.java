@@ -109,7 +109,6 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     private void prepareAndShowOutgoingScreen() {
         configureOutgoingScreen();
         allOpponentsTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
-        Log.d(TAG, "outgoing opponents = " + CollectionsUtils.makeStringFromUsersFullNames(opponents));
     }
 
     protected abstract void configureOutgoingScreen();
