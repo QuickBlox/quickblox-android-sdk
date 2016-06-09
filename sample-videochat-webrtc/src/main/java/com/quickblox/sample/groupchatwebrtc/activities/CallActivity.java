@@ -98,14 +98,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        }
 
         context.startActivity(intent);
     }
@@ -146,11 +138,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
         opponentsIdsList = currentSession.getOpponents();
-
-        if (isInCommingCall){
-            opponentsIdsList.remove(currentSession.getCallerID());
-            opponentsIdsList.add(QBChatService.getInstance().getUser().getId());
-        }
     }
 
     @Override

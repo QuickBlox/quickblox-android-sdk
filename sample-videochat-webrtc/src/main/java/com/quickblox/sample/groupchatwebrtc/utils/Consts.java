@@ -30,6 +30,8 @@ public interface Consts {
     String EXTRA_TAG = "currentRoomName";
 
     String PREF_CURREN_ROOM_NAME = "current_room_name";
+    String PREF_CURRENT_TOKEN = "current_token";
+    String PREF_TOKEN_EXPIRATION_DATE = "token_expiration_date";
 
     String EXTRA_QB_USER = "qb_user";
 
@@ -52,6 +54,8 @@ public interface Consts {
     int COMMAND_NOT_FOUND = 0;
     int COMMAND_LOGIN = 1;
     int COMMAND_LOGOUT = 2;
+    String EXTRA_IS_STARTED_FOR_CALL = "isRunForCall";
+    String ALREADY_LOGGED_IN = "You have already logged in chat";
 
     enum StartConversationReason {
         INCOME_CALL_FOR_ACCEPTION,
