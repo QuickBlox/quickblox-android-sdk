@@ -56,17 +56,16 @@ public class TokenUtils {
         }
     }
 
-    public static void restoreExistentQbSessionWithResult(final QBEntityCallback<QBSession> creatingSessionCallback) {
+    public static boolean restoreExistentQbSessionWithResult() {
         if (isTokenValid()) {
             try {
                 QBAuth.createFromExistentToken(getCurrentToken(), getTokenExpirationDate());
-                creatingSessionCallback.onSuccess(null, null);
+                return true;
             } catch (BaseServiceException e) {
-                creatingSessionCallback.onError(null);
                 e.printStackTrace();
             }
-        } else {
-            creatingSessionCallback.onError(null);
         }
+
+        return false;
     }
 }

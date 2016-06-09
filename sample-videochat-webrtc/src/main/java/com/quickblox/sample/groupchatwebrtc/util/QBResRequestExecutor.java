@@ -73,7 +73,11 @@ public class QBResRequestExecutor {
 
     private void restoreOrCreateSession(final QBEntityCallback <QBSession> creatingSessionCallback) {
         if (TokenUtils.isTokenValid()) {
-            TokenUtils.restoreExistentQbSessionWithResult(creatingSessionCallback);
+            if (TokenUtils.restoreExistentQbSessionWithResult()){
+                creatingSessionCallback.onSuccess(null, null);
+            } else {
+                creatingSessionCallback.onError(null);
+            }
         } else if (SharedPrefsHelper.getInstance().hasQbUser()) {
             createSessionWithSavedUser(creatingSessionCallback);
         } else {
