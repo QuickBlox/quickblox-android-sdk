@@ -3,14 +3,13 @@ package com.quickblox.sample.groupchatwebrtc.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.view.View.OnClickListener;
 
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.QBRTCSessionUtils;
@@ -19,7 +18,6 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,43 +25,25 @@ import java.util.List;
  */
 public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder> {
 
-    public static final int OPPONENT = 1;
-    public static final int HOLDER = 2;
-
-    private static final int NUM_IN_ROW = 3;
     private static final String TAG = OpponentsFromCallAdapter.class.getSimpleName();
     private final int itemHeight;
     private final int itemWidth;
-    private final int paddingLeft = 0;
 
     private Context context;
     private QBRTCSession session;
     private List<QBUser> opponents;
-    private int gridWidth;
     private LayoutInflater inflater;
-    private int columns;
     private OnAdapterEventListener adapterListener;
 
 
-    public OpponentsFromCallAdapter(Context context, QBRTCSession session, List<QBUser> users, int width, int height,
-                                    int gridWidth, int columns) {
+    public OpponentsFromCallAdapter(Context context, QBRTCSession session, List<QBUser> users, int width, int height) {
         this.context = context;
         this.session = session;
         this.opponents = users;
-        this.gridWidth = gridWidth;
-        this.columns = columns;
         this.inflater = LayoutInflater.from(context);
         itemWidth = width;
         itemHeight = height;
-//        setPadding(itemMargin);
         Log.d(TAG, "item width=" + itemWidth + ", item height=" + itemHeight);
-    }
-
-    private void setPadding(int itemMargin) {
-        int allCellWidth = (itemWidth + (itemMargin * 2)) * columns;
-        if ((allCellWidth < gridWidth) && ((gridWidth - allCellWidth) > (itemMargin * 2))) { //set padding if it makes sense to do it
-//            paddingLeft = (gridWidth - allCellWidth) / 2;
-        }
     }
 
     public void setAdapterListener(OnAdapterEventListener adapterListener) {
@@ -97,17 +77,8 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
-//        TODO maybe it's no reason to do this
-        Log.d(TAG, "parent.getHeight()=" + parent.getHeight() + ", vparent.getWidth()=" + parent.getWidth());
-//        if(parent.getHeight()){
-//
-//        } else {
         v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
-//        }
-        if (paddingLeft != 0) {
-            Log.d(TAG, "paddingLeft1=" + paddingLeft + ", v.getPaddingRight()1=" + v.getPaddingRight());
-            v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
-        }
+
         ViewHolder vh = new ViewHolder(v);
         vh.setListener(new ViewHolder.ViewHolderClickListener() {
             @Override

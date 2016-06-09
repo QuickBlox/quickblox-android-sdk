@@ -233,7 +233,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
         opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, cellSizeWidth,
-                (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount);
+                (int) getResources().getDimension(R.dimen.item_height));
         opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
         recyclerView.setAdapter(opponentsAdapter);
     }
