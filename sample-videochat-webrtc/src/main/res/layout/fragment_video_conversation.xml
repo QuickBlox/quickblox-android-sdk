@@ -2,17 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentOpponents"
-    android:background="@color/black"
-    style="@style/MatchParent">
+    style="@style/MatchParent"
+    android:background="@color/background_fragment_conversation">
 
     <ViewStub
         android:id="@+id/localViewStub"
         style="@style/WrapContent"
-        android:layout="@layout/local_videoview"
-        android:layout_above="@+id/grid_opponents"/>
+        android:layout_above="@+id/grid_opponents"
+        android:layout="@layout/local_video_view" />
 
-    <include
-        layout="@layout/view_outgoing_screen" />
+    <include layout="@layout/view_outgoing_screen" />
 
     <TextView
         android:id="@+id/connectionStatusLocal"
@@ -48,8 +47,8 @@
         android:layout_marginBottom="@dimen/margin_common" />
 
     <View
+        android:id="@+id/empty_stub"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/empty_stub"/>
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

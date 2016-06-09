@@ -40,21 +40,18 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private QBRTCSession session;
     private List<QBUser> opponents;
     private int gridWidth;
-    private boolean showVideoView;
     private LayoutInflater inflater;
     private int columns;
     private OnAdapterEventListener adapterListener;
 
 
     public OpponentsFromCallAdapter(Context context, QBRTCSession session, List<QBUser> users, int width, int height,
-                                    int gridWidth, int columns, int itemMargin,
-                                    boolean showVideoView) {
+                                    int gridWidth, int columns) {
         this.context = context;
         this.session = session;
         this.opponents = users;
         this.gridWidth = gridWidth;
         this.columns = columns;
-        this.showVideoView = showVideoView;
         this.inflater = LayoutInflater.from(context);
         itemWidth = width;
         itemHeight = height;
@@ -101,11 +98,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
 //        TODO maybe it's no reason to do this
-        Log.d(TAG, "parent.getHeight()=" + parent.getHeight()+ ", vparent.getWidth()=" + parent.getWidth());
+        Log.d(TAG, "parent.getHeight()=" + parent.getHeight() + ", vparent.getWidth()=" + parent.getWidth());
 //        if(parent.getHeight()){
 //
 //        } else {
-            v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
+        v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
 //        }
         if (paddingLeft != 0) {
             Log.d(TAG, "paddingLeft1=" + paddingLeft + ", v.getPaddingRight()1=" + v.getPaddingRight());

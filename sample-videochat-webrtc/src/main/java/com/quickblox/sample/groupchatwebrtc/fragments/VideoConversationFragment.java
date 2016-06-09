@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -86,7 +87,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private int amountOpponents;
     private int userIDFullScreen;
-    private ArrayList<QBUser> allOponents;
+    private ArrayList<QBUser> allOpponents;
     private boolean connectionEstablished;
 
 
@@ -99,9 +100,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     protected void configureOutgoingScreen() {
-        outgoingOpponentsRelativeLayout.setBackgroundColor(getResources().getColor(R.color.grey_transparent_50));
-        allOpponentsTextView.setTextColor(getResources().getColor(R.color.white));
-        ringingTextView.setTextColor(getResources().getColor(R.color.white));
+        outgoingOpponentsRelativeLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.grey_transparent_50));
+        allOpponentsTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        ringingTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
     }
 
     @Override
@@ -113,9 +114,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void configureToolbar() {
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.black_transparent_50));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black_transparent_50));
+        toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(getActivity(), R.color.white));
     }
 
     @Override
@@ -128,8 +129,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.initFields();
         localViewOnClickListener = new LocalViewOnClickListener();
         amountOpponents = opponents.size();
-        allOponents = new ArrayList<>(opponents.size());
-        allOponents.addAll(opponents);
+        allOpponents = new ArrayList<>(opponents.size());
+        allOpponents.addAll(opponents);
 
         timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer_action_bar);
 
@@ -201,7 +202,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.dimen.grid_item_divider));
             recyclerView.setHasFixedSize(true);
             final int columnsCount = defineColumnsCount();
-            final int rowsCount = defineRowCount();
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
@@ -211,7 +211,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    setGrid(columnsCount, rowsCount);
+                    setGrid(columnsCount);
                     recyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             });
@@ -226,17 +226,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         actionButtonsEnabled(false);
     }
 
-    private void setGrid(int columnsCount, int rowsCount) {
-        int gridWidth = recyclerView.getMeasuredWidth();
-        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth + " recyclerView.getMeasuredHeight()= " + recyclerView.getMeasuredHeight());
+    private void setGrid(int columnsCount) {
+        int gridWidth = view.getMeasuredWidth();
+        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth + " columnsCount= " + columnsCount);
         float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
-        int cellSize = defineMinSize(gridWidth, recyclerView.getMeasuredHeight(),
-                columnsCount, rowsCount, itemMargin);
-        Log.i(TAG, "onGlobalLayout : cellSize=" + cellSize);
-
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, (int) getResources().getDimension(R.dimen.item_width),
-                (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount, (int) itemMargin,
-                isVideoCall);
+        int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
+        Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
+        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, cellSizeWidth,
+                (int) getResources().getDimension(R.dimen.item_height), gridWidth, columnsCount);
         opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
         recyclerView.setAdapter(opponentsAdapter);
     }
@@ -248,10 +245,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return videoTrackMap;
     }
 
-    private int defineMinSize(int measuredWidth, int measuredHeight, int columnsCount, int rowsCount, float padding) {
-        int cellWidth = measuredWidth / columnsCount - (int) (padding * 2);
-        int cellHeight = measuredHeight / rowsCount - (int) (padding * 2);
-        return Math.min(cellWidth, cellHeight);
+    private int defineSize(int measuredWidth, int columnsCount, float padding) {
+        return measuredWidth / columnsCount - (int) (padding * 2) - 1;
     }
 
     private int defineRowCount() {
@@ -261,18 +256,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             result = opponentsCount;
         }
         return result;
-
     }
 
     private int defineColumnsCount() {
-        int result = DEFAULT_COLS_COUNT;
-        int opponentsCount = opponents.size();
-        if (opponentsCount == 1 || opponentsCount == 2) {
-            result = 1;
-        } else if (opponentsCount == 4) {
-            result = 2;
-        }
-        return result;
+        return opponents.size() - 1;
     }
 
     @Override
@@ -398,6 +385,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
+            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -462,8 +450,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (viewHolders != null)
-                        Log.d(TAG, "USer childViewHolder.getUserId OnBindLastViewHolder= " + viewHolders.get(position).getUserId());
                     if (localVideoView != null) {
                         return;
                     }
@@ -497,7 +483,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void replaceUsersInAdapter(int position) {
-        for (QBUser qbUser : allOponents) {
+        for (QBUser qbUser : allOpponents) {
             if (qbUser.getId() == userIDFullScreen) {
                 opponentsAdapter.replaceUsers(position, qbUser);
                 break;
@@ -530,9 +516,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
         RTCGLVideoView.RendererConfig config = setRTCCameraMirrorConfig(true);
-        if(isPeerToPeerCall){
+        if (isPeerToPeerCall) {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
-        }else {
+        } else {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
         }
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
@@ -871,9 +857,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.show();
             fillVideoView(localVideoView, localVideoTrack, false);
             RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-            if(isPeerToPeerCall){
+            if (isPeerToPeerCall) {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
-            }else {
+            } else {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
             }
             localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);

@@ -23,6 +23,7 @@
     <color name="background_color_selected_user_item">#eeeeee</color>
     <color name="background_color_normal_user_item">#ffffff</color>
     <color name="icon_background_color_selected_user">#959595</color>
+    <color name="background_fragment_conversation">#2b2a2a</color>
 
     <color name="button_end_call_normal_color">#ff2744</color>
     <color name="button_end_call_pressed_color">#FC5876</color>
