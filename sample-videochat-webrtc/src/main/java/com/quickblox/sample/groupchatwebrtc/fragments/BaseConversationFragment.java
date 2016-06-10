@@ -26,6 +26,7 @@ import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -135,14 +136,22 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
-        opponents = dbManager.getUsersByIds(currentSession.getOpponents());
+
+        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
+        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
 
         if (getArguments() != null) {
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
         }
 
+        QBUser caller = dbManager.getUserById(currentSession.getCallerID());
+        if (caller == null){
+            caller = new QBUser(currentSession.getCallerID());
+            caller.setFullName(String.valueOf(currentSession.getCallerID()));
+        }
+
         if (isIncomingCall) {
-            opponents.add(dbManager.getUserById(currentSession.getCallerID()));
+            opponents.add(caller);
             opponents.remove(QBChatService.getInstance().getUser());
         }
 

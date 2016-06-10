@@ -15,6 +15,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
@@ -193,6 +194,12 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startCall(boolean isVideoCall) {
+        if (opponentsAdapter.getSelectedItems().size() > Consts.MAX_OPPONENTS_COUNT){
+            Toaster.longToast(String.format(getString(R.string.error_max_opponents_count),
+                    Consts.MAX_OPPONENTS_COUNT));
+            return;
+        }
+
         Log.d(TAG, "startCall()");
         ArrayList<Integer> opponentsList = CollectionsUtils.getIdsSelectedOpponents(opponentsAdapter.getSelectedItems());
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall

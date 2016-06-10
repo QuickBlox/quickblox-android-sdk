@@ -31,6 +31,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -133,8 +134,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         allOpponents.addAll(opponents);
 
         timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer_action_bar);
-
-        String callerName = dbManager.getUserNameById(currentSession.getCallerID());
 
         isPeerToPeerCall = opponents.size() == 1;
         isVideoCall = (QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType()));

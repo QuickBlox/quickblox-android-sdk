@@ -204,7 +204,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         // Configure
         //
-        QBRTCConfig.setMaxOpponentsCount(6);
+        QBRTCConfig.setMaxOpponentsCount(Consts.MAX_OPPONENTS_COUNT);
         SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
         SettingsUtil.configRTCTimers(sharedPref, CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);
@@ -540,7 +540,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 sessionUserCallback.onReceiveHangUpFromUser(session, userID);
             }
 
-            final String participantName = dbManager.getUserNameById(userID);
+            QBUser participant = dbManager.getUserById(userID);
+            final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
 
             runOnUiThread(new Runnable() {
                 @Override

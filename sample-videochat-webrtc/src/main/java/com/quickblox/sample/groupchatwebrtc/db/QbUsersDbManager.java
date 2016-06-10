@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class QbUsersDbManager {
                     qbUser.setPassword(c.getString(userPassColIndex));
 
                     StringifyArrayList<String> tags = new StringifyArrayList<>();
-                    tags.add(c.getString(userTagColIndex));
+                    tags.add(c.getString(userTagColIndex).split(","));
                     qbUser.setTags(tags);
                     break;
                 }
@@ -128,7 +127,7 @@ public class QbUsersDbManager {
         cv.put(DbHelper.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
         cv.put(DbHelper.DB_COLUMN_USER_ID, qbUser.getId());
         cv.put(DbHelper.DB_COLUMN_USER_PASSWORD, qbUser.getPassword());
-        cv.put(DbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().get(0));
+        cv.put(DbHelper.DB_COLUMN_USER_TAG, qbUser.getTags().getItemsAsString());
 
         db.insert(DbHelper.DB_TABLE_NAME, null, cv);
         dbHelper.close();
@@ -141,28 +140,12 @@ public class QbUsersDbManager {
         dbHelper.close();
     }
 
-    public String getUserNameById(Integer userId){
-        QBUser userById = getUserById(userId);
-        if (userById == null){
-            return String.valueOf(userId);
-        }
-
-        String fullName = userById.getFullName();
-
-        return TextUtils.isEmpty(fullName) ? String.valueOf(userId) : fullName;
-    }
-
     public ArrayList<QBUser> getUsersByIds(List<Integer> usersIds){
         ArrayList<QBUser> qbUsers = new ArrayList<>();
 
         for (Integer userId : usersIds){
             if (getUserById(userId) != null) {
                 qbUsers.add(getUserById(userId));
-            } else {
-                QBUser newUser = new QBUser();
-                newUser.setId(userId);
-                newUser.setFullName(String.valueOf(userId));
-                qbUsers.add(newUser);
             }
         }
 

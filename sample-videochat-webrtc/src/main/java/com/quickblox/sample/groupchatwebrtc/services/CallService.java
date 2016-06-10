@@ -39,7 +39,6 @@ public class CallService extends Service{
     private PendingIntent pendingIntent;
     private int currentCommand;
     private QBUser currentUser;
-    private Handler handler;
 
     public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent) {
         Intent intent = new Intent(context, CallService.class);
@@ -59,7 +58,6 @@ public class CallService extends Service{
     public void onCreate() {
         super.onCreate();
 
-        handler = new Handler();
         createChatService();
 
         Log.d(TAG, "Service onCreate()");
@@ -137,7 +135,7 @@ public class CallService extends Service{
         ChatPingAlarmManager.getInstanceFor().addPingListener(new PingFailedListener() {
             @Override
             public void pingFailed() {
-                showToast("Ping chat server failed");
+                Log.d(TAG, "Ping chat server failed");
             }
         });
     }
@@ -177,15 +175,6 @@ public class CallService extends Service{
                         : "Error sending result to activity");
             }
         }
-    }
-
-    private void showToast(final String message) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public static void logout(Context context){
