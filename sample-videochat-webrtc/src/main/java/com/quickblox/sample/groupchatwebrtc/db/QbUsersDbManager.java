@@ -140,36 +140,16 @@ public class QbUsersDbManager {
         dbHelper.close();
     }
 
-    public String getUserNameById(Integer userId){
-        QBUser userById = getUserById(userId);
-        if (userById == null){
-            return String.valueOf(userId);
-        }
-
-        String fullName = userById.getFullName();
-
-        return TextUtils.isEmpty(fullName) ? String.valueOf(userId) : fullName;
-    }
-
     public ArrayList<QBUser> getUsersByIds(List<Integer> usersIds){
         ArrayList<QBUser> qbUsers = new ArrayList<>();
 
         for (Integer userId : usersIds){
             if (getUserById(userId) != null) {
                 qbUsers.add(getUserById(userId));
-            } else {
-                qbUsers.add(createStubUser(userId));
             }
         }
 
         return qbUsers;
-    }
-
-    private QBUser createStubUser(Integer userId){
-        QBUser userStub = new QBUser();
-        userStub.setId(userId);
-        userStub.setFullName(String.valueOf(userId));
-        return userStub;
     }
 }
 

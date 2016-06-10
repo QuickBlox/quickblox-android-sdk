@@ -18,6 +18,7 @@
 
 
     <!-- Errors strings. -->
+    <string name="error_max_opponents_count">You can select up to %s opponents</string>
     <string name="sign_up_error">Error creating new user, please try again</string>
     <string name="sign_in_error_with_error">Sign In error. Error</string>
     <string name="sign_in_error_without_error">Sign In error</string>
@@ -149,8 +150,8 @@
     <integer name="pref_dialing_time_interval_step_size">1</integer>
 
     <string name="pref_videocodec_key">videocodec_preference</string>
-    <string name="pref_videocodec_title">Default video codec.</string>
-    <string name="pref_videocodec_dlg">Select default video codec.</string>
+    <string name="pref_videocodec_title">Default video codec</string>
+    <string name="pref_videocodec_dlg">Select default video codec</string>
     <string name="pref_videocodec_default">0</string>
 
     <string name="pref_hwcodec_key">hwcodec_preference</string>

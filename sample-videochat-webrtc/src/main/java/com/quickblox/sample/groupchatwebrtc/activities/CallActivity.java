@@ -201,7 +201,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         // Configure
         //
-        QBRTCConfig.setMaxOpponentsCount(6);
+        QBRTCConfig.setMaxOpponentsCount(Consts.MAX_OPPONENTS_COUNT);
         SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
         SettingsUtil.configRTCTimers(sharedPref, CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);

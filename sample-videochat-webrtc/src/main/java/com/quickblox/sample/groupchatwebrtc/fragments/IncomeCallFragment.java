@@ -22,6 +22,7 @@ import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -126,7 +127,9 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
         callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
-        callerNameTextView.setText(qbUserDbManager.getUserNameById(currentSession.getCallerID()));
+
+        QBUser callerUser = qbUserDbManager.getUserById(currentSession.getCallerID());
+        callerNameTextView.setText(UsersUtils.getUserNameOrId(callerUser, currentSession.getCallerID()));
 
         otherIncUsersTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
@@ -166,7 +169,9 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private String getOtherIncUsersNames() {
-        ArrayList<QBUser> opponents = qbUserDbManager.getUsersByIds(opponentsIds);
+        ArrayList<QBUser> usersFromDb = qbUserDbManager.getUsersByIds(opponentsIds);
+        ArrayList<QBUser> opponents = new ArrayList<>();
+        opponents.addAll(UsersUtils.getListAllUsersFromIds(usersFromDb, opponentsIds));
 
         opponents.remove(QBChatService.getInstance().getUser());
         Log.d(TAG, "opponentsIds = " + opponentsIds);

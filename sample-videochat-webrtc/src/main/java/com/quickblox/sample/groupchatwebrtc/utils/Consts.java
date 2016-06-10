@@ -28,6 +28,7 @@ public interface Consts {
     String OPPONENTS = "opponents";
     String CONFERENCE_TYPE = "conference_type";
     String EXTRA_TAG = "currentRoomName";
+    int MAX_OPPONENTS_COUNT = 6;
 
     String PREF_CURREN_ROOM_NAME = "current_room_name";
 

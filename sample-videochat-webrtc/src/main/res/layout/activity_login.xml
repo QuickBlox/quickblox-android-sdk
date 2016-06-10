@@ -18,7 +18,7 @@
         android:paddingTop="@dimen/padding_top"
         android:hint="@string/hint_user_name"
         android:textSize="16sp"
-        android:inputType="text"
+        android:singleLine="true"
         />
 
     <EditText
@@ -27,7 +27,7 @@
         android:paddingTop="@dimen/padding_top"
         android:hint="@string/hint_chat_room_name"
         android:textSize="16sp"
-        android:inputType="text"
+        android:singleLine="true"
         />
 
 </LinearLayout>
