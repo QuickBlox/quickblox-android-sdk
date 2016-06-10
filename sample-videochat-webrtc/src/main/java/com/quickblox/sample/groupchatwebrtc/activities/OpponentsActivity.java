@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +11,10 @@ import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.errors.QBChatErrorsConstants;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
