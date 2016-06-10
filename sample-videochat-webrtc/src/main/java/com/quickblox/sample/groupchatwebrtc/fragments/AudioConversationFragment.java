@@ -2,6 +2,7 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class AudioConversationFragment extends BaseConversationFragment {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
     private ImageView firstOpponentAvatarImageView;
-    private TextView firsrOpponentNameTextView;
+    private TextView firstOpponentNameTextView;
 
     private ToggleButton audioSwichToggleButton;
     private TextView otherOpponentsTextView;
@@ -42,17 +43,17 @@ public class AudioConversationFragment extends BaseConversationFragment {
 
     @Override
     protected void configureOutgoingScreen() {
-        outgoingOpponentsRelativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
-        allOpponentsTextView.setTextColor(getResources().getColor(R.color.text_color_outgoing_opponents_names_audio_call));
-        ringingTextView.setTextColor(getResources().getColor(R.color.text_color_call_type));
+        outgoingOpponentsRelativeLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+        allOpponentsTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.text_color_outgoing_opponents_names_audio_call));
+        ringingTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.text_color_call_type));
     }
 
     @Override
     protected void configureToolbar() {
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_color));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.toolbar_subtitle_color));
+        toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+        toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.toolbar_title_color));
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(getActivity(), R.color.toolbar_subtitle_color));
     }
 
     @Override
@@ -69,8 +70,8 @@ public class AudioConversationFragment extends BaseConversationFragment {
         firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         firstOpponentAvatarImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponents.get(0).getId()));
 
-        firsrOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
-        firsrOpponentNameTextView.setText(opponents.get(0).getFullName());
+        firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
+        firstOpponentNameTextView.setText(opponents.get(0).getFullName());
 
         otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
@@ -103,11 +104,11 @@ public class AudioConversationFragment extends BaseConversationFragment {
     }
 
     @Override
-    protected void actionButtonsEnabled(boolean enability) {
-        super.actionButtonsEnabled(enability);
+    protected void actionButtonsEnabled(boolean ability) {
+        super.actionButtonsEnabled(ability);
 
-        audioSwichToggleButton.setEnabled(enability);
-        audioSwichToggleButton.setActivated(enability);
+        audioSwichToggleButton.setEnabled(ability);
+        audioSwichToggleButton.setActivated(ability);
     }
 
     @Override

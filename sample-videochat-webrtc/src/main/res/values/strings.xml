@@ -69,8 +69,8 @@
     <string name="opponent_closed">Closed</string>
     <string name="text_incoming_audio_call">Incoming Audio Call</string>
     <string name="text_incoming_video_call">Incoming Video Call</string>
-    <string name="text_status_connect">Connect...</string>
-    <string name="text_status_checking">Checking...</string>
+    <string name="text_status_connect">Connect…</string>
+    <string name="text_status_checking">Checking…</string>
     <string name="text_status_connected">Connected</string>
     <string name="text_status_disconnected">Disconnected</string>
 
