@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.errors.QBChatErrorsConstants;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
@@ -46,14 +48,16 @@ public class OpponentsActivity extends BaseActivity {
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
     private QBUser currentUser;
-    private GooglePlayServicesHelper googlePlayServicesHelper;
     private ArrayList<QBUser> currentOpponentsList;
     private QbUsersDbManager dbManager;
+    private boolean isRunedForCall;
+    private WebRtcSessionManager webRtcSessionManager;
 
 
-    public static void start(Context context){
+    public static void start(Context context, boolean isRunForCall){
         Intent intent = new Intent(context, OpponentsActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra(Consts.EXTRA_IS_STARTED_FOR_CALL, isRunForCall);
         context.startActivity(intent);
     }
 
@@ -65,15 +69,27 @@ public class OpponentsActivity extends BaseActivity {
 
         initFields();
 
-        subscribeToPushes();
-
         initDefaultActionBar();
 
         initUi();
 
         startLoadUsers();
+
+        if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
+            CallActivity.start(OpponentsActivity.this, true);
+        }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getExtras() != null){
+            isRunedForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+            if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null){
+                CallActivity.start(OpponentsActivity.this, true);
+            }
+        }
+    }
 
     @Override
     protected View getSnackbarAnchorView() {
@@ -81,22 +97,20 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initFields() {
-        googlePlayServicesHelper = new GooglePlayServicesHelper();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            isRunedForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+        }
+
         currentUser = sharedPrefsHelper.getQbUser();
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
-    }
-
-    private void subscribeToPushes() {
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            Log.d(TAG, "subscribeToPushes()");
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
+        webRtcSessionManager = WebRtcSessionManager.getInstance(getApplicationContext());
     }
 
     private void startLoadUsers() {
         showProgressDialog(R.string.dlg_loading_opponents);
         String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
-        App.getInstance().getQbResRequestExecutor().loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
+        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 hideProgressDialog();
@@ -137,16 +151,6 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (opponentsAdapter != null && !opponentsAdapter.getSelectedItems().isEmpty()){
             getMenuInflater().inflate(R.menu.activity_selected_opponents, menu);
@@ -175,12 +179,10 @@ public class OpponentsActivity extends BaseActivity {
                 return true;
 
             case R.id.start_video_call:
-                //start video call
                 startCall(true);
                 return true;
 
             case R.id.start_audio_call:
-                //start audio call
                 startCall(false);
                 return true;
 
@@ -262,6 +264,8 @@ public class OpponentsActivity extends BaseActivity {
 
         sharedPrefsHelper.removeQbUser();
         sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
+        sharedPrefsHelper.delete(Consts.PREF_CURRENT_TOKEN);
+        sharedPrefsHelper.delete(Consts.PREF_TOKEN_EXPIRATION_DATE);
         dbManager.clearDB();
     }
 
