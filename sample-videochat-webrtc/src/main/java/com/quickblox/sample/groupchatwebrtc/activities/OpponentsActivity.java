@@ -50,7 +50,7 @@ public class OpponentsActivity extends BaseActivity {
     private WebRtcSessionManager webRtcSessionManager;
 
 
-    public static void start(Context context, boolean isRunForCall){
+    public static void start(Context context, boolean isRunForCall) {
         Intent intent = new Intent(context, OpponentsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra(Consts.EXTRA_IS_STARTED_FOR_CALL, isRunForCall);
@@ -79,9 +79,9 @@ public class OpponentsActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getExtras() != null){
+        if (intent.getExtras() != null) {
             isRunedForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
-            if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null){
+            if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
                 CallActivity.start(OpponentsActivity.this, true);
             }
         }
@@ -94,7 +94,7 @@ public class OpponentsActivity extends BaseActivity {
 
     private void initFields() {
         Bundle extras = getIntent().getExtras();
-        if (extras != null){
+        if (extras != null) {
             isRunedForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
         }
 
@@ -133,9 +133,7 @@ public class OpponentsActivity extends BaseActivity {
 
     private void initUsersList() {
         currentOpponentsList = dbManager.getAllUsers();
-        Log.d("Ambra","currentOpponentsList all= "+currentOpponentsList.toString());
-        currentOpponentsList.remove(QBChatService.getInstance().getUser());
-        Log.d("Ambra","currentOpponentsList removed= "+currentOpponentsList.toString());
+        currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
 
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
@@ -150,7 +148,7 @@ public class OpponentsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (opponentsAdapter != null && !opponentsAdapter.getSelectedItems().isEmpty()){
+        if (opponentsAdapter != null && !opponentsAdapter.getSelectedItems().isEmpty()) {
             getMenuInflater().inflate(R.menu.activity_selected_opponents, menu);
         } else {
             getMenuInflater().inflate(R.menu.activity_opponents, menu);
@@ -194,7 +192,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startCall(boolean isVideoCall) {
-        if (opponentsAdapter.getSelectedItems().size() > Consts.MAX_OPPONENTS_COUNT){
+        if (opponentsAdapter.getSelectedItems().size() > Consts.MAX_OPPONENTS_COUNT) {
             Toaster.longToast(String.format(getString(R.string.error_max_opponents_count),
                     Consts.MAX_OPPONENTS_COUNT));
             return;
@@ -218,16 +216,16 @@ public class OpponentsActivity extends BaseActivity {
         Log.d(TAG, "conferenceType = " + conferenceType);
     }
 
-    private void initActionBarWithSelectedUsers(int countSelectedUsers){
+    private void initActionBarWithSelectedUsers(int countSelectedUsers) {
         setActionBarTitle(String.format(getString(
-                countSelectedUsers > 1
-                    ? R.string.tile_many_users_selected
-                    : R.string.title_one_user_selected),
+                        countSelectedUsers > 1
+                                ? R.string.tile_many_users_selected
+                                : R.string.title_one_user_selected),
                 countSelectedUsers));
     }
 
-    private void updateActionBar(int countSelectedUsers){
-        if (countSelectedUsers < 1 ){
+    private void updateActionBar(int countSelectedUsers) {
+        if (countSelectedUsers < 1) {
             initDefaultActionBar();
         } else {
             removeActionbarSubTitle();
@@ -244,7 +242,7 @@ public class OpponentsActivity extends BaseActivity {
         startLoginActivity();
     }
 
-    private void startLogoutCommand(){
+    private void startLogoutCommand() {
         CallService.logout(this);
     }
 
@@ -255,7 +253,7 @@ public class OpponentsActivity extends BaseActivity {
         }
     }
 
-    private void removeUserData(){
+    private void removeUserData() {
         if (sharedPrefsHelper == null) {
             sharedPrefsHelper = SharedPrefsHelper.getInstance();
         }
@@ -267,7 +265,7 @@ public class OpponentsActivity extends BaseActivity {
         dbManager.clearDB();
     }
 
-    private void startLoginActivity(){
+    private void startLoginActivity() {
         LoginActivity.start(this);
         finish();
     }
