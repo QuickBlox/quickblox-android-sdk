@@ -15,8 +15,13 @@ public class ValidationUtils {
 
     private static boolean isUserNameOrRoomNameValid(Context context, EditText editText, String text, boolean isName) {
 
+        final int USER_NAME_MAX_LENGTH = 50;
+        final int ROOM_NAME_MAX_LENGTH = 15;
+
+        int currentFieldMaxLength = isName ? USER_NAME_MAX_LENGTH : ROOM_NAME_MAX_LENGTH;
+
         boolean isCorrect;
-        Pattern p = Pattern.compile("\\A[^><;]{3,50}\\z");
+        Pattern p = Pattern.compile("\\A[^><;]{3," + currentFieldMaxLength + "}\\z");
         Matcher m = p.matcher(text);
         isCorrect = m.matches();
 
@@ -25,7 +30,8 @@ public class ValidationUtils {
                     context.getString(R.string.error_name_must_do_not_contain_special_characters_from_app),
                     context.getString(isName
                             ? R.string.field_name_user_name
-                            : R.string.field_name_chat_room_name)));
+                            : R.string.field_name_chat_room_name),
+                    currentFieldMaxLength));
             return false;
         } else {
             return true;
@@ -33,10 +39,10 @@ public class ValidationUtils {
     }
 
     public static boolean isUserNameValid(Context context, EditText editText, String text){
-        return isUserNameOrRoomNameValid(context, editText, text, true);
+        return isUserNameOrRoomNameValid(context, editText, text.trim(), true);
     }
 
     public static boolean isRoomNameValid(Context context, EditText editText, String text){
-        return isUserNameOrRoomNameValid(context, editText, text, false);
+        return isUserNameOrRoomNameValid(context, editText, text.trim(), false);
     }
 }
