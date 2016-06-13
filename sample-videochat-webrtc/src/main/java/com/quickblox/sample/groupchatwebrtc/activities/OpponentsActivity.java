@@ -133,7 +133,9 @@ public class OpponentsActivity extends BaseActivity {
 
     private void initUsersList() {
         currentOpponentsList = dbManager.getAllUsers();
+        Log.d("Ambra","currentOpponentsList all= "+currentOpponentsList.toString());
         currentOpponentsList.remove(QBChatService.getInstance().getUser());
+        Log.d("Ambra","currentOpponentsList removed= "+currentOpponentsList.toString());
 
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
