@@ -20,6 +20,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.util.ChatPingAlarmManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
@@ -154,6 +155,7 @@ public class CallService extends Service{
 
         // Configure
         QBRTCConfig.setDebugEnabled(true);
+        SettingsUtil.configRTCTimers(CallService.this);
 
         // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));

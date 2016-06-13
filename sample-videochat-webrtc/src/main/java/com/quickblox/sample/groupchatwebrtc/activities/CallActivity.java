@@ -198,7 +198,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         //
         QBRTCConfig.setMaxOpponentsCount(Consts.MAX_OPPONENTS_COUNT);
         SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
-        SettingsUtil.configRTCTimers(sharedPref, CallActivity.this);
+        SettingsUtil.configRTCTimers(CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);
 
 
@@ -257,6 +257,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
+                if (currentSession == null){
+                    return;
+                }
+
                 QBRTCSession.QBRTCSessionState currentSessionState = currentSession.getState();
                 if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)) {
                     rejectCurrentSession();
