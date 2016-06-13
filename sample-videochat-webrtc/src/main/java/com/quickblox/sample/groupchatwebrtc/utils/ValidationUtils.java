@@ -13,36 +13,28 @@ import java.util.regex.Pattern;
  */
 public class ValidationUtils {
 
-    private static boolean isUserNameOrRoomNameValid(Context context, EditText editText, String text, boolean isName) {
-
-        final int USER_NAME_MAX_LENGTH = 50;
-        final int ROOM_NAME_MAX_LENGTH = 15;
-
-        int currentFieldMaxLength = isName ? USER_NAME_MAX_LENGTH : ROOM_NAME_MAX_LENGTH;
+    private static boolean isEnteredTextValid(Context context, EditText editText, int resFieldName, int maxLength) {
 
         boolean isCorrect;
-        Pattern p = Pattern.compile("\\A[^><;]{3," + currentFieldMaxLength + "}\\z");
-        Matcher m = p.matcher(text);
+        Pattern p = Pattern.compile("\\A[^><;]{3," + maxLength + "}\\z");
+        Matcher m = p.matcher(editText.getText().toString().trim());
         isCorrect = m.matches();
 
         if (!isCorrect) {
-            editText.setError(String.format(
-                    context.getString(R.string.error_name_must_do_not_contain_special_characters_from_app),
-                    context.getString(isName
-                            ? R.string.field_name_user_name
-                            : R.string.field_name_chat_room_name),
-                    currentFieldMaxLength));
+            editText.setError(String.format(context.getString(R.string.error_name_must_do_not_contain_special_characters_from_app),
+                    context.getString(resFieldName),
+                    maxLength));
             return false;
         } else {
             return true;
         }
     }
 
-    public static boolean isUserNameValid(Context context, EditText editText, String text){
-        return isUserNameOrRoomNameValid(context, editText, text.trim(), true);
+    public static boolean isUserNameValid(Context context, EditText editText){
+        return isEnteredTextValid(context, editText, R.string.field_name_user_name, 50);
     }
 
-    public static boolean isRoomNameValid(Context context, EditText editText, String text){
-        return isUserNameOrRoomNameValid(context, editText, text.trim(), false);
+    public static boolean isRoomNameValid(Context context, EditText editText){
+        return isEnteredTextValid(context, editText, R.string.field_name_chat_room_name, 15);
     }
 }
