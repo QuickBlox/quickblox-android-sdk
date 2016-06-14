@@ -40,10 +40,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
     private static final String TAG = IncomeCallFragment.class.getSimpleName();
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
-    private ImageView callerAvatarImageView;
     private TextView callTypeTextView;
-    private TextView callerNameTextView;
-    private TextView otherIncUsersTextView;
     private ImageButton rejectButton;
     private ImageButton takeButton;
 
@@ -55,6 +52,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private IncomeCallFragmentCallbackListener incomeCallFragmentCallbackListener;
     private QBRTCSession currentSession;
     private QbUsersDbManager qbUserDbManager;
+    private TextView alsoOnCallText;
 
     @Override
     public void onAttach(Activity activity) {
@@ -123,22 +121,31 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void initUI(View view) {
         callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
-        callerAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
+        ImageView callerAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
-        callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
+        TextView callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
 
         QBUser callerUser = qbUserDbManager.getUserById(currentSession.getCallerID());
         callerNameTextView.setText(UsersUtils.getUserNameOrId(callerUser, currentSession.getCallerID()));
 
-        otherIncUsersTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
+        TextView otherIncUsersTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherIncUsersTextView.setText(getOtherIncUsersNames());
+
+        alsoOnCallText = (TextView) view.findViewById(R.id.text_also_on_call);
+        setVisibilityAlsoOnCallTextView();
 
         rejectButton = (ImageButton) view.findViewById(R.id.image_button_reject_call);
         takeButton = (ImageButton) view.findViewById(R.id.image_button_accept_call);
     }
 
-    private Drawable getBackgroundForCallerAvatar(int callerId){
+    private void setVisibilityAlsoOnCallTextView() {
+        if (opponentsIds.size() < 2) {
+            alsoOnCallText.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private Drawable getBackgroundForCallerAvatar(int callerId) {
         return UiUtils.getColorCircleDrawable(callerId);
     }
 

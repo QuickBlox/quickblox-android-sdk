@@ -23,12 +23,9 @@ import java.util.ArrayList;
  */
 public class AudioConversationFragment extends BaseConversationFragment {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
-    private ImageView firstOpponentAvatarImageView;
-    private TextView firstOpponentNameTextView;
 
-    private ToggleButton audioSwichToggleButton;
-    private TextView otherOpponentsTextView;
-
+    private ToggleButton audioSwitchToggleButton;
+    private TextView alsoOnCallText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,19 +64,28 @@ public class AudioConversationFragment extends BaseConversationFragment {
         super.initViews(view);
         timerChronometer = (Chronometer) view.findViewById(R.id.chronometer_timer_audio_call);
 
-        firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
+        ImageView firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         firstOpponentAvatarImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponents.get(0).getId()));
 
-        firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
+        alsoOnCallText = (TextView) view.findViewById(R.id.text_also_on_call);
+        setVisibilityAlsoOnCallTextView();
+
+        TextView firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
         firstOpponentNameTextView.setText(opponents.get(0).getFullName());
 
-        otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
+        TextView otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
 
-        audioSwichToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
-        audioSwichToggleButton.setVisibility(View.VISIBLE);
+        audioSwitchToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
+        audioSwitchToggleButton.setVisibility(View.VISIBLE);
 
         actionButtonsEnabled(false);
+    }
+
+    private void setVisibilityAlsoOnCallTextView() {
+        if (opponents.size()< 2) {
+            alsoOnCallText.setVisibility(View.INVISIBLE);
+        }
     }
 
     private String getOtherOpponentsNames() {
@@ -95,7 +101,7 @@ public class AudioConversationFragment extends BaseConversationFragment {
     protected void initButtonsListener() {
         super.initButtonsListener();
 
-        audioSwichToggleButton.setOnClickListener(new View.OnClickListener() {
+        audioSwitchToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 conversationFragmentCallbackListener.onSwitchAudio();
@@ -107,8 +113,8 @@ public class AudioConversationFragment extends BaseConversationFragment {
     protected void actionButtonsEnabled(boolean ability) {
         super.actionButtonsEnabled(ability);
 
-        audioSwichToggleButton.setEnabled(ability);
-        audioSwichToggleButton.setActivated(ability);
+        audioSwitchToggleButton.setEnabled(ability);
+        audioSwitchToggleButton.setActivated(ability);
     }
 
     @Override
