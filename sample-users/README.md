@@ -17,4 +17,4 @@ Go to project page on QuickBlox Developers Section -- <http://quickblox.com/deve
 
 Or clone project here and start to work with the code.
 
-<img src="http://files.quickblox.com/Sample_Users_2.png" width=200 />&nbsp;<img src="http://files.quickblox.com/Sample_Users_3.png" width=200 />&nbsp;<img src="http://files.quickblox.com/Sample_Users_4.png" width=200 />&nbsp;
+<img src="screenshots/Users1.png" width=200 />&nbsp;<img src="screenshots/Users2.png" width=200 />&nbsp;<img src="screenshots/Users3.png" width=200 />&nbsp;<img src="screenshots/Users4.png" width=200 />&nbsp;
