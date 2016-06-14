@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -129,7 +128,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             initIncommingCallTask();
             addIncomeCallFragment();
         } else {
-            addConvrsationFragment(isInComingCall);
+            addConversationFragment(isInComingCall);
         }
     }
 
@@ -497,8 +496,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onSessionStartClose(final QBRTCSession session) {
-        session.removeSessionCallbacksListener(CallActivity.this);
-        notifyCallStateListenersCallStoped();
+        if (session.equals(getCurrentSession())) {
+            session.removeSessionCallbacksListener(CallActivity.this);
+            notifyCallStateListenersCallStopped();
+        }
     }
 
     @Override
@@ -559,7 +560,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void addConvrsationFragment(boolean isIncomingCall) {
+    private void addConversationFragment(boolean isIncomingCall) {
         boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
@@ -592,7 +593,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onAcceptCurrentSession() {
-        addConvrsationFragment(true);
+        addConversationFragment(true);
     }
 
     @Override
@@ -690,7 +691,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public interface CurrentCallStateCallback {
         void onCallStarted();
 
-        void onCallStoped();
+        void onCallStopped();
     }
 
     private void notifyCallStateListenersCallStarted() {
@@ -704,13 +705,14 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         });
     }
 
-    private void notifyCallStateListenersCallStoped() {
+    private void notifyCallStateListenersCallStopped() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
-                    callback.onCallStoped();
+                    callback.onCallStopped();
                 }
+                rtcClient.removeSessionsCallbacksListener(CallActivity.this);
             }
         });
     }
