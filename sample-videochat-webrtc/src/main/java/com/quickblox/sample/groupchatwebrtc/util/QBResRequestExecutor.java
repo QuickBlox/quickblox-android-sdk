@@ -14,6 +14,7 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,6 +63,20 @@ public class QBResRequestExecutor {
                 tags.add(tag);
 
                 QBUsers.getUsersByTags(tags, requestBuilder, callback);
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+
+            }
+        });
+    }
+
+    public void loadsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback){
+        restoreOrCreateSession(new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession result, Bundle params) {
+                QBUsers.getUsersByIDs(usersIDs, null, callback);
             }
 
             @Override
