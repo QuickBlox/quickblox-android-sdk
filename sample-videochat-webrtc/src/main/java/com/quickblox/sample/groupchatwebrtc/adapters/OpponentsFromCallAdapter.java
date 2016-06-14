@@ -2,6 +2,7 @@ package com.quickblox.sample.groupchatwebrtc.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,6 +110,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         TextView opponentsName;
         TextView connectionStatus;
         RTCGLVideoView opponentView;
+        TextView connectionStats;
         private int userId;
 
         public ViewHolder(View itemView) {
@@ -116,10 +118,16 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
             opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
+            connectionStats = (TextView) itemView.findViewById(R.id.connectionStats);
+            connectionStats.setMovementMethod(new ScrollingMovementMethod());
         }
 
         public void setStatus(String status) {
             connectionStatus.setText(status);
+        }
+
+        public void setStatsReport(String statsreport) {
+            connectionStats.setText(statsreport);
         }
 
 

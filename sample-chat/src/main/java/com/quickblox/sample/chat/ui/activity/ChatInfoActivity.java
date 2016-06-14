@@ -51,7 +51,7 @@ public class ChatInfoActivity extends BaseActivity {
     }
 
     private void buildUserList() {
-        ArrayList<Integer> userIds = qbDialog.getOccupants();
+        List<Integer> userIds = qbDialog.getOccupants();
         List<QBUser> users = QbUsersHolder.getInstance().getUsersByIds(userIds);
 
         UsersAdapter adapter = new UsersAdapter(this, users);

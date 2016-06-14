@@ -44,6 +44,7 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCStatsReportCallback;
 import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
@@ -162,6 +163,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         QBRTCConfig.setMaxOpponentsCount(6);
         QBRTCConfig.setDisconnectTime(30);
         QBRTCConfig.setAnswerTimeInterval(30l);
+        QBRTCConfig.setStatsReportInterval(60);
         QBRTCConfig.setDebugEnabled(true);
 
 
@@ -317,6 +319,18 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         this.currentSession.removeSessionCallbacksListener(CallActivity.this);
         this.currentSession.removeSignalingCallback(CallActivity.this);
         this.currentSession = null;
+    }
+
+    public void addRTCStatsReportCallback(QBRTCStatsReportCallback statsReportCallback) {
+        if (currentSession != null) {
+            currentSession.addStatsReportCallback(statsReportCallback);
+        }
+    }
+
+    public void removeRTCStatsReportCallback(QBRTCStatsReportCallback statsReportCallback) {
+        if (currentSession != null) {
+            currentSession.removeStatsReportCallback(statsReportCallback);
+        }
     }
 
     // ---------------Chat callback methods implementation  ----------------------//

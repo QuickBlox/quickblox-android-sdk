@@ -75,6 +75,17 @@
             android:textColor="@color/white"
             android:textStyle="normal|italic" />
 
+        <TextView
+            android:id="@+id/connectionStats"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_above="@+id/connectionStatus"
+            android:layout_marginBottom="3dp"
+            android:scrollbars="vertical"
+            android:maxLines="5"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic" />
 
         <TextView
             android:id="@+id/opponentName"

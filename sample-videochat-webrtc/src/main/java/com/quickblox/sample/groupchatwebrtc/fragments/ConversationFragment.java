@@ -28,22 +28,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.activities.ListUsersActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
-import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
-import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCStatsReportCallback;
+import com.quickblox.videochat.webrtc.exception.QBRTCException;
+import com.quickblox.videochat.webrtc.stats.QBRTCStatsReport;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.VideoRenderer;
@@ -57,7 +59,8 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class ConversationFragment extends Fragment implements Serializable, QBRTCClientVideoTracksCallbacks, QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+public class ConversationFragment extends Fragment implements Serializable, QBRTCClientVideoTracksCallbacks,
+        QBRTCSessionConnectionCallbacks, QBRTCStatsReportCallback, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     public static final String CALLER_NAME = "caller_name";
     public static final String SESSION_ID = "sessionID";
@@ -208,6 +211,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         }
         ((CallActivity) getActivity()).addTCClientConnectionCallback(this);
         ((CallActivity) getActivity()).addRTCSessionUserCallback(this);
+        ((CallActivity) getActivity()).addRTCStatsReportCallback(this);
     }
 
 
@@ -329,6 +333,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         getActivity().unregisterReceiver(audioStreamReceiver);
         ((CallActivity) getActivity()).removeRTCClientConnectionCallback(this);
         ((CallActivity) getActivity()).removeRTCSessionUserCallback(this);
+        ((CallActivity) getActivity()).removeRTCStatsReportCallback(this);
     }
 
     private void initSwitchCameraButton(View view) {
@@ -561,6 +566,19 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         });
     }
 
+    private void setStatsReportForOpponent(final int userId, final String statsReport) {
+        final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
+        if (holder == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                holder.setStatsReport(statsReport);
+            }
+        });
+    }
+
     @Override
     public void onStartConnectToUser(QBRTCSession qbrtcSession, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.checking));
@@ -621,6 +639,13 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.hungUp));
+    }
+
+    @Override
+    public void onStatsReportUpdate(QBRTCStatsReport statsReport, Integer userId) {
+        String statsReportValue = statsReport.toString();
+        Log.i(TAG, "statsReport for userid  " + userId +" =" + statsReportValue);
+        setStatsReportForOpponent(userId, statsReportValue);
     }
 
     public void enableDinamicToggle(boolean plugged) {
