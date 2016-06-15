@@ -251,7 +251,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     }
 
     @Override
-    public void onCallStoped() {
+    public void onCallStopped() {
         stopTimer();
         actionButtonsEnabled(false);
     }

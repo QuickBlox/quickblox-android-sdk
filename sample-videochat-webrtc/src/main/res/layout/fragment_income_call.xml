@@ -23,7 +23,7 @@
             style="@style/WrapContent"
             android:textColor="@color/text_color_caller_name"
             android:textSize="@dimen/caller_name_text_size"
-            android:text="User Name"
+            tools:text="User Name"
             android:maxLines="1"
             android:maxLength="25"
             android:paddingTop="20dp"
@@ -53,7 +53,7 @@
             android:textColor="@color/text_color_other_inc_users"
             android:textSize="@dimen/other_inc_users_text_size"
             android:layout_marginTop="10dp"
-            android:text="User 1, User 2, User 3"
+            tools:text="User 1, User 2, User 3"
             />
 
     </LinearLayout>

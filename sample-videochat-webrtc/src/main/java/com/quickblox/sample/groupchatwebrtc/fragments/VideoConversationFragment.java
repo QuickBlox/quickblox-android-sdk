@@ -245,7 +245,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private int defineSize(int measuredWidth, int columnsCount, float padding) {
-        return measuredWidth / columnsCount - (int) (padding * 2) - 1;
+//        ToDo recyclerView could be not showing at all cause measuredWidth
+        return measuredWidth / columnsCount - (int) (padding * 2) - 2;
     }
 
     private int defineRowCount() {
