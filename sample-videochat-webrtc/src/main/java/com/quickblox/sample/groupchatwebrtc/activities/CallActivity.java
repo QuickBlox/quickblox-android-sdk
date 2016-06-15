@@ -155,7 +155,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 Toaster.shortToast("Audio device switched to  " + audioDevice);
             }
         });
-        audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+        audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
@@ -345,6 +345,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (currentSession != null) {
             this.currentSession.removeSessionCallbacksListener(CallActivity.this);
             this.currentSession.removeSignalingCallback(CallActivity.this);
+            rtcClient.removeSessionsCallbacksListener(CallActivity.this);
             this.currentSession = null;
         }
     }
@@ -712,7 +713,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStopped();
                 }
-                rtcClient.removeSessionsCallbacksListener(CallActivity.this);
             }
         });
     }
