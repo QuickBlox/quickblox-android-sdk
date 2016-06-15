@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -33,7 +32,6 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
-import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -590,6 +588,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
         if (viewHolders == null) {
+            Log.d("UPDATE_USERS", "viewHolders == null");
             return null;
         }
         for (OpponentsFromCallAdapter.ViewHolder childViewHolder : viewHolders) {
@@ -638,6 +637,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 holder.setStatus(status);
             }
         });
+    }
+
+    private void updateNameForOpponent(int userId, String newUserName){
+
+        if (viewHolders == null) {
+            Log.v("UPDATE_USERS","viewHolders == null");
+            getAllOpponentsView();
+        }
+
+        OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
+        if (holder != null) {
+            Log.v("UPDATE_USERS", "holder != null");
+            holder.setUserName(newUserName);
+        }
     }
 
     private void setProgressBarForOpponentGone(int userId) {
@@ -803,6 +816,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
+        super.onOpponentsListUpdated(newUsers);
+        Log.v("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
+
+        for (QBUser user: newUsers){
+            Log.v("UPDATE_USERS","foreach, user = "+ user.getFullName() );
+            updateNameForOpponent(user.getId(), user.getFullName());
         }
     }
 

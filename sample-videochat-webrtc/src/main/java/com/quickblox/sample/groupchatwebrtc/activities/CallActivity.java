@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,8 +19,6 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
@@ -35,6 +32,7 @@ import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragmentCallback
 import com.quickblox.sample.groupchatwebrtc.util.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
+import com.quickblox.sample.groupchatwebrtc.utils.QBEntityCallbackImpl;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
 import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
@@ -148,18 +146,18 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         ArrayList<Integer> idsUsersNeedLoad = UsersUtils.getIdsNotLoadedUsers(usersFromDb, allParticipantsOfCall);
         if (!idsUsersNeedLoad.isEmpty()) {
-            requestExecutor.loadsersByIds(idsUsersNeedLoad, new QBEntityCallback<ArrayList<QBUser>>() {
+            requestExecutor.loadUsersByIds(idsUsersNeedLoad, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
                 @Override
                 public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                     dbManager.saveAllUsers(result, false);
-                }
-
-                @Override
-                public void onError(QBResponseException responseException) {
-
+                    needUpdateOpponentsList(result);
                 }
             });
         }
+    }
+
+    private void needUpdateOpponentsList(ArrayList<QBUser> newUsers) {
+        notifyCallStateListenersNeedUpdateOpponentsList(newUsers);
     }
 
     private void initFields() {
@@ -724,6 +722,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         void onCallStarted();
 
         void onCallStoped();
+
+        void onOpponentsListUpdated(ArrayList<QBUser> newUsers);
     }
 
     private void notifyCallStateListenersCallStarted() {
@@ -743,6 +743,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             public void run() {
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStoped();
+                }
+            }
+        });
+    }
+
+    private void notifyCallStateListenersNeedUpdateOpponentsList(final ArrayList<QBUser> newUsers) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
+                    callback.onOpponentsListUpdated(newUsers);
                 }
             }
         });

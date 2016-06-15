@@ -9,6 +9,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.sample.groupchatwebrtc.utils.QBEntityCallbackImpl;
 import com.quickblox.sample.groupchatwebrtc.utils.TokenUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -37,7 +38,7 @@ public class QBResRequestExecutor {
     }
 
     public void updateUserOnQBServer(final QBUser qbUser, final QBEntityCallback<QBUser> callback){
-        restoreOrCreateSession(new QBEntityCallback<QBSession>() {
+        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 QBUsers.updateUser(qbUser, callback);
@@ -55,7 +56,7 @@ public class QBResRequestExecutor {
     }
 
     public void loadUsersByTag(final String tag, final QBEntityCallback<ArrayList<QBUser>> callback) {
-        restoreOrCreateSession(new QBEntityCallback<QBSession>() {
+        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>(){
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
@@ -64,29 +65,19 @@ public class QBResRequestExecutor {
 
                 QBUsers.getUsersByTags(tags, requestBuilder, callback);
             }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-
-            }
         });
     }
 
-    public void loadsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback){
-        restoreOrCreateSession(new QBEntityCallback<QBSession>() {
+    public void loadUsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback){
+        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 QBUsers.getUsersByIDs(usersIDs, null, callback);
             }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-
-            }
         });
     }
 
-    private void restoreOrCreateSession(final QBEntityCallback <QBSession> creatingSessionCallback) {
+    private void restoreOrCreateSession(final QBEntityCallbackImpl <QBSession> creatingSessionCallback) {
         if (TokenUtils.isTokenValid()) {
             if (TokenUtils.restoreExistentQbSessionWithResult()){
                 creatingSessionCallback.onSuccess(null, null);

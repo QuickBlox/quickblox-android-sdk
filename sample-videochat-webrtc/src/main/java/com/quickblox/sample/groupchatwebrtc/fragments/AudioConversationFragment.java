@@ -114,4 +114,11 @@ public class AudioConversationFragment extends BaseConversationFragment {
     int getFragmentLayout() {
         return R.layout.fragment_audio_conversation;
     }
+
+    @Override
+    public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
+        super.onOpponentsListUpdated(newUsers);
+        firsrOpponentNameTextView.setText(opponents.get(0).getFullName());
+        otherOpponentsTextView.setText(getOtherOpponentsNames());
+    }
 }

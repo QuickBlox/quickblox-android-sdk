@@ -256,6 +256,28 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         actionButtonsEnabled(false);
     }
 
+    @Override
+    public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
+        updateOpponentsList();
+    }
+
+    private void updateOpponentsList(){
+        Log.v("UPDATE_USERS","super updateOpponentsList()");
+        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
+        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
+
+        QBUser caller = dbManager.getUserById(currentSession.getCallerID());
+        if (caller == null){
+            caller = new QBUser(currentSession.getCallerID());
+            caller.setFullName(String.valueOf(currentSession.getCallerID()));
+        }
+
+        if (isIncomingCall) {
+            opponents.add(caller);
+            opponents.remove(QBChatService.getInstance().getUser());
+        }
+    }
+
     class FragmentLifeCycleHandler extends Handler {
 
         @Override
