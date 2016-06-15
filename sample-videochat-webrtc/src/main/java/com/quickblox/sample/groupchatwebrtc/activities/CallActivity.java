@@ -19,6 +19,8 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
@@ -34,6 +36,7 @@ import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
@@ -127,9 +130,35 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private void startSuitableFragment(boolean isInComingCall) {
         if (isInComingCall) {
             initIncommingCallTask();
+            startLoadAbsentUsers();
             addIncomeCallFragment();
         } else {
             addConversationFragment(isInComingCall);
+        }
+    }
+
+    private void startLoadAbsentUsers() {
+        ArrayList<QBUser> usersFromDb = dbManager.getAllUsers();
+        ArrayList<Integer> allParticipantsOfCall = new ArrayList<>();
+        allParticipantsOfCall.addAll(opponentsIdsList);
+
+        if (isInCommingCall){
+            allParticipantsOfCall.add(currentSession.getCallerID());
+        }
+
+        ArrayList<Integer> idsUsersNeedLoad = UsersUtils.getIdsNotLoadedUsers(usersFromDb, allParticipantsOfCall);
+        if (!idsUsersNeedLoad.isEmpty()) {
+            requestExecutor.loadsersByIds(idsUsersNeedLoad, new QBEntityCallback<ArrayList<QBUser>>() {
+                @Override
+                public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+                    dbManager.saveAllUsers(result, false);
+                }
+
+                @Override
+                public void onError(QBResponseException responseException) {
+
+                }
+            });
         }
     }
 
@@ -202,7 +231,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         //
         QBRTCConfig.setMaxOpponentsCount(Consts.MAX_OPPONENTS_COUNT);
         SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
-        SettingsUtil.configRTCTimers(sharedPref, CallActivity.this);
+        SettingsUtil.configRTCTimers(CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);
 
 
@@ -263,6 +292,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
+                if (currentSession == null){
+                    return;
+                }
+
                 QBRTCSession.QBRTCSessionState currentSessionState = currentSession.getState();
                 if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)) {
                     rejectCurrentSession();

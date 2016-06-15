@@ -1,9 +1,11 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -826,9 +828,16 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     class LocalViewOnClickListener implements View.OnClickListener {
+        private static final long FULL_SCREEN_CLICK_DELAY = 200;
+        private long lastFullScreenClickTime = 0l;
 
         @Override
         public void onClick(View v) {
+            if ((SystemClock.uptimeMillis() - lastFullScreenClickTime) < FULL_SCREEN_CLICK_DELAY) {
+                return;
+            }
+            lastFullScreenClickTime = SystemClock.uptimeMillis();
+
             if (connectionEstablished) {
                 setFullScreenOnOff();
             }

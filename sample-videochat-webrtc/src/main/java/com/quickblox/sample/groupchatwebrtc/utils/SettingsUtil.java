@@ -2,6 +2,7 @@ package com.quickblox.sample.groupchatwebrtc.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -84,7 +85,9 @@ public class SettingsUtil {
         Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
     }
 
-    public static void configRTCTimers(SharedPreferences sharedPref, Context context){
+    public static void configRTCTimers(Context context){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+
         long answerTimeInterval = getPreferenceInt(sharedPref, context,
                 R.string.pref_answer_time_interval_key,
                 R.string.pref_answer_time_interval_default_value);

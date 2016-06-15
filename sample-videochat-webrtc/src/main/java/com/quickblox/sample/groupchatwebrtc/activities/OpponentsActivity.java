@@ -77,6 +77,12 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        initUsersList();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.getExtras() != null) {

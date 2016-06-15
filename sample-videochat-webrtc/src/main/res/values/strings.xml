@@ -36,7 +36,7 @@
 
     <string name="error_is_too_long_maximum_is_50_characters_from_app">%s mustn\'t be more than 50 characters</string>
     <string name="error_name_must_be_more_than_2_characters_from_app">%s must be more than 2 characters</string>
-    <string name="error_name_must_do_not_contain_special_characters_from_app"><![CDATA[%s must contain 3 – 50 characters, except \"<\", \">\", \";\" symbols]]></string>
+    <string name="error_name_must_do_not_contain_special_characters_from_app">%1$s must contain 3 &#8212; %2$s characters, except \"&lt;\", \"&gt;\", \";\" symbols</string>
     <string name="dlg_not_fullname_field_entered">Please enter %s</string>
 
 

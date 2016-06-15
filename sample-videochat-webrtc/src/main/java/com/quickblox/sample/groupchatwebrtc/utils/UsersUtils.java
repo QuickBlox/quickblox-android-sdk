@@ -43,4 +43,17 @@ public class UsersUtils {
         stubUser.setFullName(String.valueOf(userId));
         return stubUser;
     }
+
+    public static ArrayList<Integer> getIdsNotLoadedUsers(ArrayList<QBUser> existedUsers, List<Integer> allIds){
+        ArrayList<Integer> idsNotLoadedUsers = new ArrayList<>();
+
+        for (Integer userId : allIds){
+            QBUser stubUser = createStubUserById(userId);
+            if (!existedUsers.contains(stubUser)) {
+                idsNotLoadedUsers.add(userId);
+            }
+        }
+
+        return idsNotLoadedUsers;
+    }
 }
