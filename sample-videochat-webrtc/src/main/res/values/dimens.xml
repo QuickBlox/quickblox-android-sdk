@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="grid_item_divider">1dp</dimen>
 
+    <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="item_width">80dp</dimen>
     <dimen name="item_height">136dp</dimen>
     <dimen name="action_bar_height">80dp</dimen>

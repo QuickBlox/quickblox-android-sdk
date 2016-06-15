@@ -31,7 +31,6 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
-import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView.RendererConfig;
 import com.quickblox.users.model.QBUser;
@@ -64,6 +63,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final int DEFAULT_COLS_COUNT = 3;
     private static final long TOGGLE_CAMERA_DELAY = 1000;
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
+    private static final int RECYCLE_VIEW_PADDING = 2;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -245,8 +245,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private int defineSize(int measuredWidth, int columnsCount, float padding) {
-//        ToDo recyclerView could be not showing at all cause measuredWidth
-        return measuredWidth / columnsCount - (int) (padding * 2) - 2;
+        return measuredWidth / columnsCount - (int) (padding * 2) - RECYCLE_VIEW_PADDING;
     }
 
     private int defineRowCount() {
