@@ -91,6 +91,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private QbUsersDbManager dbManager;
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
+    private boolean callStarted;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -152,14 +153,18 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         audioManager = AppRTCAudioManager.create(this, new AppRTCAudioManager.OnAudioManagerStateListener() {
             @Override
             public void onAudioChangedState(AppRTCAudioManager.AudioDevice audioDevice) {
-                Toaster.shortToast("Audio device switched to  " + audioDevice);
+                if (callStarted) {
+                    Toaster.shortToast("Audio device switched to  " + audioDevice);
+                }
             }
         });
         audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
-                Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
+                if (callStarted) {
+                    Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
+                }
                 if (sessionUserCallback != null) {
                     sessionUserCallback.enableDynamicToggle(plugged);
                 }
@@ -227,7 +232,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void connectivityChanged(boolean availableNow) {
-        showToast("Internet connection " + (availableNow ? "available" : " unavailable"));
+        if (callStarted) {
+            showToast("Internet connection " + (availableNow ? "available" : " unavailable"));
+        }
     }
 
     private void showNotificationPopUp(final int text, final boolean show) {
@@ -326,7 +333,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
 
-    private void forbidenCloseByWifiState() {
+    private void forbiddenCloseByWifiState() {
         closeByWifiStateAllow = false;
     }
 
@@ -443,8 +450,9 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onConnectedToUser(QBRTCSession session, final Integer userID) {
+        callStarted = true;
         notifyCallStateListenersCallStarted();
-        forbidenCloseByWifiState();
+        forbiddenCloseByWifiState();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -512,7 +520,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toaster.longToast(message);
+                Toaster.shortToast(message);
             }
         });
     }
@@ -521,7 +529,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toaster.longToast(message);
+                Toaster.shortToast(message);
             }
         });
     }
