@@ -26,6 +26,8 @@ public class AudioConversationFragment extends BaseConversationFragment {
 
     private ToggleButton audioSwitchToggleButton;
     private TextView alsoOnCallText;
+    private TextView firstOpponentNameTextView;
+    private TextView otherOpponentsTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +72,10 @@ public class AudioConversationFragment extends BaseConversationFragment {
         alsoOnCallText = (TextView) view.findViewById(R.id.text_also_on_call);
         setVisibilityAlsoOnCallTextView();
 
-        TextView firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
+        firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
         firstOpponentNameTextView.setText(opponents.get(0).getFullName());
 
-        TextView otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
+        otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
 
         audioSwitchToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
@@ -125,7 +127,7 @@ public class AudioConversationFragment extends BaseConversationFragment {
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
-        firsrOpponentNameTextView.setText(opponents.get(0).getFullName());
+        firstOpponentNameTextView.setText(opponents.get(0).getFullName());
         otherOpponentsTextView.setText(getOtherOpponentsNames());
     }
 }
