@@ -15,6 +15,8 @@ public class QBRTCSessionUtils {
         peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTING.ordinal(), R.string.text_status_connect);
         peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CHECKING.ordinal(), R.string.text_status_checking);
+        peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTED.ordinal(), R.string.text_status_connected);
         peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_DISCONNECTED.ordinal(), R.string.text_status_disconnected);

@@ -47,6 +47,7 @@ import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private int amountOpponents;
     private int userIDFullScreen;
-    private ArrayList<QBUser> allOpponents;
+    private List<QBUser> allOpponents;
     private boolean connectionEstablished;
 
 
@@ -131,7 +132,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.initFields();
         localViewOnClickListener = new LocalViewOnClickListener();
         amountOpponents = opponents.size();
-        allOpponents = new ArrayList<>(opponents.size());
+        allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
 
         timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer_action_bar);
@@ -821,8 +822,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
+        updateAllOpponentsList(newUsers);
         Log.d("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
         runUpdateUsersNames(newUsers);
+    }
+
+    private void updateAllOpponentsList(ArrayList<QBUser> newUsers) {
+
+        for(int i = 0; i < allOpponents.size(); i ++ ) {
+            for (QBUser updatedUser : newUsers) {
+                if (updatedUser.equals(allOpponents.get(i))) {
+                    allOpponents.set(i, updatedUser);
+                }
+            }
+        }
     }
 
     private void runUpdateUsersNames(final ArrayList<QBUser> newUsers) {
