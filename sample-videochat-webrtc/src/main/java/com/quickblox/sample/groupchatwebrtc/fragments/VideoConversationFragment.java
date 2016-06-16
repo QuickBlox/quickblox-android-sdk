@@ -64,6 +64,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final int DEFAULT_COLS_COUNT = 3;
     private static final long TOGGLE_CAMERA_DELAY = 1000;
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
+    private static final long UPDATING_USERS_DELAY = 2000;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -639,18 +640,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         });
     }
 
-    private void updateNameForOpponent(int userId, String newUserName){
-
-        if (viewHolders == null) {
-            Log.v("UPDATE_USERS","viewHolders == null");
-            getAllOpponentsView();
-        }
-
+    private void updateNameForOpponent(int userId, String newUserName) {
         OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
-        if (holder != null) {
-            Log.v("UPDATE_USERS", "holder != null");
-            holder.setUserName(newUserName);
+        if (holder == null) {
+            Log.d("UPDATE_USERS", "holder == null");
+            return;
         }
+
+        Log.d("UPDATE_USERS", "holder != null");
+        holder.setUserName(newUserName);
     }
 
     private void setProgressBarForOpponentGone(int userId) {
@@ -823,12 +821,21 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
-        Log.v("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
+        Log.d("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
+        runUpdateUsersNames(newUsers);
+    }
 
-        for (QBUser user: newUsers){
-            Log.v("UPDATE_USERS","foreach, user = "+ user.getFullName() );
-            updateNameForOpponent(user.getId(), user.getFullName());
-        }
+    private void runUpdateUsersNames(final ArrayList<QBUser> newUsers) {
+        //need delayed for synchronization with recycler view initialization
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (QBUser user: newUsers){
+                    Log.d("UPDATE_USERS","foreach, user = "+ user.getFullName() );
+                    updateNameForOpponent(user.getId(), user.getFullName());
+                }
+            }
+        }, UPDATING_USERS_DELAY);
     }
 
     private enum CameraState {
