@@ -77,8 +77,8 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         initUsersList();
     }
 

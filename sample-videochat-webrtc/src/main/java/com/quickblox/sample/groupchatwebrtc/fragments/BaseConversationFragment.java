@@ -137,23 +137,11 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
 
-        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
-        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
-
         if (getArguments() != null) {
             isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
         }
 
-        QBUser caller = dbManager.getUserById(currentSession.getCallerID());
-        if (caller == null){
-            caller = new QBUser(currentSession.getCallerID());
-            caller.setFullName(String.valueOf(currentSession.getCallerID()));
-        }
-
-        if (isIncomingCall) {
-            opponents.add(caller);
-            opponents.remove(QBChatService.getInstance().getUser());
-        }
+        initOpponentsList();
 
         qbConferenceType = currentSession.getConferenceType();
 
@@ -258,11 +246,11 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
-        updateOpponentsList();
+        initOpponentsList();
     }
 
-    private void updateOpponentsList(){
-        Log.v("UPDATE_USERS","super updateOpponentsList()");
+    private void initOpponentsList(){
+        Log.v("UPDATE_USERS","super initOpponentsList()");
         ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
         opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
 

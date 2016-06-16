@@ -853,8 +853,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     class LocalViewOnClickListener implements View.OnClickListener {
-        private static final long FULL_SCREEN_CLICK_DELAY = 200;
-        private long lastFullScreenClickTime = 0l;
+        private static final long FULL_SCREEN_CLICK_DELAY = 1000;
+        private long lastFullScreenClickTime = 0L;
 
         @Override
         public void onClick(View v) {
