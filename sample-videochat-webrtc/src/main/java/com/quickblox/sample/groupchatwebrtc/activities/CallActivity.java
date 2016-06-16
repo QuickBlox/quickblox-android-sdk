@@ -94,6 +94,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
     private boolean callStarted;
+    private long expirationReconnectionTime;
+    private int reconnectHangUpTimeMillis;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -141,7 +143,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         ArrayList<Integer> allParticipantsOfCall = new ArrayList<>();
         allParticipantsOfCall.addAll(opponentsIdsList);
 
-        if (isInCommingCall){
+        if (isInCommingCall) {
             allParticipantsOfCall.add(currentSession.getCallerID());
         }
 
@@ -244,6 +246,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void connectionClosedOnError(Exception e) {
                 showNotificationPopUp(R.string.connection_was_lost, true);
+                setExpirationReconnectionTime();
             }
 
             @Override
@@ -254,8 +257,21 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void reconnectingIn(int seconds) {
                 Log.i(TAG, "reconnectingIn " + seconds);
+                hangUpAfterLongReconnection();
             }
         });
+    }
+
+    private void setExpirationReconnectionTime() {
+        reconnectHangUpTimeMillis = SettingsUtil.getPreferenceInt(sharedPref, this, R.string.pref_disconnect_time_interval_key,
+                R.string.pref_disconnect_time_interval_default_value) * 1000;
+        expirationReconnectionTime = System.currentTimeMillis() + reconnectHangUpTimeMillis;
+    }
+
+    private void hangUpAfterLongReconnection() {
+        if (expirationReconnectionTime < System.currentTimeMillis()) {
+            hangUpCurrentSession();
+        }
     }
 
     @Override
@@ -291,7 +307,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                if (currentSession == null){
+                if (currentSession == null) {
                     return;
                 }
 
