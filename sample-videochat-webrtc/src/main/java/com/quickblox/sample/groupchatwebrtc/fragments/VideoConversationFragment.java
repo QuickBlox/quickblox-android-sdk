@@ -65,6 +65,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final int DEFAULT_COLS_COUNT = 3;
     private static final long TOGGLE_CAMERA_DELAY = 1000;
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
+    private static final int RECYCLE_VIEW_PADDING = 2;
     private static final long UPDATING_USERS_DELAY = 2000;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
@@ -247,7 +248,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private int defineSize(int measuredWidth, int columnsCount, float padding) {
-        return measuredWidth / columnsCount - (int) (padding * 2) - 1;
+        return measuredWidth / columnsCount - (int) (padding * 2) - RECYCLE_VIEW_PADDING;
     }
 
     private int defineRowCount() {

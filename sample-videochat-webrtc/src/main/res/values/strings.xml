@@ -69,8 +69,8 @@
     <string name="opponent_closed">Closed</string>
     <string name="text_incoming_audio_call">Incoming Audio Call</string>
     <string name="text_incoming_video_call">Incoming Video Call</string>
-    <string name="text_status_connect">Connect...</string>
-    <string name="text_status_checking">Checking...</string>
+    <string name="text_status_connect">Connect…</string>
+    <string name="text_status_checking">Checking…</string>
     <string name="text_status_connected">Connected</string>
     <string name="text_status_disconnected">Disconnected</string>
 
@@ -163,8 +163,7 @@
     <string name="pref_videocodec_default">0</string>
 
     <string name="pref_hwcodec_key">hwcodec_preference</string>
-    <string name="pref_hwcodec_title">Video codec hardware acceleration.</string>
-    <string name="pref_hwcodec_dlg">Use hardware accelerated video codec (if available).</string>
+    <string name="pref_hwcodec_title">Video codec hardware acceleration</string>
     <string name="pref_hwcodec_default">true</string>
 
     <string name="pref_value_enabled">Enabled</string>

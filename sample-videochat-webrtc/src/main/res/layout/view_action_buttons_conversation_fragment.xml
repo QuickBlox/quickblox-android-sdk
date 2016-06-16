@@ -47,7 +47,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/element_fragment_margin"
-        android:background="@drawable/call_specker_toggle_background"
+        android:background="@drawable/call_speaker_toggle_background"
         android:checked="true"
         android:visibility="gone"
         android:textOff=""
