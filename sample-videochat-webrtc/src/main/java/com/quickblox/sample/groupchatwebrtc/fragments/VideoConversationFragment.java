@@ -385,10 +385,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
-
+        Log.d("Ambra", "start");
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
-            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
+            Log.d("Ambra", "localVideoView.updateRenderer SECOND");
+//            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -461,7 +462,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     localVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
-                        fillVideoView(localVideoView, localVideoTrack, !isPeerToPeerCall);
+                        Log.d("Ambra", "OnBindLastViewHolder.fillVideoView localVideoTrack");
+                        fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
@@ -531,8 +533,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
+        Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+        Log.d(TAG, "setRemoteViewMultiCall viewHolders= " + viewHolders);
         if (itemHolder == null) {
+            Log.d(TAG, "itemHolder == null - true");
             return;
         }
         final RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
@@ -592,7 +597,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
         if (viewHolders == null) {
-            Log.d("UPDATE_USERS", "viewHolders == null");
+            Log.d(TAG, "viewHolders == null");
             return null;
         }
         for (OpponentsFromCallAdapter.ViewHolder childViewHolder : viewHolders) {
@@ -736,6 +741,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void enableDynamicToggle(boolean plugged) {
         headsetPlugged = plugged;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -796,18 +802,24 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        updateMenuVolume(headsetPlugged, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.audio_switch:
-                Log.d("Conversation", "audio_switch");
+                Log.d(TAG, "audio_switch");
                 conversationFragmentCallbackListener.onSwitchAudio();
                 if (!headsetPlugged) {
                     if (!item.isChecked()) {
                         item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_speaker_phone);
+                        item.setIcon(R.drawable.ic_phonelink_ring);
                     } else {
                         item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_phonelink_ring);
+                        item.setIcon(R.drawable.ic_speaker_phone);
                     }
                 }
                 return true;
@@ -820,6 +832,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
+    private void updateMenuVolume(boolean headsetPlugged, Menu menu) {
+
+        MenuItem audiSwitchItem = menu.findItem(R.id.audio_switch);
+        if (headsetPlugged) {
+            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
+        } else {
+            audiSwitchItem.setIcon(R.drawable.ic_speaker_phone);
+        }
+    }
 
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
