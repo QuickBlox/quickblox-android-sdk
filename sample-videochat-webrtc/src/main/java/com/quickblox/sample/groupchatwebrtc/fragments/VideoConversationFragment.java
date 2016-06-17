@@ -67,6 +67,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
     private static final int RECYCLE_VIEW_PADDING = 2;
     private static final long UPDATING_USERS_DELAY = 2000;
+    private static final long FULL_SCREEN_CLICK_DELAY = 500;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -824,13 +825,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
         updateAllOpponentsList(newUsers);
-        Log.d("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
+        Log.d("UPDATE_USERS", "updateOpponentsList(), newUsers = " + newUsers);
         runUpdateUsersNames(newUsers);
     }
 
     private void updateAllOpponentsList(ArrayList<QBUser> newUsers) {
 
-        for(int i = 0; i < allOpponents.size(); i ++ ) {
+        for (int i = 0; i < allOpponents.size(); i++) {
             for (QBUser updatedUser : newUsers) {
                 if (updatedUser.equals(allOpponents.get(i))) {
                     allOpponents.set(i, updatedUser);
@@ -844,8 +845,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (QBUser user: newUsers){
-                    Log.d("UPDATE_USERS","foreach, user = "+ user.getFullName() );
+                for (QBUser user : newUsers) {
+                    Log.d("UPDATE_USERS", "foreach, user = " + user.getFullName());
                     updateNameForOpponent(user.getId(), user.getFullName());
                 }
             }
@@ -874,7 +875,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     class LocalViewOnClickListener implements View.OnClickListener {
-        private static final long FULL_SCREEN_CLICK_DELAY = 1000;
         private long lastFullScreenClickTime = 0L;
 
         @Override

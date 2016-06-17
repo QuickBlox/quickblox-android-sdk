@@ -77,8 +77,8 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
         initUsersList();
     }
 
@@ -138,9 +138,20 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initUsersList() {
+//      checking whether currentOpponentsList is actual, if yes - return
+        if (currentOpponentsList != null) {
+            ArrayList<QBUser> actualCurrentOpponentsListList = dbManager.getAllUsers();
+            actualCurrentOpponentsListList.remove(sharedPrefsHelper.getQbUser());
+            if (currentOpponentsList.containsAll(actualCurrentOpponentsListList)) {
+                return;
+            }
+        }
+        proceedInitUsersList();
+    }
+
+    private void proceedInitUsersList() {
         currentOpponentsList = dbManager.getAllUsers();
         currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
-
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
             @Override
