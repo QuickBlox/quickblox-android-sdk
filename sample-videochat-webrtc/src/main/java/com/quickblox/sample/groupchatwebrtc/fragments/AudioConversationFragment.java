@@ -13,25 +13,35 @@ import android.widget.ToggleButton;
 
 import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCSession;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by tereha on 25.05.16.
  */
-public class AudioConversationFragment extends BaseConversationFragment {
+public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.QBRTCSessionUserCallback {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 
     private ToggleButton audioSwitchToggleButton;
     private TextView alsoOnCallText;
     private TextView firstOpponentNameTextView;
     private TextView otherOpponentsTextView;
+    private boolean headsetPlugged;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
     }
 
     @Nullable
@@ -85,7 +95,7 @@ public class AudioConversationFragment extends BaseConversationFragment {
     }
 
     private void setVisibilityAlsoOnCallTextView() {
-        if (opponents.size()< 2) {
+        if (opponents.size() < 2) {
             alsoOnCallText.setVisibility(View.INVISIBLE);
         }
     }
@@ -106,7 +116,9 @@ public class AudioConversationFragment extends BaseConversationFragment {
         audioSwitchToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                conversationFragmentCallbackListener.onSwitchAudio();
+                if (!headsetPlugged) {
+                    conversationFragmentCallbackListener.onSwitchAudio();
+                }
             }
         });
     }
@@ -129,5 +141,11 @@ public class AudioConversationFragment extends BaseConversationFragment {
         super.onOpponentsListUpdated(newUsers);
         firstOpponentNameTextView.setText(opponents.get(0).getFullName());
         otherOpponentsTextView.setText(getOtherOpponentsNames());
+    }
+
+    @Override
+    public void enableDynamicToggle(boolean plugged) {
+        headsetPlugged = plugged;
+        audioSwitchToggleButton.setChecked(!plugged);
     }
 }

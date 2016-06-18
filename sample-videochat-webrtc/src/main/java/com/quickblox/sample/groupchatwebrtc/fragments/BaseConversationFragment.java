@@ -33,6 +33,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by tereha on 24.05.16.
@@ -276,5 +277,14 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
                 Log.d(TAG, "Fragment under destroying");
             }
         }
+    }
+
+    public void onUserNotAnswer(QBRTCSession session, Integer userId) {
+    }
+    public void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
+    }
+    public void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
+    }
+    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
     }
 }
