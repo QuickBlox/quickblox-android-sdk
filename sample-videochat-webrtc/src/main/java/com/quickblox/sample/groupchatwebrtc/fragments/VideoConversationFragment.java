@@ -385,10 +385,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
-        Log.d("Ambra", "start");
+        Log.d(TAG, "start");
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
-            Log.d("Ambra", "localVideoView.updateRenderer SECOND");
+            Log.d(TAG, "localVideoView.updateRenderer SECOND");
 //            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
@@ -462,7 +462,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     localVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
-                        Log.d("Ambra", "OnBindLastViewHolder.fillVideoView localVideoTrack");
+                        Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
                         fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
                 }
@@ -526,7 +526,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         } else {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
         }
-        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+        Log.d(TAG, "setLocalVideoView localVideoView = null? " + (localVideoView == null));
+        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);// nullpointer
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
         fillVideoView(userId, localVideoView, videoTrack);
@@ -932,7 +933,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.show();
             fillVideoView(localVideoView, localVideoTrack, false);
             RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-            if (isPeerToPeerCall) {
+            if (isPeerToPeerCall || opponentsAdapter.getOpponents().size() == 0) {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
             } else {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
