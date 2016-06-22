@@ -53,7 +53,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
     protected Chronometer timerChronometer;
     private boolean isMessageProcessed;
-    private boolean isStarted;
+    protected boolean isStarted;
     protected FragmentLifeCycleHandler mainHandler;
     protected View outgoingOpponentsRelativeLayout;
     protected TextView allOpponentsTextView;

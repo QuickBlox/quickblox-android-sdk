@@ -116,9 +116,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         audioSwitchToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!headsetPlugged) {
-                    conversationFragmentCallbackListener.onSwitchAudio();
-                }
+                conversationFragmentCallbackListener.onSwitchAudio();
             }
         });
     }
@@ -126,8 +124,9 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void actionButtonsEnabled(boolean ability) {
         super.actionButtonsEnabled(ability);
-
-        audioSwitchToggleButton.setEnabled(ability);
+        if (!headsetPlugged) {
+            audioSwitchToggleButton.setEnabled(ability);
+        }
         audioSwitchToggleButton.setActivated(ability);
     }
 
@@ -146,6 +145,14 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void enableDynamicToggle(boolean plugged) {
         headsetPlugged = plugged;
-        audioSwitchToggleButton.setChecked(!plugged);
+        if (isStarted) {
+            if (plugged) {
+                audioSwitchToggleButton.setEnabled(false);
+                audioSwitchToggleButton.setChecked(true);
+            } else {
+                audioSwitchToggleButton.setEnabled(true);
+                audioSwitchToggleButton.setChecked(audioSwitchToggleButton.isChecked());
+            }
+        }
     }
 }

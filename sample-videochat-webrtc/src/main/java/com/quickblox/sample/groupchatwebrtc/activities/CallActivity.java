@@ -94,8 +94,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
     private boolean callStarted;
+    private boolean isVideoCall;
     private long expirationReconnectionTime;
     private int reconnectHangUpTimeMillis;
+    private boolean headsetPlugged;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -111,7 +113,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        parceIntentExtras();
+        parseIntentExtras();
 
         if (!initFields()) {
 //            we have currentSession == null, so it's no reason to do further initialisation
@@ -132,12 +134,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
         startSuitableFragment(isInCommingCall);
-
     }
 
     private void startSuitableFragment(boolean isInComingCall) {
         if (isInComingCall) {
-            initIncommingCallTask();
+            initIncomingCallTask();
             startLoadAbsentUsers();
             addIncomeCallFragment();
         } else {
@@ -186,7 +187,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         return null;
     }
 
-    private void parceIntentExtras() {
+    private void parseIntentExtras() {
         isInCommingCall = getIntent().getExtras().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
     }
 
@@ -199,10 +200,20 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 }
             }
         });
-        audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+
+        isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
+        if (isVideoCall) {
+            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
+        } else {
+            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.EARPIECE");
+        }
+
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
+                headsetPlugged = plugged;
                 if (callStarted) {
                     Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
                 }
@@ -313,7 +324,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         networkConnectionChecker = new NetworkConnectionChecker(getApplication());
     }
 
-    private void initIncommingCallTask() {
+    private void initIncomingCallTask() {
         showIncomingCallWindowTaskHandler = new Handler(Looper.myLooper());
         showIncomingCallWindowTask = new Runnable() {
             @Override
@@ -629,7 +640,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void addConversationFragment(boolean isIncomingCall) {
-        boolean isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
                         ? new VideoConversationFragment()
@@ -656,6 +666,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         audioManager.setManageHeadsetByDefault(use);
     }
 
+    public void sendHeadsetState() {
+        if (isInCommingCall) {
+            sessionUserCallback.enableDynamicToggle(headsetPlugged);
+        }
+    }
 
     ////////////////////////////// IncomeCallFragmentCallbackListener ////////////////////////////
 
@@ -693,6 +708,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void addRTCSessionUserCallback(QBRTCSessionUserCallback sessionUserCallback) {
         this.sessionUserCallback = sessionUserCallback;
+
+        sendHeadsetState();
     }
 
     @Override
