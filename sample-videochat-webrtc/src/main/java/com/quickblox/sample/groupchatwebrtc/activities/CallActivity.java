@@ -83,6 +83,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private boolean isInCommingCall;
     private QBRTCClient rtcClient;
     private QBRTCSessionUserCallback sessionUserCallback;
+    private OnChangeDynamicToggle onChangeDynamicCallback;
     private boolean wifiEnabled = true;
     private SharedPreferences sharedPref;
     private RingtonePlayer ringtonePlayer;
@@ -115,8 +116,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         parseIntentExtras();
 
-        if (!initFields()) {
-//            we have currentSession == null, so it's no reason to do further initialisation
+        if (!initFieldsSuccess()) {
+//            we have already currentSession == null, so it's no reason to do further initialization
             finish();
             Log.d(TAG, "finish CallActivity");
             return;
@@ -171,7 +172,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         notifyCallStateListenersNeedUpdateOpponentsList(newUsers);
     }
 
-    private boolean initFields() {
+    private boolean initFieldsSuccess() {
         sessionManager = WebRtcSessionManager.getInstance(this);
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
@@ -217,8 +218,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                 if (callStarted) {
                     Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
                 }
-                if (sessionUserCallback != null) {
-                    sessionUserCallback.enableDynamicToggle(plugged);
+                if (onChangeDynamicCallback != null) {
+                    onChangeDynamicCallback.enableDynamicToggle(plugged);
                 }
             }
         });
@@ -668,7 +669,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     public void sendHeadsetState() {
         if (isInCommingCall) {
-            sessionUserCallback.enableDynamicToggle(headsetPlugged);
+            onChangeDynamicCallback.enableDynamicToggle(headsetPlugged);
         }
     }
 
@@ -708,8 +709,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void addRTCSessionUserCallback(QBRTCSessionUserCallback sessionUserCallback) {
         this.sessionUserCallback = sessionUserCallback;
-
-        sendHeadsetState();
     }
 
     @Override
@@ -759,11 +758,24 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         currentCallStateCallbackList.remove(currentCallStateCallback);
     }
 
+    @Override
+    public void addOnChangeDynamicToggle(OnChangeDynamicToggle onChangeDynamicCallback) {
+        this.onChangeDynamicCallback = onChangeDynamicCallback;
+        sendHeadsetState();
+    }
+
+    @Override
+    public void removeOnChangeDynamicToggle(OnChangeDynamicToggle onChangeDynamicCallback) {
+        this.onChangeDynamicCallback = null;
+    }
+
     //////////////////////////////////////////   end   /////////////////////////////////////////////
 
-    public interface QBRTCSessionUserCallback {
+    public interface OnChangeDynamicToggle {
         void enableDynamicToggle(boolean plugged);
+    }
 
+    public interface QBRTCSessionUserCallback {
         void onUserNotAnswer(QBRTCSession session, Integer userId);
 
         void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);

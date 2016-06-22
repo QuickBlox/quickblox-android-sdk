@@ -250,13 +250,13 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         initOpponentsList();
     }
 
-    private void initOpponentsList(){
-        Log.v("UPDATE_USERS","super initOpponentsList()");
+    private void initOpponentsList() {
+        Log.v("UPDATE_USERS", "super initOpponentsList()");
         ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
         opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
 
         QBUser caller = dbManager.getUserById(currentSession.getCallerID());
-        if (caller == null){
+        if (caller == null) {
             caller = new QBUser(currentSession.getCallerID());
             caller.setFullName(String.valueOf(currentSession.getCallerID()));
         }
@@ -277,14 +277,5 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
                 Log.d(TAG, "Fragment under destroying");
             }
         }
-    }
-
-    public void onUserNotAnswer(QBRTCSession session, Integer userId) {
-    }
-    public void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-    }
-    public void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-    }
-    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
     }
 }

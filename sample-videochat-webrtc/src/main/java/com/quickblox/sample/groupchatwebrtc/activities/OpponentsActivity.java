@@ -77,8 +77,8 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onResume() {
+        super.onResume();
         initUsersList();
     }
 

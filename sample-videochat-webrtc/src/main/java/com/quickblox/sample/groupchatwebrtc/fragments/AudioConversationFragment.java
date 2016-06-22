@@ -16,15 +16,13 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBRTCSession;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by tereha on 25.05.16.
  */
-public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.QBRTCSessionUserCallback {
+public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeDynamicToggle {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 
     private ToggleButton audioSwitchToggleButton;
@@ -41,7 +39,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStart() {
         super.onStart();
-        conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
     }
 
     @Nullable
@@ -108,6 +106,11 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         return CollectionsUtils.makeStringFromUsersFullNames(otherOpponents);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
+    }
 
     @Override
     protected void initButtonsListener() {
@@ -145,12 +148,13 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void enableDynamicToggle(boolean plugged) {
         headsetPlugged = plugged;
+
         if (isStarted) {
+            audioSwitchToggleButton.setEnabled(!plugged);
+
             if (plugged) {
-                audioSwitchToggleButton.setEnabled(false);
                 audioSwitchToggleButton.setChecked(true);
             } else {
-                audioSwitchToggleButton.setEnabled(true);
                 audioSwitchToggleButton.setChecked(audioSwitchToggleButton.isChecked());
             }
         }

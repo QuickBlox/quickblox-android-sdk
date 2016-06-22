@@ -59,7 +59,7 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener, CallActivity.OnChangeDynamicToggle {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -184,6 +184,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
     }
 
     @Override
@@ -293,6 +294,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         removeVideoTrackSListener();
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
     }
 
     protected void initButtonsListener() {
