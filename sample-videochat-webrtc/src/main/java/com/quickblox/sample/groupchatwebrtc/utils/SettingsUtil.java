@@ -22,8 +22,7 @@ public class SettingsUtil {
         if (users.size() <= 2) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
-                QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width);
-                QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.height);
+                setDefaultVideoQuality();
             }
         } else {
             //set to minimum settings
@@ -110,7 +109,14 @@ public class SettingsUtil {
     private static void setVideoQuality(int resolutionItem) {
         if (resolutionItem != -1) {
             setVideoFromLibraryPreferences(resolutionItem);
+        } else {
+            setDefaultVideoQuality();
         }
+    }
+
+    private static void setDefaultVideoQuality() {
+        QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width);
+        QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.height);
     }
 
     private static void setVideoFromLibraryPreferences(int resolutionItem) {
