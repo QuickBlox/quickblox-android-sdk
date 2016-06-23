@@ -384,6 +384,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     protected void onStop() {
         super.onStop();
+        QBChatService.getInstance().removeConnectionListener(connectionListener);
     }
 
 
@@ -677,7 +678,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QBChatService.getInstance().removeConnectionListener(connectionListener);
     }
 
 
