@@ -280,7 +280,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void reconnectingIn(int seconds) {
                 Log.i(TAG, "reconnectingIn " + seconds);
-                hangUpAfterLongReconnection();
+                Log.i(TAG, "callStarted? " + callStarted);
+                if(!callStarted) {
+                    hangUpAfterLongReconnection();
+                }
             }
         });
     }

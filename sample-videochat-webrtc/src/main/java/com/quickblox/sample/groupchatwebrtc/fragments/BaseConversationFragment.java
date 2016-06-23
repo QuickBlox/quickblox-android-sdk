@@ -204,12 +204,12 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         });
     }
 
-    protected void actionButtonsEnabled(boolean enability) {
+    protected void actionButtonsEnabled(boolean inability) {
 
-        micToggleVideoCall.setEnabled(enability);
+        micToggleVideoCall.setEnabled(inability);
 
         // inactivate toggle buttons
-        micToggleVideoCall.setActivated(enability);
+        micToggleVideoCall.setActivated(inability);
     }
 
     private void startTimer() {

@@ -125,12 +125,12 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    protected void actionButtonsEnabled(boolean ability) {
-        super.actionButtonsEnabled(ability);
+    protected void actionButtonsEnabled(boolean inability) {
+        super.actionButtonsEnabled(inability);
         if (!headsetPlugged) {
-            audioSwitchToggleButton.setEnabled(ability);
+            audioSwitchToggleButton.setEnabled(inability);
         }
-        audioSwitchToggleButton.setActivated(ability);
+        audioSwitchToggleButton.setActivated(inability);
     }
 
     @Override

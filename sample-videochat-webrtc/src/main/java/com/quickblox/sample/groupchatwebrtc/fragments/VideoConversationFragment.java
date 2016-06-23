@@ -168,12 +168,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    protected void actionButtonsEnabled(boolean enability) {
-        super.actionButtonsEnabled(enability);
-        cameraToggle.setEnabled(enability);
-//Todo add switch camera
+    protected void actionButtonsEnabled(boolean inability) {
+        super.actionButtonsEnabled(inability);
+        cameraToggle.setEnabled(inability);
         // inactivate toggle buttons
-        cameraToggle.setActivated(enability);
+        cameraToggle.setActivated(inability);
     }
 
     @Override
