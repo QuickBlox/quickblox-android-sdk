@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 
 import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -21,17 +22,24 @@ import java.util.ArrayList;
 /**
  * Created by tereha on 25.05.16.
  */
-public class AudioConversationFragment extends BaseConversationFragment {
+public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeDynamicToggle {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 
     private ToggleButton audioSwitchToggleButton;
     private TextView alsoOnCallText;
     private TextView firstOpponentNameTextView;
     private TextView otherOpponentsTextView;
+    private boolean headsetPlugged;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
     }
 
     @Nullable
@@ -85,7 +93,7 @@ public class AudioConversationFragment extends BaseConversationFragment {
     }
 
     private void setVisibilityAlsoOnCallTextView() {
-        if (opponents.size()< 2) {
+        if (opponents.size() < 2) {
             alsoOnCallText.setVisibility(View.INVISIBLE);
         }
     }
@@ -98,6 +106,11 @@ public class AudioConversationFragment extends BaseConversationFragment {
         return CollectionsUtils.makeStringFromUsersFullNames(otherOpponents);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
+    }
 
     @Override
     protected void initButtonsListener() {
@@ -112,11 +125,12 @@ public class AudioConversationFragment extends BaseConversationFragment {
     }
 
     @Override
-    protected void actionButtonsEnabled(boolean ability) {
-        super.actionButtonsEnabled(ability);
-
-        audioSwitchToggleButton.setEnabled(ability);
-        audioSwitchToggleButton.setActivated(ability);
+    protected void actionButtonsEnabled(boolean inability) {
+        super.actionButtonsEnabled(inability);
+        if (!headsetPlugged) {
+            audioSwitchToggleButton.setEnabled(inability);
+        }
+        audioSwitchToggleButton.setActivated(inability);
     }
 
     @Override
@@ -129,5 +143,20 @@ public class AudioConversationFragment extends BaseConversationFragment {
         super.onOpponentsListUpdated(newUsers);
         firstOpponentNameTextView.setText(opponents.get(0).getFullName());
         otherOpponentsTextView.setText(getOtherOpponentsNames());
+    }
+
+    @Override
+    public void enableDynamicToggle(boolean plugged) {
+        headsetPlugged = plugged;
+
+        if (isStarted) {
+            audioSwitchToggleButton.setEnabled(!plugged);
+
+            if (plugged) {
+                audioSwitchToggleButton.setChecked(true);
+            } else {
+                audioSwitchToggleButton.setChecked(audioSwitchToggleButton.isChecked());
+            }
+        }
     }
 }

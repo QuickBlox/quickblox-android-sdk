@@ -33,6 +33,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by tereha on 24.05.16.
@@ -52,7 +53,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
     protected Chronometer timerChronometer;
     private boolean isMessageProcessed;
-    private boolean isStarted;
+    protected boolean isStarted;
     protected FragmentLifeCycleHandler mainHandler;
     protected View outgoingOpponentsRelativeLayout;
     protected TextView allOpponentsTextView;
@@ -203,12 +204,12 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         });
     }
 
-    protected void actionButtonsEnabled(boolean enability) {
+    protected void actionButtonsEnabled(boolean inability) {
 
-        micToggleVideoCall.setEnabled(enability);
+        micToggleVideoCall.setEnabled(inability);
 
         // inactivate toggle buttons
-        micToggleVideoCall.setActivated(enability);
+        micToggleVideoCall.setActivated(inability);
     }
 
     private void startTimer() {
@@ -249,13 +250,13 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         initOpponentsList();
     }
 
-    private void initOpponentsList(){
-        Log.v("UPDATE_USERS","super initOpponentsList()");
+    private void initOpponentsList() {
+        Log.v("UPDATE_USERS", "super initOpponentsList()");
         ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
         opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
 
         QBUser caller = dbManager.getUserById(currentSession.getCallerID());
-        if (caller == null){
+        if (caller == null) {
             caller = new QBUser(currentSession.getCallerID());
             caller.setFullName(String.valueOf(currentSession.getCallerID()));
         }

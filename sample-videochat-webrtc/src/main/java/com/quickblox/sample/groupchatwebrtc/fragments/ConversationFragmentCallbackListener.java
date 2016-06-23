@@ -17,6 +17,9 @@ public interface ConversationFragmentCallbackListener {
     void addCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
     void removeCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
 
+    void addOnChangeDynamicToggle (CallActivity.OnChangeDynamicToggle onChangeDynamicCallback);
+    void removeOnChangeDynamicToggle (CallActivity.OnChangeDynamicToggle onChangeDynamicCallback);
+
     void onSetAudioEnabled(boolean isAudioEnabled);
 
     void onSetVideoEnabled(boolean isNeedEnableCam);
@@ -24,9 +27,5 @@ public interface ConversationFragmentCallbackListener {
     void onSwitchAudio();
 
     void onHangUpCurrentSession();
-
-
-
-
 
 }

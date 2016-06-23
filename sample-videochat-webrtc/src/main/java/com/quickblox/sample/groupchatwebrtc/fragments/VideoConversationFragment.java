@@ -59,7 +59,7 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener, CallActivity.OnChangeDynamicToggle {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -67,6 +67,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
     private static final int RECYCLE_VIEW_PADDING = 2;
     private static final long UPDATING_USERS_DELAY = 2000;
+    private static final long FULL_SCREEN_CLICK_DELAY = 500;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -167,12 +168,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    protected void actionButtonsEnabled(boolean enability) {
-        super.actionButtonsEnabled(enability);
-        cameraToggle.setEnabled(enability);
-//Todo add switch camera
+    protected void actionButtonsEnabled(boolean inability) {
+        super.actionButtonsEnabled(inability);
+        cameraToggle.setEnabled(inability);
         // inactivate toggle buttons
-        cameraToggle.setActivated(enability);
+        cameraToggle.setActivated(inability);
     }
 
     @Override
@@ -183,6 +183,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
     }
 
     @Override
@@ -292,6 +293,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         removeVideoTrackSListener();
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
     }
 
     protected void initButtonsListener() {
@@ -384,10 +386,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
-
+        Log.d(TAG, "start");
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
-            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
+            Log.d(TAG, "localVideoView.updateRenderer SECOND");
+//            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -460,7 +463,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
                     localVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
-                        fillVideoView(localVideoView, localVideoTrack, !isPeerToPeerCall);
+                        Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
+                        fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
@@ -523,15 +527,19 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         } else {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
         }
-        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);
+        Log.d(TAG, "setLocalVideoView localVideoView = null? " + (localVideoView == null));
+        localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);// nullpointer
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
         fillVideoView(userId, localVideoView, videoTrack);
     }
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
+        Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+        Log.d(TAG, "setRemoteViewMultiCall viewHolders= " + viewHolders);
         if (itemHolder == null) {
+            Log.d(TAG, "itemHolder == null - true");
             return;
         }
         final RTCGLVideoView remoteVideoView = itemHolder.getOpponentView();
@@ -591,7 +599,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
         if (viewHolders == null) {
-            Log.d("UPDATE_USERS", "viewHolders == null");
+            Log.d(TAG, "viewHolders == null");
             return null;
         }
         for (OpponentsFromCallAdapter.ViewHolder childViewHolder : viewHolders) {
@@ -735,6 +743,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void enableDynamicToggle(boolean plugged) {
         headsetPlugged = plugged;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -766,7 +775,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @SuppressWarnings("ConstantConditions")
     private void setAnotherUserToFullScreen() {
-        if (opponentsAdapter.getOpponents().size() == 0) {
+        if (opponentsAdapter.getOpponents().isEmpty()) {
             return;
         }
         final int userId = opponentsAdapter.getItem(0);
@@ -795,18 +804,24 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        updateMenuVolume(headsetPlugged, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.audio_switch:
-                Log.d("Conversation", "audio_switch");
+                Log.d(TAG, "audio_switch");
                 conversationFragmentCallbackListener.onSwitchAudio();
                 if (!headsetPlugged) {
                     if (!item.isChecked()) {
                         item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_speaker_phone);
+                        item.setIcon(R.drawable.ic_phonelink_ring);
                     } else {
                         item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_phonelink_ring);
+                        item.setIcon(R.drawable.ic_speaker_phone);
                     }
                 }
                 return true;
@@ -819,18 +834,27 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
+    private void updateMenuVolume(boolean headsetPlugged, Menu menu) {
+
+        MenuItem audiSwitchItem = menu.findItem(R.id.audio_switch);
+        if (headsetPlugged) {
+            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
+        } else {
+            audiSwitchItem.setIcon(R.drawable.ic_speaker_phone);
+        }
+    }
 
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
         updateAllOpponentsList(newUsers);
-        Log.d("UPDATE_USERS","updateOpponentsList(), newUsers = " + newUsers);
+        Log.d("UPDATE_USERS", "updateOpponentsList(), newUsers = " + newUsers);
         runUpdateUsersNames(newUsers);
     }
 
     private void updateAllOpponentsList(ArrayList<QBUser> newUsers) {
 
-        for(int i = 0; i < allOpponents.size(); i ++ ) {
+        for (int i = 0; i < allOpponents.size(); i++) {
             for (QBUser updatedUser : newUsers) {
                 if (updatedUser.equals(allOpponents.get(i))) {
                     allOpponents.set(i, updatedUser);
@@ -844,8 +868,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (QBUser user: newUsers){
-                    Log.d("UPDATE_USERS","foreach, user = "+ user.getFullName() );
+                for (QBUser user : newUsers) {
+                    Log.d("UPDATE_USERS", "foreach, user = " + user.getFullName());
                     updateNameForOpponent(user.getId(), user.getFullName());
                 }
             }
@@ -874,7 +898,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     class LocalViewOnClickListener implements View.OnClickListener {
-        private static final long FULL_SCREEN_CLICK_DELAY = 1000;
         private long lastFullScreenClickTime = 0L;
 
         @Override
@@ -911,7 +934,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.show();
             fillVideoView(localVideoView, localVideoTrack, false);
             RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-            if (isPeerToPeerCall) {
+            if (isPeerToPeerCall || opponentsAdapter.getOpponents().isEmpty()) {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
             } else {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);

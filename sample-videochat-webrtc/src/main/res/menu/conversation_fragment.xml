@@ -5,7 +5,7 @@
     <item
         android:id="@+id/audio_switch"
         android:checkable="true"
-        android:icon="@drawable/ic_phonelink_ring"
+        android:icon="@drawable/ic_speaker_phone"
         android:title="@string/action_logout"
         app:showAsAction="ifRoom" />
     <item

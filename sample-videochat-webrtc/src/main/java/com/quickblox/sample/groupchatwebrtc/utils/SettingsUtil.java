@@ -22,8 +22,7 @@ public class SettingsUtil {
         if (users.size() <= 2) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
-                QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width);
-                QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.height);
+                setDefaultVideoQuality();
             }
         } else {
             //set to minimum settings
@@ -85,7 +84,7 @@ public class SettingsUtil {
         Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
     }
 
-    public static void configRTCTimers(Context context){
+    public static void configRTCTimers(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
         long answerTimeInterval = getPreferenceInt(sharedPref, context,
@@ -110,10 +109,17 @@ public class SettingsUtil {
     private static void setVideoQuality(int resolutionItem) {
         if (resolutionItem != -1) {
             setVideoFromLibraryPreferences(resolutionItem);
+        } else {
+            setDefaultVideoQuality();
         }
     }
 
-    private static void setVideoFromLibraryPreferences(int resolutionItem){
+    private static void setDefaultVideoQuality() {
+        QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width);
+        QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.VGA_VIDEO.height);
+    }
+
+    private static void setVideoFromLibraryPreferences(int resolutionItem) {
         for (QBRTCMediaConfig.VideoQuality quality : QBRTCMediaConfig.VideoQuality.values()) {
             if (quality.ordinal() == resolutionItem) {
                 Log.e(TAG, "resolution =: " + quality.height + ":" + quality.width);
@@ -123,18 +129,18 @@ public class SettingsUtil {
         }
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, int strResDefValue) {
-        return sharedPref.getString(context.getString(strRes),
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
+        return sharedPref.getString(context.getString(strResKey),
                 context.getString(strResDefValue));
     }
 
-    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strRes, String defValue) {
-        return sharedPref.getString(context.getString(strRes),
-                defValue);
+    private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strResKey, String strResDefValue) {
+        return sharedPref.getString(context.getString(strResKey),
+                strResDefValue);
     }
 
-    private static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strRes, int resDefValue) {
-        return sharedPref.getInt(context.getString(strRes), sharedPref.getInt(context.getString(resDefValue), 0));
+    public static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
+        return sharedPref.getInt(context.getString(strResKey), sharedPref.getInt(context.getString(strResDefValue), 0));
     }
 
 }
