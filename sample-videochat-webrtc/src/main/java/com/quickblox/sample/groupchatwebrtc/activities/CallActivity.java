@@ -117,13 +117,14 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         parseIntentExtras();
 
-        if (!initFieldsSuccess()) {
+        if (!currentSessionExist()) {
 //            we have already currentSession == null, so it's no reason to do further initialization
             finish();
             Log.d(TAG, "finish CallActivity");
             return;
         }
 
+        initFields();
         initCurrentSession(currentSession);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -173,15 +174,15 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         notifyCallStateListenersNeedUpdateOpponentsList(newUsers);
     }
 
-    private boolean initFieldsSuccess() {
+    private boolean currentSessionExist() {
         sessionManager = WebRtcSessionManager.getInstance(this);
-        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         currentSession = sessionManager.getCurrentSession();
-        if (currentSession == null) {
-            return false;
-        }
+        return currentSession != null;
+    }
+
+    private void initFields() {
+        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
         opponentsIdsList = currentSession.getOpponents();
-        return true;
     }
 
     @Override
