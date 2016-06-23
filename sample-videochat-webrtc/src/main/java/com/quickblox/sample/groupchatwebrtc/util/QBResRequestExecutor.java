@@ -25,7 +25,7 @@ import java.util.List;
 public class QBResRequestExecutor {
     private String TAG = QBResRequestExecutor.class.getSimpleName();
 
-    public void createSession(QBEntityCallback<QBSession> callback){
+    public void createSession(QBEntityCallback<QBSession> callback) {
         QBAuth.createSession(callback);
     }
 
@@ -33,30 +33,20 @@ public class QBResRequestExecutor {
         QBAuth.createSession(qbUser, callback);
     }
 
-    public void signIn(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback){
-        QBUsers.signIn(currentQbUser, callback);
-    }
-
-    public void updateUserOnQBServer(final QBUser qbUser, final QBEntityCallback<QBUser> callback){
-        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
-            @Override
-            public void onSuccess(QBSession result, Bundle params) {
-                QBUsers.updateUser(qbUser, callback);
-            }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-                callback.onError(responseException);
-            }
-        });
-    }
-
-    public void signUpNewUser(QBUser newQbUser,  QBEntityCallback<QBUser> callback){
+    public void signUpNewUser(QBUser newQbUser, QBEntityCallback<QBUser> callback) {
         QBUsers.signUp(newQbUser, callback);
     }
 
+    public void signInUser(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback){
+        QBUsers.signIn(currentQbUser, callback);
+    }
+
+    public void deleteCurrentUser(int currentQbUserID, QBEntityCallback<Void> callback) {
+        QBUsers.deleteUser(currentQbUserID, callback);
+    }
+
     public void loadUsersByTag(final String tag, final QBEntityCallback<ArrayList<QBUser>> callback) {
-        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>(){
+        restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
@@ -68,7 +58,7 @@ public class QBResRequestExecutor {
         });
     }
 
-    public void loadUsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback){
+    public void loadUsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback) {
         restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
@@ -77,9 +67,9 @@ public class QBResRequestExecutor {
         });
     }
 
-    private void restoreOrCreateSession(final QBEntityCallbackImpl <QBSession> creatingSessionCallback) {
+    private void restoreOrCreateSession(final QBEntityCallbackImpl<QBSession> creatingSessionCallback) {
         if (TokenUtils.isTokenValid()) {
-            if (TokenUtils.restoreExistentQbSessionWithResult()){
+            if (TokenUtils.restoreExistentQbSessionWithResult()) {
                 creatingSessionCallback.onSuccess(null, null);
             } else {
                 creatingSessionCallback.onError(null);
@@ -91,7 +81,7 @@ public class QBResRequestExecutor {
         }
     }
 
-    private void createSessionWithSavedUser(final QBEntityCallback <QBSession> creatingSessionCallback){
+    private void createSessionWithSavedUser(final QBEntityCallback<QBSession> creatingSessionCallback) {
         createSessionWithUser(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
@@ -107,7 +97,7 @@ public class QBResRequestExecutor {
         });
     }
 
-    private void createSessionWithoutUser(final QBEntityCallback <QBSession> creatingSessionCallback){
+    private void createSessionWithoutUser(final QBEntityCallback<QBSession> creatingSessionCallback) {
         createSession(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {

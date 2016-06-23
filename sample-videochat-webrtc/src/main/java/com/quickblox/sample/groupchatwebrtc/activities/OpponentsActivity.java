@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
@@ -253,10 +252,9 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void logOut() {
-        startLogoutCommand();
         unsubscribeFromPushes();
-        removeUserData();
-        startLoginActivity();
+        startLogoutCommand();
+        deleteUserFromQB();
     }
 
     private void startLogoutCommand() {
@@ -270,15 +268,34 @@ public class OpponentsActivity extends BaseActivity {
         }
     }
 
+    private void deleteUserFromQB() {
+        showProgressDialog(R.string.dlg_logout);
+        requestExecutor.deleteCurrentUser(currentUser.getId(), new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                removeUserData();
+                hideProgressDialog();
+                startLoginActivity();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.logout_user_with_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteUserFromQB();
+                    }
+                });
+            }
+        });
+    }
+
     private void removeUserData() {
         if (sharedPrefsHelper == null) {
             sharedPrefsHelper = SharedPrefsHelper.getInstance();
         }
-
-        sharedPrefsHelper.removeQbUser();
-        sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
-        sharedPrefsHelper.delete(Consts.PREF_CURRENT_TOKEN);
-        sharedPrefsHelper.delete(Consts.PREF_TOKEN_EXPIRATION_DATE);
+        sharedPrefsHelper.clearAllData();
         dbManager.clearDB();
     }
 

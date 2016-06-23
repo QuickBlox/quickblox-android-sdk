@@ -32,7 +32,7 @@ public class SplashActivity extends CoreSplashActivity {
 
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
 
-        if(sharedPrefsHelper.hasQbUser()){
+        if (sharedPrefsHelper.hasQbUser()) {
             startLoginService(sharedPrefsHelper.getQbUser());
             startOpponentsActivity();
             return;
@@ -75,7 +75,7 @@ public class SplashActivity extends CoreSplashActivity {
         CallService.start(this, qbUser);
     }
 
-    private void startOpponentsActivity(){
+    private void startOpponentsActivity() {
         OpponentsActivity.start(SplashActivity.this, false);
         finish();
     }
