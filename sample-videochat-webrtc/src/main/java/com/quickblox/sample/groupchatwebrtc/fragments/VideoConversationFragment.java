@@ -775,7 +775,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @SuppressWarnings("ConstantConditions")
     private void setAnotherUserToFullScreen() {
-        if (opponentsAdapter.getOpponents().size() == 0) {
+        if (opponentsAdapter.getOpponents().isEmpty()) {
             return;
         }
         final int userId = opponentsAdapter.getItem(0);
@@ -934,7 +934,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.show();
             fillVideoView(localVideoView, localVideoTrack, false);
             RendererConfig config = setRTCCameraMirrorConfig(CameraUtils.isCameraFront(currentSession.getMediaStreamManager().getCurrentCameraId()));
-            if (isPeerToPeerCall || opponentsAdapter.getOpponents().size() == 0) {
+            if (isPeerToPeerCall || opponentsAdapter.getOpponents().isEmpty()) {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
             } else {
                 config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
