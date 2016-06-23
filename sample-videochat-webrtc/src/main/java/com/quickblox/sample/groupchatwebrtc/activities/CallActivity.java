@@ -84,6 +84,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private QBRTCClient rtcClient;
     private QBRTCSessionUserCallback sessionUserCallback;
     private OnChangeDynamicToggle onChangeDynamicCallback;
+    private ConnectionListener connectionListener;
     private boolean wifiEnabled = true;
     private SharedPreferences sharedPref;
     private RingtonePlayer ringtonePlayer;
@@ -263,29 +264,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         rtcClient.addSessionCallbacksListener(this);
         // Start mange QBRTCSessions according to VideoCall parser's callbacks
         rtcClient.prepareToProcessCalls();
-
-        QBChatService.getInstance().addConnectionListener(new AbstractConnectionListener() {
-
-            @Override
-            public void connectionClosedOnError(Exception e) {
-                showNotificationPopUp(R.string.connection_was_lost, true);
-                setExpirationReconnectionTime();
-            }
-
-            @Override
-            public void reconnectionSuccessful() {
-                showNotificationPopUp(R.string.connection_was_lost, false);
-            }
-
-            @Override
-            public void reconnectingIn(int seconds) {
-                Log.i(TAG, "reconnectingIn " + seconds);
-                Log.i(TAG, "callStarted? " + callStarted);
-                if(!callStarted) {
-                    hangUpAfterLongReconnection();
-                }
-            }
-        });
+        connectionListener = new ConnectionListener();
+        QBChatService.getInstance().addConnectionListener(connectionListener);
     }
 
     private void setExpirationReconnectionTime() {
@@ -697,6 +677,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        QBChatService.getInstance().removeConnectionListener(connectionListener);
     }
 
 
@@ -773,6 +754,26 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     //////////////////////////////////////////   end   /////////////////////////////////////////////
+    private class ConnectionListener extends AbstractConnectionListener {
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            showNotificationPopUp(R.string.connection_was_lost, true);
+            setExpirationReconnectionTime();
+        }
+
+        @Override
+        public void reconnectionSuccessful() {
+            showNotificationPopUp(R.string.connection_was_lost, false);
+        }
+
+        @Override
+        public void reconnectingIn(int seconds) {
+            Log.i(TAG, "reconnectingIn " + seconds);
+            if (!callStarted) {
+                hangUpAfterLongReconnection();
+            }
+        }
+    }
 
     public interface OnChangeDynamicToggle {
         void enableDynamicToggle(boolean plugged);
