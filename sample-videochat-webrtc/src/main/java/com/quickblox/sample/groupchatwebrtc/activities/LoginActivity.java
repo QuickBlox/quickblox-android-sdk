@@ -97,7 +97,7 @@ public class LoginActivity extends BaseActivity {
         KeyboardUtils.hideKeyboard(chatRoomNameEditText);
     }
 
-    private void startSignUpNewUser(QBUser newUser) {
+    private void startSignUpNewUser(final QBUser newUser) {
         showProgressDialog(R.string.dlg_creating_new_user);
         requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
                     @Override
@@ -106,9 +106,13 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onError(QBResponseException responseException) {
-                        hideProgressDialog();
-                        Toaster.longToast(R.string.sign_up_error);
+                    public void onError(QBResponseException e) {
+                        if (Consts.ERR_MSG_LOGIN_ALREADY_TAKEN.equals(e.getMessage())) {
+                            signInCreatedUser(newUser, true);
+                        } else {
+                            hideProgressDialog();
+                            Toaster.longToast(R.string.sign_up_error);
+                        }
                     }
                 }
         );
@@ -164,7 +168,7 @@ public class LoginActivity extends BaseActivity {
             if (isLoginSuccess) {
                 saveUserData(userForSave);
 
-                signInCreatedUser();
+                signInCreatedUser(userForSave, false);
             } else {
                 Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
                 userNameEditText.setText(userForSave.getFullName());
@@ -173,16 +177,36 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void signInCreatedUser() {
-        requestExecutor.signInUser(userForSave, new QBEntityCallbackImpl<QBUser>() {
+    private void signInCreatedUser(final QBUser user, final boolean deleteCurrentUser) {
+        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
             @Override
             public void onSuccess(QBUser result, Bundle params) {
-                subscribeToPushes();
-                startOpponentsActivity();
+                if (deleteCurrentUser) {
+                    deleteUserFromQB(result);
+                } else {
+                    subscribeToPushes();
+                    startOpponentsActivity();
+                }
             }
 
             @Override
             public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                Toaster.longToast(R.string.sign_up_error);
+            }
+        });
+    }
+
+    private void deleteUserFromQB(final QBUser user) {
+        requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                startSignUpNewUser(createUserWithEnteredData());
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                hideProgressDialog();
                 Toaster.longToast(R.string.sign_up_error);
             }
         });

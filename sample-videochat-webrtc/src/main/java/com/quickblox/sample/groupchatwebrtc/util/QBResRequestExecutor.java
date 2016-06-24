@@ -37,7 +37,7 @@ public class QBResRequestExecutor {
         QBUsers.signUp(newQbUser, callback);
     }
 
-    public void signInUser(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback){
+    public void signInUser(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback) {
         QBUsers.signIn(currentQbUser, callback);
     }
 

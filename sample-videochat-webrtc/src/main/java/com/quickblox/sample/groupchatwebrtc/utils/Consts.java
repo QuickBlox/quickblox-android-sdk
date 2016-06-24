@@ -19,7 +19,7 @@ public interface Consts {
 
     int CALL_ACTIVITY_CLOSE = 1000;
 
-    int UNAUTHORIZED_ERROR_CODE = 401;
+    String ERR_MSG_LOGIN_ALREADY_TAKEN = "login has already been taken";
 
     //CALL ACTIVITY CLOSE REASONS
     int CALL_ACTIVITY_CLOSE_WIFI_DISABLED = 1001;
