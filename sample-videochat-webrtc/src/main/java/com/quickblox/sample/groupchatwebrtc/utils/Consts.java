@@ -19,8 +19,8 @@ public interface Consts {
 
     int CALL_ACTIVITY_CLOSE = 1000;
 
-    String ERR_MSG_LOGIN_ALREADY_TAKEN = "login has already been taken";
-    String ERR_MSG_DELETING = "Couldn't find User with id";
+    int ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS = 422;
+    String ERR_MSG_DELETING_ERR_MSG_DELETING = "Couldn't find User with id";
 
     //CALL ACTIVITY CLOSE REASONS
     int CALL_ACTIVITY_CLOSE_WIFI_DISABLED = 1001;

@@ -108,7 +108,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onError(QBResponseException e) {
-                        if (Consts.ERR_MSG_LOGIN_ALREADY_TAKEN.equals(e.getMessage())) {
+                        if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
                             signInCreatedUser(newUser, true);
                         } else {
                             hideProgressDialog();

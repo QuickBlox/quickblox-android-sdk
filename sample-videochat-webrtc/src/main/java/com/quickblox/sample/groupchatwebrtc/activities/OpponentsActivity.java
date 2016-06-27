@@ -137,12 +137,10 @@ public class OpponentsActivity extends BaseActivity {
         opponentsListView = (ListView) findViewById(R.id.list_opponents);
     }
 
-    private boolean compareOpponentsLists(ArrayList<QBUser> actualCurrentOpponentsList) {
-        ArrayList<QBUser> result1 = new ArrayList<>(actualCurrentOpponentsList);
-        result1.removeAll(currentOpponentsList);
-        ArrayList<QBUser> result2 = new ArrayList<>(currentOpponentsList);
-        result2.removeAll(actualCurrentOpponentsList);
-        return result1.size() == 0 && result2.size() == 0;
+    private boolean isCurrentOpponentsListActual(ArrayList<QBUser> actualCurrentOpponentsList) {
+        boolean equalActual = actualCurrentOpponentsList.retainAll(currentOpponentsList);
+        boolean equalCurrent = currentOpponentsList.retainAll(actualCurrentOpponentsList);
+        return !equalActual && !equalCurrent;
     }
 
     private void initUsersList() {
@@ -150,7 +148,7 @@ public class OpponentsActivity extends BaseActivity {
         if (currentOpponentsList != null) {
             ArrayList<QBUser> actualCurrentOpponentsList = dbManager.getAllUsers();
             actualCurrentOpponentsList.remove(sharedPrefsHelper.getQbUser());
-            if (compareOpponentsLists(actualCurrentOpponentsList)) {
+            if (isCurrentOpponentsListActual(actualCurrentOpponentsList)) {
                 return;
             }
         }
@@ -291,7 +289,7 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 hideProgressDialog();
-                if (e.getMessage().contains(Consts.ERR_MSG_DELETING)) {
+                if (e.getHttpStatusCode() == 401) {
 //                    user already deleted
                     UsersUtils.removeUserData(getApplicationContext());
                     startLoginActivity();
