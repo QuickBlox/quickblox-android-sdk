@@ -1,7 +1,10 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -11,6 +14,9 @@ import java.util.List;
  * Created by tereha on 09.06.16.
  */
 public class UsersUtils {
+
+    private static SharedPrefsHelper sharedPrefsHelper;
+    private static QbUsersDbManager dbManager;
 
     public static String getUserNameOrId(QBUser qbUser, Integer userId) {
         if (qbUser == null) {
@@ -26,7 +32,7 @@ public class UsersUtils {
         ArrayList<QBUser> qbUsers = new ArrayList<>();
 
 
-        for (Integer userId : allIds){
+        for (Integer userId : allIds) {
             QBUser stubUser = createStubUserById(userId);
             if (!existedUsers.contains(stubUser)) {
                 qbUsers.add(stubUser);
@@ -44,10 +50,10 @@ public class UsersUtils {
         return stubUser;
     }
 
-    public static ArrayList<Integer> getIdsNotLoadedUsers(ArrayList<QBUser> existedUsers, List<Integer> allIds){
+    public static ArrayList<Integer> getIdsNotLoadedUsers(ArrayList<QBUser> existedUsers, List<Integer> allIds) {
         ArrayList<Integer> idsNotLoadedUsers = new ArrayList<>();
 
-        for (Integer userId : allIds){
+        for (Integer userId : allIds) {
             QBUser stubUser = createStubUserById(userId);
             if (!existedUsers.contains(stubUser)) {
                 idsNotLoadedUsers.add(userId);
@@ -55,5 +61,16 @@ public class UsersUtils {
         }
 
         return idsNotLoadedUsers;
+    }
+
+    public static void removeUserData(Context context) {
+        if (sharedPrefsHelper == null) {
+            sharedPrefsHelper = SharedPrefsHelper.getInstance();
+        }
+        sharedPrefsHelper.clearAllData();
+        if (dbManager == null) {
+            dbManager = QbUsersDbManager.getInstance(context);
+        }
+        dbManager.clearDB();
     }
 }

@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
@@ -22,6 +21,7 @@ import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
@@ -137,12 +137,18 @@ public class OpponentsActivity extends BaseActivity {
         opponentsListView = (ListView) findViewById(R.id.list_opponents);
     }
 
+    private boolean isCurrentOpponentsListActual(ArrayList<QBUser> actualCurrentOpponentsList) {
+        boolean equalActual = actualCurrentOpponentsList.retainAll(currentOpponentsList);
+        boolean equalCurrent = currentOpponentsList.retainAll(actualCurrentOpponentsList);
+        return !equalActual && !equalCurrent;
+    }
+
     private void initUsersList() {
 //      checking whether currentOpponentsList is actual, if yes - return
         if (currentOpponentsList != null) {
-            ArrayList<QBUser> actualCurrentOpponentsListList = dbManager.getAllUsers();
-            actualCurrentOpponentsListList.remove(sharedPrefsHelper.getQbUser());
-            if (currentOpponentsList.containsAll(actualCurrentOpponentsListList)) {
+            ArrayList<QBUser> actualCurrentOpponentsList = dbManager.getAllUsers();
+            actualCurrentOpponentsList.remove(sharedPrefsHelper.getQbUser());
+            if (isCurrentOpponentsListActual(actualCurrentOpponentsList)) {
                 return;
             }
         }
@@ -151,6 +157,7 @@ public class OpponentsActivity extends BaseActivity {
 
     private void proceedInitUsersList() {
         currentOpponentsList = dbManager.getAllUsers();
+        Log.d(TAG, "proceedInitUsersList currentOpponentsList= " + currentOpponentsList);
         currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
@@ -253,10 +260,9 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void logOut() {
-        startLogoutCommand();
         unsubscribeFromPushes();
-        removeUserData();
-        startLoginActivity();
+        startLogoutCommand();
+        removeAllUserData();
     }
 
     private void startLogoutCommand() {
@@ -270,16 +276,34 @@ public class OpponentsActivity extends BaseActivity {
         }
     }
 
-    private void removeUserData() {
-        if (sharedPrefsHelper == null) {
-            sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        }
+    private void removeAllUserData() {
+        showProgressDialog(R.string.dlg_logout);
+        requestExecutor.deleteCurrentUser(currentUser.getId(), new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                UsersUtils.removeUserData(getApplicationContext());
+                hideProgressDialog();
+                startLoginActivity();
+            }
 
-        sharedPrefsHelper.removeQbUser();
-        sharedPrefsHelper.delete(Consts.PREF_CURREN_ROOM_NAME);
-        sharedPrefsHelper.delete(Consts.PREF_CURRENT_TOKEN);
-        sharedPrefsHelper.delete(Consts.PREF_TOKEN_EXPIRATION_DATE);
-        dbManager.clearDB();
+            @Override
+            public void onError(QBResponseException e) {
+                hideProgressDialog();
+                if (e.getHttpStatusCode() == Consts.ERR_MSG_DELETING_HTTP_STATUS) {
+//                    user already deleted
+//                    TODO handle exception "Auth fail" when user deleted from admin panel
+                    UsersUtils.removeUserData(getApplicationContext());
+                    startLoginActivity();
+                    return;
+                }
+                showErrorSnackbar(R.string.logout_user_with_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeAllUserData();
+                    }
+                });
+            }
+        });
     }
 
     private void startLoginActivity() {

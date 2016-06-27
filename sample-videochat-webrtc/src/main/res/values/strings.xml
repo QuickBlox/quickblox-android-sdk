@@ -22,6 +22,7 @@
     <string name="sign_up_error">Error creating new user, please try again</string>
     <string name="sign_in_error_with_error">Sign In error. Error</string>
     <string name="sign_in_error_without_error">Sign In error</string>
+    <string name="logout_user_with_error">Logout user error. Error</string>
 
     <string name="error_empty_login">Login can not be empty</string>
     <string name="error_empty_chat_room_name">Chat room name can not be empty</string>

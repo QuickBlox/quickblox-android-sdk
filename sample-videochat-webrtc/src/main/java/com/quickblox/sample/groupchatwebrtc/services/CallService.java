@@ -190,9 +190,13 @@ public class CallService extends Service{
     }
 
     private void destroyRtcClientAndChat() {
-        rtcClient.destroy();
+        if(rtcClient != null) {
+            rtcClient.destroy();
+        }
         ChatPingAlarmManager.onDestroy();
-        chatService.destroy();
+        if(chatService != null) {
+            chatService.destroy();
+        }
         stopSelf();
     }
 

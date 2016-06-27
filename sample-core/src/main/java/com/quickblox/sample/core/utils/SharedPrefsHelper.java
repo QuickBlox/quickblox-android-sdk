@@ -129,7 +129,7 @@ public class SharedPrefsHelper {
 
     public void clearAllData(){
         SharedPreferences.Editor editor = getEditor();
-        editor.clear();
+        editor.clear().commit();
     }
 
     private SharedPreferences.Editor getEditor() {
