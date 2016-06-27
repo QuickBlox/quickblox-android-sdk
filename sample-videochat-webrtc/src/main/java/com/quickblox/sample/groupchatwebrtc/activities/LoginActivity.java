@@ -183,7 +183,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onSuccess(QBUser result, Bundle params) {
                 if (deleteCurrentUser) {
-                    deleteUserFromQB(result);
+                    removeAllUserData(result);
                 } else {
                     subscribeToPushes();
                     startOpponentsActivity();
@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    private void deleteUserFromQB(final QBUser user) {
+    private void removeAllUserData(final QBUser user) {
         requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
