@@ -23,6 +23,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.QBEntityCallbackImpl;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.ValidationUtils;
 import com.quickblox.users.model.QBUser;
 
@@ -201,6 +202,7 @@ public class LoginActivity extends BaseActivity {
         requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
+                UsersUtils.removeUserData(getApplicationContext());
                 startSignUpNewUser(createUserWithEnteredData());
             }
 

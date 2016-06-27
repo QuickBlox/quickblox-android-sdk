@@ -21,6 +21,7 @@ import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
+import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
@@ -150,6 +151,7 @@ public class OpponentsActivity extends BaseActivity {
 
     private void proceedInitUsersList() {
         currentOpponentsList = dbManager.getAllUsers();
+        Log.d(TAG, "proceedInitUsersList currentOpponentsList= " + currentOpponentsList);
         currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
         opponentsAdapter = new OpponentsAdapter(this, currentOpponentsList);
         opponentsAdapter.setSelectedItemsCountsChangedListener(new OpponentsAdapter.SelectedItemsCountsChangedListener() {
@@ -273,7 +275,7 @@ public class OpponentsActivity extends BaseActivity {
         requestExecutor.deleteCurrentUser(currentUser.getId(), new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
-                removeUserData();
+                UsersUtils.removeUserData(getApplicationContext());
                 hideProgressDialog();
                 startLoginActivity();
             }
@@ -281,6 +283,12 @@ public class OpponentsActivity extends BaseActivity {
             @Override
             public void onError(QBResponseException e) {
                 hideProgressDialog();
+                if (e.getMessage().contains(Consts.ERR_MSG_DELETING)) {
+//                    user already deleted
+                    UsersUtils.removeUserData(getApplicationContext());
+                    startLoginActivity();
+                    return;
+                }
                 showErrorSnackbar(R.string.logout_user_with_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -289,14 +297,6 @@ public class OpponentsActivity extends BaseActivity {
                 });
             }
         });
-    }
-
-    private void removeUserData() {
-        if (sharedPrefsHelper == null) {
-            sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        }
-        sharedPrefsHelper.clearAllData();
-        dbManager.clearDB();
     }
 
     private void startLoginActivity() {
