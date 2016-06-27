@@ -22,12 +22,12 @@ public class QbUsersDbManager {
     private static QbUsersDbManager instance;
     private Context mContext;
 
-    private QbUsersDbManager(Context context){
+    private QbUsersDbManager(Context context) {
         this.mContext = context;
     }
 
-    public static QbUsersDbManager getInstance(Context context){
-        if (instance == null){
+    public static QbUsersDbManager getInstance(Context context) {
+        if (instance == null) {
             instance = new QbUsersDbManager(context);
         }
 
@@ -63,9 +63,7 @@ public class QbUsersDbManager {
             } while (c.moveToNext());
         }
 
-        if (c != null) {
-            c.close();
-        }
+        c.close();
         dbHelper.close();
 
         return allUsers;
@@ -100,9 +98,7 @@ public class QbUsersDbManager {
             } while (c.moveToNext());
         }
 
-        if (c != null) {
-            c.close();
-        }
+        c.close();
         dbHelper.close();
 
         return qbUser;
@@ -140,10 +136,10 @@ public class QbUsersDbManager {
         dbHelper.close();
     }
 
-    public ArrayList<QBUser> getUsersByIds(List<Integer> usersIds){
+    public ArrayList<QBUser> getUsersByIds(List<Integer> usersIds) {
         ArrayList<QBUser> qbUsers = new ArrayList<>();
 
-        for (Integer userId : usersIds){
+        for (Integer userId : usersIds) {
             if (getUserById(userId) != null) {
                 qbUsers.add(getUserById(userId));
             }

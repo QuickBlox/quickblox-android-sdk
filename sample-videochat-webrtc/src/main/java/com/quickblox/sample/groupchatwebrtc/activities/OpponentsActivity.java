@@ -137,12 +137,20 @@ public class OpponentsActivity extends BaseActivity {
         opponentsListView = (ListView) findViewById(R.id.list_opponents);
     }
 
+    private boolean compareOpponentsLists(ArrayList<QBUser> actualCurrentOpponentsList) {
+        ArrayList<QBUser> result1 = new ArrayList<>(actualCurrentOpponentsList);
+        result1.removeAll(currentOpponentsList);
+        ArrayList<QBUser> result2 = new ArrayList<>(currentOpponentsList);
+        result2.removeAll(actualCurrentOpponentsList);
+        return result1.size() == 0 && result2.size() == 0;
+    }
+
     private void initUsersList() {
 //      checking whether currentOpponentsList is actual, if yes - return
         if (currentOpponentsList != null) {
-            ArrayList<QBUser> actualCurrentOpponentsListList = dbManager.getAllUsers();
-            actualCurrentOpponentsListList.remove(sharedPrefsHelper.getQbUser());
-            if (currentOpponentsList.containsAll(actualCurrentOpponentsListList)) {
+            ArrayList<QBUser> actualCurrentOpponentsList = dbManager.getAllUsers();
+            actualCurrentOpponentsList.remove(sharedPrefsHelper.getQbUser());
+            if (compareOpponentsLists(actualCurrentOpponentsList)) {
                 return;
             }
         }
