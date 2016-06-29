@@ -146,7 +146,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void enableDynamicToggle(boolean plugged) {
+    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
         headsetPlugged = plugged;
 
         if (isStarted) {

@@ -100,6 +100,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private long expirationReconnectionTime;
     private int reconnectHangUpTimeMillis;
     private boolean headsetPlugged;
+    private boolean previousDeviceEarPiece;
+    private boolean showToastAfterHeadsetPlugged = true;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -204,7 +206,14 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             @Override
             public void onAudioChangedState(AppRTCAudioManager.AudioDevice audioDevice) {
                 if (callStarted) {
-                    Toaster.shortToast("Audio device switched to  " + audioDevice);
+                    if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.EARPIECE) {
+                        previousDeviceEarPiece = true;
+                    } else if (audioManager.getSelectedAudioDevice() == AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
+                        previousDeviceEarPiece = false;
+                    }
+                    if (showToastAfterHeadsetPlugged) {
+                        Toaster.shortToast("Audio device switched to  " + audioDevice);
+                    }
                 }
             }
         });
@@ -226,7 +235,18 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                     Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
                 }
                 if (onChangeDynamicCallback != null) {
-                    onChangeDynamicCallback.enableDynamicToggle(plugged);
+
+                    if (!plugged && previousDeviceEarPiece) {
+                        showToastAfterHeadsetPlugged = false;
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                showToastAfterHeadsetPlugged = true;
+                                audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+                            }
+                        }, 500);
+                    }
+                    onChangeDynamicCallback.enableDynamicToggle(plugged, previousDeviceEarPiece);
                 }
             }
         });
@@ -659,7 +679,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     public void sendHeadsetState() {
         if (isInCommingCall) {
-            onChangeDynamicCallback.enableDynamicToggle(headsetPlugged);
+            onChangeDynamicCallback.enableDynamicToggle(headsetPlugged, previousDeviceEarPiece);
         }
     }
 
@@ -782,7 +802,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     public interface OnChangeDynamicToggle {
-        void enableDynamicToggle(boolean plugged);
+        void enableDynamicToggle(boolean plugged, boolean wasEarpiece);
     }
 
     public interface QBRTCSessionUserCallback {

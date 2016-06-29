@@ -94,6 +94,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private int userIDFullScreen;
     private List<QBUser> allOpponents;
     private boolean connectionEstablished;
+    private boolean previousDeviceEarPiece;
 
 
     @Override
@@ -741,7 +742,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
 
     @Override
-    public void enableDynamicToggle(boolean plugged) {
+    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
+        this.previousDeviceEarPiece = previousDeviceEarPiece;
         headsetPlugged = plugged;
         getActivity().invalidateOptionsMenu();
     }
@@ -838,8 +840,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         MenuItem audiSwitchItem = menu.findItem(R.id.audio_switch);
         if (headsetPlugged) {
+            audiSwitchItem.setChecked(true);
+            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
+        } else if (previousDeviceEarPiece) {
+            audiSwitchItem.setChecked(true);
             audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
         } else {
+            audiSwitchItem.setChecked(false);
             audiSwitchItem.setIcon(R.drawable.ic_speaker_phone);
         }
     }
