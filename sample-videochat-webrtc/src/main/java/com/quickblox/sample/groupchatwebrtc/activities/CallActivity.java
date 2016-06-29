@@ -224,6 +224,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
         } else {
             audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+            previousDeviceEarPiece = true;
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.EARPIECE");
         }
 
@@ -235,22 +236,29 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                     Toaster.shortToast("Headset " + (plugged ? "plugged" : "unplugged"));
                 }
                 if (onChangeDynamicCallback != null) {
-
-                    if (!plugged && previousDeviceEarPiece) {
+                    if (!plugged) {
                         showToastAfterHeadsetPlugged = false;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showToastAfterHeadsetPlugged = true;
-                                audioManager.setAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
-                            }
-                        }, 500);
+                        if (previousDeviceEarPiece) {
+                            setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.EARPIECE);
+                        } else {
+                            setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+                        }
                     }
                     onChangeDynamicCallback.enableDynamicToggle(plugged, previousDeviceEarPiece);
                 }
             }
         });
         audioManager.init();
+    }
+
+    private void setAudioDeviceDelayed(final AppRTCAudioManager.AudioDevice audioDevice) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showToastAfterHeadsetPlugged = true;
+                audioManager.setAudioDevice(audioDevice);
+            }
+        }, 500);
     }
 
     private void initQBRTCClient() {
