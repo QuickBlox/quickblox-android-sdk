@@ -89,4 +89,8 @@
 
     </PreferenceCategory>
 
+    <Preference
+        android:layout="@layout/preference_version"
+        android:selectable="false" />
+
 </PreferenceScreen>
