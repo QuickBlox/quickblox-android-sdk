@@ -9,7 +9,9 @@
         style="@style/MatchWidth"
         android:layout_marginTop="@dimen/action_bar_height"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/also_in_call_text_left_right_padding"
+        android:paddingRight="@dimen/also_in_call_text_left_right_padding">
 
         <ImageView
             android:id="@+id/image_caller_avatar"
@@ -18,9 +20,9 @@
         <TextView
             android:id="@+id/text_caller_name"
             style="@style/WrapContent"
-            android:maxLength="25"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:paddingTop="24dp"
+            android:paddingTop="@dimen/padding_top_large"
             android:textColor="@color/text_color_caller_name"
             android:textSize="@dimen/caller_name_text_size" />
 
@@ -46,8 +48,6 @@
             style="@style/WrapContent"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:paddingLeft="@dimen/also_in_call_text_left_right_padding"
-            android:paddingRight="@dimen/also_in_call_text_left_right_padding"
             android:textColor="@color/text_color_other_inc_users"
             android:textSize="@dimen/other_inc_users_text_size"
             tools:text="@string/user_list_on_call" />
