@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentIncomeCall"
     style="@style/MatchParent">
 
@@ -44,8 +45,12 @@
             android:id="@+id/text_other_inc_users"
             style="@style/WrapContent"
             android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/also_in_call_text_left_right_padding"
+            android:paddingRight="@dimen/also_in_call_text_left_right_padding"
             android:textColor="@color/text_color_other_inc_users"
-            android:textSize="@dimen/other_inc_users_text_size" />
+            android:textSize="@dimen/other_inc_users_text_size"
+            tools:text="@string/user_list_on_call" />
 
     </LinearLayout>
 

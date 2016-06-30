@@ -64,6 +64,7 @@
     <string name="incoming_audio_call">Incoming Audio Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
     <string name="outgoing_audio_video_call_title">%s\n\nRinging</string>
+    <string name="user_list_on_call">User 1, User 2, User 3, User 4, User 5, User 6</string>
 
 
     <string name="opponent_pending">Pending</string>
