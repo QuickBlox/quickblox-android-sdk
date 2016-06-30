@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,7 +62,38 @@ public class LoginActivity extends BaseActivity {
     private void initUI() {
         setActionBarTitle(R.string.title_login_activity);
         userNameEditText = (EditText) findViewById(R.id.user_name);
+//        TODO specific device Nexus 4 (white), we need to setError(null) for hiding previous error message
+//        TODO maybe exist another way?
+        userNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userNameEditText.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
+        chatRoomNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                chatRoomNameEditText.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     @Override
