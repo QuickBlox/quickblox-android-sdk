@@ -16,12 +16,12 @@ public class ValidationUtils {
     private static boolean isEnteredTextValid(Context context, EditText editText, int resFieldName, int maxLength) {
 
         boolean isCorrect;
-        Pattern p = Pattern.compile("\\A[^><;]{3," + maxLength + "}\\z");
+        Pattern p = Pattern.compile("[a-zA-Z][\\w]{2," + (maxLength - 1) + "}");
         Matcher m = p.matcher(editText.getText().toString().trim());
         isCorrect = m.matches();
 
         if (!isCorrect) {
-            editText.setError(String.format(context.getString(R.string.error_name_must_do_not_contain_special_characters_from_app),
+            editText.setError(String.format(context.getString(R.string.error_name_must_not_contain_special_characters_from_app),
                     context.getString(resFieldName),
                     maxLength));
             return false;
@@ -30,11 +30,11 @@ public class ValidationUtils {
         }
     }
 
-    public static boolean isUserNameValid(Context context, EditText editText){
-        return isEnteredTextValid(context, editText, R.string.field_name_user_name, 50);
+    public static boolean isUserNameValid(Context context, EditText editText) {
+        return isEnteredTextValid(context, editText, R.string.field_name_user_name, 20);
     }
 
-    public static boolean isRoomNameValid(Context context, EditText editText){
+    public static boolean isRoomNameValid(Context context, EditText editText) {
         return isEnteredTextValid(context, editText, R.string.field_name_chat_room_name, 15);
     }
 }
