@@ -146,7 +146,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void enableDynamicToggle(boolean plugged) {
+    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
         headsetPlugged = plugged;
 
         if (isStarted) {
@@ -154,8 +154,10 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
 
             if (plugged) {
                 audioSwitchToggleButton.setChecked(true);
+            }else if(previousDeviceEarPiece){
+                audioSwitchToggleButton.setChecked(true);
             } else {
-                audioSwitchToggleButton.setChecked(audioSwitchToggleButton.isChecked());
+                audioSwitchToggleButton.setChecked(false);
             }
         }
     }

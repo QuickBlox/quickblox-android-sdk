@@ -67,7 +67,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
     private static final int RECYCLE_VIEW_PADDING = 2;
     private static final long UPDATING_USERS_DELAY = 2000;
-    private static final long FULL_SCREEN_CLICK_DELAY = 500;
+    private static final long FULL_SCREEN_CLICK_DELAY = 1000;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -94,6 +94,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private int userIDFullScreen;
     private List<QBUser> allOpponents;
     private boolean connectionEstablished;
+    private boolean previousDeviceEarPiece;
 
 
     @Override
@@ -741,7 +742,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
 
     @Override
-    public void enableDynamicToggle(boolean plugged) {
+    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
+        this.previousDeviceEarPiece = previousDeviceEarPiece;
         headsetPlugged = plugged;
         getActivity().invalidateOptionsMenu();
     }
@@ -838,8 +840,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         MenuItem audiSwitchItem = menu.findItem(R.id.audio_switch);
         if (headsetPlugged) {
+            audiSwitchItem.setChecked(true);
+            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
+        } else if (previousDeviceEarPiece) {
+            audiSwitchItem.setChecked(true);
             audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
         } else {
+            audiSwitchItem.setChecked(false);
             audiSwitchItem.setIcon(R.drawable.ic_speaker_phone);
         }
     }

@@ -2,6 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:seekBar="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:layout="@layout/view_for_preference"
+        android:selectable="false" />
+
     <PreferenceCategory android:title="@string/title_video_category">
 
         <ListPreference
@@ -22,15 +26,16 @@
             seekBar:min="@integer/pref_startbitratevalue_min_value"
             seekBar:stepSize="@integer/pref_startbitratevalue_step_size" />
 
-        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
-            android:defaultValue="@string/pref_frame_rate_default"
-            android:key="@string/pref_frame_rate_key"
-            android:max="@integer/pref_frame_rate_max_value"
-            android:summary="%s"
-            android:title="@string/pref_frame_rate_title"
-            seekBar:min="@integer/pref_frame_rate_min_value"
-            seekBar:stepSize="@integer/pref_frame_rate_stepSize" />
+        <!--Will be able in next release-->
 
+        <!--<com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference-->
+            <!--android:defaultValue="@string/pref_frame_rate_default"-->
+            <!--android:key="@string/pref_frame_rate_key"-->
+            <!--android:max="@integer/pref_frame_rate_max_value"-->
+            <!--android:summary="%s"-->
+            <!--android:title="@string/pref_frame_rate_title"-->
+            <!--seekBar:min="@integer/pref_frame_rate_min_value"-->
+            <!--seekBar:stepSize="@integer/pref_frame_rate_stepSize" />-->
 
         <ListPreference
             android:defaultValue="@string/pref_audiocodec_def"
@@ -88,5 +93,9 @@
 
 
     </PreferenceCategory>
+
+    <Preference
+        android:layout="@layout/preference_version"
+        android:selectable="false" />
 
 </PreferenceScreen>

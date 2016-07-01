@@ -17,7 +17,7 @@
         android:id="@+id/opponentsName"
         style="@style/MatchWidth"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="User Name"
+        tools:text="User Name"
         />
 
 </LinearLayout>

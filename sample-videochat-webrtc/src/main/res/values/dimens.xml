@@ -26,6 +26,7 @@
 
     <dimen name="padding_start">16dp</dimen>
     <dimen name="padding_top">16dp</dimen>
+    <dimen name="padding_top_large">24dp</dimen>
     <dimen name="padding_actionbar">24dp</dimen>
     <dimen name="padding_user_icon">16dp</dimen>
     <dimen name="padding_bottom">62dp</dimen>
@@ -50,6 +51,7 @@
     <dimen name="call_opponent_avatar_diameter">176dp</dimen>
     <dimen name="call_avatar_top_margin_plus_height_actionbar">112dp</dimen>
     <dimen name="income_call_buttons_margin">88dp</dimen>
+    <dimen name="also_in_call_text_left_right_padding">64dp</dimen>
 
     <dimen name="call_avatar_diameter">78dp</dimen>
     <dimen name="call_margin_top">50dp</dimen>
