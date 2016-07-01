@@ -391,7 +391,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         localVideoTrack = videoTrack;
         if (localVideoView != null) {
             Log.d(TAG, "localVideoView.updateRenderer SECOND");
-//            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
+            localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
         }
 
@@ -560,13 +560,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     public void run() {
                         opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
                         setDuringCallActionBar();
-                        recyclerView.setVisibility(View.VISIBLE);
+                        setRecyclerViewVisibleState();
                         setOpponentsVisibility(View.VISIBLE);
                     }
                 });
                 setLocalVideoView(userID, videoTrack);
             }
         }
+    }
+
+    private void setRecyclerViewVisibleState() {
+        ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+        params.height = (int) getResources().getDimension(R.dimen.item_height);
+        recyclerView.setLayoutParams(params);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private OpponentsFromCallAdapter.ViewHolder getViewHolderForOpponent(Integer userID) {
