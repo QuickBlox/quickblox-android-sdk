@@ -35,7 +35,6 @@ public class CallService extends Service {
     private PendingIntent pendingIntent;
     private int currentCommand;
     private QBUser currentUser;
-    private boolean pingListenerRTCClientAlreadyInit;
 
     public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent) {
         Intent intent = new Intent(context, CallService.class);
@@ -99,7 +98,7 @@ public class CallService extends Service {
         if (!chatService.isLoggedIn()) {
             loginToChat(currentUser);
         } else {
-            startActionsOnSuccessLogin();
+            sendResultToActivity(true, null);
         }
     }
 
@@ -122,10 +121,8 @@ public class CallService extends Service {
     }
 
     private void startActionsOnSuccessLogin() {
-        if (!pingListenerRTCClientAlreadyInit) {
-            initPingListener();
-            initQBRTCClient();
-        }
+        initPingListener();
+        initQBRTCClient();
         sendResultToActivity(true, null);
     }
 
@@ -157,7 +154,6 @@ public class CallService extends Service {
 
         // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));
-        pingListenerRTCClientAlreadyInit = true;
     }
 
     private void sendResultToActivity(boolean isSuccess, String errorMessage) {
