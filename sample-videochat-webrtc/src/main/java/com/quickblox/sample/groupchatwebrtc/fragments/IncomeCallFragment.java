@@ -192,10 +192,11 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         takeButton.setImageResource(isVideoCall ? R.drawable.ic_video_white : R.drawable.ic_call);
     }
 
+    @Override
     public void onStop() {
         stopCallNotification();
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() from IncomeCallFragment");
+        super.onStop();
+        Log.d(TAG, "onStop() from IncomeCallFragment");
     }
 
     @Override

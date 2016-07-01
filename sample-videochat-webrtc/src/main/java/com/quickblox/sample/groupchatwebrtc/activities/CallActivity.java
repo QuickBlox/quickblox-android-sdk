@@ -132,6 +132,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        initQBRTCClient();
         initAudioManager();
         initWiFiManagerListener();
 
@@ -139,12 +140,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
         startSuitableFragment(isInCommingCall);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initQBRTCClient();
     }
 
     private void startSuitableFragment(boolean isInComingCall) {

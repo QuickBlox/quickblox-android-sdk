@@ -5,11 +5,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
@@ -17,7 +15,6 @@ import com.quickblox.chat.QBWebRTCSignaling;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.util.ChatPingAlarmManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
@@ -25,21 +22,20 @@ import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
-import com.quickblox.videochat.webrtc.QBRTCSession;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 
 import org.jivesoftware.smackx.ping.PingFailedListener;
 
 /**
  * QuickBlox team
  */
-public class CallService extends Service{
+public class CallService extends Service {
     private static final String TAG = CallService.class.getSimpleName();
     private QBChatService chatService;
     private QBRTCClient rtcClient;
     private PendingIntent pendingIntent;
     private int currentCommand;
     private QBUser currentUser;
+    private boolean pingListenerRTCClientAlreadyInit;
 
     public static void start(Context context, QBUser qbUser, PendingIntent pendingIntent) {
         Intent intent = new Intent(context, CallService.class);
@@ -51,7 +47,7 @@ public class CallService extends Service{
         context.startService(intent);
     }
 
-    public static void start(Context context, QBUser qbUser){
+    public static void start(Context context, QBUser qbUser) {
         start(context, qbUser, null);
     }
 
@@ -86,13 +82,13 @@ public class CallService extends Service{
     private void startSuitableActions() {
         if (currentCommand == Consts.COMMAND_LOGIN) {
             startLoginToChat();
-        } else if (currentCommand == Consts.COMMAND_LOGOUT){
+        } else if (currentCommand == Consts.COMMAND_LOGOUT) {
             logout();
         }
     }
 
     private void createChatService() {
-        if (chatService == null){
+        if (chatService == null) {
             QBChatService.setDebugEnabled(true);
             QBChatService.setDefaultAutoSendPresenceInterval(60);
             chatService = QBChatService.getInstance();
@@ -100,7 +96,7 @@ public class CallService extends Service{
     }
 
     private void startLoginToChat() {
-        if(!chatService.isLoggedIn()){
+        if (!chatService.isLoggedIn()) {
             loginToChat(currentUser);
         } else {
             startActionsOnSuccessLogin();
@@ -126,8 +122,10 @@ public class CallService extends Service{
     }
 
     private void startActionsOnSuccessLogin() {
-        initPingListener();
-        initQBRTCClient();
+        if (!pingListenerRTCClientAlreadyInit) {
+            initPingListener();
+            initQBRTCClient();
+        }
         sendResultToActivity(true, null);
     }
 
@@ -159,6 +157,7 @@ public class CallService extends Service{
 
         // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));
+        pingListenerRTCClientAlreadyInit = true;
     }
 
     private void sendResultToActivity(boolean isSuccess, String errorMessage) {
@@ -179,22 +178,22 @@ public class CallService extends Service{
         }
     }
 
-    public static void logout(Context context){
+    public static void logout(Context context) {
         Intent intent = new Intent(context, CallService.class);
         intent.putExtra(Consts.EXTRA_COMMAND_TO_SERVICE, Consts.COMMAND_LOGOUT);
         context.startService(intent);
     }
 
-    private void logout(){
+    private void logout() {
         destroyRtcClientAndChat();
     }
 
     private void destroyRtcClientAndChat() {
-        if(rtcClient != null) {
+        if (rtcClient != null) {
             rtcClient.destroy();
         }
         ChatPingAlarmManager.onDestroy();
-        if(chatService != null) {
+        if (chatService != null) {
             chatService.destroy();
         }
         stopSelf();
