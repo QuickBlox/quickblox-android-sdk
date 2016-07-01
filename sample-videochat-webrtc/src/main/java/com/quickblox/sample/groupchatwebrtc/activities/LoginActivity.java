@@ -62,38 +62,10 @@ public class LoginActivity extends BaseActivity {
     private void initUI() {
         setActionBarTitle(R.string.title_login_activity);
         userNameEditText = (EditText) findViewById(R.id.user_name);
-//        TODO specific device Nexus 4 (white), we need to setError(null) for hiding previous error message
-//        TODO maybe exist another way?
-        userNameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                userNameEditText.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        userNameEditText.addTextChangedListener(new LoginEditTextWatcher(userNameEditText));
 
         chatRoomNameEditText = (EditText) findViewById(R.id.chat_room_name);
-        chatRoomNameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                chatRoomNameEditText.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        chatRoomNameEditText.addTextChangedListener(new LoginEditTextWatcher(chatRoomNameEditText));
     }
 
     @Override
@@ -262,5 +234,28 @@ public class LoginActivity extends BaseActivity {
 
     private String getCurrentDeviceId() {
         return Utils.generateDeviceId(this);
+    }
+
+    private class LoginEditTextWatcher implements TextWatcher {
+        private EditText editText;
+
+        private LoginEditTextWatcher(EditText editText) {
+            this.editText = editText;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            editText.setError(null);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
     }
 }
