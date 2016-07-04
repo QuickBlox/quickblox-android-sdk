@@ -41,20 +41,20 @@
         <activity
             android:name=".activities.OpponentsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.PermissionsActivity" />
         <activity
             android:name=".activities.CallActivity"
-            android:theme="@style/BaseAppTheme"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name=".services.CallService"/>
+        <service android:name=".services.CallService" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

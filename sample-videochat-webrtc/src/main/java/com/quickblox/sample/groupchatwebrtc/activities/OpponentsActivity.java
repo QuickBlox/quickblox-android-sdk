@@ -1,5 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
+import com.quickblox.sample.groupchatwebrtc.utils.PermissionsChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.PushNotificationSender;
 import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
@@ -40,6 +42,7 @@ public class OpponentsActivity extends BaseActivity {
     private static final String TAG = OpponentsActivity.class.getSimpleName();
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
+    private static final String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
 
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
@@ -49,6 +52,7 @@ public class OpponentsActivity extends BaseActivity {
     private boolean isRunedForCall;
     private WebRtcSessionManager webRtcSessionManager;
 
+    private PermissionsChecker checker;
 
     public static void start(Context context, boolean isRunForCall) {
         Intent intent = new Intent(context, OpponentsActivity.class);
@@ -74,6 +78,8 @@ public class OpponentsActivity extends BaseActivity {
         if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
             CallActivity.start(OpponentsActivity.this, true);
         }
+
+        checker = new PermissionsChecker(this);
     }
 
     @Override
@@ -96,6 +102,10 @@ public class OpponentsActivity extends BaseActivity {
     @Override
     protected View getSnackbarAnchorView() {
         return findViewById(R.id.list_opponents);
+    }
+
+    private void startPermissionsActivity(boolean onlyAudio) {
+        PermissionsActivity.startActivity(this, onlyAudio, PERMISSIONS);
     }
 
     private void initFields() {
@@ -200,10 +210,16 @@ public class OpponentsActivity extends BaseActivity {
 
             case R.id.start_video_call:
                 startCall(true);
+                if (checker.lacksPermissions(PERMISSIONS)) {
+                    startPermissionsActivity(false);
+                }
                 return true;
 
             case R.id.start_audio_call:
                 startCall(false);
+                if (checker.lacksPermissions(PERMISSIONS[1])) {
+                    startPermissionsActivity(true);
+                }
                 return true;
 
             default:
