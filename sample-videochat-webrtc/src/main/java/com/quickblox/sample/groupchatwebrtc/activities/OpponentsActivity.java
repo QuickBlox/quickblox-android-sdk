@@ -104,8 +104,8 @@ public class OpponentsActivity extends BaseActivity {
         return findViewById(R.id.list_opponents);
     }
 
-    private void startPermissionsActivity(boolean onlyAudio) {
-        PermissionsActivity.startActivity(this, onlyAudio, PERMISSIONS);
+    private void startPermissionsActivity(boolean checkOnlyAudio) {
+        PermissionsActivity.startActivity(this, checkOnlyAudio, PERMISSIONS);
     }
 
     private void initFields() {

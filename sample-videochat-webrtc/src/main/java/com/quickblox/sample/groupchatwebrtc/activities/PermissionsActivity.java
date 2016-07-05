@@ -13,15 +13,12 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.PermissionsChecker;
 
 public class PermissionsActivity extends AppCompatActivity {
-    public static final int PERMISSIONS_GRANTED = 0;
-    public static final int PERMISSIONS_DENIED = 1;
-    public static final String PERMISSION_GRANT_RESULTS_KEY = "grantResults";
 
     private static final int PERMISSION_REQUEST_CODE = 0;
     private static final String EXTRA_PERMISSIONS = "extraPermissions";
     private static final String CHECK_ONLY_AUDIO = "checkAudio";
 
-    enum permissionFeatures {
+    private enum permissionFeatures {
         CAMERA,
         MICROPHONE
     }
@@ -29,10 +26,10 @@ public class PermissionsActivity extends AppCompatActivity {
     private PermissionsChecker checker;
     private boolean requiresCheck;
 
-    public static void startActivity(Activity activity, boolean onlyAudio, String... permissions) {
+    public static void startActivity(Activity activity, boolean checkOnlyAudio, String... permissions) {
         Intent intent = new Intent(activity, PermissionsActivity.class);
         intent.putExtra(EXTRA_PERMISSIONS, permissions);
-        intent.putExtra(CHECK_ONLY_AUDIO, onlyAudio);
+        intent.putExtra(CHECK_ONLY_AUDIO, checkOnlyAudio);
         ActivityCompat.startActivity(activity, intent, null);
     }
 
@@ -53,9 +50,9 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onResume();
         if (requiresCheck) {
             String[] permissions = getPermissions();
-            boolean onlyAudio = getOnlyAudio();
+            boolean checkOnlyAudio = getCheckOnlyAudio();
 
-            if (onlyAudio) {
+            if (checkOnlyAudio) {
                 if (checker.lacksPermissions(permissions[1])) {
                     requestPermissions(permissions[1]);
                 } else {
@@ -77,7 +74,7 @@ public class PermissionsActivity extends AppCompatActivity {
         return getIntent().getStringArrayExtra(EXTRA_PERMISSIONS);
     }
 
-    private boolean getOnlyAudio() {
+    private boolean getCheckOnlyAudio() {
         return getIntent().getBooleanExtra(CHECK_ONLY_AUDIO, false);
     }
 
