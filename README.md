@@ -32,73 +32,74 @@ The repository https://github.com/QuickBlox/quickblox-android-sdk-releases conta
 # TUTORIAL  Customize Proguard in Android Studio (debug mode)
 
 In build.gradle (for ex. Module: sample chat) you need to add next params:
+```xml
 
-buildTypes { <br />
-   debug { <br />
-       signingConfig signingConfigs.debug <br />
-//     shrinkResources true //for more reducing code <br />
-       minifyEnabled true <br />
-       proguardFile 'proguard-rules.pro' <br />
-       zipAlignEnabled false <br />
-   } <br />
-} <br />
-
+buildTypes {
+   debug {
+       signingConfig signingConfigs.debug
+//     shrinkResources true //for more reducing code
+       minifyEnabled true
+       proguardFile 'proguard-rules.pro'
+       zipAlignEnabled false
+   }
+}
+```
 Then, in your module root directory create proguard-rules.pro file and put there the next:
+```xml
+##---------------Begin: proguard configuration for Gson  ---------- 
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
 
-\##---------------Begin: proguard configuration for Gson  ---------- <br />
-\# Gson uses generic type information stored in a class file when working with fields. Proguard <br />
-\# removes such information by default, so configure it to keep all of it. <br />
--keepattributes Signature <br />
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
 
-\# For using GSON @Expose annotation <br />
--keepattributes *Annotation* <br />
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
 
-\# Gson specific classes <br />
--keep class sun.misc.Unsafe { *; } <br />
-\#-keep class com.google.gson.stream.** { *; } <br />
-
-\# Application classes that will be serialized/deserialized over Gson <br />
--keep class com.quickblox.core.account.model.** { *; } <br />
-
-
-\##---------------End: proguard configuration for Gson  ---------- <br />
-\##---------------Begin: proguard configuration for quickblox  ---------- <br />
-\#quickblox sample chat <br />
-
--keep class com.quickblox.auth.parsers.** { *; } <br />
--keep class com.quickblox.auth.model.** { *; } <br />
--keep class com.quickblox.core.parser.** { *; } <br />
--keep class com.quickblox.core.model.** { *; } <br />
--keep class com.quickblox.core.server.** { *; } <br />
--keep class com.quickblox.core.rest.** { *; } <br />
--keep class com.quickblox.core.error.** { *; } <br />
--keep class com.quickblox.core.Query { *; } <br />
-
--keep class com.quickblox.users.parsers.** { *; } <br />
--keep class com.quickblox.users.model.** { *; } <br />
-
--keep class com.quickblox.chat.parser.** { *; } <br />
--keep class com.quickblox.chat.model.** { *; } <br />
-
--keep class com.quickblox.messages.parsers.** { *; } <br />
--keep class com.quickblox.messages.model.** { *; } <br />
-
--keep class com.quickblox.content.parsers.** { *; } <br />
--keep class com.quickblox.content.model.** { *; } <br />
-
--keep class org.jivesoftware.** { *; } <br />
-
-\#sample chat <br />
--keep class android.support.v7.** { *; } <br />
--keep class com.bumptech.** { *; } <br />
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.quickblox.core.account.model.** { *; }
 
 
-\##---------------End: proguard configuration for quickblox  ---------- <br />
+##---------------End: proguard configuration for Gson  ----------
+##---------------Begin: proguard configuration for quickblox  ----------
+#quickblox sample chat
 
--dontwarn org.jivesoftware.smackx.** <br />
--dontwarn android.support.v4.app.** <br />
-\##---------------End: proguard configuration ----------
+-keep class com.quickblox.auth.parsers.** { *; }
+-keep class com.quickblox.auth.model.** { *; }
+-keep class com.quickblox.core.parser.** { *; }
+-keep class com.quickblox.core.model.** { *; }
+-keep class com.quickblox.core.server.** { *; }
+-keep class com.quickblox.core.rest.** { *; }
+-keep class com.quickblox.core.error.** { *; }
+-keep class com.quickblox.core.Query { *; }
 
+-keep class com.quickblox.users.parsers.** { *; }
+-keep class com.quickblox.users.model.** { *; }
+
+-keep class com.quickblox.chat.parser.** { *; }
+-keep class com.quickblox.chat.model.** { *; }
+
+-keep class com.quickblox.messages.parsers.** { *; }
+-keep class com.quickblox.messages.model.** { *; }
+
+-keep class com.quickblox.content.parsers.** { *; }
+-keep class com.quickblox.content.model.** { *; }
+
+-keep class org.jivesoftware.** { *; }
+
+#sample chat
+-keep class android.support.v7.** { *; }
+-keep class com.bumptech.** { *; }
+
+
+##---------------End: proguard configuration for quickblox  ----------
+
+-dontwarn org.jivesoftware.smackx.**
+-dontwarn android.support.v4.app.**
+##---------------End: proguard configuration ----------
+```
 To fix errors and force ProGuard to keep certain code, add a -keep line in the ProGuard configuration file. For example:
 -keep public class MyClass
 Alternatively, you can add the @Keep annotation to the code you want to keep. Adding @Keep on a class keeps the entire class as-is. Adding it on a method or field will keep the method/field (and it's name) as well as the class name intact.
