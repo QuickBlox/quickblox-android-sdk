@@ -31,6 +31,7 @@
     <string name="update_user_error">Update user error. Error</string>
     <string name="loading_users_error">Loading users error. Error</string>
 
+    <string name="permission_unavailable">%s is not available now!</string>
 
     <string name="field_name_user_name">User name</string>
     <string name="field_name_chat_room_name">Chat room name</string>

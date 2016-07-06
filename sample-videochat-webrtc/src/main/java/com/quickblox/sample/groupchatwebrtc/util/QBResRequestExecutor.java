@@ -33,8 +33,18 @@ public class QBResRequestExecutor {
         QBAuth.createSession(qbUser, callback);
     }
 
-    public void signUpNewUser(QBUser newQbUser, QBEntityCallback<QBUser> callback) {
-        QBUsers.signUp(newQbUser, callback);
+    public void signUpNewUser(final QBUser newQbUser, final QBEntityCallback<QBUser> callback) {
+        createSessionWithoutUser(new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+                QBUsers.signUp(newQbUser, callback);
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void signInUser(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback) {

@@ -13,10 +13,16 @@ import java.util.regex.Pattern;
  */
 public class ValidationUtils {
 
-    private static boolean isEnteredTextValid(Context context, EditText editText, int resFieldName, int maxLength) {
+    private static boolean isEnteredTextValid(Context context, EditText editText, int resFieldName, int maxLength, boolean checkName) {
 
         boolean isCorrect;
-        Pattern p = Pattern.compile("[a-zA-Z][\\w]{2," + (maxLength - 1) + "}");
+        Pattern p;
+        if (checkName) {
+            p = Pattern.compile("[a-zA-Z][\\w\\s]{2," + (maxLength - 1) + "}");
+        } else {
+            p = Pattern.compile("[a-zA-Z][\\w]{2," + (maxLength - 1) + "}");
+        }
+
         Matcher m = p.matcher(editText.getText().toString().trim());
         isCorrect = m.matches();
 
@@ -31,10 +37,10 @@ public class ValidationUtils {
     }
 
     public static boolean isUserNameValid(Context context, EditText editText) {
-        return isEnteredTextValid(context, editText, R.string.field_name_user_name, 20);
+        return isEnteredTextValid(context, editText, R.string.field_name_user_name, 20, true);
     }
 
     public static boolean isRoomNameValid(Context context, EditText editText) {
-        return isEnteredTextValid(context, editText, R.string.field_name_chat_room_name, 15);
+        return isEnteredTextValid(context, editText, R.string.field_name_chat_room_name, 15, false);
     }
 }
