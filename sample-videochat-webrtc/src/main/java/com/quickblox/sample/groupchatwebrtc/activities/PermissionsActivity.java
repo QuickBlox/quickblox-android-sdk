@@ -49,24 +49,36 @@ public class PermissionsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (requiresCheck) {
-            String[] permissions = getPermissions();
-            boolean checkOnlyAudio = getCheckOnlyAudio();
-
-            if (checkOnlyAudio) {
-                if (checker.lacksPermissions(permissions[1])) {
-                    requestPermissions(permissions[1]);
-                } else {
-                    allPermissionsGranted();
-                }
-            } else {
-                if (checker.lacksPermissions(permissions)) {
-                    requestPermissions(permissions);
-                } else {
-                    allPermissionsGranted();
-                }
-            }
+            checkPermissions();
         } else {
             requiresCheck = true;
+        }
+    }
+
+    private void checkPermissions() {
+        String[] permissions = getPermissions();
+        boolean checkOnlyAudio = getCheckOnlyAudio();
+
+        if (checkOnlyAudio) {
+            checkPermissionAudio(permissions[1]);
+        } else {
+            checkPermissionAudioVideo(permissions);
+        }
+    }
+
+    private void checkPermissionAudio(String audioPermission) {
+        if (checker.lacksPermissions(audioPermission)) {
+            requestPermissions(audioPermission);
+        } else {
+            allPermissionsGranted();
+        }
+    }
+
+    private void checkPermissionAudioVideo(String[] permissions) {
+        if (checker.lacksPermissions(permissions)) {
+            requestPermissions(permissions);
+        } else {
+            allPermissionsGranted();
         }
     }
 

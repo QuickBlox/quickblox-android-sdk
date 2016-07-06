@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId "com.quickblox.sample.groupchatwebrtc"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion 23
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0.9"
     }

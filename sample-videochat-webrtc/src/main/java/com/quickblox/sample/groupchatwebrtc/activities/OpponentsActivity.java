@@ -79,7 +79,7 @@ public class OpponentsActivity extends BaseActivity {
             CallActivity.start(OpponentsActivity.this, true);
         }
 
-        checker = new PermissionsChecker(this);
+        checker = new PermissionsChecker(getApplicationContext());
     }
 
     @Override
