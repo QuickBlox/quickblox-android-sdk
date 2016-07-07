@@ -690,7 +690,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onAcceptCurrentSession() {
-        addConversationFragment(true);
+        if (currentSession != null) {
+            addConversationFragment(true);
+        } else {
+            Log.d(TAG, "SKIP addConversationFragment method");
+        }
     }
 
     @Override
