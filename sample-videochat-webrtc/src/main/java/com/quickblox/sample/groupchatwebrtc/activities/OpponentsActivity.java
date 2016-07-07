@@ -279,6 +279,7 @@ public class OpponentsActivity extends BaseActivity {
         unsubscribeFromPushes();
         startLogoutCommand();
         removeAllUserData();
+        startLoginActivity();
     }
 
     private void startLogoutCommand() {
@@ -293,31 +294,16 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void removeAllUserData() {
-        showProgressDialog(R.string.dlg_logout);
+        UsersUtils.removeUserData(getApplicationContext());
         requestExecutor.deleteCurrentUser(currentUser.getId(), new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
-                UsersUtils.removeUserData(getApplicationContext());
-                hideProgressDialog();
-                startLoginActivity();
+                Log.d(TAG, "Current user was deleted from QB");
             }
 
             @Override
             public void onError(QBResponseException e) {
-                hideProgressDialog();
-                if (e.getHttpStatusCode() == Consts.ERR_MSG_DELETING_HTTP_STATUS) {
-//                    user already deleted
-//                    TODO handle exception "Auth fail" when user deleted from admin panel
-                    UsersUtils.removeUserData(getApplicationContext());
-                    startLoginActivity();
-                    return;
-                }
-                showErrorSnackbar(R.string.logout_user_with_error, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removeAllUserData();
-                    }
-                });
+                Log.e(TAG, "Current user wasn't deleted from QB " +e);
             }
         });
     }
