@@ -24,7 +24,7 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
-        versionName "1.0.9"
+        versionName "1.0.10"
     }
 
     productFlavors {
