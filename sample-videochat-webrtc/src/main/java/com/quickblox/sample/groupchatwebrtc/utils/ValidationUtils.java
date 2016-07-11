@@ -18,9 +18,9 @@ public class ValidationUtils {
         boolean isCorrect;
         Pattern p;
         if (checkName) {
-            p = Pattern.compile("[a-zA-Z][\\w\\s]{2," + (maxLength - 1) + "}");
+            p = Pattern.compile("^[a-zA-Z][a-zA-Z 0-9]{2," + (maxLength - 1) + "}+$");
         } else {
-            p = Pattern.compile("[a-zA-Z][\\w]{2," + (maxLength - 1) + "}");
+            p = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{2," + (maxLength - 1) + "}+$");
         }
 
         Matcher m = p.matcher(editText.getText().toString().trim());
