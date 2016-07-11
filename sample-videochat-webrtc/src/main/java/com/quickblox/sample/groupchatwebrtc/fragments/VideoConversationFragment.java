@@ -310,7 +310,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void switchCamera(MenuItem item) {
-        if (currentSession == null) {
+        if (currentSession == null || cameraState == CameraState.DISABLED_FROM_USER) {
             return;
         }
         final QBMediaStreamManager mediaStreamManager = currentSession.getMediaStreamManager();
