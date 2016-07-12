@@ -8,7 +8,7 @@
 
     <PreferenceCategory android:title="@string/title_video_category">
 
-        <ListPreference
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
             android:defaultValue="@string/pref_resolution_default"
             android:dialogTitle="@string/pref_resolution_dlg"
             android:entries="@array/videoResolutions"
@@ -37,7 +37,7 @@
             <!--seekBar:min="@integer/pref_frame_rate_min_value"-->
             <!--seekBar:stepSize="@integer/pref_frame_rate_stepSize" />-->
 
-        <ListPreference
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
             android:defaultValue="@string/pref_audiocodec_def"
             android:dialogTitle="@string/pref_audiocodec_dlg"
             android:entries="@array/audioCodecs"
@@ -46,7 +46,7 @@
             android:summary="%s"
             android:title="@string/pref_audiocodec_title" />
 
-        <ListPreference
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
             android:defaultValue="@string/pref_videocodec_default"
             android:dialogTitle="@string/pref_videocodec_dlg"
             android:entries="@array/videoCodecs"
