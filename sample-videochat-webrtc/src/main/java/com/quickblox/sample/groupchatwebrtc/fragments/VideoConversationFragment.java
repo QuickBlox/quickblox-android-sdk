@@ -95,6 +95,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private List<QBUser> allOpponents;
     private boolean connectionEstablished;
     private boolean previousDeviceEarPiece;
+    private boolean allCallbacksInit;
 
 
     @Override
@@ -179,12 +180,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStart() {
         super.onStart();
-
-        initVideoTrackSListener();
-
-        conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
-        conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
-        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
+        if(!allCallbacksInit) {
+            initVideoTrackSListener();
+            conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
+            conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+            conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
+            allCallbacksInit = true;
+        }
     }
 
     @Override
@@ -291,10 +293,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStop() {
         super.onStop();
-        removeVideoTrackSListener();
-        conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
-        conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
-        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
+        if(connectionEstablished) {
+            removeVideoTrackSListener();
+            conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
+            conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
+            conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
+            allCallbacksInit = false;
+        } else {
+            Log.d(TAG, "We are in dialing process yet!");
+        }
     }
 
     protected void initButtonsListener() {
