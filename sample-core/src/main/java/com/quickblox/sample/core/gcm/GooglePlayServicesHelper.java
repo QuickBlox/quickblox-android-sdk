@@ -12,12 +12,12 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.Utils;
 import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBNotificationChannel;
 import com.quickblox.messages.model.QBSubscription;
 import com.quickblox.sample.core.CoreApp;
-import com.quickblox.sample.core.utils.DeviceUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.VersionUtils;
 
@@ -109,7 +109,8 @@ public class GooglePlayServicesHelper {
 
                     QBSubscription qbSubscription = new QBSubscription();
                     qbSubscription.setNotificationChannel(QBNotificationChannel.GCM);
-                    qbSubscription.setDeviceUdid(DeviceUtils.getDeviceUid());
+                    String androidId = Utils.generateDeviceId(CoreApp.getInstance());
+                    qbSubscription.setDeviceUdid(androidId);
                     qbSubscription.setRegistrationID(gcmRegId);
                     qbSubscription.setEnvironment(QBEnvironment.DEVELOPMENT); // Don't forget to change QBEnvironment to PRODUCTION when releasing application
 

@@ -98,7 +98,12 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getFragmentLayout(), container, false);
-
+        sessionManager = WebRtcSessionManager.getInstance(getActivity());
+        currentSession = sessionManager.getCurrentSession();
+        if(currentSession == null){
+            Log.d(TAG, "currentSession = null onCreateView");
+            return view;
+        }
         initFields();
         initViews(view);
         initActionBar();
@@ -153,7 +158,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     @Override
     public void onStart() {
         super.onStart();
-
+    if(currentSession == null){
+        Log.d(TAG, "currentSession = null onStart");
+       return;
+    }
         if (!isMessageProcessed) {
             if (isIncomingCall) {
                 currentSession.acceptCall(null);
@@ -241,6 +249,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
     @Override
     public void onCallStopped() {
+        if(currentSession == null){
+            Log.d(TAG, "currentSession = null onCallStopped");
+            return;
+        }
         stopTimer();
         actionButtonsEnabled(false);
     }
