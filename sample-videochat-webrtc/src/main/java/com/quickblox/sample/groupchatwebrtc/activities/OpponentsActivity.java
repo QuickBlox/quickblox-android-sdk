@@ -49,7 +49,7 @@ public class OpponentsActivity extends BaseActivity {
     private QBUser currentUser;
     private ArrayList<QBUser> currentOpponentsList;
     private QbUsersDbManager dbManager;
-    private boolean isRunedForCall;
+    private boolean isRunForCall;
     private WebRtcSessionManager webRtcSessionManager;
 
     private PermissionsChecker checker;
@@ -75,7 +75,7 @@ public class OpponentsActivity extends BaseActivity {
 
         startLoadUsers();
 
-        if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
+        if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
             CallActivity.start(OpponentsActivity.this, true);
         }
 
@@ -92,8 +92,8 @@ public class OpponentsActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.getExtras() != null) {
-            isRunedForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
-            if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
+            isRunForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+            if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
                 CallActivity.start(OpponentsActivity.this, true);
             }
         }
@@ -111,7 +111,7 @@ public class OpponentsActivity extends BaseActivity {
     private void initFields() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            isRunedForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+            isRunForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
         }
 
         currentUser = sharedPrefsHelper.getQbUser();

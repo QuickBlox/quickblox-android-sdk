@@ -622,6 +622,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public void onReceiveHangUpFromUser(final QBRTCSession session, final Integer userID, Map<String, String> map) {
         if (session.equals(getCurrentSession())) {
 
+            if(userID.equals(session.getCallerID())){
+                hangUpCurrentSession();
+                Log.d(TAG, "initiator hung up the call");
+            }
+
             if (sessionUserCallback != null) {
                 sessionUserCallback.onReceiveHangUpFromUser(session, userID);
             }
