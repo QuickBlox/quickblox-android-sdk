@@ -180,7 +180,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStart() {
         super.onStart();
-        if(!allCallbacksInit) {
+        if (!allCallbacksInit) {
             initVideoTrackSListener();
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
@@ -293,7 +293,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStop() {
         super.onStop();
-        if(connectionEstablished) {
+        if (connectionEstablished) {
             removeVideoTrackSListener();
             conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
@@ -400,6 +400,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             Log.d(TAG, "localVideoView.updateRenderer SECOND");
             localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
+            localRenderInited = true;
         }
 
         if (isPeerToPeerCall) {
@@ -418,6 +419,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, false);
                     }
+                    localRenderInited = true;
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
@@ -474,6 +476,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
                         fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
+                    localRenderInited = true;
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
