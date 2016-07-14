@@ -1,5 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
+import android.Manifest;
+
 /**
  * QuickBlox team
  */
@@ -51,6 +53,7 @@ public interface Consts {
     String EXTRA_LOGIN_ERROR_MESSAGE = "login_error_message";
     int EXTRA_LOGIN_RESULT_CODE = 1002;
 
+    String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
 
     String EXTRA_COMMAND_TO_SERVICE = "command_for_service";
     int COMMAND_NOT_FOUND = 0;
