@@ -19,7 +19,7 @@ public class SettingsUtil {
     private static final String TAG = SettingsUtil.class.getSimpleName();
 
     private static void setSettingsForMultiCall(List<Integer> users) {
-        if (users.size() <= 2) {
+        if (users.size() <= 4) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
                 setDefaultVideoQuality();
