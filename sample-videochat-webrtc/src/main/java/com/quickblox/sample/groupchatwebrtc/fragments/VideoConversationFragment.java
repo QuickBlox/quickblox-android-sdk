@@ -324,6 +324,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (mediaStreamManager == null) {
             return;
         }
+        cameraToggle.setEnabled(false);
         boolean cameraSwitched = mediaStreamManager.switchCameraInput(new Runnable() {
             @Override
             public void run() {
@@ -374,6 +375,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void toggleCamera(boolean isNeedEnableCam) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             conversationFragmentCallbackListener.onSetVideoEnabled(isNeedEnableCam);
+        }
+        if(connectionEstablished && !cameraToggle.isEnabled()) {
+            cameraToggle.setEnabled(true);
         }
     }
 
@@ -538,7 +542,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         } else {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
         }
-        Log.d(TAG, "setLocalVideoView localVideoView = null? " + (localVideoView == null));
+        if(localVideoView == null){
+            Log.d(TAG, "setLocalVideoView localVideoView = null");
+            localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
+        }
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, config);// nullpointer
         config = setRTCCameraMirrorConfig(false);
         localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.MAIN, config);
@@ -831,19 +838,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.audio_switch:
-                Log.d(TAG, "audio_switch");
-                conversationFragmentCallbackListener.onSwitchAudio();
-                if (!headsetPlugged) {
-                    if (!item.isChecked()) {
-                        item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_phonelink_ring);
-                    } else {
-                        item.setChecked(!item.isChecked());
-                        item.setIcon(R.drawable.ic_speaker_phone);
-                    }
-                }
-                return true;
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
                 switchCamera(item);
