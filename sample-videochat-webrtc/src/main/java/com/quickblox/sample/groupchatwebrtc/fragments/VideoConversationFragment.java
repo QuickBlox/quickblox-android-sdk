@@ -324,6 +324,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (mediaStreamManager == null) {
             return;
         }
+//      disable cameraToggle while processing switchCamera
         cameraToggle.setEnabled(false);
         boolean cameraSwitched = mediaStreamManager.switchCameraInput(new Runnable() {
             @Override
@@ -376,7 +377,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             conversationFragmentCallbackListener.onSetVideoEnabled(isNeedEnableCam);
         }
-        if(connectionEstablished && !cameraToggle.isEnabled()) {
+        if (connectionEstablished && !cameraToggle.isEnabled()) {
             cameraToggle.setEnabled(true);
         }
     }
@@ -404,7 +405,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             Log.d(TAG, "localVideoView.updateRenderer SECOND");
             localVideoView.updateRenderer(RTCGLVideoView.RendererSurface.SECOND, setRTCCameraMirrorConfig(true));
             fillVideoView(localVideoView, videoTrack, false);
-            localRenderInited = true;
         }
 
         if (isPeerToPeerCall) {
@@ -423,7 +423,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     if (localVideoTrack != null) {
                         fillVideoView(localVideoView, localVideoTrack, false);
                     }
-                    localRenderInited = true;
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
@@ -480,7 +479,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
                         fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
-                    localRenderInited = true;
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
@@ -542,7 +540,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         } else {
             config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
         }
-        if(localVideoView == null){
+        if (localVideoView == null) {
             Log.d(TAG, "setLocalVideoView localVideoView = null");
             localVideoView = (RTCGLVideoView) ((ViewStub) view.findViewById(R.id.localViewStub)).inflate();
         }
