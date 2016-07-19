@@ -140,7 +140,7 @@ public class SettingsUtil {
     }
 
     public static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
-        return sharedPref.getInt(context.getString(strResKey), sharedPref.getInt(context.getString(strResDefValue), 0));
+        return sharedPref.getInt(context.getString(strResKey), Integer.valueOf(context.getString(strResDefValue)));
     }
 
 }
