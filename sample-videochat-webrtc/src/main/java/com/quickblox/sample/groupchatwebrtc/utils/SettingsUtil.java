@@ -19,7 +19,7 @@ public class SettingsUtil {
     private static final String TAG = SettingsUtil.class.getSimpleName();
 
     private static void setSettingsForMultiCall(List<Integer> users) {
-        if (users.size() <= 2) {
+        if (users.size() <= 4) {
             int width = QBRTCMediaConfig.getVideoWidth();
             if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
                 setDefaultVideoQuality();
@@ -140,7 +140,7 @@ public class SettingsUtil {
     }
 
     public static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
-        return sharedPref.getInt(context.getString(strResKey), sharedPref.getInt(context.getString(strResDefValue), 0));
+        return sharedPref.getInt(context.getString(strResKey), Integer.valueOf(context.getString(strResDefValue)));
     }
 
 }

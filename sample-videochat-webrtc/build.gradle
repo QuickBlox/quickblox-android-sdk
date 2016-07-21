@@ -24,7 +24,7 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
-        versionName "1.0.10"
+        versionName "1.0.12"
     }
 
     productFlavors {
@@ -39,6 +39,7 @@ android {
 
     buildTypes {
         debug {
+            resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
             signingConfig signingConfigs.debug
         }
     }

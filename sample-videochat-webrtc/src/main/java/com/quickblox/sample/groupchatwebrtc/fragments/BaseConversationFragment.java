@@ -33,7 +33,6 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by tereha on 24.05.16.
@@ -100,7 +99,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         View view = inflater.inflate(getFragmentLayout(), container, false);
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
-        if(currentSession == null){
+        if (currentSession == null) {
             Log.d(TAG, "currentSession = null onCreateView");
             return view;
         }
@@ -158,10 +157,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     @Override
     public void onStart() {
         super.onStart();
-    if(currentSession == null){
-        Log.d(TAG, "currentSession = null onStart");
-       return;
-    }
+        if (currentSession == null) {
+            Log.d(TAG, "currentSession = null onStart");
+            return;
+        }
         if (!isMessageProcessed) {
             if (isIncomingCall) {
                 currentSession.acceptCall(null);
@@ -202,12 +201,12 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionButtonsEnabled(false);
-                handUpVideoCall.setEnabled(false);
-                handUpVideoCall.setActivated(false);
+                    actionButtonsEnabled(false);
+                    handUpVideoCall.setEnabled(false);
+                    handUpVideoCall.setActivated(false);
 
-                conversationFragmentCallbackListener.onHangUpCurrentSession();
-                Log.d(TAG, "Call is stopped");
+                    conversationFragmentCallbackListener.onHangUpCurrentSession();
+                    Log.d(TAG, "Call is stopped");
             }
         });
     }
@@ -249,7 +248,7 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
     @Override
     public void onCallStopped() {
-        if(currentSession == null){
+        if (currentSession == null) {
             Log.d(TAG, "currentSession = null onCallStopped");
             return;
         }

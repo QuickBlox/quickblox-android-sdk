@@ -42,14 +42,13 @@ public class OpponentsActivity extends BaseActivity {
     private static final String TAG = OpponentsActivity.class.getSimpleName();
 
     private static final long ON_ITEM_CLICK_DELAY = TimeUnit.SECONDS.toMillis(10);
-    private static final String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
 
     private OpponentsAdapter opponentsAdapter;
     private ListView opponentsListView;
     private QBUser currentUser;
     private ArrayList<QBUser> currentOpponentsList;
     private QbUsersDbManager dbManager;
-    private boolean isRunedForCall;
+    private boolean isRunForCall;
     private WebRtcSessionManager webRtcSessionManager;
 
     private PermissionsChecker checker;
@@ -75,7 +74,7 @@ public class OpponentsActivity extends BaseActivity {
 
         startLoadUsers();
 
-        if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
+        if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
             CallActivity.start(OpponentsActivity.this, true);
         }
 
@@ -92,8 +91,8 @@ public class OpponentsActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.getExtras() != null) {
-            isRunedForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
-            if (isRunedForCall && webRtcSessionManager.getCurrentSession() != null) {
+            isRunForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+            if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
                 CallActivity.start(OpponentsActivity.this, true);
             }
         }
@@ -105,13 +104,13 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startPermissionsActivity(boolean checkOnlyAudio) {
-        PermissionsActivity.startActivity(this, checkOnlyAudio, PERMISSIONS);
+        PermissionsActivity.startActivity(this, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
     private void initFields() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            isRunedForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
+            isRunForCall = extras.getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
         }
 
         currentUser = sharedPrefsHelper.getQbUser();
@@ -210,14 +209,14 @@ public class OpponentsActivity extends BaseActivity {
 
             case R.id.start_video_call:
                 startCall(true);
-                if (checker.lacksPermissions(PERMISSIONS)) {
+                if (checker.lacksPermissions(Consts.PERMISSIONS)) {
                     startPermissionsActivity(false);
                 }
                 return true;
 
             case R.id.start_audio_call:
                 startCall(false);
-                if (checker.lacksPermissions(PERMISSIONS[1])) {
+                if (checker.lacksPermissions(Consts.PERMISSIONS[1])) {
                     startPermissionsActivity(true);
                 }
                 return true;

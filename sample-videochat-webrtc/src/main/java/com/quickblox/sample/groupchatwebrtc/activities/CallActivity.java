@@ -32,6 +32,7 @@ import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragmentCallback
 import com.quickblox.sample.groupchatwebrtc.util.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
+import com.quickblox.sample.groupchatwebrtc.utils.PermissionsChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.QBEntityCallbackImpl;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
 import com.quickblox.sample.groupchatwebrtc.utils.SettingsUtil;
@@ -102,6 +103,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private boolean headsetPlugged;
     private boolean previousDeviceEarPiece;
     private boolean showToastAfterHeadsetPlugged = true;
+    private PermissionsChecker checker;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -139,6 +141,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
+        checker = new PermissionsChecker(getApplicationContext());
         startSuitableFragment(isInCommingCall);
     }
 
@@ -147,9 +150,20 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             initIncomingCallTask();
             startLoadAbsentUsers();
             addIncomeCallFragment();
+            checkPermission();
         } else {
             addConversationFragment(isInComingCall);
         }
+    }
+
+    private void checkPermission(){
+        if (checker.lacksPermissions(Consts.PERMISSIONS)) {
+            startPermissionsActivity(!isVideoCall);
+        }
+    }
+
+    private void startPermissionsActivity(boolean checkOnlyAudio) {
+        PermissionsActivity.startActivity(this, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
     private void startLoadAbsentUsers() {
@@ -621,6 +635,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onReceiveHangUpFromUser(final QBRTCSession session, final Integer userID, Map<String, String> map) {
         if (session.equals(getCurrentSession())) {
+
+            if (userID.equals(session.getCallerID())) {
+                hangUpCurrentSession();
+                Log.d(TAG, "initiator hung up the call");
+            }
 
             if (sessionUserCallback != null) {
                 sessionUserCallback.onReceiveHangUpFromUser(session, userID);
