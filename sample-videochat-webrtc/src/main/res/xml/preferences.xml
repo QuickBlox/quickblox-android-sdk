@@ -10,12 +10,21 @@
         android:entryValues="@array/videoResolutionsValues" />
 
     <ListPreference
+        android:key="@string/pref_fps_key"
+        android:title="@string/pref_fps_title"
+        android:defaultValue="@string/pref_fps_default"
+        android:dialogTitle="@string/pref_fps_dlg"
+        android:entries="@array/cameraFps"
+        android:entryValues="@array/cameraFpsValues" />
+
+    <ListPreference
         android:key="@string/pref_startbitrate_key"
         android:title="@string/pref_startbitrate_title"
         android:defaultValue="@string/pref_startbitrate_default"
         android:dialogTitle="@string/pref_startbitrate_dlg"
         android:entries="@array/startBitrate"
         android:entryValues="@array/startBitrate" />
+
 
     <EditTextPreference
         android:key="@string/pref_startbitratevalue_key"
@@ -47,5 +56,37 @@
         android:dialogTitle="@string/pref_hwcodec_dlg"
         android:defaultValue="@string/pref_hwcodec_default" />
 
+    <CheckBoxPreference
+        android:key="@string/pref_initiator_behaviour_key"
+        android:title="@string/pref_initiator_behaviour_title"
+        android:defaultValue="@string/pref_initiator_behaviour_default" />
+
+
+    <CheckBoxPreference
+        android:key="@string/pref_noaudioprocessing_key"
+        android:title="@string/pref_noaudioprocessing_title"
+        android:dialogTitle="@string/pref_noaudioprocessing_dlg"
+        android:defaultValue="@string/pref_noaudioprocessing_default" />
+    <CheckBoxPreference
+        android:key="@string/pref_aecdump_key"
+        android:title="@string/pref_aecdump_title"
+        android:dialogTitle="@string/pref_aecdump_dlg"
+        android:defaultValue="@string/pref_aecdump_default" />
+    <CheckBoxPreference
+        android:key="@string/pref_opensles_key"
+        android:title="@string/pref_opensles_title"
+        android:dialogTitle="@string/pref_opensles_dlg"
+        android:defaultValue="@string/pref_opensles_default" />
+    <CheckBoxPreference
+        android:key="@string/pref_disable_built_in_aec_key"
+        android:title="@string/pref_disable_built_in_aec_title"
+        android:dialogTitle="@string/pref_disable_built_in_aec_dlg"
+        android:defaultValue="@string/pref_disable_built_in_aec_default" />
+
+    <CheckBoxPreference
+        android:key="@string/pref_tracing_key"
+        android:title="@string/pref_tracing_title"
+        android:dialogTitle="@string/pref_tracing_dlg"
+        android:defaultValue="@string/pref_tracing_default" />
 
 </PreferenceScreen>

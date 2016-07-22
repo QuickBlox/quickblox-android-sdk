@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
@@ -88,7 +87,7 @@ public class SnippetsChat extends Snippets {
     private QBMessageListener<QBPrivateChat> privateChatMessageListener;
     private QBMessageSentListener<QBPrivateChat> privateChatMessageSentListener;
     //
-    private QBIsTypingListener<QBChat> isTypingListener;
+    private QBIsTypingListener<QBPrivateChat> isTypingListenerPrivate;
 
 
     // Message statuses
@@ -126,6 +125,7 @@ public class SnippetsChat extends Snippets {
     //
     private QBPrivacyListsManager privacyListsManager;
     private QBPrivacyListListener privacyListListener;
+    private QBIsTypingListener<QBGroupChat> isTypingListenerGroup;
 
 
     public SnippetsChat(final Context context) {
@@ -304,7 +304,7 @@ public class SnippetsChat extends Snippets {
                     Log.i(TAG, "adding message listener to new chat");
                     privateChat.addMessageListener(privateChatMessageListener);
                     privateChat.addMessageSentListener(privateChatMessageSentListener);
-                    privateChat.addIsTypingListener(isTypingListener);
+                    privateChat.addIsTypingListener(isTypingListenerPrivate);
                 }
 
                 log("Private chat created: " + privateChat + ", createdLocally: " + createdLocally);
@@ -601,25 +601,40 @@ public class SnippetsChat extends Snippets {
 
         // Create 'is typing' listener
         //
-        isTypingListener = new QBIsTypingListener<QBChat>() {
+        isTypingListenerPrivate = new QBIsTypingListener<QBPrivateChat>() {
             @Override
-            public void processUserIsTyping(QBChat chat, Integer userId) {
-                if (chat instanceof QBGroupChat) {
+            public void processUserIsTyping(QBPrivateChat chat, Integer userId) {
+                /*if (chat instanceof QBGroupChat) {
                     String roomJid = ((QBGroupChat) chat).getJid();
                     log("user " + userId + " is typing. Room Jid: " + roomJid);
-                } else {
+                } else {*/
                     log("user " + userId + " is typing");
-                }
+                //}
             }
 
             @Override
-            public void processUserStopTyping(QBChat chat, Integer userId) {
-                if (chat instanceof QBGroupChat) {
+            public void processUserStopTyping(QBPrivateChat chat, Integer userId) {
+                /*if (chat instanceof QBGroupChat) {
                     String roomJid = ((QBGroupChat) chat).getJid();
                     log("user " + userId + " stop typing. Room Jid: " + roomJid);
-                } else {
+                } else {*/
                     log("user " + userId + " stop typing");
-                }
+                //}
+            }
+        };
+
+        isTypingListenerGroup = new QBIsTypingListener<QBGroupChat>() {
+
+            @Override
+            public void processUserIsTyping(QBGroupChat qbGroupChat, Integer userId) {
+                String roomJid = ((QBGroupChat) qbGroupChat).getJid();
+                log("user " + userId + " is typing. Room Jid: " + roomJid);
+            }
+
+            @Override
+            public void processUserStopTyping(QBGroupChat qbGroupChat, Integer userId) {
+                String roomJid = ((QBGroupChat) qbGroupChat).getJid();
+                log("user " + userId + " stop typing. Room Jid: " + roomJid);
             }
         };
     }
@@ -674,7 +689,7 @@ public class SnippetsChat extends Snippets {
                 QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
                 if (privateChat == null) {
                     privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                    privateChat.addIsTypingListener(isTypingListener);
+                    privateChat.addIsTypingListener(isTypingListenerPrivate);
                     privateChat.addMessageSentListener(privateChatMessageSentListener);
                 }
                 privateChat.sendMessage(chatMessage);
@@ -701,7 +716,7 @@ public class SnippetsChat extends Snippets {
             QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
             if (privateChat == null) {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                privateChat.addIsTypingListener(isTypingListener);
+                privateChat.addIsTypingListener(isTypingListenerPrivate);
             }
             try {
                 privateChat.sendIsTypingNotification();
@@ -724,7 +739,7 @@ public class SnippetsChat extends Snippets {
             QBPrivateChat privateChat = privateChatManager.getChat(ApplicationConfig.getInstance().getTestUserId2());
             if (privateChat == null) {
                 privateChat = privateChatManager.createChat(ApplicationConfig.getInstance().getTestUserId2(), privateChatMessageListener);
-                privateChat.addIsTypingListener(isTypingListener);
+                privateChat.addIsTypingListener(isTypingListenerPrivate);
             }
             try {
                 privateChat.sendStopTypingNotification();
@@ -929,7 +944,7 @@ public class SnippetsChat extends Snippets {
                     currentChatRoom.addMessageListener(groupChatMessageListener);
                     currentChatRoom.addParticipantListener(participantListener);
                     currentChatRoom.addMessageSentListener(groupChatMessageSentListener);
-                    currentChatRoom.addIsTypingListener(isTypingListener);
+                    currentChatRoom.addIsTypingListener(isTypingListenerGroup);
                 }
 
                 @Override
@@ -962,7 +977,7 @@ public class SnippetsChat extends Snippets {
                 // add listeners
                 currentChatRoom.addMessageListener(groupChatMessageListener);
                 currentChatRoom.addParticipantListener(participantListener);
-                currentChatRoom.addIsTypingListener(isTypingListener);
+                currentChatRoom.addIsTypingListener(isTypingListenerGroup);
 
             } catch (XMPPException | SmackException e) {
                 setException(e);
@@ -1403,7 +1418,7 @@ public class SnippetsChat extends Snippets {
 
             String dialogID = "5444bba7535c121d3302245f";
 
-            groupChatManager.deleteDialog(dialogID, new QBEntityCallback<Void>() {
+            groupChatManager.deleteDialog(dialogID, true, new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, "dialog deleted");

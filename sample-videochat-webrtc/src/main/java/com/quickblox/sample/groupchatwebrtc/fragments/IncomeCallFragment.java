@@ -121,13 +121,12 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         takeBtn = (ImageButton) view.findViewById(R.id.takeBtn);
     }
 
-    private void enableButtons(boolean enable) {
+    private void enableButtons(boolean enable){
         takeBtn.setEnabled(enable);
         rejectBtn.setEnabled(enable);
     }
 
     public void startCallNotification() {
-        Log.d(TAG, "startCallNotification()");
 
         ringtonePlayer.play(false);
 
@@ -141,8 +140,6 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void stopCallNotification() {
-        Log.d(TAG, "stopCallNotification()");
-
         if (ringtonePlayer != null) {
             ringtonePlayer.stop();
         }
@@ -218,9 +215,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             default:
                 break;
         }
-    }
-
-    ;
+    };
 
     private void accept() {
         takeBtn.setClickable(false);
@@ -238,7 +233,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
 
         stopCallNotification();
 
-        ((CallActivity) getActivity()).rejectCurrentSession();
+        ((CallActivity) getActivity()).rejectCurrentSession(" I don't want to talk");
         ((CallActivity) getActivity()).removeIncomeCallFragment();
         ((CallActivity) getActivity()).addOpponentsFragment();
     }

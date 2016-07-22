@@ -2,7 +2,6 @@ package com.quickblox.sample.groupchatwebrtc.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
+import com.quickblox.sample.groupchatwebrtc.utils.QBRTCSessionUtils;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBPeerChannel;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
+
+import org.webrtc.RendererCommon;
+import org.webrtc.SurfaceViewRenderer;
 
 import java.util.List;
 
@@ -21,28 +26,25 @@ import java.util.List;
  */
 public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder> {
 
-    public static final int OPPONENT = 1;
-    public static final int HOLDER = 2;
-
-    private static final int NUM_IN_ROW = 3;
     private static final String TAG = OpponentsFromCallAdapter.class.getSimpleName();
     private final int itemHeight;
     private final int itemWidth;
     private int paddingLeft = 0;
 
     private Context context;
+    private final QBRTCSession qbrtcSession;
     private List<QBUser> opponents;
     private int gridWidth;
     private boolean showVideoView;
     private LayoutInflater inflater;
     private int columns;
-    private OnAdapterEventListener adapterListener;
 
-
-    public OpponentsFromCallAdapter(Context context, List<QBUser> users, int width, int height,
+    public OpponentsFromCallAdapter(Context context, QBRTCSession qbrtcSession,
+                                    List<QBUser> users, int width, int height,
                                     int gridWidth, int columns, int itemMargin,
                                     boolean showVideoView) {
         this.context = context;
+        this.qbrtcSession = qbrtcSession;
         this.opponents = users;
         this.gridWidth = gridWidth;
         this.columns = columns;
@@ -61,10 +63,6 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         }
     }
 
-    public void setAdapterListener(OnAdapterEventListener adapterListener) {
-        this.adapterListener = adapterListener;
-    }
-
     @Override
     public int getItemCount() {
         return opponents.size();
@@ -81,6 +79,9 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         if (paddingLeft != 0) {
             v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
         }
+        SurfaceViewRenderer opponentView = (SurfaceViewRenderer) v.findViewById(R.id.opponentView);
+        updateVideoView(opponentView, false);
+
         ViewHolder vh = new ViewHolder(v);
         vh.showOpponentView(showVideoView);
         return vh;
@@ -89,12 +90,16 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final QBUser user = opponents.get(position);
-
         holder.opponentsName.setText(user.getFullName());
         holder.setUserId(user.getId());
-        if (position == (opponents.size() -1 )) {
-            adapterListener.OnBindLastViewHolder(holder, position);
+        QBPeerChannel peerChannel = qbrtcSession.getPeerChannel(user.getId());
+        Integer statusRes = QBRTCSessionUtils.getStatusDescriptionReosuurce(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED == peerChannel.getState() ?
+                        peerChannel.getDisconnectReason() : peerChannel.getState());
+        if (statusRes == null) {
+            statusRes = R.string.unDefined;
         }
+        holder.setStatus(context.getString(statusRes));
     }
 
     @Override
@@ -102,34 +107,32 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         return position;
     }
 
-    public interface OnAdapterEventListener {
-        public void OnBindLastViewHolder(ViewHolder holder, int position);
+    protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer,  boolean mirror){
+        surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+        surfaceViewRenderer.setMirror(mirror);
+        surfaceViewRenderer.requestLayout();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView opponentsName;
         TextView connectionStatus;
-        RTCGLVideoView opponentView;
-        TextView connectionStats;
+        SurfaceViewRenderer opponentView;
         private int userId;
 
         public ViewHolder(View itemView) {
             super(itemView);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
-            opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
-            connectionStats = (TextView) itemView.findViewById(R.id.connectionStats);
-            connectionStats.setMovementMethod(new ScrollingMovementMethod());
+            opponentView = (SurfaceViewRenderer) itemView.findViewById(R.id.opponentView);
         }
 
         public void setStatus(String status) {
             connectionStatus.setText(status);
         }
 
-        public void setStatsReport(String statsreport) {
-            connectionStats.setText(statsreport);
+        public TextView getConnectionStatus() {
+            return connectionStatus;
         }
-
 
         public void setUserId(int userId) {
             this.userId = userId;
@@ -139,7 +142,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             return userId;
         }
 
-        public RTCGLVideoView getOpponentView() {
+        public SurfaceViewRenderer getOpponentView() {
             return opponentView;
         }
 

@@ -1,16 +1,19 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.SystemClock;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.users.model.QBUser;
 
@@ -18,7 +21,7 @@ import com.quickblox.users.model.QBUser;
 /**
  * QuickBlox team
  */
-public class BaseLogginedUserActivity extends Activity {
+public class BaseLogginedUserActivity extends AppCompatActivity {
 
     private static final String APP_VERSION = "App version";
     private ActionBar mActionBar;
@@ -27,7 +30,7 @@ public class BaseLogginedUserActivity extends Activity {
 
     public void initActionBar() {
 
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -37,16 +40,16 @@ public class BaseLogginedUserActivity extends Activity {
 
         TextView numberOfListAB = (TextView) mCustomView.findViewById(R.id.numberOfListAB);
         QBUser loggedUser = DataHolder.getLoggedUser();
-        if (loggedUser != null) {
+        if (loggedUser != null ) {
             int number = DataHolder.getUserIndexByID(loggedUser.getId());
             numberOfListAB.setBackgroundResource(ListUsersActivity.resourceSelector(number));
-            numberOfListAB.setText(String.valueOf(number + 1));
+            numberOfListAB.setText(String.valueOf(number+1));
 
             TextView loginAsAB = (TextView) mCustomView.findViewById(R.id.loginAsAB);
             loginAsAB.setText(R.string.logged_in_as);
             //
             TextView userNameAB = (TextView) mCustomView.findViewById(R.id.userNameAB);
-            userNameAB.setText(String.valueOf(number + 1));
+            userNameAB.setText(String.valueOf(number+1));
         }
 
         numberOfListAB.setOnLongClickListener(new View.OnLongClickListener() {
@@ -54,11 +57,11 @@ public class BaseLogginedUserActivity extends Activity {
             public boolean onLongClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(BaseLogginedUserActivity.this);
                 dialog.setTitle(APP_VERSION);
-                dialog.setMessage(Consts.VERSION_NUMBER);
+                String appVersion = getAppVersion();
+                dialog.setMessage(appVersion != null ? appVersion : Consts.VERSION_NUMBER );
                 dialog.show();
                 return true;
-            }
-        });
+            }});
 
 
         mActionBar.setCustomView(mCustomView);
@@ -66,8 +69,20 @@ public class BaseLogginedUserActivity extends Activity {
 
     }
 
+    public  String getAppVersion() {
+        PackageInfo pinfo = null;
+        try {
+            pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return pinfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(BaseLogginedUserActivity.class.getSimpleName(), "Retriving versionName failed." + e.getLocalizedMessage());
+            return null;
+        }
+
+    }
+
     public void initActionBarWithTimer() {
-        mActionBar = getActionBar();
+        mActionBar = getSupportActionBar();
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
 
@@ -98,8 +113,8 @@ public class BaseLogginedUserActivity extends Activity {
         }
     }
 
-    public void stopTimer() {
-        if (timerABWithTimer != null) {
+    public void stopTimer(){
+        if (timerABWithTimer != null){
             timerABWithTimer.stop();
             isStarted = false;
         }

@@ -16,27 +16,30 @@
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
 
-    <string name="users_tag">webrtcusers</string>
+    <string name="users_tag">webrtc</string>
 
     <string name="welcoming_message">Login as any user on this deviсe and another(s) users on another device</string>
     <string name="select_user_to_call">Select Users You Want to Call</string>
 
-    
+
     <string name="btn_audio_call">AUDIO CALL</string>
     <string name="btn_video_call">VIDEO CALL</string>
     <string name="opponentsListActionBarTitle"><![CDATA[Video & Audio Group Chat Sample]]></string>
     <string name="current_version">0.9.1</string>
     <string name="rejected">Rejected</string>
     <string name="noAnswer">No answer</string>
+    <string name="unDefined">Undefined</string>
+    <string name="pending">Pending</string>
     <string name="hungUp">Hung up</string>
     <string name="closed">Closed</string>
     <string name="time_out">Time Out</string>
     <string name="failed">Failed</string>
-    <string name="WIFI_DISABLED">Call was stoped because connection was lost</string>
-    <string name="NETWORK_ABSENT">Connection lost</string>
+    <string name="call_was_stopped_connection_lost">Call was stopped because connection was lost</string>
+    <string name="connection_was_lost">Chat connection was lost</string>
+    <string name="connection_reconnected">Connection reconnected</string>
 
     <!-- Dialogs strings. -->
-    <string name="dlg_signal_error">Disconnected... Please check your Internet connection!</string>
+    <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -95,13 +98,41 @@
     <string name="pref_hwcodec_dlg">Use hardware accelerated video codec (if available).</string>
     <string name="pref_hwcodec_default">true</string>
 
+    <string name="pref_initiator_behaviour_key">initiator_as_main_preference</string>
+    <string name="pref_initiator_behaviour_title">End conference if initiator hangs up</string>
+    <string name="pref_initiator_behaviour_default">true</string>
+
+
+
+
     <string name="pref_value_enabled">Enabled</string>
     <string name="pref_value_disabled">Disabled</string>
 
-    <string name="pref_room_server_url_key">room_server_url_preference</string>
-    <string name="pref_room_server_url_title">Room server URL.</string>
-    <string name="pref_room_server_url_dlg">Enter a room server URL.</string>
-    <string name="pref_room_server_url_default" translatable="false">https://apprtc.appspot.com</string>
+    <string name="pref_noaudioprocessing_key">audioprocessing_preference</string>
+    <string name="pref_noaudioprocessing_title">Disable audio processing.</string>
+    <string name="pref_noaudioprocessing_dlg">Disable audio processing pipeline.</string>
+    <string name="pref_noaudioprocessing_default">false</string>
+
+    <string name="pref_aecdump_key">aecdump_preference</string>
+    <string name="pref_aecdump_title">Create aecdump.</string>
+    <string name="pref_aecdump_dlg">Enable diagnostic audio recordings.</string>
+    <string name="pref_aecdump_default">false</string>
+
+    <string name="pref_opensles_key">opensles_preference</string>
+    <string name="pref_opensles_title">Use OpenSL ES for audio playback.</string>
+    <string name="pref_opensles_dlg">Use OpenSL ES for audio playback.</string>
+    <string name="pref_opensles_default">false</string>
+
+    <string name="pref_disable_built_in_aec_key">disable_built_in_aec_preference</string>
+    <string name="pref_disable_built_in_aec_title">Disable built-in AEC.</string>
+    <string name="pref_disable_built_in_aec_dlg">Disable built-in AEC.</string>
+    <string name="pref_disable_built_in_aec_default">false</string>
+    <string name="pref_built_in_aec_not_available">Built-in AEC is not available</string>
+
+    <string name="pref_tracing_key">tracing_preference</string>
+    <string name="pref_tracing_title">Debug performance tracing.</string>
+    <string name="pref_tracing_dlg">Debug performance tracing.</string>
+    <string name="pref_tracing_default" translatable="false">false</string>
 
     <string name="pref_displayhud_key">displayhud_preference</string>
     <string name="pref_displayhud_title">Display call statistics.</string>
@@ -114,6 +145,11 @@
     <string name="pref_audiocodec_dlg">Select default audio codec</string>
     <string name="btn_screen_capture">screenShot</string>
     <string name="accepted">Accepted</string>
-    <string name="connection_was_lost">Connection was lost</string>
+    <string name="dlg_accepted_another_device">Call was accepted on another device</string>
+    <string name="dlg_rejected_another_device">Call was rejected on another device</string>
+    <string name="pref_use_proximity_sensor">use_proximity_sensor</string>
+    <string name="pref_use_proximity_sensor_title">Use proximity sensor to switch speakers</string>
+    <string name="muted">Muted</string>
+    <string name="capture_format_change_text">Slide to change capture format</string>
 
 </resources>

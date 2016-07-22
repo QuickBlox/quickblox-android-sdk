@@ -264,9 +264,9 @@ public class SnippetsContent extends Snippets {
         @Override
         public void execute() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
-            QBContent.uploadFile(file1, params, new QBEntityCallback<PostResponse>(){
+            QBContent.uploadFile(file1, params, new QBEntityCallback<Void>(){
                 @Override
-                public void onSuccess(PostResponse amazonS3Response, Bundle params) {
+                public void onSuccess(Void amazonS3Response, Bundle params) {
                     Log.i(TAG, ">>> AmazonS3Response: " + amazonS3Response);
                 }
 
@@ -290,7 +290,7 @@ public class SnippetsContent extends Snippets {
 
             PostResponse amazonS3Response = null;
             try {
-                amazonS3Response = QBContent.uploadFile(file1, params, new QBProgressCallback() {
+                QBContent.uploadFile(file1, params, new QBProgressCallback() {
                     @Override
                     public void onProgressUpdate(int progress) {
                         Log.i(TAG, "progress: " + progress);
@@ -299,9 +299,7 @@ public class SnippetsContent extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(amazonS3Response != null){
-                Log.i(TAG, ">>> AmazonS3Response: " + amazonS3Response);
-            }
+
         }
     };
 

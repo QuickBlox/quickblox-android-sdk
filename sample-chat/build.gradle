@@ -8,8 +8,8 @@ android {
         applicationId "com.quickblox.sample.chat"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 200
-        versionName "2.0.0"
+        versionCode 201
+        versionName "2.0.3"
     }
 
     productFlavors {
@@ -35,17 +35,15 @@ android {
             keyPassword "android"
         }
     }
+
 }
 
-dependencies {
-    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
-        transitive = true
-    }
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
 
-    compile(project(":sample-core")) {
-        transitive = true;
-    }
+dependencies {
+    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion")
+    compile("com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion")
+
+    compile(project(":sample-core"))
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"

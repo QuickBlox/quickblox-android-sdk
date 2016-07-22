@@ -61,9 +61,7 @@ android {
 }
 
 dependencies {
-    compile(project(":sample-core")) {
-        transitive = true;
-    }
+    compile(project(":sample-core"))
 
     // online dependencies, from maven repository, jar files
     //
@@ -71,18 +69,16 @@ dependencies {
         exclude group: 'de.measite.minidns'
         exclude group: 'org.jxmpp'
     }
-    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
-    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
+    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
+    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
+    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
 
     // online dependencies, from remote repository, aar files
-    //
-    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
-        transitive = true
-    }
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
-    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
+
+    compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
 
 //    // offline dependencies, from 'SDK-android' dir, for debug
 //    //

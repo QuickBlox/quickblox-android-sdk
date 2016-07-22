@@ -1,8 +1,12 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="BaseAppTheme" parent="android:Theme.Holo.Light">
-        <!-- Customize your theme here. -->
+    <style name="AppThemeVideo" parent="AppTheme" />
+
+
+
+    <style name="AppThemeVideo.Button" parent="Widget.AppCompat.Button">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
 
 </resources>

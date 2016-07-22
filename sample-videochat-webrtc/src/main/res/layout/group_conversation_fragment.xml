@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/local_videoview_layout"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        layout="@layout/local_videoview"
+        />
+
+    <android.support.v7.widget.RecyclerView android:id="@+id/grid_opponents"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="1dp"
+        android:layout_below="@+id/local_videoview_layout"
+        android:numColumns="3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

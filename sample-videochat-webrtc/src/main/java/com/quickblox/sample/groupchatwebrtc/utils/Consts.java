@@ -19,4 +19,6 @@ public interface Consts {
 
     String OPPONENTS = "opponents";
     String CONFERENCE_TYPE = "conference_type";
+    String HANG_UP_REASON = "hangup_reason";
+    String REJECT_REASON = "reject_reason";
 }

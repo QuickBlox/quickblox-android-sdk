@@ -38,10 +38,9 @@ android {
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
-    compile(project(":sample-core")) {
-        transitive = true;
-    }
+    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+
+    compile(project(":sample-core"))
 
     compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
 }

@@ -23,9 +23,9 @@ android {
     defaultConfig {
         applicationId "com.quickblox.sample.groupchatwebrtc"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.4"
     }
 
     productFlavors {
@@ -52,19 +52,17 @@ android {
             keyPassword "android"
         }
     }
+
+    dexOptions {
+        preDexLibraries = false
+    }
 }
 
 dependencies {
 
-    compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
-    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
-        transitive=true
-    }
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
-    compile (project(":sample-core")) {
-        transitive = true;
-    }
+    compile (project(":sample-core"))
 
     compile "com.android.support:recyclerview-v7:${rootProject.recyclerviewV7Version}"
     compile "com.android.support:support-annotations:${rootProject.supportAnnotationsVersion}"

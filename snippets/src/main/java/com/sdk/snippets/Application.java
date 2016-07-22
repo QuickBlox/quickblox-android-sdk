@@ -2,12 +2,13 @@ package com.sdk.snippets;
 
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.ServiceZone;
+import com.quickblox.sample.core.CoreApp;
 import com.sdk.snippets.core.ApplicationConfig;
 
 /**
  * Created by igorkhomenko on 11/20/15.
  */
-public class Application extends android.app.Application {
+public class Application extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
