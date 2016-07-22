@@ -33,7 +33,6 @@ import com.quickblox.sample.groupchatwebrtc.fragments.SessionController;
 import com.quickblox.sample.groupchatwebrtc.holder.DataHolder;
 import com.quickblox.sample.groupchatwebrtc.utils.ChatPingAlarmManager;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
-import com.quickblox.sample.groupchatwebrtc.utils.DialogUtil;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
 import com.quickblox.sample.groupchatwebrtc.utils.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.RingtonePlayer;
@@ -151,14 +150,14 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         audioManager = AppRTCAudioManager.create(this,  new AppRTCAudioManager.OnAudioManagerStateListener() {
             @Override
             public void onAudioChangedState(AppRTCAudioManager.AudioDevice audioDevice) {
-                DialogUtil.showToast(CallActivity.this, "Audio device swicthed to  " + audioDevice);
+                Toaster.longToast( "Audio device swicthed to  " + audioDevice);
             }
         });
         audioManager.setDefaultAudioDevice(AudioDevice.EARPIECE);
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
-                DialogUtil.showToast(CallActivity.this, "Headset " + (plugged ? "plugged" : "unplugged"));
+                Toaster.longToast( "Headset " + (plugged ? "plugged" : "unplugged"));
                 if (audioStateCallback != null){
                     audioStateCallback.onWiredHeadsetStateChanged(plugged);
                 }
@@ -182,28 +181,28 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
             @Override
             public void onCameraError(final String s) {
 
-                DialogUtil.showToast(CallActivity.this, "Camera error: " + s);
+                showToast( "Camera error: " + s);
             }
 
             @Override
             public void onCameraFreezed(String s) {
-                DialogUtil.showToast(CallActivity.this, "Camera freezed: " + s);
+                showToast( "Camera freezed: " + s);
                 hangUpCurrentSession("camera freezed" + s);
             }
 
             @Override
             public void onCameraOpening(int i) {
-                DialogUtil.showToast(CallActivity.this, "Camera " + i + " opening");
+                showToast( "Camera " + i + " opening");
             }
 
             @Override
             public void onFirstFrameAvailable() {
-                DialogUtil.showToast(CallActivity.this, "onFirstFrameAvailable");
+                showToast( "onFirstFrameAvailable");
             }
 
             @Override
             public void onCameraClosed() {
-                DialogUtil.showToast(CallActivity.this, "onCameraClosed");
+                showToast("onCameraClosed");
             }
         });
 
@@ -300,7 +299,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 } else {
                     rejectCurrentSession(" opponent didn't answer");
                 }
-                DialogUtil.showToast(CallActivity.this, "Call was stopped by timer");
+                Toaster.longToast( "Call was stopped by timer");
             }
         };
     }
@@ -459,8 +458,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
 
 
         String participantName = DataHolder.getUserNameByID(userID);
-        DialogUtil.showToast(CallActivity.this,
-                "User " + participantName + " " + getString(R.string.rejected) + " conversation:" + reason);
+        showToast( "User " + participantName + " " + getString(R.string.rejected) + " conversation:" + reason);
         ringtonePlayer.stop();
 
     }
