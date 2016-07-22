@@ -14,8 +14,7 @@ import org.webrtc.VideoRendererGui;
 
 
 /**
- * @Deprecated
- *
+ * @deprecated
  * View Class displays webrtc video frames {@link org.webrtc.VideoRenderer.I420Frame I420Frame}
  * using {@link org.webrtc.VideoRendererGui VideoRendererGui}.
  * <p>
