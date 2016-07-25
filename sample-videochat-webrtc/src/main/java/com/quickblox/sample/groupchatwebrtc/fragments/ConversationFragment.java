@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.media.AudioManager;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.DimenRes;
@@ -50,6 +52,8 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.VideoRenderer;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +85,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
     private ToggleButton switchCameraToggle;
     private ToggleButton dynamicToggleVideoCall;
     private ToggleButton micToggleVideoCall;
+    private ToggleButton audiorecordToggle;
     private ImageButton handUpVideoCall;
     private View myCameraOff;
     private TextView incUserName;
@@ -153,6 +158,7 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         setUpUiByCallType(qbConferenceType);
 
         mainHandler = new FragmentLifeCycleHandler();
+
         return view;
 
     }
@@ -259,6 +265,18 @@ public class ConversationFragment extends Fragment implements Serializable, QBRT
         incUserName.setText(callerName);
         incUserName.setBackgroundResource(ListUsersActivity.selectBackgrounForOpponent((
                 DataHolder.getUserIndexByFullName(callerName)) + 1));
+
+        audiorecordToggle = (ToggleButton) view.findViewById(R.id.audioRecordToggle);
+        audiorecordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    ((CallActivity) getActivity()).startAudioRecord();
+                } else {
+                    ((CallActivity) getActivity()).stopAudioRecord();
+                }
+            }
+        });
 
         actionButtonsEnabled(false);
     }

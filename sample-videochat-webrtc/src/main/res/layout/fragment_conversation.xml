@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:id = "@+id/fragmentOpponents"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:keepScreenOn="true"
     android:background="@color/white">
+
+    <ToggleButton
+        android:id="@+id/audioRecordToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="Start record audio"
+        android:textOn="Stop record audio"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <FrameLayout
         android:layout_width="100dp"

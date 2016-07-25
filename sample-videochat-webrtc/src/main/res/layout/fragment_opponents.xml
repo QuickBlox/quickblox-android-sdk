@@ -4,6 +4,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <ToggleButton
+        android:id="@+id/audioRecordToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="Start record audio"
+        android:textOn="Stop record audio"
+
+        />
+
 
     <TextView
         android:layout_width="fill_parent"
@@ -11,12 +20,12 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/select_user_to_call"
         android:id="@+id/selectUsertextView"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:textColor="@color/grey"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/audioRecordToggle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <!--android:layout_alignParentTop="true"-->
 

@@ -11,7 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -40,6 +42,7 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
     private View view = null;
     private ProgressDialog progresDialog;
     private ListView opponentsList;
+    private ToggleButton audiorecordToggle;
 
     public static OpponentsFragment getInstance() {
         return new OpponentsFragment();
@@ -109,6 +112,18 @@ public class OpponentsFragment extends Fragment implements View.OnClickListener,
         btnVideoCall.setOnClickListener(this);
 
         opponentsList = (ListView) view.findViewById(R.id.opponentsList);
+
+        audiorecordToggle = (ToggleButton) view.findViewById(R.id.audioRecordToggle);
+        audiorecordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    ((CallActivity) getActivity()).startAudioRecord();
+                } else {
+                    ((CallActivity) getActivity()).stopAudioRecord();
+                }
+            }
+        });
     }
 
     @Override

@@ -4,7 +4,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -53,6 +55,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.webrtc.VideoCapturerAndroid;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,6 +92,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
     private LinearLayout connectionView;
     private AppRTCAudioManager audioManager;
     private NetworkConnectionChecker networkConnectionChecker;
+    private MediaRecorder mRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -607,7 +611,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                 qbConferenceType, userInfo,
                 StartConversetionReason.OUTCOME_CALL_MADE, getCurrentSession().getSessionID());
         FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
-        audioManager.init();
+//        audioManager.init();
         ringtonePlayer.play(true);
     }
 
@@ -655,7 +659,7 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
                     session.getConferenceType(), session.getUserInfo(),
                     StartConversetionReason.INCOME_CALL_FOR_ACCEPTION, getCurrentSession().getSessionID());
             // Start conversation fragment
-            audioManager.init();
+//            audioManager.init();
             FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, CONVERSATION_CALL_FRAGMENT);
         }
     }
@@ -756,6 +760,37 @@ public class CallActivity extends BaseLogginedUserActivity implements QBRTCClien
         void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
 
         void onReceiveHangUpFromUser(QBRTCSession session, Integer userId);
+    }
+
+    //TODO VT for checking audio recording during call
+    public void startAudioRecord() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+        mRecorder.setOutputFile(getAudioFileName());
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+
+        try {
+            mRecorder.prepare();
+            Log.v(TAG, "prepare() audio recorder success");
+        } catch (IOException e) {
+            Log.v(TAG, "prepare() audio recorder failed");
+        }
+
+        mRecorder.start();
+    }
+
+    private String getAudioFileName() {
+        String mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFileName += "/audiorecord_" + SystemClock.uptimeMillis() + ".3gp";
+        return mFileName;
+    }
+
+    public void stopAudioRecord() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+
     }
 }
 
