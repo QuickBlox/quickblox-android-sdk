@@ -34,11 +34,42 @@ public class SettingsUtil {
     }
 
     public static void setSettingsStrategy(List<Integer> users, SharedPreferences sharedPref, Context context) {
+        setCommonSettings(sharedPref, context);
         if (users.size() == 1) {
             setSettingsFromPreferences(sharedPref, context);
         } else {
             setSettingsForMultiCall(users);
         }
+    }
+
+    private static void setCommonSettings(SharedPreferences sharedPref, Context context) {
+        String audioCodecDescription = getPreferenceString(sharedPref, context, R.string.pref_audiocodec_key,
+                R.string.pref_audiocodec_def);
+        QBRTCMediaConfig.AudioCodec audioCodec = QBRTCMediaConfig.AudioCodec.ISAC.getDescription()
+                .equals(audioCodecDescription) ?
+                QBRTCMediaConfig.AudioCodec.ISAC : QBRTCMediaConfig.AudioCodec.OPUS;
+        Log.e(TAG, "audioCodec =: " + audioCodec.getDescription());
+        QBRTCMediaConfig.setAudioCodec(audioCodec);
+        Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
+        // Check Disable built-in AEC flag.
+        boolean disableBuiltInAEC = getPreferenceBoolean(sharedPref, context,
+                R.string.pref_disable_built_in_aec_key,
+                R.string.pref_disable_built_in_aec_default);
+
+        QBRTCMediaConfig.setUseBuildInAEC(!disableBuiltInAEC);
+        Log.v(TAG, "setUseBuildInAEC = " + QBRTCMediaConfig.isUseBuildInAEC());
+        // Check Disable Audio Processing flag.
+        boolean noAudioProcessing = getPreferenceBoolean(sharedPref, context,
+                R.string.pref_noaudioprocessing_key,
+                R.string.pref_noaudioprocessing_default);
+        QBRTCMediaConfig.setAudioProcessingEnabled(!noAudioProcessing);
+        Log.v(TAG, "isAudioProcessingEnabled = " + QBRTCMediaConfig.isAudioProcessingEnabled());
+        // Check OpenSL ES enabled flag.
+        boolean useOpenSLES = getPreferenceBoolean(sharedPref, context,
+                R.string.pref_opensles_key,
+                R.string.pref_opensles_default);
+        QBRTCMediaConfig.setUseOpenSLES(useOpenSLES);
+        Log.v(TAG, "isUseOpenSLES = " + QBRTCMediaConfig.isUseOpenSLES());
     }
 
     private static void setSettingsFromPreferences(SharedPreferences sharedPref, Context context) {
@@ -73,15 +104,11 @@ public class SettingsUtil {
                 break;
             }
         }
-
-        String audioCodecDescription = getPreferenceString(sharedPref, context, R.string.pref_audiocodec_key,
-                R.string.pref_audiocodec_def);
-        QBRTCMediaConfig.AudioCodec audioCodec = QBRTCMediaConfig.AudioCodec.ISAC.getDescription()
-                .equals(audioCodecDescription) ?
-                QBRTCMediaConfig.AudioCodec.ISAC : QBRTCMediaConfig.AudioCodec.OPUS;
-        Log.e(TAG, "audioCodec =: " + audioCodec.getDescription());
-        QBRTCMediaConfig.setAudioCodec(audioCodec);
-        Log.v(TAG, "audioCodec = " + QBRTCMediaConfig.getAudioCodec());
+        // Get camera fps from settings.
+        int cameraFps = getPreferenceInt(sharedPref, context, R.string.pref_frame_rate_key, R.string.pref_frame_rate_default);
+        Log.e(TAG, "cameraFps = " + cameraFps);
+        QBRTCMediaConfig.setVideoFps(cameraFps);
+        Log.v(TAG, "cameraFps = " + QBRTCMediaConfig.getVideoFps());
     }
 
     public static void configRTCTimers(Context context) {
@@ -130,17 +157,17 @@ public class SettingsUtil {
     }
 
     private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
-        return sharedPref.getString(context.getString(strResKey),
-                context.getString(strResDefValue));
+        return sharedPref.getString(context.getString(strResKey), context.getString(strResDefValue));
     }
 
     private static String getPreferenceString(SharedPreferences sharedPref, Context context, int strResKey, String strResDefValue) {
-        return sharedPref.getString(context.getString(strResKey),
-                strResDefValue);
+        return sharedPref.getString(context.getString(strResKey), strResDefValue);
     }
 
     public static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
         return sharedPref.getInt(context.getString(strResKey), Integer.valueOf(context.getString(strResDefValue)));
     }
-
+    private static boolean getPreferenceBoolean(SharedPreferences sharedPref, Context context, int StrRes, int strResDefValue) {
+        return sharedPref.getBoolean(context.getString(StrRes), Boolean.valueOf(context.getString(strResDefValue)));
+    }
 }

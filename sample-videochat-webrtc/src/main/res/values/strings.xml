@@ -116,11 +116,6 @@
     <string name="pref_resolution_dlg">Enter RTC local video resolution</string>
     <string name="pref_resolution_default">-1</string>
 
-    <string name="pref_fps_key">fps_preference</string>
-    <string name="pref_fps_title">Camera fps.</string>
-    <string name="pref_fps_dlg">Enter local camera fps.</string>
-    <string name="pref_fps_default">0</string>
-
     <string name="pref_startbitrate_key">startbitrate_preference</string>
     <string name="pref_startbitrate_title">Start bitrate setting</string>
     <string name="pref_startbitrate_dlg">Start bitrate setting</string>
@@ -132,6 +127,22 @@
     <integer name="pref_startbitratevalue_min_value">0</integer>
     <integer name="pref_startbitratevalue_max_value">2000</integer>
     <integer name="pref_startbitratevalue_step_size">100</integer>
+
+    <string name="pref_disable_built_in_aec_key">disable_built_in_aec_preference</string>
+    <string name="pref_disable_built_in_aec_title">Disable built-in AEC</string>
+    <string name="pref_disable_built_in_aec_dlg">Disable built-in AEC</string>
+    <string name="pref_disable_built_in_aec_default">false</string>
+    <string name="pref_built_in_aec_not_available">Built-in AEC is not available</string>
+
+    <string name="pref_opensles_key">opensles_preference</string>
+    <string name="pref_opensles_title">Use OpenSL ES for audio playback</string>
+    <string name="pref_opensles_dlg">Use OpenSL ES for audio playback</string>
+    <string name="pref_opensles_default">false</string>
+
+    <string name="pref_noaudioprocessing_key">audioprocessing_preference</string>
+    <string name="pref_noaudioprocessing_title">Disable audio processing</string>
+    <string name="pref_noaudioprocessing_dlg">Disable audio processing pipeline</string>
+    <string name="pref_noaudioprocessing_default">false</string>
 
     <!--Call Settings-->
 
