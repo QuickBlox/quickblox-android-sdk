@@ -152,10 +152,10 @@ public class ChatHelper {
 
     public void deleteDialog(QBDialog qbDialog, QBEntityCallback<Void> callback) {
         if (qbDialog.getType() == QBDialogType.GROUP) {
-            QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(),
+            QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(), false,
                     new QbEntityCallbackWrapper<>(callback));
         } else if (qbDialog.getType() == QBDialogType.PRIVATE) {
-            QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(),
+            QBChatService.getInstance().getPrivateChatManager().deleteDialog(qbDialog.getDialogId(), false,
                     new QbEntityCallbackWrapper<>(callback));
         } else if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
@@ -251,7 +251,7 @@ public class ChatHelper {
 
     public void getUsersFromDialog(QBDialog dialog,
                                    final QBEntityCallback<ArrayList<QBUser>> callback) {
-        ArrayList<Integer> userIds = dialog.getOccupants();
+        List<Integer> userIds = dialog.getOccupants();
 
         ArrayList<QBUser> users = new ArrayList<>(userIds.size());
         for (Integer id : userIds) {
