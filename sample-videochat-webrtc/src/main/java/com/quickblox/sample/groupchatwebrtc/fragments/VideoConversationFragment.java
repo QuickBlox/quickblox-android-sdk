@@ -331,21 +331,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 //      disable cameraToggle while processing switchCamera
         cameraToggle.setEnabled(false);
 
-        mediaStreamManager.switchCameraInput(new CameraVideoCapturer.CameraSwitchHandler() {
-            @Override
-            public void onCameraSwitchDone(boolean b) {
-                toggleCameraInternal(mediaStreamManager);
-                updateSwitchCameraIcon(item, mediaStreamManager);
-            }
+        mediaStreamManager.switchCameraInput(null);
+        toggleCameraInternal(mediaStreamManager);
 
-            @Override
-            public void onCameraSwitchError(String s) {
-                updateSwitchCameraIcon(item, mediaStreamManager);
-            }
-        });
+        updateSwitchCameraIcon(item, mediaStreamManager);
     }
 
-    private void updateSwitchCameraIcon(MenuItem item, QBMediaStreamManager mediaStreamManager) {
+    private void updateSwitchCameraIcon(final MenuItem item, final QBMediaStreamManager mediaStreamManager) {
         if (CameraUtils.isCameraFront(mediaStreamManager.getCurrentCameraId())) {
             Log.d(TAG, "CameraFront now!");
             item.setIcon(R.drawable.ic_camera_front);
@@ -405,8 +397,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (remoteVideoView != null) {
             Log.d(TAG, "localVideoView.updateRenderer SECOND");
             //TODO VT need update renderer
-            remoteVideoView.setMirror(true);
-            fillVideoView(remoteVideoView, videoTrack, false);
+            fillVideoView(remoteVideoView, localVideoTrack, false);
+            updateVideoView(remoteVideoView, true);
         }
 
         if (isPeerToPeerCall) {
@@ -430,15 +422,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
+        localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
+        fillVideoView(localVideoView, localVideoTrack, false);
+
         if (isPeerToPeerCall) {
                     setDuringCallActionBar();
-                    localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
                     if (remoteVideoView == null) {
                         remoteVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
                     }
-                    fillVideoView(localVideoView, localVideoTrack, false);
                     fillVideoView(userID, remoteVideoView, videoTrack);
-
         } else {
             setRemoteViewMultiCall(userID, videoTrack);
         }
@@ -471,7 +463,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     remoteVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
                         Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
-                        fillVideoView(remoteVideoView, localVideoTrack, isPeerToPeerCall);
+                        fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
@@ -544,12 +536,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         updateVideoView(remoteVideoView, false);
     }
 
-    private void setRemoteViewOneToOneCall(QBRTCVideoTrack remoteVideoTrack){
-        if (remoteVideoView != null){
-            fillVideoView(remoteVideoView, remoteVideoTrack, true);
-        }
-    }
-
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
@@ -571,10 +557,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             } else {
                 isRemoteShown = true;
 
-                opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
-                setDuringCallActionBar();
-                setRecyclerViewVisibleState();
-                setOpponentsVisibility(View.VISIBLE);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+                        setDuringCallActionBar();
+                        setRecyclerViewVisibleState();
+                        setOpponentsVisibility(View.VISIBLE);
+                    }
+                });
                 setLocalVideoView(userID, videoTrack);
             }
         }
