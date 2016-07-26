@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView
+<com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/localViewForGroupCall"
+    android:id="@+id/localView"
     style="@style/MatchParent"
-    custom:mainCoords="@array/localViewCoordinates"
-    custom:mainMirror="true" />
+    />

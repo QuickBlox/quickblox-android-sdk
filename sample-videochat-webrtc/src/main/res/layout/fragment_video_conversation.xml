@@ -5,11 +5,18 @@
     style="@style/MatchParent"
     android:background="@color/background_fragment_conversation">
 
-    <ViewStub
-        android:id="@+id/localViewStub"
-        style="@style/WrapContent"
+    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+        android:id="@+id/remote_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/grid_opponents"
-        android:layout="@layout/local_video_view" />
+        />
+
+    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+        android:id="@+id/local_video_view"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        />
 
     <include layout="@layout/view_outgoing_screen" />
 

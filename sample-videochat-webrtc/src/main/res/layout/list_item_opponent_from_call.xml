@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView
+        <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
             android:id="@+id/opponentView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
