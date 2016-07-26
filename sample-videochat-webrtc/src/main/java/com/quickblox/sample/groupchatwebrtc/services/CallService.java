@@ -154,6 +154,7 @@ public class CallService extends Service {
 
         // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));
+        rtcClient.prepareToProcessCalls();
     }
 
     private void sendResultToActivity(boolean isSuccess, String errorMessage) {

@@ -1,6 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
@@ -208,14 +208,18 @@ public class OpponentsActivity extends BaseActivity {
                 return true;
 
             case R.id.start_video_call:
-                startCall(true);
+                if (isLoggedInChat()) {
+                    startCall(true);
+                }
                 if (checker.lacksPermissions(Consts.PERMISSIONS)) {
                     startPermissionsActivity(false);
                 }
                 return true;
 
             case R.id.start_audio_call:
-                startCall(false);
+                if (isLoggedInChat()) {
+                    startCall(false);
+                }
                 if (checker.lacksPermissions(Consts.PERMISSIONS[1])) {
                     startPermissionsActivity(true);
                 }
@@ -223,6 +227,22 @@ public class OpponentsActivity extends BaseActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private boolean isLoggedInChat() {
+        if (!QBChatService.getInstance().isLoggedIn()) {
+            Toaster.shortToast(R.string.dlg_signal_error);
+            tryReLoginToChat();
+            return false;
+        }
+        return true;
+    }
+
+    private void tryReLoginToChat() {
+        if (sharedPrefsHelper.hasQbUser()) {
+            QBUser qbUser = sharedPrefsHelper.getQbUser();
+            CallService.start(this, qbUser);
         }
     }
 
@@ -257,9 +277,9 @@ public class OpponentsActivity extends BaseActivity {
 
     private void initActionBarWithSelectedUsers(int countSelectedUsers) {
         setActionBarTitle(String.format(getString(
-                        countSelectedUsers > 1
-                                ? R.string.tile_many_users_selected
-                                : R.string.title_one_user_selected),
+                countSelectedUsers > 1
+                        ? R.string.tile_many_users_selected
+                        : R.string.title_one_user_selected),
                 countSelectedUsers));
     }
 
@@ -302,7 +322,7 @@ public class OpponentsActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                Log.e(TAG, "Current user wasn't deleted from QB " +e);
+                Log.e(TAG, "Current user wasn't deleted from QB " + e);
             }
         });
     }
