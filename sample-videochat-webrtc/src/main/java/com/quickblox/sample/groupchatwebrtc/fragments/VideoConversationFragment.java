@@ -30,7 +30,6 @@ import android.widget.ToggleButton;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
-import com.quickblox.sample.groupchatwebrtc.utils.CameraUtils;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCSession;
@@ -76,7 +75,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private View view;
     private boolean isVideoCall = false;
     private LinearLayout actionVideoButtonsLayout;
-    private QBRTCSurfaceView remoteVideoView;
+    private QBRTCSurfaceView remoteFullScreenVideoView;
     private QBRTCSurfaceView localVideoView;
     private CameraState cameraState = CameraState.NONE;
     private RecyclerView recyclerView;
@@ -98,6 +97,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean connectionEstablished;
     private boolean previousDeviceEarPiece;
     private boolean allCallbacksInit;
+    private boolean isCurrentCameraFront = true;
 
 
     @Override
@@ -203,6 +203,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.initViews(view);
 
         opponentViewHolders = new SparseArray<>(opponents.size());
+
         localVideoView = (QBRTCSurfaceView) view.findViewById(R.id.local_video_view);
         localVideoView.setZOrderMediaOverlay(true);
 
@@ -331,14 +332,25 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 //      disable cameraToggle while processing switchCamera
         cameraToggle.setEnabled(false);
 
-        mediaStreamManager.switchCameraInput(null);
-        toggleCameraInternal(mediaStreamManager);
+        mediaStreamManager.switchCameraInput(new CameraVideoCapturer.CameraSwitchHandler() {
+            @Override
+            public void onCameraSwitchDone(boolean b) {
+                Log.d(TAG, "camera switched, bool = " + b);
+                isCurrentCameraFront = b;
+                updateSwitchCameraIcon(item);
+                toggleCameraInternal();
+            }
 
-        updateSwitchCameraIcon(item, mediaStreamManager);
+            @Override
+            public void onCameraSwitchError(String s) {
+                Log.d(TAG, "camera switch error " + s);
+                cameraToggle.setEnabled(true);
+            }
+        });
     }
 
-    private void updateSwitchCameraIcon(final MenuItem item, final QBMediaStreamManager mediaStreamManager) {
-        if (CameraUtils.isCameraFront(mediaStreamManager.getCurrentCameraId())) {
+    private void updateSwitchCameraIcon(final MenuItem item) {
+        if (isCurrentCameraFront) {
             Log.d(TAG, "CameraFront now!");
             item.setIcon(R.drawable.ic_camera_front);
         } else {
@@ -347,26 +359,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    private void toggleCameraInternal(QBMediaStreamManager mediaStreamManager) {
-        int currentCameraId = mediaStreamManager.getCurrentCameraId();
-        boolean isCameraFront = CameraUtils.isCameraFront(currentCameraId);
+    private void toggleCameraInternal() {
         Log.d(TAG, "Camera was switched!");
-        updateVideoView(localVideoView, isCameraFront);
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toggleCameraOnUiThread(true);
-            }
-        }, TOGGLE_CAMERA_DELAY);
-    }
-
-    private void toggleCameraOnUiThread(final boolean toggle) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                toggleCamera(toggle);
-            }
-        });
+        updateVideoView(localVideoView, isCurrentCameraFront);
+        toggleCamera(true);
     }
 
     private void runOnUiThread(Runnable runnable) {
@@ -394,26 +390,25 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "onLocalVideoTrackReceive() run");
         Log.d(TAG, "start");
         localVideoTrack = videoTrack;
-        if (remoteVideoView != null) {
+        if (remoteFullScreenVideoView != null) {
             Log.d(TAG, "localVideoView.updateRenderer SECOND");
             //TODO VT need update renderer
-            fillVideoView(remoteVideoView, localVideoTrack, false);
-            updateVideoView(remoteVideoView, true);
+            fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
         }
 
         if (isPeerToPeerCall) {
-                    if (remoteVideoView != null) {
-                        return;
-                    }
-                    Log.i(TAG, "onLocalVideoTrackReceive init localView");
-                    remoteVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+            if (remoteFullScreenVideoView != null) {
+                return;
+            }
+            Log.i(TAG, "onLocalVideoTrackReceive init localView");
+            remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
 
-                    //TODO VT need update renderer
-                    remoteVideoView.setOnClickListener(localViewOnClickListener);
+            //TODO VT need update renderer
+            remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
-                    if (localVideoTrack != null) {
-                        fillVideoView(remoteVideoView, localVideoTrack, false);
-                    }
+            if (localVideoTrack != null) {
+                fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
+            }
         }
         //in other case localVideoView hasn't been inflated yet. Will set track while OnBindLastViewHolder
     }
@@ -426,11 +421,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         fillVideoView(localVideoView, localVideoTrack, false);
 
         if (isPeerToPeerCall) {
-                    setDuringCallActionBar();
-                    if (remoteVideoView == null) {
-                        remoteVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-                    }
-                    fillVideoView(userID, remoteVideoView, videoTrack);
+            setDuringCallActionBar();
+            if (remoteFullScreenVideoView == null) {
+                remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+            }
+
+            fillVideoView(userID, remoteFullScreenVideoView, videoTrack);
+            updateVideoView(remoteFullScreenVideoView, false);
         } else {
             setRemoteViewMultiCall(userID, videoTrack);
         }
@@ -446,27 +443,27 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         if (isPeerToPeerCall) {
             Log.i(TAG, " isPeerToPeerCall");
-            remoteVideoView = holder.getOpponentView();
+            remoteFullScreenVideoView = holder.getOpponentView();
 
         } else {
             //on group call we postpone initialization of VideoView due to set it on Gui renderer.
             // Refer to RTCGlVIew
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (remoteVideoView != null) {
-                        return;
-                    }
+//            mainHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (remoteFullScreenVideoView != null) {
+//                        return;
+//                    }
                     setOpponentsVisibility(View.GONE);
                     Log.i(TAG, "OnBindLastViewHolder init localView");
-                    remoteVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-                    remoteVideoView.setOnClickListener(localViewOnClickListener);
+                    remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+                    remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
                         Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
                         fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
                     }
-                }
-            }, LOCAL_TRACk_INITIALIZE_DELAY);
+//                }
+//            }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
     }
 
@@ -513,27 +510,19 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         QBRTCSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
 
         fillVideoView(0, remoteVideoView, videoTrackFullScreen);
-        Log.d(TAG, "remoteVideoView enabled");
+        Log.d(TAG, "_remoteVideoView enabled");
 
-        fillVideoView(userId, this.remoteVideoView, userVideoTrackPreview);
+        fillVideoView(userId, this.remoteFullScreenVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
     }
 
     private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
-//        if (isPeerToPeerCall) {
-//            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_local_preview_peer2peer_screen);
-//        } else {
-//            config.coordinates = getResources().getIntArray(R.array.local_view_coordinates_preview_multi_screen);
-//        }
-        if (remoteVideoView == null) {
+        if (remoteFullScreenVideoView == null) {
             Log.d(TAG, "setLocalVideoView VideoView = null");
-            remoteVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+            remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
         }
-        //TODO VT need update renderer
-//        config = setRTCCameraMirrorConfig(false);
-        //TODO VT need update renderer
-        fillVideoView(userId, remoteVideoView, videoTrack);
-        updateVideoView(remoteVideoView, false);
+
+        fillVideoView(userId, remoteFullScreenVideoView, videoTrack);
     }
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
@@ -553,7 +542,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             if (isRemoteShown) {
                 Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
                 fillVideoView(0, remoteVideoView, videoTrack);
-                updateVideoView(remoteVideoView, false);
             } else {
                 isRemoteShown = true;
 
@@ -624,6 +612,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void fillVideoView(QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
         videoTrack.addRenderer(new VideoRenderer(videoView));
 
+        if (!remoteRenderer){
+            updateVideoView(videoView, isCurrentCameraFront);
+        }
+
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
@@ -638,7 +630,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror) {
-        updateVideoView(surfaceViewRenderer, mirror, RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        updateVideoView(surfaceViewRenderer, mirror, RendererCommon.ScalingType.SCALE_ASPECT_FILL);
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror, RendererCommon.ScalingType scalingType) {
@@ -805,7 +797,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             return;
         }
         userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
-        fillVideoView(userId, remoteVideoView, userVideoTrackPreview);
+        fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
 
         runOnUiThread(new Runnable() {
@@ -935,9 +927,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         private void hideToolBarAndButtons() {
             actionBar.hide();
+
             localVideoView.setVisibility(View.INVISIBLE);
             localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
-//            remoteVideoView.releaseLocalRendererCallback();
+
             actionVideoButtonsLayout.setVisibility(View.GONE);
 
             if (!isPeerToPeerCall) {
@@ -947,10 +940,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         private void showToolBarAndButtons() {
             actionBar.show();
-            fillVideoView(localVideoView, localVideoTrack, false);
 
+            fillVideoView(localVideoView, localVideoTrack, false);
             localVideoView.setVisibility(View.VISIBLE);
-            //TODO VT need update renderer
+
             actionVideoButtonsLayout.setVisibility(View.VISIBLE);
 
             if (!isPeerToPeerCall) {
