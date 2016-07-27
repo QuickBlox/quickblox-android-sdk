@@ -1,6 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -11,12 +12,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -205,7 +208,26 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         opponentViewHolders = new SparseArray<>(opponents.size());
 
         localVideoView = (QBRTCSurfaceView) view.findViewById(R.id.local_video_view);
+        initCorrectSizeForLocalView();
         localVideoView.setZOrderMediaOverlay(true);
+        localVideoView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                Log.e(TAG, "surfaceCreated " + "holder = " + holder);
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                Log.e(TAG, "surfaceChanged " + "holder = " + holder + " format = "+  format + " resolution " + width+ "x" + height);
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                Log.e(TAG, "surfaceDestroyed " + "holder = " + holder);
+
+            }
+        });
 
         if (!isPeerToPeerCall) {
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
@@ -235,6 +257,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
         actionButtonsEnabled(false);
+    }
+
+    private void initCorrectSizeForLocalView() {
+        ViewGroup.LayoutParams params = localVideoView.getLayoutParams();
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+
+        int screenWidthPx = displaymetrics.widthPixels;
+        Log.d(TAG, "screenWidthPx " + screenWidthPx);
+        params.width = (int) (screenWidthPx*0.3);
+        params.height = (params.width/2)*3;
+        localVideoView.setLayoutParams(params);
     }
 
     private void setGrid(int columnsCount) {
@@ -443,27 +476,27 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         if (isPeerToPeerCall) {
             Log.i(TAG, " isPeerToPeerCall");
-            remoteFullScreenVideoView = holder.getOpponentView();
+//            remoteFullScreenVideoView = holder.getOpponentView();
 
         } else {
             //on group call we postpone initialization of VideoView due to set it on Gui renderer.
             // Refer to RTCGlVIew
-//            mainHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (remoteFullScreenVideoView != null) {
-//                        return;
-//                    }
+            mainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (remoteFullScreenVideoView != null) {
+                        return;
+                    }
                     setOpponentsVisibility(View.GONE);
                     Log.i(TAG, "OnBindLastViewHolder init localView");
                     remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
                     remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
                     if (localVideoTrack != null) {
                         Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
-                        fillVideoView(localVideoView, localVideoTrack, isPeerToPeerCall);
+//                        fillVideoView(localVideoView, localVideoTrack, false);
                     }
-//                }
-//            }, LOCAL_TRACk_INITIALIZE_DELAY);
+                }
+            }, LOCAL_TRACk_INITIALIZE_DELAY);
         }
     }
 
@@ -512,7 +545,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         fillVideoView(0, remoteVideoView, videoTrackFullScreen);
         Log.d(TAG, "_remoteVideoView enabled");
 
-        fillVideoView(userId, this.remoteFullScreenVideoView, userVideoTrackPreview);
+        fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
     }
 
@@ -538,10 +571,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         getVideoTrackMap().put(userID, videoTrack);
 
         if (remoteVideoView != null) {
+            remoteVideoView.setZOrderMediaOverlay(true);
+            updateVideoView(remoteVideoView, false);
+
             Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
             if (isRemoteShown) {
                 Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
-                fillVideoView(0, remoteVideoView, videoTrack);
+                fillVideoView(remoteVideoView, videoTrack, true);
+//                fillVideoView(0, remoteFullScreenVideoView, videoTrack);
             } else {
                 isRemoteShown = true;
 
@@ -554,7 +591,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         setOpponentsVisibility(View.VISIBLE);
                     }
                 });
-                setLocalVideoView(userID, videoTrack);
+                fillVideoView(userID, remoteFullScreenVideoView, videoTrack);
+//                setLocalVideoView(userID, videoTrack);
             }
         }
     }

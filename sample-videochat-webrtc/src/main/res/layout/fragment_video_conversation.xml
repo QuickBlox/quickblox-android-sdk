@@ -14,11 +14,11 @@
 
     <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
         android:id="@+id/local_video_view"
-        android:layout_height="150dp"
-        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:layout_marginTop="@dimen/action_bar_height"
-        android:layout_marginLeft="8dp"
-        />
+        android:layout_marginLeft="@dimen/margin_small"
+         />
 
     <include layout="@layout/view_outgoing_screen" />
 
