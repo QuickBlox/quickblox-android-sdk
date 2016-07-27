@@ -213,5 +213,6 @@ public class CallService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         Log.d(TAG, "Service onTaskRemoved()");
         super.onTaskRemoved(rootIntent);
+        destroyRtcClientAndChat();
     }
 }

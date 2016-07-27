@@ -459,16 +459,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onReceiveNewSession(final QBRTCSession session) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 Log.d(TAG, "Session " + session.getSessionID() + " are income");
                 if (getCurrentSession() != null) {
                     Log.d(TAG, "Stop new session. Device now is busy");
                     session.rejectCall(null);
                 }
-            }
-        });
     }
 
     @Override
@@ -479,13 +474,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onUserNotAnswer(session, userID);
         }
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 ringtonePlayer.stop();
-            }
-        });
     }
 
     @Override
@@ -506,12 +495,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onCallAcceptByUser(session, userId, userInfo);
         }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 ringtonePlayer.stop();
-            }
-        });
     }
 
     @Override
@@ -522,28 +506,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onCallRejectByUser(session, userID, userInfo);
         }
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 ringtonePlayer.stop();
-            }
-        });
     }
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession session, Integer userID) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 // Close app after session close of network was disabled
                 if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)) {
                     Intent returnIntent = new Intent();
                     setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
                     finish();
                 }
-            }
-        });
     }
 
     @Override
@@ -551,16 +524,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         callStarted = true;
         notifyCallStateListenersCallStarted();
         forbiddenCloseByWifiState();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 if (isInCommingCall) {
                     stopIncomeCallTimer();
                 }
                 Log.d(TAG, "onConnectedToUser() is started");
-
-            }
-        });
     }
 
 
@@ -580,9 +547,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onSessionClosed(final QBRTCSession session) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
                 Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
@@ -597,8 +561,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                     closeByWifiStateAllow = true;
                     finish();
                 }
-            }
-        });
     }
 
     @Override
@@ -648,12 +610,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             QBUser participant = dbManager.getUserById(userID);
             final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     showToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
-                }
-            });
         }
     }
 
@@ -850,35 +807,20 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void notifyCallStateListenersCallStarted() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStarted();
                 }
-            }
-        });
     }
 
     private void notifyCallStateListenersCallStopped() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onCallStopped();
                 }
-            }
-        });
     }
 
     private void notifyCallStateListenersNeedUpdateOpponentsList(final ArrayList<QBUser> newUsers) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
                     callback.onOpponentsListUpdated(newUsers);
                 }
-            }
-        });
     }
 }
