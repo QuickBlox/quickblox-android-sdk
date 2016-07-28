@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,13 +9,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView
+        <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
             android:id="@+id/opponentView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            custom:secondCoords="@array/localViewCoordinatesOnRemote"
-            custom:secondMirror="true" />
+            />
 
         <TextView
             android:id="@+id/connectionStatus"

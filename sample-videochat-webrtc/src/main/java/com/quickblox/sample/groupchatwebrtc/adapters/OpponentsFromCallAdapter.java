@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.utils.QBRTCSessionUtils;
-import com.quickblox.sample.groupchatwebrtc.view.RTCGLVideoView;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 
 import java.util.List;
 
@@ -119,7 +119,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView opponentsName;
         TextView connectionStatus;
-        RTCGLVideoView opponentView;
+        QBRTCSurfaceView opponentView;
         ProgressBar progressBar;
         private int userId;
         private ViewHolderClickListener viewHolderClickListener;
@@ -129,7 +129,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             itemView.setOnClickListener(this);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
-            opponentView = (RTCGLVideoView) itemView.findViewById(R.id.opponentView);
+            opponentView = (QBRTCSurfaceView) itemView.findViewById(R.id.opponentView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar_adapter);
         }
 
@@ -157,7 +157,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             return progressBar;
         }
 
-        public RTCGLVideoView getOpponentView() {
+        public QBRTCSurfaceView getOpponentView() {
             return opponentView;
         }
 

@@ -282,15 +282,29 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             }
         });
 
-        rtcClient.setCameraErrorHendler(new VideoCapturerAndroid.CameraErrorHandler() {
+        rtcClient.setCameraErrorHendler(new VideoCapturerAndroid.CameraEventsHandler() {
             @Override
             public void onCameraError(final String s) {
-                CallActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toaster.longToast(s);
-                    }
-                });
+
+                showToast( "Camera error: " + s);
+            }
+
+            @Override
+            public void onCameraFreezed(String s) {
+                showToast( "Camera freezed: " + s);
+                hangUpCurrentSession();
+            }
+
+            @Override
+            public void onCameraOpening(int i) {
+            }
+
+            @Override
+            public void onFirstFrameAvailable() {
+            }
+
+            @Override
+            public void onCameraClosed() {
             }
         });
 

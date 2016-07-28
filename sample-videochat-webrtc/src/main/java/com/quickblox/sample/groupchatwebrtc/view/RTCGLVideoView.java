@@ -7,7 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 
+import org.webrtc.RendererCommon;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
@@ -34,7 +36,7 @@ import org.webrtc.VideoRendererGui;
  * [x, y, width, height] as array resource.
  * Use xml attributes "mainMirror" and "secondMirror" to reflect frame by Y axis.
  */
-public class RTCGLVideoView extends GLSurfaceView {
+public class RTCGLVideoView extends QBRTCSurfaceView {
 
     private static final String TAG = RTCGLVideoView.class.getSimpleName();
     private static final int NUMBER_COORDINATES = 4;
@@ -49,7 +51,7 @@ public class RTCGLVideoView extends GLSurfaceView {
     public RTCGLVideoView(Context context) {
         super(context);
         Log.i(TAG, "ctor");
-        init(null);
+        init();
     }
 
     public RTCGLVideoView(Context c, AttributeSet attr) {
@@ -59,7 +61,7 @@ public class RTCGLVideoView extends GLSurfaceView {
                 attr,
                 R.styleable.RTCGlView,
                 0, 0);
-        init(a);
+        init();
     }
 
     public VideoRenderer.Callbacks obtainVideoRenderer(RendererSurface rendererSurface) {
@@ -98,7 +100,7 @@ public class RTCGLVideoView extends GLSurfaceView {
         int[] viewCoordinates = mainRenderer ? remoteCoords : localCoords;
         VideoRendererGui.update(callbacks, viewCoordinates[0], viewCoordinates[1],
                 viewCoordinates[2], viewCoordinates[3],
-                VideoRendererGui.ScalingType.SCALE_ASPECT_FILL,
+                RendererCommon.ScalingType.SCALE_ASPECT_FILL,
                 (mainRenderer ? mainMirror : secondMirror));
     }
 
@@ -133,18 +135,8 @@ public class RTCGLVideoView extends GLSurfaceView {
         return VideoRendererGui.createGuiRenderer(
                 viewCoordinates[0], viewCoordinates[1],
                 viewCoordinates[2], viewCoordinates[3],
-                VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, mirror);
+                RendererCommon.ScalingType.SCALE_ASPECT_FILL, mirror);
 
-    }
-
-    private void init(TypedArray typedArray) {
-        VideoRendererGui.setView(this, null);
-        if (typedArray != null) {
-            setValuefromResources(typedArray);
-            typedArray.recycle();
-        }
-
-        obtainMainVideoRenderer();
     }
 
     private void setValuefromResources(TypedArray typedArray) {
