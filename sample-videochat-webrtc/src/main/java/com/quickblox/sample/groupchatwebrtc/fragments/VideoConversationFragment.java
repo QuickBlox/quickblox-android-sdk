@@ -430,9 +430,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
-        localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
-        isLocalVideoFullScreen = false;
         fillVideoView(localVideoView, localVideoTrack, false);
+        isLocalVideoFullScreen = false;
+
 
         if (isPeerToPeerCall) {
             setDuringCallActionBar();
@@ -441,6 +441,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             }
 
             fillVideoView(remoteFullScreenVideoView, videoTrack, true);
+            updateVideoView(remoteFullScreenVideoView, false);
         } else {
             mainHandler.postDelayed(new Runnable() {
                 @Override
@@ -521,9 +522,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void swapUsersFullscreenToPreview(int userId) {
         QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         QBRTCVideoTrack videoTrackFullScreen = getVideoTrackMap().get(userIDFullScreen);
-        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
-
-        videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
         QBRTCSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
 
@@ -570,6 +568,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 setRecyclerViewVisibleState();
                 setOpponentsVisibility(View.VISIBLE);
                 fillVideoView(userID, remoteFullScreenVideoView, videoTrack);
+                updateVideoView(remoteFullScreenVideoView, false);
             }
         }
     }
@@ -796,7 +795,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (userVideoTrackPreview == null) {
             return;
         }
-        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
         fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
 
@@ -924,7 +922,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             actionBar.hide();
 
             localVideoView.setVisibility(View.INVISIBLE);
-            localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
 
             actionVideoButtonsLayout.setVisibility(View.GONE);
 
@@ -936,7 +933,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         private void showToolBarAndButtons() {
             actionBar.show();
 
-            fillVideoView(localVideoView, localVideoTrack, false);
             localVideoView.setVisibility(View.VISIBLE);
 
             actionVideoButtonsLayout.setVisibility(View.VISIBLE);
