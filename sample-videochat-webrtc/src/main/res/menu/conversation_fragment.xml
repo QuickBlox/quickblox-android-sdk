@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/audio_switch"
-        android:checkable="true"
-        android:icon="@drawable/ic_speaker_phone"
-        android:title="@string/action_logout"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/camera_switch"
         android:checkable="true"
         android:icon="@drawable/ic_camera_front"

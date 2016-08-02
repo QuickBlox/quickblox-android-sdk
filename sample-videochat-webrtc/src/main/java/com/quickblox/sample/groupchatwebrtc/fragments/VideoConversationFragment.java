@@ -60,7 +60,7 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener, CallActivity.OnChangeDynamicToggle {
+        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -188,7 +188,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             initVideoTrackSListener();
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
-            conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
             allCallbacksInit = true;
         }
     }
@@ -246,8 +245,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         int screenWidthPx = displaymetrics.widthPixels;
         Log.d(TAG, "screenWidthPx " + screenWidthPx);
-        params.width = (int) (screenWidthPx*0.3);
-        params.height = (params.width/2)*3;
+        params.width = (int) (screenWidthPx * 0.3);
+        params.height = (params.width / 2) * 3;
         localVideoView.setLayoutParams(params);
     }
 
@@ -316,7 +315,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             removeVideoTrackSListener();
             conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
-            conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
             allCallbacksInit = false;
         } else {
             Log.d(TAG, "We are in dialing process yet!");
@@ -623,7 +621,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         videoTrack.removeRenderer(videoTrack.getRenderer());
         videoTrack.addRenderer(new VideoRenderer(videoView));
 
-        if (!remoteRenderer){
+        if (!remoteRenderer) {
             updateVideoView(videoView, isCurrentCameraFront);
         }
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
@@ -644,7 +642,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror, RendererCommon.ScalingType scalingType) {
-        Log.i(TAG, "updateVideoView mirror:" + mirror +", scalintType = "+ scalingType);
+        Log.i(TAG, "updateVideoView mirror:" + mirror + ", scalintType = " + scalingType);
         surfaceViewRenderer.setScalingType(scalingType);
         surfaceViewRenderer.setMirror(mirror);
         surfaceViewRenderer.requestLayout();
@@ -750,14 +748,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
 
     /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
-
-    @Override
-    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
-        this.previousDeviceEarPiece = previousDeviceEarPiece;
-        headsetPlugged = plugged;
-        getActivity().invalidateOptionsMenu();
-    }
-
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userId) {
         setProgressBarForOpponentGone(userId);
@@ -810,12 +800,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        updateMenuVolume(headsetPlugged, menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.camera_switch:
@@ -824,21 +808,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void updateMenuVolume(boolean headsetPlugged, Menu menu) {
-
-        MenuItem audiSwitchItem = menu.findItem(R.id.audio_switch);
-        if (headsetPlugged) {
-            audiSwitchItem.setChecked(true);
-            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
-        } else if (previousDeviceEarPiece) {
-            audiSwitchItem.setChecked(true);
-            audiSwitchItem.setIcon(R.drawable.ic_phonelink_ring);
-        } else {
-            audiSwitchItem.setChecked(false);
-            audiSwitchItem.setIcon(R.drawable.ic_speaker_phone);
         }
     }
 
