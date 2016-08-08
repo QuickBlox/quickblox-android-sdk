@@ -191,7 +191,18 @@ public class CallService extends Service {
         }
         ChatPingAlarmManager.onDestroy();
         if (chatService != null) {
-            chatService.destroy();
+            chatService.logout(new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    chatService.destroy();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    Log.d(TAG, "logout onError " + e.getMessage());
+                    chatService.destroy();
+                }
+            });
         }
         stopSelf();
     }
