@@ -105,7 +105,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = super.onCreateView(inflater, container, savedInstanceState);
-
+        initVideoTrackSListener();
         return view;
     }
 
@@ -185,7 +185,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onStart() {
         super.onStart();
         if (!allCallbacksInit) {
-            initVideoTrackSListener();
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
             allCallbacksInit = true;
@@ -312,13 +311,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onStop() {
         super.onStop();
         if (connectionEstablished) {
-            removeVideoTrackSListener();
             conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
             allCallbacksInit = false;
         } else {
             Log.d(TAG, "We are in dialing process yet!");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        removeVideoTrackSListener();
     }
 
     protected void initButtonsListener() {

@@ -156,7 +156,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private void checkPermission(){
+    private void checkPermission() {
         if (checker.lacksPermissions(Consts.PERMISSIONS)) {
             startPermissionsActivity(!isVideoCall);
         }
@@ -272,26 +272,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this);
-        // Add signalling manager
-        QBChatService.getInstance().getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
-            @Override
-            public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
-                if (!createdLocally) {
-                    rtcClient.addSignaling((QBWebRTCSignaling) qbSignaling);
-                }
-            }
-        });
 
         rtcClient.setCameraErrorHendler(new VideoCapturerAndroid.CameraEventsHandler() {
             @Override
             public void onCameraError(final String s) {
 
-                showToast( "Camera error: " + s);
+                showToast("Camera error: " + s);
             }
 
             @Override
             public void onCameraFreezed(String s) {
-                showToast( "Camera freezed: " + s);
+                showToast("Camera freezed: " + s);
                 hangUpCurrentSession();
             }
 
@@ -473,11 +464,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onReceiveNewSession(final QBRTCSession session) {
-                Log.d(TAG, "Session " + session.getSessionID() + " are income");
-                if (getCurrentSession() != null) {
-                    Log.d(TAG, "Stop new session. Device now is busy");
-                    session.rejectCall(null);
-                }
+        Log.d(TAG, "Session " + session.getSessionID() + " are income");
+        if (getCurrentSession() != null) {
+            Log.d(TAG, "Stop new session. Device now is busy");
+            session.rejectCall(null);
+        }
     }
 
     @Override
@@ -488,7 +479,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onUserNotAnswer(session, userID);
         }
-                ringtonePlayer.stop();
+        ringtonePlayer.stop();
     }
 
     @Override
@@ -509,7 +500,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onCallAcceptByUser(session, userId, userInfo);
         }
-                ringtonePlayer.stop();
+        ringtonePlayer.stop();
     }
 
     @Override
@@ -520,17 +511,17 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (sessionUserCallback != null) {
             sessionUserCallback.onCallRejectByUser(session, userID, userInfo);
         }
-                ringtonePlayer.stop();
+        ringtonePlayer.stop();
     }
 
     @Override
     public void onConnectionClosedForUser(QBRTCSession session, Integer userID) {
-                // Close app after session close of network was disabled
-                if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)) {
-                    Intent returnIntent = new Intent();
-                    setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
-                    finish();
-                }
+        // Close app after session close of network was disabled
+        if (hangUpReason != null && hangUpReason.equals(Consts.WIFI_DISABLED)) {
+            Intent returnIntent = new Intent();
+            setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
+            finish();
+        }
     }
 
     @Override
@@ -538,10 +529,10 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         callStarted = true;
         notifyCallStateListenersCallStarted();
         forbiddenCloseByWifiState();
-                if (isInCommingCall) {
-                    stopIncomeCallTimer();
-                }
-                Log.d(TAG, "onConnectedToUser() is started");
+        if (isInCommingCall) {
+            stopIncomeCallTimer();
+        }
+        Log.d(TAG, "onConnectedToUser() is started");
     }
 
 
@@ -562,19 +553,19 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onSessionClosed(final QBRTCSession session) {
 
-                Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
+        Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
-                if (session.equals(getCurrentSession())) {
-                    Log.d(TAG, "Stop session");
+        if (session.equals(getCurrentSession())) {
+            Log.d(TAG, "Stop session");
 
-                    if (audioManager != null) {
-                        audioManager.close();
-                    }
-                    releaseCurrentSession();
+            if (audioManager != null) {
+                audioManager.close();
+            }
+            releaseCurrentSession();
 
-                    closeByWifiStateAllow = true;
-                    finish();
-                }
+            closeByWifiStateAllow = true;
+            finish();
+        }
     }
 
     @Override
@@ -624,7 +615,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             QBUser participant = dbManager.getUserById(userID);
             final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
 
-                    showToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
+            showToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
         }
     }
 
@@ -821,20 +812,20 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void notifyCallStateListenersCallStarted() {
-                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
-                    callback.onCallStarted();
-                }
+        for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
+            callback.onCallStarted();
+        }
     }
 
     private void notifyCallStateListenersCallStopped() {
-                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
-                    callback.onCallStopped();
-                }
+        for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
+            callback.onCallStopped();
+        }
     }
 
     private void notifyCallStateListenersNeedUpdateOpponentsList(final ArrayList<QBUser> newUsers) {
-                for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
-                    callback.onOpponentsListUpdated(newUsers);
-                }
+        for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
+            callback.onOpponentsListUpdated(newUsers);
+        }
     }
 }
