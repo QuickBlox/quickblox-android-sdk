@@ -523,17 +523,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void swapUsersFullscreenToPreview(int userId) {
         QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         QBRTCVideoTrack videoTrackFullScreen = getVideoTrackMap().get(userIDFullScreen);
-        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
-
-        videoTrackFullScreen.removeRenderer(videoTrackFullScreen.getRenderer());
 
         QBRTCSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
 
-        fillVideoView(0, remoteVideoView, videoTrackFullScreen);
-        Log.d(TAG, "_remoteVideoView enabled");
-
-        fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
-        Log.d(TAG, "fullscreen enabled");
+        if (videoTrackFullScreen != null) {
+            fillVideoView(0, remoteVideoView, videoTrackFullScreen);
+            Log.d(TAG, "_remoteVideoView enabled");
+        }
+        if (userVideoTrackPreview != null) {
+            fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
+            Log.d(TAG, "fullscreen enabled");
+        }
     }
 
     private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
@@ -794,7 +794,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (opponentsAdapter.getOpponents().isEmpty()) {
             return;
         }
-        final int userId = opponentsAdapter.getItem(0);
+        int userId = opponentsAdapter.getItem(0);
         QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         if (userVideoTrackPreview == null) {
             Log.d(TAG, "setAnotherUserToFullScreen userVideoTrackPreview == null");
