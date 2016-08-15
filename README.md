@@ -29,22 +29,9 @@ To get the QuickBlox SDK project running you will need Android Studio and Maven 
 
 The repository https://github.com/QuickBlox/quickblox-android-sdk-releases contains binary distributions of QuickBlox Android SDK and an instruction how to connect SDK to your project. Check it out.
 
-# TUTORIAL  Customize Proguard in Android Studio (debug mode)
+# Customize Proguard in Android Studio 
 
-In build.gradle (for ex. Module: sample chat) you need to add next params:
-```xml
-
-buildTypes {
-   debug {
-       signingConfig signingConfigs.debug
-//     shrinkResources true //for more reducing code
-       minifyEnabled true
-       proguardFile 'proguard-rules.pro'
-       zipAlignEnabled false
-   }
-}
-```
-Then, in your module root directory create proguard-rules.pro file and put there the next:
+To use Proguard in your project create proguard-rules.pro file and put there the next for quickblox modules:
 ```xml
 ##---------------Begin: proguard configuration for Gson  ---------- 
 # Gson uses generic type information stored in a class file when working with fields. Proguard
@@ -61,11 +48,11 @@ Then, in your module root directory create proguard-rules.pro file and put there
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.quickblox.core.account.model.** { *; }
 
-
 ##---------------End: proguard configuration for Gson  ----------
-##---------------Begin: proguard configuration for quickblox  ----------
-#quickblox sample chat
 
+##---------------Begin: proguard configuration for quickblox  ----------
+
+#quickblox core module
 -keep class com.quickblox.auth.parsers.** { *; }
 -keep class com.quickblox.auth.model.** { *; }
 -keep class com.quickblox.core.parser.** { *; }
@@ -75,29 +62,26 @@ Then, in your module root directory create proguard-rules.pro file and put there
 -keep class com.quickblox.core.error.** { *; }
 -keep class com.quickblox.core.Query { *; }
 
+#quickblox users module
 -keep class com.quickblox.users.parsers.** { *; }
 -keep class com.quickblox.users.model.** { *; }
 
--keep class com.quickblox.chat.parser.** { *; }
--keep class com.quickblox.chat.model.** { *; }
-
+#quickblox messages module
 -keep class com.quickblox.messages.parsers.** { *; }
 -keep class com.quickblox.messages.model.** { *; }
 
+#quickblox content module
 -keep class com.quickblox.content.parsers.** { *; }
 -keep class com.quickblox.content.model.** { *; }
 
+#quickblox chat module
+-keep class com.quickblox.chat.parser.** { *; }
+-keep class com.quickblox.chat.model.** { *; }
 -keep class org.jivesoftware.** { *; }
-
-#sample chat
--keep class android.support.v7.** { *; }
--keep class com.bumptech.** { *; }
 
 
 ##---------------End: proguard configuration for quickblox  ----------
 
--dontwarn org.jivesoftware.smackx.**
--dontwarn android.support.v4.app.**
 ##---------------End: proguard configuration ----------
 ```
 To fix errors and force ProGuard to keep certain code, add a -keep line in the ProGuard configuration file. For example:
