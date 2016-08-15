@@ -521,17 +521,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @SuppressWarnings("ConstantConditions")
     private void swapUsersFullscreenToPreview(int userId) {
-        QBRTCVideoTrack userVideoTrackPreviewScreen = getVideoTrackMap().get(userId);
-        QBRTCVideoTrack userVideoTrackFullScreen = getVideoTrackMap().get(userIDFullScreen);
+//      get opponentVideoTrack - opponent's video track from recyclerView
+        QBRTCVideoTrack opponentVideoTrack = getVideoTrackMap().get(userId);
+
+//      get mainVideoTrack - opponent's video track from full screen
+        QBRTCVideoTrack mainVideoTrack = getVideoTrackMap().get(userIDFullScreen);
 
         QBRTCSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
 
-        if (userVideoTrackFullScreen != null) {
-            fillVideoView(0, remoteVideoView, userVideoTrackFullScreen);
+        if (mainVideoTrack != null) {
+            fillVideoView(0, remoteVideoView, mainVideoTrack);
             Log.d(TAG, "_remoteVideoView enabled");
         }
-        if (userVideoTrackPreviewScreen != null) {
-            fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreviewScreen);
+        if (opponentVideoTrack != null) {
+            fillVideoView(userId, remoteFullScreenVideoView, opponentVideoTrack);
             Log.d(TAG, "fullscreen enabled");
         }
     }
@@ -789,13 +792,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             return;
         }
         int userId = opponentsAdapter.getItem(0);
-        QBRTCVideoTrack userVideoTrackPreviewScreen = getVideoTrackMap().get(userId);
-        if (userVideoTrackPreviewScreen == null) {
-            Log.d(TAG, "setAnotherUserToFullScreen userVideoTrackPreviewScreen == null");
+//      get opponentVideoTrack - opponent's video track from recyclerView
+        QBRTCVideoTrack opponentVideoTrack = getVideoTrackMap().get(userId);
+        if (opponentVideoTrack == null) {
+            Log.d(TAG, "setAnotherUserToFullScreen opponentVideoTrack == null");
             return;
         }
 
-        fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreviewScreen);
+        fillVideoView(userId, remoteFullScreenVideoView, opponentVideoTrack);
         Log.d(TAG, "fullscreen enabled");
 
         OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
