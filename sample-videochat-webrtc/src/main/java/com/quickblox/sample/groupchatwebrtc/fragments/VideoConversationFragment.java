@@ -726,6 +726,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.text_status_closed));
         if (!isPeerToPeerCall) {
+            if (videoTrackMap != null && videoTrackMap.containsKey(userId)) {
+                Log.d(TAG, "onConnectionClosedForUser videoTrackMap.remove(userId)= " + userId);
+                videoTrackMap.remove(userId);
+            }
             setBackgroundOpponentView(userId);
         }
     }
@@ -772,15 +776,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.text_status_hang_up));
+        Log.d(TAG, "onReceiveHangUpFromUser userId= " + userId);
         if (!isPeerToPeerCall) {
             if (userId == userIDFullScreen) {
+                Log.d(TAG, "setAnotherUserToFullScreen call userId= " + userId);
                 setAnotherUserToFullScreen();
+            }
+            if (videoTrackMap != null && videoTrackMap.containsKey(userId)) {
+                Log.d(TAG, "onReceiveHangUpFromUser videoTrackMap.remove(userId)= " + userId);
+                videoTrackMap.remove(userId);
             }
         }
     }
     //////////////////////////////////   end     //////////////////////////////////////////
 
-    @SuppressWarnings("ConstantConditions")
     private void setAnotherUserToFullScreen() {
         if (opponentsAdapter.getOpponents().isEmpty()) {
             return;
@@ -788,14 +797,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         final int userId = opponentsAdapter.getItem(0);
         QBRTCVideoTrack userVideoTrackPreview = videoTrackMap.get(userId);
         if (userVideoTrackPreview == null) {
+            Log.d(TAG, "setAnotherUserToFullScreen userVideoTrackPreview == null");
             return;
         }
-        userVideoTrackPreview.removeRenderer(userVideoTrackPreview.getRenderer());
+
         fillVideoView(userId, remoteFullScreenVideoView, userVideoTrackPreview);
         Log.d(TAG, "fullscreen enabled");
 
         OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
-        opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+        if (itemHolder != null) {
+            opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+        }
     }
 
     @Override
