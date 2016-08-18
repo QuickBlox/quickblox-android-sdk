@@ -100,7 +100,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         });
         holder.messageInfoTextView.setVisibility(View.GONE);
 
-        downloadMore(position);
+//        downloadMore(position);
 
         return convertView;
     }

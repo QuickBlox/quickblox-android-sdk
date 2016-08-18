@@ -5,13 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import java.util.List;
 
 public interface QBBaseAdapter<T> {
-    Integer getPosition(T item);
-
-    Integer getPosition(T item, int lastPosition);
-
     T getItem(int position);
 
-    void add (T item);
+    int getItemViewType(int position);
+
+    void add(T item);
 
     List<T> getList();
 

@@ -8,7 +8,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_chat_messages"
         style="@style/ListViewWithoutDividerStyle"
-        android:layout_above="@+id/layout_attachment_preview_container" />
+        android:layout_above="@+id/layout_attachment_preview_container"
+        tools:listitem="@layout/list_item_chat_message"/>
 
     <ProgressBar
         android:id="@+id/progress_chat"

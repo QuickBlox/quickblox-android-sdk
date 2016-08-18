@@ -26,9 +26,11 @@ import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.qblist.QBMessagesAdapter;
 import com.quickblox.sample.chat.qblist.QBRecycleViewAdapter;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.ui.adapter.CustomMessageAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.Chat;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
@@ -56,6 +58,9 @@ import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
+import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
+import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
+
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private static final int REQUEST_CODE_ATTACHMENT = 721;
@@ -74,7 +79,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
 
-    private QBRecycleViewAdapter chatAdapter;
+    private CustomMessageAdapter chatAdapter;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
 
@@ -471,7 +476,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
 //                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
-                    chatAdapter = new QBRecycleViewAdapter(ChatActivity.this, messages);
+                    chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
 //                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
 //                        @Override
 //                        public void downloadMore() {
@@ -506,7 +511,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                             }
                         }
                     }
-                    messagesListView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                    LinearLayoutManager layoutManager
+                            = new LinearLayoutManager(ChatActivity.this, VERTICAL, true);
+                    messagesListView.setLayoutManager(layoutManager);
                     messagesListView.setAdapter(chatAdapter);
 //                    messagesListView.setAreHeadersSticky(false);
 //                    messagesListView.setDivider(null);

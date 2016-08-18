@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.qblist;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class QBRecycleViewAdapter extends RecyclerView.Adapter<QBRecycleViewAdapter.ViewHolder> implements QBBaseAdapter<QBChatMessage> {
+    private static final String TAG = QBRecycleViewAdapter.class.getSimpleName();
+
     static int PREFERRED_IMAGE_SIZE_PREVIEW = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
     protected LayoutInflater inflater;
     protected Context context;
@@ -45,7 +48,7 @@ public class QBRecycleViewAdapter extends RecyclerView.Adapter<QBRecycleViewAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = inflater.inflate(R.layout.list_item_chat_message, null);
+        View v = inflater.inflate(R.layout.list_item_chat_message, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -54,7 +57,7 @@ public class QBRecycleViewAdapter extends RecyclerView.Adapter<QBRecycleViewAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
 
 
-        final QBChatMessage chatMessage = getItem(position);
+        QBChatMessage chatMessage = getItem(position);
 
         setIncomingOrOutgoingMessageAttributes(holder, chatMessage);
         setMessageBody(holder, chatMessage);
@@ -65,16 +68,6 @@ public class QBRecycleViewAdapter extends RecyclerView.Adapter<QBRecycleViewAdap
     @Override
     public int getItemCount() {
         return chatMessages.size();
-    }
-
-    @Override
-    public Integer getPosition(QBChatMessage item) {
-        return null;
-    }
-
-    @Override
-    public Integer getPosition(QBChatMessage item, int lastPosition) {
-        return null;
     }
 
     @Override
@@ -107,6 +100,7 @@ public class QBRecycleViewAdapter extends RecyclerView.Adapter<QBRecycleViewAdap
     private void setIncomingOrOutgoingMessageAttributes(ViewHolder holder, QBChatMessage chatMessage) {
         boolean isIncoming = isIncoming(chatMessage);
         int gravity = isIncoming ? Gravity.LEFT : Gravity.RIGHT;
+        Log.d(TAG, "gravity= " + gravity);
         holder.messageContainerLayout.setGravity(gravity);
         holder.messageInfoTextView.setGravity(gravity);
 
