@@ -12,7 +12,7 @@ public interface Consts {
     String QB_AUTH_SECRET = "BTFsj7Rtt27DAmT";
     String QB_ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
 
-    String QB_USERS_TAG = "webrtcusers";
+    String QB_USERS_TAG = "webrtcuserssdk";
     String QB_USERS_PASSWORD = "x6Bt0VDy5";
 
     int PREFERRED_IMAGE_SIZE_PREVIEW = ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size);

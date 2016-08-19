@@ -467,6 +467,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
     }
 
+    public void onDownloadmoreClick(View view){
+        loadChatHistory();
+        Log.d(TAG, "onDownloadmoreClick");
+    }
+
     private void loadChatHistory() {
         ChatHelper.getInstance().loadChatHistory(qbDialog, skipPagination, new QBEntityCallback<ArrayList<QBChatMessage>>() {
             @Override
@@ -477,6 +482,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 if (chatAdapter == null) {
 //                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
                     chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
+                    chatAdapter.setHasStableIds(true);
 //                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
 //                        @Override
 //                        public void downloadMore() {
@@ -512,7 +518,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                         }
                     }
                     LinearLayoutManager layoutManager
-                            = new LinearLayoutManager(ChatActivity.this, VERTICAL, true);
+                            = new LinearLayoutManager(ChatActivity.this, VERTICAL, false);
                     messagesListView.setLayoutManager(layoutManager);
                     messagesListView.setAdapter(chatAdapter);
 //                    messagesListView.setAreHeadersSticky(false);

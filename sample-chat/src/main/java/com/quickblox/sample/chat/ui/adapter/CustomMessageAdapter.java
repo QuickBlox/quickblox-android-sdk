@@ -37,7 +37,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
         switch (valueType) {
             case TYPE_OWN_MESSAGE:
                 customMessage = (TextView) holder.listViewBinded.get(0);
-                customMessage.setText(chatMessage.getId());
+                customMessage.setText("custom view!");
                 break;
             default:
                 break;

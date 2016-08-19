@@ -5,9 +5,19 @@
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded">
 
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="dowload"
+        android:id="@+id/button_dowload"
+        android:onClick="onDownloadmoreClick"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_chat_messages"
         style="@style/ListViewWithoutDividerStyle"
+        android:layout_below="@+id/button_dowload"
         android:layout_above="@+id/layout_attachment_preview_container"
         tools:listitem="@layout/list_item_chat_message"/>
 
@@ -68,4 +78,5 @@
             android:src="@drawable/ic_send"
             android:text="@string/chat_send" />
     </LinearLayout>
+
 </RelativeLayout>
