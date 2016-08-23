@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/color_blue_qb</item>
     </style>
 
+    <style name="ItemTextMessageOwnWidgetFrame">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ItemTextMessageOwnOuterLinear">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_below">@id/widget_frame</item>
+    </style>
+
 </resources>

@@ -13,7 +13,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+            url= "file://Users/Roman/workspace/quickblox-android-sdk-releases"
         }
     }
 }

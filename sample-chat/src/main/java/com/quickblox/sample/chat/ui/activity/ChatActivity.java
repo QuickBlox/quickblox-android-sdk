@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.quickblox.chat.QBChat;
@@ -23,13 +22,11 @@ import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.chat.ui.adapter.QBMessagesAdapter;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.qblist.QBMessagesAdapter;
-import com.quickblox.sample.chat.qblist.QBRecycleViewAdapter;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
-import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.ui.adapter.CustomMessageAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.Chat;
@@ -37,7 +34,6 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.chat.GroupChatImpl;
 import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
-import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -56,9 +52,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
@@ -79,7 +72,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
 
-    private CustomMessageAdapter chatAdapter;
+    private QBMessagesAdapter chatAdapter;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
 
@@ -481,7 +474,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
 //                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
-                    chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
+                    chatAdapter = new QBMessagesAdapter(ChatActivity.this, messages);
                     chatAdapter.setHasStableIds(true);
 //                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
 //                        @Override
