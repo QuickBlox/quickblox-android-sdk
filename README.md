@@ -32,6 +32,7 @@ The repository https://github.com/QuickBlox/quickblox-android-sdk-releases conta
 # Issue occurring with import SDK library from remote repo when sync the gradle
 
 If you can’t successfully build the gradle after updating to some of the version Quickblox SDK, try to resolve all errors appearing in Gradle Console (but not in code emphasized red!) It may occurs cause some versions of Android Studio can’t completely resolve import dependencies while project has internal errors.
+
 If you still have problems with import SDK library from remote repo follow to the next section.
 
 # Import QuickBlox SDK library from local folder.
@@ -42,7 +43,19 @@ If you still have problems with import SDK library from remote repo follow to th
 
 3. Put in created quickblox folder downloaded quickblox-android-sdk-releases-master.
 
-4. In project build.grade file replace url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/" with url= "file://Users/igor/workspace/quickblox/quickblox-android-sdk-releases-master” and use any version of quickblox-android-sdk-SDK
+4. In project build.grade file replace
+```xml
+maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+```
+to
+```xml
+maven {
+            url= "file://Users/igor/workspace/quickblox/quickblox-android-sdk-releases-master"
+        }
+```
+and use any version of quickblox-android-sdk.
 
 # Customize Proguard in Android Studio 
 
