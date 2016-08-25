@@ -29,13 +29,13 @@ To get the QuickBlox SDK project running you will need Android Studio and Maven 
 
 The repository https://github.com/QuickBlox/quickblox-android-sdk-releases contains binary distributions of QuickBlox Android SDK and an instruction how to connect SDK to your project. Check it out.
 
-# Issue occurring with import SDK library from remote repo when sync the gradle
+# Android Studio issues
 
 If you can’t successfully build the gradle after updating to some of the version Quickblox SDK, try to resolve all errors appearing in Gradle Console (but not in code emphasized red!) It may occurs cause some versions of Android Studio can’t completely resolve import dependencies while project has internal errors.
 
 If you still have problems with import SDK library from remote repo follow to the next section.
 
-# Import QuickBlox SDK library from local folder.
+# Add quickblox dependency as local repository
 
 1. Create local folder, for example /Users/igor/workspace/quickblox
 
