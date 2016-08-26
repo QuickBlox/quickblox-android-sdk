@@ -9,14 +9,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginLeft">@dimen/chat_babble_margin</item>
-        <item name="android:background">@drawable/own_bubble</item>
+        <item name="android:background">@drawable/right_bubble</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>
 
     <style name="ItemTextMessageOwnOuterLinear">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:background">@drawable/own_bubble</item>
+        <!--<item name="android:background">@drawable/own_bubble</item>-->
     </style>
 
     <style name="ItemTextMessageOwnWidgetFrame">

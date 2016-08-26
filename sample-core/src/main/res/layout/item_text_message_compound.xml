@@ -16,7 +16,7 @@
         android:id="@+id/outer_message_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/own_bubble"
+        android:background="@drawable/right_bubble"
         android:orientation="horizontal"
         android:layout_gravity="right">
         <!--android:layout_below="@+id/widget_frame">-->

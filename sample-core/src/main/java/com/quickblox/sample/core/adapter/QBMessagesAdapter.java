@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.ViewHolder> implements QBBaseAdapter<QBChatMessage> {
+public class QBMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements QBBaseAdapter<QBChatMessage> {
     private static final String TAG = QBMessagesAdapter.class.getSimpleName();
     private List<Integer> customViewList;
 
     protected enum ViewTypes {TYPE_OWN_MESSAGE, TYPE_OPPONENT_MESSAGE, TYPE_ATTACHMENT_MESSAGE_OWN, TYPE_ATTACHMENT_MESSAGE_OPPONENT, TYPE_ATTACHMENT_CUSTOM}
 
-    private QBMessagesAdapter.ViewHolder qbViewHolder;
+    private RecyclerView.ViewHolder qbViewHolder;
 
     private int preferredImageSizePreview = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
 
@@ -66,18 +66,21 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.Vi
     }
 
     @Override
-    public QBMessagesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewTypes valueType = ViewTypes.values()[viewType];
         switch (valueType) {
+            case TYPE_OWN_MESSAGE:
+                qbViewHolder = new MessageOwnHolder(inflater.inflate(typeOwnMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                return qbViewHolder;
+            case TYPE_OPPONENT_MESSAGE:
+                qbViewHolder = new MessageOpponentHolder(inflater.inflate(typeOpponentMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                return qbViewHolder;
             case TYPE_ATTACHMENT_MESSAGE_OWN:
-                qbViewHolder = new ViewHolder(inflater.inflate(typeOwnAttachmentMessageLayoutResource, parent, false), inflater, valueType, customViewList, widgetLayoutResId, viewItemIDs);
+                qbViewHolder = new AttachOwnHolder(inflater.inflate(typeOwnAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
             case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
-                return new ViewHolder(inflater.inflate(typeOpponentAttachmentMessageLayoutResource, parent, false), inflater, valueType, customViewList, widgetLayoutResId, viewItemIDs);
-            case TYPE_OWN_MESSAGE:
-                return new ViewHolder(inflater.inflate(typeOwnMessageLayoutResource, parent, false), inflater, valueType, customViewList, widgetLayoutResId, viewItemIDs);
-            case TYPE_OPPONENT_MESSAGE:
-                return new ViewHolder(inflater.inflate(typeOpponentMessageLayoutResource, parent, false), inflater, valueType, customViewList, widgetLayoutResId, viewItemIDs);
+                qbViewHolder = new AttachOpponentHolder(inflater.inflate(typeOpponentAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+
             case TYPE_ATTACHMENT_CUSTOM:
                 Log.d("QBMessagesAdapter", "onCreateViewHolder case TYPE_ATTACHMENT_CUSTOM");
 //               resource must be set manually
@@ -159,19 +162,23 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         QBChatMessage chatMessage = getItem(position);
         ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
         switch (valueType) {
             case TYPE_ATTACHMENT_MESSAGE_OWN:
+                initRequestListener(holder);
+                showAttachment(holder, chatMessage);
             case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
                 initRequestListener(holder);
                 showAttachment(holder, chatMessage);
                 break;
             case TYPE_OWN_MESSAGE:
+                ((MessageOwnHolder) holder).messageTextView.setText(chatMessage.getBody());
+                ((MessageOwnHolder) holder).timeTextMessageTextView.setText(new SimpleDateFormat("MMMM dd", Locale.getDefault()).format(new Date(chatMessage.getDateSent() * 1000)));
             case TYPE_OPPONENT_MESSAGE:
-                holder.messageTextView.setText(chatMessage.getBody());
-                holder.timeTextMessageTextView.setText(new SimpleDateFormat("MMMM dd", Locale.getDefault()).format(new Date(chatMessage.getDateSent() * 1000)));
+                ((MessageOpponentHolder) holder).messageTextView.setText(chatMessage.getBody());
+                ((MessageOpponentHolder) holder).timeTextMessageTextView.setText(new SimpleDateFormat("MMMM dd", Locale.getDefault()).format(new Date(chatMessage.getDateSent() * 1000)));
                 break;
             default:
                 break;
@@ -276,6 +283,54 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.Vi
             }
         };
     }
+
+
+    protected static class MessageOwnHolder extends RecyclerView.ViewHolder{
+        TextView messageTextView;
+        TextView timeTextMessageTextView;
+
+        public MessageOwnHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
+            super(itemView);
+            messageTextView = (TextView) itemView.findViewById(msgId);
+            timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
+        }
+    }
+
+    public static class MessageOpponentHolder extends RecyclerView.ViewHolder{
+        TextView messageTextView;
+        TextView timeTextMessageTextView;
+
+        public MessageOpponentHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
+            super(itemView);
+            messageTextView = (TextView) itemView.findViewById(msgId);
+            timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
+        }
+    }
+
+    public static class AttachOwnHolder extends RecyclerView.ViewHolder{
+        ImageView attach_imageView;
+        ProgressBar attachmentProgressBar;
+
+        public AttachOwnHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
+            super(itemView);
+            attach_imageView = (ImageView) itemView.findViewById(attachId);
+            attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
+        }
+    }
+
+    public static class AttachOpponentHolder extends RecyclerView.ViewHolder{
+        ImageView attach_imageView;
+        ProgressBar attachmentProgressBar;
+
+        public AttachOpponentHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
+            super(itemView);
+            attach_imageView = (ImageView) itemView.findViewById(attachId);
+            attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
+        }
+    }
+
+
+
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         public View customLayout;

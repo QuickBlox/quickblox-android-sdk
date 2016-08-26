@@ -1,8 +1,73 @@
-<com.quickblox.sample.core.adapter.CompoundChatTextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    style=""
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/view1"
-    />
+    android:animateLayoutChanges="true"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:id="@+id/text_message_view"
+        style="@style/MessageAdapterTextMsgOwnParent.Child">
+
+        <!--android:layout_below="@+id/widget_frame">-->
+
+
+        <LinearLayout
+            android:id="@+id/outer_message_textview"
+            style="@style/ItemTextMessageOwnOuterLinear"
+            android:layout_below="@+id/widget_frame">
+
+            <TextView
+                android:id="@+id/message_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/qb_text_own_color"
+                android:textSize="@dimen/qb_text_size"
+                tools:text="message" />
+
+            <LinearLayout
+                android:id="@+id/inner_message_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:id="@+id/time_text_message_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:alpha="0.5"
+                    android:textColor="@color/white"
+                    tools:text="time" />
+
+                <ImageView
+                    android:id="@+id/text_message_delivery_status_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top"
+                    android:paddingLeft="5dp"
+                    android:scaleType="fitCenter" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/widget_frame"
+            style="@style/ItemTextMessageOwnWidgetFrame">
+
+            <TextView
+                android:id="@+id/custom_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HELLO" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
