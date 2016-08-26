@@ -13,11 +13,12 @@ android {
 }
 
 dependencies {
+    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar")
     compile "com.quickblox:quickblox-android-sdk-core:$rootProject.qbSdkVersion@aar"
     compile "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion@aar"
 
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
     compile "com.android.support:design:${rootProject.designVersion}"
     compile "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
-
+    compile 'com.github.bumptech.glide:glide:3.6.1'
 }

@@ -1,0 +1,8 @@
+<com.quickblox.sample.core.adapter.CompoundChatTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    style=""
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/view1"
+    />

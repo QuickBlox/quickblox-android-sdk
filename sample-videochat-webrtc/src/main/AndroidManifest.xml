@@ -47,7 +47,7 @@
         <activity
             android:name=".activities.CallActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:screenOrientation="portrait"
+            android:screenOrientation="sensor"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".activities.SettingsActivity"

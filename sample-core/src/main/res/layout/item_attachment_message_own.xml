@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal">
+
+<RelativeLayout
+    android:id="@+id/attach_message_relativelayout"
+    android:layout_height="@dimen/chat_attach_height"
+    android:layout_width="@dimen/chat_attach_width"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:layout_alignParentRight="true">
+
+    <ProgressBar
+        android:id="@+id/centered_progressbar"
+        android:indeterminate="false"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:max="100" />
+
+    <ImageView
+        android:id="@+id/attach_imageview"
+        android:layout_gravity="center"
+        android:layout_height="@dimen/chat_attach_height"
+        android:layout_width="@dimen/chat_attach_width"
+        android:scaleType="centerCrop"
+        android:src="@null" />
+
+    <TextView
+        android:alpha="0.5"
+        android:background="@drawable/badge_attach_message_time"
+        android:id="@+id/time_attach_message_textview"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:padding="4dp"
+        android:textColor="@color/black"
+        tools:text="time" />
+
+</RelativeLayout>
+</RelativeLayout>

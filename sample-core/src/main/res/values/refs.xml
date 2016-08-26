@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="drawable" name="own_bubble">@drawable/right_bubble</item>
+    <item type="color" name="qb_text_own_color">@color/color_grey</item>
+    <item type="dimen" name="qb_text_size">@dimen/text_size_small</item>
+</resources>

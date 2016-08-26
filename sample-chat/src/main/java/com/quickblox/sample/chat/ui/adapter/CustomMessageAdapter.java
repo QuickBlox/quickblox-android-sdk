@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.ui.adapter.QBMessagesAdapter;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        setCustomViewCustomLayout(holder);
+
     }
 
     private void setCustomTextViewOwn(ViewHolder holder) {
