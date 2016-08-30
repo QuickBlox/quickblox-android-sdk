@@ -110,6 +110,14 @@ To use Proguard in your project create proguard-rules.pro file and put there the
 
 ##---------------End: proguard configuration for quickblox  ----------
 
+# for example sample chat needs additional rules
+-keep class android.support.v7.** { *; }
+-keep class com.bumptech.** { *; }
+
+-dontwarn org.jivesoftware.smackx.**
+-dontwarn android.support.v4.app.**
+
+
 ##---------------End: proguard configuration ----------
 ```
 To fix errors and force ProGuard to keep certain code, add a -keep line in the ProGuard configuration file. For example:
