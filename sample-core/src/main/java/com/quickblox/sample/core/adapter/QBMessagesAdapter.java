@@ -176,10 +176,12 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
                     Log.wtf(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
                     onBindViewAttachOwnHolder((AttachOwnHolder) holder, position);
                 }
+                break;
             case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
-                Log.wtf(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
-//                initRequestListener(holder);
-//                showAttachment(holder, chatMessage);
+                if (useEmbeddedImageLoader) {
+                    Log.wtf(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
+                    onBindViewAttachOpponentHolder((AttachOpponentHolder) holder, position);
+                }
                 break;
             case TYPE_OWN_MESSAGE:
                 onBindViewMsgOwnHolder((MessageOwnHolder) holder, position);
@@ -199,6 +201,19 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         showAttachment(holder, chatMessage, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN);
     }
 
+    protected void onBindViewAttachOpponentHolder(AttachOpponentHolder holder, int position) {
+        QBChatMessage chatMessage = getItem(position);
+        initRequestListener(holder, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT);
+        showAttachment(holder, chatMessage, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT);
+    }
+
+    protected void onBindViewMsgOpponentHolder(MessageOpponentHolder holder, int position) {
+        QBChatMessage chatMessage = getItem(position);
+
+        holder.messageTextView.setText((textOpp == null) ? chatMessage.getBody() : textOpp);
+        holder.timeTextMessageTextView.setText((timeOpp == null) ? new SimpleDateFormat("MMMM dd", Locale.getDefault()).format(new Date(chatMessage.getDateSent() * 1000)) : timeOpp);
+    }
+
     protected void onBindViewMsgOwnHolder(MessageOwnHolder holder, int position) {
         QBChatMessage chatMessage = getItem(position);
 
@@ -212,13 +227,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     protected void setTimeOwnText(String str) {
         timeOwn = str;
-    }
-
-    protected void onBindViewMsgOpponentHolder(MessageOpponentHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
-
-        holder.messageTextView.setText((textOpp == null) ? chatMessage.getBody() : textOpp);
-        holder.timeTextMessageTextView.setText((timeOpp == null) ? new SimpleDateFormat("MMMM dd", Locale.getDefault()).format(new Date(chatMessage.getDateSent() * 1000)) : timeOpp);
     }
 
     @Override

@@ -22,4 +22,9 @@
     <dimen name="text_size_small">15sp</dimen>
 
     <dimen name="corners_small_value">3dp</dimen>
+    <dimen name="image_view_small_avatar_layout_width">33dp</dimen>
+    <dimen name="image_view_small_avatar_layout_height">33dp</dimen>
+    <dimen name="image_view_big_avatar_layout_width">70dp</dimen>
+    <dimen name="image_view_big_avatar_layout_height">70dp</dimen>
+    <dimen name="avatar_border_width">1dp</dimen>
 </resources>

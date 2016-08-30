@@ -4,7 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_medium">
 
 <RelativeLayout
     android:id="@+id/attach_message_relativelayout"
@@ -12,6 +13,7 @@
     android:layout_width="@dimen/chat_attach_width"
     android:orientation="horizontal"
     android:padding="5dp"
+    android:background="@drawable/right_bubble"
     android:layout_alignParentRight="true">
 
     <ProgressBar
@@ -27,6 +29,7 @@
         android:layout_gravity="center"
         android:layout_height="@dimen/chat_attach_height"
         android:layout_width="@dimen/chat_attach_width"
+        android:layout_marginRight="8dp"
         android:scaleType="centerCrop"
         android:src="@null" />
 

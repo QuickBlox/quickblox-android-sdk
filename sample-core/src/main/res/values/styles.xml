@@ -25,6 +25,14 @@
         <!--<item name="android:layout_below">@+id/outer_message_textview</item>-->
     </style>
 
+    <style name="AvatarImageViewStyle">
+        <item name="android:layout_width">@dimen/image_view_big_avatar_layout_width</item>
+        <item name="android:layout_height">@dimen/image_view_big_avatar_layout_height</item>
+        <item name="android:layout_gravity">center|top</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/placeholder_user</item>
+    </style>
+
     <style name="MyCustomStyle">
         <item name="msgTextColor">#FF0000</item>
         <item name="android:background">#ffffff</item>
