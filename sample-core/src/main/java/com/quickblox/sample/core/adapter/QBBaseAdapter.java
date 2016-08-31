@@ -16,5 +16,5 @@ public interface QBBaseAdapter<T> {
 
     void addList(List<T> items);
 
-    T getItem(RecyclerView.ViewHolder viewHolder);
+//    T getItem(RecyclerView.ViewHolder viewHolder);
 }

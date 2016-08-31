@@ -3,7 +3,6 @@ package com.quickblox.sample.core.adapter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +17,7 @@ public class CompoundChatTextView extends RelativeLayout {
         super(context, attrs);
 
         int[] attrss = { R.attr.msgTextColor, android.R.attr.background, android.R.attr.textSize, R.attr.timeTextColor};
-        TypedArray ta = context.obtainStyledAttributes(R.style.MyCustomStyle, attrss);
+        TypedArray ta = context.obtainStyledAttributes(R.style.CompoundChatTextViewStyle, attrss);
 
 // Fetch the text from your style like this.
         float size = ta.getDimension(2, 20);

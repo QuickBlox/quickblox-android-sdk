@@ -7,7 +7,6 @@
     <style name="MessageAdapterTextMsgOwnParent">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginLeft">@dimen/chat_babble_margin</item>
         <item name="android:background">@drawable/right_bubble</item>
         <item name="android:padding">@dimen/padding_small</item>
@@ -16,13 +15,11 @@
     <style name="ItemTextMessageOwnOuterLinear">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <!--<item name="android:background">@drawable/own_bubble</item>-->
     </style>
 
     <style name="ItemTextMessageOwnWidgetFrame">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <!--<item name="android:layout_below">@+id/outer_message_textview</item>-->
     </style>
 
     <style name="AvatarImageViewStyle">
@@ -33,7 +30,7 @@
         <item name="android:src">@drawable/placeholder_user</item>
     </style>
 
-    <style name="MyCustomStyle">
+    <style name="CompoundChatTextViewStyle">
         <item name="msgTextColor">#FF0000</item>
         <item name="android:background">#ffffff</item>
         <item name="android:textSize">18sp</item>
