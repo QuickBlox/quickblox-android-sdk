@@ -15,7 +15,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     }
 
     @Override
-    public void onBindViewHolder(QBMessageViewHolder holder, int position) {
+    public void onBindViewHolder(QBMessagesAdapterViewHolder holder, int position) {
 
 //      setOwnMessageLayoutResource(R.layout.item_text_message_own);
 //      setMessageLayoutResourceByType(ViewTypes.TYPE_OWN_MESSAGE, R.layout.item_text_message_own);

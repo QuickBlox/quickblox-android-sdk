@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QBMessageViewHolder> implements QBBaseAdapter<QBChatMessage> {
+public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QBMessagesAdapterViewHolder> implements QBBaseAdapter<QBChatMessage> {
     private static final String TAG = QBMessagesAdapter.class.getSimpleName();
 
     private int typeOwnAttachmentMessageLayoutResource = R.layout.item_attachment_message_own;
@@ -46,7 +46,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     private int preferredImageSizePreview = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
     private RequestListener glideRequestListener;
-    private QBMessageViewHolder qbViewHolder;
+    private QBMessagesAdapterViewHolder qbViewHolder;
     private boolean useEmbeddedImageLoader = true;
     private
     @LayoutRes
@@ -58,7 +58,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected LayoutInflater inflater;
     protected Context context;
 
-    protected QBMessageViewHolder customHolder;
+    protected QBMessagesAdapterViewHolder customHolder;
 
 
     public QBMessagesAdapter(Context context, List<QBChatMessage> chatMessages) {
@@ -68,7 +68,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     @Override
-    public QBMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public QBMessagesAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewTypes valueType = ViewTypes.values()[viewType];
         switch (valueType) {
             case TYPE_OWN_MESSAGE:
@@ -135,7 +135,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     @Override
-    public void onBindViewHolder(QBMessageViewHolder holder, int position) {
+    public void onBindViewHolder(QBMessagesAdapterViewHolder holder, int position) {
         QBChatMessage chatMessage = getItem(position);
         ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
         switch (valueType) {
@@ -187,7 +187,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected void onBindViewMsgOwnHolder(MessageOwnHolder holder, int position) {
         QBChatMessage chatMessage = getItem(position);
         if (textOwnSize != 0) {
-            Log.d(TAG, "textOwnSize= "+textOwnSize);
+            Log.d(TAG, "textOwnSize= " + textOwnSize);
             holder.messageTextView.setTextSize(textOwnSize);
         }
         if (textOwnColor != 0) {
@@ -248,7 +248,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
             QBAttachment attachment = chatMessage.getAttachments().iterator().next();
             Log.d("QBMessagesAdapter", "attachment.getType= " + attachment.getType());
 
-            if (attachment.getType() != null && attachment.getType().equals(QBAttachment.PHOTO_TYPE)) {
+            if (QBAttachment.PHOTO_TYPE.equals(attachment.getType())) {
                 if (isIncoming(chatMessage)) {
                     return ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT.ordinal();
                 } else {
@@ -300,7 +300,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return dateFormat.format(new Date(milliseconds));
     }
 
-    private void showAttachment(final QBMessageViewHolder holder, QBChatMessage chatMessage, ViewTypes type) {
+    public void showAttachment(final QBMessagesAdapterViewHolder holder, QBChatMessage chatMessage, ViewTypes type) {
         Collection<QBAttachment> attachments = chatMessage.getAttachments();
         QBAttachment attachment = attachments.iterator().next();
         Glide.with(context)
@@ -312,9 +312,9 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
                 .into((type == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? ((AttachOwnHolder) holder).attach_imageView : ((AttachOpponentHolder) holder).attach_imageView);
     }
 
-    private void initGlideRequestListener(final QBMessageViewHolder holder, final ViewTypes type) {
+    private void initGlideRequestListener(final QBAttachViewHolder holder, final ViewTypes type) {
         glideRequestListener = new RequestListener() {
-            QBMessageViewHolder viewHolder = (type == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? (AttachOwnHolder) holder : (AttachOpponentHolder) holder;
+            QBAttachViewHolder viewHolder = (type == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? (AttachOwnHolder) holder : (AttachOpponentHolder) holder;
 
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
@@ -334,7 +334,10 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
 
-    protected static class MessageOwnHolder extends QBMessageViewHolder {
+    protected static class MessageOwnHolder extends QBMessagesAdapterViewHolder {
+        public TextView messageTextView;
+        public TextView timeTextMessageTextView;
+
         public View customLayout;
 
         public MessageOwnHolder(View itemView, LayoutInflater inflater, @LayoutRes int widgetLayoutResId, @IdRes int msgId, @IdRes int timeId) {
@@ -357,7 +360,9 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected static class MessageOpponentHolder extends QBMessageViewHolder {
+    protected static class MessageOpponentHolder extends QBMessagesAdapterViewHolder {
+        public TextView messageTextView;
+        public TextView timeTextMessageTextView;
 
         public MessageOpponentHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
             super(itemView);
@@ -366,7 +371,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected static class AttachOwnHolder extends QBMessageViewHolder {
+    protected static class AttachOwnHolder extends QBAttachViewHolder {
 
         public AttachOwnHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
             super(itemView);
@@ -375,7 +380,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected static class AttachOpponentHolder extends QBMessageViewHolder {
+    protected static class AttachOpponentHolder extends QBAttachViewHolder {
 
         public AttachOpponentHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
             super(itemView);
@@ -384,13 +389,18 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected abstract static class QBMessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView messageTextView;
-        public TextView timeTextMessageTextView;
+    protected abstract static class QBAttachViewHolder extends QBMessagesAdapterViewHolder {
         public ImageView attach_imageView;
         public ProgressBar attachmentProgressBar;
 
-        public QBMessageViewHolder(View itemView) {
+        public QBAttachViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    protected abstract static class QBMessagesAdapterViewHolder extends RecyclerView.ViewHolder {
+
+        public QBMessagesAdapterViewHolder(View itemView) {
             super(itemView);
         }
     }
