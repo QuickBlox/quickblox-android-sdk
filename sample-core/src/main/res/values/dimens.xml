@@ -14,7 +14,7 @@
 
     <dimen name="chat_attach_width">200dp</dimen>
     <dimen name="chat_attach_height">200dp</dimen>
-    <dimen name="chat_babble_margin">30dp</dimen>
+    <dimen name="chat_babble_margin">4dp</dimen>
 
     <dimen name="padding_small">5dp</dimen>
     <dimen name="padding_medium">10dp</dimen>

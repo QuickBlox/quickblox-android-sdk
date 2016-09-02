@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="CompoundChatTextView">
         <attr name="outcoming" format="boolean" />
-        <attr name="bubble" format="integer"/>
+        <attr name="bubble_draw" format="integer"/>
         <attr name="msgTextColor" format="color"/>
         <attr name="timeTextColor" format="color"/>
 
@@ -20,6 +20,14 @@
         <attr name="mutate_background" format="boolean" />
         <attr name="oval" format="boolean" />
         <attr name="android:scaleType" />
+    </declare-styleable>
+
+
+
+
+    <declare-styleable name="EditMessageTextView">
+        <attr name="stick_right" format="boolean"/>
+        <attr name="bubble" format="integer"/>
     </declare-styleable>
 
 </resources>

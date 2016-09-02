@@ -26,46 +26,19 @@
                 android:layout_marginTop="8dp"
                 android:textColor="@color/qb_text_own_color"
                 android:textSize="@dimen/qb_text_size"
-                tools:text="message" />
-
-            <LinearLayout
-                android:id="@+id/inner_message_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingRight="5dp">
-
-                <TextView
-                    android:id="@+id/time_text_message_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|top"
-                    android:alpha="0.5"
-                    android:textColor="@color/white"
-                    tools:text="time" />
-
-                <ImageView
-                    android:id="@+id/text_message_delivery_status_imageview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="top"
-                    android:paddingLeft="5dp"
-                    android:scaleType="fitCenter" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_frame"
-            style="@style/ItemTextMessageOwnWidgetFrame">
+                tools:text="messagertdfgdfgdgfdfgdghfdfgdfgdfgdfdfgdfgdfdfgdfgdfgdfgdfgdfg" />
 
             <TextView
-                android:id="@+id/custom_text_view"
-                android:layout_width="wrap_content"
+                android:id="@+id/time_text_message_textview"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Custom Text" />
-        </LinearLayout>
+                android:layout_gravity="right|top"
+                android:alpha="0.5"
+                android:layout_margin="4dp"
+                android:textColor="@color/white"
+                tools:text="August 16" />
+
+            </LinearLayout>
 
     </LinearLayout>
 
