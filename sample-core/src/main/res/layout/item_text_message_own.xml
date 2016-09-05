@@ -9,13 +9,13 @@
 
     <LinearLayout
         android:id="@+id/text_message_view"
-        style="@style/MessageAdapterTextMsgOwnParent.Child"
+        style="@style/MessageAdapterTextMsgParent"
         android:orientation="vertical"
         android:layout_gravity="right">
 
         <LinearLayout
             android:id="@+id/outer_message_textview"
-            style="@style/ItemTextMessageOwnOuterLinear">
+            style="@style/LinearTextMessage.Opponent">
 
             <TextView
                 android:id="@+id/message_textview"

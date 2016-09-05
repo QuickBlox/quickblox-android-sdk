@@ -1,72 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:padding="@dimen/padding_medium">
 
-   <LinearLayout
-       android:id="@+id/linear_agile"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content">
-
-    <com.quickblox.sample.core.adapter.views.RoundedImageView
-        android:visibility="gone"
-        android:id="@+id/avatar_imageview_1"
-        style="@style/AvatarImageViewStyle"
-        android:layout_width="@dimen/image_view_small_avatar_layout_width"
-        android:layout_height="@dimen/image_view_small_avatar_layout_height"
-        app:border_color="@color/dark_gray"
-        app:border_width="@dimen/avatar_border_width"
-        app:oval="true" />
-
 
     <LinearLayout
-        android:id="@+id/bubble_background"
-        style="@style/MessageAdapterTextMsgOwnParent.Child"
-        android:layout_marginRight="4dp"
-        android:orientation="vertical">
+        android:id="@+id/linear_agile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
 
-        <LinearLayout
-            android:id="@+id/outer_message_textview"
-            style="@style/ItemTextMessageOwnOuterLinear">
+        <com.quickblox.sample.core.adapter.views.RoundedImageView
+            android:id="@+id/avatar_imageview_left"
+            style="@style/AvatarImageViewStyle"
+            android:layout_width="@dimen/image_view_small_avatar_layout_width"
+            android:layout_height="@dimen/image_view_small_avatar_layout_height"
+            android:visibility="visible"
+            app:border_color="@color/dark_gray"
+            app:border_width="@dimen/avatar_border_width"
+            app:oval="true" />
 
-            <TextView
-                android:id="@+id/message_textview"
+
+
+            <ViewStub android:id="@+id/stub_text"
+                android:inflatedId="@+id/subTree_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/qb_text_own_color"
-                android:textSize="@dimen/qb_text_size"
-                tools:text="messagertdfsscsd" />
-
-            <TextView
-                android:id="@+id/time_text_message_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_margin="4dp"
-                android:alpha="0.5"
-                android:textColor="@color/black"
-                tools:text="August 16" />
-
-        </LinearLayout>
+                android:layout_weight="1"/>
 
 
+
+        <com.quickblox.sample.core.adapter.views.RoundedImageView
+            android:id="@+id/avatar_imageview_right"
+            style="@style/AvatarImageViewStyle"
+            android:layout_width="@dimen/image_view_small_avatar_layout_width"
+            android:layout_height="@dimen/image_view_small_avatar_layout_height"
+            app:border_color="@color/dark_gray"
+            app:border_width="@dimen/avatar_border_width"
+            app:oval="true" />
 
     </LinearLayout>
 
-    <com.quickblox.sample.core.adapter.views.RoundedImageView
-        android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle"
-        android:layout_width="@dimen/image_view_small_avatar_layout_width"
-        android:layout_height="@dimen/image_view_small_avatar_layout_height"
-        app:border_color="@color/dark_gray"
-        app:border_width="@dimen/avatar_border_width"
-        app:oval="true" />
-   </LinearLayout>
-
-</RelativeLayout>
+</FrameLayout>

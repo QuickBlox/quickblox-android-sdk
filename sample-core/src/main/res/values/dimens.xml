@@ -18,8 +18,10 @@
 
     <dimen name="padding_small">5dp</dimen>
     <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_big">15dp</dimen>
 
     <dimen name="text_size_small">15sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
 
     <dimen name="corners_small_value">3dp</dimen>
     <dimen name="image_view_small_avatar_layout_width">33dp</dimen>

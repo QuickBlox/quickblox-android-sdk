@@ -474,7 +474,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
 //                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
-                    chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
+                    chatAdapter = new QBMessagesAdapter(ChatActivity.this, messages);
                     chatAdapter.setHasStableIds(true);
 //                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
 //                        @Override

@@ -31,10 +31,10 @@ import java.util.Locale;
 public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QBMessagesAdapterViewHolder> implements QBBaseAdapter<QBChatMessage> {
     private static final String TAG = QBMessagesAdapter.class.getSimpleName();
 
-    private int typeOwnAttachmentMessageLayoutResource = R.layout.item_attachment_message_own;
-    private int typeOpponentAttachmentMessageLayoutResource = R.layout.item_attachment_message_opponent;
-    private int typeOwnMessageLayoutResource = R.layout.item_text_message_own;
-    private int typeOpponentMessageLayoutResource = R.layout.item_text_message_opponent;
+    public int typeOwnAttachmentMessageLayoutResource = R.layout.item_attachment_message_own;
+    public int typeOpponentAttachmentMessageLayoutResource = R.layout.item_attachment_message_opponent;
+    public int typeOwnMessageLayoutResource = R.layout.item_text_message_own_compound;
+    public int typeOpponentMessageLayoutResource = R.layout.item_text_message_opp_compound;
 
     private String textOwn;
     private String timeOwn;
