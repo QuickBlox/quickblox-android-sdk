@@ -16,5 +16,7 @@ public interface QBBaseAdapter<T> {
 
     void addList(List<T> items);
 
+    void showAttachment(QBMessagesAdapter.QBMessagesAdapterViewHolder holder, int position);
+
 //    T getItem(RecyclerView.ViewHolder viewHolder);
 }

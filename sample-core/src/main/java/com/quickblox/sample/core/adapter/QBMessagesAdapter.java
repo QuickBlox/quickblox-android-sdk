@@ -166,15 +166,13 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     protected void onBindViewAttachOwnHolder(AttachOwnHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
-        initGlideRequestListener(holder, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN);
-        showAttachment(holder, chatMessage, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN);
+
+        showAttachment(holder, position);
     }
 
     protected void onBindViewAttachOpponentHolder(AttachOpponentHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
-        initGlideRequestListener(holder, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT);
-        showAttachment(holder, chatMessage, ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT);
+
+        showAttachment(holder, position);
     }
 
     protected void onBindViewMsgOpponentHolder(MessageOpponentHolder holder, int position) {
@@ -300,7 +298,14 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return dateFormat.format(new Date(milliseconds));
     }
 
-    public void showAttachment(final QBMessagesAdapterViewHolder holder, QBChatMessage chatMessage, ViewTypes type) {
+    @Override
+    public void showAttachment(QBMessagesAdapterViewHolder holder, int position) {
+        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        Log.d(TAG, "showAttachment valueType= " + valueType);
+        initGlideRequestListener((QBAttachViewHolder) holder, valueType);
+
+        QBChatMessage chatMessage = getItem(position);
+
         Collection<QBAttachment> attachments = chatMessage.getAttachments();
         QBAttachment attachment = attachments.iterator().next();
         Glide.with(context)
@@ -309,7 +314,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
                 .override(preferredImageSizePreview, preferredImageSizePreview)
                 .dontTransform()
                 .error(R.drawable.ic_error)
-                .into((type == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? ((AttachOwnHolder) holder).attach_imageView : ((AttachOpponentHolder) holder).attach_imageView);
+                .into((valueType == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? ((AttachOwnHolder) holder).attach_imageView : ((AttachOpponentHolder) holder).attach_imageView);
     }
 
     private void initGlideRequestListener(final QBAttachViewHolder holder, final ViewTypes type) {
