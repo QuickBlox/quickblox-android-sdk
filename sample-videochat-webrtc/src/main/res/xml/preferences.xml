@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:seekBar="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:layout="@layout/view_for_preference"
+        android:selectable="false" />
+
+    <PreferenceCategory android:title="@string/title_video_category">
+
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
+            android:defaultValue="@string/pref_resolution_default"
+            android:dialogTitle="@string/pref_resolution_dlg"
+            android:entries="@array/videoResolutions"
+            android:entryValues="@array/videoResolutionsValues"
+            android:key="@string/pref_resolution_key"
+            android:summary="%s"
+            android:title="@string/pref_resolution_title" />
+
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
+            android:defaultValue="@string/pref_startbitratevalue_default"
+            android:key="@string/pref_startbitratevalue_key"
+            android:max="@integer/pref_startbitratevalue_max_value"
+            android:summary="%s"
+            android:title="@string/pref_startbitratevalue_title"
+            seekBar:min="@integer/pref_startbitratevalue_min_value"
+            seekBar:stepSize="@integer/pref_startbitratevalue_step_size" />
+
+        <!--Will be able in next release-->
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
+            android:defaultValue="@string/pref_frame_rate_default"
+            android:key="@string/pref_frame_rate_key"
+            android:max="@integer/pref_frame_rate_max_value"
+            android:summary="%s"
+            android:title="@string/pref_frame_rate_title"
+            seekBar:min="@integer/pref_frame_rate_min_value"
+            seekBar:stepSize="@integer/pref_frame_rate_stepSize" />
+
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
+            android:defaultValue="@string/pref_audiocodec_def"
+            android:dialogTitle="@string/pref_audiocodec_dlg"
+            android:entries="@array/audioCodecs"
+            android:entryValues="@array/audioCodecs"
+            android:key="@string/pref_audiocodec_key"
+            android:summary="%s"
+            android:title="@string/pref_audiocodec_title" />
+
+        <com.quickblox.sample.groupchatwebrtc.view.ListPreferenceCompat
+            android:defaultValue="@string/pref_videocodec_default"
+            android:dialogTitle="@string/pref_videocodec_dlg"
+            android:entries="@array/videoCodecs"
+            android:entryValues="@array/videoCodecsValues"
+            android:key="@string/pref_videocodec_key"
+            android:summary="%s"
+            android:title="@string/pref_videocodec_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_call_settings_category">
+
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
+            android:defaultValue="@string/pref_answer_time_interval_default_value"
+            android:key="@string/pref_answer_time_interval_key"
+            android:max="@integer/pref_answer_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_answer_time_interval_title"
+            seekBar:min="@integer/pref_answer_time_interval_min_value"
+            seekBar:stepSize="@integer/pref_answer_time_interval_step_size" />
+
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
+            android:defaultValue="@string/pref_disconnect_time_interval_default_value"
+            android:key="@string/pref_disconnect_time_interval_key"
+            android:max="@integer/pref_disconnect_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_disconnect_time_interval_title"
+            seekBar:min="@integer/pref_disconnect_time_interval_min_value"
+            seekBar:stepSize="@integer/pref_disconnect_time_interval_step_size" />
+
+        <com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference
+            android:defaultValue="@string/pref_dialing_time_interval_default_value"
+            android:key="@string/pref_dialing_time_interval_key"
+            android:max="@integer/pref_dialing_time_interval_max_value"
+            android:summary="%s"
+            android:title="@string/pref_dialing_time_interval_title"
+            seekBar:min="@integer/pref_dialing_time_interval_min_value"
+            seekBar:stepSize="@integer/pref_dialing_time_interval_step_size" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_hwcodec_default"
+            android:key="@string/pref_hwcodec_key"
+            android:title="@string/pref_hwcodec_title" />
+
+
+
+        <CheckBoxPreference
+            android:key="@string/pref_disable_built_in_aec_key"
+            android:title="@string/pref_disable_built_in_aec_title"
+            android:dialogTitle="@string/pref_disable_built_in_aec_dlg"
+            android:defaultValue="@string/pref_disable_built_in_aec_default" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_opensles_key"
+            android:title="@string/pref_opensles_title"
+            android:dialogTitle="@string/pref_opensles_dlg"
+            android:defaultValue="@string/pref_opensles_default" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_noaudioprocessing_key"
+            android:title="@string/pref_noaudioprocessing_title"
+            android:dialogTitle="@string/pref_noaudioprocessing_dlg"
+            android:defaultValue="@string/pref_noaudioprocessing_default" />
+
+    </PreferenceCategory>
+
+    <Preference
+        android:layout="@layout/preference_version"
+        android:selectable="false" />
+
+</PreferenceScreen>
