@@ -193,7 +193,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate() from " + TAG);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -404,12 +403,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
-        Log.d(TAG, "start");
         localVideoTrack = videoTrack;
         isLocalVideoFullScreen = true;
 
         if (remoteFullScreenVideoView != null) {
-            Log.d(TAG, "localVideoView.updateRenderer SECOND");
             fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
         }
 
@@ -417,7 +414,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             if (remoteFullScreenVideoView != null) {
                 return;
             }
-            Log.i(TAG, "onLocalVideoTrackReceive init localView");
+            Log.d(TAG, "onLocalVideoTrackReceive init localView");
             remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
             remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
@@ -463,8 +460,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             return;
         }
         if (isPeerToPeerCall) {
-            Log.i(TAG, " isPeerToPeerCall");
-//            remoteFullScreenVideoView = holder.getOpponentView();
 
         } else {
             //on group call we postpone initialization of VideoView due to set it on Gui renderer.
@@ -552,7 +547,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
-        Log.d(TAG, "setRemoteViewMultiCall viewHolders= " + viewHolders);
         if (itemHolder == null) {
             Log.d(TAG, "itemHolder == null - true");
             return;
@@ -652,7 +646,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror, RendererCommon.ScalingType scalingType) {
-        Log.i(TAG, "updateVideoView mirror:" + mirror + ", scalintType = " + scalingType);
+        Log.i(TAG, "updateVideoView mirror:" + mirror + ", scalingType = " + scalingType);
         surfaceViewRenderer.setScalingType(scalingType);
         surfaceViewRenderer.setMirror(mirror);
         surfaceViewRenderer.requestLayout();
@@ -704,9 +698,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (holder == null) {
             return;
         }
-
-        Log.d(TAG, "setBackgroundOpponentView userIDFullScreen= " + userIDFullScreen);
-        Log.d(TAG, "setBackgroundOpponentView userId= " + userId);
 
         if (userId != userIDFullScreen) {
             holder.getOpponentView().setBackgroundColor(Color.parseColor("#000000"));
