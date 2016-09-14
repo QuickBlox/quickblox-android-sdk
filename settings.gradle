@@ -8,4 +8,5 @@ include 'sample-users'
 include 'sample-videochat-webrtc'
 include 'snippets'
 
+apply from: "sdk-settings.gradle"
 
