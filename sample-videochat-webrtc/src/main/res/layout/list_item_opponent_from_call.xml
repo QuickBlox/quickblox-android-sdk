@@ -7,13 +7,14 @@
         android:id="@+id/innerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/black_transparent_50">
+        android:layout_gravity="center">
 
         <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
             android:id="@+id/opponentView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            />
 
         <TextView
             android:id="@+id/connectionStatus"
@@ -23,10 +24,11 @@
             android:layout_marginBottom="3dp"
             android:gravity="center_horizontal"
             android:maxLength="13"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/white"
             android:textStyle="normal|italic" />
+
 
         <TextView
             android:id="@+id/opponentName"
@@ -41,5 +43,11 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_adapter"
+        style="@style/MatchWidth"
+        android:visibility="visible"
+        android:layout_gravity="center" />
 
 </FrameLayout>

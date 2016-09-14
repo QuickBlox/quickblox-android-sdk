@@ -23,7 +23,7 @@ ext {
     buildToolsVersion = "23.0.2"
 
     minSdkVersion = 14
-    targetSdkVersion = 22
+    targetSdkVersion = 23
 
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7
@@ -42,7 +42,7 @@ ext {
     playServicesVersion = '8.4.0'
     supportV4Version = '23.1.1'
     appcompatV7Version = '23.1.1'
-    recyclerviewV7Version = '23.1.1'
+    recyclerviewV7Version = '23.2.1'
     supportAnnotationsVersion = '23.1.1'
     designVersion = '23.1.1'
 

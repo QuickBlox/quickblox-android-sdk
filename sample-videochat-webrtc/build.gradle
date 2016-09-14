@@ -12,7 +12,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
-    mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -23,9 +22,9 @@ android {
     defaultConfig {
         applicationId "com.quickblox.sample.groupchatwebrtc"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.4"
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 200
+        versionName "2.0.0"
     }
 
     productFlavors {
@@ -40,6 +39,7 @@ android {
 
     buildTypes {
         debug {
+            resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
             signingConfig signingConfigs.debug
         }
     }
@@ -52,19 +52,21 @@ android {
             keyPassword "android"
         }
     }
-
-    dexOptions {
-        preDexLibraries = false
-    }
 }
 
 dependencies {
 
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
+    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
+        transitive=true
+    }
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion@aar"
 
-    compile (project(":sample-core"))
+    compile (project(":sample-core")) {
+        transitive = true;
+    }
 
     compile "com.android.support:recyclerview-v7:${rootProject.recyclerviewV7Version}"
+    compile "com.android.support:cardview-v7:23.+"
     compile "com.android.support:support-annotations:${rootProject.supportAnnotationsVersion}"
 
     compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"

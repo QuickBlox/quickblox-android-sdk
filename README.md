@@ -29,6 +29,34 @@ To get the QuickBlox SDK project running you will need Android Studio and Maven 
 
 The repository https://github.com/QuickBlox/quickblox-android-sdk-releases contains binary distributions of QuickBlox Android SDK and an instruction how to connect SDK to your project. Check it out.
 
+# Android Studio issues
+
+If you can’t successfully build the gradle after updating to some of the version Quickblox SDK, try to resolve all errors appearing in Gradle Console (but not in code emphasized red!) It may occurs cause some versions of Android Studio can’t completely resolve import dependencies while project has internal errors.
+
+If you still have problems with import SDK library from remote repo follow to the next section.
+
+# Add quickblox dependency as local repository
+
+1. Create local folder, for example /Users/igor/workspace/quickblox
+
+2. By the link https://github.com/QuickBlox/quickblox-android-sdk-releases clone or download repository
+
+3. Put in created quickblox folder downloaded quickblox-android-sdk-releases-master.
+
+4. In project build.grade file replace
+```xml
+maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+```
+to
+```xml
+maven {
+            url= "file://Users/igor/workspace/quickblox/quickblox-android-sdk-releases-master"
+        }
+```
+and use any version of quickblox-android-sdk.
+
 # Customize Proguard in Android Studio 
 
 To use Proguard in your project create proguard-rules.pro file and put there the next for quickblox modules:
@@ -78,7 +106,10 @@ To use Proguard in your project create proguard-rules.pro file and put there the
 -keep class com.quickblox.chat.parser.** { *; }
 -keep class com.quickblox.chat.model.** { *; }
 -keep class org.jivesoftware.** { *; }
+-dontwarn org.jivesoftware.smackx.**
 
+#quickblox videochat-webrtc module
+-keep class org.webrtc.** { *; }
 
 ##---------------End: proguard configuration for quickblox  ----------
 
