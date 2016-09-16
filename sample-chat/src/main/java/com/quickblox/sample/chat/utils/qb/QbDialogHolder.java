@@ -1,6 +1,6 @@
 package com.quickblox.sample.chat.utils.qb;
 
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.List;
 public class QbDialogHolder {
 
     private static QbDialogHolder instance;
-    private List<QBDialog> dialogList;
+    private List<QBChatDialog> dialogList;
 
     public static synchronized QbDialogHolder getInstance() {
         if (instance == null) {
@@ -22,7 +22,7 @@ public class QbDialogHolder {
         dialogList = new ArrayList<>();
     }
 
-    public List<QBDialog> getDialogList() {
+    public List<QBChatDialog> getDialogList() {
         return dialogList;
     }
 
@@ -30,20 +30,20 @@ public class QbDialogHolder {
         dialogList.clear();
     }
 
-    public void addDialogToList(QBDialog dialog) {
+    public void addDialogToList(QBChatDialog dialog) {
         if (!dialogList.contains(dialog)) {
             dialogList.add(dialog);
         }
     }
 
-    public void addDialogs(List<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
+    public void addDialogs(List<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
             addDialogToList(dialog);
         }
     }
 
-    public void deleteDialogs(Collection<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
+    public void deleteDialogs(Collection<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
             dialogList.remove(dialog);
         }
     }

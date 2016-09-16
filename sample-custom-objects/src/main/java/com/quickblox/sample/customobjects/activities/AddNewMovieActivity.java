@@ -97,7 +97,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
         QBCustomObject qbCustomObject = QBCustomObjectsUtils.createCustomObject(title, description, year, rating);
 
-        QBCustomObjects.createObject(qbCustomObject, new QBEntityCallback<QBCustomObject>() {
+        QBCustomObjects.createObject(qbCustomObject).performAsync(new QBEntityCallback<QBCustomObject>() {
             @Override
             public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
                 progressDialog.dismiss();

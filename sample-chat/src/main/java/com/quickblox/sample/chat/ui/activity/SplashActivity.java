@@ -41,7 +41,7 @@ public class SplashActivity extends CoreSplashActivity {
     }
 
     private void createSession() {
-        QBAuth.createSession(new QBEntityCallback<QBSession>() {
+        QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
                 proceedToTheNextActivity();

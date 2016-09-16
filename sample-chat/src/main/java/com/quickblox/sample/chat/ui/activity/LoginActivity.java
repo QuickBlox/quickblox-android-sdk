@@ -55,7 +55,7 @@ public class LoginActivity extends CoreBaseActivity {
         List<String> tags = new ArrayList<>();
         tags.add(Consts.QB_USERS_TAG);
 
-        QBUsers.getUsersByTags(tags, null, new QBEntityCallback<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 UsersAdapter adapter = new UsersAdapter(LoginActivity.this, result);

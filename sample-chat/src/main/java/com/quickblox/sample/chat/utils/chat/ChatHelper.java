@@ -8,7 +8,7 @@ import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
@@ -83,7 +83,7 @@ public class ChatHelper {
 
     public void login(final QBUser user, final QBEntityCallback<Void> callback) {
         // Create REST API session on QuickBlox
-        QBAuth.createSession(user, new QbEntityCallbackTwoTypeWrapper<QBSession, Void>(callback) {
+        QBAuth.createSession(user).performAsync(new QbEntityCallbackTwoTypeWrapper<QBSession, Void>(callback) {
             @Override
             public void onSuccess(QBSession session, Bundle args) {
                 user.setId(session.getUserId());
@@ -122,11 +122,11 @@ public class ChatHelper {
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
-                                              final QBEntityCallback<QBDialog> callback) {
+                                              final QBEntityCallback<QBChatDialog> callback) {
         QBChatService.getInstance().getGroupChatManager().createDialog(QbDialogUtils.createDialog(users),
-                new QbEntityCallbackWrapper<QBDialog>(callback) {
+                new QbEntityCallbackWrapper<QBChatDialog>(callback) {
                     @Override
-                    public void onSuccess(QBDialog dialog, Bundle args) {
+                    public void onSuccess(QBChatDialog dialog, Bundle args) {
                         QbUsersHolder.getInstance().putUsers(users);
                         super.onSuccess(dialog, args);
                     }
@@ -134,8 +134,8 @@ public class ChatHelper {
         );
     }
 
-    public void deleteDialogs(Collection<QBDialog> dialogs, QBEntityCallback<Void> callback) {
-        for (QBDialog dialog : dialogs) {
+    public void deleteDialogs(Collection<QBChatDialog> dialogs, QBEntityCallback<Void> callback) {
+        for (QBChatDialog dialog : dialogs) {
             deleteDialog(dialog, new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid, Bundle bundle) {
@@ -150,7 +150,7 @@ public class ChatHelper {
         callback.onSuccess(null, null);
     }
 
-    public void deleteDialog(QBDialog qbDialog, QBEntityCallback<Void> callback) {
+    public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
         if (qbDialog.getType() == QBDialogType.GROUP) {
             QBChatService.getInstance().getGroupChatManager().deleteDialog(qbDialog.getDialogId(), true,
                     new QbEntityCallbackWrapper<Void>(callback));
@@ -163,22 +163,22 @@ public class ChatHelper {
         }
     }
 
-    public void leaveDialog(QBDialog qbDialog, QBEntityCallback<QBDialog> callback) {
+    public void leaveDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
         qbRequestBuilder.pullAll("occupants_ids", SharedPreferencesUtil.getQbUser().getId());
 
         QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
-                new QbEntityCallbackWrapper<QBDialog>(callback) {
+                new QbEntityCallbackWrapper<QBChatDialog>(callback) {
                     @Override
-                    public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                    public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
                         super.onSuccess(qbDialog, bundle);
                     }
                 });
     }
 
-    public void updateDialogUsers(QBDialog qbDialog,
+    public void updateDialogUsers(QBChatDialog qbDialog,
                                   final List<QBUser> newQbDialogUsersList,
-                                  QBEntityCallback<QBDialog> callback) {
+                                  QBEntityCallback<QBChatDialog> callback) {
         List<QBUser> addedUsers = QbDialogUtils.getAddedUsers(qbDialog, newQbDialogUsersList);
         List<QBUser> removedUsers = QbDialogUtils.getRemovedUsers(qbDialog, newQbDialogUsersList);
 
@@ -197,9 +197,9 @@ public class ChatHelper {
         qbDialog.setName(QbDialogUtils.createChatNameFromUserList(newQbDialogUsersList));
 
         QBChatService.getInstance().getGroupChatManager().updateDialog(qbDialog, qbRequestBuilder,
-                new QbEntityCallbackWrapper<QBDialog>(callback) {
+                new QbEntityCallbackWrapper<QBChatDialog>(callback) {
                     @Override
-                    public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+                    public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
                         QbUsersHolder.getInstance().putUsers(newQbDialogUsersList);
                         QbDialogUtils.logDialogUsers(qbDialog);
                         super.onSuccess(qbDialog, bundle);
@@ -207,7 +207,7 @@ public class ChatHelper {
                 });
     }
 
-    public void loadChatHistory(QBDialog dialog, int skipPagination,
+    public void loadChatHistory(QBChatDialog dialog, int skipPagination,
                                 final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
         QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
         customObjectRequestBuilder.setSkip(skipPagination);
@@ -225,22 +225,22 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogs(QBRequestGetBuilder customObjectRequestBuilder, final QBEntityCallback<ArrayList<QBDialog>> callback) {
+    public void getDialogs(QBRequestGetBuilder customObjectRequestBuilder, final QBEntityCallback<ArrayList<QBChatDialog>> callback) {
         customObjectRequestBuilder.setLimit(DIALOG_ITEMS_PER_PAGE);
 
         QBChatService.getChatDialogs(null, customObjectRequestBuilder,
-                new QbEntityCallbackWrapper<ArrayList<QBDialog>>(callback) {
+                new QbEntityCallbackWrapper<ArrayList<QBChatDialog>>(callback) {
                     @Override
-                    public void onSuccess(ArrayList<QBDialog> dialogs, Bundle args) {
-                        Iterator<QBDialog> dialogIterator = dialogs.iterator();
+                    public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle args) {
+                        Iterator<QBChatDialog> dialogIterator = dialogs.iterator();
                         while (dialogIterator.hasNext()) {
-                            QBDialog dialog = dialogIterator.next();
+                            QBChatDialog dialog = dialogIterator.next();
                             if (dialog.getType() == QBDialogType.PUBLIC_GROUP) {
                                 dialogIterator.remove();
                             }
                         }
 
-                        for (QBDialog dialog : dialogs) {
+                        for (QBChatDialog dialog : dialogs) {
                             dialog.setId(dialog.getDialogId().hashCode());
                         }
                         getUsersFromDialogs(dialogs, callback);
@@ -250,7 +250,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getUsersFromDialog(QBDialog dialog,
+    public void getUsersFromDialog(QBChatDialog dialog,
                                    final QBEntityCallback<ArrayList<QBUser>> callback) {
         List<Integer> userIds = dialog.getOccupants();
 
@@ -267,7 +267,7 @@ public class ChatHelper {
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder,
+        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
                 new QbEntityCallbackWrapper<ArrayList<QBUser>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
@@ -283,7 +283,7 @@ public class ChatHelper {
 
     public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback,
                                      QBProgressCallback progressCallback) {
-        QBContent.uploadFileTask(file, true, null,
+        QBContent.uploadFileTask(file, true, null, progressCallback).performAsync(
                 new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     @Override
                     public void onSuccess(QBFile qbFile, Bundle bundle) {
@@ -292,20 +292,20 @@ public class ChatHelper {
                         attachment.setUrl(qbFile.getPublicUrl());
                         onSuccessInMainThread(attachment, bundle);
                     }
-                }, progressCallback);
+                });
     }
 
-    private void getUsersFromDialogs(final ArrayList<QBDialog> dialogs,
-                                     final QBEntityCallback<ArrayList<QBDialog>> callback) {
+    private void getUsersFromDialogs(final ArrayList<QBChatDialog> dialogs,
+                                     final QBEntityCallback<ArrayList<QBChatDialog>> callback) {
         List<Integer> userIds = new ArrayList<>();
-        for (QBDialog dialog : dialogs) {
+        for (QBChatDialog dialog : dialogs) {
             userIds.addAll(dialog.getOccupants());
             userIds.add(dialog.getLastMessageUserId());
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder,
-                new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBDialog>>(callback) {
+        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
+                new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                         QbUsersHolder.getInstance().putUsers(users);
@@ -322,7 +322,7 @@ public class ChatHelper {
         }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder,
+        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
                 new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {

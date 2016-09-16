@@ -8,7 +8,7 @@ import com.quickblox.chat.QBGroupChat;
 import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 
@@ -32,7 +32,7 @@ public class GroupChatImpl extends BaseChatImpl<QBGroupChat> implements QBMessag
         }
     }
 
-    public void joinGroupChat(QBDialog dialog, QBEntityCallback<Void> callback) {
+    public void joinGroupChat(QBChatDialog dialog, QBEntityCallback<Void> callback) {
         initManagerIfNeed();
         if (qbChat == null) {
             qbChat = qbGroupChatManager.createGroupChat(dialog.getRoomJid());

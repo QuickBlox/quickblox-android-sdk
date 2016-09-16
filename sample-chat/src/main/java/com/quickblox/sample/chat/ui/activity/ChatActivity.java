@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -75,12 +75,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private ConnectionListener chatConnectionListener;
 
     private Chat chat;
-    private QBDialog qbDialog;
+    private QBChatDialog qbDialog;
     private ArrayList<String> chatMessageIds;
     private ArrayList<QBChatMessage> unShownMessages;
     private int skipPagination = 0;
 
-    public static void startForResult(Activity activity, int code, QBDialog dialog) {
+    public static void startForResult(Activity activity, int code, QBChatDialog dialog) {
         Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_DIALOG, dialog);
         activity.startActivityForResult(intent, code);
@@ -91,7 +91,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        qbDialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
+        qbDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
         chatMessageIds = new ArrayList<>();
         initChatConnectionListener();
 
@@ -110,7 +110,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (qbDialog == null) {
-            qbDialog = (QBDialog) savedInstanceState.getSerializable(EXTRA_DIALOG);
+            qbDialog = (QBChatDialog) savedInstanceState.getSerializable(EXTRA_DIALOG);
         }
     }
 
@@ -197,9 +197,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private void leaveGroupChat() {
         ((GroupChatImpl) chat).leaveChatRoom();
         ProgressDialogFragment.show(getSupportFragmentManager());
-        ChatHelper.getInstance().leaveDialog(qbDialog, new QBEntityCallback<QBDialog>() {
+        ChatHelper.getInstance().leaveDialog(qbDialog, new QBEntityCallback<QBChatDialog>() {
             @Override
-            public void onSuccess(QBDialog qbDialog, Bundle bundle) {
+            public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 finish();
             }
@@ -406,9 +406,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().updateDialogUsers(qbDialog, selectedUsers,
-                new QBEntityCallback<QBDialog>() {
+                new QBEntityCallback<QBChatDialog>() {
                     @Override
-                    public void onSuccess(QBDialog dialog, Bundle args) {
+                    public void onSuccess(QBChatDialog dialog, Bundle args) {
                         qbDialog = dialog;
                         loadDialogUsers();
                     }
