@@ -11,15 +11,14 @@
     <LinearLayout
         android:id="@+id/linear_agile"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right">
+        android:layout_height="wrap_content">
 
         <com.quickblox.sample.core.adapter.views.RoundedImageView
             android:id="@+id/avatar_imageview_left"
             style="@style/AvatarImageViewStyle"
             android:layout_width="@dimen/image_view_small_avatar_layout_width"
             android:layout_height="@dimen/image_view_small_avatar_layout_height"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:border_color="@color/dark_gray"
             app:border_width="@dimen/avatar_border_width"
             app:oval="true" />
@@ -39,6 +38,7 @@
             style="@style/AvatarImageViewStyle"
             android:layout_width="@dimen/image_view_small_avatar_layout_width"
             android:layout_height="@dimen/image_view_small_avatar_layout_height"
+            android:visibility="invisible"
             app:border_color="@color/dark_gray"
             app:border_width="@dimen/avatar_border_width"
             app:oval="true" />

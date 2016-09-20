@@ -14,26 +14,22 @@
         <TextView
             android:id="@+id/time_text_message_textview"
             style="@style/ItemStubTimeText.Own"
+            android:layout_gravity="right"
             tools:text="current time August" />
 
         <TextView
             android:id="@+id/message_textview"
             style="@style/ItemStubMsgText.Own"
             android:paddingRight="5dp"
+            android:paddingBottom="5dp"
             tools:text="messagertdfsscsd messagertdfsscsd " />
 
-        <!-- Preference should place its actual preference widget here. -->
+        <!-- LinearLayout should place its actual preference widget here. -->
         <LinearLayout
             android:id="@+id/widget_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/custom_text_view"-->
-            <!--style="@style/ItemStubWidgetFrame"-->
-            <!--android:background="@color/white"-->
-            <!--android:layout_gravity="right"-->
-            <!--android:text="widget" />-->
+            android:orientation="vertical" />
 
     </LinearLayout>
 

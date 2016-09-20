@@ -18,8 +18,10 @@ import android.widget.TextView;
 
 import com.quickblox.sample.core.R;
 
-public class EditMessageTextView extends RelativeLayout {
+public abstract class EditMessageTextView extends RelativeLayout {
     private static String TAG = EditMessageTextView.class.getSimpleName();
+    protected LinearLayout linearAgile;
+    protected ViewStub viewStub;
 
     public int stubLayout;
     LinearLayout viewStubLayout;
@@ -36,24 +38,29 @@ public class EditMessageTextView extends RelativeLayout {
     protected void init(@LayoutRes int layoutId) {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutId, this, true);
+        linearAgile = (LinearLayout) getRootView().findViewById(R.id.linear_agile);
+        viewStub = (ViewStub) findViewById(R.id.stub_text);
     }
 
     protected void applyAttributes(AttributeSet attrs) {
         TypedArray array = null;
         boolean stickRight;
+        int textViewId;
         int widgetId;
         try {
             array = getContext().obtainStyledAttributes(attrs, R.styleable.EditMessageTextView);
             stickRight = array.getBoolean(R.styleable.EditMessageTextView_stick_right, false);
             bubble = array.getDrawable(R.styleable.EditMessageTextView_bubble);
+            textViewId = array.getResourceId(R.styleable.EditMessageTextView_message_text_id, 0);
             widgetId = array.getResourceId(R.styleable.EditMessageTextView_widget_id, 0);
         } finally {
             if (array != null) {
                 array.recycle();
             }
         }
-        setLinearSide(stickRight);
-        setTextLayout(stickRight);
+        setLinearSide();
+        setTextLayout(textViewId);
+        setBubble(bubble);
         setWidget(widgetId);
     }
 
@@ -68,39 +75,13 @@ public class EditMessageTextView extends RelativeLayout {
         }
     }
 
-    private void setLinearSide(boolean right) {
-        LinearLayout linearAgile = (LinearLayout) getRootView().findViewById(R.id.linear_agile);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) linearAgile.getLayoutParams();
-        layoutParams.gravity = right ? Gravity.RIGHT : Gravity.LEFT;
+    abstract protected void setLinearSide();
 
-        linearAgile.setLayoutParams(layoutParams);
-
-        RoundedImageView roundedImageViewLeft = (RoundedImageView) getRootView().findViewById(R.id.avatar_imageview_left);
-        roundedImageViewLeft.setVisibility(right ? INVISIBLE : VISIBLE);
-
-        RoundedImageView roundedImageViewRight = (RoundedImageView) getRootView().findViewById(R.id.avatar_imageview_right);
-        roundedImageViewRight.setVisibility(right ? VISIBLE : INVISIBLE);
-    }
-
-    private void setBubble(Drawable draw) {
+    protected void setBubble(Drawable draw) {
         //использовать другой метод
         viewStubLayout.setBackgroundDrawable(draw);
         viewStubLayout.setPadding(20, 0, 10, 0);
     }
 
-    private void setTextLayout(boolean right) {
-        Log.d(TAG, "setTextLayout");
-        ViewStub viewStub = (ViewStub) findViewById(R.id.stub_text);
-
-        // надуваем либо правый либо левый
-        viewStub.setLayoutResource(right ? R.layout.item_stub_right_text : R.layout.item_stub_left_text);
-        viewStubLayout = (LinearLayout) viewStub.inflate();
-        setBubble(bubble);
-
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) viewStubLayout.getLayoutParams();
-        layoutParams.gravity = right ? Gravity.RIGHT : Gravity.LEFT;
-
-        TextView timeText = (TextView) viewStubLayout.findViewById(R.id.time_text_message_textview);
-        timeText.setLayoutParams(layoutParams);
-    }
+    abstract protected void setTextLayout(@LayoutRes int textViewId);
 }
