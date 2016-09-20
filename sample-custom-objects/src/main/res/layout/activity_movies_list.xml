@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipy_refresh_layout"
+    style="@style/MatchParent"
+    app:srl_direction="bottom">
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/list_movies"
+        style="@style/ListViewWithoutDividerStyle" />
+
+</com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>

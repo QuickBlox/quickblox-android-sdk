@@ -15,4 +15,4 @@ Go to project page on QuickBlox Developers Section -- <http://quickblox.com/deve
 
 Or clone project here and start to work with the code.
 
-<img src="http://files.quickblox.com/Sample_Content_1.png" width=200 />&nbsp;<img src="http://files.quickblox.com/Sample_Content_2.png" width=200 />&nbsp;<img src="http://files.quickblox.com/Sample_Content_3.png" width=200 />&nbsp;
+<img src="screenshots/Content1.png" width=200 />&nbsp;<img src="screenshots/Content2.png" width=200 />&nbsp;<img src="screenshots/Content3.png" width=200 />&nbsp;<img src="screenshots/Content4.png" width=200 />&nbsp;

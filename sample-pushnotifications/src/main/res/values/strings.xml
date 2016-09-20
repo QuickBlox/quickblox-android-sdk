@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Push Notifications</string>
+    <string name="app_title">Push Notification Sample</string>
+    <string name="activity_title">Push Notification Sample</string>
+
+    <string name="message">Incoming message</string>
+    <string name="hint_enter_your_message">Enter push message here</string>
+    <string name="send_push">Send push</string>
+    <string name="received_messages">Received Push Notifications</string>
+    <string name="no_messages">No messages received yet</string>
+    <string name="notification_title">GCM Notification</string>
+    <string name="error_field_is_empty">Field is empty!</string>
+    <string name="splash_create_session_error">Create session errors:</string>
+    <string name="connection_error">Connection errors:</string>
+    <string name="error_too_long_push">You can enter only 1000 characters!</string>
+
+</resources>

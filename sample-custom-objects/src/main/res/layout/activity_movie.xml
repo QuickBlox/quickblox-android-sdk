@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent">
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/MatchParent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingRight="@dimen/padding_large">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/movie_title_textview"
+            style="@style/TextPrimaryStyle"
+            android:layout_marginTop="@dimen/margin_tittle_details"
+            android:text="@string/title"
+            android:textSize="@dimen/text_size_large"
+            app:typeface="roboto_medium" />
+
+        <TextView
+            android:id="@+id/text_movie_year"
+            style="@style/TextSecondaryStyle"
+            android:layout_marginTop="@dimen/margin_year_details"
+            android:text="@string/year" />
+
+        <TextView
+            android:id="@+id/movie_description_textview"
+            style="@style/TextPrimaryStyle"
+            android:layout_marginTop="@dimen/margin_description_details"
+            android:text="@string/description" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/movie_rating_textview"
+            style="@style/MovieRatingStyle"
+            android:layout_marginTop="@dimen/margin_rating_details"
+            android:text="@string/rating"
+            app:typeface="roboto_medium" />
+
+        <RatingBar
+            android:id="@+id/rating_movie"
+            style="@style/MovieRatingBarStyle"
+            android:isIndicator="true" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_sign_in"
+    style="@style/MatchParent"
+    android:background="@color/background_app_color"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_small">
+
+    <EditText
+        android:id="@+id/login_in_edittext"
+        style="@style/MatchWidth"
+        android:hint="@string/username"
+        android:singleLine="true"
+        android:textColor="@color/black_light"
+        android:textColorHint="@color/warm_gray_two"
+        android:textSize="@dimen/text_size_large"
+        android:theme="@style/EditTextTheme" />
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/password_in_edittext"
+        style="@style/MatchWidth"
+        android:layout_marginTop="@dimen/margin_middle"
+        android:hint="@string/password"
+        android:imeOptions="actionSend"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textColor="@color/black_light"
+        android:textColorHint="@color/warm_gray_two"
+        android:textSize="@dimen/text_size_large"
+        android:theme="@style/EditTextTheme"
+        app:typeface="roboto_regular" />
+
+</LinearLayout>

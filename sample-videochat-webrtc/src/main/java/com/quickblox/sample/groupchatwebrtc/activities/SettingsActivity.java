@@ -1,22 +1,22 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.text.TextUtils;
-import android.widget.Toast;
+import android.view.View;
 
-import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
+import com.quickblox.sample.groupchatwebrtc.fragments.SettingsFragment;
+import com.quickblox.sample.groupchatwebrtc.view.SeekBarPreference;
 
 /**
  * QuickBlox team
  */
-public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private static final int MAX_VIDEO_START_BITRATE = 2000;
@@ -32,6 +32,8 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initActionBar();
+
         // Display the fragment as the main content.
         settingsFragment = new SettingsFragment();
         getFragmentManager().beginTransaction()
@@ -40,6 +42,14 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
         bitrateStringKey = getString(R.string.pref_startbitratevalue_key);
     }
 
+    private void initActionBar() {
+        actionBar.setTitle(R.string.actionbar_title_settings);
+    }
+
+    @Override
+    protected View getSnackbarAnchorView() {
+        return null;
+    }
 
     @Override
     protected void onResume() {
@@ -60,16 +70,15 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(bitrateStringKey)) {
-            String bitrateValue = sharedPreferences.getString(bitrateStringKey,
-                    getString(R.string.pref_startbitratevalue_default));
-            if (TextUtils.isEmpty(bitrateValue)){
-                Toast.makeText(this, "Value can't be empty:", Toast.LENGTH_LONG).show();
+            int bitrateValue = sharedPreferences.getInt(bitrateStringKey, Integer.parseInt(
+                    getString(R.string.pref_startbitratevalue_default)));
+            if (bitrateValue == 0){
                 setDefaultstartingBitrate(sharedPreferences);
                 return;
             }
-            int startBitrate = Integer.parseInt(bitrateValue);
+            int startBitrate = bitrateValue;
             if (startBitrate > MAX_VIDEO_START_BITRATE){
-                Toast.makeText(this, "Max value is:"+MAX_VIDEO_START_BITRATE, Toast.LENGTH_LONG).show();
+                Toaster.longToast("Max value is:" + MAX_VIDEO_START_BITRATE);
                 setDefaultstartingBitrate(sharedPreferences);
             }
         }
@@ -77,8 +86,8 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
 
     private void setDefaultstartingBitrate(SharedPreferences sharedPreferences){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(bitrateStringKey,
-                getString(R.string.pref_startbitratevalue_default));
+        editor.putInt(bitrateStringKey,
+                Integer.parseInt(getString(R.string.pref_startbitratevalue_default)));
         editor.apply();
         updateSummary(sharedPreferences, bitrateStringKey);
     }
@@ -88,6 +97,8 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
         // Set summary to be the user-description for the selected value
         if (updatedPref instanceof EditTextPreference) {
             ((EditTextPreference) updatedPref).setText(sharedPreferences.getString(key, ""));
+        } else if (updatedPref instanceof SeekBarPreference){
+            updatedPref.setSummary(String.valueOf(sharedPreferences.getInt(key, 0)));
         } else {
             updatedPref.setSummary(sharedPreferences.getString(key, ""));
         }

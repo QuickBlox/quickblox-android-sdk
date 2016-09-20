@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_dialogs_action_logout"
+        android:icon="@drawable/ic_action_logout"
+        android:title="@string/menu_dialogs_logout"
+        app:showAsAction="ifRoom" />
+</menu>

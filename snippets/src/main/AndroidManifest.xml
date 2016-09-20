@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sdk.snippets">
+
+    <application
+        android:icon="@drawable/icon"
+        android:name=".Application"
+        android:label="@string/app_name">
+        <activity
+            android:name=".activities.StartSnippetsActivity"
+            android:configChanges="locale|keyboard|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.AuthActivity" />
+        <activity android:name=".activities.UsersActivity" />
+        <activity android:name=".activities.LocationsActivity" />
+        <activity android:name=".activities.CustomObjectsActivity" />
+        <activity android:name=".activities.ContentActivity" />
+        <activity android:name=".activities.PushNotificationsActivity" />
+        <activity android:name=".activities.ChatActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="06afe5b32890416c317e719380d755a99dd2d5ba" />
+    </application>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

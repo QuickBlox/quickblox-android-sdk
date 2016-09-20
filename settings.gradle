@@ -1,24 +1,12 @@
-include 'snippets'
-include 'sample-users'
-include 'sample-messages'
-include 'sample-location'
-include 'sample-custom-objects'
-include 'sample-content'
 include 'sample-chat'
+include 'sample-content'
+include 'sample-core'
+include 'sample-custom-objects'
+include 'sample-location'
+include 'sample-pushnotifications'
+include 'sample-users'
 include 'sample-videochat-webrtc'
+include 'snippets'
 
+apply from: "sdk-settings.gradle"
 
-// for development purpose
-//
-include ':quickblox-android-sdk-chat'
-project(':quickblox-android-sdk-chat').projectDir = new File('../SDK-android/quickblox-android-sdk-chat')
-include ':quickblox-android-sdk-core'
-project(':quickblox-android-sdk-core').projectDir = new File('../SDK-android/quickblox-android-sdk-core')
-include ':quickblox-android-sdk-content'
-project(':quickblox-android-sdk-content').projectDir = new File('../SDK-android/quickblox-android-sdk-content')
-include ':quickblox-android-sdk-messages'
-project(':quickblox-android-sdk-messages').projectDir = new File('../SDK-android/quickblox-android-sdk-messages')
-include ':quickblox-android-sdk-location'
-project(':quickblox-android-sdk-location').projectDir = new File('../SDK-android/quickblox-android-sdk-location')
-include ':quickblox-android-sdk-customobjects'
-project(':quickblox-android-sdk-customobjects').projectDir = new File('../SDK-android/quickblox-android-sdk-customobjects')

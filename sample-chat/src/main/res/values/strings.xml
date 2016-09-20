@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="chat_sample">Chat Sample</string>
+
+    <string name="menu_new_chat">New Chat</string>
+    <string name="menu_chat_info">Chat info</string>
+    <string name="menu_add_users_to_chat">Add Users to Chat</string>
+    <string name="menu_leave_chat">Leave Chat</string>
+    <string name="menu_delete_chat">Delete Chat</string>
+    <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_dialogs_delete">Delete</string>
+    <string name="menu_select_people_done">Done</string>
+
+    <string name="dlg_loading">Loading</string>
+    <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+    <string name="dlg_restoring_chat_session_logout">Restoring session and logout</string>
+    <string name="create_chat">Creating chat…</string>
+    <string name="dlg_login">Login…</string>
+
+    <string name="placeholder_username_you">%s (you)</string>
+    <string name="error_recreate_session">Login Chat error</string>
+
+    <string name="login_title">@string/chat_sample</string>
+
+    <string name="splash_app_title">@string/chat_sample</string>
+    <string name="splash_create_session_error">Create session errors:</string>
+
+    <string name="login_select_user_for_login">Select User for Login to Chat</string>
+    <string name="login_cant_obtain_users">Can\'t obtain users errors</string>
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
+
+    <string name="dialogs_logged_in_as">Logged in as %s</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="dialogs_deletion_error">Dialog deletion errors</string>
+    <string name="dialogs_list_hint">Select a Dialog to Chat</string>
+    <string name="dialogs_get_error">Get dialogs errors</string>
+
+    <string name="select_users_list_hint">Select Users you want to chat</string>
+    <string name="select_users_create_chat">Create new chat</string>
+    <string name="select_users_edit_chat">Add Users to chat</string>
+    <string name="select_users_get_users_error">Get users errors</string>
+    <string name="select_users_choose_users">Please, choose at least one participant</string>
+
+    <string name="chat_sticker">Sticker</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_edit_text_hint">Message</string>
+    <string name="chat_me">Me</string>
+    <string name="chat_friend">Friend</string>
+    <string name="chat_join_error">Error join group chat</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+    <string name="chat_load_history_error">Load chat history errors</string>
+    <string name="chat_load_users_error">Load chat users errors</string>
+    <string name="chat_attachment_error">Can\'t load chosen file</string>
+    <string name="chat_attachment">Attachment</string>
+    <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
+    <string name="chat_empty_start_new_chat">Start new chat.</string>
+    <string name="chat_unsupported_type">Unsupported dialog type</string>
+    <string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>
+    <string name="notification_title">Quickblox Chat Notification</string>
+    <string name="connection_error">Chat connection has been dropped</string>
+    <string name="reconnect_alert">Reconnecting in %s seconds</string>
+
+    <string name="chat_info">Chat info</string>
+    <string name="chat_info_add_people_error">Add people errors</string>
+
+    <string name="group_chat_join_error">Could not join chat, errors:</string>
+    <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
+    <string name="error_leave_chat">Error leaving room</string>
+</resources>

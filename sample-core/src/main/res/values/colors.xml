@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="color_grey">#d3d3d3</color>
+    <color name="white">#ffffff</color>
+
+    <color name="color_primary">@color/white</color>
+    <color name="color_primary_dark">#d0d0d0</color>
+    <color name="color_accent">@color/color_green_qb</color>
+
+    <color name="background_app_color">#ffffff</color>
+
+    <color name="color_blue_qb">#046ad0</color>
+    <color name="color_green_qb">#4ad24d</color>
+    <color name="color_username_rectangle">#99000000</color>
+
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="text_color_black">#000000</color>
+    <color name="text_color_light_grey">#dedede</color>
+    <color name="text_color_medium_grey">#b1b1b1</color>
+    <color name="text_color_medium_dark_grey">#747474</color>
+    <color name="text_color_dark_grey">#6e6e6e</color>
+    <color name="text_color_green">@color/color_green_qb</color>
+
+    <color name="random_color_1">#ff9500</color>
+    <color name="random_color_2">#007aff</color>
+    <color name="random_color_3">#ff0091</color>
+    <color name="random_color_4">#4cd964</color>
+    <color name="random_color_5">#c3c1f2</color>
+    <color name="random_color_6">#a727a5</color>
+    <color name="random_color_7">#77a6d0</color>
+    <color name="random_color_8">#d0021b</color>
+    <color name="random_color_9">#166642</color>
+    <color name="random_color_10">#bdbdbd</color>
+
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_messages"
+    style="@style/MatchParent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edit_message_out"
+            style="@style/MatchWidth"
+            android:background="@android:color/transparent"
+            android:hint="@string/hint_enter_your_message"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/push_max_length"
+            android:padding="@dimen/padding_large"
+            android:textSize="@dimen/text_size_medium" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/WrapContent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/text_messages_header"
+            style="@style/HeaderStyle"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/received_messages" />
+
+        <TextView
+            android:id="@+id/text_empty_messages"
+            style="@style/PushMessageItemStyle"
+            android:gravity="center"
+            android:text="@string/no_messages" />
+
+        <ListView
+            android:id="@+id/list_messages"
+            style="@style/MatchParent" />
+    </LinearLayout>
+
+</LinearLayout>

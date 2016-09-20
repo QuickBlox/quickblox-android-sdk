@@ -1,0 +1,30 @@
+android.applicationVariants.all {
+    variant ->
+        def appName
+        //Check if an applicationName property is supplied; if not use the name of the parent project.
+        if (project.hasProperty("applicationName")) {
+            appName = applicationName
+        } else {
+            appName = project.projectDir.getName()
+        }
+
+        variant.outputs.each {
+            output ->
+                def newApkName
+                def apkEndName
+                //If there's no ZipAlign task it means that our artifact will be unaligned and we need to mark it as such.
+                if (output.zipAlign) {
+                    apkEndName = ".apk"
+                } else {
+                    apkEndName = "-unaligned.apk"
+                }
+                newApkName = "${appName}-${variant.buildType.name}-${getDate()}-code-${variant.versionCode}-version-${variant.versionName}" + apkEndName
+                output.outputFile = new File(output.outputFile.parent, newApkName)
+        }
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMdd')
+    return formattedDate
+}

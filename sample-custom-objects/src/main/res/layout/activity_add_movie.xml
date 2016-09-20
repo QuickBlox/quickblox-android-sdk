@@ -1,0 +1,52 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent">
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_add_movie"
+        style="@style/MatchParent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingRight="@dimen/padding_large">
+
+        <EditText
+            android:id="@+id/add_movie_title_textview"
+            style="@style/TextPrimaryStyle"
+            android:layout_marginTop="@dimen/margin_title_add"
+            android:hint="@string/title"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/field_max_length" />
+
+        <EditText
+            android:id="@+id/add_movie_description_textview"
+            style="@style/TextPrimaryStyle"
+            android:layout_marginTop="@dimen/margin_description"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/field_max_length" />
+
+        <Spinner
+            android:id="@+id/year_spinner"
+            style="@style/TextPrimaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/margin_spinner"
+            android:layout_marginTop="@dimen/margin_year_add"
+            android:hint="@string/year"
+            tools:ignore="RtlHardcoded" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/add_movie_rating_textview"
+            style="@style/MovieRatingStyle"
+            android:layout_marginTop="@dimen/margin_rating_add"
+            android:paddingLeft="@dimen/padding_small"
+            android:text="@string/rating"
+            app:typeface="roboto_medium"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <RatingBar
+            android:id="@+id/add_movie_ratingBar"
+            style="@style/MovieRatingBarStyle"
+            android:stepSize="1.0" />
+
+    </LinearLayout>
+</ScrollView>

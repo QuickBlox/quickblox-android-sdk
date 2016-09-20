@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style name="ListHeaderStyle" parent="ListItem">
+        <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:textColor">@color/warm_gray</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
+    <style name="EditTextNotEditableTheme">
+        <item name="colorControlNormal">@color/warm_white</item>
+        <item name="colorControlActivated">@color/warm_white</item>
+        <item name="colorControlHighlight">@color/warm_white</item>
+
+    </style>
+
+    <style name="EditTextTheme">
+        <item name="colorControlNormal">@color/warm_white</item>
+        <item name="colorControlActivated">@color/color_accent</item>
+        <item name="colorControlHighlight">@color/warm_white</item>
+
+    </style>
+</resources>
