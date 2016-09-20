@@ -28,6 +28,7 @@ import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.exception.QBChatException;
+import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
@@ -147,9 +148,9 @@ public class DialogsActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (isAppSessionActive) {
-            unregisterQbChatListeners();
-        }
+//        if (isAppSessionActive) {
+//            unregisterQbChatListeners();
+//        }
     }
 
     @Override
@@ -185,7 +186,7 @@ public class DialogsActivity extends BaseActivity {
                 setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
             }
 
-            registerQbChatListeners();
+//            registerQbChatListeners();
             if (QbDialogHolder.getInstance().getDialogList().size() > 0) {
                 loadDialogsFromQb(true, true);
             } else {
@@ -372,29 +373,43 @@ public class DialogsActivity extends BaseActivity {
         }
     };
 
-    private void registerQbChatListeners() {
-        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
-        if (privateChatManager != null) {
-            privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
+
+    QBChatDialogMessageListener messageListener = new QBChatDialogMessageListener() {
+        @Override
+        public void processMessage(String dialogId, QBChatMessage qbChatMessage, Integer senderId) {
+
         }
 
-        if (groupChatManager != null) {
-            groupChatManager.addGroupChatManagerListener(groupChatManagerListener);
-        }
-    }
+        @Override
+        public void processError(String dialogId, QBChatException e, QBChatMessage qbChatMessage, Integer senderId) {
 
-    private void unregisterQbChatListeners() {
-        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
-        if (privateChatManager != null) {
-            privateChatManager.removePrivateChatManagerListener(privateChatManagerListener);
         }
+    };
 
-        if (groupChatManager != null) {
-            groupChatManager.removeGroupChatManagerListener(groupChatManagerListener);
-        }
-    }
+
+//    private void registerQbChatListeners() {
+//        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+//        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
+//        if (privateChatManager != null) {
+//            privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
+//        }
+//
+//        if (groupChatManager != null) {
+//            groupChatManager.addGroupChatManagerListener(groupChatManagerListener);
+//        }
+//    }
+//
+//    private void unregisterQbChatListeners() {
+//        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+//        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
+//        if (privateChatManager != null) {
+//            privateChatManager.removePrivateChatManagerListener(privateChatManagerListener);
+//        }
+//
+//        if (groupChatManager != null) {
+//            groupChatManager.removeGroupChatManagerListener(groupChatManagerListener);
+//        }
+//    }
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
