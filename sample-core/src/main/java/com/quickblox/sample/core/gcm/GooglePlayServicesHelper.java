@@ -114,7 +114,7 @@ public class GooglePlayServicesHelper {
                     qbSubscription.setRegistrationID(gcmRegId);
                     qbSubscription.setEnvironment(QBEnvironment.DEVELOPMENT); // Don't forget to change QBEnvironment to PRODUCTION when releasing application
 
-                    QBPushNotifications.createSubscription(qbSubscription,
+                    QBPushNotifications.createSubscription(qbSubscription).performAsync(
                             new QBEntityCallback<ArrayList<QBSubscription>>() {
                                 @Override
                                 public void onSuccess(ArrayList<QBSubscription> qbSubscriptions, Bundle bundle) {

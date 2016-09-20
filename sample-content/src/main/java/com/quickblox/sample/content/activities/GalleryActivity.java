@@ -92,7 +92,7 @@ public class GalleryActivity extends BaseActivity
         builder.setPerPage(IMAGES_PER_PAGE);
         builder.setPage(current_page++);
 
-        QBContent.getFiles(builder, new QBEntityCallback<ArrayList<QBFile>>() {
+        QBContent.getFiles(builder).performAsync(new QBEntityCallback<ArrayList<QBFile>>() {
             @Override
             public void onSuccess(ArrayList<QBFile> qbFiles, Bundle bundle) {
                 if (qbFiles.isEmpty()) {
@@ -152,7 +152,12 @@ public class GalleryActivity extends BaseActivity
         progressDialog.setProgressNumberFormat("%1d/%2d kB");
         progressDialog.show();
 
-        QBContent.uploadFileTask(imageFile, true, null, new QBEntityCallback<QBFile>() {
+        QBContent.uploadFileTask(imageFile, true, null, new QBProgressCallback() {
+            @Override
+            public void onProgressUpdate(int progress) {
+                progressDialog.setProgress((int) (onePercent * progress));
+            }
+        }).performAsync(new QBEntityCallback<QBFile>() {
             @Override
             public void onSuccess(QBFile qbFile, Bundle bundle) {
                 DataHolder.getInstance().addQbFile(qbFile);
@@ -170,11 +175,6 @@ public class GalleryActivity extends BaseActivity
                         uploadSelectedImage(imageFile);
                     }
                 });
-            }
-        }, new QBProgressCallback() {
-            @Override
-            public void onProgressUpdate(int progress) {
-                progressDialog.setProgress((int) (onePercent * progress));
             }
         });
     }

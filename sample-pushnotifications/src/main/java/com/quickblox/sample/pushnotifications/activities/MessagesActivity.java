@@ -161,7 +161,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         userIds.add(App.getInstance().getCurrentUserId());
         qbEvent.setUserIds(userIds);
 
-        QBPushNotifications.createEvent(qbEvent, new QBEntityCallback<QBEvent>() {
+        QBPushNotifications.createEvent(qbEvent).performAsync(new QBEntityCallback<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle bundle) {
                 progressBar.setVisibility(View.INVISIBLE);

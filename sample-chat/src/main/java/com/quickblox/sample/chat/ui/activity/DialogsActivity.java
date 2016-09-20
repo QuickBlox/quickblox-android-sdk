@@ -32,7 +32,7 @@ import com.quickblox.chat.listeners.QBGroupChatManagerListener;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -329,7 +329,7 @@ public class DialogsActivity extends BaseActivity {
         dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                 if (currentActionMode == null) {
                     ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, selectedDialog);
                 } else {
@@ -340,7 +340,7 @@ public class DialogsActivity extends BaseActivity {
         dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                QBDialog selectedDialog = (QBDialog) parent.getItemAtPosition(position);
+                QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                 startSupportActionMode(new DeleteActionModeCallback());
                 dialogsAdapter.selectItem(selectedDialog);
                 return true;
@@ -398,9 +398,9 @@ public class DialogsActivity extends BaseActivity {
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
-                new QBEntityCallback<QBDialog>() {
+                new QBEntityCallback<QBChatDialog>() {
                     @Override
-                    public void onSuccess(QBDialog dialog, Bundle args) {
+                    public void onSuccess(QBChatDialog dialog, Bundle args) {
                         isProcessingResultInProgress = false;
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_MARK_READ, dialog);
                         ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -434,9 +434,9 @@ public class DialogsActivity extends BaseActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
+        ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBChatDialog>>() {
             @Override
-            public void onSuccess(ArrayList<QBDialog> dialogs, Bundle bundle) {
+            public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle bundle) {
                 progressBar.setVisibility(View.GONE);
                 setOnRefreshListener.setRefreshing(false);
 
@@ -494,7 +494,7 @@ public class DialogsActivity extends BaseActivity {
         }
 
         private void deleteSelectedDialogs() {
-            final Collection<QBDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+            final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
             ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid, Bundle bundle) {

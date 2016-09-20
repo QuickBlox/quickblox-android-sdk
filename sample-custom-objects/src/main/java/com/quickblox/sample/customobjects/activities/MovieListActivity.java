@@ -109,7 +109,7 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         }
         builder.setLimit(Consts.LIMIT_RECORDS);
         builder.sortDesc(createDateField);
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, builder, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+        QBCustomObjects.getObjects(Consts.CLASS_NAME, builder).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
             @Override
             public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
                 setOnRefreshListener.setEnabled(true);
