@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,7 +23,8 @@ public class EditMessageTextView extends RelativeLayout {
 
     public int stubLayout;
     LinearLayout viewStubLayout;
-    LinearLayout linearAgile;
+    LayoutInflater inflater;
+
     Drawable bubble;
 
     public EditMessageTextView(Context context, AttributeSet attrs) {
@@ -30,36 +33,43 @@ public class EditMessageTextView extends RelativeLayout {
         applyAttributes(attrs);
     }
 
-    private void init(@LayoutRes int layoutId) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    protected void init(@LayoutRes int layoutId) {
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutId, this, true);
-
-//        viewStubLayout = (LinearLayout) getRootView().findViewById(R.id.bubble_background);
-        linearAgile = (LinearLayout) getRootView().findViewById(R.id.linear_agile);
-
-
     }
 
-    private void applyAttributes(AttributeSet attrs) {
+    protected void applyAttributes(AttributeSet attrs) {
         TypedArray array = null;
         boolean stickRight;
-//        Drawable bubble;
+        int widgetId;
         try {
             array = getContext().obtainStyledAttributes(attrs, R.styleable.EditMessageTextView);
             stickRight = array.getBoolean(R.styleable.EditMessageTextView_stick_right, false);
             bubble = array.getDrawable(R.styleable.EditMessageTextView_bubble);
+            widgetId = array.getResourceId(R.styleable.EditMessageTextView_widget_id, 0);
         } finally {
             if (array != null) {
                 array.recycle();
             }
         }
         setLinearSide(stickRight);
-//        setBubble(bubble);
         setTextLayout(stickRight);
+        setWidget(widgetId);
+    }
+
+    private void setWidget(@LayoutRes int widgetId) {
+//        ViewStub viewStubWidget = (ViewStub) findViewById(R.id.stub_widget);
+        if (widgetId != 0) {
+//            viewStubWidget.setLayoutResource(widgetId);
+//            TextView viewStubLayout = (TextView) viewStubWidget.inflate();
+            final ViewGroup widgetFrame = (ViewGroup) findViewById(R.id.widget_frame);
+            View view = inflater.inflate(widgetId, widgetFrame);
+            Log.d(TAG, "view=null? " + (view == null));
+        }
     }
 
     private void setLinearSide(boolean right) {
-
+        LinearLayout linearAgile = (LinearLayout) getRootView().findViewById(R.id.linear_agile);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) linearAgile.getLayoutParams();
         layoutParams.gravity = right ? Gravity.RIGHT : Gravity.LEFT;
 

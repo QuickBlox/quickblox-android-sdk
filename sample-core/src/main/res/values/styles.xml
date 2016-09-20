@@ -24,7 +24,7 @@
     <style name="LinearTextMessage">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/padding_medium</item>
+        <item name="android:paddingLeft">@dimen/padding_small</item>
     </style>
 
 
@@ -55,6 +55,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+
+    <style name="ItemStubWidgetFrame">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 
 

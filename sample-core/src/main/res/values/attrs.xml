@@ -28,6 +28,7 @@
     <declare-styleable name="EditMessageTextView">
         <attr name="stick_right" format="boolean"/>
         <attr name="bubble" format="integer"/>
+        <attr name="widget_id" format="integer"/>
     </declare-styleable>
 
 </resources>

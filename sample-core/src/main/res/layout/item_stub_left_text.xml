@@ -21,6 +21,8 @@
             style="@style/ItemStubMsgText.Opponent"
             tools:text="messagertdfsscsd" />
 
+        <include layout="@layout/stub_text_widget" />
+
 
     </LinearLayout>
 

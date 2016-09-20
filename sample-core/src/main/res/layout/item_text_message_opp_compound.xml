@@ -5,5 +5,6 @@
     android:layout_height="wrap_content"
     custom:bubble="@drawable/left_bubble"
     custom:stick_right="false">
+    <!--custom:widget_id="@layout/text_view_widget_left">-->
 
 </com.quickblox.sample.core.adapter.views.EditMessageTextView>

@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.core.adapter.QBMessagesAdapter;
@@ -9,6 +10,8 @@ import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 import java.util.List;
 
 public class CustomMessageAdapter extends QBMessagesAdapter {
+
+    private static final String TAG = CustomMessageAdapter.class.getSimpleName();
 
     public CustomMessageAdapter(Context context, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);

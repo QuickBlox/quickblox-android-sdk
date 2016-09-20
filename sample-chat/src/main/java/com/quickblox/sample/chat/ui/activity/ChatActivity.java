@@ -35,6 +35,7 @@ import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
+import com.quickblox.sample.core.adapter.CompoundChatTextView;
 import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
@@ -474,7 +475,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
 //                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
-                    chatAdapter = new QBMessagesAdapter(ChatActivity.this, messages);
+                    chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
                     chatAdapter.setHasStableIds(true);
 //                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
 //                        @Override

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_text_view"
+    style="@style/ItemStubWidgetFrame"
+    android:layout_gravity="right"
+    android:text="widget left" />

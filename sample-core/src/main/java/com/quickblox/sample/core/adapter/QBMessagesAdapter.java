@@ -93,23 +93,23 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected void setOwnMessageLayoutResource(@LayoutRes int typeOwnMessageLayoutResource) {
+    public void setOwnMessageLayoutResource(@LayoutRes int typeOwnMessageLayoutResource) {
         this.typeOwnMessageLayoutResource = typeOwnMessageLayoutResource;
     }
 
-    protected void setOpponentMessageLayoutResource(@LayoutRes int typeOpponentMessageLayoutResource) {
+    public void setOpponentMessageLayoutResource(@LayoutRes int typeOpponentMessageLayoutResource) {
         this.typeOpponentMessageLayoutResource = typeOpponentMessageLayoutResource;
     }
 
-    protected void setOwnAttachmentMessageLayoutResource(@LayoutRes int typeOwnAttachmentMessageLayoutResource) {
+    public void setOwnAttachmentMessageLayoutResource(@LayoutRes int typeOwnAttachmentMessageLayoutResource) {
         this.typeOwnAttachmentMessageLayoutResource = typeOwnAttachmentMessageLayoutResource;
     }
 
-    protected void setOpponentAttachmentMessageLayoutResource(@LayoutRes int typeOpponentAttachmentMessageLayoutResource) {
+    public void setOpponentAttachmentMessageLayoutResource(@LayoutRes int typeOpponentAttachmentMessageLayoutResource) {
         this.typeOpponentAttachmentMessageLayoutResource = typeOpponentAttachmentMessageLayoutResource;
     }
 
-    protected void setMessageLayoutResourceByType(ViewTypes typeLayout, @LayoutRes int messageLayoutResource) {
+    public void setMessageLayoutResourceByType(ViewTypes typeLayout, @LayoutRes int messageLayoutResource) {
         switch (typeLayout) {
             case TYPE_OWN_MESSAGE:
                 typeOwnMessageLayoutResource = messageLayoutResource;
@@ -355,13 +355,13 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         private void setCustomWidget(View itemView, LayoutInflater inflater, @LayoutRes int widgetLayoutResId) {
             final ViewGroup widgetFrame = (ViewGroup) itemView.findViewById(R.id.widget_frame);
 
-            if (widgetFrame != null) {
-                if (widgetLayoutResId != 0) {
-                    customLayout = inflater.inflate(widgetLayoutResId, widgetFrame);
-                } else {
-                    widgetFrame.setVisibility(View.GONE);
-                }
-            }
+//            if (widgetFrame != null) {
+//                if (widgetLayoutResId != 0) {
+//                    customLayout = inflater.inflate(widgetLayoutResId, widgetFrame);
+//                } else {
+//                    widgetFrame.setVisibility(View.GONE);
+//                }
+//            }
         }
     }
 
@@ -404,7 +404,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     protected abstract static class QBMessagesAdapterViewHolder extends RecyclerView.ViewHolder {
-
         public QBMessagesAdapterViewHolder(View itemView) {
             super(itemView);
         }
