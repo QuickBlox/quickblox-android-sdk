@@ -3,17 +3,15 @@ package com.quickblox.sample.core.adapter.views;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.quickblox.sample.core.R;
 
 public class EditMessageTextViewLeft extends EditMessageTextView {
+
     public EditMessageTextViewLeft(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
 
     @Override
     protected void setLinearSide() {
@@ -22,15 +20,13 @@ public class EditMessageTextViewLeft extends EditMessageTextView {
     }
 
     @Override
-    protected void setTextLayout(@LayoutRes int customWidgetId) {
-        int widgetId = R.layout.item_stub_left_text;
+    protected void setTextLayout(@LayoutRes int customTextId) {
+        int textViewId = R.layout.item_stub_left_text;
 
-        if(customWidgetId != 0){
-            widgetId = customWidgetId;
+        if (customTextId != 0) {
+            textViewId = customTextId;
         }
-        viewStub.setLayoutResource(widgetId);
-        viewStubLayout = (LinearLayout) viewStub.inflate();
+        viewTextStub.setLayoutResource(textViewId);
+        layoutStub = (LinearLayout) viewTextStub.inflate();
     }
-
-
 }

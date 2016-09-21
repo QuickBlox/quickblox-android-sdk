@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:gravity="right"
     android:padding="@dimen/padding_medium">
 
 <RelativeLayout
@@ -13,8 +15,7 @@
     android:layout_width="@dimen/chat_attach_width"
     android:orientation="horizontal"
     android:padding="5dp"
-    android:background="@drawable/right_bubble"
-    android:layout_gravity="right">
+    android:background="@drawable/right_bubble">
 
     <ProgressBar
         android:id="@+id/centered_progressbar"
@@ -48,5 +49,16 @@
 
 
 </RelativeLayout>
+
+    <com.quickblox.sample.core.adapter.views.RoundedImageView
+        android:id="@+id/avatar_imageview"
+        style="@style/AvatarImageViewStyle"
+        android:layout_width="@dimen/image_view_small_avatar_layout_width"
+        android:layout_height="@dimen/image_view_small_avatar_layout_height"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="5dp"
+        app:border_color="@color/dark_gray"
+        app:border_width="@dimen/avatar_border_width"
+        app:oval="true" />
 
 </LinearLayout>

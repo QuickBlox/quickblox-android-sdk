@@ -1,8 +1,8 @@
 package com.quickblox.sample.core.adapter;
 
+import android.widget.ImageView;
+import com.quickblox.chat.model.QBChatMessage;
 import java.util.List;
-
-import android.support.v7.widget.RecyclerView;
 
 public interface QBBaseAdapter<T> {
 
@@ -18,5 +18,8 @@ public interface QBBaseAdapter<T> {
 
     void showAttachment(QBMessagesAdapter.QBMessagesAdapterViewHolder holder, int position);
 
-//    T getItem(RecyclerView.ViewHolder viewHolder);
+    void displayAvatarImage (String uri, ImageView imageView);
+
+    String obtainAvatarUrl(QBMessagesAdapter.ViewTypes type, QBChatMessage chatMessage);
+
 }

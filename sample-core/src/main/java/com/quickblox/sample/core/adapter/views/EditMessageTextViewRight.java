@@ -3,12 +3,11 @@ package com.quickblox.sample.core.adapter.views;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.ViewStub;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.quickblox.sample.core.R;
 
@@ -18,27 +17,24 @@ public class EditMessageTextViewRight extends EditMessageTextView {
         super(context, attrs);
     }
 
-
     @Override
     protected void setLinearSide() {
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) linearAgile.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameLinear.getLayoutParams();
         layoutParams.gravity = Gravity.RIGHT;
-        linearAgile.setLayoutParams(layoutParams);
+        frameLinear.setLayoutParams(layoutParams);
 
         RoundedImageView roundedImageViewRight = (RoundedImageView) getRootView().findViewById(R.id.avatar_imageview_right);
         roundedImageViewRight.setVisibility(VISIBLE);
     }
 
     @Override
-    protected void setTextLayout(@LayoutRes int customWidgetId) {
-        int widgetId = R.layout.item_stub_right_text;
+    protected void setTextLayout(@LayoutRes int customTextId) {
+        int textViewId = R.layout.item_stub_right_text;
 
-        if(customWidgetId != 0){
-           widgetId = customWidgetId;
+        if (customTextId != 0) {
+            textViewId = customTextId;
         }
-        viewStub.setLayoutResource(widgetId);
-        viewStubLayout = (LinearLayout) viewStub.inflate();
+        viewTextStub.setLayoutResource(textViewId);
+        layoutStub = (LinearLayout) viewTextStub.inflate();
     }
-
-
 }

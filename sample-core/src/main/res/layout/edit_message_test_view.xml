@@ -9,7 +9,7 @@
 
 
     <LinearLayout
-        android:id="@+id/linear_agile"
+        android:id="@+id/linear_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

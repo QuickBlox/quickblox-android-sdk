@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.sample.chat.R;
 import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     @Override
     public void onBindViewHolder(QBMessagesAdapterViewHolder holder, int position) {
 
-//      setOwnMessageLayoutResource(R.layout.item_text_message_own);
+      setOwnMessageLayoutResource(R.layout.item_text_message_own);
 //      setMessageLayoutResourceByType(ViewTypes.TYPE_OWN_MESSAGE, R.layout.item_text_message_own);
 
 //      setTextOwnText("Mine text");

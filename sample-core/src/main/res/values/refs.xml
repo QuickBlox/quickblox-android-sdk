@@ -3,4 +3,7 @@
     <!--<item type="drawable" name="own_bubble">@drawable/right_bubble</item>-->
     <item type="color" name="qb_text_own_color">@color/black</item>
     <item type="dimen" name="qb_text_size">@dimen/text_size_small</item>
+
+    <item type="layout" name="widget_opponent">@layout/text_view_widget_left</item>
+    <item type="layout" name="widget_owner">@layout/text_view_widget_right</item>
 </resources>

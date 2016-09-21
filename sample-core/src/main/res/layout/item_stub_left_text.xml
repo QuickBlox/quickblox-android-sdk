@@ -22,7 +22,12 @@
             android:paddingBottom="5dp"
             tools:text="messagertdfsscsd" />
 
-        <include layout="@layout/stub_text_widget" />
+        <!--LinearLayout should place its actual message widget here.-->
+        <LinearLayout
+            android:id="@+id/widget_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
 
     </LinearLayout>
