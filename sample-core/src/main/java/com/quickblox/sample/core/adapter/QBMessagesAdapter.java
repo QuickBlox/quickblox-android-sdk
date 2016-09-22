@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
@@ -38,6 +37,9 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     private int typeOwnMessageLayoutResource = R.layout.item_text_message_own_compound;
     private int typeOpponentMessageLayoutResource = R.layout.item_text_message_opp_compound;
 
+    private int widgetOwnId;
+    private int widgetOppId;
+
     private String textOwn;
     private String timeOwn;
     private String textOpp;
@@ -56,8 +58,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected LayoutInflater inflater;
     protected Context context;
 
-    protected QBMessagesAdapterViewHolder customHolder;
-
 
     public QBMessagesAdapter(Context context, List<QBChatMessage> chatMessages) {
         this.context = context;
@@ -70,22 +70,21 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         ViewTypes valueType = ViewTypes.values()[viewType];
         switch (valueType) {
             case TYPE_OWN_MESSAGE:
-                qbViewHolder = new MessageOwnHolder(inflater.inflate(typeOwnMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new MessageOwnHolder(inflater.inflate(typeOwnMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOwnId);
                 return qbViewHolder;
             case TYPE_OPPONENT_MESSAGE:
-                qbViewHolder = new MessageOpponentHolder(inflater.inflate(typeOpponentMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new MessageOpponentHolder(inflater.inflate(typeOpponentMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOppId);
                 return qbViewHolder;
             case TYPE_ATTACHMENT_MESSAGE_OWN:
                 qbViewHolder = new AttachOwnHolder(inflater.inflate(typeOwnAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
             case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
                 qbViewHolder = new AttachOpponentHolder(inflater.inflate(typeOpponentAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
-
+                return qbViewHolder;
             case TYPE_ATTACHMENT_CUSTOM:
                 Log.d(TAG, "onCreateViewHolder case TYPE_ATTACHMENT_CUSTOM");
                 // resource must be set manually by creating custom adapter
-//                ToDo temporary stub потом customHolder будет создаваться в CustomAdapter на клиенте
-                return customHolder = new AttachOpponentHolder(inflater.inflate(typeOpponentAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+                throw new RuntimeException("ViewHolder is null, in case attachment type TYPE_ATTACHMENT_CUSTOM you must create ViewHolder by your own");
             default:
                 return null;
         }
@@ -105,6 +104,14 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     public void setOpponentAttachmentMessageLayoutResource(@LayoutRes int typeOpponentAttachmentMessageLayoutResource) {
         this.typeOpponentAttachmentMessageLayoutResource = typeOpponentAttachmentMessageLayoutResource;
+    }
+
+    public void setWidgetOwnId(@IdRes int widgetOwnId) {
+        this.widgetOwnId = widgetOwnId;
+    }
+
+    public void setWidgetOppId(@IdRes int widgetOppId) {
+        this.widgetOppId = widgetOppId;
     }
 
     public void setMessageLayoutResourceByType(ViewTypes typeLayout, @LayoutRes int messageLayoutResource) {
@@ -128,11 +135,10 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     @Override
     public void onBindViewHolder(QBMessagesAdapterViewHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
         ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
         switch (valueType) {
             case TYPE_ATTACHMENT_MESSAGE_OWN:
-                Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
+                Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OWN");
                 onBindViewAttachOwnHolder((AttachOwnHolder) holder, position);
                 break;
             case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
@@ -146,11 +152,14 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
                 onBindViewMsgOpponentHolder((MessageOpponentHolder) holder, position);
                 break;
             case TYPE_ATTACHMENT_CUSTOM:
+                onBindViewAttachCustomHolder(holder, position);
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_CUSTOM");
             default:
                 break;
         }
+    }
 
+    protected void onBindViewAttachCustomHolder(QBMessagesAdapterViewHolder holder, int position) {
     }
 
     protected void onBindViewAttachOwnHolder(AttachOwnHolder holder, int position) {
@@ -211,6 +220,11 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
+    /**
+     * ObtainAvatarUrl must be set manually
+     *
+     * @return String avatar url
+     */
     @Nullable
     public String obtainAvatarUrl(ViewTypes valueType, QBChatMessage chatMessage) {
         return null;
@@ -372,24 +386,32 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected static class MessageOwnHolder extends QBMessagesAdapterViewHolder {
         public TextView messageTextView;
         public TextView timeTextMessageTextView;
+        public View widgetOwn;
 
-        public MessageOwnHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
+        public MessageOwnHolder(View itemView, @IdRes int msgId, @IdRes int timeId, @IdRes int widgetId) {
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(msgId);
             timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
             avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview_right);
+            if (widgetId != 0) {
+                widgetOwn = itemView.findViewById(widgetId);
+            }
         }
     }
 
     protected static class MessageOpponentHolder extends QBMessagesAdapterViewHolder {
         public TextView messageTextView;
         public TextView timeTextMessageTextView;
+        public View widgetOpp;
 
-        public MessageOpponentHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
+        public MessageOpponentHolder(View itemView, @IdRes int msgId, @IdRes int timeId, @IdRes int widgetId) {
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(msgId);
             timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
             avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview_left);
+            if (widgetId != 0) {
+                widgetOpp = itemView.findViewById(widgetId);
+            }
         }
     }
 
