@@ -2,14 +2,15 @@ package com.quickblox.sample.chat.utils.qb;
 
 import com.quickblox.chat.model.QBChatDialog;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QbDialogHolder {
 
     private static QbDialogHolder instance;
-    private List<QBChatDialog> dialogList;
+    private Map<String, QBChatDialog> dialogsMap;
 
     public static synchronized QbDialogHolder getInstance() {
         if (instance == null) {
@@ -19,32 +20,36 @@ public class QbDialogHolder {
     }
 
     private QbDialogHolder() {
-        dialogList = new ArrayList<>();
+        dialogsMap = new HashMap<>();
     }
 
-    public List<QBChatDialog> getDialogList() {
-        return dialogList;
+    public Map<String, QBChatDialog> getDialogsMap() {
+        return dialogsMap;
+    }
+
+    public QBChatDialog getChatDialogById(String dialogId){
+        return dialogsMap.get(dialogId);
     }
 
     public void clear() {
-        dialogList.clear();
+        dialogsMap.clear();
     }
 
-    public void addDialogToList(QBChatDialog dialog) {
-        if (!dialogList.contains(dialog)) {
-            dialogList.add(dialog);
+    public void addDialogToMap(QBChatDialog dialog) {
+        if (dialog != null) {
+            dialogsMap.put(dialog.getDialogId(), dialog);
         }
     }
 
     public void addDialogs(List<QBChatDialog> dialogs) {
         for (QBChatDialog dialog : dialogs) {
-            addDialogToList(dialog);
+            addDialogToMap(dialog);
         }
     }
 
     public void deleteDialogs(Collection<QBChatDialog> dialogs) {
         for (QBChatDialog dialog : dialogs) {
-            dialogList.remove(dialog);
+            dialogsMap.remove(dialog.getDialogId());
         }
     }
 }
