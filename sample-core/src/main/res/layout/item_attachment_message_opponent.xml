@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_medium">
 
-
-    <com.quickblox.sample.core.adapter.views.RoundedImageView
+    <ImageView
         android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle"
-        android:layout_width="@dimen/image_view_small_avatar_layout_width"
-        android:layout_height="@dimen/image_view_small_avatar_layout_height"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="5dp"
-        app:border_color="@color/dark_gray"
-        app:border_width="@dimen/avatar_border_width"
-        app:oval="true" />
+        style="@style/AvatarImageViewStyle.Opponent"/>
 
     <RelativeLayout
         android:id="@+id/attach_message_relativelayout"

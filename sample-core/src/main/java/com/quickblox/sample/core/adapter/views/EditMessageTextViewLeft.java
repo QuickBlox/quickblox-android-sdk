@@ -3,6 +3,8 @@ package com.quickblox.sample.core.adapter.views;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.quickblox.sample.core.R;
@@ -15,8 +17,9 @@ public class EditMessageTextViewLeft extends EditMessageTextView {
 
     @Override
     protected void setLinearSide() {
-        RoundedImageView roundedImageViewRight = (RoundedImageView) getRootView().findViewById(R.id.avatar_imageview_left);
-        roundedImageViewRight.setVisibility(VISIBLE);
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameLinear.getLayoutParams();
+        layoutParams.gravity = Gravity.LEFT;
+        frameLinear.setLayoutParams(layoutParams);
     }
 
     @Override

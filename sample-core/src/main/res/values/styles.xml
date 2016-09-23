@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MessageAdapterTextMsgParent.Own">
-    </style>
+    <style name="MessageAdapterTextMsgParent.Own"></style>
 
     <style name="MessageAdapterTextMsgParent.Opponent">
         <item name="android:background">@drawable/left_bubble</item>
@@ -61,6 +60,19 @@
     </style>
 
 
+    <style name="AvatarImageViewStyle.Own"></style>
+
+    <style name="AvatarImageViewStyle.Opponent"></style>
+
+    <style name="AvatarImageViewStyle">
+        <item name="android:layout_width">@dimen/image_view_small_avatar_layout_width</item>
+        <item name="android:layout_height">@dimen/image_view_small_avatar_layout_width</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@drawable/placeholder_user</item>
+        <item name="android:src">@drawable/shape_border</item>
+    </style>
+
 
 
 
@@ -70,13 +82,6 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="AvatarImageViewStyle">
-        <item name="android:layout_width">@dimen/image_view_big_avatar_layout_width</item>
-        <item name="android:layout_height">@dimen/image_view_big_avatar_layout_height</item>
-        <item name="android:layout_gravity">top</item>
-        <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@drawable/placeholder_user</item>
-    </style>
 
     <style name="CompoundChatTextViewStyle">
         <item name="msgTextColor">#FF0000</item>

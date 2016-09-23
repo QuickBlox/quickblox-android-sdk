@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -13,17 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.quickblox.sample.core.adapter.views.RoundedImageView
-            android:id="@+id/avatar_imageview_left"
-            style="@style/AvatarImageViewStyle"
-            android:layout_width="@dimen/image_view_small_avatar_layout_width"
-            android:layout_height="@dimen/image_view_small_avatar_layout_height"
-            android:visibility="invisible"
-            app:border_color="@color/dark_gray"
-            app:border_width="@dimen/avatar_border_width"
-            app:oval="true" />
-
-
 
             <ViewStub android:id="@+id/stub_text"
                 android:inflatedId="@+id/subTree_right"
@@ -31,17 +18,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-
-
-        <com.quickblox.sample.core.adapter.views.RoundedImageView
-            android:id="@+id/avatar_imageview_right"
-            style="@style/AvatarImageViewStyle"
-            android:layout_width="@dimen/image_view_small_avatar_layout_width"
-            android:layout_height="@dimen/image_view_small_avatar_layout_height"
-            android:visibility="invisible"
-            app:border_color="@color/dark_gray"
-            app:border_width="@dimen/avatar_border_width"
-            app:oval="true" />
 
     </LinearLayout>
 

@@ -69,8 +69,9 @@ public abstract class EditMessageTextView extends RelativeLayout {
     }
 
     protected void setBubble(Drawable draw) {
-        layoutStub.setBackgroundDrawable(draw);
-        layoutStub.setPadding(20, 0, 10, 0);
+        LinearLayout layoutBubble = (LinearLayout) layoutStub.findViewById(R.id.bubble_background);
+        layoutBubble.setBackgroundDrawable(draw);
+        layoutBubble.setPadding(20, 0, 10, 0);
     }
 
     abstract protected void setLinearSide();

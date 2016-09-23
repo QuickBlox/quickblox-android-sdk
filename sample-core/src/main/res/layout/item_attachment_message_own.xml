@@ -1,64 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    android:orientation="horizontal"
     android:gravity="right"
+    android:orientation="horizontal"
     android:padding="@dimen/padding_medium">
 
-<RelativeLayout
-    android:id="@+id/attach_message_relativelayout"
-    android:layout_height="@dimen/chat_attach_height"
-    android:layout_width="@dimen/chat_attach_width"
-    android:orientation="horizontal"
-    android:padding="5dp"
-    android:background="@drawable/right_bubble">
+    <RelativeLayout
+        android:id="@+id/attach_message_relativelayout"
+        android:layout_width="@dimen/chat_attach_width"
+        android:layout_height="@dimen/chat_attach_height"
+        android:background="@drawable/right_bubble"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-    <ProgressBar
-        android:id="@+id/centered_progressbar"
-        android:indeterminate="false"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:max="100" />
+        <ProgressBar
+            android:id="@+id/centered_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="false"
+            android:max="100" />
+
+        <ImageView
+            android:id="@+id/attach_imageview"
+            android:layout_width="@dimen/chat_attach_width"
+            android:layout_height="@dimen/chat_attach_height"
+            android:layout_gravity="center"
+            android:layout_marginRight="8dp"
+            android:scaleType="centerCrop"
+            android:src="@null" />
+
+        <TextView
+            android:id="@+id/time_attach_message_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:alpha="0.5"
+            android:background="@drawable/badge_attach_message_time"
+            android:padding="4dp"
+            android:text="time"
+            android:textColor="@color/black" />
+
+
+    </RelativeLayout>
 
     <ImageView
-        android:id="@+id/attach_imageview"
-        android:layout_gravity="center"
-        android:layout_height="@dimen/chat_attach_height"
-        android:layout_width="@dimen/chat_attach_width"
-        android:layout_marginRight="8dp"
-        android:scaleType="centerCrop"
-        android:src="@null" />
-
-    <TextView
-        android:alpha="0.5"
-        android:background="@drawable/badge_attach_message_time"
-        android:id="@+id/time_attach_message_textview"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
-        android:padding="4dp"
-        android:textColor="@color/black"
-        android:text="time" />
-
-
-</RelativeLayout>
-
-    <com.quickblox.sample.core.adapter.views.RoundedImageView
         android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle"
-        android:layout_width="@dimen/image_view_small_avatar_layout_width"
-        android:layout_height="@dimen/image_view_small_avatar_layout_height"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="5dp"
-        app:border_color="@color/dark_gray"
-        app:border_width="@dimen/avatar_border_width"
-        app:oval="true" />
+        style="@style/AvatarImageViewStyle.Own"/>
 
 </LinearLayout>

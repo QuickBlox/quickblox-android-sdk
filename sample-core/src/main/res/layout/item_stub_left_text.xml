@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bubble_background"
-    style="@style/MessageAdapterTextMsgParent.Opponent"
-    android:orientation="vertical">
+    android:id="@+id/linear_frame"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/avatar_imageview_left"
+        style="@style/AvatarImageViewStyle.Opponent"/>
 
     <LinearLayout
-        android:id="@+id/outer_message_textview_left"
-        style="@style/LinearTextMessage.Opponent"
+        android:id="@+id/bubble_background"
+        style="@style/MessageAdapterTextMsgParent.Opponent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/time_text_message_textview"
-            style="@style/ItemStubTimeText.Opponent"
-            tools:text="August 16" />
 
-        <TextView
-            android:id="@+id/message_textview"
-            style="@style/ItemStubMsgText.Opponent"
-            android:paddingBottom="5dp"
-            tools:text="messagertdfsscsd" />
-
-        <!--LinearLayout should place its actual message widget here.-->
         <LinearLayout
-            android:id="@+id/widget_frame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:id="@+id/outer_message_textview_left"
+            style="@style/LinearTextMessage.Opponent"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/time_text_message_textview"
+                style="@style/ItemStubTimeText.Opponent"
+                tools:text="August 16" />
+
+            <TextView
+                android:id="@+id/message_textview"
+                style="@style/ItemStubMsgText.Opponent"
+                android:paddingBottom="5dp"
+                tools:text="messagertdfsscsd" />
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/widget_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>

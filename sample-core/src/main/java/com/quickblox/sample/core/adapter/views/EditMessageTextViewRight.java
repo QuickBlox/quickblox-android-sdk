@@ -17,14 +17,12 @@ public class EditMessageTextViewRight extends EditMessageTextView {
         super(context, attrs);
     }
 
-    @Override
+ @Override
     protected void setLinearSide() {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameLinear.getLayoutParams();
         layoutParams.gravity = Gravity.RIGHT;
         frameLinear.setLayoutParams(layoutParams);
 
-        RoundedImageView roundedImageViewRight = (RoundedImageView) getRootView().findViewById(R.id.avatar_imageview_right);
-        roundedImageViewRight.setVisibility(VISIBLE);
     }
 
     @Override
