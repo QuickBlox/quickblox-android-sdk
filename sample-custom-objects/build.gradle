@@ -43,6 +43,7 @@ android {
 dependencies {
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
+    compile "com.quickblox:quickblox-android-sdk-extensions:3.0"
     compile(project(":sample-core")) {
         transitive = true;
     }
