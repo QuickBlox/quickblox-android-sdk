@@ -20,6 +20,6 @@ public interface QBBaseAdapter<T> {
 
     void displayAvatarImage (String uri, ImageView imageView);
 
-    String obtainAvatarUrl(QBMessagesAdapter.ViewTypes type, QBChatMessage chatMessage);
+    String obtainAvatarUrl(int type, QBChatMessage chatMessage);
 
 }

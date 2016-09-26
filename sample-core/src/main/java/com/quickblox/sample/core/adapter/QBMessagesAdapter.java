@@ -7,6 +7,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,19 @@ import java.util.Locale;
 public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QBMessagesAdapterViewHolder> implements QBBaseAdapter<QBChatMessage> {
     private static final String TAG = QBMessagesAdapter.class.getSimpleName();
 
-    private int typeOwnAttachmentMessageLayoutResource = R.layout.item_attachment_message_own;
-    private int typeOpponentAttachmentMessageLayoutResource = R.layout.item_attachment_message_opponent;
-    private int typeOwnMessageLayoutResource = R.layout.item_text_message_own_compound;
-    private int typeOpponentMessageLayoutResource = R.layout.item_text_message_opp_compound;
+    protected static final int TYPE_OWN_MESG_LAYOUT = 1;
+    protected static final int TYPE_OPP_MESG_LAYOUT = 2;
+    protected static final int TYPE_OWN_ATTACH_LAYOUT = 3;
+    protected static final int TYPE_OPP_ATTACH_LAYOUT = 4;
+
+    SparseIntArray containerLayoutRes = new SparseIntArray(){
+        {
+            put(TYPE_OWN_MESG_LAYOUT, R.layout.item_text_message_own_compound);
+            put(TYPE_OPP_MESG_LAYOUT, R.layout.item_text_message_opp_compound);
+            put(TYPE_OWN_ATTACH_LAYOUT, R.layout.item_attachment_message_own);
+            put(TYPE_OPP_ATTACH_LAYOUT, R.layout.item_attachment_message_opponent);
+        }
+    };
 
     private int widgetOwnId;
     private int widgetOppId;
@@ -50,9 +60,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     private int preferredImageSizePreview = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
     private RequestListener glideRequestListener;
-    private QBMessagesAdapterViewHolder qbViewHolder;
-
-    protected enum ViewTypes {TYPE_OWN_MESSAGE, TYPE_OPPONENT_MESSAGE, TYPE_ATTACHMENT_MESSAGE_OWN, TYPE_ATTACHMENT_MESSAGE_OPPONENT, TYPE_ATTACHMENT_CUSTOM}
+    protected QBMessagesAdapterViewHolder qbViewHolder;
 
     protected List<QBChatMessage> chatMessages;
     protected LayoutInflater inflater;
@@ -67,43 +75,25 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     @Override
     public QBMessagesAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewTypes valueType = ViewTypes.values()[viewType];
-        switch (valueType) {
-            case TYPE_OWN_MESSAGE:
-                qbViewHolder = new MessageOwnHolder(inflater.inflate(typeOwnMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOwnId);
+        switch (viewType) {
+            case 1:
+                qbViewHolder = new MessageOwnHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOwnId);
                 return qbViewHolder;
-            case TYPE_OPPONENT_MESSAGE:
-                qbViewHolder = new MessageOpponentHolder(inflater.inflate(typeOpponentMessageLayoutResource, parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOppId);
+            case 2:
+                qbViewHolder = new MessageOpponentHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview, widgetOppId);
                 return qbViewHolder;
-            case TYPE_ATTACHMENT_MESSAGE_OWN:
-                qbViewHolder = new AttachOwnHolder(inflater.inflate(typeOwnAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+            case 3:
+                qbViewHolder = new AttachOwnHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
-            case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
-                qbViewHolder = new AttachOpponentHolder(inflater.inflate(typeOpponentAttachmentMessageLayoutResource, parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+            case 4:
+                qbViewHolder = new AttachOpponentHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
-            case TYPE_ATTACHMENT_CUSTOM:
-                Log.d(TAG, "onCreateViewHolder case TYPE_ATTACHMENT_CUSTOM");
-                // resource must be set manually by creating custom adapter
-                throw new RuntimeException("ViewHolder is null, in case attachment type TYPE_ATTACHMENT_CUSTOM you must create ViewHolder by your own");
+
             default:
-                return null;
+                Log.d(TAG, "onCreateViewHolder case default");
+                // resource must be set manually by creating custom adapter
+                return qbViewHolder;
         }
-    }
-
-    public void setOwnMessageLayoutResource(@LayoutRes int typeOwnMessageLayoutResource) {
-        this.typeOwnMessageLayoutResource = typeOwnMessageLayoutResource;
-    }
-
-    public void setOpponentMessageLayoutResource(@LayoutRes int typeOpponentMessageLayoutResource) {
-        this.typeOpponentMessageLayoutResource = typeOpponentMessageLayoutResource;
-    }
-
-    public void setOwnAttachmentMessageLayoutResource(@LayoutRes int typeOwnAttachmentMessageLayoutResource) {
-        this.typeOwnAttachmentMessageLayoutResource = typeOwnAttachmentMessageLayoutResource;
-    }
-
-    public void setOpponentAttachmentMessageLayoutResource(@LayoutRes int typeOpponentAttachmentMessageLayoutResource) {
-        this.typeOpponentAttachmentMessageLayoutResource = typeOpponentAttachmentMessageLayoutResource;
     }
 
     public void setWidgetOwnId(@IdRes int widgetOwnId) {
@@ -114,52 +104,36 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         this.widgetOppId = widgetOppId;
     }
 
-    public void setMessageLayoutResourceByType(ViewTypes typeLayout, @LayoutRes int messageLayoutResource) {
-        switch (typeLayout) {
-            case TYPE_OWN_MESSAGE:
-                typeOwnMessageLayoutResource = messageLayoutResource;
-                break;
-            case TYPE_OPPONENT_MESSAGE:
-                typeOpponentMessageLayoutResource = messageLayoutResource;
-                break;
-            case TYPE_ATTACHMENT_MESSAGE_OWN:
-                typeOwnAttachmentMessageLayoutResource = messageLayoutResource;
-                break;
-            case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
-                typeOpponentMessageLayoutResource = messageLayoutResource;
-                break;
-            default:
-                break;
-        }
+    public void setMessageLayoutResourceByType(int typeLayout, @LayoutRes int messageLayoutResource) {
+        containerLayoutRes.put(typeLayout, messageLayoutResource);
     }
 
     @Override
     public void onBindViewHolder(QBMessagesAdapterViewHolder holder, int position) {
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         switch (valueType) {
-            case TYPE_ATTACHMENT_MESSAGE_OWN:
+            case 1:
+                onBindViewMsgOwnHolder((MessageOwnHolder) holder, position);
+                break;
+            case 2:
+                onBindViewMsgOpponentHolder((MessageOpponentHolder) holder, position);
+                break;
+            case 3:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OWN");
                 onBindViewAttachOwnHolder((AttachOwnHolder) holder, position);
                 break;
-            case TYPE_ATTACHMENT_MESSAGE_OPPONENT:
+            case 4:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
                 onBindViewAttachOpponentHolder((AttachOpponentHolder) holder, position);
                 break;
-            case TYPE_OWN_MESSAGE:
-                onBindViewMsgOwnHolder((MessageOwnHolder) holder, position);
-                break;
-            case TYPE_OPPONENT_MESSAGE:
-                onBindViewMsgOpponentHolder((MessageOpponentHolder) holder, position);
-                break;
-            case TYPE_ATTACHMENT_CUSTOM:
-                onBindViewAttachCustomHolder(holder, position);
-                Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_CUSTOM");
             default:
+                onBindViewCustomHolder(holder, position);
+                Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_CUSTOM");
                 break;
         }
     }
 
-    protected void onBindViewAttachCustomHolder(QBMessagesAdapterViewHolder holder, int position) {
+    protected void onBindViewCustomHolder(QBMessagesAdapterViewHolder holder, int position) {
     }
 
     protected void onBindViewAttachOwnHolder(AttachOwnHolder holder, int position) {
@@ -167,7 +141,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
         QBChatMessage chatMessage = getItem(position);
 
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
         if (avatarUrl != null) {
             displayAvatarImage(avatarUrl, holder.avatar);
@@ -179,7 +153,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
         QBChatMessage chatMessage = getItem(position);
 
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
         if (avatarUrl != null) {
             displayAvatarImage(avatarUrl, holder.avatar);
@@ -189,10 +163,11 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected void onBindViewMsgOpponentHolder(MessageOpponentHolder holder, int position) {
         QBChatMessage chatMessage = getItem(position);
 
+//        ((EditMessageTextView)holder.itemView).setText("sdsd");
         holder.messageTextView.setText((textOpp == null) ? chatMessage.getBody() : textOpp);
         holder.timeTextMessageTextView.setText((timeOpp == null) ? getDate(chatMessage.getDateSent() * 1000) : timeOpp);
 
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
         if (avatarUrl != null) {
             displayAvatarImage(avatarUrl, holder.avatar);
@@ -213,7 +188,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         holder.timeTextMessageTextView.setText((timeOwn == null) ? getDate(chatMessage.getDateSent() * 1000) : timeOwn);
 
 
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
         if (avatarUrl != null) {
             displayAvatarImage(avatarUrl, holder.avatar);
@@ -226,7 +201,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
      * @return String avatar url
      */
     @Nullable
-    public String obtainAvatarUrl(ViewTypes valueType, QBChatMessage chatMessage) {
+    public String obtainAvatarUrl(int valueType, QBChatMessage chatMessage) {
         return null;
     }
 
@@ -279,21 +254,20 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
             if (QBAttachment.PHOTO_TYPE.equals(attachment.getType())) {
                 if (isIncoming(chatMessage)) {
-                    return ViewTypes.TYPE_ATTACHMENT_MESSAGE_OPPONENT.ordinal();
+                    return TYPE_OPP_ATTACH_LAYOUT;
                 } else {
-                    return ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN.ordinal();
+                    return TYPE_OWN_ATTACH_LAYOUT;
                 }
-            } else {
-                return ViewTypes.TYPE_ATTACHMENT_CUSTOM.ordinal();
             }
 
         } else {
             if (isIncoming(chatMessage)) {
-                return ViewTypes.TYPE_OPPONENT_MESSAGE.ordinal();
+                return TYPE_OPP_MESG_LAYOUT;
             } else {
-                return ViewTypes.TYPE_OWN_MESSAGE.ordinal();
+                return TYPE_OWN_MESG_LAYOUT;
             }
         }
+        return -1;
     }
 
     @Override
@@ -331,7 +305,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     @Override
     public void showAttachment(QBMessagesAdapterViewHolder holder, int position) {
-        ViewTypes valueType = ViewTypes.values()[getItemViewType(position)];
+        int valueType = getItemViewType(position);
         Log.d(TAG, "showAttachment valueType= " + valueType);
         initGlideRequestListener((QBAttachViewHolder) holder, valueType);
 
@@ -345,13 +319,13 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
                 .override(preferredImageSizePreview, preferredImageSizePreview)
                 .dontTransform()
                 .error(R.drawable.ic_error)
-                .into((valueType == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? ((AttachOwnHolder) holder).attach_imageView : ((AttachOpponentHolder) holder).attach_imageView);
+                .into((valueType == TYPE_OWN_ATTACH_LAYOUT) ? ((AttachOwnHolder) holder).attach_imageView : ((AttachOpponentHolder) holder).attach_imageView);
     }
 
 
-    private void initGlideRequestListener(final QBAttachViewHolder holder, final ViewTypes type) {
+    private void initGlideRequestListener(final QBAttachViewHolder holder, final int type) {
         glideRequestListener = new RequestListener() {
-            QBAttachViewHolder viewHolder = (type == ViewTypes.TYPE_ATTACHMENT_MESSAGE_OWN) ? (AttachOwnHolder) holder : (AttachOpponentHolder) holder;
+            QBAttachViewHolder viewHolder = (type == TYPE_OWN_ATTACH_LAYOUT) ? (AttachOwnHolder) holder : (AttachOpponentHolder) holder;
 
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {

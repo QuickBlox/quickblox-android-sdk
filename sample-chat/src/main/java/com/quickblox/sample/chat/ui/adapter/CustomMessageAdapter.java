@@ -26,7 +26,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 
     //    если хотим отображать аватарку, определяем avatarUrl
     @Override
-    public String obtainAvatarUrl(ViewTypes valueType, QBChatMessage chatMessage) {
+    public String obtainAvatarUrl(int valueType, QBChatMessage chatMessage) {
         String avatarUrl = null;
         return avatarUrl;
     }
@@ -45,7 +45,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
         int customAttachID = R.id.attach_imageview;
         int customProgressBar = R.id.centered_progressbar;
 
-        if (ViewTypes.values()[viewType] == ViewTypes.TYPE_ATTACHMENT_CUSTOM) {
+        if (viewType > TYPE_OPP_ATTACH_LAYOUT) {
             Log.d(TAG, "Override TYPE_ATTACHMENT_CUSTOM");
             return new CustomViewHolder(inflater.inflate(typeCustomAttachLayoutResource, parent, false), customAttachID, customProgressBar);
         }
@@ -53,8 +53,8 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     }
 
     @Override
-    protected void onBindViewAttachCustomHolder(QBMessagesAdapterViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewAttachCustomHolder");
+    protected void onBindViewCustomHolder(QBMessagesAdapterViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewCustomHolder");
     }
 
     @Override

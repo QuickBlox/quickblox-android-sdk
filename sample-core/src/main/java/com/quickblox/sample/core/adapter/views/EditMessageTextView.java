@@ -10,12 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.quickblox.sample.core.R;
 
-public abstract class EditMessageTextView extends RelativeLayout {
+public abstract class EditMessageTextView extends FrameLayout {
     private static String TAG = EditMessageTextView.class.getSimpleName();
     protected LinearLayout frameLinear;
     protected ViewStub viewTextStub;
