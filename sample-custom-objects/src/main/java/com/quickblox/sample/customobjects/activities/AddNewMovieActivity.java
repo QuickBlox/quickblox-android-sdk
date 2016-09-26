@@ -17,10 +17,11 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.server.Performer;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.extensions.RxJavaPerformProcessor;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.helper.DataHolder;
@@ -30,6 +31,11 @@ import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
@@ -97,25 +103,35 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
         QBCustomObject qbCustomObject = QBCustomObjectsUtils.createCustomObject(title, description, year, rating);
 
-        QBCustomObjects.createObject(qbCustomObject).performAsync(new QBEntityCallback<QBCustomObject>() {
+
+        Performer<QBCustomObject> performer = QBCustomObjects.createObject(qbCustomObject);
+        Observable<QBCustomObject> observable =
+                performer.convertTo(RxJavaPerformProcessor.INSTANCE);
+
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<QBCustomObject>() {
             @Override
-            public void onSuccess(QBCustomObject qbCustomObject, Bundle bundle) {
-                progressDialog.dismiss();
-                Toaster.shortToast(R.string.done);
-                DataHolder.getInstance().addMovieToMap(new Movie(qbCustomObject));
-                finish();
+            public void onCompleted() {
             }
 
             @Override
-            public void onError(QBResponseException e) {
+            public void onError(Throwable e) {
                 progressDialog.dismiss();
                 View rootLayout = findViewById(R.id.activity_add_movie);
-                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
+                showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException)e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createNewMovie();
                     }
                 });
+            }
+
+            @Override
+            public void onNext(QBCustomObject qbCustomObject) {
+                progressDialog.dismiss();
+                Toaster.shortToast(R.string.done);
+                DataHolder.getInstance().addMovieToMap(new Movie(qbCustomObject));
+                finish();
             }
         });
     }

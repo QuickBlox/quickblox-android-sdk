@@ -153,17 +153,5 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                 movieListAdapter.updateData(movieMap);
             }
         });
-
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, builder).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
-            @Override
-            public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-
-            }
-        });
     }
 }
