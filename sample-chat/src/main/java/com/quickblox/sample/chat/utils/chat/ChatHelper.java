@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.utils.chat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -46,6 +47,7 @@ import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -240,12 +242,12 @@ public class ChatHelper {
         Log.w(TAG, "=======================");
         QbDialogUtils.logUsers(removedUsers);
 
-        QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
+        QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
         if (!addedUsers.isEmpty()) {
-            qbRequestBuilder.pushAll("occupants_ids", QbDialogUtils.getUserIds(addedUsers));
+            qbRequestBuilder.addUsers(addedUsers.toArray(new QBUser[addedUsers.size()]));
         }
         if (!removedUsers.isEmpty()) {
-            qbRequestBuilder.pullAll("occupants_ids", QbDialogUtils.getUserIds(removedUsers));
+            qbRequestBuilder.removeUsers(removedUsers.toArray(new QBUser[removedUsers.size()]));
         }
         qbDialog.setName(QbDialogUtils.createChatNameFromUserList(newQbDialogUsersList));
 
