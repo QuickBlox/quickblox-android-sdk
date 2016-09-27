@@ -109,12 +109,7 @@ public class ChatHelper {
 
     private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
         if (qbChatService.isLoggedIn()) {
-            MAIN_HANDLER.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onSuccess(null, null);
-                }
-            });
+            callback.onSuccess(null, null);
             return;
         }
 
@@ -135,25 +130,15 @@ public class ChatHelper {
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        chatDialog.join(history, new QBEntityCallback<Void>() {
+        chatDialog.join(history, new QbEntityCallbackWrapper<Void>(callback) {
             @Override
             public void onSuccess(final Void result, final Bundle b) {
-                MAIN_HANDLER.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onSuccess(result, b);
-                    }
-                });
+                onSuccessInMainThread(result, b);
             }
 
             @Override
             public void onError(final QBResponseException e) {
-                MAIN_HANDLER.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onError(e);
-                    }
-                });
+                onErrorInMainThread(e);
             }
         });
     }
@@ -196,15 +181,15 @@ public class ChatHelper {
             dialogsIds.add(dialog.getDialogId());
         }
 
-        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(new QBEntityCallback<ArrayList<String>>() {
+        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(new QbEntityCallbackWrapper<ArrayList<String>>(callback) {
             @Override
             public void onSuccess(ArrayList<String> removedDialogsIds, Bundle bundle) {
-                callback.onSuccess(removedDialogsIds, bundle);
+                onSuccessInMainThread(removedDialogsIds, bundle);
             }
 
             @Override
             public void onError(QBResponseException e) {
-
+                onErrorInMainThread(e);
             }
         });
     }
@@ -329,12 +314,7 @@ public class ChatHelper {
         // If we already have all users in memory
         // there is no need to make REST requests to QB
         if (userIds.size() == users.size()) {
-            MAIN_HANDLER.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onSuccess(users, null);
-                }
-            });
+            callback.onSuccess(users, null);
             return;
         }
 
