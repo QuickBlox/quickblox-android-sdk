@@ -125,22 +125,19 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
             public Observable<QBCustomObject> call(ArrayList<QBCustomObject> qbCustomObjects) {
                 return Observable.from(qbCustomObjects);
             }
-        })
-                .subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<QBCustomObject>() {
                     @Override
                     public void onCompleted() {
+                        setResultParams(true);
                         Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
-                        setOnRefreshListener.setEnabled(true);
-                        progressDialog.dismiss();
-                        setOnRefreshListener.setRefreshing(false);
                         movieListAdapter.updateData(movieMap);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        setOnRefreshListener.setEnabled(false);
+                        setResultParams(false);
                         View rootLayout = findViewById(R.id.swipy_refresh_layout);
                         showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
                             @Override
@@ -148,8 +145,6 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                                 getMovieList(false);
                             }
                         });
-                        progressDialog.dismiss();
-                        setOnRefreshListener.setRefreshing(false);
                     }
 
                     @Override
@@ -157,5 +152,11 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                         DataHolder.getInstance().addMovieToMap(new Movie(customObject));
                     }
                 });
+    }
+
+    private void setResultParams(boolean enabled) {
+        setOnRefreshListener.setEnabled(enabled);
+        progressDialog.dismiss();
+        setOnRefreshListener.setRefreshing(false);
     }
 }
