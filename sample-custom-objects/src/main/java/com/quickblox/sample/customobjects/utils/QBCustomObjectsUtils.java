@@ -1,5 +1,6 @@
 package com.quickblox.sample.customobjects.utils;
 
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.customobjects.model.QBCustomObject;
 import com.quickblox.sample.customobjects.model.Movie;
 
@@ -29,4 +30,7 @@ public class QBCustomObjectsUtils {
         return qbCustomObject;
     }
 
+    public static boolean checkQBException(Throwable exception) {
+        return exception instanceof QBResponseException;
+    }
 }

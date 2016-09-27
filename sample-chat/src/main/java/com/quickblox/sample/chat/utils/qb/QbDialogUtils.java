@@ -3,23 +3,32 @@ package com.quickblox.sample.chat.utils.qb;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class QbDialogUtils {
     private static final String TAG = QbDialogUtils.class.getSimpleName();
 
-    public static QBDialog createDialog(List<QBUser> users) {
+    public static final String PROPERTY_OCCUPANTS_IDS = "occupants_ids";
+    public static final String PROPERTY_DIALOG_TYPE = "dialog_type";
+    public static final String PROPERTY_NOTIFICATION_TYPE = "notification_type";
+    public static final String CREATING_DIALOG = "creating_dialog";
+
+
+    public static QBChatDialog createDialog(List<QBUser> users) {
         QBUser currentUser = ChatHelper.getCurrentUser();
         users.remove(currentUser);
 
-        QBDialog dialogToCreate = new QBDialog();
+        QBChatDialog dialogToCreate = new QBChatDialog();
         dialogToCreate.setName(QbDialogUtils.createChatNameFromUserList(users));
         if (users.size() == 1) {
             dialogToCreate.setType(QBDialogType.PRIVATE);
@@ -30,7 +39,7 @@ public class QbDialogUtils {
         return dialogToCreate;
     }
 
-    public static List<QBUser> getAddedUsers(QBDialog dialog, List<QBUser> currentUsers) {
+    public static List<QBUser> getAddedUsers(QBChatDialog dialog, List<QBUser> currentUsers) {
         return getAddedUsers(getQbUsersFromQbDialog(dialog), currentUsers);
     }
 
@@ -55,7 +64,7 @@ public class QbDialogUtils {
         return addedUsers;
     }
 
-    public static List<QBUser> getRemovedUsers(QBDialog dialog, List<QBUser> currentUsers) {
+    public static List<QBUser> getRemovedUsers(QBChatDialog dialog, List<QBUser> currentUsers) {
         return getRemovedUsers(getQbUsersFromQbDialog(dialog), currentUsers);
     }
 
@@ -80,7 +89,7 @@ public class QbDialogUtils {
         return removedUsers;
     }
 
-    public static void logDialogUsers(QBDialog qbDialog) {
+    public static void logDialogUsers(QBChatDialog qbDialog) {
         Log.v(TAG, "Dialog " + getDialogName(qbDialog));
         logUsersByIds(qbDialog.getOccupants());
     }
@@ -98,7 +107,7 @@ public class QbDialogUtils {
         }
     }
 
-    public static Integer getOpponentIdForPrivateDialog(QBDialog dialog) {
+    public static Integer getOpponentIdForPrivateDialog(QBChatDialog dialog) {
         Integer opponentId = -1;
         QBUser qbUser = ChatHelper.getCurrentUser();
         if (qbUser == null) {
@@ -138,7 +147,7 @@ public class QbDialogUtils {
         return chatName;
     }
 
-    public static String getDialogName(QBDialog dialog) {
+    public static String getDialogName(QBChatDialog dialog) {
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             return dialog.getName();
         } else {
@@ -153,7 +162,7 @@ public class QbDialogUtils {
         }
     }
 
-    private static List<QBUser> getQbUsersFromQbDialog(QBDialog dialog) {
+    private static List<QBUser> getQbUsersFromQbDialog(QBChatDialog dialog) {
         List<QBUser> previousDialogUsers = new ArrayList<>();
         for (Integer id : dialog.getOccupants()) {
             QBUser user = QbUsersHolder.getInstance().getUserById(id);
@@ -163,5 +172,44 @@ public class QbDialogUtils {
             previousDialogUsers.add(user);
         }
         return previousDialogUsers;
+    }
+
+    public static QBChatMessage createSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog){
+        QBChatMessage qbChatMessage = new QBChatMessage();
+        qbChatMessage.setDialogId(dialog.getDialogId());
+        qbChatMessage.setProperty(PROPERTY_OCCUPANTS_IDS, getOccupantsIdsStringFromList(dialog.getOccupants()));
+        qbChatMessage.setProperty(PROPERTY_DIALOG_TYPE, String.valueOf(dialog.getType().getCode()));
+        qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
+
+        return qbChatMessage;
+    }
+
+    public static QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage){
+        QBChatDialog chatDialog = new QBChatDialog();
+        chatDialog.setDialogId(qbChatMessage.getDialogId());
+        chatDialog.setOccupantsIds(QbDialogUtils.getOccupantsIdsListFromString((String) qbChatMessage.getProperty(PROPERTY_OCCUPANTS_IDS)));
+        chatDialog.setType(QBDialogType.parseByCode(Integer.parseInt(qbChatMessage.getProperty(PROPERTY_DIALOG_TYPE).toString())));
+
+        return chatDialog;
+    }
+
+    public static List<Integer> getOccupantsIdsListFromString(String occupantIds) {
+        List<Integer> occupantIdsList = new ArrayList<>();
+        String[] occupantIdsArray = occupantIds.split(",");
+        for (String occupantId : occupantIdsArray) {
+            occupantIdsList.add(Integer.valueOf(occupantId));
+        }
+        return occupantIdsList;
+    }
+
+    public static String getOccupantsIdsStringFromList(Collection<Integer> occupantIdsList) {
+        return TextUtils.join(",", occupantIdsList);
+    }
+
+    public static QBChatDialog createPrivateChatDialog(String dialogId, Integer recipientId){
+        QBChatDialog chatDialog = DialogUtils.buildPrivateDialog(recipientId);
+        chatDialog.setDialogId(dialogId);
+
+        return chatDialog;
     }
 }

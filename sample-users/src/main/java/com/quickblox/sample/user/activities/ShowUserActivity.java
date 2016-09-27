@@ -107,7 +107,7 @@ public class ShowUserActivity extends BaseActivity {
         qbUser.setPhone(phoneNumber);
         qbUser.setTags(tagsArray);
 
-        QBUsers.updateUser(qbUser, new QBEntityCallback<QBUser>() {
+        QBUsers.updateUser(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser user, Bundle args) {
 

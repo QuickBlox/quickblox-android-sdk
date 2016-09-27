@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
@@ -17,9 +17,9 @@ import com.quickblox.sample.core.utils.UiUtils;
 
 import java.util.List;
 
-public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
+public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
 
-    public DialogsAdapter(Context context, List<QBDialog> dialogs) {
+    public DialogsAdapter(Context context, List<QBChatDialog> dialogs) {
         super(context, dialogs);
     }
 
@@ -41,7 +41,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        QBDialog dialog = getItem(position);
+        QBChatDialog dialog = getItem(position);
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
             holder.dialogImageView.setImageResource(R.drawable.ic_chat_group);
@@ -71,7 +71,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBDialog> {
         return convertView;
     }
 
-    private boolean isLastMessageAttachment(QBDialog dialog) {
+    private boolean isLastMessageAttachment(QBChatDialog dialog) {
         String lastMessage = dialog.getLastMessage();
         Integer lastMessageSenderId = dialog.getLastMessageUserId();
         return TextUtils.isEmpty(lastMessage) && lastMessageSenderId != null;

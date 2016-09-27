@@ -1,15 +1,19 @@
 package com.quickblox.sample.chat.utils.qb;
 
-import com.quickblox.chat.model.QBDialog;
+import android.util.Log;
+
+import com.quickblox.chat.model.QBChatDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QbDialogHolder {
 
     private static QbDialogHolder instance;
-    private List<QBDialog> dialogList;
+    private Map<String, QBChatDialog> dialogsMap;
 
     public static synchronized QbDialogHolder getInstance() {
         if (instance == null) {
@@ -19,32 +23,47 @@ public class QbDialogHolder {
     }
 
     private QbDialogHolder() {
-        dialogList = new ArrayList<>();
+        Log.d("two_messages", "QbDialogHolder.newInstance");
+        dialogsMap = new HashMap<>();
     }
 
-    public List<QBDialog> getDialogList() {
-        return dialogList;
+    public Map<String, QBChatDialog> getDialogsMap() {
+        return dialogsMap;
+    }
+
+    public QBChatDialog getChatDialogById(String dialogId){
+        return dialogsMap.get(dialogId);
     }
 
     public void clear() {
-        dialogList.clear();
+        dialogsMap.clear();
     }
 
-    public void addDialogToList(QBDialog dialog) {
-        if (!dialogList.contains(dialog)) {
-            dialogList.add(dialog);
+    public void addDialogToMap(QBChatDialog dialog) {
+        if (dialog != null) {
+            dialogsMap.put(dialog.getDialogId(), dialog);
         }
     }
 
-    public void addDialogs(List<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
-            addDialogToList(dialog);
+    public void addDialogs(List<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
+            addDialogToMap(dialog);
         }
     }
 
-    public void deleteDialogs(Collection<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
-            dialogList.remove(dialog);
+    public void deleteDialogs(Collection<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
+            dialogsMap.remove(dialog.getDialogId());
         }
+    }
+
+    public void deleteDialogs(ArrayList<String> dialogsIds) {
+        for (String dialogId : dialogsIds) {
+            dialogsMap.remove(dialogId);
+        }
+    }
+
+    public boolean hadDialogWithId(String dialogId){
+        return dialogsMap.containsKey(dialogId);
     }
 }
