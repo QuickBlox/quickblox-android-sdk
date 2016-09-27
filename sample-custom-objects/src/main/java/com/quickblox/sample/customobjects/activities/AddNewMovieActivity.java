@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
+    private static final String TAG = AddNewMovieActivity.class.getSimpleName();
 
     private static final String OBJ = "\uFFFC";
     private EditText titleEditText;
@@ -120,13 +122,17 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
             @Override
             public void onError(Throwable e) {
                 progressDialog.dismiss();
-                View rootLayout = findViewById(R.id.activity_add_movie);
-                showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException)e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        createNewMovie();
-                    }
-                });
+                if (QBCustomObjectsUtils.checkQBException(e)) {
+                    View rootLayout = findViewById(R.id.activity_add_movie);
+                    showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            createNewMovie();
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "onError" + e.getMessage());
+                }
             }
 
             @Override

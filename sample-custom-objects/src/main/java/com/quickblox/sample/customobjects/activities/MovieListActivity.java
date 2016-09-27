@@ -3,6 +3,7 @@ package com.quickblox.sample.customobjects.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
 import com.quickblox.sample.customobjects.utils.Consts;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,7 +36,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
-
+    private static final String TAG = MovieListActivity.class.getSimpleName();
     private static final String createDateField = "created_at";
 
     private MovieListAdapter movieListAdapter;
@@ -138,13 +140,17 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
                     @Override
                     public void onError(Throwable e) {
                         setResultParams(false);
-                        View rootLayout = findViewById(R.id.swipy_refresh_layout);
-                        showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getMovieList(false);
-                            }
-                        });
+                        if (QBCustomObjectsUtils.checkQBException(e)) {
+                            View rootLayout = findViewById(R.id.swipy_refresh_layout);
+                            showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    getMovieList(false);
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "onError" + e.getMessage());
+                        }
                     }
 
                     @Override
