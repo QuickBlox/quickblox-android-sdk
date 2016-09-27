@@ -1,6 +1,7 @@
 package com.quickblox.sample.customobjects.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.quickblox.auth.QBAuth;
@@ -11,6 +12,7 @@ import com.quickblox.extensions.RxJavaPerformProcessor;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.utils.Consts;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 import com.quickblox.users.model.QBUser;
 
 import rx.Observable;
@@ -19,6 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class SplashActivity extends CoreSplashActivity {
+    private static final String TAG = SplashActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,16 @@ public class SplashActivity extends CoreSplashActivity {
 
             @Override
             public void onError(Throwable e) {
-                showSnackbarError(null, R.string.splash_create_session_error, (QBResponseException)e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        createSession();
-                    }
-                });
+                if (QBCustomObjectsUtils.checkQBException(e)) {
+                    showSnackbarError(null, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            createSession();
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "onError" + e.getMessage());
+                }
             }
 
             @Override
