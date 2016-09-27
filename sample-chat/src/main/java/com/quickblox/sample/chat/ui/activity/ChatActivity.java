@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.model.QBAttachment;
@@ -41,8 +40,6 @@ import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +74,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private ArrayList<String> chatMessageIds;
     private ArrayList<QBChatMessage> unShownMessages;
     private int skipPagination = 0;
+    private ChatMessageListener chatMessageListener;
 
     public static void startForResult(Activity activity, int code, String dialogId) {
         Intent intent = new Intent(activity, ChatActivity.class);
@@ -91,8 +89,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         qbChatDialog = QbDialogHolder.getInstance().getChatDialogById(
                 getIntent().getStringExtra(EXTRA_DIALOG_ID));
+        chatMessageListener = new ChatMessageListener();
+
+        qbChatDialog.addMessageListener(chatMessageListener);
 
         chatMessageIds = new ArrayList<>();
+
         initChatConnectionListener();
 
         initViews();
@@ -195,7 +197,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void leaveGroupChat() {
-        leaveGroupChatRoom();
+        leaveGroupDialog();
         ProgressDialogFragment.show(getSupportFragmentManager());
         ChatHelper.getInstance().leaveDialog(qbChatDialog, new QBEntityCallback<QBChatDialog>() {
             @Override
@@ -353,8 +355,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void initChat() {
-        qbChatDialog.initForChat(QBChatService.getInstance());
-        qbChatDialog.addMessageListener(chatMessageListener);
+//        qbChatDialog.initForChat(QBChatService.getInstance());
 
         switch (qbChatDialog.getType()) {
             case GROUP:
@@ -375,10 +376,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void joinGroupChat() {
         progressBar.setVisibility(View.VISIBLE);
-        DiscussionHistory history = new DiscussionHistory();
-        history.setMaxStanzas(0);
-
-        qbChatDialog.join(history, new QBEntityCallback<Void>() {
+        ChatHelper.getInstance().join(qbChatDialog, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle b) {
                 if (snackbar != null) {
@@ -395,13 +393,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         });
     }
 
-    private void leaveGroupChatRoom() {
+    private void leaveGroupDialog() {
         if (qbChatDialog != null) {
-            try {
-                qbChatDialog.leave();
-            } catch (SmackException.NotConnectedException | XMPPException e) {
-                e.printStackTrace();
-            }
+            ChatHelper.getInstance().leave(qbChatDialog);
         }
     }
 
@@ -409,7 +403,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         if (qbChatDialog != null) {
             qbChatDialog.removeMessageListrener(chatMessageListener);
             if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType())){
-                leaveGroupChatRoom();
+                leaveGroupDialog();
             }
         }
     }
@@ -567,7 +561,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            leaveGroupChatRoom();
+                            leaveGroupDialog();
                         }
                     });
                 }
@@ -601,17 +595,19 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         };
     }
 
-    private QBChatDialogMessageListener chatMessageListener = new QBChatDialogMessageListener() {
+    public class ChatMessageListener implements QBChatDialogMessageListener {
+
         @Override
-        public void processMessage(String dialogId, QBChatMessage qbChatMessage, Integer senderId) {
+        public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
             chatMessageIds.add(qbChatMessage.getId());
             Log.d(TAG, "showMessage from listener");
+            Log.d(TAG, "qbDialoh have listeners: " + qbChatDialog.getMessageListeners().size());
             showMessage(qbChatMessage);
         }
 
         @Override
-        public void processError(String dialogId, QBChatException e, QBChatMessage qbChatMessage, Integer senderId) {
+        public void processError(String s, QBChatException e, QBChatMessage qbChatMessage, Integer integer) {
 
         }
-    };
+    }
 }

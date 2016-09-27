@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -13,14 +14,17 @@ import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.chat.request.QBDialogRequestBuilder;
 import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
@@ -37,6 +41,8 @@ import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -123,6 +129,41 @@ public class ChatHelper {
         });
     }
 
+    public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback){
+        DiscussionHistory history = new DiscussionHistory();
+        history.setMaxStanzas(0);
+
+        chatDialog.join(history, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(final Void result, final Bundle b) {
+                MAIN_HANDLER.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onSuccess(result, b);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final QBResponseException e) {
+                MAIN_HANDLER.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onError(e);
+                    }
+                });
+            }
+        });
+    }
+
+    public void leave(QBChatDialog chatDialog){
+        try {
+            chatDialog.leave();
+        } catch (SmackException.NotConnectedException | XMPPException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean logout() {
         try {
             qbChatService.logout();
@@ -147,23 +188,21 @@ public class ChatHelper {
                 });
     }
 
-    public void deleteDialogs(Collection<QBChatDialog> dialogs, final QBEntityCallback<Void> callback) {
-        for (QBChatDialog dialog : dialogs) {
-            deleteDialog(dialog, new QBEntityCallback<Void>() {
-                @Override
-                public void onSuccess(Void aVoid, Bundle bundle) {
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                }
-            });
+    public void deleteDialogs(Collection<QBChatDialog> dialogs, final QBEntityCallback<ArrayList<String>> callback) {
+        StringifyArrayList<String> dialogsIds = new StringifyArrayList<>();
+        for (QBChatDialog dialog : dialogs){
+            dialogsIds.add(dialog.getDialogId());
         }
 
-        MAIN_HANDLER.post(new Runnable() {
+        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(new QBEntityCallback<ArrayList<String>>() {
             @Override
-            public void run() {
-                callback.onSuccess(null, null);
+            public void onSuccess(ArrayList<String> removedDialogsIds, Bundle bundle) {
+                callback.onSuccess(removedDialogsIds, bundle);
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+
             }
         });
     }
@@ -178,8 +217,8 @@ public class ChatHelper {
     }
 
     public void leaveDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
-        QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
-        qbRequestBuilder.pullAll("occupants_ids", SharedPreferencesUtil.getQbUser().getId());
+        QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
+        qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
 
         QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(
                 new QbEntityCallbackWrapper<QBChatDialog>(callback) {
@@ -257,6 +296,21 @@ public class ChatHelper {
                         getUsersFromDialogs(dialogs, callback);
                         // Not calling super.onSuccess() because
                         // we want to load chat users before triggering callback
+                    }
+                });
+    }
+
+    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
+        QBRestChatService.getChatDialogById(dialogId).performAsync(
+                new QBEntityCallback<QBChatDialog>() {
+                    @Override
+                    public void onSuccess(QBChatDialog chatDialog, Bundle bundle) {
+                        callback.onSuccess(chatDialog, bundle);
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        callback.onError(e);
                     }
                 });
     }

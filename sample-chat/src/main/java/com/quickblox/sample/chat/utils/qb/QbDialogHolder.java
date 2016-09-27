@@ -1,7 +1,10 @@
 package com.quickblox.sample.chat.utils.qb;
 
+import android.util.Log;
+
 import com.quickblox.chat.model.QBChatDialog;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +23,7 @@ public class QbDialogHolder {
     }
 
     private QbDialogHolder() {
+        Log.d("two_messages", "QbDialogHolder.newInstance");
         dialogsMap = new HashMap<>();
     }
 
@@ -51,5 +55,15 @@ public class QbDialogHolder {
         for (QBChatDialog dialog : dialogs) {
             dialogsMap.remove(dialog.getDialogId());
         }
+    }
+
+    public void deleteDialogs(ArrayList<String> dialogsIds) {
+        for (String dialogId : dialogsIds) {
+            dialogsMap.remove(dialogId);
+        }
+    }
+
+    public boolean hadDialogWithId(String dialogId){
+        return dialogsMap.containsKey(dialogId);
     }
 }
