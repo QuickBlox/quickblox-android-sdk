@@ -112,6 +112,9 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<QBCustomObject>() {
             @Override
             public void onCompleted() {
+                progressDialog.dismiss();
+                Toaster.shortToast(R.string.done);
+                finish();
             }
 
             @Override
@@ -128,10 +131,7 @@ public class AddNewMovieActivity extends BaseActivity implements TextWatcher {
 
             @Override
             public void onNext(QBCustomObject qbCustomObject) {
-                progressDialog.dismiss();
-                Toaster.shortToast(R.string.done);
                 DataHolder.getInstance().addMovieToMap(new Movie(qbCustomObject));
-                finish();
             }
         });
     }
