@@ -3,6 +3,7 @@ package com.quickblox.sample.customobjects.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,22 +13,30 @@ import android.widget.ListView;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
-import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.core.server.Performer;
 import com.quickblox.customobjects.QBCustomObjects;
 import com.quickblox.customobjects.model.QBCustomObject;
+import com.quickblox.extensions.RxJavaPerformProcessor;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.adapter.MovieListAdapter;
-import com.quickblox.sample.customobjects.utils.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
+import com.quickblox.sample.customobjects.utils.Consts;
+import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
+public class MovieListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+    private static final String TAG = MovieListActivity.class.getSimpleName();
     private static final String createDateField = "created_at";
 
     private MovieListAdapter movieListAdapter;
@@ -109,34 +118,51 @@ public class MovieListActivity extends BaseActivity implements AdapterView.OnIte
         }
         builder.setLimit(Consts.LIMIT_RECORDS);
         builder.sortDesc(createDateField);
-        QBCustomObjects.getObjects(Consts.CLASS_NAME, builder).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
+
+        Performer<ArrayList<QBCustomObject>> performer = QBCustomObjects.getObjects(Consts.CLASS_NAME, builder);
+        Observable<ArrayList<QBCustomObject>> observable = performer.convertTo(RxJavaPerformProcessor.INSTANCE);
+
+        observable.flatMap(new Func1<ArrayList<QBCustomObject>, Observable<QBCustomObject>>() {
             @Override
-            public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle bundle) {
-                setOnRefreshListener.setEnabled(true);
-                Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
-
-                for (QBCustomObject customObject : qbCustomObjects) {
-                    DataHolder.getInstance().addMovieToMap(new Movie(customObject));
-                }
-
-                progressDialog.dismiss();
-                setOnRefreshListener.setRefreshing(false);
-                movieListAdapter.updateData(movieMap);
+            public Observable<QBCustomObject> call(ArrayList<QBCustomObject> qbCustomObjects) {
+                return Observable.from(qbCustomObjects);
             }
-
-            @Override
-            public void onError(QBResponseException e) {
-                setOnRefreshListener.setEnabled(false);
-                View rootLayout = findViewById(R.id.swipy_refresh_layout);
-                showSnackbarError(rootLayout, R.string.splash_create_session_error, e, new View.OnClickListener() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<QBCustomObject>() {
                     @Override
-                    public void onClick(View v) {
-                        getMovieList(false);
+                    public void onCompleted() {
+                        setResultParams(true);
+                        Map<String, Movie> movieMap = DataHolder.getInstance().getMovieMap();
+                        movieListAdapter.updateData(movieMap);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        setResultParams(false);
+                        if (QBCustomObjectsUtils.checkQBException(e)) {
+                            View rootLayout = findViewById(R.id.swipy_refresh_layout);
+                            showSnackbarError(rootLayout, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    getMovieList(false);
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "onError" + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onNext(QBCustomObject customObject) {
+                        DataHolder.getInstance().addMovieToMap(new Movie(customObject));
                     }
                 });
-                progressDialog.dismiss();
-                setOnRefreshListener.setRefreshing(false);
-            }
-        });
+    }
+
+    private void setResultParams(boolean enabled) {
+        setOnRefreshListener.setEnabled(enabled);
+        progressDialog.dismiss();
+        setOnRefreshListener.setRefreshing(false);
     }
 }
