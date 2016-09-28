@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
@@ -57,7 +57,7 @@ public class SelectUsersActivity extends BaseActivity {
         startForResult(activity, code, null);
     }
 
-    public static void startForResult(Activity activity, int code, QBDialog dialog) {
+    public static void startForResult(Activity activity, int code, QBChatDialog dialog) {
         Intent intent = new Intent(activity, SelectUsersActivity.class);
         intent.putExtra(EXTRA_QB_DIALOG, dialog);
         activity.startActivityForResult(intent, code);
@@ -139,10 +139,10 @@ public class SelectUsersActivity extends BaseActivity {
         tags.add(Consts.QB_USERS_TAG);
 
         progressBar.setVisibility(View.VISIBLE);
-        QBUsers.getUsersByTags(tags, null, new QBEntityCallback<ArrayList<QBUser>>() {
+        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                QBDialog dialog = (QBDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+                QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
 
                 usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, result);
                 if (dialog != null) {

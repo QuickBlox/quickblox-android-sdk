@@ -58,7 +58,7 @@ public class SignUpUserActivity extends BaseActivity {
         QBUser qbUser = new QBUser();
         qbUser.setLogin(login);
         qbUser.setPassword(password);
-        QBUsers.signUpSignInTask(qbUser, new QBEntityCallback<QBUser>() {
+        QBUsers.signUpSignInTask(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 progressDialog.dismiss();
