@@ -1,6 +1,7 @@
 package com.quickblox.sample.core.adapter.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
@@ -12,12 +13,11 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.quickblox.sample.core.R;
 
-public abstract class EditMessageTextView extends FrameLayout {
-    private static String TAG = EditMessageTextView.class.getSimpleName();
+public abstract class ChatMessageTextView extends FrameLayout {
+    private static String TAG = ChatMessageTextView.class.getSimpleName();
     protected LinearLayout frameLinear;
     protected ViewStub viewTextStub;
 
@@ -26,9 +26,9 @@ public abstract class EditMessageTextView extends FrameLayout {
 
     Drawable bubble;
 
-    public EditMessageTextView(Context context, AttributeSet attrs) {
+    public ChatMessageTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(R.layout.edit_message_test_view);
+        init(R.layout.chat_message_test_view);
         applyAttributes(attrs);
     }
 
@@ -45,10 +45,10 @@ public abstract class EditMessageTextView extends FrameLayout {
         int widgetId;
 
         try {
-            array = getContext().obtainStyledAttributes(attrs, R.styleable.EditMessageTextView);
-            bubble = array.getDrawable(R.styleable.EditMessageTextView_bubble);
-            textViewId = array.getResourceId(R.styleable.EditMessageTextView_message_text_id, 0);
-            widgetId = array.getResourceId(R.styleable.EditMessageTextView_widget_id, 0);
+            array = getContext().obtainStyledAttributes(attrs, R.styleable.ChatMessageTextView);
+            bubble = array.getDrawable(R.styleable.ChatMessageTextView_bubble);
+            textViewId = array.getResourceId(R.styleable.ChatMessageTextView_message_text_id, 0);
+            widgetId = array.getResourceId(R.styleable.ChatMessageTextView_widget_id, 0);
         } finally {
             if (array != null) {
                 array.recycle();
@@ -70,9 +70,15 @@ public abstract class EditMessageTextView extends FrameLayout {
     }
 
     protected void setBubble(Drawable draw) {
+        Resources res = getResources();
+        int leftPadding = (int) res.getDimension(R.dimen.bubble_padding_left);
+        int topPadding = (int) res.getDimension(R.dimen.bubble_padding_top);
+        int rightPadding = (int) res.getDimension(R.dimen.bubble_padding_right);
+        int bottomPadding = (int) res.getDimension(R.dimen.bubble_padding_bottom);
+
         LinearLayout layoutBubble = (LinearLayout) layoutStub.findViewById(R.id.bubble_background);
         layoutBubble.setBackgroundDrawable(draw);
-        layoutBubble.setPadding(20, 0, 10, 0);
+        layoutBubble.setPadding(leftPadding, topPadding, rightPadding, bottomPadding);
     }
 
     abstract protected void setLinearSide();

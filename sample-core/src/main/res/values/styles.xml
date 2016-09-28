@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MessageAdapterTextMsgParent.Own"></style>
+    <style name="MainItemStubMsgText.Right"></style>
 
-    <style name="MessageAdapterTextMsgParent.Opponent">
-        <item name="android:background">@drawable/left_bubble</item>
+    <style name="MainItemStubMsgText.Left"></style>
+
+    <style name="MainItemStubMsgText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
+
+
+    <style name="MessageAdapterTextMsgParent.Right"></style>
+
+    <style name="MessageAdapterTextMsgParent.Left"></style>
 
     <style name="MessageAdapterTextMsgParent">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/chat_babble_margin</item>
-        <item name="android:background">@drawable/right_bubble</item>
         <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
 
-    <style name="LinearTextMessage.Own"></style>
+    <style name="LinearTextMessage.Right"></style>
 
-    <style name="LinearTextMessage.Opponent"></style>
+    <style name="LinearTextMessage.Left"></style>
 
     <style name="LinearTextMessage">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
 
-    <style name="ItemStubMsgText.Own">
-        <item name="android:textColor">@color/white</item>
-    </style>
+    <style name="ItemStubMsgText.Right"></style>
 
-    <style name="ItemStubMsgText.Opponent">
-        <item name="android:textColor">@color/random_color_8</item>
-    </style>
+    <style name="ItemStubMsgText.Left"></style>
 
     <style name="ItemStubMsgText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingRight">@dimen/padding_small</item>
     </style>
 
 
-    <style name="ItemStubTimeText.Own"></style>
+    <style name="ItemStubTimeText.Right">
+        <item name="android:layout_gravity">right</item>
+    </style>
 
-    <style name="ItemStubTimeText.Opponent"></style>
+    <style name="ItemStubTimeText.Left"></style>
 
     <style name="ItemStubTimeText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingRight">@dimen/padding_medium</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 
+
+    <style name="ItemStubWidgetFrame.Right">
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="ItemStubWidgetFrame.Left"></style>
 
     <style name="ItemStubWidgetFrame">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
 
-    <style name="AvatarImageViewStyle.Own"></style>
+    <style name="AvatarImageViewStyle.Right"></style>
 
-    <style name="AvatarImageViewStyle.Opponent"></style>
+    <style name="AvatarImageViewStyle.Left"></style>
 
     <style name="AvatarImageViewStyle">
         <item name="android:layout_width">@dimen/image_view_small_avatar_layout_width</item>
@@ -74,15 +89,100 @@
     </style>
 
 
+    <style name="MainLayoutTextMsg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
 
-
-
-    <style name="ItemTextMessageOwnWidgetFrame">
+    <style name="LinearFrameTextMsg">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="ViewStubTextMsg">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
 
+
+    <style name="MainLayoutAttachMsg.Right">
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="MainLayoutAttachMsg.Left"></style>
+
+    <style name="MainLayoutAttachMsg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
+
+
+    <style name="RelativeFrameAttachMsg.Right">
+        <item name="android:background">@drawable/right_bubble</item>
+    </style>
+
+    <style name="RelativeFrameAttachMsg.Left">
+        <item name="android:background">@drawable/left_bubble</item>
+    </style>
+
+    <style name="RelativeFrameAttachMsg">
+        <item name="android:layout_width">@dimen/chat_attach_width</item>
+        <item name="android:layout_height">@dimen/chat_attach_height</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+
+    <style name="ProgressBarAttach.Right"></style>
+
+    <style name="ProgressBarAttach.Left"></style>
+
+    <style name="ProgressBarAttach">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:indeterminate">false</item>
+        <item name="android:max">100</item>
+    </style>
+
+
+    <style name="ImageViewAttach.Right"></style>
+
+    <style name="ImageViewAttach.Left"></style>
+
+    <style name="ImageViewAttach">
+        <item name="android:layout_width">@dimen/chat_attach_width</item>
+        <item name="android:layout_height">@dimen/chat_attach_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/padding_common</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+
+    <style name="TextViewAttach.Right"></style>
+
+    <style name="TextViewAttach.Left"></style>
+
+    <style name="TextViewAttach">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_margin">@dimen/padding_medium</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:background">@drawable/badge_attach_message_time</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+
+
+
+
+    <!-- удалить-->
     <style name="CompoundChatTextViewStyle">
         <item name="msgTextColor">#FF0000</item>
         <item name="android:background">#ffffff</item>

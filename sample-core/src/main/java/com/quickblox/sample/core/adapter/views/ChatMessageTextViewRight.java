@@ -9,22 +9,23 @@ import android.widget.LinearLayout;
 
 import com.quickblox.sample.core.R;
 
-public class EditMessageTextViewLeft extends EditMessageTextView {
+public class ChatMessageTextViewRight extends ChatMessageTextView {
 
-    public EditMessageTextViewLeft(Context context, AttributeSet attrs) {
+    public ChatMessageTextViewRight(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @Override
+ @Override
     protected void setLinearSide() {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameLinear.getLayoutParams();
-        layoutParams.gravity = Gravity.LEFT;
+        layoutParams.gravity = Gravity.RIGHT;
         frameLinear.setLayoutParams(layoutParams);
+
     }
 
     @Override
     protected void setTextLayout(@LayoutRes int customTextId) {
-        int textViewId = R.layout.item_stub_left_text;
+        int textViewId = R.layout.item_stub_right_text;
 
         if (customTextId != 0) {
             textViewId = customTextId;

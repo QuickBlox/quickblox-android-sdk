@@ -16,7 +16,7 @@ public interface QBBaseAdapter<T> {
 
     void addList(List<T> items);
 
-    void showAttachment(QBMessagesAdapter.QBMessagesAdapterViewHolder holder, int position);
+    void showAttachment(QBMessagesAdapter.QBMessageViewHolder holder, int position);
 
     void displayAvatarImage (String uri, ImageView imageView);
 

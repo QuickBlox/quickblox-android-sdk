@@ -25,7 +25,7 @@
 
 
 
-    <declare-styleable name="EditMessageTextView">
+    <declare-styleable name="ChatMessageTextView">
         <attr name="stick_right" format="boolean"/>
         <attr name="bubble" format="integer"/>
         <attr name="message_text_id" format="integer"/>

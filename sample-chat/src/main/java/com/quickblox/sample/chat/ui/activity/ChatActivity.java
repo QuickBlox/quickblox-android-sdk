@@ -473,7 +473,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
-                    chatAdapter = new QBMessagesAdapter(ChatActivity.this, messages);
+                    chatAdapter = new CustomMessageAdapter(ChatActivity.this, messages);
                     chatAdapter.setHasStableIds(true);
                     if (unShownMessages != null && !unShownMessages.isEmpty()) {
                         List<QBChatMessage> chatList = chatAdapter.getList();

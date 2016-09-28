@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_frame_left"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    style="@style/MainItemStubMsgText.Left">
 
     <ImageView
         android:id="@+id/avatar_imageview_left"
-        style="@style/AvatarImageViewStyle.Opponent"/>
+        style="@style/AvatarImageViewStyle.Left" />
 
     <LinearLayout
         android:id="@+id/bubble_background"
-        style="@style/MessageAdapterTextMsgParent.Opponent"
-        android:orientation="vertical">
+        style="@style/MessageAdapterTextMsgParent.Left">
 
 
         <LinearLayout
             android:id="@+id/outer_message_textview_left"
-            style="@style/LinearTextMessage.Opponent"
-            android:orientation="vertical">
+            style="@style/LinearTextMessage.Left">
 
             <TextView
                 android:id="@+id/time_text_message_textview"
-                style="@style/ItemStubTimeText.Opponent"
+                style="@style/ItemStubTimeText.Left"
                 tools:text="August 16" />
 
             <TextView
                 android:id="@+id/message_textview"
-                style="@style/ItemStubMsgText.Opponent"
-                android:paddingBottom="5dp"
+                style="@style/ItemStubMsgText.Left"
                 tools:text="messagertdfsscsd" />
 
             <!--LinearLayout should place its actual message widget here.-->
             <LinearLayout
                 android:id="@+id/widget_frame"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                style="@style/ItemStubWidgetFrame.Left" />
 
 
         </LinearLayout>

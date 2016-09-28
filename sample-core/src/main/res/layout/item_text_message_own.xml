@@ -15,7 +15,7 @@
 
         <LinearLayout
             android:id="@+id/outer_message_textview"
-            style="@style/LinearTextMessage.Opponent">
+            style="@style/LinearTextMessage.Right">
 
             <TextView
                 android:id="@+id/message_textview"

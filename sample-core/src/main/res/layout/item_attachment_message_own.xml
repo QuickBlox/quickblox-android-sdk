@@ -1,55 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:gravity="right"
-    android:orientation="horizontal"
-    android:padding="@dimen/padding_medium">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MainLayoutAttachMsg.Right">
 
     <RelativeLayout
         android:id="@+id/attach_message_relativelayout"
-        android:layout_width="@dimen/chat_attach_width"
-        android:layout_height="@dimen/chat_attach_height"
-        android:background="@drawable/right_bubble"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        style="@style/RelativeFrameAttachMsg.Right">
 
         <ProgressBar
             android:id="@+id/centered_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:indeterminate="false"
-            android:max="100" />
+            style="@style/ProgressBarAttach.Right" />
 
         <ImageView
             android:id="@+id/attach_imageview"
-            android:layout_width="@dimen/chat_attach_width"
-            android:layout_height="@dimen/chat_attach_height"
-            android:layout_gravity="center"
-            android:layout_marginRight="8dp"
-            android:scaleType="centerCrop"
-            android:src="@null" />
+            style="@style/ImageViewAttach.Right" />
 
         <TextView
             android:id="@+id/time_attach_message_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="10dp"
-            android:alpha="0.5"
-            android:background="@drawable/badge_attach_message_time"
-            android:padding="4dp"
-            android:text="time"
-            android:textColor="@color/black" />
-
+            style="@style/TextViewAttach.Right"
+            tools:text="time" />
 
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle.Own"/>
+        style="@style/AvatarImageViewStyle.Right" />
 
 </LinearLayout>
