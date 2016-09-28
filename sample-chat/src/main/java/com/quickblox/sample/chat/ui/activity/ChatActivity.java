@@ -131,7 +131,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     public void onBackPressed() {
         releaseChat();
-        sendReadMessageId();
+        sendDialogId();
 
         super.onBackPressed();
     }
@@ -189,9 +189,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
     }
 
-    private void sendReadMessageId() {
+    private void sendDialogId() {
         Intent result = new Intent();
-        result.putExtra(EXTRA_MARK_READ, chatMessageIds);
         result.putExtra(EXTRA_DIALOG_ID, qbChatDialog.getDialogId());
         setResult(RESULT_OK, result);
     }
@@ -336,7 +335,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             qbChatDialog.sendMessage(chatMessage);
 
             if (qbChatDialog.getType() == QBDialogType.PRIVATE) {
-                Log.d(TAG, "showMessage from method sendChatMessage");
                 showMessage(chatMessage);
             }
 
@@ -355,8 +353,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void initChat() {
-//        qbChatDialog.initForChat(QBChatService.getInstance());
-
         switch (qbChatDialog.getType()) {
             case GROUP:
             case PUBLIC_GROUP:
@@ -394,20 +390,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void leaveGroupDialog() {
-        if (qbChatDialog != null) {
-            ChatHelper.getInstance().leave(qbChatDialog);
-        }
+        ChatHelper.getInstance().leave(qbChatDialog);
     }
 
     private void releaseChat() {
-        if (qbChatDialog != null) {
-            qbChatDialog.removeMessageListrener(chatMessageListener);
-            if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType())){
-                leaveGroupDialog();
-            }
+        qbChatDialog.removeMessageListrener(chatMessageListener);
+        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
+            leaveGroupDialog();
         }
     }
-
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().updateDialogUsers(qbChatDialog, selectedUsers,
                 new QBEntityCallback<QBChatDialog>() {
@@ -470,7 +461,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
-                    chatAdapter = new ChatAdapter(ChatActivity.this, messages);
+                    chatAdapter = new ChatAdapter(ChatActivity.this, qbChatDialog, messages);
                     chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
                         @Override
                         public void downloadMore() {
@@ -600,8 +591,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         @Override
         public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
             chatMessageIds.add(qbChatMessage.getId());
-            Log.d(TAG, "showMessage from listener");
-            Log.d(TAG, "qbDialoh have listeners: " + qbChatDialog.getMessageListeners().size());
             showMessage(qbChatMessage);
         }
 

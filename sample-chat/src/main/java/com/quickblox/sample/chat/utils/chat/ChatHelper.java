@@ -3,9 +3,7 @@ package com.quickblox.sample.chat.utils.chat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.util.Log;
-import android.view.View;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -16,19 +14,16 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.request.QBDialogRequestBuilder;
-import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
-import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
@@ -47,7 +42,6 @@ import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,23 +51,22 @@ import java.util.Set;
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
-    private static final int AUTO_PRESENCE_INTERVAL_IN_SECONDS = 30;
+    private static final int CHAT_SOCKET_TIMEOUT = 5*60*1000;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
+    private static final String DIALOGS_ITEMS_SORT_FIELD = "last_message_date_sent";
 
     private static ChatHelper instance;
 
     private QBChatService qbChatService;
 
-    public static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
-
     public static synchronized ChatHelper getInstance() {
         if (instance == null) {
             QBSettings.getInstance().setLogLevel(LogLevel.DEBUG);
             QBChatService.setDebugEnabled(true);
-            QBChatService.setDefaultAutoSendPresenceInterval(AUTO_PRESENCE_INTERVAL_IN_SECONDS);
+            QBChatService.setConfigurationBuilder(buildChatConfigs());
             instance = new ChatHelper();
         }
         return instance;
@@ -86,6 +79,15 @@ public class ChatHelper {
     private ChatHelper() {
         qbChatService = QBChatService.getInstance();
         qbChatService.setUseStreamManagement(true);
+    }
+
+    private static QBChatService.ConfigurationBuilder buildChatConfigs(){
+        QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
+        configurationBuilder.setKeepAlive(true)
+                .setSocketTimeout(CHAT_SOCKET_TIMEOUT)
+                .setAutojoinEnabled(false);
+
+        return configurationBuilder;
     }
 
     public void addConnectionListener(ConnectionListener listener) {
@@ -151,14 +153,8 @@ public class ChatHelper {
         }
     }
 
-    public boolean logout() {
-        try {
-            qbChatService.logout();
-            return true;
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public void logout(final QBEntityCallback<Void> callback) {
+        qbChatService.logout(callback);
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
@@ -168,7 +164,7 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<QBChatDialog>(callback) {
                     @Override
                     public void onSuccess(QBChatDialog dialog, Bundle args) {
-                        QbDialogHolder.getInstance().addDialogToMap(dialog);
+                        QbDialogHolder.getInstance().addDialog(dialog);
                         QbUsersHolder.getInstance().putUsers(users);
                         super.onSuccess(dialog, args);
                     }
@@ -288,18 +284,7 @@ public class ChatHelper {
     }
 
     public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
-        QBRestChatService.getChatDialogById(dialogId).performAsync(
-                new QBEntityCallback<QBChatDialog>() {
-                    @Override
-                    public void onSuccess(QBChatDialog chatDialog, Bundle bundle) {
-                        callback.onSuccess(chatDialog, bundle);
-                    }
-
-                    @Override
-                    public void onError(QBResponseException e) {
-                        callback.onError(e);
-                    }
-                });
+        QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 
     public void getUsersFromDialog(QBChatDialog dialog,

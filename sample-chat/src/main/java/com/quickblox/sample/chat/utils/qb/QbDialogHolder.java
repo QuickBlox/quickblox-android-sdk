@@ -1,14 +1,13 @@
 package com.quickblox.sample.chat.utils.qb;
 
-import android.util.Log;
-
 import com.quickblox.chat.model.QBChatDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class QbDialogHolder {
 
@@ -23,12 +22,11 @@ public class QbDialogHolder {
     }
 
     private QbDialogHolder() {
-        Log.d("two_messages", "QbDialogHolder.newInstance");
-        dialogsMap = new HashMap<>();
+        dialogsMap = new TreeMap<>();
     }
 
-    public Map<String, QBChatDialog> getDialogsMap() {
-        return dialogsMap;
+    public Map<String, QBChatDialog> getDialogs() {
+        return getSortedMap(dialogsMap);
     }
 
     public QBChatDialog getChatDialogById(String dialogId){
@@ -39,7 +37,7 @@ public class QbDialogHolder {
         dialogsMap.clear();
     }
 
-    public void addDialogToMap(QBChatDialog dialog) {
+    public void addDialog(QBChatDialog dialog) {
         if (dialog != null) {
             dialogsMap.put(dialog.getDialogId(), dialog);
         }
@@ -47,7 +45,7 @@ public class QbDialogHolder {
 
     public void addDialogs(List<QBChatDialog> dialogs) {
         for (QBChatDialog dialog : dialogs) {
-            addDialogToMap(dialog);
+            addDialog(dialog);
         }
     }
 
@@ -65,5 +63,26 @@ public class QbDialogHolder {
 
     public boolean hadDialogWithId(String dialogId){
         return dialogsMap.containsKey(dialogId);
+    }
+
+    private Map<String, QBChatDialog> getSortedMap(Map <String, QBChatDialog> unsortedMap){
+        Map <String, QBChatDialog> sortedMap = new TreeMap(new ValueComparator(unsortedMap));
+        sortedMap.putAll(unsortedMap);
+        return sortedMap;
+    }
+
+    class ValueComparator implements Comparator<String> {
+        Map <String, QBChatDialog> map;
+
+        public ValueComparator(Map <String, QBChatDialog> map) {
+
+            this.map = map;
+        }
+
+        public int compare(String keyA, String keyB) {
+            Comparable valueA = map.get(keyA).getLastMessageDateSent();
+            Comparable valueB = map.get(keyB).getLastMessageDateSent();
+            return valueB.compareTo(valueA);
+        }
     }
 }

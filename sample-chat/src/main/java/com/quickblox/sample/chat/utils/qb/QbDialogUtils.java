@@ -134,17 +134,7 @@ public class QbDialogUtils {
     }
 
     public static String createChatNameFromUserList(List<QBUser> users) {
-        String chatName = "";
-        QBUser currentUser = ChatHelper.getCurrentUser();
-        for (QBUser user : users) {
-            if (user.getId().equals(currentUser.getId())) {
-                continue;
-            }
-
-            String prefix = chatName.equals("") ? "" : ", ";
-            chatName = chatName + prefix + user.getFullName();
-        }
-        return chatName;
+        return DialogUtils.createChatNameFromUserList(users.toArray(new QBUser[users.size()]));
     }
 
     public static String getDialogName(QBChatDialog dialog) {
@@ -206,7 +196,7 @@ public class QbDialogUtils {
         return TextUtils.join(",", occupantIdsList);
     }
 
-    public static QBChatDialog createPrivateChatDialog(String dialogId, Integer recipientId){
+    public static QBChatDialog buildPrivateChatDialog(String dialogId, Integer recipientId){
         QBChatDialog chatDialog = DialogUtils.buildPrivateDialog(recipientId);
         chatDialog.setDialogId(dialogId);
 

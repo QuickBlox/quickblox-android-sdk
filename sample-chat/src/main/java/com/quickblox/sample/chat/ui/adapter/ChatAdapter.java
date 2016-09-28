@@ -16,7 +16,9 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.model.QBAttachment;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.core.helper.CollectionsUtil;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.activity.AttachmentImageActivity;
 import com.quickblox.sample.chat.ui.widget.MaskedImageView;
@@ -29,6 +31,9 @@ import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.users.model.QBUser;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -36,12 +41,14 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
+    private final QBChatDialog chatDialog;
     private OnItemInfoExpandedListener onItemInfoExpandedListener;
     private PaginationHistoryListener paginationListener;
     private int previousGetCount = 0;
 
-    public ChatAdapter(Context context, List<QBChatMessage> chatMessages) {
+    public ChatAdapter(Context context, QBChatDialog chatDialog, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
+        this.chatDialog = chatDialog;
     }
 
     public void setOnItemInfoExpandedListener(OnItemInfoExpandedListener onItemInfoExpandedListener) {
@@ -99,6 +106,10 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             }
         });
         holder.messageInfoTextView.setVisibility(View.GONE);
+
+        if (isIncoming(chatMessage) && !isRead(chatMessage)){
+            readMessage(chatMessage);
+        }
 
         downloadMore(position);
 
@@ -264,6 +275,21 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
     private boolean isIncoming(QBChatMessage chatMessage) {
         QBUser currentUser = ChatHelper.getCurrentUser();
         return chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
+    }
+
+    private boolean isRead(QBChatMessage chatMessage){
+        Integer currentUserId = ChatHelper.getCurrentUser().getId();
+        return !CollectionsUtil.isEmpty(chatMessage.getReadIds()) && chatMessage.getReadIds().contains(currentUserId);
+    }
+
+    private void readMessage(QBChatMessage chatMessage){
+        try {
+            chatDialog.readMessage(chatMessage);
+        } catch (XMPPException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class HeaderViewHolder {
