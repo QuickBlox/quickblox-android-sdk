@@ -69,7 +69,7 @@
     <style name="ItemStubWidgetFrame.Left"></style>
 
     <style name="ItemStubWidgetFrame">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
     </style>
@@ -148,15 +148,18 @@
     </style>
 
 
-    <style name="ImageViewAttach.Right"></style>
+    <style name="ImageViewAttach.Right">
+        <item name="android:layout_marginRight">@dimen/padding_common</item>
+    </style>
 
-    <style name="ImageViewAttach.Left"></style>
+    <style name="ImageViewAttach.Left">
+        <item name="android:layout_marginLeft">@dimen/padding_common</item>
+    </style>
 
     <style name="ImageViewAttach">
         <item name="android:layout_width">@dimen/chat_attach_width</item>
         <item name="android:layout_height">@dimen/chat_attach_height</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginLeft">@dimen/padding_common</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 
@@ -177,19 +180,5 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-
-
-
-
-
-    <!-- удалить-->
-    <style name="CompoundChatTextViewStyle">
-        <item name="msgTextColor">#FF0000</item>
-        <item name="android:background">#ffffff</item>
-        <item name="android:textSize">18sp</item>
-        <item name="timeTextColor">#0f92b8</item>
-
-    </style>
-
-
+    
 </resources>

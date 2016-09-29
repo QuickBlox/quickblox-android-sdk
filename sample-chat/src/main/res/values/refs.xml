@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--<item type="color" name="qb_text_own_color">@android:color/holo_red_dark</item>-->
-    <!-- переопределяем виджет для исходящих мессаджей-->
+    <item type="layout" name="widget_opponent">@layout/text_widget_owner</item>
     <item type="layout" name="widget_owner">@layout/text_widget_owner</item>
 </resources>

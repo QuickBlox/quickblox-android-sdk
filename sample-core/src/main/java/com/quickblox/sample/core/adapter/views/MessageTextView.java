@@ -16,8 +16,8 @@ import android.widget.LinearLayout;
 
 import com.quickblox.sample.core.R;
 
-public abstract class ChatMessageTextView extends FrameLayout {
-    private static String TAG = ChatMessageTextView.class.getSimpleName();
+public abstract class MessageTextView extends FrameLayout {
+    private static String TAG = MessageTextView.class.getSimpleName();
     protected LinearLayout frameLinear;
     protected ViewStub viewTextStub;
 
@@ -26,9 +26,9 @@ public abstract class ChatMessageTextView extends FrameLayout {
 
     Drawable bubble;
 
-    public ChatMessageTextView(Context context, AttributeSet attrs) {
+    public MessageTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(R.layout.chat_message_test_view);
+        init(R.layout.message_test_view);
         applyAttributes(attrs);
     }
 
@@ -45,10 +45,10 @@ public abstract class ChatMessageTextView extends FrameLayout {
         int widgetId;
 
         try {
-            array = getContext().obtainStyledAttributes(attrs, R.styleable.ChatMessageTextView);
-            bubble = array.getDrawable(R.styleable.ChatMessageTextView_bubble);
-            textViewId = array.getResourceId(R.styleable.ChatMessageTextView_message_text_id, 0);
-            widgetId = array.getResourceId(R.styleable.ChatMessageTextView_widget_id, 0);
+            array = getContext().obtainStyledAttributes(attrs, R.styleable.MessageTextView);
+            bubble = array.getDrawable(R.styleable.MessageTextView_bubble);
+            textViewId = array.getResourceId(R.styleable.MessageTextView_message_text_id, 0);
+            widgetId = array.getResourceId(R.styleable.MessageTextView_widget_id, 0);
         } finally {
             if (array != null) {
                 array.recycle();

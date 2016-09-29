@@ -9,9 +9,9 @@ import android.widget.LinearLayout;
 
 import com.quickblox.sample.core.R;
 
-public class ChatMessageTextViewRight extends ChatMessageTextView {
+public class MessageTextViewRight extends MessageTextView {
 
-    public ChatMessageTextViewRight(Context context, AttributeSet attrs) {
+    public MessageTextViewRight(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

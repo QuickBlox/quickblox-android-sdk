@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/MainLayoutAttachMsg.Left">
 
     <ImageView
@@ -22,7 +21,7 @@
         <TextView
             android:id="@+id/time_attach_message_textview"
             style="@style/TextViewAttach.Left"
-            tools:text="time" />
+            android:text="time" />
 
     </RelativeLayout>
 

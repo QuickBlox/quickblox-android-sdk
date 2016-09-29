@@ -6,12 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.sample.chat.R;
 import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 
 import java.util.Collection;
@@ -34,10 +36,10 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 
 
     @Override
-    public void showAttachment(QBMessageViewHolder holder, int position) {
+    public void displayAttachment(QBMessageViewHolder holder, int position) {
         int preferredImageSizePreview = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
         int valueType = getItemViewType(position);
-        Log.d(TAG, "showAttachment valueType= " + valueType);
+        Log.d(TAG, "displayAttachment valueType= " + valueType);
         initGlideRequestListener((ImageAttachHolder) holder, valueType);
 
         QBChatMessage chatMessage = getItem(position);
@@ -85,6 +87,14 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
                 .error(com.quickblox.sample.core.R.drawable.ic_error)
                 .into(imageView);
     }
+
+    protected void onBindViewMsgOpponentHolder(TextMsgOpponentHolder holder, int position) {
+        TextView view = (TextView) holder.itemView.findViewById(R.id.custom_text_view);
+        view.setText("Don Juan");
+        super.onBindViewMsgOpponentHolder(holder, position);
+
+        }
+
 
 //
 //    //    если хотим отображать аватарку, определяем avatarUrl

@@ -35,7 +35,6 @@ import com.quickblox.sample.chat.utils.chat.PrivateChatImpl;
 import com.quickblox.sample.chat.utils.chat.QBChatMessageListener;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
-import com.quickblox.sample.core.adapter.CompoundChatTextView;
 import com.quickblox.sample.core.adapter.QBMessagesAdapter;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
