@@ -56,7 +56,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
 
-    public static final String EXTRA_MARK_READ = "markRead";
     public static final String EXTRA_DIALOG_ID = "dialogId";
 
     private ProgressBar progressBar;
@@ -196,7 +195,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void leaveGroupChat() {
-        leaveGroupDialog();
         ProgressDialogFragment.show(getSupportFragmentManager());
         ChatHelper.getInstance().leaveDialog(qbChatDialog, new QBEntityCallback<QBChatDialog>() {
             @Override
@@ -546,16 +544,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void connectionClosedOnError(final Exception e) {
                 super.connectionClosedOnError(e);
-
-                // Leave active room if we're in Group Chat
-                if (qbChatDialog.getType() == QBDialogType.GROUP) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            leaveGroupDialog();
-                        }
-                    });
-                }
             }
 
             @Override

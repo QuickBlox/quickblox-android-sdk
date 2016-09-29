@@ -18,10 +18,6 @@ import java.util.List;
 public class QbDialogUtils {
     private static final String TAG = QbDialogUtils.class.getSimpleName();
 
-    public static final String PROPERTY_OCCUPANTS_IDS = "occupants_ids";
-    public static final String PROPERTY_DIALOG_TYPE = "dialog_type";
-    public static final String PROPERTY_NOTIFICATION_TYPE = "notification_type";
-    public static final String CREATING_DIALOG = "creating_dialog";
 
 
     public static QBChatDialog createDialog(List<QBUser> users) {
@@ -162,25 +158,6 @@ public class QbDialogUtils {
             previousDialogUsers.add(user);
         }
         return previousDialogUsers;
-    }
-
-    public static QBChatMessage createSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog){
-        QBChatMessage qbChatMessage = new QBChatMessage();
-        qbChatMessage.setDialogId(dialog.getDialogId());
-        qbChatMessage.setProperty(PROPERTY_OCCUPANTS_IDS, getOccupantsIdsStringFromList(dialog.getOccupants()));
-        qbChatMessage.setProperty(PROPERTY_DIALOG_TYPE, String.valueOf(dialog.getType().getCode()));
-        qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
-
-        return qbChatMessage;
-    }
-
-    public static QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage){
-        QBChatDialog chatDialog = new QBChatDialog();
-        chatDialog.setDialogId(qbChatMessage.getDialogId());
-        chatDialog.setOccupantsIds(QbDialogUtils.getOccupantsIdsListFromString((String) qbChatMessage.getProperty(PROPERTY_OCCUPANTS_IDS)));
-        chatDialog.setType(QBDialogType.parseByCode(Integer.parseInt(qbChatMessage.getProperty(PROPERTY_DIALOG_TYPE).toString())));
-
-        return chatDialog;
     }
 
     public static List<Integer> getOccupantsIdsListFromString(String occupantIds) {

@@ -66,15 +66,15 @@ public class QbDialogHolder {
     }
 
     private Map<String, QBChatDialog> getSortedMap(Map <String, QBChatDialog> unsortedMap){
-        Map <String, QBChatDialog> sortedMap = new TreeMap(new ValueComparator(unsortedMap));
+        Map <String, QBChatDialog> sortedMap = new TreeMap(new LastMessageDateSentComparator(unsortedMap));
         sortedMap.putAll(unsortedMap);
         return sortedMap;
     }
 
-    class ValueComparator implements Comparator<String> {
+    class LastMessageDateSentComparator implements Comparator<String> {
         Map <String, QBChatDialog> map;
 
-        public ValueComparator(Map <String, QBChatDialog> map) {
+        public LastMessageDateSentComparator(Map <String, QBChatDialog> map) {
 
             this.map = map;
         }

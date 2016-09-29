@@ -56,7 +56,6 @@ public class ChatHelper {
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
-    private static final String DIALOGS_ITEMS_SORT_FIELD = "last_message_date_sent";
 
     private static ChatHelper instance;
 
@@ -200,6 +199,7 @@ public class ChatHelper {
     }
 
     public void leaveDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
+        leave(qbDialog);
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
         qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
 
