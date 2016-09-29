@@ -25,7 +25,7 @@ public class QbDialogUtils {
         users.remove(currentUser);
 
         QBChatDialog dialogToCreate = new QBChatDialog();
-        dialogToCreate.setName(QbDialogUtils.createChatNameFromUserList(users));
+        dialogToCreate.setName(DialogUtils.createChatNameFromUserList(users.toArray(new QBUser[users.size()])));
         if (users.size() == 1) {
             dialogToCreate.setType(QBDialogType.PRIVATE);
         } else {
@@ -103,24 +103,6 @@ public class QbDialogUtils {
         }
     }
 
-    public static Integer getOpponentIdForPrivateDialog(QBChatDialog dialog) {
-        Integer opponentId = -1;
-        QBUser qbUser = ChatHelper.getCurrentUser();
-        if (qbUser == null) {
-            return opponentId;
-        }
-
-        Integer currentUserId = qbUser.getId();
-
-        for (Integer userId : dialog.getOccupants()) {
-            if (!userId.equals(currentUserId)) {
-                opponentId = userId;
-                break;
-            }
-        }
-        return opponentId;
-    }
-
     public static Integer[] getUserIds(List<QBUser> users) {
         ArrayList<Integer> ids = new ArrayList<>();
         for (QBUser user : users) {
@@ -129,16 +111,12 @@ public class QbDialogUtils {
         return ids.toArray(new Integer[ids.size()]);
     }
 
-    public static String createChatNameFromUserList(List<QBUser> users) {
-        return DialogUtils.createChatNameFromUserList(users.toArray(new QBUser[users.size()]));
-    }
-
     public static String getDialogName(QBChatDialog dialog) {
         if (dialog.getType().equals(QBDialogType.GROUP)) {
             return dialog.getName();
         } else {
             // It's a private dialog, let's use opponent's name as chat name
-            Integer opponentId = getOpponentIdForPrivateDialog(dialog);
+            Integer opponentId = dialog.getRecipientId();
             QBUser user = QbUsersHolder.getInstance().getUserById(opponentId);
             if (user != null) {
                 return TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();

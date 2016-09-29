@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements StickyListHeadersAdapter {
 
+    private static final String TAG = ChatAdapter.class.getSimpleName();
     private final QBChatDialog chatDialog;
     private OnItemInfoExpandedListener onItemInfoExpandedListener;
     private PaginationHistoryListener paginationListener;
@@ -285,10 +287,8 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
     private void readMessage(QBChatMessage chatMessage){
         try {
             chatDialog.readMessage(chatMessage);
-        } catch (XMPPException e) {
-            e.printStackTrace();
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
+        } catch (XMPPException | SmackException.NotConnectedException e) {
+            Log.w(TAG, e);
         }
     }
 

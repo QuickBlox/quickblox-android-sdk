@@ -29,6 +29,7 @@ import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
+import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
@@ -40,6 +41,7 @@ import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,7 +72,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private ConnectionListener chatConnectionListener;
 
     private QBChatDialog qbChatDialog;
-    private ArrayList<String> chatMessageIds;
     private ArrayList<QBChatMessage> unShownMessages;
     private int skipPagination = 0;
     private ChatMessageListener chatMessageListener;
@@ -91,8 +92,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         chatMessageListener = new ChatMessageListener();
 
         qbChatDialog.addMessageListener(chatMessageListener);
-
-        chatMessageIds = new ArrayList<>();
 
         initChatConnectionListener();
 
@@ -328,11 +327,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
         chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
+        chatMessage.setMarkable(true);
+
+        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType()) && !qbChatDialog.isJoined()){
+            Toaster.shortToast("You're still joining a group chat, please wait a bit");
+        }
 
         try {
             qbChatDialog.sendMessage(chatMessage);
 
-            if (qbChatDialog.getType() == QBDialogType.PRIVATE) {
+            if (QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
                 showMessage(chatMessage);
             }
 
@@ -346,7 +350,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             Toaster.shortToast("Can't send a message, You are not connected to chat");
         } catch (IllegalStateException e) {
             Log.w(TAG, e);
-            Toaster.shortToast("You're still joining a group chat, please wait a bit");
         }
     }
 
@@ -388,7 +391,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void leaveGroupDialog() {
-        ChatHelper.getInstance().leave(qbChatDialog);
+        try {
+            ChatHelper.getInstance().leave(qbChatDialog);
+        } catch (XMPPException | SmackException.NotConnectedException e) {
+            Log.w(TAG, e);
+        }
     }
 
     private void releaseChat() {
@@ -542,11 +549,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private void initChatConnectionListener() {
         chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
             @Override
-            public void connectionClosedOnError(final Exception e) {
-                super.connectionClosedOnError(e);
-            }
-
-            @Override
             public void reconnectionSuccessful() {
                 super.reconnectionSuccessful();
                 skipPagination = 0;
@@ -574,17 +576,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         };
     }
 
-    public class ChatMessageListener implements QBChatDialogMessageListener {
-
+    public class ChatMessageListener extends QbChatDialogMessageListenerImp {
         @Override
         public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
-            chatMessageIds.add(qbChatMessage.getId());
             showMessage(qbChatMessage);
-        }
-
-        @Override
-        public void processError(String s, QBChatException e, QBChatMessage qbChatMessage, Integer integer) {
-
         }
     }
 }

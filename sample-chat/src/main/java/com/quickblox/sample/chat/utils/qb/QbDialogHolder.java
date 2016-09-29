@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.utils.qb;
 
 import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class QbDialogHolder {
         }
     }
 
-    public boolean hadDialogWithId(String dialogId){
+    public boolean hasDialogWithId(String dialogId){
         return dialogsMap.containsKey(dialogId);
     }
 
@@ -71,7 +72,17 @@ public class QbDialogHolder {
         return sortedMap;
     }
 
-    class LastMessageDateSentComparator implements Comparator<String> {
+    public void updateDialog(String dialogId, QBChatMessage qbChatMessage){
+        QBChatDialog updatedDialog = getChatDialogById(dialogId);
+        updatedDialog.setLastMessage(qbChatMessage.getBody());
+        updatedDialog.setLastMessageDateSent(qbChatMessage.getDateSent());
+        updatedDialog.setUnreadMessageCount(updatedDialog.getUnreadMessageCount() + 1);
+        updatedDialog.setLastMessageUserId(qbChatMessage.getSenderId());
+
+        dialogsMap.put(updatedDialog.getDialogId(), updatedDialog);
+    }
+
+    static class LastMessageDateSentComparator implements Comparator<String> {
         Map <String, QBChatDialog> map;
 
         public LastMessageDateSentComparator(Map <String, QBChatDialog> map) {

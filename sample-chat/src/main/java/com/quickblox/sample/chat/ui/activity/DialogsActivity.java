@@ -37,8 +37,9 @@ import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
-import com.quickblox.sample.chat.utils.SystemMessagesUtils;
+import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
@@ -53,7 +54,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DialogsActivity extends BaseActivity {
+public class DialogsActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks {
     private static final String TAG = DialogsActivity.class.getSimpleName();
     private static final int REQUEST_SELECT_PEOPLE = 174;
     private static final int REQUEST_DIALOG_ID_FOR_UPDATE = 165;
@@ -74,6 +75,7 @@ public class DialogsActivity extends BaseActivity {
     private SystemMessagesListener systemMessagesListener;
     private QBSystemMessagesManager systemMessagesManager;
     private QBIncomingMessagesManager incomingMessagesManager;
+    private DialogsManager dialogsManager;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
@@ -98,6 +100,8 @@ public class DialogsActivity extends BaseActivity {
             allDialogsMessagesListener = new AllDialogsMessageListener();
             systemMessagesListener = new SystemMessagesListener();
         }
+
+        dialogsManager = new DialogsManager();
 
         chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
 
@@ -208,7 +212,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void loadUpdatedDialog(String dialogId) {
-        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>(){
+        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog result, Bundle bundle) {
                 isProcessingResultInProgress = false;
@@ -349,10 +353,12 @@ public class DialogsActivity extends BaseActivity {
                     ? allDialogsMessagesListener : new AllDialogsMessageListener());
         }
 
-        if (systemMessagesManager != null){
+        if (systemMessagesManager != null) {
             systemMessagesManager.addSystemMessageListener(systemMessagesListener != null
                     ? systemMessagesListener : new SystemMessagesListener());
         }
+
+        dialogsManager.addMagingDialogsCallbackListener(this);
     }
 
     private void unregisterQbChatListeners() {
@@ -360,9 +366,11 @@ public class DialogsActivity extends BaseActivity {
             incomingMessagesManager.removeDialogMessageListrener(allDialogsMessagesListener);
         }
 
-        if (systemMessagesManager != null){
+        if (systemMessagesManager != null) {
             systemMessagesManager.removeSystemMessageListener(systemMessagesListener);
         }
+
+        dialogsManager.removeMagingDialogsCallbackListener(this);
     }
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
@@ -371,7 +379,7 @@ public class DialogsActivity extends BaseActivity {
                     @Override
                     public void onSuccess(QBChatDialog dialog, Bundle args) {
                         isProcessingResultInProgress = false;
-                        SystemMessagesUtils.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
+                        DialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog.getDialogId());
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
@@ -426,12 +434,23 @@ public class DialogsActivity extends BaseActivity {
         });
     }
 
-    private void loadUsersFromDialog(QBChatDialog chatDialog){
-        ChatHelper.getInstance().getUsersFromDialog(chatDialog, new QbEntityCallbackImpl<ArrayList<QBUser>>());
+    private void updateDialogsAdapter() {
+        dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
     }
 
-    private void updateDialogsAdapter(){
-        dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
+    @Override
+    public void onDialogCreated(QBChatDialog chatDialog) {
+        updateDialogsAdapter();
+    }
+
+    @Override
+    public void onDialogUpdated(String chatDialog) {
+        updateDialogsAdapter();
+    }
+
+    @Override
+    public void onNewDialogLoaded(QBChatDialog chatDialog) {
+        updateDialogsAdapter();
     }
 
     private class DeleteActionModeCallback implements ActionMode.Callback {
@@ -507,15 +526,7 @@ public class DialogsActivity extends BaseActivity {
     private class SystemMessagesListener implements QBSystemMessageListener {
         @Override
         public void processMessage(final QBChatMessage qbChatMessage) {
-            if (SystemMessagesUtils.isMessageCreatingDialog(qbChatMessage)) {
-                QbDialogHolder.getInstance().addDialog(SystemMessagesUtils.buildChatDialogFromSystemMessage(qbChatMessage));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateDialogsAdapter();
-                    }
-                });
-            }
+            dialogsManager.onSystemMessageReceived(qbChatMessage);
         }
 
         @Override
@@ -524,24 +535,10 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    private class AllDialogsMessageListener implements QBChatDialogMessageListener{
+    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
         @Override
         public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer integer) {
-                ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
-                    @Override
-                    public void onSuccess(QBChatDialog chatDialog, Bundle bundle) {
-                        if (!QbDialogHolder.getInstance().hadDialogWithId(dialogId)) {
-                            loadUsersFromDialog(chatDialog);
-                        }
-
-                        QbDialogHolder.getInstance().addDialog(chatDialog);
-                        updateDialogsAdapter();
-                    }
-                });
-        }
-
-        @Override
-        public void processError(String s, QBChatException e, QBChatMessage qbChatMessage, Integer integer) {
+            dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
         }
     }
 }

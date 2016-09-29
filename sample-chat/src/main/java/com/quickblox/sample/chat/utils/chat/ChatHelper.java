@@ -14,6 +14,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.request.QBDialogRequestBuilder;
+import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.LogLevel;
@@ -51,7 +52,7 @@ import java.util.Set;
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
-    private static final int CHAT_SOCKET_TIMEOUT = 5*60*1000;
+    private static final int CHAT_SOCKET_TIMEOUT = 5*60;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
@@ -144,12 +145,8 @@ public class ChatHelper {
         });
     }
 
-    public void leave(QBChatDialog chatDialog){
-        try {
-            chatDialog.leave();
-        } catch (SmackException.NotConnectedException | XMPPException e) {
-            e.printStackTrace();
-        }
+    public void leave(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
+        chatDialog.leave();
     }
 
     public void logout(final QBEntityCallback<Void> callback) {
@@ -199,7 +196,12 @@ public class ChatHelper {
     }
 
     public void leaveDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
-        leave(qbDialog);
+        try {
+            leave(qbDialog);
+        } catch (XMPPException | SmackException.NotConnectedException e) {
+            callback.onError(new QBResponseException(e.getMessage()));
+        }
+
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
         qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
 
@@ -230,7 +232,8 @@ public class ChatHelper {
         if (!removedUsers.isEmpty()) {
             qbRequestBuilder.removeUsers(removedUsers.toArray(new QBUser[removedUsers.size()]));
         }
-        qbDialog.setName(QbDialogUtils.createChatNameFromUserList(newQbDialogUsersList));
+        qbDialog.setName(DialogUtils.createChatNameFromUserList(
+                newQbDialogUsersList.toArray(new QBUser[newQbDialogUsersList.size()])));
 
         QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(
                 new QbEntityCallbackWrapper<QBChatDialog>(callback) {
