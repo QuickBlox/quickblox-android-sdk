@@ -23,10 +23,7 @@
     <dimen name="text_size_small">15sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
 
-    <dimen name="bubble_padding_left">8dp</dimen>
-    <dimen name="bubble_padding_top">0dp</dimen>
-    <dimen name="bubble_padding_right">4dp</dimen>
-    <dimen name="bubble_padding_bottom">0dp</dimen>
+
 
     <dimen name="corners_small_value">3dp</dimen>
     <dimen name="image_view_small_avatar_layout_width">33dp</dimen>

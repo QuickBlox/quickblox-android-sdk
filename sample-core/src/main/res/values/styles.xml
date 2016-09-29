@@ -11,11 +11,15 @@
     </style>
 
 
-    <style name="MessageAdapterTextMsgParent.Right"></style>
+    <style name="MessageAdapterTextMsg.Right">
+        <item name="android:background">@drawable/right_bubble</item>
+    </style>
 
-    <style name="MessageAdapterTextMsgParent.Left"></style>
+    <style name="MessageAdapterTextMsg.Left">
+        <item name="android:background">@drawable/left_bubble</item>
+    </style>
 
-    <style name="MessageAdapterTextMsgParent">
+    <style name="MessageAdapterTextMsg">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/chat_babble_margin</item>
@@ -24,14 +28,17 @@
     </style>
 
 
-    <style name="LinearTextMessage.Right"></style>
+    <style name="LinearTextMessage.Right">
+        <item name="android:paddingRight">@dimen/padding_medium</item>
+    </style>
 
-    <style name="LinearTextMessage.Left"></style>
+    <style name="LinearTextMessage.Left">
+        <item name="android:paddingLeft">@dimen/padding_medium</item>
+    </style>
 
     <style name="LinearTextMessage">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/padding_small</item>
         <item name="android:orientation">vertical</item>
     </style>
 
@@ -120,15 +127,15 @@
     </style>
 
 
-    <style name="RelativeFrameAttachMsg.Right">
+    <style name="MessageAdapterAttachMsg.Right">
         <item name="android:background">@drawable/right_bubble</item>
     </style>
 
-    <style name="RelativeFrameAttachMsg.Left">
+    <style name="MessageAdapterAttachMsg.Left">
         <item name="android:background">@drawable/left_bubble</item>
     </style>
 
-    <style name="RelativeFrameAttachMsg">
+    <style name="MessageAdapterAttachMsg">
         <item name="android:layout_width">@dimen/chat_attach_width</item>
         <item name="android:layout_height">@dimen/chat_attach_height</item>
         <item name="android:padding">@dimen/padding_small</item>

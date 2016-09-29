@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/bubble_background"
-        style="@style/MessageAdapterTextMsgParent.Right">
+        style="@style/MessageAdapterTextMsg.Right">
 
         <LinearLayout
             android:id="@+id/outer_message_textview_right"

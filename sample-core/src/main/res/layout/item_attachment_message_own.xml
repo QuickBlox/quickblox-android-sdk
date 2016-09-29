@@ -4,7 +4,7 @@
 
     <RelativeLayout
         android:id="@+id/attach_message_relativelayout"
-        style="@style/RelativeFrameAttachMsg.Right">
+        style="@style/MessageAdapterAttachMsg.Right">
 
         <ProgressBar
             android:id="@+id/centered_progressbar"

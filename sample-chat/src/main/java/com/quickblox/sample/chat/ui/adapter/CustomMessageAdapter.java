@@ -30,7 +30,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 
     protected QBMessageViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateCustomViewHolder viewType= " + viewType);
-        return new ImageAttachOwnHolder(inflater.inflate(com.quickblox.sample.core.R.layout.item_attachment_message_opponent, parent, false), com.quickblox.sample.core.R.id.attach_imageview, com.quickblox.sample.core.R.id.centered_progressbar);
+        return new ImageAttachHolder(inflater.inflate(com.quickblox.sample.core.R.layout.item_attachment_message_opponent, parent, false), com.quickblox.sample.core.R.id.attach_imageview, com.quickblox.sample.core.R.id.centered_progressbar);
     }
 
 
@@ -38,9 +38,9 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     @Override
     public void displayAttachment(QBMessageViewHolder holder, int position) {
         int preferredImageSizePreview = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
-        int valueType = getItemViewType(position);
-        Log.d(TAG, "displayAttachment valueType= " + valueType);
-        initGlideRequestListener((ImageAttachHolder) holder, valueType);
+//        int valueType = getItemViewType(position);
+//        Log.d(TAG, "displayAttachment valueType= " + valueType);
+        initGlideRequestListener((ImageAttachHolder) holder);
 
         QBChatMessage chatMessage = getItem(position);
 
@@ -52,25 +52,24 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
                 .override(preferredImageSizePreview, preferredImageSizePreview)
                 .dontTransform()
                 .error(com.quickblox.sample.core.R.drawable.ic_error)
-                .into((valueType == TYPE_OWN_ATTACH_LAYOUT) ? ((ImageAttachOwnHolder) holder).attachImageView : ((ImageAttachOppHolder) holder).attachImageView);
+                .into(((ImageAttachHolder) holder).attachImageView);
     }
 
-    private void initGlideRequestListener(final ImageAttachHolder holder, final int type) {
+    private void initGlideRequestListener(final ImageAttachHolder holder) {
         glideRequestListener = new RequestListener() {
-            ImageAttachHolder viewHolder = (type == TYPE_OWN_ATTACH_LAYOUT) ? (ImageAttachOwnHolder) holder : (ImageAttachOppHolder) holder;
 
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 e.printStackTrace();
-                viewHolder.attachImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                viewHolder.attachmentProgressBar.setVisibility(View.GONE);
+                holder.attachImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                holder.attachmentProgressBar.setVisibility(View.GONE);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-                viewHolder.attachImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                viewHolder.attachmentProgressBar.setVisibility(View.GONE);
+                holder.attachImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder.attachmentProgressBar.setVisibility(View.GONE);
                 return false;
             }
         };
@@ -88,10 +87,11 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
                 .into(imageView);
     }
 
-    protected void onBindViewMsgOpponentHolder(TextMsgOpponentHolder holder, int position) {
+    @Override
+    protected void onBindViewMsgOpponentHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
         TextView view = (TextView) holder.itemView.findViewById(R.id.custom_text_view);
         view.setText("Don Juan");
-        super.onBindViewMsgOpponentHolder(holder, position);
+        super.onBindViewMsgOpponentHolder(holder, chatMessage, position);
 
         }
 

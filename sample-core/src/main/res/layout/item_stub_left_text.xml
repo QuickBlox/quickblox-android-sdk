@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:id="@+id/bubble_background"
-        style="@style/MessageAdapterTextMsgParent.Left">
+        style="@style/MessageAdapterTextMsg.Left">
 
 
         <LinearLayout

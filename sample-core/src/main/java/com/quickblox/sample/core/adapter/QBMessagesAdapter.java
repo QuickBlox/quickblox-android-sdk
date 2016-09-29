@@ -60,16 +60,16 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     public QBMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case 1:
-                qbViewHolder = new TextMsgOwnHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
                 return qbViewHolder;
             case 2:
-                qbViewHolder = new TextMsgOpponentHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
                 return qbViewHolder;
             case 3:
-                qbViewHolder = new ImageAttachOwnHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
             case 4:
-                qbViewHolder = new ImageAttachOppHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
 
             default:
@@ -90,36 +90,35 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
     @Override
     public void onBindViewHolder(QBMessageViewHolder holder, int position) {
+        QBChatMessage chatMessage = getItem(position);
         int valueType = getItemViewType(position);
         switch (valueType) {
             case 1:
-                onBindViewMsgOwnHolder((TextMsgOwnHolder) holder, position);
+                onBindViewMsgOwnHolder((TextMessageHolder) holder, chatMessage, position);
                 break;
             case 2:
-                onBindViewMsgOpponentHolder((TextMsgOpponentHolder) holder, position);
+                onBindViewMsgOpponentHolder((TextMessageHolder) holder, chatMessage, position);
                 break;
             case 3:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OWN");
-                onBindViewAttachOwnHolder((ImageAttachOwnHolder) holder, position);
+                onBindViewAttachOwnHolder((ImageAttachHolder) holder, chatMessage, position);
                 break;
             case 4:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
-                onBindViewAttachOpponentHolder((ImageAttachOppHolder) holder, position);
+                onBindViewAttachOpponentHolder((ImageAttachHolder) holder, chatMessage, position);
                 break;
             default:
-                onBindViewCustomHolder(holder, position);
+                onBindViewCustomHolder(holder, chatMessage, position);
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_CUSTOM");
                 break;
         }
     }
 
-    protected void onBindViewCustomHolder(QBMessageViewHolder holder, int position) {
+    protected void onBindViewCustomHolder(QBMessageViewHolder holder, QBChatMessage chatMessage, int position) {
     }
 
-    protected void onBindViewAttachOwnHolder(ImageAttachOwnHolder holder, int position) {
+    protected void onBindViewAttachOwnHolder(ImageAttachHolder holder, QBChatMessage chatMessage, int position) {
         displayAttachment(holder, position);
-
-        QBChatMessage chatMessage = getItem(position);
 
         int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
@@ -128,10 +127,8 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected void onBindViewAttachOpponentHolder(ImageAttachOppHolder holder, int position) {
+    protected void onBindViewAttachOpponentHolder(ImageAttachHolder holder, QBChatMessage chatMessage, int position) {
         displayAttachment(holder, position);
-
-        QBChatMessage chatMessage = getItem(position);
 
         int valueType = getItemViewType(position);
         String avatarUrl = obtainAvatarUrl(valueType, chatMessage);
@@ -140,9 +137,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected void onBindViewMsgOpponentHolder(TextMsgOpponentHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
-
+    protected void onBindViewMsgOpponentHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
         holder.messageTextView.setText(chatMessage.getBody());
         holder.timeTextMessageTextView.setText(getDate(chatMessage.getDateSent() * 1000));
 
@@ -153,9 +148,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected void onBindViewMsgOwnHolder(TextMsgOwnHolder holder, int position) {
-        QBChatMessage chatMessage = getItem(position);
-
+    protected void onBindViewMsgOwnHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
         holder.messageTextView.setText(chatMessage.getBody());
         holder.timeTextMessageTextView.setText(getDate(chatMessage.getDateSent() * 1000));
 
@@ -185,6 +178,12 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     @Override
     public QBChatMessage getItem(int position) {
         return chatMessages.get(position);
+    }
+
+//    Todo может возвращать конкретный ID?
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -265,23 +264,11 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
 
-    protected static class TextMsgOwnHolder extends QBMessageViewHolder {
+    protected static class TextMessageHolder extends QBMessageViewHolder {
         public TextView messageTextView;
         public TextView timeTextMessageTextView;
 
-        public TextMsgOwnHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
-            super(itemView);
-            messageTextView = (TextView) itemView.findViewById(msgId);
-            timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview_right);
-        }
-    }
-
-    protected static class TextMsgOpponentHolder extends QBMessageViewHolder {
-        public TextView messageTextView;
-        public TextView timeTextMessageTextView;
-
-        public TextMsgOpponentHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
+        public TextMessageHolder(View itemView, @IdRes int msgId, @IdRes int timeId) {
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(msgId);
             timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
@@ -289,32 +276,15 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         }
     }
 
-    protected static class ImageAttachOwnHolder extends ImageAttachHolder {
-
-        public ImageAttachOwnHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
-            super(itemView);
-            attachImageView = (ImageView) itemView.findViewById(attachId);
-            attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
-        }
-    }
-
-    protected static class ImageAttachOppHolder extends ImageAttachHolder {
-
-        public ImageAttachOppHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
-            super(itemView);
-            attachImageView = (ImageView) itemView.findViewById(attachId);
-            attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
-        }
-    }
-
-    protected abstract static class ImageAttachHolder extends QBMessageViewHolder {
+    protected static class ImageAttachHolder extends QBMessageViewHolder {
         public ImageView attachImageView;
         public ProgressBar attachmentProgressBar;
 
-        public ImageAttachHolder(View itemView) {
+        public ImageAttachHolder(View itemView, @IdRes int attachId, @IdRes int progressBarId) {
             super(itemView);
+            attachImageView = (ImageView) itemView.findViewById(attachId);
+            attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
+            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
         }
     }
 

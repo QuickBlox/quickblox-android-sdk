@@ -1,9 +1,7 @@
 package com.quickblox.sample.core.adapter.views;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,8 +21,6 @@ public abstract class MessageTextView extends FrameLayout {
 
     LinearLayout layoutStub;
     LayoutInflater inflater;
-
-    Drawable bubble;
 
     public MessageTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,7 +42,6 @@ public abstract class MessageTextView extends FrameLayout {
 
         try {
             array = getContext().obtainStyledAttributes(attrs, R.styleable.MessageTextView);
-            bubble = array.getDrawable(R.styleable.MessageTextView_bubble);
             textViewId = array.getResourceId(R.styleable.MessageTextView_message_text_id, 0);
             widgetId = array.getResourceId(R.styleable.MessageTextView_widget_id, 0);
         } finally {
@@ -57,7 +52,6 @@ public abstract class MessageTextView extends FrameLayout {
 
         setLinearSide();
         setTextLayout(textViewId);
-        setBubble(bubble);
         setWidget(widgetId);
     }
 
@@ -67,18 +61,6 @@ public abstract class MessageTextView extends FrameLayout {
             View view = inflater.inflate(widgetId, widgetFrame);
             Log.d(TAG, "view=null? " + (view == null));
         }
-    }
-
-    protected void setBubble(Drawable draw) {
-        Resources res = getResources();
-        int leftPadding = (int) res.getDimension(R.dimen.bubble_padding_left);
-        int topPadding = (int) res.getDimension(R.dimen.bubble_padding_top);
-        int rightPadding = (int) res.getDimension(R.dimen.bubble_padding_right);
-        int bottomPadding = (int) res.getDimension(R.dimen.bubble_padding_bottom);
-
-        LinearLayout layoutBubble = (LinearLayout) layoutStub.findViewById(R.id.bubble_background);
-        layoutBubble.setBackgroundDrawable(draw);
-        layoutBubble.setPadding(leftPadding, topPadding, rightPadding, bottomPadding);
     }
 
     abstract protected void setLinearSide();
