@@ -21,8 +21,8 @@
 
     </RelativeLayout>
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle.Right" />
+        style="@style/AvatarImageViewStyle.Right"/>
 
 </LinearLayout>

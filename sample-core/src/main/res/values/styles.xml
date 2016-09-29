@@ -69,14 +69,12 @@
     </style>
 
 
-    <style name="ItemStubWidgetFrame.Right">
-        <item name="android:gravity">right</item>
-    </style>
+    <style name="ItemStubWidgetFrame.Right"></style>
 
     <style name="ItemStubWidgetFrame.Left"></style>
 
     <style name="ItemStubWidgetFrame">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
     </style>
@@ -89,10 +87,9 @@
     <style name="AvatarImageViewStyle">
         <item name="android:layout_width">@dimen/image_view_small_avatar_layout_width</item>
         <item name="android:layout_height">@dimen/image_view_small_avatar_layout_width</item>
-        <item name="android:layout_gravity">top</item>
-        <item name="android:scaleType">centerCrop</item>
-        <item name="android:background">@drawable/placeholder_user</item>
-        <item name="android:src">@drawable/shape_border</item>
+        <item name="android:src">@drawable/placeholder_user</item>
+        <item name="civ_border_width">@dimen/avatar_border_width</item>
+        <item name="civ_border_color">@color/dark_gray</item>
     </style>
 
 

@@ -180,7 +180,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return chatMessages.get(position);
     }
 
-//    Todo может возвращать конкретный ID?
+//  если переопределить getItemId, то setHasStableIds(true) работает (может возвращать unique ID)?
     @Override
     public long getItemId(int position) {
         return position;
@@ -272,7 +272,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(msgId);
             timeTextMessageTextView = (TextView) itemView.findViewById(timeId);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview_left);
         }
     }
 
@@ -284,7 +283,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
             super(itemView);
             attachImageView = (ImageView) itemView.findViewById(attachId);
             attachmentProgressBar = (ProgressBar) itemView.findViewById(progressBarId);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
         }
     }
 
@@ -293,6 +291,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
         public QBMessageViewHolder(View itemView) {
             super(itemView);
+            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
         }
     }
 }

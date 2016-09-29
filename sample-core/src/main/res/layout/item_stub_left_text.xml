@@ -4,9 +4,9 @@
     android:id="@+id/linear_frame_left"
     style="@style/MainItemStubMsgText.Left">
 
-    <ImageView
-        android:id="@+id/avatar_imageview_left"
-        style="@style/AvatarImageViewStyle.Left" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar_imageview"
+        style="@style/AvatarImageViewStyle.Left"/>
 
     <LinearLayout
         android:id="@+id/bubble_background"

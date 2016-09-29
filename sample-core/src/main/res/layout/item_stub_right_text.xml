@@ -31,8 +31,8 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/avatar_imageview_right"
-        style="@style/AvatarImageViewStyle.Right" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar_imageview"
+        style="@style/AvatarImageViewStyle.Right"/>
 
 </LinearLayout>
