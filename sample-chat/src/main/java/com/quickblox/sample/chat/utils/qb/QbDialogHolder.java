@@ -92,9 +92,15 @@ public class QbDialogHolder {
         }
 
         public int compare(String keyA, String keyB) {
-            Comparable valueA = map.get(keyA).getLastMessageDateSent();
-            Comparable valueB = map.get(keyB).getLastMessageDateSent();
-            return valueB.compareTo(valueA);
+
+            long valueA = map.get(keyA).getLastMessageDateSent();
+            long valueB = map.get(keyB).getLastMessageDateSent();
+
+            if (valueB < valueA){
+                return -1;
+            } else {
+                return 1;
+            }
         }
     }
 }
