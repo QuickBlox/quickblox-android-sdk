@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.managers;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSystemMessagesManager;
@@ -27,6 +28,7 @@ public class DialogsManager {
 
     public static final String PROPERTY_OCCUPANTS_IDS = "occupants_ids";
     public static final String PROPERTY_DIALOG_TYPE = "dialog_type";
+    public static final String PROPERTY_DIALOG_NAME = "dialog_name";
     public static final String PROPERTY_NOTIFICATION_TYPE = "notification_type";
     public static final String CREATING_DIALOG = "creating_dialog";
 
@@ -41,6 +43,7 @@ public class DialogsManager {
         qbChatMessage.setDialogId(dialog.getDialogId());
         qbChatMessage.setProperty(PROPERTY_OCCUPANTS_IDS, QbDialogUtils.getOccupantsIdsStringFromList(dialog.getOccupants()));
         qbChatMessage.setProperty(PROPERTY_DIALOG_TYPE, String.valueOf(dialog.getType().getCode()));
+        qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, String.valueOf(dialog.getName()));
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
 
         return qbChatMessage;
@@ -51,6 +54,8 @@ public class DialogsManager {
         chatDialog.setDialogId(qbChatMessage.getDialogId());
         chatDialog.setOccupantsIds(QbDialogUtils.getOccupantsIdsListFromString((String) qbChatMessage.getProperty(PROPERTY_OCCUPANTS_IDS)));
         chatDialog.setType(QBDialogType.parseByCode(Integer.parseInt(qbChatMessage.getProperty(PROPERTY_DIALOG_TYPE).toString())));
+        chatDialog.setName(qbChatMessage.getProperty(PROPERTY_DIALOG_NAME).toString());
+        chatDialog.setUnreadMessageCount(0);
 
         return chatDialog;
     }
@@ -95,8 +100,9 @@ public class DialogsManager {
     public void onSystemMessageReceived(QBChatMessage systemMessage){
         if (isMessageCreatingDialog(systemMessage)) {
             QBChatDialog chatDialog = buildChatDialogFromSystemMessage(systemMessage);
+            chatDialog.initForChat(QBChatService.getInstance());
             QbDialogHolder.getInstance().addDialog(chatDialog);
-            notifyListenersDialogCreated(buildChatDialogFromSystemMessage(systemMessage));
+            notifyListenersDialogCreated(chatDialog);
         }
     }
 
@@ -133,13 +139,13 @@ public class DialogsManager {
         });
     }
 
-    public void addMagingDialogsCallbackListener(ManagingDialogsCallbacks listener){
+    public void addManagingDialogsCallbackListener(ManagingDialogsCallbacks listener){
         if (listener != null){
             magingDialogsCallbackListener.add(listener);
         }
     }
 
-    public void removeMagingDialogsCallbackListener(ManagingDialogsCallbacks listener) {
+    public void removeManagingDialogsCallbackListener(ManagingDialogsCallbacks listener) {
         magingDialogsCallbackListener.remove(listener);
     }
 

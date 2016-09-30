@@ -358,7 +358,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                     ? systemMessagesListener : new SystemMessagesListener());
         }
 
-        dialogsManager.addMagingDialogsCallbackListener(this);
+        dialogsManager.addManagingDialogsCallbackListener(this);
     }
 
     private void unregisterQbChatListeners() {
@@ -370,7 +370,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             systemMessagesManager.removeSystemMessageListener(systemMessagesListener);
         }
 
-        dialogsManager.removeMagingDialogsCallbackListener(this);
+        dialogsManager.removeManagingDialogsCallbackListener(this);
     }
 
     private void createDialog(final ArrayList<QBUser> selectedUsers) {
@@ -537,8 +537,10 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
         @Override
-        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer integer) {
-            dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
+        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
+            if (!senderId.equals(ChatHelper.getCurrentUser().getId())) {
+                dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
+            }
         }
     }
 }

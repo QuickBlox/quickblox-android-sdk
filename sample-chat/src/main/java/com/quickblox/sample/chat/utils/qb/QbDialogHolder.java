@@ -76,7 +76,8 @@ public class QbDialogHolder {
         QBChatDialog updatedDialog = getChatDialogById(dialogId);
         updatedDialog.setLastMessage(qbChatMessage.getBody());
         updatedDialog.setLastMessageDateSent(qbChatMessage.getDateSent());
-        updatedDialog.setUnreadMessageCount(updatedDialog.getUnreadMessageCount() + 1);
+        updatedDialog.setUnreadMessageCount(updatedDialog.getUnreadMessageCount() != null
+                ? updatedDialog.getUnreadMessageCount() + 1 : 1);
         updatedDialog.setLastMessageUserId(qbChatMessage.getSenderId());
 
         dialogsMap.put(updatedDialog.getDialogId(), updatedDialog);
