@@ -52,7 +52,7 @@ import java.util.Set;
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
-    private static final int CHAT_SOCKET_TIMEOUT = 5*60;
+    private static final int CHAT_SOCKET_TIMEOUT = 0;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;

@@ -379,7 +379,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                     @Override
                     public void onSuccess(QBChatDialog dialog, Bundle args) {
                         isProcessingResultInProgress = false;
-                        DialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
+                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog.getDialogId());
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }

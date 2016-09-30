@@ -3,7 +3,6 @@ package com.quickblox.sample.chat.managers;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSystemMessagesManager;
@@ -32,13 +31,13 @@ public class DialogsManager {
     public static final String PROPERTY_NOTIFICATION_TYPE = "notification_type";
     public static final String CREATING_DIALOG = "creating_dialog";
 
-    private Set<ManagingDialogsCallbacks> magingDialogsCallbackListener = new CopyOnWriteArraySet<>();
+    private Set<ManagingDialogsCallbacks> managingDialogsCallbackListener = new CopyOnWriteArraySet<>();
 
-    public static boolean isMessageCreatingDialog(QBChatMessage systemMessage){
+    private boolean isMessageCreatingDialog(QBChatMessage systemMessage){
         return CREATING_DIALOG.equals(systemMessage.getProperty(PROPERTY_NOTIFICATION_TYPE));
     }
 
-    public static QBChatMessage buildSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog){
+    private QBChatMessage buildSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog){
         QBChatMessage qbChatMessage = new QBChatMessage();
         qbChatMessage.setDialogId(dialog.getDialogId());
         qbChatMessage.setProperty(PROPERTY_OCCUPANTS_IDS, QbDialogUtils.getOccupantsIdsStringFromList(dialog.getOccupants()));
@@ -49,7 +48,7 @@ public class DialogsManager {
         return qbChatMessage;
     }
 
-    public static QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage){
+    private QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage){
         QBChatDialog chatDialog = new QBChatDialog();
         chatDialog.setDialogId(qbChatMessage.getDialogId());
         chatDialog.setOccupantsIds(QbDialogUtils.getOccupantsIdsListFromString((String) qbChatMessage.getProperty(PROPERTY_OCCUPANTS_IDS)));
@@ -60,7 +59,7 @@ public class DialogsManager {
         return chatDialog;
     }
 
-    public static void sendSystemMessageAboutCreatingDialog(QBSystemMessagesManager systemMessagesManager, QBChatDialog dialog) {
+    public void sendSystemMessageAboutCreatingDialog(QBSystemMessagesManager systemMessagesManager, QBChatDialog dialog) {
         QBChatMessage systemMessageCreatingDialog = buildSystemMessageAboutCreatingGroupDialog(dialog);
 
         try {
@@ -141,16 +140,16 @@ public class DialogsManager {
 
     public void addManagingDialogsCallbackListener(ManagingDialogsCallbacks listener){
         if (listener != null){
-            magingDialogsCallbackListener.add(listener);
+            managingDialogsCallbackListener.add(listener);
         }
     }
 
     public void removeManagingDialogsCallbackListener(ManagingDialogsCallbacks listener) {
-        magingDialogsCallbackListener.remove(listener);
+        managingDialogsCallbackListener.remove(listener);
     }
 
     public Collection<ManagingDialogsCallbacks> getManagingDialogsCallbackListeners() {
-        return Collections.unmodifiableCollection(magingDialogsCallbackListener);
+        return Collections.unmodifiableCollection(managingDialogsCallbackListener);
     }
 
     public interface ManagingDialogsCallbacks{
