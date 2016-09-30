@@ -15,8 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.quickblox.chat.exception.QBChatException;
-import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
@@ -86,6 +84,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        Log.v("ChatHelper", "onCreate ChatActivity on Thread ID = " + Thread.currentThread().getId());
 
         qbChatDialog = QbDialogHolder.getInstance().getChatDialogById(
                 getIntent().getStringExtra(EXTRA_DIALOG_ID));
@@ -195,7 +195,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void leaveGroupChat() {
         ProgressDialogFragment.show(getSupportFragmentManager());
-        ChatHelper.getInstance().leaveDialog(qbChatDialog, new QBEntityCallback<QBChatDialog>() {
+        ChatHelper.getInstance().exitFromDialog(qbChatDialog, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -331,6 +331,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType()) && !qbChatDialog.isJoined()){
             Toaster.shortToast("You're still joining a group chat, please wait a bit");
+            return;
         }
 
         try {
@@ -348,8 +349,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         } catch (SmackException.NotConnectedException e) {
             Log.w(TAG, e);
             Toaster.shortToast("Can't send a message, You are not connected to chat");
-        } catch (IllegalStateException e) {
-            Log.w(TAG, e);
         }
     }
 
@@ -392,7 +391,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void leaveGroupDialog() {
         try {
-            ChatHelper.getInstance().leave(qbChatDialog);
+            ChatHelper.getInstance().leaveChatDialog(qbChatDialog);
         } catch (XMPPException | SmackException.NotConnectedException e) {
             Log.w(TAG, e);
         }

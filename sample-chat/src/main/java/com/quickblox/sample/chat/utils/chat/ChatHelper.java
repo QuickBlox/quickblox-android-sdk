@@ -1,8 +1,6 @@
 package com.quickblox.sample.chat.utils.chat;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
@@ -145,7 +143,7 @@ public class ChatHelper {
         });
     }
 
-    public void leave(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
+    public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
         chatDialog.leave();
     }
 
@@ -169,21 +167,11 @@ public class ChatHelper {
 
     public void deleteDialogs(Collection<QBChatDialog> dialogs, final QBEntityCallback<ArrayList<String>> callback) {
         StringifyArrayList<String> dialogsIds = new StringifyArrayList<>();
-        for (QBChatDialog dialog : dialogs){
+        for (QBChatDialog dialog : dialogs) {
             dialogsIds.add(dialog.getDialogId());
         }
 
-        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(new QbEntityCallbackWrapper<ArrayList<String>>(callback) {
-            @Override
-            public void onSuccess(ArrayList<String> removedDialogsIds, Bundle bundle) {
-                onSuccessInMainThread(removedDialogsIds, bundle);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                onErrorInMainThread(e);
-            }
-        });
+        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(callback);
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
@@ -195,9 +183,9 @@ public class ChatHelper {
         }
     }
 
-    public void leaveDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
+    public void exitFromDialog(QBChatDialog qbDialog, QBEntityCallback<QBChatDialog> callback) {
         try {
-            leave(qbDialog);
+            leaveChatDialog(qbDialog);
         } catch (XMPPException | SmackException.NotConnectedException e) {
             callback.onError(new QBResponseException(e.getMessage()));
         }
@@ -205,13 +193,7 @@ public class ChatHelper {
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
         qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
 
-        QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(
-                new QbEntityCallbackWrapper<QBChatDialog>(callback) {
-                    @Override
-                    public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
-                        super.onSuccess(qbDialog, bundle);
-                    }
-                });
+        QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(callback);
     }
 
     public void updateDialogUsers(QBChatDialog qbDialog,
