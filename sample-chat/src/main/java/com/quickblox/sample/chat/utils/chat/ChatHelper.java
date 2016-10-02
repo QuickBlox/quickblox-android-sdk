@@ -294,7 +294,7 @@ public class ChatHelper {
                     @Override
                     public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                         QbUsersHolder.getInstance().putUsers(qbUsers);
-                        onSuccessInMainThread(qbUsers, bundle);
+                        callback.onSuccess(qbUsers, bundle);
                     }
                 });
     }
@@ -312,7 +312,7 @@ public class ChatHelper {
                         QBAttachment attachment = new QBAttachment(QBAttachment.PHOTO_TYPE);
                         attachment.setId(qbFile.getId().toString());
                         attachment.setUrl(qbFile.getPublicUrl());
-                        onSuccessInMainThread(attachment, bundle);
+                        callback.onSuccess(attachment, bundle);
                     }
                 });
     }
@@ -331,7 +331,7 @@ public class ChatHelper {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                         QbUsersHolder.getInstance().putUsers(users);
-                        onSuccessInMainThread(dialogs, params);
+                        callback.onSuccess(dialogs, params);
                     }
                 });
     }
@@ -349,7 +349,7 @@ public class ChatHelper {
                     @Override
                     public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                         QbUsersHolder.getInstance().putUsers(users);
-                        onSuccessInMainThread(messages, params);
+                        callback.onSuccess(messages, params);
                     }
                 });
     }
