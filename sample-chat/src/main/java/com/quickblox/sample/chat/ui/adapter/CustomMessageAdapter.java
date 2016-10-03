@@ -30,9 +30,8 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 
     protected QBMessageViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateCustomViewHolder viewType= " + viewType);
-        return new ImageAttachHolder(inflater.inflate(com.quickblox.sample.core.R.layout.widget_attach_msg_left, parent, false), com.quickblox.sample.core.R.id.attach_imageview, com.quickblox.sample.core.R.id.centered_progressbar);
+        return new ImageAttachHolder(inflater.inflate(com.quickblox.sample.core.R.layout.widget_attach_msg_left, parent, false), com.quickblox.sample.core.R.id.msg_image_attach, com.quickblox.sample.core.R.id.msg_progressbar_attach);
     }
-
 
 
     @Override
@@ -76,15 +75,8 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
     }
 
     @Override
-    public void displayAvatarImage(String uri, ImageView imageView) {
-        int prefSize = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
-        Glide.with(context)
-                .load(uri)
-                .listener(null)
-                .override(prefSize, prefSize)
-                .dontTransform()
-                .error(com.quickblox.sample.core.R.drawable.ic_error)
-                .into(imageView);
+    public void displayAvatarImage(String url, ImageView imageView) {
+        Glide.with(context).load(url).into(imageView);
     }
 
     @Override
@@ -93,16 +85,21 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
         view.setText("Don Juan");
         super.onBindViewMsgOpponentHolder(holder, chatMessage, position);
 
-        }
+    }
 
 
-//
+    //
 //    //    если хотим отображать аватарку, определяем avatarUrl
-//    @Override
-//    public String obtainAvatarUrl(int valueType, QBChatMessage chatMessage) {
-//        String avatarUrl = null;
-//        return avatarUrl;
-//    }
+    @Override
+    public String obtainAvatarUrl(int valueType, QBChatMessage chatMessage) {
+        String avatarUrl = null;
+        if (isIncoming(chatMessage)) {
+            avatarUrl = "http://pngimg.com/upload/face_PNG11761.png";
+        } else {
+            avatarUrl = "http://pngimg.com/upload/face_PNG5646.png";
+        }
+        return avatarUrl;
+    }
 //
 //    //    можно переопределить displayAvatarImage
 //    @Override

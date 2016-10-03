@@ -31,8 +31,8 @@ public abstract class MessageTextView extends FrameLayout {
     protected void init(@LayoutRes int layoutId) {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutId, this, true);
-        frameLinear = (LinearLayout) getRootView().findViewById(R.id.linear_frame);
-        viewTextStub = (ViewStub) findViewById(R.id.stub_text);
+        frameLinear = (LinearLayout) getRootView().findViewById(R.id.msg_linear_frame);
+        viewTextStub = (ViewStub) findViewById(R.id.msg_stub_message);
     }
 
     protected void applyAttributes(AttributeSet attrs) {
@@ -57,7 +57,7 @@ public abstract class MessageTextView extends FrameLayout {
 
     protected void setCustomWidget(@LayoutRes int widgetId) {
         if (widgetId != 0) {
-            final ViewGroup widgetFrame = (ViewGroup) findViewById(R.id.widget_frame);
+            final ViewGroup widgetFrame = (ViewGroup) findViewById(R.id.msg_custom_widget_frame);
             View view = inflater.inflate(widgetId, widgetFrame);
             Log.d(TAG, "view=null? " + (view == null));
         }

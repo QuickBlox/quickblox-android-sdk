@@ -34,7 +34,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     protected static final int TYPE_OWN_ATTACH = 3;
     protected static final int TYPE_OPPONENT_ATTACH = 4;
 
-    SparseIntArray containerLayoutRes = new SparseIntArray() {
+    private SparseIntArray containerLayoutRes = new SparseIntArray() {
         {
             put(TYPE_OWN_TEXT, R.layout.widget_text_msg_right);
             put(TYPE_OPPONENT_TEXT, R.layout.widget_text_msg_left);
@@ -60,16 +60,16 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     public QBMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_OWN_TEXT:
-                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.msg_text_message, R.id.msg_text_time_message);
                 return qbViewHolder;
             case TYPE_OPPONENT_TEXT:
-                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
+                qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.msg_text_message, R.id.msg_text_time_message);
                 return qbViewHolder;
             case TYPE_OWN_ATTACH:
-                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.msg_image_attach, R.id.msg_progressbar_attach);
                 return qbViewHolder;
             case TYPE_OPPONENT_ATTACH:
-                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
+                qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.msg_image_attach, R.id.msg_progressbar_attach);
                 return qbViewHolder;
 
             default:
@@ -84,7 +84,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return null;
     }
 
-    public void setMsgLayoutResourceByType(int typeLayout, @LayoutRes int messageLayoutResource) {
+    protected void setMsgLayoutResourceByType(int typeLayout, @LayoutRes int messageLayoutResource) {
         containerLayoutRes.put(typeLayout, messageLayoutResource);
     }
 
@@ -169,7 +169,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return null;
     }
 
-
     @Override
     public int getItemCount() {
         return chatMessages.size();
@@ -232,7 +231,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         notifyDataSetChanged();
     }
 
-    private boolean isIncoming(QBChatMessage chatMessage) {
+    protected boolean isIncoming(QBChatMessage chatMessage) {
         QBUser currentUser = QBChatService.getInstance().getUser();
         return chatMessage.getSenderId() != null && !chatMessage.getSenderId().equals(currentUser.getId());
     }
@@ -243,7 +242,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
 
-    public String getDate(long milliseconds) {
+    protected String getDate(long milliseconds) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd", Locale.getDefault());
         return dateFormat.format(new Date(milliseconds));
     }
@@ -251,7 +250,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     /**
      * displayAttachment must be implemented in derived class
      */
-    public void displayAttachment(QBMessageViewHolder holder, int position) {
+    protected void displayAttachment(QBMessageViewHolder holder, int position) {
     }
 
     /**
@@ -289,7 +288,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
         public QBMessageViewHolder(View itemView) {
             super(itemView);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar_imageview);
+            avatar = (ImageView) itemView.findViewById(R.id.msg_image_avatar);
         }
     }
 }

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linear_frame_right"
+    android:id="@+id/msg_linear_frame_right"
     style="@style/ListItemText.Right">
 
     <LinearLayout
-        android:id="@+id/bubble_background"
+        android:id="@+id/msg_bubble_background_text"
         style="@style/BubbleTextFrame.Right">
 
         <LinearLayout
-            android:id="@+id/outer_message_textview_right"
+            android:id="@+id/msg_linear_list_item_right"
             style="@style/LinearListItemTextMsg.Right">
 
             <TextView
-                android:id="@+id/time_text_message_textview"
+                android:id="@+id/msg_text_time_message"
                 style="@style/TextViewTimeMsg.Right"
                 tools:text="current time August" />
 
             <TextView
-                android:id="@+id/message_textview"
+                android:id="@+id/msg_text_message"
                 style="@style/TextViewTextMsg.Right"
                 tools:text="messagertdfsscsd messagertdfsscsd" />
 
             <!--LinearLayout should place its actual message widget here.-->
             <LinearLayout
-                android:id="@+id/widget_frame"
+                android:id="@+id/msg_custom_widget_frame"
                 style="@style/CustomWidgetFrame.Right" />
 
         </LinearLayout>
@@ -32,7 +32,7 @@
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatar_imageview"
+        android:id="@+id/msg_image_avatar"
         style="@style/AvatarImageViewStyle.Right"/>
 
 </LinearLayout>

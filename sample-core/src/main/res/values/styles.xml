@@ -20,9 +20,9 @@
 
 
 
-    <style name="WidgetTextMessage.Right"></style>
+    <style name="WidgetTextMessage.Right" />
 
-    <style name="WidgetTextMessage.Left"></style>
+    <style name="WidgetTextMessage.Left" />
 
     <style name="WidgetTextMessage">
         <item name="android:layout_width">match_parent</item>
@@ -35,7 +35,7 @@
         <item name="android:gravity">right</item>
     </style>
 
-    <style name="WidgetAttachMessage.Left"></style>
+    <style name="WidgetAttachMessage.Left" />
 
     <style name="WidgetAttachMessage">
         <item name="android:layout_width">match_parent</item>
@@ -59,9 +59,9 @@
     </style>
 
 
-    <style name="ProgressBarAttach.Right"></style>
+    <style name="ProgressBarAttach.Right" />
 
-    <style name="ProgressBarAttach.Left"></style>
+    <style name="ProgressBarAttach.Left" />
 
     <style name="ProgressBarAttach">
         <item name="android:layout_width">wrap_content</item>
@@ -88,9 +88,9 @@
     </style>
 
 
-    <style name="TextViewAttach.Right"></style>
+    <style name="TextViewAttach.Right" />
 
-    <style name="TextViewAttach.Left"></style>
+    <style name="TextViewAttach.Left" />
 
     <style name="TextViewAttach">
         <item name="android:layout_width">wrap_content</item>
@@ -106,9 +106,9 @@
 
 
 
-    <style name="AvatarImageViewStyle.Right"></style>
+    <style name="AvatarImageViewStyle.Right" />
 
-    <style name="AvatarImageViewStyle.Left"></style>
+    <style name="AvatarImageViewStyle.Left" />
 
     <style name="AvatarImageViewStyle">
         <item name="android:layout_width">@dimen/image_view_small_avatar_layout_width</item>
@@ -120,9 +120,9 @@
 
 
 
-    <style name="ListItemText.Right"></style>
+    <style name="ListItemText.Right" />
 
-    <style name="ListItemText.Left"></style>
+    <style name="ListItemText.Left" />
 
     <style name="ListItemText">
         <item name="android:layout_width">wrap_content</item>
@@ -166,7 +166,7 @@
         <item name="android:layout_gravity">right</item>
     </style>
 
-    <style name="TextViewTimeMsg.Left"></style>
+    <style name="TextViewTimeMsg.Left" />
 
     <style name="TextViewTimeMsg">
         <item name="android:layout_width">wrap_content</item>
@@ -175,9 +175,9 @@
     </style>
 
 
-    <style name="TextViewTextMsg.Right"></style>
+    <style name="TextViewTextMsg.Right" />
 
-    <style name="TextViewTextMsg.Left"></style>
+    <style name="TextViewTextMsg.Left" />
 
     <style name="TextViewTextMsg">
         <item name="android:layout_width">wrap_content</item>
@@ -188,9 +188,9 @@
     </style>
 
 
-    <style name="CustomWidgetFrame.Right"></style>
+    <style name="CustomWidgetFrame.Right" />
 
-    <style name="CustomWidgetFrame.Left"></style>
+    <style name="CustomWidgetFrame.Left" />
 
     <style name="CustomWidgetFrame">
         <item name="android:layout_width">match_parent</item>
