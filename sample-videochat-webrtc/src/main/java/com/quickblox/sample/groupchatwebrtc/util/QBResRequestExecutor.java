@@ -26,18 +26,18 @@ public class QBResRequestExecutor {
     private String TAG = QBResRequestExecutor.class.getSimpleName();
 
     public void createSession(QBEntityCallback<QBSession> callback) {
-        QBAuth.createSession(callback);
+        QBAuth.createSession().performAsync(callback);
     }
 
     public void createSessionWithUser(final QBUser qbUser, final QBEntityCallback<QBSession> callback) {
-        QBAuth.createSession(qbUser, callback);
+        QBAuth.createSession(qbUser).performAsync(callback);
     }
 
     public void signUpNewUser(final QBUser newQbUser, final QBEntityCallback<QBUser> callback) {
         createSessionWithoutUser(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
-                QBUsers.signUp(newQbUser, callback);
+                QBUsers.signUp(newQbUser).performAsync(callback);
             }
 
             @Override
@@ -48,11 +48,11 @@ public class QBResRequestExecutor {
     }
 
     public void signInUser(final QBUser currentQbUser, final QBEntityCallback<QBUser> callback) {
-        QBUsers.signIn(currentQbUser, callback);
+        QBUsers.signIn(currentQbUser).performAsync(callback);
     }
 
     public void deleteCurrentUser(int currentQbUserID, QBEntityCallback<Void> callback) {
-        QBUsers.deleteUser(currentQbUserID, callback);
+        QBUsers.deleteUser(currentQbUserID).performAsync(callback);
     }
 
     public void loadUsersByTag(final String tag, final QBEntityCallback<ArrayList<QBUser>> callback) {
@@ -63,7 +63,7 @@ public class QBResRequestExecutor {
                 List<String> tags = new LinkedList<>();
                 tags.add(tag);
 
-                QBUsers.getUsersByTags(tags, requestBuilder, callback);
+                QBUsers.getUsersByTags(tags, requestBuilder).performAsync(callback);
             }
         });
     }
@@ -72,7 +72,7 @@ public class QBResRequestExecutor {
         restoreOrCreateSession(new QBEntityCallbackImpl<QBSession>() {
             @Override
             public void onSuccess(QBSession result, Bundle params) {
-                QBUsers.getUsersByIDs(usersIDs, null, callback);
+                QBUsers.getUsersByIDs(usersIDs, null).performAsync(callback);
             }
         });
     }

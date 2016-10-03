@@ -1,15 +1,19 @@
 package com.quickblox.sample.chat.utils.qb;
 
-import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class QbDialogHolder {
 
     private static QbDialogHolder instance;
-    private List<QBDialog> dialogList;
+    private Map<String, QBChatDialog> dialogsMap;
 
     public static synchronized QbDialogHolder getInstance() {
         if (instance == null) {
@@ -19,32 +23,84 @@ public class QbDialogHolder {
     }
 
     private QbDialogHolder() {
-        dialogList = new ArrayList<>();
+        dialogsMap = new TreeMap<>();
     }
 
-    public List<QBDialog> getDialogList() {
-        return dialogList;
+    public Map<String, QBChatDialog> getDialogs() {
+        return getSortedMap(dialogsMap);
+    }
+
+    public QBChatDialog getChatDialogById(String dialogId){
+        return dialogsMap.get(dialogId);
     }
 
     public void clear() {
-        dialogList.clear();
+        dialogsMap.clear();
     }
 
-    public void addDialogToList(QBDialog dialog) {
-        if (!dialogList.contains(dialog)) {
-            dialogList.add(dialog);
+    public void addDialog(QBChatDialog dialog) {
+        if (dialog != null) {
+            dialogsMap.put(dialog.getDialogId(), dialog);
         }
     }
 
-    public void addDialogs(List<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
-            addDialogToList(dialog);
+    public void addDialogs(List<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
+            addDialog(dialog);
         }
     }
 
-    public void deleteDialogs(Collection<QBDialog> dialogs) {
-        for (QBDialog dialog : dialogs) {
-            dialogList.remove(dialog);
+    public void deleteDialogs(Collection<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
+            dialogsMap.remove(dialog.getDialogId());
+        }
+    }
+
+    public void deleteDialogs(ArrayList<String> dialogsIds) {
+        for (String dialogId : dialogsIds) {
+            dialogsMap.remove(dialogId);
+        }
+    }
+
+    public boolean hasDialogWithId(String dialogId){
+        return dialogsMap.containsKey(dialogId);
+    }
+
+    private Map<String, QBChatDialog> getSortedMap(Map <String, QBChatDialog> unsortedMap){
+        Map <String, QBChatDialog> sortedMap = new TreeMap(new LastMessageDateSentComparator(unsortedMap));
+        sortedMap.putAll(unsortedMap);
+        return sortedMap;
+    }
+
+    public void updateDialog(String dialogId, QBChatMessage qbChatMessage){
+        QBChatDialog updatedDialog = getChatDialogById(dialogId);
+        updatedDialog.setLastMessage(qbChatMessage.getBody());
+        updatedDialog.setLastMessageDateSent(qbChatMessage.getDateSent());
+        updatedDialog.setUnreadMessageCount(updatedDialog.getUnreadMessageCount() != null
+                ? updatedDialog.getUnreadMessageCount() + 1 : 1);
+        updatedDialog.setLastMessageUserId(qbChatMessage.getSenderId());
+
+        dialogsMap.put(updatedDialog.getDialogId(), updatedDialog);
+    }
+
+    static class LastMessageDateSentComparator implements Comparator<String> {
+        Map <String, QBChatDialog> map;
+
+        public LastMessageDateSentComparator(Map <String, QBChatDialog> map) {
+
+            this.map = map;
+        }
+
+        public int compare(String keyA, String keyB) {
+
+            long valueA = map.get(keyA).getLastMessageDateSent();
+            long valueB = map.get(keyB).getLastMessageDateSent();
+
+            if (valueB < valueA){
+                return -1;
+            } else {
+                return 1;
+            }
         }
     }
 }
