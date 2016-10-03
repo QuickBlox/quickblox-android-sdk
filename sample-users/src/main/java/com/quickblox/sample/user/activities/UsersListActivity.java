@@ -157,7 +157,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
 
             case R.id.logout:
                 progressDialog.show();
-                QBUsers.signOut(new QBEntityCallback<Void>() {
+                QBUsers.signOut().performAsync(new QBEntityCallback<Void>() {
                     @Override
                     public void onSuccess(Void result, Bundle bundle) {
                         progressDialog.dismiss();
@@ -200,7 +200,7 @@ public class UsersListActivity extends BaseActivity implements AdapterView.OnIte
             progressDialog.show();
         }
 
-        QBUsers.getUsers(qbPagedBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
+        QBUsers.getUsers(qbPagedBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 setOnRefreshListener.setEnabled(true);
