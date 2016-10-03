@@ -52,6 +52,10 @@ android {
             keyPassword "android"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
