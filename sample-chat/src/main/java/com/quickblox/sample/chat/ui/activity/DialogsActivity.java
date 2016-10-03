@@ -82,8 +82,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         context.startActivity(intent);
     }
 
-    private ConnectionListener chatConnectionListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,24 +101,12 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         dialogsManager = new DialogsManager();
 
-        chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
-
-            @Override
-            public void reconnectionSuccessful() {
-                super.reconnectionSuccessful();
-
-                requestBuilder.setSkip(skipRecords = 0);
-                loadDialogsFromQbInUiThread(true);
-            }
-        };
-
         initUi();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -130,7 +116,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     @Override
     protected void onPause() {
         super.onPause();
-        ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
@@ -180,7 +165,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
                 loadDialogsFromQb(true, true);
             } else {
-                loadDialogsFromQb();
+                loadDialogsFromQb(false, true);
             }
         }
     }
@@ -206,8 +191,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                     updateDialogsList();
                 }
             }
-        } else {
-            updateDialogsList();
         }
     }
 
@@ -392,19 +375,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                     }
                 }
         );
-    }
-
-    private void loadDialogsFromQb() {
-        loadDialogsFromQb(false, true);
-    }
-
-    private void loadDialogsFromQbInUiThread(final boolean silentUpdate) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadDialogsFromQb(silentUpdate, true);
-            }
-        });
     }
 
     private void loadDialogsFromQb(final boolean silentUpdate, final boolean clearDialogHolder) {
