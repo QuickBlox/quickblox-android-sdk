@@ -16,8 +16,6 @@ public interface QBBaseAdapter<T> {
 
     void addList(List<T> items);
 
-    void displayAttachment(QBMessagesAdapter.QBMessageViewHolder holder, int position);
-
     void displayAvatarImage (String uri, ImageView imageView);
 
     String obtainAvatarUrl(int type, QBChatMessage chatMessage);

@@ -29,17 +29,17 @@ import java.util.Locale;
 public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QBMessageViewHolder> implements QBBaseAdapter<QBChatMessage> {
     private static final String TAG = QBMessagesAdapter.class.getSimpleName();
 
-    protected static final int TYPE_OWN_TEXT_LAYOUT = 1;
-    protected static final int TYPE_OPP_TEXT_LAYOUT = 2;
-    protected static final int TYPE_OWN_ATTACH_LAYOUT = 3;
-    protected static final int TYPE_OPP_ATTACH_LAYOUT = 4;
+    protected static final int TYPE_OWN_TEXT = 1;
+    protected static final int TYPE_OPPONENT_TEXT = 2;
+    protected static final int TYPE_OWN_ATTACH = 3;
+    protected static final int TYPE_OPPONENT_ATTACH = 4;
 
-    SparseIntArray containerLayoutRes = new SparseIntArray(){
+    SparseIntArray containerLayoutRes = new SparseIntArray() {
         {
-            put(TYPE_OWN_TEXT_LAYOUT, R.layout.item_text_message_own_compound);
-            put(TYPE_OPP_TEXT_LAYOUT, R.layout.item_text_message_opp_compound);
-            put(TYPE_OWN_ATTACH_LAYOUT, R.layout.item_attachment_message_own);
-            put(TYPE_OPP_ATTACH_LAYOUT, R.layout.item_attachment_message_opponent);
+            put(TYPE_OWN_TEXT, R.layout.widget_text_msg_right);
+            put(TYPE_OPPONENT_TEXT, R.layout.widget_text_msg_left);
+            put(TYPE_OWN_ATTACH, R.layout.widget_attach_msg_right);
+            put(TYPE_OPPONENT_ATTACH, R.layout.widget_attach_msg_left);
         }
     };
 
@@ -59,16 +59,16 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     @Override
     public QBMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case 1:
+            case TYPE_OWN_TEXT:
                 qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
                 return qbViewHolder;
-            case 2:
+            case TYPE_OPPONENT_TEXT:
                 qbViewHolder = new TextMessageHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.message_textview, R.id.time_text_message_textview);
                 return qbViewHolder;
-            case 3:
+            case TYPE_OWN_ATTACH:
                 qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
-            case 4:
+            case TYPE_OPPONENT_ATTACH:
                 qbViewHolder = new ImageAttachHolder(inflater.inflate(containerLayoutRes.get(viewType), parent, false), R.id.attach_imageview, R.id.centered_progressbar);
                 return qbViewHolder;
 
@@ -93,17 +93,17 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         QBChatMessage chatMessage = getItem(position);
         int valueType = getItemViewType(position);
         switch (valueType) {
-            case 1:
+            case TYPE_OWN_TEXT:
                 onBindViewMsgOwnHolder((TextMessageHolder) holder, chatMessage, position);
                 break;
-            case 2:
+            case TYPE_OPPONENT_TEXT:
                 onBindViewMsgOpponentHolder((TextMessageHolder) holder, chatMessage, position);
                 break;
-            case 3:
+            case TYPE_OWN_ATTACH:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OWN");
                 onBindViewAttachOwnHolder((ImageAttachHolder) holder, chatMessage, position);
                 break;
-            case 4:
+            case TYPE_OPPONENT_ATTACH:
                 Log.i(TAG, "onBindViewHolder TYPE_ATTACHMENT_MESSAGE_OPPONENT");
                 onBindViewAttachOpponentHolder((ImageAttachHolder) holder, chatMessage, position);
                 break;
@@ -160,7 +160,7 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     /**
-     * ObtainAvatarUrl must be implement in derived class
+     * ObtainAvatarUrl must be implemented in derived class
      *
      * @return String avatar url
      */
@@ -180,7 +180,6 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
         return chatMessages.get(position);
     }
 
-//  если переопределить getItemId, то setHasStableIds(true) работает (может возвращать unique ID)?
     @Override
     public long getItemId(int position) {
         return position;
@@ -196,23 +195,23 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
 
             if (QBAttachment.PHOTO_TYPE.equals(attachment.getType())) {
                 if (isIncoming(chatMessage)) {
-                    return TYPE_OPP_ATTACH_LAYOUT;
+                    return TYPE_OPPONENT_ATTACH;
                 } else {
-                    return TYPE_OWN_ATTACH_LAYOUT;
+                    return TYPE_OWN_ATTACH;
                 }
             }
 
         } else {
             if (isIncoming(chatMessage)) {
-                return TYPE_OPP_TEXT_LAYOUT;
+                return TYPE_OPPONENT_TEXT;
             } else {
-                return TYPE_OWN_TEXT_LAYOUT;
+                return TYPE_OWN_TEXT;
             }
         }
         return customViewType();
     }
 
-    protected int customViewType(){
+    protected int customViewType() {
         return -1;
     }
 
@@ -250,14 +249,13 @@ public class QBMessagesAdapter extends RecyclerView.Adapter<QBMessagesAdapter.QB
     }
 
     /**
-     * displayAttachment must be implement in derived class
+     * displayAttachment must be implemented in derived class
      */
-    @Override
     public void displayAttachment(QBMessageViewHolder holder, int position) {
     }
 
     /**
-     * displayAvatarImage must be implement in derived class
+     * displayAvatarImage must be implemented in derived class
      */
     @Override
     public void displayAvatarImage(String uri, ImageView imageView) {

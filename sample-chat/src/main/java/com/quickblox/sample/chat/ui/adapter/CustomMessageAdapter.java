@@ -30,7 +30,7 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 
     protected QBMessageViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateCustomViewHolder viewType= " + viewType);
-        return new ImageAttachHolder(inflater.inflate(com.quickblox.sample.core.R.layout.item_attachment_message_opponent, parent, false), com.quickblox.sample.core.R.id.attach_imageview, com.quickblox.sample.core.R.id.centered_progressbar);
+        return new ImageAttachHolder(inflater.inflate(com.quickblox.sample.core.R.layout.widget_attach_msg_left, parent, false), com.quickblox.sample.core.R.id.attach_imageview, com.quickblox.sample.core.R.id.centered_progressbar);
     }
 
 
@@ -114,11 +114,11 @@ public class CustomMessageAdapter extends QBMessagesAdapter {
 //    @Override
 //    public QBMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //
-//        int typeCustomAttachLayoutResource = com.quickblox.sample.core.R.layout.item_attachment_message_opponent;
+//        int typeCustomAttachLayoutResource = com.quickblox.sample.core.R.layout.widget_attach_msg_left;
 //        int customAttachID = R.id.attach_imageview;
 //        int customProgressBar = R.id.centered_progressbar;
 //
-//        if (viewType > TYPE_OPP_ATTACH_LAYOUT) {
+//        if (viewType > TYPE_OPPONENT_ATTACH) {
 //            Log.d(TAG, "Override TYPE_ATTACHMENT_CUSTOM");
 //            return new CustomViewHolder(inflater.inflate(typeCustomAttachLayoutResource, parent, false), customAttachID, customProgressBar);
 //        }

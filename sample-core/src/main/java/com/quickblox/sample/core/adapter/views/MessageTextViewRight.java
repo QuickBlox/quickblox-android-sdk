@@ -25,7 +25,7 @@ public class MessageTextViewRight extends MessageTextView {
 
     @Override
     protected void setTextLayout(@LayoutRes int customTextId) {
-        int textViewId = R.layout.item_stub_right_text;
+        int textViewId = R.layout.list_item_text_right;
 
         if (customTextId != 0) {
             textViewId = customTextId;

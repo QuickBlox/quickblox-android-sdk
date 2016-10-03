@@ -24,7 +24,7 @@ public abstract class MessageTextView extends FrameLayout {
 
     public MessageTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(R.layout.message_test_view);
+        init(R.layout.widget_text_msg_frame);
         applyAttributes(attrs);
     }
 
@@ -52,10 +52,10 @@ public abstract class MessageTextView extends FrameLayout {
 
         setLinearSide();
         setTextLayout(textViewId);
-        setWidget(widgetId);
+        setCustomWidget(widgetId);
     }
 
-    protected void setWidget(@LayoutRes int widgetId) {
+    protected void setCustomWidget(@LayoutRes int widgetId) {
         if (widgetId != 0) {
             final ViewGroup widgetFrame = (ViewGroup) findViewById(R.id.widget_frame);
             View view = inflater.inflate(widgetId, widgetFrame);

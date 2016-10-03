@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MainLayoutAttachMsg.Right">
+    style="@style/WidgetAttachMessage.Left">
 
-    <RelativeLayout
-        android:id="@+id/attach_message_relativelayout"
-        style="@style/MessageAdapterAttachMsg.Right">
-
-        <ProgressBar
-            android:id="@+id/centered_progressbar"
-            style="@style/ProgressBarAttach.Right" />
-
-        <ImageView
-            android:id="@+id/attach_imageview"
-            style="@style/ImageViewAttach.Right" />
-
-        <TextView
-            android:id="@+id/time_attach_message_textview"
-            style="@style/TextViewAttach.Right"
-            android:text="time" />
-
-    </RelativeLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar_imageview"
-        style="@style/AvatarImageViewStyle.Right"/>
+        style="@style/AvatarImageViewStyle.Left"/>
+
+    <RelativeLayout
+        android:id="@+id/attach_message_relativelayout"
+        style="@style/BubbleAttachFrame.Left">
+
+        <ProgressBar
+            android:id="@+id/centered_progressbar"
+            style="@style/ProgressBarAttach.Left" />
+
+        <ImageView
+            android:id="@+id/attach_imageview"
+            style="@style/ImageViewAttach.Left" />
+
+        <TextView
+            android:id="@+id/time_attach_message_textview"
+            style="@style/TextViewAttach.Left"
+            android:text="time" />
+
+    </RelativeLayout>
 
 </LinearLayout>

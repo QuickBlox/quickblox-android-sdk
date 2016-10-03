@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_frame_left"
-    style="@style/MainItemStubMsgText.Left">
+    style="@style/ListItemText.Left">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar_imageview"
@@ -10,27 +10,27 @@
 
     <LinearLayout
         android:id="@+id/bubble_background"
-        style="@style/MessageAdapterTextMsg.Left">
+        style="@style/BubbleTextFrame.Left">
 
 
         <LinearLayout
             android:id="@+id/outer_message_textview_left"
-            style="@style/LinearTextMessage.Left">
+            style="@style/LinearListItemTextMsg.Left">
 
             <TextView
                 android:id="@+id/time_text_message_textview"
-                style="@style/ItemStubTimeText.Left"
+                style="@style/TextViewTimeMsg.Left"
                 tools:text="August 16" />
 
             <TextView
                 android:id="@+id/message_textview"
-                style="@style/ItemStubMsgText.Left"
+                style="@style/TextViewTextMsg.Left"
                 tools:text="messagertdfsscsd" />
 
             <!--LinearLayout should place its actual message widget here.-->
             <LinearLayout
                 android:id="@+id/widget_frame"
-                style="@style/ItemStubWidgetFrame.Left" />
+                style="@style/CustomWidgetFrame.Left" />
 
 
         </LinearLayout>

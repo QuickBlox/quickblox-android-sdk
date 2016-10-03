@@ -23,4 +23,13 @@
     <!--<item name="android:background">@color/color_grey</item>-->
     <!--</style>-->
 
+
+    <style name="WidgetTextMessage.Right">
+        <item name="widget_id">@layout/text_widget_owner</item>
+    </style>
+
+    <style name="WidgetTextMessage.Left">
+        <item name="widget_id">@layout/text_widget_owner</item>
+    </style>
+
 </resources>
