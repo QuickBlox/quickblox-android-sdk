@@ -87,7 +87,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         getLocationsBuilder.setPerPage(Consts.LOCATION_PER_PAGE);
         getLocationsBuilder.setLastOnly();
 
-        QBLocations.getLocations(getLocationsBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
+        QBLocations.getLocations(getLocationsBuilder).performAsync( new QBEntityCallback<ArrayList<QBLocation>>() {
             @Override
             public void onSuccess(ArrayList<QBLocation> qbLocations, Bundle bundle) {
                 // show all locations on the map
@@ -202,7 +202,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
                 // ================= QuickBlox ====================
                 // Share own location
                 QBLocation location = new QBLocation(lat, lng, input.getText().toString());
-                QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
+                QBLocations.createLocation(location).performAsync( new QBEntityCallback<QBLocation>() {
                     @Override
                     public void onSuccess(QBLocation qbLocation, Bundle bundle) {
                         Toaster.longToast(R.string.dlg_check_in_success);
