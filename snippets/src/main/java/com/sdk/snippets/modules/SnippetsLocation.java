@@ -63,7 +63,7 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
+            QBLocations.createLocation(location).performAsync(new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -89,7 +89,7 @@ public class SnippetsLocation extends Snippets {
 
             QBLocation locationResult = null;
             try {
-                locationResult = QBLocations.createLocation(location);
+                locationResult = QBLocations.createLocation(location).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -114,18 +114,19 @@ public class SnippetsLocation extends Snippets {
             //
             final QBLocation location = new QBLocation(latitude, longitude, status);
 
-            QBLocations.createLocation(location, new QBEntityCallback<QBLocation>() {
+            QBLocations.createLocation(location, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000).performAsync(
+                    new QBEntityCallback<QBLocation>() {
 
-                @Override
-                public void onSuccess(QBLocation qbLocation, Bundle args) {
-                    Log.i(TAG, "Location is: " + qbLocation);
-                }
+                        @Override
+                        public void onSuccess(QBLocation qbLocation, Bundle args) {
+                            Log.i(TAG, "Location is: " + qbLocation);
+                        }
 
-                @Override
-                public void onError(QBResponseException errors) {
-                    handleErrors(errors);
-                }
-            }, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
+                        @Override
+                        public void onError(QBResponseException errors) {
+                            handleErrors(errors);
+                        }
+                    });
         }
     };
 
@@ -140,7 +141,7 @@ public class SnippetsLocation extends Snippets {
 
             QBLocation locationResult = null;
             try {
-                locationResult = QBLocations.createLocation(location, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000);
+                locationResult = QBLocations.createLocation(location, "Your friend is near!", QBEnvironment.DEVELOPMENT, 1000).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -160,7 +161,7 @@ public class SnippetsLocation extends Snippets {
         @Override
         public void execute() {
             QBLocation location = new QBLocation(11308);
-            QBLocations.getLocation(location, new QBEntityCallback<QBLocation>() {
+            QBLocations.getLocation(location).performAsync(new QBEntityCallback<QBLocation>() {
 
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
@@ -182,7 +183,7 @@ public class SnippetsLocation extends Snippets {
             QBLocation location = new QBLocation(11308);
             QBLocation locationResult = null;
             try {
-                locationResult = QBLocations.getLocation(location);
+                locationResult = QBLocations.getLocation(location).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -206,7 +207,7 @@ public class SnippetsLocation extends Snippets {
             qbLocation.setId(1141748);
             qbLocation.setStatus("I'am at Pizza");
 
-            QBLocations.updateLocation(qbLocation, new QBEntityCallback<QBLocation>() {
+            QBLocations.updateLocation(qbLocation).performAsync(new QBEntityCallback<QBLocation>() {
                 @Override
                 public void onSuccess(QBLocation qbLocation, Bundle args) {
                     Log.i(TAG, "Location is: " + qbLocation);
@@ -229,7 +230,7 @@ public class SnippetsLocation extends Snippets {
 
             QBLocation locationResult = null;
             try {
-                locationResult = QBLocations.updateLocation(qbLocation);
+                locationResult = QBLocations.updateLocation(qbLocation).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -250,7 +251,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             QBLocation location = new QBLocation(1141748);
 
-            QBLocations.deleteLocation(location, new QBEntityCallback<Void>() {
+            QBLocations.deleteLocation(location).performAsync(new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -271,7 +272,7 @@ public class SnippetsLocation extends Snippets {
             QBLocation location = new QBLocation(1141748);
 
             try {
-                QBLocations.deleteLocation(location);
+                QBLocations.deleteLocation(location).perform();
                 Log.i(TAG, "Location was removed");
             } catch (QBResponseException e) {
                 setException(e);
@@ -315,7 +316,9 @@ public class SnippetsLocation extends Snippets {
             locationRequestBuilder.setPage(1);
             locationRequestBuilder.setPerPage(10);
 
-            QBLocations.getLocations(locationRequestBuilder, new QBEntityCallback<ArrayList<QBLocation>>() {
+            Bundle bundle = new Bundle();
+
+            QBLocations.getLocations(locationRequestBuilder, bundle).performAsync(new QBEntityCallback<ArrayList<QBLocation>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBLocation> locations, Bundle params) {
@@ -366,7 +369,7 @@ public class SnippetsLocation extends Snippets {
             Bundle params = new Bundle();
             ArrayList<QBLocation> locations = null;
             try {
-                locations = QBLocations.getLocations(locationRequestBuilder, params);
+                locations = QBLocations.getLocations(locationRequestBuilder, params).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -390,7 +393,7 @@ public class SnippetsLocation extends Snippets {
         public void execute() {
             int days = 2;
 
-            QBLocations.deleteObsoleteLocations(days, new QBEntityCallback<Void>() {
+            QBLocations.deleteObsoleteLocations(days).performAsync(new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -411,7 +414,7 @@ public class SnippetsLocation extends Snippets {
             int days = 2;
 
             try {
-                QBLocations.deleteObsoleteLocations(days);
+                QBLocations.deleteObsoleteLocations(days).perform();
                 Log.i(TAG, "Locations was removed");
             } catch (QBResponseException e) {
                 setException(e);
