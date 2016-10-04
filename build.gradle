@@ -19,11 +19,11 @@ allprojects {
 }
 
 ext {
-    compileSdkVersion = 22
+    compileSdkVersion = 23
     buildToolsVersion = "22.0.1"
 
     minSdkVersion = 14
-    targetSdkVersion = 22
+    targetSdkVersion = 23
 
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7
@@ -33,7 +33,7 @@ ext {
     // QuickBlox SDK version
     qbSdkVersion = '3.0'
 
-    versionName = "2.6.1"
+    versionName = "3.0"
 
     testRunnerVersion = "0.4.1"
 
