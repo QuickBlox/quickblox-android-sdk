@@ -20,7 +20,7 @@ public class SplashActivity extends CoreSplashActivity {
 
         // Create QuickBlox session
         QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
-        QBAuth.createSession(qbUser, new QBEntityCallback<QBSession>() {
+        QBAuth.createSession(qbUser).performAsync(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 proceedToTheNextActivity();

@@ -52,18 +52,17 @@ android {
             keyPassword "android"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
 
-    compile ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion@aar") {
-        transitive=true
-    }
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
-    compile (project(":sample-core")) {
-        transitive = true;
-    }
+    compile (project(":sample-core"))
 
     compile "com.android.support:recyclerview-v7:${rootProject.recyclerviewV7Version}"
     compile "com.android.support:cardview-v7:23.+"

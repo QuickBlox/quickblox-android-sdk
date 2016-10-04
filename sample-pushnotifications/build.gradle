@@ -35,12 +35,14 @@ android {
             keyPassword "android"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    compile(project(":sample-core")) {
-        transitive = true;
-    }
+    compile(project(":sample-core"))
 
     compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
 }
