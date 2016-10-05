@@ -41,15 +41,12 @@ import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
-import com.quickblox.sample.chat.utils.qb.VerboseQbChatConnectionListener;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
-
-import org.jivesoftware.smack.ConnectionListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -177,11 +174,18 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         if (resultCode == RESULT_OK) {
             isProcessingResultInProgress = true;
             if (requestCode == REQUEST_SELECT_PEOPLE) {
-                ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_chat);
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-                createDialog(selectedUsers);
+                if (isTryCreateExistingPrivateDialog(selectedUsers)){
+                    selectedUsers.remove(ChatHelper.getCurrentUser());
+                    QBChatDialog existingPrivateDialog = QbDialogHolder.getInstance().getPrivateDialogWithUser(selectedUsers.get(0));
+                    isProcessingResultInProgress = false;
+                    ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, existingPrivateDialog.getDialogId());
+                } else {
+                    ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_chat);
+                    createDialog(selectedUsers);
+                }
             } else if (requestCode == REQUEST_DIALOG_ID_FOR_UPDATE) {
                 if (data != null) {
                     String dialogId = data.getStringExtra(ChatActivity.EXTRA_DIALOG_ID);
@@ -194,6 +198,13 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         } else {
             updateDialogsAdapter();
         }
+    }
+
+    private boolean isTryCreateExistingPrivateDialog(ArrayList<QBUser> allSelectedUsers){
+        ArrayList<QBUser> selectedUsers = new ArrayList<>();
+        selectedUsers.addAll(allSelectedUsers);
+        selectedUsers.remove(ChatHelper.getCurrentUser());
+        return selectedUsers.size() == 1 && QbDialogHolder.getInstance().hasPrivateDialogWithUser(selectedUsers.get(0));
     }
 
     private void loadUpdatedDialog(String dialogId) {
