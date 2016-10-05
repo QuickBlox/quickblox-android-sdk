@@ -52,14 +52,22 @@ public class QbDialogHolder {
 
     public void deleteDialogs(Collection<QBChatDialog> dialogs) {
         for (QBChatDialog dialog : dialogs) {
-            dialogsMap.remove(dialog.getDialogId());
+            deleteDialog(dialog);
         }
     }
 
     public void deleteDialogs(ArrayList<String> dialogsIds) {
         for (String dialogId : dialogsIds) {
-            dialogsMap.remove(dialogId);
+            deleteDialog(dialogId);
         }
+    }
+
+    public void deleteDialog(QBChatDialog chatDialog){
+        dialogsMap.remove(chatDialog.getDialogId());
+    }
+
+    public void deleteDialog(String dialogId){
+        dialogsMap.remove(dialogId);
     }
 
     public boolean hasDialogWithId(String dialogId){

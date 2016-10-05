@@ -199,6 +199,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             @Override
             public void onSuccess(QBChatDialog qbDialog, Bundle bundle) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
+                QbDialogHolder.getInstance().deleteDialog(qbDialog);
                 finish();
             }
 

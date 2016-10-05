@@ -191,6 +191,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                     updateDialogsList();
                 }
             }
+        } else {
+            updateDialogsAdapter();
         }
     }
 
