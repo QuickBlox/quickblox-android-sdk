@@ -502,6 +502,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
             Log.v(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
+            requestBuilder.setSkip(skipRecords = 0);
             loadDialogsFromQb(true, true);
         }
     }
