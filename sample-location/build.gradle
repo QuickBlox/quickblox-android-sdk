@@ -35,10 +35,14 @@ android {
             keyPassword "android"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
     compile (project(":sample-core")) {
         transitive = true;
     }

@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.google.gms:google-services:2.0.0-beta2'
     }
 }
@@ -33,7 +33,7 @@ ext {
     // QuickBlox SDK version
     qbSdkVersion = '3.0'
 
-    versionName = "2.6.1"
+    versionName = "3.0"
 
     testRunnerVersion = "0.4.1"
 
@@ -44,7 +44,7 @@ ext {
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.2.1'
     supportAnnotationsVersion = '23.1.1'
-    designVersion = '23.1.1'
+    designVersion = '24.1.1'
 
     uilVersion = '1.9.0'
     glideVersion = '3.6.1'
