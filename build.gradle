@@ -44,7 +44,7 @@ ext {
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.2.1'
     supportAnnotationsVersion = '23.1.1'
-    designVersion = '24.1.1'
+    designVersion = '23.1.1'
 
     uilVersion = '1.9.0'
     glideVersion = '3.6.1'
