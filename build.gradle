@@ -16,6 +16,10 @@ allprojects {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
     }
+
+    crashlytics {
+        manifestPath = '/src/main/AndroidManifest.xml'
+    }
 }
 
 ext {
