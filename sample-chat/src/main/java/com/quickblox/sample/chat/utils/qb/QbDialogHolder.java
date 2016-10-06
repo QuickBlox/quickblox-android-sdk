@@ -2,6 +2,8 @@ package com.quickblox.sample.chat.utils.qb;
 
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,18 +54,41 @@ public class QbDialogHolder {
 
     public void deleteDialogs(Collection<QBChatDialog> dialogs) {
         for (QBChatDialog dialog : dialogs) {
-            dialogsMap.remove(dialog.getDialogId());
+            deleteDialog(dialog);
         }
     }
 
     public void deleteDialogs(ArrayList<String> dialogsIds) {
         for (String dialogId : dialogsIds) {
-            dialogsMap.remove(dialogId);
+            deleteDialog(dialogId);
         }
+    }
+
+    public void deleteDialog(QBChatDialog chatDialog){
+        dialogsMap.remove(chatDialog.getDialogId());
+    }
+
+    public void deleteDialog(String dialogId){
+        dialogsMap.remove(dialogId);
     }
 
     public boolean hasDialogWithId(String dialogId){
         return dialogsMap.containsKey(dialogId);
+    }
+
+    public boolean hasPrivateDialogWithUser(QBUser user){
+        return getPrivateDialogWithUser(user) != null;
+    }
+
+    public QBChatDialog getPrivateDialogWithUser(QBUser user){
+        for (QBChatDialog chatDialog : dialogsMap.values()){
+            if (QBDialogType.PRIVATE.equals(chatDialog.getType())
+                    && chatDialog.getOccupants().contains(user.getId())){
+                return chatDialog;
+            }
+        }
+
+        return null;
     }
 
     private Map<String, QBChatDialog> getSortedMap(Map <String, QBChatDialog> unsortedMap){
