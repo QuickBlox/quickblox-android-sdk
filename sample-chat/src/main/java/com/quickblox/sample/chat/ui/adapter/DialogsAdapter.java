@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.utils.StringUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.core.ui.adapter.BaseSelectableListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -19,8 +20,7 @@ import java.util.List;
 
 public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
 
-    private final String NULL_TEXT = "null";
-    private final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = "";
 
     public DialogsAdapter(Context context, List<QBChatDialog> dialogs) {
         super(context, dialogs);
@@ -73,22 +73,17 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
     private boolean isLastMessageAttachment(QBChatDialog dialog) {
         String lastMessage = dialog.getLastMessage();
         Integer lastMessageSenderId = dialog.getLastMessageUserId();
-        return (textIsNull(lastMessage) || TextUtils.isEmpty(lastMessage)) && lastMessageSenderId != null;
+        return (StringUtils.textIsNull(lastMessage) || TextUtils.isEmpty(lastMessage)) && lastMessageSenderId != null;
     }
 
     private String prepareTextLastMessage(QBChatDialog chatDialog){
         if (isLastMessageAttachment(chatDialog)){
             return context.getString(R.string.chat_attachment);
         } else if (!TextUtils.isEmpty(chatDialog.getLastMessage())){
-            return textIsNull(chatDialog.getLastMessage()) ? EMPTY_STRING : chatDialog.getLastMessage();
+            return StringUtils.textIsNull(chatDialog.getLastMessage()) ? EMPTY_STRING : chatDialog.getLastMessage();
         }
 
         return EMPTY_STRING;
-    }
-
-    //temp fix before fixing in SDK
-    private boolean textIsNull(String text){
-        return NULL_TEXT.equals(text);
     }
 
     private static class ViewHolder {

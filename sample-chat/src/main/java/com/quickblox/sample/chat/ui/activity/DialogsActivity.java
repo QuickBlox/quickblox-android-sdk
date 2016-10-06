@@ -177,7 +177,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-                if (isTryCreateExistingPrivateDialog(selectedUsers)){
+                if (isPrivateDialogExist(selectedUsers)){
                     selectedUsers.remove(ChatHelper.getCurrentUser());
                     QBChatDialog existingPrivateDialog = QbDialogHolder.getInstance().getPrivateDialogWithUser(selectedUsers.get(0));
                     isProcessingResultInProgress = false;
@@ -200,7 +200,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         }
     }
 
-    private boolean isTryCreateExistingPrivateDialog(ArrayList<QBUser> allSelectedUsers){
+    private boolean isPrivateDialogExist(ArrayList<QBUser> allSelectedUsers){
         ArrayList<QBUser> selectedUsers = new ArrayList<>();
         selectedUsers.addAll(allSelectedUsers);
         selectedUsers.remove(ChatHelper.getCurrentUser());
