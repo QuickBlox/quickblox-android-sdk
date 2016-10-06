@@ -17,9 +17,6 @@ allprojects {
         }
     }
 
-    crashlytics {
-        manifestPath = '/src/main/AndroidManifest.xml'
-    }
 }
 
 ext {
