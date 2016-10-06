@@ -41,23 +41,6 @@ android {
         }
     }
 
-    productFlavors {
-        // JAR
-        online {
-
-        }
-
-        // AAR
-        onlineAar {
-
-        }
-
-        // for development
-        offlineDev {
-
-        }
-    }
-
     lintOptions {
         abortOnError false
     }
