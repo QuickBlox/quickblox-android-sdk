@@ -64,9 +64,6 @@ android {
         abortOnError false
     }
 
-    crashlytics {
-        manifestPath = '/src/main/AndroidManifest.xml'
-    }
 
 }
 
