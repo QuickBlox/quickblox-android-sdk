@@ -13,7 +13,8 @@
             "test_user_id2": 11108871,
             "test_user_login2": "supersample-ios1",
             "test_user_password2": "supersample-ios1",
-            "dialog_id": "561cffc2a28f9a97ec0001d9"
+//            "dialog_id": "561cffc2a28f9a97ec0001d9"
+            "dialog_id": "56f3fac3a0eb4786ae00003f"
         }
     },
     "active": "production",
