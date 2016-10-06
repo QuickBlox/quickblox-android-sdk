@@ -178,7 +178,7 @@ public class ChatHelper {
         if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
-            QBRestChatService.deleteDialog(qbDialog.getDialogId(), true)
+            QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
                     .performAsync(new QbEntityCallbackWrapper<Void>(callback));
         }
     }
