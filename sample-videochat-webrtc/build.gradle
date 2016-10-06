@@ -42,6 +42,10 @@ android {
             resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
             signingConfig signingConfigs.debug
         }
+
+        release {
+            resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
+        }
     }
 
     signingConfigs {
