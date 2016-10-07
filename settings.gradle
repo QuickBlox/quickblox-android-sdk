@@ -7,4 +7,3 @@ include 'sample-pushnotifications'
 include 'sample-users'
 include 'sample-videochat-webrtc'
 include 'snippets'
-

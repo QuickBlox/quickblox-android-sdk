@@ -41,21 +41,8 @@ android {
         }
     }
 
-    productFlavors {
-        // JAR
-        online {
-
-        }
-
-        // AAR
-        onlineAar {
-
-        }
-
-        // for development
-        offlineDev {
-
-        }
+    lintOptions {
+        abortOnError false
     }
 
 }
@@ -63,31 +50,12 @@ android {
 dependencies {
     compile(project(":sample-core"))
 
-    // online dependencies, from maven repository, jar files
-    //
-    onlineCompile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion") {
-        exclude group: 'de.measite.minidns'
-        exclude group: 'org.jxmpp'
-    }
-    onlineCompile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion@aar"
-    onlineCompile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
-    onlineCompile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion@aar"
-
     // online dependencies, from remote repository, aar files
 
     compile "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-location:$rootProject.qbSdkVersion"
-
-//    // offline dependencies, from 'SDK-android' dir, for debug
-//    //
-//    offlineDevCompile project(':quickblox-android-sdk-core')
-//    offlineDevCompile project(':quickblox-android-sdk-chat')
-//    offlineDevCompile project(':quickblox-android-sdk-content')
-//    offlineDevCompile project(':quickblox-android-sdk-messages')
-//    offlineDevCompile project(':quickblox-android-sdk-location')
-//    offlineDevCompile project(':quickblox-android-sdk-customobjects')
 
     // twitter digits
     compile('com.digits.sdk.android:digits:1.9.0@aar') {

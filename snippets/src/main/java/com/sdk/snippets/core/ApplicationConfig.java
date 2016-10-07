@@ -97,13 +97,13 @@ public class ApplicationConfig {
             useUser1 = jObject.getBoolean("use_first_user");
 
 
-            // fast run mode (only for debug)
-            //
-            if(android.os.Build.MODEL.equals("Galaxy Nexus")){
-                useUser1 = false;
-            }else{
-                useUser1 = true;
-            }
+//            // fast run mode (only for debug)
+//            //
+//            if(android.os.Build.MODEL.equals("Galaxy Nexus")){
+//                useUser1 = false;
+//            }else{
+//                useUser1 = true;
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

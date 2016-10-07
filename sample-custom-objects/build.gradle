@@ -35,17 +35,21 @@ android {
             keyPassword "android"
         }
     }
+
     dataBinding {
         enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion@aar"
+    compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+    compile "com.quickblox:quickblox-android-sdk-extensions:$rootProject.qbSdkVersion"
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
-    compile(project(":sample-core")) {
-        transitive = true;
-    }
+    compile(project(":sample-core"))
 }
 
 apply from: "../artifacts.gradle"

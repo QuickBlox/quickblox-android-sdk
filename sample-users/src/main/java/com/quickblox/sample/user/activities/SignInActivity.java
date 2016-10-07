@@ -40,7 +40,7 @@ public class SignInActivity extends BaseActivity {
         progressDialog.show();
 
         QBUser qbUser = new QBUser(loginEditText.getText().toString(), passwordEditText.getText().toString());
-        QBUsers.signIn(qbUser, new QBEntityCallback<QBUser>() {
+        QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 progressDialog.dismiss();

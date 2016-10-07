@@ -124,7 +124,7 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject object = new QBCustomObject("JSON", "561cbde9a28f9a520c001c35");
 
-            QBCustomObjects.getObject(object, new QBEntityCallback<QBCustomObject>(){
+            QBCustomObjects.getObject(object).performAsync(new QBEntityCallback<QBCustomObject>(){
                 @Override
                 public void onSuccess(QBCustomObject customObject, Bundle params) {
                     Log.i(TAG, ">>> custom object: " + customObject);
@@ -151,7 +151,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObject getObject = null;
             try {
-                getObject = QBCustomObjects.getObject(object);
+                getObject = QBCustomObjects.getObject(object).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -174,7 +174,7 @@ public class SnippetsCustomObjects extends Snippets {
             coIDs.add("53f323ab535c12567903ba43");
             coIDs.add("53f32498535c12a57a03f434");
 
-            QBCustomObjects.getObjectsByIds(MOVIE_CLASS, coIDs, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+            QBCustomObjects.getObjectsByIds(MOVIE_CLASS, coIDs).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
                 @Override
                 public void onSuccess(ArrayList<QBCustomObject> customObjects, Bundle params) {
                     Log.i(TAG, ">>> custom objects: " + customObjects);
@@ -197,7 +197,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             ArrayList<QBCustomObject> getObjects = null;
             try {
-                getObjects = QBCustomObjects.getObjectsByIds(MOVIE_CLASS, coIDs);
+                getObjects = (ArrayList<QBCustomObject>) QBCustomObjects.getObjectsByIds(MOVIE_CLASS, coIDs).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -223,7 +223,7 @@ public class SnippetsCustomObjects extends Snippets {
 //            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
             
 
-            QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+            QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
 
                 @Override
                 public void onSuccess(ArrayList<QBCustomObject> customObjects, Bundle params) {
@@ -267,7 +267,7 @@ public class SnippetsCustomObjects extends Snippets {
             Bundle params = new Bundle();
             ArrayList<QBCustomObject> objects = null;
             try {
-                objects = QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder, params);
+                objects = QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder, params).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -292,7 +292,7 @@ public class SnippetsCustomObjects extends Snippets {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.gt("rating", 1);
 
-            QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder, new QBEntityCallback<Integer>() {
+            QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder).performAsync(new QBEntityCallback<Integer>() {
 
                     @Override
                     public void onSuccess(Integer count, Bundle params) {
@@ -317,7 +317,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             Integer count = null;
             try {
-                count = QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder);
+                count = QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -345,7 +345,7 @@ public class SnippetsCustomObjects extends Snippets {
             newRecord.putDate("ddd", new Date());
             newRecord.putLocation("loc", Arrays.asList(new Double[]{3.78, 4.87}));
 
-            QBCustomObjects.createObject(newRecord, new QBEntityCallback<QBCustomObject>() {
+            QBCustomObjects.createObject(newRecord).performAsync(new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> created object: " + object);
@@ -384,7 +384,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObject createdObject = null;
             try {
-                createdObject = QBCustomObjects.createObject(newRecord);
+                createdObject = QBCustomObjects.createObject(newRecord).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -419,7 +419,7 @@ public class SnippetsCustomObjects extends Snippets {
             qbCustomObjectList.add(newRecord1);
             qbCustomObjectList.add(newRecord2);
 
-            QBCustomObjects.createObjects(qbCustomObjectList, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+            QBCustomObjects.createObjects(qbCustomObjectList).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
                 @Override
                 public void onSuccess(ArrayList<QBCustomObject> qbCustomObjects, Bundle args) {
                     Log.i(TAG, ">>> custom object list: " + qbCustomObjects);
@@ -454,7 +454,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             List<QBCustomObject> createdObjects = null;
             try {
-                createdObjects = QBCustomObjects.createObjects(qbCustomObjectList);
+                createdObjects = QBCustomObjects.createObjects(qbCustomObjectList).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -485,7 +485,7 @@ public class SnippetsCustomObjects extends Snippets {
             QBRequestUpdateBuilder rb = new QBRequestUpdateBuilder();
             rb.pullAll("tags", "car1", "car2");
 
-            QBCustomObjects.updateObject(record, rb, new QBEntityCallback<QBCustomObject>() {
+            QBCustomObjects.updateObject(record, rb).performAsync(new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> updated record: : " + object.toString());
@@ -525,7 +525,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObject updatedObject = null;
             try {
-                updatedObject = QBCustomObjects.updateObject(obj);
+                updatedObject = QBCustomObjects.updateObject(obj).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -561,7 +561,7 @@ public class SnippetsCustomObjects extends Snippets {
             qbCustomObjectList.add(record1);
             qbCustomObjectList.add(record2);
 
-            QBCustomObjects.updateObjects(qbCustomObjectList, new QBEntityCallback<ArrayList<QBCustomObject>>() {
+            QBCustomObjects.updateObjects(qbCustomObjectList).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
                 @Override
                 public void onSuccess(ArrayList<QBCustomObject> objects, Bundle params) {
                     Log.i(TAG, ">>> updated records: " + objects.toString());
@@ -599,7 +599,7 @@ public class SnippetsCustomObjects extends Snippets {
             ArrayList<QBCustomObject> updatedObjects = null;
             Bundle params = new Bundle();
             try {
-                updatedObjects = QBCustomObjects.updateObjects(qbCustomObjectList, params);
+                updatedObjects = QBCustomObjects.updateObjects(qbCustomObjectList, params).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -619,7 +619,7 @@ public class SnippetsCustomObjects extends Snippets {
     Snippet deleteCustomObject = new Snippet("delete object") {
         @Override
         public void execute() {
-            QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a4", new QBEntityCallback<Void>() {
+            QBCustomObjects.deleteObject(MOVIE_CLASS, "53f3660b6fd1dfa9c43ce5a4").performAsync(new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
                     Log.i(TAG, ">>> custom object deleted OK");
@@ -637,7 +637,7 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void executeAsync() {
             try {
-                QBCustomObjects.deleteObject(MOVIE_CLASS, "561b9af7a0eb47fc1e000718");
+                QBCustomObjects.deleteObject(MOVIE_CLASS, "561b9af7a0eb47fc1e000718").perform();
                 Log.i(TAG, ">>> custom object deleted OK");
             } catch (QBResponseException e) {
                 setException(e);
@@ -658,7 +658,7 @@ public class SnippetsCustomObjects extends Snippets {
             deleteIds.add("53f36e796fd1dfa9c43ce5a6");
             deleteIds.add("53f36e796fd1dfa9c43ce5a7");
 
-            QBCustomObjects.deleteObjects(MOVIE_CLASS, deleteIds, new QBEntityCallback<ArrayList<String>>() {
+            QBCustomObjects.deleteObjects(MOVIE_CLASS, deleteIds).performAsync(new QBEntityCallback<ArrayList<String>>() {
 
                 @Override
                 public void onSuccess(ArrayList<String> deletedObjects, Bundle params) {
@@ -687,7 +687,7 @@ public class SnippetsCustomObjects extends Snippets {
             Bundle params = new Bundle();
             ArrayList<String> deleted = null;
             try {
-                deleted = QBCustomObjects.deleteObjects(MOVIE_CLASS, deleteIds, params);
+                deleted = (ArrayList<String>) QBCustomObjects.deleteObjects(MOVIE_CLASS, deleteIds, params).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -711,7 +711,7 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
 
-            QBCustomObjects.getObjectPermissions(MOVIE_CLASS, "53f44e7befa3573473000002", new QBEntityCallback<QBPermissions>() {
+            QBCustomObjects.getObjectPermissions(MOVIE_CLASS, "53f44e7befa3573473000002").performAsync(new QBEntityCallback<QBPermissions>() {
 
                 @Override
                 public void onSuccess(QBPermissions permissions, Bundle params) {
@@ -731,7 +731,7 @@ public class SnippetsCustomObjects extends Snippets {
         public void executeAsync() {
             QBPermissions permissions = null;
             try {
-                permissions = QBCustomObjects.getObjectPermissions(MOVIE_CLASS, "53f365f06fd1dfa9c43ce5a3");
+                permissions = QBCustomObjects.getObjectPermissions(MOVIE_CLASS, "53f365f06fd1dfa9c43ce5a3").perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -770,7 +770,7 @@ public class SnippetsCustomObjects extends Snippets {
             permissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, openPermissionsForGroups);
             record.setPermission(permissions);
 
-            QBCustomObjects.updateObject(record, (QBRequestUpdateBuilder) null, new QBEntityCallback<QBCustomObject>() {
+            QBCustomObjects.updateObject(record, null).performAsync(new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> updated record: : " + object.toString());
@@ -810,7 +810,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObject updatedObject = null;
             try {
-                updatedObject = QBCustomObjects.updateObject(obj);
+                updatedObject = QBCustomObjects.updateObject(obj).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -849,7 +849,7 @@ public class SnippetsCustomObjects extends Snippets {
             permissions.setUpdatePermission(QBPermissionsLevel.OWNER);
             newRecord.setPermission(permissions);
 
-            QBCustomObjects.createObject(newRecord, new QBEntityCallback<QBCustomObject>() {
+            QBCustomObjects.createObject(newRecord).performAsync(new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject object, Bundle params) {
                     Log.i(TAG, ">>> created object: " + object);
@@ -889,7 +889,7 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObject createdObject = null;
             try {
-                createdObject = QBCustomObjects.createObject(newRecord);
+                createdObject = QBCustomObjects.createObject(newRecord).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -910,7 +910,12 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
-            QBCustomObjectsFiles.uploadFile(imageFile, qbCustomObject, "image", new QBEntityCallback<QBCustomObjectFileField>() {
+            QBCustomObjectsFiles.uploadFile(imageFile, qbCustomObject, "image", new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
+            }).performAsync(new QBEntityCallback<QBCustomObjectFileField>() {
 
                 @Override
                 public void onSuccess(QBCustomObjectFileField uploadFileResult, Bundle params) {
@@ -921,11 +926,6 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onError(QBResponseException errors) {
                        handleErrors(errors);
-                }
-            }, new QBProgressCallback() {
-                @Override
-                public void onProgressUpdate(int progress) {
-                    Log.i(TAG, "progress: " + progress);
                 }
             });
         }
@@ -943,7 +943,7 @@ public class SnippetsCustomObjects extends Snippets {
                     public void onProgressUpdate(int progress) {
                         Log.i(TAG, "progress: " + progress);
                     }
-                });
+                }).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -965,7 +965,12 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "54b51dadefa3574f1600000c");
 
-            QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", new QBEntityCallback<InputStream>(){
+            QBCustomObjectsFiles.downloadFile(qbCustomObject, "image", new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(int progress) {
+                    Log.i(TAG, "progress: " + progress);
+                }
+            }).performAsync(new QBEntityCallback<InputStream>(){
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
                     Log.i(TAG, "file downloaded");
@@ -974,11 +979,6 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onError(QBResponseException errors) {
                     handleErrors(errors);
-                }
-            }, new QBProgressCallback() {
-                @Override
-                public void onProgressUpdate(int progress) {
-                    Log.i(TAG, "progress: " + progress);
                 }
             });
         }
@@ -997,7 +997,7 @@ public class SnippetsCustomObjects extends Snippets {
                     public void onProgressUpdate(int progress) {
                         Log.i(TAG, "progress: " + progress);
                     }
-                });
+                }).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -1018,7 +1018,7 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
 
-            QBCustomObjectsFiles.deleteFile(qbCustomObject, "image", new QBEntityCallback<Void>() {
+            QBCustomObjectsFiles.deleteFile(qbCustomObject, "image").performAsync(new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -1039,7 +1039,7 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
 
             try {
-                 QBCustomObjectsFiles.deleteFile(qbCustomObject, "image");
+                 QBCustomObjectsFiles.deleteFile(qbCustomObject, "image").perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -1058,7 +1058,7 @@ public class SnippetsCustomObjects extends Snippets {
             requestGetBuilder.in("name", "The Dark Knight", "The Godfather");
 
             QBCustomObjects.getAggregationObjects("SuperSample",
-                    aggregationRequestBuilder, requestGetBuilder, new QBEntityCallback<ArrayList<QBAggregationItem>>() {
+                    aggregationRequestBuilder, requestGetBuilder).performAsync(new QBEntityCallback<ArrayList<QBAggregationItem>>() {
                         @Override
                         public void onSuccess(ArrayList<QBAggregationItem> qbAggregationItems, Bundle bundle) {
                             Log.i(TAG, "aggregationObjects: " + qbAggregationItems);
@@ -1084,7 +1084,7 @@ public class SnippetsCustomObjects extends Snippets {
             requestGetBuilder.in("name", "The Dark Knight", "The Godfather");
             try {
                 ArrayList<QBAggregationItem> aggregationObjects = QBCustomObjects.getAggregationObjects("SuperSample",
-                        aggregationRequestBuilder, requestGetBuilder);
+                        aggregationRequestBuilder, requestGetBuilder).perform();
 
                 Log.i(TAG, "aggregationObjects: " + aggregationObjects);
 

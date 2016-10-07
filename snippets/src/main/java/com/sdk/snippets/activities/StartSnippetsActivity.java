@@ -3,6 +3,7 @@ package com.sdk.snippets.activities;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.TabHost;
 import com.sdk.snippets.R;
 
@@ -51,5 +52,7 @@ public class StartSnippetsActivity extends TabActivity {
         tabHost.addTab(content);
         tabHost.addTab(users);
         tabHost.addTab(locations);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 }

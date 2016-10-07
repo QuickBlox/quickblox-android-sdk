@@ -72,7 +72,7 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void execute() {
 
-            QBAuth.createSession(new QBEntityCallback<QBSession>() {
+            QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
 
                 @Override
                 public void onSuccess(QBSession session, Bundle params) {
@@ -92,7 +92,7 @@ public class SnippetsAuth extends Snippets{
         public void executeAsync() {
             QBSession session = null;
             try {
-                session = QBAuth.createSession();
+                session = QBAuth.createSession().perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -114,7 +114,7 @@ public class SnippetsAuth extends Snippets{
         public void execute() {
 
             QBAuth.createSession(new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
-                    ApplicationConfig.getInstance().getTestUserPassword1()), new QBEntityCallback<QBSession>() {
+                    ApplicationConfig.getInstance().getTestUserPassword1())).performAsync(new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession session, Bundle args) {
                     Log.i(TAG, "session created, token = " + session.getToken());
@@ -141,7 +141,7 @@ public class SnippetsAuth extends Snippets{
             try {
                 QBUser user = new QBUser(ApplicationConfig.getInstance().getTestUserLogin1(),
                         ApplicationConfig.getInstance().getTestUserPassword1());
-                session = QBAuth.createSession(user);
+                session = QBAuth.createSession(user).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -163,7 +163,7 @@ public class SnippetsAuth extends Snippets{
 
             String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null, new QBEntityCallback<QBSession>() {
+            QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null).performAsync(new QBEntityCallback<QBSession>() {
 
                 @Override
                 public void onSuccess(QBSession session,  Bundle args) {
@@ -185,7 +185,7 @@ public class SnippetsAuth extends Snippets{
             try {
                 String facebookAccessToken = "AAAEra8jNdnkBABYf3ZBSAz9dgLfyK7tQNttIoaZA1cC40niR6HVS0nYuufZB0ZCn66VJcISM8DO2bcbhEahm2nW01ZAZC1YwpZB7rds37xW0wZDZD";
 
-                session = QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null);
+                session = QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
@@ -243,7 +243,7 @@ public class SnippetsAuth extends Snippets{
                 if(isSync){
                     QBSession qbSession = null;
                     try {
-                        qbSession = QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization);
+                        qbSession = QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization).perform();
                     } catch (QBResponseException e) {
                         e.printStackTrace();
                     }
@@ -251,7 +251,7 @@ public class SnippetsAuth extends Snippets{
                         Log.i(TAG, "session created: " + qbSession);
                     }
                 }else{
-                    QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization, new QBEntityCallback<QBSession>() {
+                    QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization).performAsync(new QBEntityCallback<QBSession>() {
                         @Override
                         public void onSuccess(QBSession qbSession, Bundle params) {
                             Log.i(TAG, "session created: "+qbSession);
@@ -288,7 +288,7 @@ public class SnippetsAuth extends Snippets{
     Snippet destroySession = new Snippet("destroy session") {
         @Override
         public void execute() {
-            QBAuth.deleteSession(new QBEntityCallback<Void>() {
+            QBAuth.deleteSession().performAsync(new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid, Bundle bundle) {
                     Log.i(TAG, "success");
@@ -306,7 +306,7 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void executeAsync() {
             try {
-                QBAuth.deleteSession();
+                QBAuth.deleteSession().perform();
                 Log.i(TAG, "session destroyed ");
             } catch (QBResponseException e) {
                 Log.i(TAG, "destroy fail");
@@ -325,7 +325,7 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void execute() {
 
-            QBAuth.getSession(new QBEntityCallback<QBSession>() {
+            QBAuth.getSession().performAsync(new QBEntityCallback<QBSession>() {
                 @Override
                 public void onSuccess(QBSession qbSession, Bundle bundle) {
                     Log.i(TAG, "session: " + qbSession);
@@ -343,7 +343,7 @@ public class SnippetsAuth extends Snippets{
         @Override
         public void executeAsync() {
             try {
-                QBSession session = QBAuth.getSession();
+                QBSession session = QBAuth.getSession().perform();
                 Log.i(TAG, "session: " + session);
             } catch (QBResponseException e) {
                 Log.i(TAG, "get session fail");
