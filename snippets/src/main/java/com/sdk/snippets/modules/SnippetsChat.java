@@ -4,12 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.auth.QBAuth;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBMessageStatusesManager;
 import com.quickblox.chat.QBPingManager;
 import com.quickblox.chat.QBPrivacyListsManager;
-import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBRestChatService;
 import com.quickblox.chat.QBRoster;
 import com.quickblox.chat.QBSystemMessagesManager;
@@ -18,7 +16,6 @@ import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.listeners.QBChatDialogMessageSentListener;
 import com.quickblox.chat.listeners.QBChatDialogParticipantListener;
 import com.quickblox.chat.listeners.QBChatDialogTypingListener;
-import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBPrivacyListListener;
 import com.quickblox.chat.listeners.QBRosterListener;
@@ -79,7 +76,6 @@ public class SnippetsChat extends Snippets {
 
 
     //Chat API 3.0
-    private QBChatDialog chatDialog;
     private QBChatDialog privateChatDialog;
     private QBChatDialog groupChatDialog;
 
@@ -184,8 +180,12 @@ public class SnippetsChat extends Snippets {
         snippets.add(getDialogsSynchronous);
         snippets.add(getDialogsCount);
         snippets.add(getDialogsCountSynchronous);
-        snippets.add(createDialog);
-        snippets.add(createDialogSynchronous);
+        snippets.add(createGroupDialog);
+        snippets.add(createGroupDialogSynchronous);
+
+        snippets.add(createPrivateDialog);
+        snippets.add(createPrivateDialogSynchronous);
+
         snippets.add(updateDialog);
         snippets.add(updateDialogSynchronous);
         snippets.add(deleteDialog);
@@ -229,7 +229,12 @@ public class SnippetsChat extends Snippets {
     }
 
     private void initChatService() {
+        QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
+        configurationBuilder.setKeepAlive(true)
+                .setSocketTimeout(0);
+        QBChatService.setConfigurationBuilder(configurationBuilder);
         QBChatService.setDebugEnabled(true);
+        QBChatService.setDefaultPacketReplyTimeout(10000);
 
         chatService = QBChatService.getInstance();
         chatService.addConnectionListener(chatConnectionListener);
@@ -290,29 +295,33 @@ public class SnippetsChat extends Snippets {
         globalChatDialogMessageListener = new QBChatDialogMessageListener() {
             @Override
             public void processMessage(String dialogId, QBChatMessage qbChatMessage, Integer senderId) {
-                try {
-                    chatDialog = QBRestChatService.getChatDialogById(dialogId).perform();
-                    log(chatDialog.getType().toString() +  "chat with id " + chatDialog.getDialogId() + " downloaded");
-                } catch (QBResponseException e) {
-                    e.printStackTrace();
-                }
+                QBRestChatService.getChatDialogById(dialogId).performAsync(new QBEntityCallback<QBChatDialog>() {
+                    @Override
+                    public void onSuccess(QBChatDialog chatDialog, Bundle bundle) {
+                        log(chatDialog.getType().toString() +  " chat with id " + chatDialog.getDialogId() + " downloaded");
+                        if (QBDialogType.PRIVATE.equals(chatDialog.getType())){
+                            privateChatDialog = chatDialog;
+                            privateChatDialog.addMessageListener(privateChatDialogMessageListener);
+                            privateChatDialog.addMessageSentListener(privateChatDialogMessageSentListener);
+                            privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
+                        } else {
+                            groupChatDialog = chatDialog;
+                            groupChatDialog.addMessageListener(groupChatDialogMessageListener);
+                            groupChatDialog.addMessageSentListener(groupChatDialogMessageSentListener);
+                            groupChatDialog.addIsTypingListener(groupChatDialogTypingListener);
+                        }
+                    }
 
-                if (QBDialogType.PRIVATE.equals(chatDialog.getType())){
-                    privateChatDialog = chatDialog;
-                    privateChatDialog.addMessageListener(privateChatDialogMessageListener);
-                    privateChatDialog.addMessageSentListener(privateChatDialogMessageSentListener);
-                    privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
-                } else {
-                    groupChatDialog = chatDialog;
-                    groupChatDialog.addMessageListener(groupChatDialogMessageListener);
-                    groupChatDialog.addMessageSentListener(groupChatDialogMessageSentListener);
-                    groupChatDialog.addIsTypingListener(groupChatDialogTypingListener);
-                }
+                    @Override
+                    public void onError(QBResponseException e) {
+                        log("Error loading dialog from global message listener: " + e);
+                    }
+                });
             }
 
             @Override
             public void processError(String dialogId, QBChatException e, QBChatMessage qbChatMessage, Integer senderId) {
-
+                log("Received error message to message listener");
             }
         };
 
@@ -634,47 +643,42 @@ public class SnippetsChat extends Snippets {
     Snippet sendPrivateMessageExtended = new Snippet("send private message") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
+            if (!chatService.isLoggedIn()) {
                 log("Please login first");
                 return;
+            } else if (privateChatDialog == null){
+                log("Please create private dialog first");
             }
 
-            try {
-                // create a message
-                QBChatMessage chatMessage = new QBChatMessage();
-                chatMessage.setBody("Hey " + new Random().nextInt());
-                chatMessage.setProperty("name", "bob");
-                chatMessage.setProperty("lastname", "boblast");
-                chatMessage.setSaveToHistory(true);
-                chatMessage.setMarkable(true);
+            // create a message
+            final QBChatMessage chatMessage = new QBChatMessage();
+            chatMessage.setBody("Hey " + new Random().nextInt());
+            chatMessage.setProperty("name", "bob");
+            chatMessage.setProperty("lastname", "boblast");
+            chatMessage.setSaveToHistory(true);
+            chatMessage.setMarkable(true);
 
 //                long time = System.currentTimeMillis()/1000;
 //                chatMessage.setProperty("date_sent", time + ".431");
 
-                // attach a photo
-                QBAttachment attachment = new QBAttachment("photo");
-                attachment.setId("111");
-                attachment.setUrl("www.img.com");
-                chatMessage.addAttachment(attachment);
-                //
-                QBAttachment attachment2 = new QBAttachment("video");
-                attachment2.setId("222");
-                attachment2.setUrl("www.video.com");
-                chatMessage.addAttachment(attachment2);
+            // attach a photo
+            QBAttachment attachment = new QBAttachment("photo");
+            attachment.setId("111");
+            attachment.setUrl("www.img.com");
+            chatMessage.addAttachment(attachment);
+            //
+            QBAttachment attachment2 = new QBAttachment("video");
+            attachment2.setId("222");
+            attachment2.setUrl("www.video.com");
+            chatMessage.addAttachment(attachment2);
 
-                QBChatDialog privateChatDialog = QBRestChatService.createChatDialog(DialogUtils.buildPrivateDialog(ApplicationConfig.getInstance().getTestUserId2())).perform();
+            privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
+            privateChatDialog.addMessageSentListener(privateChatDialogMessageSentListener);
 
-                if (privateChatDialog != null) {
-                    privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
-                    privateChatDialog.addMessageSentListener(privateChatDialogMessageSentListener);
-                }
-
+            try {
                 privateChatDialog.sendMessage(chatMessage);
             } catch (SmackException.NotConnectedException e) {
                 log("send message error: " + e.getClass().getSimpleName());
-            } catch (QBResponseException e) {
-                log("getting private chat dialog error: " + e.getClass().getSimpleName());
-                e.printStackTrace();
             }
         }
     };
@@ -684,27 +688,19 @@ public class SnippetsChat extends Snippets {
     ////////////////////////////////////// Typing notifications //////////////////////////////////////////
     //
 
-
     Snippet sendIsTypingInPrivateChat = new Snippet("send is typing (private chat)") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
-                return;
+            if (privateChatDialog == null){
+                log("Please create private dialog first");
             }
 
-            QBChatDialog privateChatDialog = null;
+            privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
+
             try {
-                privateChatDialog = QBRestChatService.createChatDialog(DialogUtils.buildPrivateDialog(
-                        ApplicationConfig.getInstance().getTestUserId2())).perform();
-                if (privateChatDialog != null) {
-                    privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
-                    privateChatDialog.sendIsTypingNotification();
-                }
-            } catch (QBResponseException | SmackException.NotConnectedException e) {
+                privateChatDialog.sendIsTypingNotification();
+            } catch (XMPPException | SmackException.NotConnectedException e) {
                 log("send typing error: " + e.getClass().getSimpleName());
-            } catch (XMPPException e) {
-                e.printStackTrace();
             }
         }
     };
@@ -712,23 +708,16 @@ public class SnippetsChat extends Snippets {
     Snippet sendStopTypingInPrivateChat = new Snippet("send stop typing (private chat)") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
-                return;
+            if (privateChatDialog == null){
+                log("Please create private dialog first");
             }
 
-            QBChatDialog privateChatDialog = null;
+            privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
+
             try {
-                privateChatDialog = QBRestChatService.createChatDialog(DialogUtils.buildPrivateDialog(
-                        ApplicationConfig.getInstance().getTestUserId2())).perform();
-                if (privateChatDialog != null) {
-                    privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
-                    privateChatDialog.sendStopTypingNotification();
-                }
-            } catch (QBResponseException | SmackException.NotConnectedException e) {
+                privateChatDialog.sendStopTypingNotification();
+            } catch (XMPPException | SmackException.NotConnectedException e) {
                 log("send stop typing error: " + e.getClass().getSimpleName());
-            } catch (XMPPException e) {
-                e.printStackTrace();
             }
         }
     };
@@ -736,7 +725,7 @@ public class SnippetsChat extends Snippets {
     Snippet sendIsTypingInGroupChat = new Snippet("send is typing (group chat)") {
         @Override
         public void execute() {
-            if (groupChatDialog == null) {
+            if (groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -754,7 +743,7 @@ public class SnippetsChat extends Snippets {
     Snippet sendStopTypingInGroupChat = new Snippet("send stop typing (group chat)") {
         @Override
         public void execute() {
-            if (groupChatDialog == null) {
+            if (groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -774,28 +763,21 @@ public class SnippetsChat extends Snippets {
     /////////////////////////////////////// Read/Delivered //////////////////////////////////////////
     //
 
-
     Snippet readMessagePrivateChat = new Snippet("read message (private chat)") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
-                return;
+            if (privateChatDialog == null){
+                log("Please create private dialog first");
             }
 
-            QBChatDialog privateChatDialog = null;
+            QBChatMessage status = new QBChatMessage();
+            status.setId("267477ab5612312312414124");
+            status.setDialogId("267477ab5612312312414124");
+
             try {
-                privateChatDialog = QBRestChatService.createChatDialog(DialogUtils.buildPrivateDialog(ApplicationConfig.getInstance().getTestUserId2())).perform();
-
-                QBChatMessage status = new QBChatMessage();
-                status.setId("267477ab5612312312414124");
-                status.setDialogId("267477ab5612312312414124");
-
                 privateChatDialog.readMessage(status);
-            } catch (XMPPException e) {
+            } catch (XMPPException | SmackException.NotConnectedException e) {
                 log("read message error: " + e.getLocalizedMessage());
-            } catch (SmackException.NotConnectedException | QBResponseException e) {
-                log("read message error: " + e.getClass().getSimpleName());
             }
         }
     };
@@ -803,26 +785,18 @@ public class SnippetsChat extends Snippets {
     Snippet deliverMessagePrivateChat = new Snippet("deliver message (private chat)") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
-                return;
+            if (privateChatDialog == null){
+                log("Please create private dialog first");
             }
 
-            QBChatDialog privateChatDialog = null;
+            QBChatMessage status = new QBChatMessage();
+            status.setId("267477ab5612312312414124");
+            status.setDialogId("267477ab5612312312414124");
 
             try {
-                privateChatDialog = QBRestChatService.createChatDialog(DialogUtils.buildPrivateDialog(ApplicationConfig.getInstance().getTestUserId2())).perform();
-
-
-                QBChatMessage status = new QBChatMessage();
-                status.setId("267477ab5612312312414124");
-                status.setDialogId("267477ab5612312312414124");
-
                 privateChatDialog.deliverMessage(status);
-            } catch (XMPPException e) {
+            } catch (XMPPException | SmackException.NotConnectedException e) {
                 log("deliver message error: " + e.getLocalizedMessage());
-            } catch (SmackException.NotConnectedException | QBResponseException e) {
-                log("deliver message error: " + e.getClass().getSimpleName());
             }
         }
     };
@@ -830,7 +804,7 @@ public class SnippetsChat extends Snippets {
     Snippet readMessageGroupChat = new Snippet("deliver message (group chat)") {
         @Override
         public void execute() {
-            if (groupChatDialog == null) {
+            if (!groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -853,7 +827,7 @@ public class SnippetsChat extends Snippets {
     Snippet deliverMessageGroupChat = new Snippet("deliver message (group chat)") {
         @Override
         public void execute() {
-            if (groupChatDialog == null) {
+            if (!groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -906,22 +880,15 @@ public class SnippetsChat extends Snippets {
     Snippet joinRoom = new Snippet("join Room") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
+            if (groupChatDialog == null) {
+                log("Please create group dialog first");
                 return;
             }
 
-            DiscussionHistory history = new DiscussionHistory();
+            final DiscussionHistory history = new DiscussionHistory();
             history.setMaxStanzas(0);
 
-            try {
-                groupChatDialog = QBRestChatService.getChatDialogById(ApplicationConfig.getInstance().getTestDialogId()).perform();
-                log("dialog ID: " + groupChatDialog.getDialogId());
-            } catch (QBResponseException e) {
-                log("Getting dialog error: " + e.getClass().getSimpleName());
-            }
-
-            QBEntityCallback clbck = new QBEntityCallback<Void>() {
+            final QBEntityCallback clbck = new QBEntityCallback<Void>() {
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
                     log("join Room success");
@@ -946,11 +913,10 @@ public class SnippetsChat extends Snippets {
     Snippet joinRoomSynchronous = new SnippetAsync("join Room (synchronous)", context) {
         @Override
         public void executeAsync() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
-                log("Please login first");
+            if (groupChatDialog == null) {
+                log("Please create group dialog first");
                 return;
             }
-
 
             DiscussionHistory history = new DiscussionHistory();
             history.setMaxStanzas(10);
@@ -977,7 +943,7 @@ public class SnippetsChat extends Snippets {
         protected void postExecute() {
             super.postExecute();
 
-            if (!QBChatService.getInstance().isLoggedIn()) {
+            if (!chatService.isLoggedIn()) {
                 return;
             }
 
@@ -995,6 +961,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             if (groupChatDialog == null) {
+                log("Please create group dialog first");
+                return;
+            } else if (!groupChatDialog.isJoined()){
                 log("Please join room first");
                 return;
             }
@@ -1018,11 +987,9 @@ public class SnippetsChat extends Snippets {
     Snippet sendMessageToRoomWithoutJoin = new Snippet("send message to room", "w/o join") {
         @Override
         public void execute() {
-
-            try {
-                groupChatDialog = QBRestChatService.getChatDialogById(ApplicationConfig.getInstance().getTestDialogId()).perform();
-            } catch (QBResponseException e) {
-                log("Getting dialog error: " + e.getClass().getSimpleName());
+            if (groupChatDialog == null) {
+                log("Please create group dialog first");
+                return;
             }
 
             groupChatDialog.addMessageListener(groupChatDialogMessageListener);
@@ -1049,6 +1016,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
             if (groupChatDialog == null) {
+                log("Please create group dialog first");
+                return;
+            } else if (!groupChatDialog.isJoined()){
                 log("Please join room first");
                 return;
             }
@@ -1075,6 +1045,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void executeAsync() {
             if (groupChatDialog == null) {
+                log("Please create group dialog first");
+                return;
+            } else if (!groupChatDialog.isJoined()){
                 log("Please join room first");
                 return;
             }
@@ -1114,6 +1087,10 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogs = new Snippet("Get Dialogs") {
         @Override
         public void execute() {
+            if (!chatService.isLoggedIn()){   //TODO VT need delete after fix QBANDRSDK-526
+                log("Please login first");
+                return;
+            }
 
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
@@ -1150,6 +1127,10 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogsSynchronous = new SnippetAsync("Get Dialogs (synchronous)", context) {
         @Override
         public void executeAsync() {
+            if (!chatService.isLoggedIn()){   //TODO VT need delete after fix QBANDRSDK-526
+                log("Please login first");
+                return;
+            }
 
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
@@ -1215,10 +1196,10 @@ public class SnippetsChat extends Snippets {
     };
 
 
-    Snippet createDialog = new Snippet("Create Dialog") {
+    Snippet createGroupDialog = new Snippet("Create Group Dialog") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
+            if (!chatService.isLoggedIn()) {
                 log("Please login first");
                 return;
             }
@@ -1254,6 +1235,7 @@ public class SnippetsChat extends Snippets {
             QBRestChatService.createChatDialog(dialog).performAsync(new QBEntityCallback<QBChatDialog>() {
                 @Override
                 public void onSuccess(QBChatDialog dialog, Bundle args) {
+                    groupChatDialog = dialog;
                     Log.i(TAG, "dialog: " + dialog);
                     Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
                     Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
@@ -1277,7 +1259,7 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-    Snippet createDialogSynchronous = new SnippetAsync("Create Dialog (synchronous)", context) {
+    Snippet createGroupDialogSynchronous = new SnippetAsync("Create Group Dialog (synchronous)", context) {
         @Override
         public void executeAsync() {
             if (!QBChatService.getInstance().isLoggedIn()) {
@@ -1300,19 +1282,112 @@ public class SnippetsChat extends Snippets {
             data.put("data[name]", "bingo");
             dialog.setCustomData(new QBDialogCustomData(data));
 
-
-            QBChatDialog createdDialog = null;
             try {
-                createdDialog = QBRestChatService.createChatDialog(dialog).perform();
+                groupChatDialog = QBRestChatService.createChatDialog(dialog).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
 
-            if (createdDialog != null) {
-                Log.i(TAG, "dialog: " + createdDialog);
+            if (groupChatDialog != null) {
+                Log.i(TAG, "dialog: " + groupChatDialog);
             }
         }
     };
+
+    Snippet createPrivateDialog = new Snippet("Create Private Dialog") {
+        @Override
+        public void execute() {
+            if (!chatService.isLoggedIn()) {
+                log("Please login first");
+                return;
+            }
+
+            ArrayList<Integer> occupantIdsList = new ArrayList<>();
+            occupantIdsList.add(ApplicationConfig.getInstance().getTestUserId2());
+
+            QBChatDialog dialog = new QBChatDialog();
+            dialog.setPhoto("452444");
+            dialog.setType(QBDialogType.PRIVATE);
+            dialog.setOccupantsIds(occupantIdsList);
+
+//            HashMap<String, Object> data = new HashMap<>();
+//            data.put("data[class_name]", "Advert");
+//            data.put("data[name]", "bingo");
+            final String myLocation = Double.toString(23.45454) + "," + Double.toString(0.4456);
+//            data.put("data[arr]", myLocation);
+//            dialog.setData(data);
+
+            QBDialogCustomData data = new QBDialogCustomData("Advert");
+            data.putString("name", "bingo");
+            data.putArray("arr", Arrays.asList(new Double[]{1.32, 2.56}));
+            data.putBoolean("bbb", true);
+            data.putFloat("fff", 45.676f);
+            data.putInteger("iii", 56);
+            data.putDate("ddd", new Date());
+            data.putLocation("loc", Arrays.asList(new Double[]{3.78, 4.87}));
+
+            dialog.setCustomData(data);
+
+            QBRestChatService.createChatDialog(dialog).performAsync(new QBEntityCallback<QBChatDialog>() {
+                @Override
+                public void onSuccess(QBChatDialog dialog, Bundle args) {
+                    privateChatDialog = dialog;
+                    Log.i(TAG, "dialog: " + dialog);
+                    Log.i(TAG, "arr: " + dialog.getCustomData().getArray("arr"));
+                    Log.i(TAG, "bbb: " + dialog.getCustomData().getBoolean("bbb"));
+                    Log.i(TAG, "fff: " + dialog.getCustomData().getFloat("fff"));
+                    Log.i(TAG, "fff2: " + dialog.getCustomData().get("fff"));
+                    Log.i(TAG, "iii: " + dialog.getCustomData().getInteger("iii"));
+                    Log.i(TAG, "name: " + dialog.getCustomData().getString("name"));
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        Log.i(TAG, "ddd: " + dialog.getCustomData().getDate("ddd", format));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(QBResponseException errors) {
+                    handleErrors(errors);
+                }
+            });
+        }
+    };
+
+    Snippet createPrivateDialogSynchronous = new SnippetAsync("Create Private Dialog (synchronous)", context) {
+        @Override
+        public void executeAsync() {
+            if (!chatService.isLoggedIn()) {
+                log("Please login first");
+                return;
+            }
+
+            ArrayList<Integer> occupantIdsList = new ArrayList<>();
+            occupantIdsList.add(ApplicationConfig.getInstance().getTestUserId2());
+            //
+            QBChatDialog dialog = new QBChatDialog();
+            dialog.setPhoto("452444");
+            dialog.setType(QBDialogType.PRIVATE);
+            dialog.setOccupantsIds(occupantIdsList);
+
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("data[class_name]", "Advert");
+            data.put("data[name]", "bingo");
+            dialog.setCustomData(new QBDialogCustomData(data));
+
+            try {
+                privateChatDialog = QBRestChatService.createChatDialog(dialog).perform();
+            } catch (QBResponseException e) {
+                setException(e);
+            }
+
+            if (groupChatDialog != null) {
+                Log.i(TAG, "dialog: " + groupChatDialog);
+            }
+        }
+    };
+
 
     Snippet updateDialog = new Snippet("Update Dialog") {
         @Override
@@ -1405,7 +1480,7 @@ public class SnippetsChat extends Snippets {
     Snippet deleteDialog = new Snippet("Delete Dialog") {
         @Override
         public void execute() {
-            if (!QBChatService.getInstance().isLoggedIn()) {
+            if (!chatService.isLoggedIn()) {
                 log("Please login first");
                 return;
             }
@@ -1430,7 +1505,7 @@ public class SnippetsChat extends Snippets {
         @Override
         public void executeAsync() {
 
-            if (!QBChatService.getInstance().isLoggedIn()) {
+            if (!chatService.isLoggedIn()) {
                 log("Please login first");
                 return;
             }
@@ -1463,7 +1538,7 @@ public class SnippetsChat extends Snippets {
 
 // Deliver messages (group)
 //                        try {
-//                            currentChatRoom.deliverMessagePrivateChat(msg);
+//                            groupChatDialog.deliverMessage(msg);
 //                        } catch (XMPPException e) {
 //                            e.printStackTrace();
 //                        } catch (SmackException.NotConnectedException e) {
@@ -1471,12 +1546,8 @@ public class SnippetsChat extends Snippets {
 //                        }
 
 // Deliver messages (private)
-//                        QBPrivateChat privateChat = privateChatManager.getChat(msg.getRecipientId());
-//                        if (privateChat == null) {
-//                            privateChat = privateChatManager.createChat(msg.getRecipientId(), privateChatMessageListener);
-//                        }
 //                        try {
-//                            privateChat.deliverMessage(msg);
+//                            privateChatDialog.deliverMessage(msg);
 //                        } catch (XMPPException e) {
 //                            log("deliver message error: " + e.getLocalizedMessage());
 //                        } catch (SmackException.NotConnectedException e) {
