@@ -8,8 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.Utils;
@@ -88,16 +87,16 @@ public class GooglePlayServicesHelper {
         new AsyncTask<String, Void, String>() {
             @Override
             protected String doInBackground(String... params) {
+
+                FirebaseInstanceId instanceID = FirebaseInstanceId.getInstance();
                 try {
-                    InstanceID instanceID = InstanceID.getInstance(CoreApp.getInstance());
-                    return instanceID.getToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+//                TODO Actually no need to getToken like this, just instanceID.getToken();
+                    Log.w(TAG, "senderId= " + params[0]);
+                    return instanceID.getToken(params[0], "GCM");
                 } catch (IOException e) {
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
-                    Log.w(TAG, e);
-                    return null;
+                    e.printStackTrace();
                 }
+                return "nulll";
             }
 
             @Override
@@ -136,17 +135,10 @@ public class GooglePlayServicesHelper {
         new AsyncTask<String, Void, Void>() {
             @Override
             protected Void doInBackground(String... params) {
-                try {
-                    InstanceID instanceID = InstanceID.getInstance(CoreApp.getInstance());
-                    instanceID.deleteToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                    return null;
-                } catch (IOException e) {
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
-                    Log.w(TAG, e);
-                    return null;
-                }
+                FirebaseInstanceId instanceID = FirebaseInstanceId.getInstance();
+//                TODO No need to deleteToken
+//                    instanceID.deleteToken(params[0], GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                return null;
             }
 
             @Override

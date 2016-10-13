@@ -1,19 +1,24 @@
 package com.quickblox.sample.core.gcm;
 
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
-import com.quickblox.sample.core.CoreApp;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
-import com.quickblox.sample.core.utils.constant.GcmConsts;
 
-public abstract class CoreGcmPushListenerService extends GcmListenerService {
+import java.util.Map;
+
+public abstract class CoreGcmPushListenerService extends FirebaseMessagingService {
     private static final String TAG = CoreGcmPushListenerService.class.getSimpleName();
+    private static final String MESSAGE_KEY = "message";
 
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString(GcmConsts.EXTRA_GCM_MESSAGE);
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        String from = remoteMessage.getFrom();
+        Map data = remoteMessage.getData();
+
+        String message = (String) data.get(MESSAGE_KEY);
+        Log.v(TAG, "data: " + data);
         Log.v(TAG, "From: " + from);
         Log.v(TAG, "Message: " + message);
 

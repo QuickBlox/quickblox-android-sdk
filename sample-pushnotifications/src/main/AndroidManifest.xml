@@ -3,16 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.quickblox.sample.pushnotifications">
 
-    <permission
-        android:name="com.quickblox.sample.pushnotifications.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="com.quickblox.sample.messages.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
@@ -38,31 +30,17 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.quickblox.sample.pushnotifications" />
-            </intent-filter>
-        </receiver>
-
         <service
-            android:name="com.quickblox.sample.pushnotifications.gcm.GcmPushListenerService"
-            android:exported="false">
+            android:name="com.quickblox.sample.pushnotifications.gcm.GcmPushListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.quickblox.sample.pushnotifications.gcm.GcmPushInstanceIDService"
-            android:exported="false">
+            android:name="com.quickblox.sample.pushnotifications.gcm.GcmPushInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 

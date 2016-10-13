@@ -19,8 +19,9 @@ android {
 dependencies {
     compile ("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion" )
 
-    compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
+    compile "com.google.firebase:firebase-messaging:9.0.0"
     compile "com.android.support:design:${rootProject.designVersion}"
     compile "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
 
+    compile "com.google.android.gms:play-services-base:${rootProject.playServicesVersion}"
 }
