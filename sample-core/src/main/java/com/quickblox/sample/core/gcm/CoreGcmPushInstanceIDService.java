@@ -16,7 +16,7 @@ public abstract class CoreGcmPushInstanceIDService extends FirebaseInstanceIdSer
 
         GooglePlayServicesHelper playServicesHelper = new GooglePlayServicesHelper();
         if (playServicesHelper.checkPlayServicesAvailable()) {
-            playServicesHelper.registerForGcm(getSenderId());
+//            playServicesHelper.registerForGcm(getSenderId());
         }
     }
 

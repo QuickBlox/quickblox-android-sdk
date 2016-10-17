@@ -89,14 +89,7 @@ public class GooglePlayServicesHelper {
             protected String doInBackground(String... params) {
 
                 FirebaseInstanceId instanceID = FirebaseInstanceId.getInstance();
-                try {
-//                TODO Actually no need to getToken like this, just instanceID.getToken();
-                    Log.w(TAG, "senderId= " + params[0]);
-                    return instanceID.getToken(params[0], "GCM");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return "nulll";
+                return instanceID.getToken();
             }
 
             @Override

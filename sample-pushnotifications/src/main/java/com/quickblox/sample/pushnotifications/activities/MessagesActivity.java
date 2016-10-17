@@ -27,6 +27,7 @@ import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
 import com.quickblox.messages.model.QBNotificationType;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
+import com.quickblox.sample.core.service.SubscribeService;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
@@ -72,9 +73,8 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
+
+        SubscribeService.subscribeToPushes(this, SubscribeService.Type.FCM, Consts.GCM_SENDER_ID, QBEnvironment.DEVELOPMENT);
         initUI();
 
         String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
@@ -90,6 +90,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+        SubscribeService.unSubscribeToPushes(this, SubscribeService.Type.FCM, Consts.GCM_SENDER_ID);
     }
 
     @Override
