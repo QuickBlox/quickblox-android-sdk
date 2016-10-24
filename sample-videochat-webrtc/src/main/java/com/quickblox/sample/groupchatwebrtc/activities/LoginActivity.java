@@ -228,7 +228,7 @@ public class LoginActivity extends BaseActivity {
     private void subscribeToPushes() {
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
             Log.d(TAG, "subscribeToPushes()");
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+//            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
         }
     }
 

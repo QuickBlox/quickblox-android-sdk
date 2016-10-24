@@ -21,5 +21,5 @@ public interface Consts {
 
     // In GCM, the Sender ID is a project ID that you acquire from the API console
 //    String GCM_SENDER_ID = "761750217637";
-    String GCM_SENDER_ID = "30718234359";
+    String FCM_SENDER_ID = "30718234359";
 }

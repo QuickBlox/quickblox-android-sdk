@@ -33,6 +33,7 @@ import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.Consts;
@@ -43,6 +44,7 @@ import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
+import com.quickblox.sample.core.service.SubscribeService;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
@@ -86,7 +88,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+//            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+            SubscribeService.subscribeToPushes(this, SubscribeService.Type.GCM, Consts.GCM_SENDER_ID, QBEnvironment.DEVELOPMENT);
         }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
@@ -525,6 +528,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
         @Override
         public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
+            // уже в mainThread
             if (!senderId.equals(ChatHelper.getCurrentUser().getId())) {
                 dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
             }

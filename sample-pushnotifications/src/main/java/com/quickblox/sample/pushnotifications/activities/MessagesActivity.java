@@ -48,7 +48,6 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     private ArrayAdapter<String> adapter;
 
     private List<String> receivedPushes;
-    private GooglePlayServicesHelper googlePlayServicesHelper;
 
     private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -72,9 +71,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
 
         receivedPushes = new ArrayList<>();
 
-        googlePlayServicesHelper = new GooglePlayServicesHelper();
-
-        SubscribeService.subscribeToPushes(this, SubscribeService.Type.FCM, Consts.GCM_SENDER_ID, QBEnvironment.DEVELOPMENT);
+        SubscribeService.subscribeToPushes(this, SubscribeService.Type.FCM, Consts.FCM_SENDER_ID, QBEnvironment.DEVELOPMENT);
         initUI();
 
         String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
@@ -90,7 +87,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
-        SubscribeService.unSubscribeToPushes(this, SubscribeService.Type.FCM, Consts.GCM_SENDER_ID);
+        SubscribeService.unSubscribeToPushes(this);
     }
 
     @Override
@@ -130,7 +127,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     }
 
     private void registerReceiver() {
-        googlePlayServicesHelper.checkPlayServicesAvailable(this);
+        SubscribeService.checkPlayServicesAvailable(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
