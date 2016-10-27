@@ -130,17 +130,7 @@ public class ChatHelper {
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        chatDialog.join(history, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess(final Void result, final Bundle b) {
-                onSuccessInMainThread(result, b);
-            }
-
-            @Override
-            public void onError(final QBResponseException e) {
-                onErrorInMainThread(e);
-            }
-        });
+        chatDialog.join(history, callback);
     }
 
     public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {

@@ -105,37 +105,22 @@ public class DialogsManager {
         }
     }
 
-    private void notifyListenersDialogCreated(final QBChatDialog chatDialog){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()){
-                    listener.onDialogCreated(chatDialog);
-                }
-            }
-        });
+    private void notifyListenersDialogCreated(final QBChatDialog chatDialog) {
+        for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()) {
+            listener.onDialogCreated(chatDialog);
+        }
     }
 
-    private void notifyListenersDialogUpdated(final String dialogId){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()){
-                    listener.onDialogUpdated(dialogId);
-                }
-            }
-        });
+    private void notifyListenersDialogUpdated(final String dialogId) {
+        for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()) {
+            listener.onDialogUpdated(dialogId);
+        }
     }
 
-    private void notifyListenersNewDialogLoaded(final QBChatDialog chatDialog){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()){
-                    listener.onNewDialogLoaded(chatDialog);
-                }
-            }
-        });
+    private void notifyListenersNewDialogLoaded(final QBChatDialog chatDialog) {
+        for (ManagingDialogsCallbacks listener : getManagingDialogsCallbackListeners()) {
+            listener.onNewDialogLoaded(chatDialog);
+        }
     }
 
     public void addManagingDialogsCallbackListener(ManagingDialogsCallbacks listener){
