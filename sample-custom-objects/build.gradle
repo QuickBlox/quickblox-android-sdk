@@ -48,6 +48,7 @@ android {
 dependencies {
     compile "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
     compile "com.quickblox:quickblox-android-sdk-extensions:$rootProject.qbSdkVersion"
+    compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
     compile(project(":sample-core"))
 }
