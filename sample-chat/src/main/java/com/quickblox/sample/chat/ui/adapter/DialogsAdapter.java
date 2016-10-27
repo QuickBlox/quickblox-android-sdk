@@ -73,17 +73,15 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
     private boolean isLastMessageAttachment(QBChatDialog dialog) {
         String lastMessage = dialog.getLastMessage();
         Integer lastMessageSenderId = dialog.getLastMessageUserId();
-        return (StringUtils.textIsNull(lastMessage) || TextUtils.isEmpty(lastMessage)) && lastMessageSenderId != null;
+        return TextUtils.isEmpty(lastMessage) && lastMessageSenderId != null;
     }
 
     private String prepareTextLastMessage(QBChatDialog chatDialog){
         if (isLastMessageAttachment(chatDialog)){
             return context.getString(R.string.chat_attachment);
-        } else if (!TextUtils.isEmpty(chatDialog.getLastMessage())){
-            return StringUtils.textIsNull(chatDialog.getLastMessage()) ? EMPTY_STRING : chatDialog.getLastMessage();
+        } else {
+            return chatDialog.getLastMessage();
         }
-
-        return EMPTY_STRING;
     }
 
     private static class ViewHolder {
