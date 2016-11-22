@@ -1,22 +1,16 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
+import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.groupchatwebrtc.App;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
-import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.users.model.QBUser;
 
 /**

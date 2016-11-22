@@ -28,4 +28,5 @@ public interface ConversationFragmentCallbackListener {
 
     void onHangUpCurrentSession();
 
+    void onStartScreenSharing();
 }

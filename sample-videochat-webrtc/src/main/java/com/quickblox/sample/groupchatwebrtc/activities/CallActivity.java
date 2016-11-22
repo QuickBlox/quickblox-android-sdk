@@ -1,9 +1,13 @@
 package com.quickblox.sample.groupchatwebrtc.activities;
 
-import android.app.Fragment;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,19 +20,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBSignaling;
-import com.quickblox.chat.QBWebRTCSignaling;
-import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
-import com.quickblox.sample.groupchatwebrtc.fragments.BaseConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.AudioConversationFragment;
-import com.quickblox.sample.groupchatwebrtc.fragments.VideoConversationFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.BaseConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragment;
-import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
 import com.quickblox.sample.groupchatwebrtc.fragments.IncomeCallFragmentCallbackListener;
+import com.quickblox.sample.groupchatwebrtc.fragments.OnCallEventsController;
+import com.quickblox.sample.groupchatwebrtc.fragments.ScreenShareFragment;
+import com.quickblox.sample.groupchatwebrtc.fragments.VideoConversationFragment;
 import com.quickblox.sample.groupchatwebrtc.util.NetworkConnectionChecker;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.FragmentExecuotr;
@@ -40,8 +42,10 @@ import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
+import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
@@ -52,7 +56,7 @@ import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
-import org.webrtc.VideoCapturerAndroid;
+import org.webrtc.CameraVideoCapturer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +67,7 @@ import java.util.Map;
  * QuickBlox team
  */
 public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback,
-        OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener {
+        OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener, ScreenShareFragment.OnSharingEvents {
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -74,6 +78,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public static final String SESSION_ID = "sessionID";
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
 
+    private static final int REQUEST_MEDIA_PROJECTION = 1;
 
     private QBRTCSession currentSession;
     public List<QBUser> opponentsList;
@@ -104,6 +109,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private boolean previousDeviceEarPiece;
     private boolean showToastAfterHeadsetPlugged = true;
     private PermissionsChecker checker;
+    private MediaProjectionManager mMediaProjectionManager;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -130,6 +136,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
 
         initFields();
+        initViews();
         initCurrentSession(currentSession);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -140,9 +147,49 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
-
         checker = new PermissionsChecker(getApplicationContext());
+
         startSuitableFragment(isInCommingCall);
+    }
+
+    private void initViews(){
+
+    }
+
+    private void startScreenSharing(final Intent data){
+        ScreenShareFragment screenShareFragment = ScreenShareFragment.newIntstance();
+        FragmentExecuotr.addFragmentWithBackStack(getSupportFragmentManager(), R.id.fragment_container, screenShareFragment, ScreenShareFragment.TAG);
+        currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCScreenCapturer(data, new MediaProjection.Callback() {
+            @Override
+            public void onStop() {
+                Log.i(TAG, "MediaProjection onStop " );
+
+            }
+
+        }));
+    }
+
+    private void stopSharing() {
+        try {
+            currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCCameraVideoCapturer(this, null));
+        } catch (QBRTCCameraVideoCapturer.QBRTCCameraCapturerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,final Intent data) {
+        Log.i(TAG, "onActivityResult requestCode="+requestCode +", resultCode= " + resultCode);
+        if (requestCode == QBRTCScreenCapturer.REQUEST_MEDIA_PROJECTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                startScreenSharing(data);
+                Log.i(TAG, "Starting screen capture");
+            }
+            else {
+
+            }
+        }
     }
 
     private void startSuitableFragment(boolean isInComingCall) {
@@ -273,11 +320,16 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this);
 
-        rtcClient.setCameraErrorHendler(new VideoCapturerAndroid.CameraEventsHandler() {
+        rtcClient.setCameraErrorHendler(new CameraVideoCapturer.CameraEventsHandler() {
             @Override
             public void onCameraError(final String s) {
 
                 showToast("Camera error: " + s);
+            }
+
+            @Override
+            public void onCameraDisconnected() {
+                showToast("Camera onCameraDisconnected: ");
             }
 
             @Override
@@ -287,11 +339,13 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             }
 
             @Override
-            public void onCameraOpening(int i) {
+            public void onCameraOpening(String s) {
+                showToast("Camera aOpening: " + s);
             }
 
             @Override
             public void onFirstFrameAvailable() {
+                showToast("onFirstFrameAvailable: ");
             }
 
             @Override
@@ -619,8 +673,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
     }
 
-    private Fragment getCurrentFragment() {
-        return getFragmentManager().findFragmentById(R.id.fragment_container);
+    private android.support.v4.app.Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     private void addIncomeCallFragment() {
@@ -628,7 +682,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
         if (currentSession != null) {
             IncomeCallFragment fragment = new IncomeCallFragment();
-            FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT);
+            FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, fragment, INCOME_CALL_FRAGMENT);
         } else {
             Log.d(TAG, "SKIP addIncomeCallFragment method");
         }
@@ -640,7 +694,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
                         ? new VideoConversationFragment()
                         : new AudioConversationFragment(),
                 isIncomingCall);
-        FragmentExecuotr.addFragment(getFragmentManager(), R.id.fragment_container, conversationFragment, CONVERSATION_CALL_FRAGMENT);
+        FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, conversationFragment, conversationFragment.getClass().getSimpleName());
     }
 
     public SharedPreferences getDefaultSharedPrefs() {
@@ -687,6 +741,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onBackPressed() {
+        android.support.v4.app.Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ScreenShareFragment.TAG);
+        if (fragmentByTag instanceof ScreenShareFragment) {
+            stopSharing();
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -717,6 +776,15 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onHangUpCurrentSession() {
         hangUpCurrentSession();
+    }
+
+    @TargetApi(21)
+    @Override
+    public void onStartScreenSharing() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        QBRTCScreenCapturer.requestPermissions(CallActivity.this);
     }
 
     @Override
@@ -765,6 +833,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void removeOnChangeDynamicToggle(OnChangeDynamicToggle onChangeDynamicCallback) {
         this.onChangeDynamicCallback = null;
+    }
+
+    @Override
+    public void onStopPreview() {
+        onBackPressed();
     }
 
     //////////////////////////////////////////   end   /////////////////////////////////////////////

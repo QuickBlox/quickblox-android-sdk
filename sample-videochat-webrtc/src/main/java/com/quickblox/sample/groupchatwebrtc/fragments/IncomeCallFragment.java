@@ -1,7 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

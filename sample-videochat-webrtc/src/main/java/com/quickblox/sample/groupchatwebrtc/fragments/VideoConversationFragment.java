@@ -1,6 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
@@ -52,8 +54,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static android.R.attr.entries;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
+import static com.quickblox.sample.core.utils.ResourceUtils.getString;
 
 
 /**
@@ -69,6 +74,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final int RECYCLE_VIEW_PADDING = 2;
     private static final long UPDATING_USERS_DELAY = 2000;
     private static final long FULL_SCREEN_CLICK_DELAY = 1000;
+    private static final int REQUEST_CODE_ATTACHMENT = 100;
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
@@ -80,13 +86,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private QBRTCSurfaceView localVideoView;
     private CameraState cameraState = CameraState.NONE;
     private RecyclerView recyclerView;
-    private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
-    private List<OpponentsFromCallAdapter.ViewHolder> viewHolders;
+    private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders = new SparseArray<>(6);
+    private List<OpponentsFromCallAdapter.ViewHolder> viewHolders = new ArrayList<>(6);
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private TextView connectionStatusLocal;
 
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
+    private Map<Integer, VideoRenderer> videoRendererskMap;
     private OpponentsFromCallAdapter opponentsAdapter;
     private LocalViewOnClickListener localViewOnClickListener;
     private boolean isRemoteShown;
@@ -105,7 +112,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = super.onCreateView(inflater, container, savedInstanceState);
-        initVideoTrackSListener();
         return view;
     }
 
@@ -184,9 +190,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(TAG, "onStart");
         if (!allCallbacksInit) {
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+            initVideoTrackSListener();
             allCallbacksInit = true;
         }
     }
@@ -194,18 +202,22 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
         setHasOptionsMenu(true);
     }
 
     @Override
     protected void initViews(View view) {
         super.initViews(view);
-
+        Log.i(TAG, "initViews");
         opponentViewHolders = new SparseArray<>(opponents.size());
 
         localVideoView = (QBRTCSurfaceView) view.findViewById(R.id.local_video_view);
         initCorrectSizeForLocalView();
         localVideoView.setZOrderMediaOverlay(true);
+
+        remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+        remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
         if (!isPeerToPeerCall) {
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
@@ -235,6 +247,21 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
         actionButtonsEnabled(false);
+        restoreSession();
+    }
+
+    private void restoreSession() {
+        Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
+        if (!videoTrackMap.isEmpty()) {
+            for (final Map.Entry<Integer, QBRTCVideoTrack> entry :videoTrackMap.entrySet()){
+                mainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onRemoteVideoTrackReceive(currentSession,  entry.getValue(), entry.getKey());
+                    }
+                }, LOCAL_TRACk_INITIALIZE_DELAY);
+            }
+        }
     }
 
     private void initCorrectSizeForLocalView() {
@@ -267,6 +294,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return videoTrackMap;
     }
 
+    private Map<Integer, VideoRenderer> getVideoRenderersMap() {
+        if (videoRendererskMap == null) {
+            videoRendererskMap = new HashMap<>();
+        }
+        return videoRendererskMap;
+    }
+
     private int defineSize(int measuredWidth, int columnsCount, float padding) {
         return measuredWidth / columnsCount - (int) (padding * 2) - RECYCLE_VIEW_PADDING;
     }
@@ -284,16 +318,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return opponents.size() - 1;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-
+        Log.d(TAG, "onResume");
         // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER
         // than we turn on cam, else we nothing change
         if (cameraState != CameraState.DISABLED_FROM_USER) {
             toggleCamera(true);
         }
     }
+
 
     @Override
     public void onPause() {
@@ -309,19 +345,60 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
         if (connectionEstablished) {
             conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
             conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
+            //removeVideoTrackRenderers();
+            removeVideoTrackSListener();
             allCallbacksInit = false;
         } else {
             Log.d(TAG, "We are in dialing process yet!");
         }
     }
 
+    private void removeVideoTrackRenderers() {
+        Log.d(TAG, "removeVideoTrackRenderers");
+        Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
+        for (QBRTCVideoTrack videoTrack : videoTrackMap.values()) {
+            videoTrack.removeRenderer(videoTrack.getRenderer());
+        }
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
-        removeVideoTrackSListener();
+        Log.d(TAG, "onDetach");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (localVideoView != null){
+            localVideoView.release();
+        }
+        releaseViews();
+    }
+
+    private void releaseViews() {
+        if (remoteFullScreenVideoView != null) {
+            remoteFullScreenVideoView.release();
+        }
+        remoteFullScreenVideoView = null;
+        if (!isPeerToPeerCall){
+            for (int i = 0; i <  opponentViewHolders.size(); i++) {
+                OpponentsFromCallAdapter.ViewHolder viewHolder = opponentViewHolders.get(i);
+                if (viewHolder != null) {
+                    viewHolder.getOpponentView().release();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCallStopped() {
+        super.onCallStopped();
+        Log.i(TAG, "onCallStopped");
     }
 
     protected void initButtonsListener() {
@@ -406,23 +483,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         localVideoTrack = videoTrack;
         isLocalVideoFullScreen = true;
 
+
         if (remoteFullScreenVideoView != null) {
             fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
         }
-
-        if (isPeerToPeerCall) {
-            if (remoteFullScreenVideoView != null) {
-                return;
-            }
-            Log.d(TAG, "onLocalVideoTrackReceive init localView");
-            remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-            remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
-
-            if (localVideoTrack != null) {
-                fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
-            }
-        }
-        //in other case localVideoView hasn't been inflated yet. Will set track while OnBindLastViewHolder
     }
 
     @Override
@@ -432,13 +496,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         fillVideoView(localVideoView, localVideoTrack, false);
         isLocalVideoFullScreen = false;
 
+        getVideoTrackMap().put(userID, videoTrack);
 
         if (isPeerToPeerCall) {
             setDuringCallActionBar();
-            if (remoteFullScreenVideoView == null) {
-                remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-            }
-
             fillVideoView(remoteFullScreenVideoView, videoTrack, true);
             updateVideoView(remoteFullScreenVideoView, false);
         } else {
@@ -456,31 +517,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void OnBindLastViewHolder(final OpponentsFromCallAdapter.ViewHolder holder, final int position) {
         Log.i(TAG, "OnBindLastViewHolder position=" + position);
-        if (!isVideoCall) {
-            return;
-        }
-        if (isPeerToPeerCall) {
 
-        } else {
-            //on group call we postpone initialization of VideoView due to set it on Gui renderer.
-            // Refer to RTCGlVIew
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (remoteFullScreenVideoView != null) {
-                        return;
-                    }
-                    setOpponentsVisibility(View.GONE);
-                    Log.i(TAG, "OnBindLastViewHolder init localView");
-                    remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-                    remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
-                    if (localVideoTrack != null) {
-                        Log.d(TAG, "OnBindLastViewHolder.fillVideoView localVideoTrack");
-                        fillVideoView(isLocalVideoFullScreen ? remoteFullScreenVideoView : localVideoView, localVideoTrack, false);
-                    }
-                }
-            }, LOCAL_TRACk_INITIALIZE_DELAY);
-        }
     }
 
 
@@ -512,7 +549,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void updateViewHolders(int position) {
         View childView = recyclerView.getChildAt(position);
         OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
-        viewHolders.set(position, childViewHolder);
+        opponentViewHolders.put(position, childViewHolder);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -535,14 +572,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    private void setLocalVideoView(int userId, QBRTCVideoTrack videoTrack) {
-        if (remoteFullScreenVideoView == null) {
-            Log.d(TAG, "setLocalVideoView VideoView = null");
-            remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-        }
-
-        fillVideoView(userId, remoteFullScreenVideoView, videoTrack);
-    }
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
@@ -562,13 +591,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
             if (isRemoteShown) {
                 Log.d(TAG, "USer onRemoteVideoTrackReceive = " + userID);
-                fillVideoView(remoteVideoView, videoTrack, true);
+                fillVideoView(userID, remoteVideoView, videoTrack, true);
             } else {
                 isRemoteShown = true;
                 opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
                 setDuringCallActionBar();
                 setRecyclerViewVisibleState();
-                setOpponentsVisibility(View.VISIBLE);
+                //setOpponentsVisibility(View.VISIBLE);
                 fillVideoView(userID, remoteFullScreenVideoView, videoTrack);
                 updateVideoView(remoteFullScreenVideoView, false);
             }
@@ -594,9 +623,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private List<OpponentsFromCallAdapter.ViewHolder> getAllOpponentsView() {
-        if (viewHolders != null) {
-            return viewHolders;
-        }
         int childCount = recyclerView.getChildCount();
         viewHolders = new ArrayList<>();
         for (int i = 0; i < childCount; i++) {
@@ -608,27 +634,35 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
-        if (viewHolders == null) {
-            Log.d(TAG, "viewHolders == null");
-            return null;
-        }
-        for (OpponentsFromCallAdapter.ViewHolder childViewHolder : viewHolders) {
-            Log.d(TAG, "getViewForOpponent holder user id is : " + childViewHolder.getUserId());
+        int childCount = recyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = recyclerView.getChildAt(i);
+            OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
             if (userID.equals(childViewHolder.getUserId())) {
                 return childViewHolder;
             }
         }
         return null;
-    }
+    };
 
-    private void fillVideoView(QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
+    /**
+     * @param userId set userId if it from fullscreen videoTrack
+     */
+    private void fillVideoView(int userId, QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack,
+                               boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
         videoTrack.addRenderer(new VideoRenderer(videoView));
-
+        if (userId != 0) {
+            getVideoRenderersMap().put(userId, videoTrack.getRenderer());
+        }
         if (!remoteRenderer) {
             updateVideoView(videoView, isCurrentCameraFront);
         }
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
+    }
+
+    private void fillVideoView(QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
+       fillVideoView(0, videoView, videoTrack, remoteRenderer);
     }
 
     /**
@@ -638,7 +672,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (userId != 0) {
             userIDFullScreen = userId;
         }
-        fillVideoView(videoView, videoTrack, true);
+        fillVideoView(userId, videoView, videoTrack, true);
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror) {
@@ -817,9 +851,16 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 Log.d("Conversation", "camera_switch");
                 switchCamera(item);
                 return true;
+            case R.id.screen_share:
+                startScreenSharing();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void startScreenSharing() {
+        conversationFragmentCallbackListener.onStartScreenSharing();
     }
 
     @Override
@@ -853,6 +894,59 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             }
         }, UPDATING_USERS_DELAY);
     }
+
+
+
+
+
+    private void setFullScreenOnOff() {
+        if (actionBar.isShowing()) {
+            hideToolBarAndButtons();
+        } else {
+            showToolBarAndButtons();
+        }
+    }
+
+    private void hideToolBarAndButtons() {
+        actionBar.hide();
+
+        localVideoView.setVisibility(View.INVISIBLE);
+
+        actionVideoButtonsLayout.setVisibility(View.GONE);
+
+        if (!isPeerToPeerCall) {
+            shiftBottomListOpponents();
+        }
+    }
+
+    private void showToolBarAndButtons() {
+        actionBar.show();
+
+        localVideoView.setVisibility(View.VISIBLE);
+
+        actionVideoButtonsLayout.setVisibility(View.VISIBLE);
+
+        if (!isPeerToPeerCall) {
+            shiftMarginListOpponents();
+        }
+    }
+
+    private void shiftMarginListOpponents() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+        params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
+
+        recyclerView.setLayoutParams(params);
+    }
+
+    private void shiftBottomListOpponents() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params.setMargins(0, 0, 0, 0);
+
+        recyclerView.setLayoutParams(params);
+    }
+
 
     private enum CameraState {
         NONE,

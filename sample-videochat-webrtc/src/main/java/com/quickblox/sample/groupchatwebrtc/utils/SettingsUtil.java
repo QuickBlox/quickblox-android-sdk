@@ -20,10 +20,7 @@ public class SettingsUtil {
 
     private static void setSettingsForMultiCall(List<Integer> users) {
         if (users.size() <= 4) {
-            int width = QBRTCMediaConfig.getVideoWidth();
-            if (width > QBRTCMediaConfig.VideoQuality.VGA_VIDEO.width) {
-                setDefaultVideoQuality();
-            }
+            setDefaultVideoQuality();
         } else {
             //set to minimum settings
             QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.QBGA_VIDEO.width);
@@ -167,6 +164,7 @@ public class SettingsUtil {
     public static int getPreferenceInt(SharedPreferences sharedPref, Context context, int strResKey, int strResDefValue) {
         return sharedPref.getInt(context.getString(strResKey), Integer.valueOf(context.getString(strResDefValue)));
     }
+
     private static boolean getPreferenceBoolean(SharedPreferences sharedPref, Context context, int StrRes, int strResDefValue) {
         return sharedPref.getBoolean(context.getString(StrRes), Boolean.valueOf(context.getString(strResDefValue)));
     }
