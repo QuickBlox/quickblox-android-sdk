@@ -305,15 +305,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return measuredWidth / columnsCount - (int) (padding * 2) - RECYCLE_VIEW_PADDING;
     }
 
-    private int defineRowCount() {
-        int result = DEFAULT_ROWS_COUNT;
-        int opponentsCount = opponents.size();
-        if (opponentsCount < 3) {
-            result = opponentsCount;
-        }
-        return result;
-    }
-
     private int defineColumnsCount() {
         return opponents.size() - 1;
     }
@@ -347,10 +338,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.onStop();
         Log.d(TAG, "onStop");
         if (connectionEstablished) {
-            conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
-            conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
-            //removeVideoTrackRenderers();
-            removeVideoTrackSListener();
             allCallbacksInit = false;
         } else {
             Log.d(TAG, "We are in dialing process yet!");
@@ -374,10 +361,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
+        removeConnectionStateListeners();
+        removeVideoTrackSListener();
         if (localVideoView != null){
             localVideoView.release();
         }
         releaseViews();
+    }
+
+    private void removeConnectionStateListeners(){
+        conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
+        conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
     }
 
     private void releaseViews() {
