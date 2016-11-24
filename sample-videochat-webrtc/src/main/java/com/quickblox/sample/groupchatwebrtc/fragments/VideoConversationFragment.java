@@ -39,6 +39,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
@@ -65,7 +66,7 @@ import static com.quickblox.sample.core.utils.ResourceUtils.getString;
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionConnectionCallbacks, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCSessionStateCallback, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -346,6 +347,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void removeVideoTrackRenderers() {
         Log.d(TAG, "removeVideoTrackRenderers");
+        if (localVideoTrack != null) {
+            localVideoTrack.removeRenderer(localVideoTrack.getRenderer());
+        }
         Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
         for (QBRTCVideoTrack videoTrack : videoTrackMap.values()) {
             videoTrack.removeRenderer(videoTrack.getRenderer());
@@ -364,9 +368,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "onDestroyView");
         removeConnectionStateListeners();
         removeVideoTrackSListener();
-        if (localVideoView != null){
-            localVideoView.release();
-        }
+        removeVideoTrackRenderers();
         releaseViews();
     }
 
@@ -376,6 +378,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void releaseViews() {
+        if (localVideoView != null){
+            localVideoView.release();
+        }
         if (remoteFullScreenVideoView != null) {
             remoteFullScreenVideoView.release();
         }
@@ -736,11 +741,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
     @Override
-    public void onStartConnectToUser(QBRTCSession qbrtcSession, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.text_status_checking));
-    }
-
-    @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
         connectionEstablished = true;
         setStatusForOpponent(userId, getString(R.string.text_status_connected));
@@ -762,20 +762,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         setStatusForOpponent(integer, getString(R.string.text_status_disconnected));
     }
 
-    @Override
-    public void onDisconnectedTimeoutFromUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.text_status_time_out));
-    }
-
-    @Override
-    public void onConnectionFailedWithUser(QBRTCSession qbrtcSession, Integer integer) {
-        setStatusForOpponent(integer, getString(R.string.text_status_failed));
-    }
-
-    @Override
-    public void onError(QBRTCSession qbrtcSession, QBRTCException e) {
-
-    }
     //////////////////////////////////   end     //////////////////////////////////////////
 
 
@@ -888,42 +874,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 }
             }
         }, UPDATING_USERS_DELAY);
-    }
-
-
-
-
-
-    private void setFullScreenOnOff() {
-        if (actionBar.isShowing()) {
-            hideToolBarAndButtons();
-        } else {
-            showToolBarAndButtons();
-        }
-    }
-
-    private void hideToolBarAndButtons() {
-        actionBar.hide();
-
-        localVideoView.setVisibility(View.INVISIBLE);
-
-        actionVideoButtonsLayout.setVisibility(View.GONE);
-
-        if (!isPeerToPeerCall) {
-            shiftBottomListOpponents();
-        }
-    }
-
-    private void showToolBarAndButtons() {
-        actionBar.show();
-
-        localVideoView.setVisibility(View.VISIBLE);
-
-        actionVideoButtonsLayout.setVisibility(View.VISIBLE);
-
-        if (!isPeerToPeerCall) {
-            shiftMarginListOpponents();
-        }
     }
 
     private void shiftMarginListOpponents() {

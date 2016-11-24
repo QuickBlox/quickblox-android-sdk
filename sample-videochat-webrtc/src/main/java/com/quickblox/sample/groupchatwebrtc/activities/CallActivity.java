@@ -51,6 +51,7 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
 import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
@@ -66,7 +67,7 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionConnectionCallbacks, QBRTCSignalingCallback,
+public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionStateCallback, QBRTCSignalingCallback,
         OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener, ScreenShareFragment.OnSharingEvents {
 
     private static final String TAG = CallActivity.class.getSimpleName();
@@ -542,11 +543,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
-    public void onStartConnectToUser(QBRTCSession session, Integer userID) {
-
-    }
-
-    @Override
     public void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
         if (!session.equals(getCurrentSession())) {
             return;
@@ -587,21 +583,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             stopIncomeCallTimer();
         }
         Log.d(TAG, "onConnectedToUser() is started");
-    }
-
-
-    @Override
-    public void onDisconnectedTimeoutFromUser(QBRTCSession session, Integer userID) {
-
-    }
-
-    @Override
-    public void onConnectionFailedWithUser(QBRTCSession session, Integer userID) {
-
-    }
-
-    @Override
-    public void onError(QBRTCSession qbrtcSession, QBRTCException e) {
     }
 
     @Override
@@ -757,7 +738,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     ////////////////////////////// ConversationFragmentCallbackListener ////////////////////////////
 
     @Override
-    public void addTCClientConnectionCallback(QBRTCSessionConnectionCallbacks clientConnectionCallbacks) {
+    public void addTCClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks) {
         if (currentSession != null) {
             currentSession.addSessionCallbacksListener(clientConnectionCallbacks);
         }
@@ -803,7 +784,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
-    public void removeRTCClientConnectionCallback(QBRTCSessionConnectionCallbacks clientConnectionCallbacks) {
+    public void removeRTCClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks) {
         if (currentSession != null) {
             currentSession.removeSessionCallbacksListener(clientConnectionCallbacks);
         }
