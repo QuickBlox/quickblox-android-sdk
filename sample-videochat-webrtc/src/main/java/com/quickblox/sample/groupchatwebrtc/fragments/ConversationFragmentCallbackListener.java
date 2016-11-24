@@ -3,6 +3,8 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 
+import org.webrtc.CameraVideoCapturer;
+
 /**
  * Created by tereha on 23.05.16.
  */
@@ -29,4 +31,6 @@ public interface ConversationFragmentCallbackListener {
     void onHangUpCurrentSession();
 
     void onStartScreenSharing();
+
+    void onSwitchCamera(CameraVideoCapturer.CameraSwitchHandler cameraSwitchHandler);
 }

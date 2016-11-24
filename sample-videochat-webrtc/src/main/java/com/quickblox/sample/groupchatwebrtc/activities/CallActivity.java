@@ -50,10 +50,8 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
-import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -170,13 +168,12 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }));
     }
 
-    private void stopSharing() {
+    private void returnToCamera() {
         try {
             currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCCameraVideoCapturer(this, null));
         } catch (QBRTCCameraVideoCapturer.QBRTCCameraCapturerException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -724,7 +721,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public void onBackPressed() {
         android.support.v4.app.Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ScreenShareFragment.TAG);
         if (fragmentByTag instanceof ScreenShareFragment) {
-            stopSharing();
+            returnToCamera();
             super.onBackPressed();
         }
     }
@@ -766,6 +763,12 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             return;
         }
         QBRTCScreenCapturer.requestPermissions(CallActivity.this);
+    }
+
+    @Override
+    public void onSwitchCamera(CameraVideoCapturer.CameraSwitchHandler cameraSwitchHandler) {
+        ((QBRTCCameraVideoCapturer)(currentSession.getMediaStreamManager().getVideoCapturer()))
+                .switchCamera(cameraSwitchHandler);
     }
 
     @Override
