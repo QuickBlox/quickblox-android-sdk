@@ -43,8 +43,6 @@ android {
 
 dependencies {
     compile(project(":sample-core"))
-
-    compile "com.google.android.gms:play-services-gcm:${rootProject.playServicesVersion}"
 }
 
 apply from: "../artifacts.gradle"

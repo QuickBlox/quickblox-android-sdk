@@ -85,9 +85,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         setContentView(R.layout.activity_dialogs);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
