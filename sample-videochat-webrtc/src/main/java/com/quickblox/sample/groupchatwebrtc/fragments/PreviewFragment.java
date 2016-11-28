@@ -13,9 +13,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 
-/**
- * Created by Вадим on 28.11.2016.
- */
 public class PreviewFragment extends Fragment{
 
     public static final String PREVIEW_IMAGE = "preview_image";
