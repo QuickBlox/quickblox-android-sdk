@@ -97,7 +97,7 @@ public class ScreenShareFragment extends BaseToolBarFragment {
 
         @Override
         public Fragment getItem(int position) {
-            return PrevireFragment.newInstance(images[position]);
+            return PreviewFragment.newInstance(images[position]);
         }
     }
 
