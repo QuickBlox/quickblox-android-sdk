@@ -1,14 +1,17 @@
 package com.quickblox.sample.location.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.EditText;
 
@@ -16,7 +19,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -38,7 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapActivity extends CoreBaseActivity implements LocationListener {
+public class MapActivity extends CoreBaseActivity implements LocationListener, OnMapReadyCallback {
 
     private GoogleMap googleMap;
     private Location lastLocation;
@@ -74,7 +78,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         } else {
             // Google Play Services are available
             // Init Map
-            setUpMapIfNeeded();
+            initMapFragment();
             initLocationManager();
         }
     }
@@ -87,7 +91,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         getLocationsBuilder.setPerPage(Consts.LOCATION_PER_PAGE);
         getLocationsBuilder.setLastOnly();
 
-        QBLocations.getLocations(getLocationsBuilder).performAsync( new QBEntityCallback<ArrayList<QBLocation>>() {
+        QBLocations.getLocations(getLocationsBuilder).performAsync(new QBEntityCallback<ArrayList<QBLocation>>() {
             @Override
             public void onSuccess(ArrayList<QBLocation> qbLocations, Bundle bundle) {
                 // show all locations on the map
@@ -108,9 +112,9 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         });
     }
 
-    private void setUpMapIfNeeded() {
+    private void setUpMapIfNeeded(GoogleMap googleMapUpdated) {
         if (googleMap == null) {
-            googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment)).getMap();
+            googleMap = googleMapUpdated;
             if (googleMap != null) {
                 googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -133,10 +137,25 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
         }
     }
 
+    private void initMapFragment() {
+        MapFragment mapFragment = ((MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment));
+        mapFragment.getMapAsync(this);
+    }
+
     private void initLocationManager() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location location = locationManager.getLastKnownLocation(provider);
         if (location != null) {
             onLocationChanged(location);
@@ -202,7 +221,7 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
                 // ================= QuickBlox ====================
                 // Share own location
                 QBLocation location = new QBLocation(lat, lng, input.getText().toString());
-                QBLocations.createLocation(location).performAsync( new QBEntityCallback<QBLocation>() {
+                QBLocations.createLocation(location).performAsync(new QBEntityCallback<QBLocation>() {
                     @Override
                     public void onSuccess(QBLocation qbLocation, Bundle bundle) {
                         Toaster.longToast(R.string.dlg_check_in_success);
@@ -220,5 +239,10 @@ public class MapActivity extends CoreBaseActivity implements LocationListener {
                 // Canceled.
             }
         };
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        setUpMapIfNeeded(googleMap);
     }
 }
