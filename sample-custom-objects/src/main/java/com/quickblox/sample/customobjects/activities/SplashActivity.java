@@ -4,8 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.session.QBSession;
+import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.Performer;
 import com.quickblox.extensions.RxJavaPerformProcessor;
@@ -13,6 +12,7 @@ import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.utils.Consts;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import rx.Observable;
@@ -27,42 +27,49 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createSession();
+        signInQB();
     }
 
-    private void createSession() {
-        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+    private void signInQB() {
+        if (!checkSignIn()) {
+            QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
 
-        Performer<QBSession> performer = QBAuth.createSession(qbUser);
-        Observable<QBSession> observable =
-                performer.convertTo(RxJavaPerformProcessor.INSTANCE);
+            Performer<QBUser> performer = QBUsers.signIn(qbUser);
+            Observable<QBUser> observable =
+                    performer.convertTo(RxJavaPerformProcessor.INSTANCE);
 
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<QBSession>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (QBCustomObjectsUtils.checkQBException(e)) {
-                    showSnackbarError(null, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            createSession();
-                        }
-                    });
-                } else {
-                    Log.d(TAG, "onError" + e.getMessage());
+            observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<QBUser>() {
+                @Override
+                public void onCompleted() {
                 }
-            }
 
-            @Override
-            public void onNext(QBSession qbSession) {
-                // session created
-                proceedToTheNextActivity();
-            }
-        });
+                @Override
+                public void onError(Throwable e) {
+                    if (QBCustomObjectsUtils.checkQBException(e)) {
+                        showSnackbarError(null, R.string.splash_create_session_error, (QBResponseException) e, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                signInQB();
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "onError" + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onNext(QBUser qbUser) {
+                    proceedToTheNextActivity();
+                }
+            });
+        } else {
+            proceedToTheNextActivityWithDelay();
+        }
+    }
+
+    private boolean checkSignIn() {
+        return QBSessionManager.getInstance().getSessionParameters() != null;
     }
 
     @Override
