@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -190,7 +189,6 @@ public class LoginActivity extends BaseActivity {
                 if (deleteCurrentUser) {
                     removeAllUserData(result);
                 } else {
-                    subscribeToPushes();
                     startOpponentsActivity();
                 }
             }
@@ -223,13 +221,6 @@ public class LoginActivity extends BaseActivity {
         Intent tempIntent = new Intent(this, CallService.class);
         PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
         CallService.start(this, qbUser, pendingIntent);
-    }
-
-    private void subscribeToPushes() {
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            Log.d(TAG, "subscribeToPushes()");
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
     }
 
     private String getCurrentDeviceId() {
