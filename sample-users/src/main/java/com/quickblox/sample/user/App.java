@@ -15,6 +15,10 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
         initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
+        initQBSessionManager();
+    }
+
+    private void initQBSessionManager() {
         QBSessionManager.getInstance().addListener(new QBSessionManager.QBSessionListener() {
             @Override
             public void onSessionCreated(QBSession qbSession) {

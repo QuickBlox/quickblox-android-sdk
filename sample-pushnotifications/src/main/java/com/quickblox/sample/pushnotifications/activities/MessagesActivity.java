@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.quickblox.auth.session.QBSessionManager;
+import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -68,8 +69,11 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        receivedPushes = new ArrayList<>();
+        boolean enable = QBSettings.getInstance().isEnablePushNotification();
+        String subtitle = getSubtitleStatus(enable);
+        setActionbarSubTitle(subtitle);
 
+        receivedPushes = new ArrayList<>();
         googlePlayServicesHelper = new GooglePlayServicesHelper();
 
         initUI();
@@ -109,9 +113,27 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
                 item.setEnabled(false);
                 sendPushMessage();
                 return true;
+            case R.id.menu_enable_notification:
+                QBSettings.getInstance().setEnablePushNotification(true);
+                setActionbarSubTitle(getResources().getString(R.string.subtitle_enabled));
+                return true;
+            case R.id.menu_disable_notification:
+                QBSettings.getInstance().setEnablePushNotification(false);
+                setActionbarSubTitle(getResources().getString(R.string.subtitle_disabled));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private String getSubtitleStatus(boolean enable) {
+        return enable ? getResources().getString(R.string.subtitle_enabled)
+                : getResources().getString(R.string.subtitle_disabled);
+    }
+
+    private void setActionbarSubTitle(String subTitle) {
+        if (actionBar != null)
+            actionBar.setSubtitle(subTitle);
     }
 
     private void initUI() {

@@ -14,6 +14,11 @@
     <string name="splash_create_session_error">Create session errors:</string>
     <string name="connection_error">Connection errors:</string>
     <string name="error_too_long_push">You can enter only 1000 characters!</string>
+
+    <string name="enable_notification">Enable Notification</string>
+    <string name="disable_notification">Disable Notification</string>
+    <string name="subtitle_enabled">Notification enabled</string>
+    <string name="subtitle_disabled">Notification disabled</string>
     <string name="sender_id">761750217637</string>
 
 </resources>
