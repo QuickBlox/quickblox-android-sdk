@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
@@ -14,7 +13,7 @@ import com.quickblox.users.model.QBUser;
  * Created by tereha on 13.05.16.
  */
 public class GcmPushListenerService extends GcmListenerService {
-    private static final String TAG = CoreGcmPushListenerService.class.getSimpleName();
+    private static final String TAG = GcmPushListenerService.class.getSimpleName();
 
     @Override
     public void onMessageReceived(String from, Bundle data) {

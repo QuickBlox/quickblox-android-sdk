@@ -1,15 +1,15 @@
 package com.quickblox.sample.core.gcm;
 
-import com.google.android.gms.iid.InstanceIDListenerService;
+import android.util.Log;
 
-public abstract class CoreGcmPushInstanceIDService extends InstanceIDListenerService {
+import com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService;
+
+public abstract class CoreGcmPushInstanceIDService extends QBGcmPushInstanceIDService {
 
     @Override
     public void onTokenRefresh() {
-        GooglePlayServicesHelper playServicesHelper = new GooglePlayServicesHelper();
-        if (playServicesHelper.checkPlayServicesAvailable()) {
-            playServicesHelper.registerForGcm(getSenderId());
-        }
+        super.onTokenRefresh();
+        Log.d(getClass().getSimpleName(), "onTokenRefresh");
     }
 
     protected abstract String getSenderId();

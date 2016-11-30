@@ -1,13 +1,15 @@
 package com.quickblox.sample.user;
 
+import android.util.Log;
+
 import com.quickblox.auth.session.QBSession;
 import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.auth.session.QBSessionParameters;
 import com.quickblox.sample.core.CoreApp;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.utils.Consts;
 
 public class App extends CoreApp {
+    private static final String TAG = App.class.getSimpleName();
 
     @Override
     public void onCreate() {
@@ -16,27 +18,27 @@ public class App extends CoreApp {
         QBSessionManager.getInstance().addListener(new QBSessionManager.QBSessionListener() {
             @Override
             public void onSessionCreated(QBSession qbSession) {
-                Toaster.shortToast("Session Created");
+                Log.d(TAG, "Session Created");
             }
 
             @Override
             public void onSessionUpdated(QBSessionParameters qbSessionParameters) {
-                Toaster.shortToast("Session Updated");
+                Log.d(TAG, "Session Updated");
             }
 
             @Override
             public void onSessionDeleted() {
-                Toaster.shortToast("Session Deleted");
+                Log.d(TAG, "Session Deleted");
             }
 
             @Override
             public void onSessionRestored(QBSession qbSession) {
-                Toaster.shortToast("Session Restored");
+                Log.d(TAG, "Session Restored");
             }
 
             @Override
             public void onSessionExpired() {
-                Toaster.shortToast("Session Expired");
+                Log.d(TAG, "Session Expired");
             }
         });
     }
