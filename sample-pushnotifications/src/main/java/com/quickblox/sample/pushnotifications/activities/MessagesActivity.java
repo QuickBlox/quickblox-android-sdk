@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
@@ -31,9 +32,7 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
-import com.quickblox.sample.pushnotifications.App;
 import com.quickblox.sample.pushnotifications.R;
-import com.quickblox.sample.pushnotifications.utils.Consts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +71,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         receivedPushes = new ArrayList<>();
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
-        }
+
         initUI();
 
         String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
@@ -158,7 +155,7 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         qbEvent.setMessage(outMessage);
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
-        userIds.add(App.getInstance().getCurrentUserId());
+        userIds.add(QBSessionManager.getInstance().getSessionParameters().getUserId());
         qbEvent.setUserIds(userIds);
 
         QBPushNotifications.createEvent(qbEvent).performAsync(new QBEntityCallback<QBEvent>() {

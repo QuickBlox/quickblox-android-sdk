@@ -8,8 +8,6 @@ public class App extends CoreApp {
 
     private static App instance;
 
-    private int currentUserId;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -21,13 +19,5 @@ public class App extends CoreApp {
 
     public static synchronized App getInstance() {
         return instance;
-    }
-
-    public int getCurrentUserId() {
-        return currentUserId;
-    }
-
-    public void setCurrentUserId(int currentUserId) {
-        this.currentUserId = currentUserId;
     }
 }
