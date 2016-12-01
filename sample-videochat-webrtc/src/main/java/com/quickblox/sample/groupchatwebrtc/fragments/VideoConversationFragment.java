@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.chat.QBChatService;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
@@ -429,6 +430,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             @Override
             public void onCameraSwitchError(String s) {
                 Log.d(TAG, "camera switch error " + s);
+                Toaster.shortToast(getString(R.string.camera_swicth_failed) + s);
                 cameraToggle.setEnabled(true);
             }
         });

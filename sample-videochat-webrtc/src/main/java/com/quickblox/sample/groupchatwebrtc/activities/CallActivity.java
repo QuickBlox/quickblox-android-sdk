@@ -135,7 +135,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         }
 
         initFields();
-        initViews();
         initCurrentSession(currentSession);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -151,21 +150,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         startSuitableFragment(isInCommingCall);
     }
 
-    private void initViews(){
-
-    }
 
     private void startScreenSharing(final Intent data){
         ScreenShareFragment screenShareFragment = ScreenShareFragment.newIntstance();
         FragmentExecuotr.addFragmentWithBackStack(getSupportFragmentManager(), R.id.fragment_container, screenShareFragment, ScreenShareFragment.TAG);
-        currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCScreenCapturer(data, new MediaProjection.Callback() {
-            @Override
-            public void onStop() {
-                Log.i(TAG, "MediaProjection onStop " );
-
-            }
-
-        }));
+        currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCScreenCapturer(data, null));
     }
 
     private void returnToCamera() {
