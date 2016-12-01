@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
+import com.quickblox.auth.session.QBSession;
+import com.quickblox.auth.session.QBSettings;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBRestChatService;
 import com.quickblox.chat.model.QBAttachment;
@@ -18,7 +19,6 @@ import com.quickblox.content.model.QBFile;
 import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
@@ -81,9 +81,24 @@ public class ChatHelper {
 
     private static QBChatService.ConfigurationBuilder buildChatConfigs(){
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
-        configurationBuilder.setKeepAlive(true)
+        configurationBuilder
+//                .setPort(5223)
+//                .setHost("")
+//                .setServiceName("")
                 .setSocketTimeout(CHAT_SOCKET_TIMEOUT)
-                .setAutojoinEnabled(false);
+//
+//                .setKeepAlive(true)
+//                .setAutojoinEnabled(false)
+//                .setUseTls(true)
+//
+//                .setUseStreamManagement(true)
+//                .setUseStreamManagementResumption(true)
+//
+//                .setAutoMarkDelivered(true)
+//                .setPreferredResumptionTime(50)
+                .setReconnectionAllowed(true);
+
+        configurationBuilder.setAllowListenNetwork(true);
 
         return configurationBuilder;
     }
