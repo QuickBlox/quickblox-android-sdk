@@ -4,7 +4,9 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/image_preview"/>
+        android:id="@+id/image_preview"
+        style="@style/MatchParent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true" />
+
 </LinearLayout>
