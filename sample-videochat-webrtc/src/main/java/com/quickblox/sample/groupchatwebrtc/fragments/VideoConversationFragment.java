@@ -54,6 +54,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -248,20 +249,31 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void restoreSession() {
+        Log.d(TAG, "restoreSession ");
         if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
             return;
         }
         onCallStarted();
         Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
         if (!videoTrackMap.isEmpty()) {
-            for (final Map.Entry<Integer, QBRTCVideoTrack> entry :videoTrackMap.entrySet()){
-                mainHandler.postDelayed(new Runnable() {
+            for (final Iterator<Map.Entry<Integer, QBRTCVideoTrack>> entryIterator
+                 = videoTrackMap.entrySet().iterator(); entryIterator.hasNext();){
+                final Map.Entry<Integer, QBRTCVideoTrack> entry = entryIterator.next();
+                Log.d(TAG, "check ability to restoreSession for user:"+entry.getKey());
+                //if connection with peer wasn't closed do restore it otherwise remove from collection
+                if (currentSession.getPeerChannel(entry.getKey()).getState()!=
+                        QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED){
+                    Log.d(TAG, "execute restoreSession for user:"+entry.getKey());
+                    mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        onConnectedToUser(currentSession, entry.getKey());
-                        onRemoteVideoTrackReceive(currentSession,  entry.getValue(), entry.getKey());
-                    }
-                }, LOCAL_TRACk_INITIALIZE_DELAY);
+                            onConnectedToUser(currentSession, entry.getKey());
+                            onRemoteVideoTrackReceive(currentSession, entry.getValue(), entry.getKey());
+                        }
+                        }, LOCAL_TRACk_INITIALIZE_DELAY);
+                } else {
+                    entryIterator.remove();
+                }
             }
         }
     }
@@ -677,14 +689,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void updateNameForOpponent(int userId, String newUserName) {
-        OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
-        if (holder == null) {
-            Log.d("UPDATE_USERS", "holder == null");
-            return;
-        }
+        if (isPeerToPeerCall) {
+            actionBar.setSubtitle(getString(R.string.opponent, newUserName));
+        } else {
+            OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
+            if (holder == null) {
+                Log.d("UPDATE_USERS", "holder == null");
+                return;
+            }
 
-        Log.d("UPDATE_USERS", "holder != null");
-        holder.setUserName(newUserName);
+            Log.d("UPDATE_USERS", "holder != null");
+            holder.setUserName(newUserName);
+        }
     }
 
     private void setProgressBarForOpponentGone(int userId) {
@@ -821,7 +837,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
         updateAllOpponentsList(newUsers);
-        Log.d("UPDATE_USERS", "updateOpponentsList(), newUsers = " + newUsers);
+        Log.d(TAG, "updateOpponentsList(), newUsers = " + newUsers);
         runUpdateUsersNames(newUsers);
     }
 
@@ -842,7 +858,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             @Override
             public void run() {
                 for (QBUser user : newUsers) {
-                    Log.d("UPDATE_USERS", "foreach, user = " + user.getFullName());
+                    Log.d(TAG, "runUpdateUsersNames. foreach, user = " + user.getFullName());
                     updateNameForOpponent(user.getId(), user.getFullName());
                 }
             }

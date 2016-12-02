@@ -1,6 +1,8 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,7 +35,9 @@ public class ScreenShareFragment extends BaseToolBarFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  super.onCreateView(inflater, container, savedInstanceState);
-        MyAdapter adapter = new MyAdapter(getActivity().getSupportFragmentManager());
+
+        MyAdapter adapter = new MyAdapter(getChildFragmentManager());
+
         ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
@@ -84,7 +88,7 @@ public class ScreenShareFragment extends BaseToolBarFragment {
     public static class MyAdapter extends FragmentPagerAdapter {
         private static final int NUM_ITEMS = 4;
 
-        private int[] images = {R.drawable.login_screen, R.drawable.p2p, R.drawable.group_call, R.drawable.opponents};
+        private int[] images = {R.drawable.pres_img, R.drawable.p2p, R.drawable.group_call, R.drawable.opponents};
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
