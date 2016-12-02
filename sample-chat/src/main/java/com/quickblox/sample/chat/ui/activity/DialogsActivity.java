@@ -28,15 +28,16 @@ import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.listeners.QBSystemMessageListener;
-import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
-import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
@@ -85,9 +86,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         setContentView(R.layout.activity_dialogs);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(ConfigUtils.getCoreConfigs().getGcmSenderId());
-        }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
@@ -177,7 +175,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-                if (isPrivateDialogExist(selectedUsers)){
+                if (isPrivateDialogExist(selectedUsers)) {
                     selectedUsers.remove(ChatHelper.getCurrentUser());
                     QBChatDialog existingPrivateDialog = QbDialogHolder.getInstance().getPrivateDialogWithUser(selectedUsers.get(0));
                     isProcessingResultInProgress = false;
@@ -200,7 +198,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         }
     }
 
-    private boolean isPrivateDialogExist(ArrayList<QBUser> allSelectedUsers){
+    private boolean isPrivateDialogExist(ArrayList<QBUser> allSelectedUsers) {
         ArrayList<QBUser> selectedUsers = new ArrayList<>();
         selectedUsers.addAll(allSelectedUsers);
         selectedUsers.remove(ChatHelper.getCurrentUser());
@@ -238,9 +236,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         ChatHelper.getInstance().logout(new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
-                if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
-                    googlePlayServicesHelper.unregisterFromGcm(ConfigUtils.getCoreConfigs().getGcmSenderId());
-                }
+                SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+
                 SharedPreferencesUtil.removeQbUser();
                 LoginActivity.start(DialogsActivity.this);
                 QbDialogHolder.getInstance().clear();

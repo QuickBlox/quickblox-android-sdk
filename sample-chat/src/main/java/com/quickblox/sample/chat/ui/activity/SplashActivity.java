@@ -1,12 +1,7 @@
 package com.quickblox.sample.chat.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.session.QBSession;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
@@ -17,12 +12,7 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (SharedPreferencesUtil.hasQbUser()) {
-            proceedToTheNextActivityWithDelay();
-            return;
-        }
-
-        createSession();
+        proceedToTheNextActivityWithDelay();
     }
 
     @Override
@@ -38,24 +28,5 @@ public class SplashActivity extends CoreSplashActivity {
             LoginActivity.start(this);
         }
         finish();
-    }
-
-    private void createSession() {
-        QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
-            @Override
-            public void onSuccess(QBSession result, Bundle params) {
-                proceedToTheNextActivity();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                showSnackbarError(null, R.string.splash_create_session_error, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        createSession();
-                    }
-                });
-            }
-        });
     }
 }
