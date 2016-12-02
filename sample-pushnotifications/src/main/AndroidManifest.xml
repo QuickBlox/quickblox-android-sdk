@@ -59,7 +59,7 @@
         </service>
 
         <service
-            android:name="com.quickblox.sample.pushnotifications.gcm.GcmPushInstanceIDService"
+            android:name="com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
