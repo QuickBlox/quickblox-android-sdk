@@ -1,6 +1,6 @@
 package com.quickblox.sample.location;
 
-import com.quickblox.core.QBSettings;
+import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.location.utils.Consts;
 

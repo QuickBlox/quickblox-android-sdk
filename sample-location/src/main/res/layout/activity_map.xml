@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/map_fragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -16,5 +16,5 @@
         android:layout_alignParentLeft="true"
         android:onClick="onClickButtons"
         android:padding="@dimen/padding_middle"
-        android:text="@string/btn_check_in"/>
+        android:text="@string/btn_check_in" />
 </RelativeLayout>
