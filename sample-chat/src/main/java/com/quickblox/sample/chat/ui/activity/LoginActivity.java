@@ -16,6 +16,7 @@ import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
@@ -53,7 +54,7 @@ public class LoginActivity extends CoreBaseActivity {
 
     private void buildUsersList() {
         List<String> tags = new ArrayList<>();
-        tags.add(Consts.QB_USERS_TAG);
+        tags.add(ConfigUtils.getConfigs().getUsersTag());
 
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override

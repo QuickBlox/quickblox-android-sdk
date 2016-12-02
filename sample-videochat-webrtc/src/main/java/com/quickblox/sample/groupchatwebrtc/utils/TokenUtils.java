@@ -3,7 +3,6 @@ package com.quickblox.sample.groupchatwebrtc.utils;
 import android.text.TextUtils;
 
 import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;

@@ -35,10 +35,10 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
-import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
@@ -86,7 +86,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+            googlePlayServicesHelper.registerForGcm(ConfigUtils.getCoreConfigs().getGcmSenderId());
         }
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
@@ -239,7 +239,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
                 if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
-                    googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+                    googlePlayServicesHelper.unregisterFromGcm(ConfigUtils.getCoreConfigs().getGcmSenderId());
                 }
                 SharedPreferencesUtil.removeQbUser();
                 LoginActivity.start(DialogsActivity.this);

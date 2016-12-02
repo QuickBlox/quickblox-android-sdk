@@ -1,34 +1,12 @@
 {
-  "qb_endpoints": {
-    "app_id": "92",
-    "auth_key": "wJHdOcQSxXQGWx5",
-    "auth_secret": "BTFsj7Rtt27DAmT",
-    "account_key": "rz2sXxBt5xgSxGjALDW6",
-    "api_domain": "https://api.quickblox.com",
-    "chat_domain": "chat.quickblox.com"
-  },
-
-  "gcm_sender_id": "761750217637",
-
-  "users_configs":{
     "users_tag": "webrtcusers",
-    "users_password": "x6Bt0VDy5"
-  },
-
-  "chat_connection_configs": {
     "port": 5223,
-    "host": "chat.quickblox.com",
-    "service_name": "chat.quickblox.com",
     "socket_timeout": 30,
     "keep_alive": true,
-    "auto_join": true,
     "use_tls": true,
-    "use_stream_management": true,
-    "use_stream_management_resumption": true,
+    "auto_join": false,
     "auto_mark_delivered": true,
-    "preferred_resumption_time": 0,
     "reconnection_allowed": true,
     "allow_listen_network": true
-  }
 }
 

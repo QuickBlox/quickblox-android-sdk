@@ -15,6 +15,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
@@ -308,7 +309,7 @@ public class OpponentsActivity extends BaseActivity {
     private void unsubscribeFromPushes() {
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
             Log.d(TAG, "unsubscribeFromPushes()");
-            googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
+            googlePlayServicesHelper.unregisterFromGcm(CoreConfigUtils.getCoreConfigs().getGcmSenderId());
         }
     }
 

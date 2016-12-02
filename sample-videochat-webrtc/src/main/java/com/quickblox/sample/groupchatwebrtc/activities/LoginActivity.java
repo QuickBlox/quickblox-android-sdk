@@ -21,6 +21,7 @@ import com.quickblox.core.helper.Utils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
@@ -228,7 +229,7 @@ public class LoginActivity extends BaseActivity {
     private void subscribeToPushes() {
         if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
             Log.d(TAG, "subscribeToPushes()");
-            googlePlayServicesHelper.registerForGcm(Consts.GCM_SENDER_ID);
+            googlePlayServicesHelper.registerForGcm(CoreConfigUtils.getCoreConfigs().getGcmSenderId());
         }
     }
 

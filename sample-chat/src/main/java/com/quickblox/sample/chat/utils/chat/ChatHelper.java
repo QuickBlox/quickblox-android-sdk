@@ -24,7 +24,9 @@ import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.models.Configs;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
+import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -49,8 +51,6 @@ import java.util.Set;
 
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
-
-    private static final int CHAT_SOCKET_TIMEOUT = 0;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
@@ -80,25 +80,28 @@ public class ChatHelper {
     }
 
     private static QBChatService.ConfigurationBuilder buildChatConfigs(){
-        QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
-        configurationBuilder
-//                .setPort(5223)
-//                .setHost("")
-//                .setServiceName("")
-                .setSocketTimeout(CHAT_SOCKET_TIMEOUT)
-//
-//                .setKeepAlive(true)
-//                .setAutojoinEnabled(false)
-//                .setUseTls(true)
-//
-//                .setUseStreamManagement(true)
-//                .setUseStreamManagementResumption(true)
-//
-//                .setAutoMarkDelivered(true)
-//                .setPreferredResumptionTime(50)
-                .setReconnectionAllowed(true);
+        Configs configs = ConfigUtils.getConfigs();
+        int port = configs.getChatPort();
+        int socketTimeout = configs.getChatSocketTimeout();
+        boolean useTls = configs.isUseTls();
+        boolean keepAlive = configs.isKeepAlive();
+        boolean autoJoinEnabled = configs.isAutoJoinEnabled();
+        boolean autoMarkDelivered = configs.isAutoMarkDelivered();
+        boolean reconnectionAllowed = configs.isReconnectionAllowed();
+        boolean allowListenNetwork = configs.isAllowListenNetwork();
 
-        configurationBuilder.setAllowListenNetwork(true);
+        QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
+        if (port != 0){
+            configurationBuilder.setPort(port);
+        }
+
+        configurationBuilder.setSocketTimeout(socketTimeout);
+        configurationBuilder.setUseTls(useTls);
+        configurationBuilder.setKeepAlive(keepAlive);
+        configurationBuilder.setAutojoinEnabled(autoJoinEnabled);
+        configurationBuilder.setAutoMarkDelivered(autoMarkDelivered);
+        configurationBuilder.setReconnectionAllowed(reconnectionAllowed);
+        configurationBuilder.setAllowListenNetwork(allowListenNetwork);
 
         return configurationBuilder;
     }

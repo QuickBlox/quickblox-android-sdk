@@ -1,8 +1,12 @@
 package com.quickblox.sample.core;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.quickblox.auth.session.QBSettings;
+import com.quickblox.core.ServiceZone;
+import com.quickblox.sample.core.models.CoreConfigs;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 
 public class CoreApp extends Application {
 
@@ -12,14 +16,21 @@ public class CoreApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        initCredentials();
     }
 
     public static synchronized CoreApp getInstance() {
         return instance;
     }
 
-    public void initCredentials(String APP_ID, String AUTH_KEY, String AUTH_SECRET, String ACCOUNT_KEY) {
-        QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
-        QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
+    public void initCredentials(){
+        CoreConfigs coreConfigs = CoreConfigUtils.getCoreConfigs();
+        QBSettings.getInstance().init(getApplicationContext(), coreConfigs.getAppId(), coreConfigs.getAuthKey(), coreConfigs.getAuthSecret());
+        QBSettings.getInstance().setAccountKey(coreConfigs.getAccountKey());
+
+        if (!TextUtils.isEmpty(coreConfigs.getApiDomain()) && !TextUtils.isEmpty(coreConfigs.getChatDomain())){
+            QBSettings.getInstance().setEndpoints(coreConfigs.getApiDomain(), coreConfigs.getChatDomain(), ServiceZone.PRODUCTION);
+            QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
+        }
     }
 }

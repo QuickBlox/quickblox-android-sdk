@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
+import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;

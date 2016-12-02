@@ -40,7 +40,7 @@ ext {
 
 
     // Dependency versions
-    playServicesVersion = '9.0.0'
+    playServicesVersion = '9.8.0'
     supportV4Version = '23.1.1'
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.2.1'
