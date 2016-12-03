@@ -2,7 +2,8 @@ package com.quickblox.sample.core;
 
 import android.app.Application;
 
-import com.quickblox.core.QBSettings;
+import com.quickblox.auth.session.QBSettings;
+
 
 public class CoreApp extends Application {
 

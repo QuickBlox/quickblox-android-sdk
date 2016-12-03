@@ -1,14 +1,18 @@
 package com.quickblox.sample.pushnotifications;
 
+import android.util.Log;
+
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.pushnotifications.utils.Consts;
 
 public class App extends CoreApp {
 
+    private static final String TAG = App.class.getSimpleName();
     private static App instance;
-
-    private int currentUserId;
 
     @Override
     public void onCreate() {
@@ -17,17 +21,30 @@ public class App extends CoreApp {
         ActivityLifecycle.init(this);
 
         initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
+        initPushManager();
+    }
+
+    private void initPushManager() {
+        QBPushManager.getInstance().addListener(new QBPushManager.QBSubscribeListener() {
+            @Override
+            public void onSubscriptionCreated() {
+                Toaster.shortToast("Subscription Created");
+                Log.d(TAG, "SubscriptionCreated");
+            }
+
+            @Override
+            public void onSubscriptionError(Exception e, int resultCode) {
+                Log.d(TAG, "SubscriptionError" + e.getLocalizedMessage());
+                if (resultCode >= 0) {
+                    String error = GoogleApiAvailability.getInstance().getErrorString(resultCode);
+                    Log.d(TAG, "SubscriptionError playServicesAbility: " + error);
+                }
+                Toaster.shortToast(e.getLocalizedMessage());
+            }
+        });
     }
 
     public static synchronized App getInstance() {
         return instance;
-    }
-
-    public int getCurrentUserId() {
-        return currentUserId;
-    }
-
-    public void setCurrentUserId(int currentUserId) {
-        this.currentUserId = currentUserId;
     }
 }

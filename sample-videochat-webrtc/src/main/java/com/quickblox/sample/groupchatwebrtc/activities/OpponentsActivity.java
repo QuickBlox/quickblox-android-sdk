@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
@@ -306,10 +307,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void unsubscribeFromPushes() {
-        if (googlePlayServicesHelper.checkPlayServicesAvailable(this)) {
-            Log.d(TAG, "unsubscribeFromPushes()");
-            googlePlayServicesHelper.unregisterFromGcm(Consts.GCM_SENDER_ID);
-        }
+        SubscribeService.unSubscribeFromPushes(this);
     }
 
     private void removeAllUserData() {

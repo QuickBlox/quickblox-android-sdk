@@ -3,13 +3,12 @@ package com.quickblox.sample.chat.utils.chat;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
+import com.quickblox.auth.session.QBSettings;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBRestChatService;
 import com.quickblox.chat.model.QBAttachment;
-import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.request.QBDialogRequestBuilder;
 import com.quickblox.chat.utils.DialogUtils;
@@ -18,7 +17,6 @@ import com.quickblox.content.model.QBFile;
 import com.quickblox.core.LogLevel;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
@@ -79,7 +77,7 @@ public class ChatHelper {
         qbChatService.setUseStreamManagement(true);
     }
 
-    private static QBChatService.ConfigurationBuilder buildChatConfigs(){
+    private static QBChatService.ConfigurationBuilder buildChatConfigs() {
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
         configurationBuilder.setKeepAlive(true)
                 .setSocketTimeout(CHAT_SOCKET_TIMEOUT)
@@ -98,10 +96,10 @@ public class ChatHelper {
 
     public void login(final QBUser user, final QBEntityCallback<Void> callback) {
         // Create REST API session on QuickBlox
-        QBAuth.createSession(user).performAsync(new QbEntityCallbackTwoTypeWrapper<QBSession, Void>(callback) {
+        QBUsers.signIn(user).performAsync(new QbEntityCallbackTwoTypeWrapper<QBUser, Void>(callback) {
             @Override
-            public void onSuccess(QBSession session, Bundle args) {
-                user.setId(session.getUserId());
+            public void onSuccess(QBUser qbUser, Bundle args) {
+                user.setId(qbUser.getId());
                 loginToChat(user, new QbEntityCallbackWrapper<>(callback));
             }
         });
@@ -126,7 +124,7 @@ public class ChatHelper {
         });
     }
 
-    public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback){
+    public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback) {
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
@@ -165,7 +163,7 @@ public class ChatHelper {
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
-        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
             QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
@@ -258,7 +256,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
+    public void getDialogById(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
         QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 
