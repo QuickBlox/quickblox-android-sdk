@@ -1,7 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc;
 
 import com.quickblox.sample.core.CoreApp;
-import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
 
 public class App extends CoreApp {

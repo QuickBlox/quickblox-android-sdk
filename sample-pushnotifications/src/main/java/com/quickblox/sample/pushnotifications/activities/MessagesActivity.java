@@ -32,7 +32,6 @@ import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.sample.pushnotifications.R;
 

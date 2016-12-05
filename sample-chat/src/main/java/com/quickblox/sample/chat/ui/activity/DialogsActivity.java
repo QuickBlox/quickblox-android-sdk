@@ -39,7 +39,6 @@ import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
-import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
