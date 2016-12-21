@@ -23,8 +23,8 @@ android {
         applicationId "com.quickblox.sample.groupchatwebrtc"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 203
-        versionName "2.0.2-scr-share"
+        versionCode 204
+        versionName "2.0.4-scr-share"
 
     }
 
