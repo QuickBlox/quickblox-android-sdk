@@ -4,13 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-/**
- * Created by tereha on 01.12.16.
- */
+public class CoreAppConfigs implements Serializable{
 
-public class CoreConfigs implements Serializable{
-
-    public CoreConfigs() {
+    public CoreAppConfigs() {
     }
 
     @SerializedName("app_id")

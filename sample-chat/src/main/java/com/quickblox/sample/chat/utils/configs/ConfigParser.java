@@ -7,7 +7,6 @@ import com.quickblox.sample.core.utils.AssetsUtils;
 
 import java.io.IOException;
 
-
 public class ConfigParser {
 
 
@@ -30,7 +29,7 @@ public class ConfigParser {
         Context context = App.getInstance().getApplicationContext();
 
         try {
-            configsAsJsonString = AssetsUtils.getJsonAsString("config.json", context);
+            configsAsJsonString = AssetsUtils.getJsonAsString("app_config.json", context);
         } catch (IOException e) {
             e.printStackTrace();
         }

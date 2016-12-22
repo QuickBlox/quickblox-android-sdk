@@ -22,7 +22,7 @@ import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.models.Configs;
+import com.quickblox.sample.chat.models.AppConfigs;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
@@ -78,15 +78,15 @@ public class ChatHelper {
     }
 
     private static QBChatService.ConfigurationBuilder buildChatConfigs(){
-        Configs configs = ConfigUtils.getConfigs();
-        int port = configs.getChatPort();
-        int socketTimeout = configs.getChatSocketTimeout();
-        boolean useTls = configs.isUseTls();
-        boolean keepAlive = configs.isKeepAlive();
-        boolean autoJoinEnabled = configs.isAutoJoinEnabled();
-        boolean autoMarkDelivered = configs.isAutoMarkDelivered();
-        boolean reconnectionAllowed = configs.isReconnectionAllowed();
-        boolean allowListenNetwork = configs.isAllowListenNetwork();
+        AppConfigs appConfigs = ConfigUtils.getConfigs();
+        int port = appConfigs.getChatPort();
+        int socketTimeout = appConfigs.getChatSocketTimeout();
+        boolean useTls = appConfigs.isUseTls();
+        boolean keepAlive = appConfigs.isKeepAlive();
+        boolean autoJoinEnabled = appConfigs.isAutoJoinEnabled();
+        boolean autoMarkDelivered = appConfigs.isAutoMarkDelivered();
+        boolean reconnectionAllowed = appConfigs.isReconnectionAllowed();
+        boolean allowListenNetwork = appConfigs.isAllowListenNetwork();
 
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
         if (port != 0){

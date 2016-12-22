@@ -7,10 +7,6 @@ import com.quickblox.sample.core.utils.AssetsUtils;
 
 import java.io.IOException;
 
-/**
- * Created by tereha on 01.12.16.
- */
-
 public class CoreConfigParser {
 
 
@@ -33,7 +29,7 @@ public class CoreConfigParser {
         Context context = CoreApp.getInstance().getApplicationContext();
 
         try {
-            coreConfigsAsJsonString = AssetsUtils.getJsonAsString("core_config.json", context);
+            coreConfigsAsJsonString = AssetsUtils.getJsonAsString("core_app_config.json", context);
         } catch (IOException e) {
             e.printStackTrace();
         }

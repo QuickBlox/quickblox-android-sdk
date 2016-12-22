@@ -3,8 +3,8 @@
   "auth_key": "wJHdOcQSxXQGWx5",
   "auth_secret": "BTFsj7Rtt27DAmT",
   "account_key": "rz2sXxBt5xgSxGjALDW6",
-  "api_domain": "",
-  "chat_domain": "",
+  "api_domain": "https://api.quickblox.com",
+  "chat_domain": "chat.quickblox.com",
   "gcm_sender_id": "761750217637"
 }
 
