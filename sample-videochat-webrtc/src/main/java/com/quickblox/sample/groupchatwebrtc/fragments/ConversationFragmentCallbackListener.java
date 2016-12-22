@@ -1,6 +1,7 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 
 import org.webrtc.CameraVideoCapturer;
@@ -13,8 +14,8 @@ public interface ConversationFragmentCallbackListener {
     void addTCClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks);
     void removeRTCClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks);
 
-    void addRTCSessionUserCallback(CallActivity.QBRTCSessionUserCallback sessionUserCallback);
-    void removeRTCSessionUserCallback(CallActivity.QBRTCSessionUserCallback sessionUserCallback);
+    void addRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback);
+    void removeRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback);
 
     void addCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
     void removeCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);

@@ -1,7 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -29,19 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionConnectionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
-import com.quickblox.videochat.webrtc.exception.QBRTCException;
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
@@ -57,18 +53,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static android.R.attr.entries;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-import static com.quickblox.sample.core.utils.ResourceUtils.getString;
 
 
 /**
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionStateCallback, CallActivity.QBRTCSessionUserCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCSessionStateCallback, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -190,7 +183,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.i(TAG, "onStart");
         if (!allCallbacksInit) {
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
-            conversationFragmentCallbackListener.addRTCSessionUserCallback(this);
+            conversationFragmentCallbackListener.addRTCSessionEventsCallback(this);
             initVideoTrackSListener();
             allCallbacksInit = true;
         }
@@ -386,7 +379,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void removeConnectionStateListeners(){
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
-        conversationFragmentCallbackListener.removeRTCSessionUserCallback(this);
+        conversationFragmentCallbackListener.removeRTCSessionEventsCallback(this);
     }
 
     private void releaseViews() {
@@ -772,7 +765,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId) {
+    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
         setStatusForOpponent(userId, getString(R.string.text_status_hang_up));
         Log.d(TAG, "onReceiveHangUpFromUser userId= " + userId);
         if (!isPeerToPeerCall) {
@@ -782,6 +775,12 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             }
         }
     }
+
+    @Override
+    public void onSessionClosed(QBRTCSession session) {
+
+    }
+
     //////////////////////////////////   end     //////////////////////////////////////////
 
     private void setAnotherUserToFullScreen() {

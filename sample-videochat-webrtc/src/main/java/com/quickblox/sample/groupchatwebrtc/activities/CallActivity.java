@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +49,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
@@ -87,7 +87,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private String hangUpReason;
     private boolean isInCommingCall;
     private QBRTCClient rtcClient;
-    private QBRTCSessionUserCallback sessionUserCallback;
     private OnChangeDynamicToggle onChangeDynamicCallback;
     private ConnectionListener connectionListener;
     private boolean wifiEnabled = true;
@@ -517,9 +516,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (!session.equals(getCurrentSession())) {
             return;
         }
-        if (sessionUserCallback != null) {
-            sessionUserCallback.onUserNotAnswer(session, userID);
-        }
         ringtonePlayer.stop();
     }
 
@@ -533,9 +529,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         if (!session.equals(getCurrentSession())) {
             return;
         }
-        if (sessionUserCallback != null) {
-            sessionUserCallback.onCallAcceptByUser(session, userId, userInfo);
-        }
         ringtonePlayer.stop();
     }
 
@@ -543,9 +536,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
         if (!session.equals(getCurrentSession())) {
             return;
-        }
-        if (sessionUserCallback != null) {
-            sessionUserCallback.onCallRejectByUser(session, userID, userInfo);
         }
         ringtonePlayer.stop();
     }
@@ -627,10 +617,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             if (userID.equals(session.getCallerID())) {
                 hangUpCurrentSession();
                 Log.d(TAG, "initiator hung up the call");
-            }
-
-            if (sessionUserCallback != null) {
-                sessionUserCallback.onReceiveHangUpFromUser(session, userID);
             }
 
             QBUser participant = dbManager.getUserById(userID);
@@ -731,8 +717,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
-    public void addRTCSessionUserCallback(QBRTCSessionUserCallback sessionUserCallback) {
-        this.sessionUserCallback = sessionUserCallback;
+    public void addRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback) {
+        QBRTCClient.getInstance(this).addSessionCallbacksListener(eventsCallback);
     }
 
     @Override
@@ -783,8 +769,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
-    public void removeRTCSessionUserCallback(QBRTCSessionUserCallback sessionUserCallback) {
-        this.sessionUserCallback = null;
+    public void removeRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback) {
+        QBRTCClient.getInstance(this).removeSessionsCallbacksListener(eventsCallback);
     }
 
     @Override
@@ -839,15 +825,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         void enableDynamicToggle(boolean plugged, boolean wasEarpiece);
     }
 
-    public interface QBRTCSessionUserCallback {
-        void onUserNotAnswer(QBRTCSession session, Integer userId);
-
-        void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
-
-        void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo);
-
-        void onReceiveHangUpFromUser(QBRTCSession session, Integer userId);
-    }
 
     public interface CurrentCallStateCallback {
         void onCallStarted();
