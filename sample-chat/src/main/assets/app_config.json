@@ -1,5 +1,6 @@
 {
     "users_tag": "webrtcusers",
+    "users_password": "x6Bt0VDy5",
     "port": 5223,
     "socket_timeout": 30,
     "keep_alive": true,

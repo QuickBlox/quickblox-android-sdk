@@ -5,8 +5,9 @@ import com.quickblox.sample.core.utils.ResourceUtils;
 
 public interface Consts {
 
-    String USER_LOGIN = "bobbobbob";
-    String USER_PASSWORD = "bobbobbob";
+    String USER_LOGIN_FIELD_NAME = "user_login";
+    String USER_PASSWORD_FIELD_NAME = "user_password";
+    String APP_CONFIG_FILE_NAME = "app_config.json";
 
     int PREFERRED_IMAGE_WIDTH_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_width);
     int PREFERRED_IMAGE_HEIGHT_PREVIEW = ResourceUtils.getDimen(R.dimen.item_gallery_height);

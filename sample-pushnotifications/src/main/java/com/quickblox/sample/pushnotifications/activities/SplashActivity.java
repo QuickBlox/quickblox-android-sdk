@@ -9,11 +9,17 @@ import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.configs.AppConfigParser;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.sample.pushnotifications.R;
 import com.quickblox.sample.pushnotifications.utils.Consts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class SplashActivity extends CoreSplashActivity {
     private String message;
@@ -27,12 +33,28 @@ public class SplashActivity extends CoreSplashActivity {
             message = getIntent().getExtras().getString(GcmConsts.EXTRA_GCM_MESSAGE);
         }
 
-        signInQB();
+        initAppConfig();
     }
 
-    private void signInQB() {
+    private void initAppConfig() {
+        String userLogin;
+        String userPassword;
+
+        try {
+            JSONObject appConfigs = new AppConfigParser().getAppConfigsAsJson(Consts.APP_CONFIG_FILE_NAME);
+            userLogin = appConfigs.getString(Consts.USER_LOGIN_FIELD_NAME);
+            userPassword = appConfigs.getString(Consts.USER_PASSWORD_FIELD_NAME);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            showSnackbarError(null, R.string.init_configs_error, null, null);
+            return;
+        }
+
+        signInQB(new QBUser(userLogin, userPassword));
+    }
+
+    private void signInQB(final QBUser qbUser) {
         if (!checkSignIn()) {
-            QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
             QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser qbUser, Bundle bundle) {
@@ -44,7 +66,7 @@ public class SplashActivity extends CoreSplashActivity {
                     showSnackbarError(null, R.string.splash_create_session_error, e, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            signInQB();
+                            signInQB(qbUser);
                         }
                     });
                 }

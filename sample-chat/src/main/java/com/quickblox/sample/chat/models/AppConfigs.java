@@ -10,6 +10,9 @@ public class AppConfigs {
     @SerializedName("users_tag")
     private String usersTag;
 
+    @SerializedName("users_password")
+    private String usersPassword;
+
     @SerializedName("port")
     private int chatPort;
 
@@ -40,6 +43,14 @@ public class AppConfigs {
 
     public void setUsersTag(String usersTag) {
         this.usersTag = usersTag;
+    }
+
+    public String getUsersPassword() {
+        return usersPassword;
+    }
+
+    public void setUsersPassword(String usersPassword) {
+        this.usersPassword = usersPassword;
     }
 
     public int getChatPort() {

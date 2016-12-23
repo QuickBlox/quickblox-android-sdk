@@ -10,19 +10,40 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.configs.AppConfigParser;
 import com.quickblox.users.model.QBUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createSession();
+        initAppConfig();
     }
 
-    private void createSession() {
+    private void initAppConfig() {
+        String userLogin;
+        String userPassword;
 
-        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+        try {
+            JSONObject appConfigs = new AppConfigParser().getAppConfigsAsJson(Consts.APP_CONFIG_FILE_NAME);
+            userLogin = appConfigs.getString(Consts.USER_LOGIN_FIELD_NAME);
+            userPassword = appConfigs.getString(Consts.USER_PASSWORD_FIELD_NAME);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            showSnackbarError(null, R.string.init_configs_error, null, null);
+            return;
+        }
+
+        createSession(new QBUser(userLogin, userPassword));
+    }
+
+    private void createSession(final QBUser qbUser) {
         QBAuth.createSession(qbUser).performAsync(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
@@ -34,7 +55,7 @@ public class SplashActivity extends CoreSplashActivity {
                 showSnackbarError(null, R.string.splash_create_session_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        createSession();
+                        createSession(qbUser);
                     }
                 });
             }

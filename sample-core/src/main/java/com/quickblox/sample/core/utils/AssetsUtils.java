@@ -3,22 +3,29 @@ package com.quickblox.sample.core.utils;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-/**
- * Created by tereha on 02.12.16.
- */
 
 public class AssetsUtils {
 
     public static String getJsonAsString(String filename, Context context) throws IOException {
         AssetManager manager = context.getAssets();
-        InputStream file = manager.open(filename);
-        byte[] formArray = new byte[file.available()];
-        file.read(formArray);
-        file.close();
+        InputStream inputStream = manager.open(filename);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        return new String(formArray);
+        int ctr;
+        try {
+            ctr = inputStream.read();
+            while (ctr != -1) {
+                byteArrayOutputStream.write(ctr);
+                ctr = inputStream.read();
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return byteArrayOutputStream.toString();
     }
 }

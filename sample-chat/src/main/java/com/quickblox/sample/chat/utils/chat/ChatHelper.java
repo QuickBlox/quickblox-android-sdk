@@ -23,8 +23,9 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.models.AppConfigs;
+import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
-import com.quickblox.sample.chat.utils.configs.ConfigUtils;
+import com.quickblox.sample.chat.utils.configs.AppConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -40,6 +41,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -78,28 +80,37 @@ public class ChatHelper {
     }
 
     private static QBChatService.ConfigurationBuilder buildChatConfigs(){
-        AppConfigs appConfigs = ConfigUtils.getConfigs();
-        int port = appConfigs.getChatPort();
-        int socketTimeout = appConfigs.getChatSocketTimeout();
-        boolean useTls = appConfigs.isUseTls();
-        boolean keepAlive = appConfigs.isKeepAlive();
-        boolean autoJoinEnabled = appConfigs.isAutoJoinEnabled();
-        boolean autoMarkDelivered = appConfigs.isAutoMarkDelivered();
-        boolean reconnectionAllowed = appConfigs.isReconnectionAllowed();
-        boolean allowListenNetwork = appConfigs.isAllowListenNetwork();
-
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
-        if (port != 0){
-            configurationBuilder.setPort(port);
+        AppConfigs appConfigs = null;
+
+        try {
+            appConfigs = AppConfigUtils.getConfigs(Consts.APP_CONFIG_FILE_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        configurationBuilder.setSocketTimeout(socketTimeout);
-        configurationBuilder.setUseTls(useTls);
-        configurationBuilder.setKeepAlive(keepAlive);
-        configurationBuilder.setAutojoinEnabled(autoJoinEnabled);
-        configurationBuilder.setAutoMarkDelivered(autoMarkDelivered);
-        configurationBuilder.setReconnectionAllowed(reconnectionAllowed);
-        configurationBuilder.setAllowListenNetwork(allowListenNetwork);
+        if (appConfigs != null) {
+            int port = appConfigs.getChatPort();
+            int socketTimeout = appConfigs.getChatSocketTimeout();
+            boolean useTls = appConfigs.isUseTls();
+            boolean keepAlive = appConfigs.isKeepAlive();
+            boolean autoJoinEnabled = appConfigs.isAutoJoinEnabled();
+            boolean autoMarkDelivered = appConfigs.isAutoMarkDelivered();
+            boolean reconnectionAllowed = appConfigs.isReconnectionAllowed();
+            boolean allowListenNetwork = appConfigs.isAllowListenNetwork();
+
+            if (port != 0) {
+                configurationBuilder.setPort(port);
+            }
+
+            configurationBuilder.setSocketTimeout(socketTimeout);
+            configurationBuilder.setUseTls(useTls);
+            configurationBuilder.setKeepAlive(keepAlive);
+            configurationBuilder.setAutojoinEnabled(autoJoinEnabled);
+            configurationBuilder.setAutoMarkDelivered(autoMarkDelivered);
+            configurationBuilder.setReconnectionAllowed(reconnectionAllowed);
+            configurationBuilder.setAllowListenNetwork(allowListenNetwork);
+        }
 
         return configurationBuilder;
     }
