@@ -13,7 +13,7 @@ import java.io.IOException;
 public class CoreApp extends Application {
 
     private static CoreApp instance;
-    private static final String CORE_APP_CONFIG_FILE_NAME = "qb_app_config.json";
+    private static final String CORE_APP_CONFIG_FILE_NAME = "core_app_config.json";
 
     @Override
     public void onCreate() {
