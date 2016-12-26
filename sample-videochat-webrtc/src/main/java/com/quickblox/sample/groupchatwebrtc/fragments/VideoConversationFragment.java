@@ -79,7 +79,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private LinearLayout actionVideoButtonsLayout;
     private QBRTCSurfaceView remoteFullScreenVideoView;
     private QBRTCSurfaceView localVideoView;
-    private CameraState cameraState = CameraState.NONE;
+    private CameraState cameraState = CameraState.DISABLED_FROM_USER;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     private boolean isPeerToPeerCall;
@@ -412,8 +412,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         cameraToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                cameraState = isChecked ? CameraState.ENABLED_FROM_USER : CameraState.DISABLED_FROM_USER;
-                toggleCamera(isChecked);
+                if (cameraState != CameraState.DISABLED_FROM_USER) {
+                    toggleCamera(isChecked);
+                }
             }
         });
     }
@@ -476,6 +477,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "onLocalVideoTrackReceive() run");
         localVideoTrack = videoTrack;
         isLocalVideoFullScreen = true;
+        cameraState = CameraState.NONE;
 
 
         if (remoteFullScreenVideoView != null) {
@@ -487,7 +489,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
-        fillVideoView(localVideoView, localVideoTrack, false);
+        if (localVideoTrack != null) {
+            fillVideoView(localVideoView, localVideoTrack, false);
+        }
         isLocalVideoFullScreen = false;
 
         if (isPeerToPeerCall) {

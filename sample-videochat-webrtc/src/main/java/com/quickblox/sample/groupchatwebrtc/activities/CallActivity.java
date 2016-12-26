@@ -437,13 +437,13 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     private void setAudioEnabled(boolean isAudioEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
-            currentSession.getMediaStreamManager().setAudioEnabled(isAudioEnabled);
+            currentSession.getMediaStreamManager().getLocalAudioTrack().setEnabled(isAudioEnabled);
         }
     }
 
     private void setVideoEnabled(boolean isVideoEnabled) {
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
-            currentSession.getMediaStreamManager().setVideoEnabled(isVideoEnabled);
+            currentSession.getMediaStreamManager().getLocalVideoTrack().setEnabled(isVideoEnabled);
         }
     }
 
