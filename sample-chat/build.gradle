@@ -69,8 +69,8 @@ android {
 
 
 dependencies {
-    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion")
-    compile("com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion")
+    compile project(":quickblox-android-sdk-chat")
+    compile project(":quickblox-android-sdk-content")
 
     compile(project(":sample-core"))
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'

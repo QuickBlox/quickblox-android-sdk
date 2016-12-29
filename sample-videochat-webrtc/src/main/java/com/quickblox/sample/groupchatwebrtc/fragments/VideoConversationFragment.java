@@ -391,12 +391,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         remoteFullScreenVideoView = null;
         if (!isPeerToPeerCall){
-            for (int i = 0; i <  opponentViewHolders.size(); i++) {
-                OpponentsFromCallAdapter.ViewHolder viewHolder = opponentViewHolders.get(i);
-                if (viewHolder != null) {
-                    viewHolder.getOpponentView().release();
-                }
-            }
+           releseOpponentsViews();
         }
     }
 
@@ -629,6 +624,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         return null;
     };
+
+    private void releseOpponentsViews(){
+        int childCount = recyclerView.getChildCount()
+        Log.d(TAG, " releseOpponentsViews for  "+childCount + " views");
+        for (int i = 0; i < childCount; i++) {
+            View childView = recyclerView.getChildAt(i);
+            OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
+            Log.d(TAG, " relese View for  " + childViewHolder.getOpponentView().getId());
+            childViewHolder.getOpponentView().release();
+        }
+    }
 
     /**
      * @param userId set userId if it from fullscreen videoTrack
