@@ -626,12 +626,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     };
 
     private void releseOpponentsViews(){
-        int childCount = recyclerView.getChildCount()
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        int childCount = layoutManager.getChildCount();
         Log.d(TAG, " releseOpponentsViews for  "+childCount + " views");
         for (int i = 0; i < childCount; i++) {
-            View childView = recyclerView.getChildAt(i);
+            View childView = layoutManager.getChildAt(i);
+            Log.d(TAG, " relese View for  " + i +", "+childView);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
-            Log.d(TAG, " relese View for  " + childViewHolder.getOpponentView().getId());
             childViewHolder.getOpponentView().release();
         }
     }
