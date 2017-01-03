@@ -16,15 +16,13 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
-import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.chat.utils.configs.AppConfigUtils;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -138,11 +136,7 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void loadUsersFromQb() {
         List<String> tags = new ArrayList<>();
-        try {
-            tags.add(AppConfigUtils.getConfigs(Consts.APP_CONFIG_FILE_NAME).getUsersTag());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        tags.add(App.getSampleConfigs().getUsersTag());
 
         progressBar.setVisibility(View.VISIBLE);
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {

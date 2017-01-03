@@ -39,6 +39,8 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
 
     protected abstract void proceedToTheNextActivity();
 
+    protected abstract boolean sampleConfigIsCorrect();
+
     protected void proceedToTheNextActivityWithDelay() {
         mainThreadHandler.postDelayed(new Runnable() {
             @Override
@@ -48,9 +50,22 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         }, SPLASH_DELAY);
     }
 
+    protected boolean checkConfigsWithSnackebarError(){
+        if (!sampleConfigIsCorrect()){
+            showSnackbarErrorParsingConfigs();
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     protected void showSnackbarError(View rootLayout, @StringRes int resId, QBResponseException e, View.OnClickListener clickListener) {
         rootLayout = findViewById(R.id.layout_root);
         ErrorUtils.showSnackbar(rootLayout, resId, e, R.string.dlg_retry, clickListener);
+    }
+
+    protected void showSnackbarErrorParsingConfigs(){
+        ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.error_parsing_configs, R.string.dlg_ok, null);
     }
 }

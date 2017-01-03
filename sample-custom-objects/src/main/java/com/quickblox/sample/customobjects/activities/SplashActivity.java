@@ -9,7 +9,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.Performer;
 import com.quickblox.extensions.RxJavaPerformProcessor;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
-import com.quickblox.sample.core.utils.configs.AppConfigParser;
+import com.quickblox.sample.core.utils.configs.ConfigParser;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.utils.Consts;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
@@ -41,7 +41,7 @@ public class SplashActivity extends CoreSplashActivity {
         String userPassword;
 
         try {
-            JSONObject appConfigs = new AppConfigParser().getAppConfigsAsJson(Consts.APP_CONFIG_FILE_NAME);
+            JSONObject appConfigs = new ConfigParser().getConfigsAsJson(Consts.APP_CONFIG_FILE_NAME);
             userLogin = appConfigs.getString(Consts.USER_LOGIN_FIELD_NAME);
             userPassword = appConfigs.getString(Consts.USER_PASSWORD_FIELD_NAME);
         } catch (IOException | JSONException e) {

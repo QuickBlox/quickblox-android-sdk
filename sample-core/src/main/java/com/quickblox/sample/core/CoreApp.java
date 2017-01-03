@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.ServiceZone;
-import com.quickblox.sample.core.models.QbAppConfigs;
+import com.quickblox.sample.core.models.QbConfigs;
 import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class CoreApp extends Application {
 
     private static CoreApp instance;
-    private static final String CORE_APP_CONFIG_FILE_NAME = "core_app_config.json";
+    private static final String CORE_APP_CONFIG_FILE_NAME = "qb_config.json";
 
     @Override
     public void onCreate() {
@@ -28,19 +28,19 @@ public class CoreApp extends Application {
 
     //TODO VT maybe need change for init configs for all modules with own config file
     public void initCredentials(){
-        QbAppConfigs qbAppConfigs;
+        QbConfigs qbConfigs;
         try {
-            qbAppConfigs = CoreConfigUtils.getCoreConfigs(CORE_APP_CONFIG_FILE_NAME);
+            qbConfigs = CoreConfigUtils.getCoreConfigs(CORE_APP_CONFIG_FILE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
 
-        QBSettings.getInstance().init(getApplicationContext(), qbAppConfigs.getAppId(), qbAppConfigs.getAuthKey(), qbAppConfigs.getAuthSecret());
-        QBSettings.getInstance().setAccountKey(qbAppConfigs.getAccountKey());
+        QBSettings.getInstance().init(getApplicationContext(), qbConfigs.getAppId(), qbConfigs.getAuthKey(), qbConfigs.getAuthSecret());
+        QBSettings.getInstance().setAccountKey(qbConfigs.getAccountKey());
 
-        if (!TextUtils.isEmpty(qbAppConfigs.getApiDomain()) && !TextUtils.isEmpty(qbAppConfigs.getChatDomain())){
-            QBSettings.getInstance().setEndpoints(qbAppConfigs.getApiDomain(), qbAppConfigs.getChatDomain(), ServiceZone.PRODUCTION);
+        if (!TextUtils.isEmpty(qbConfigs.getApiDomain()) && !TextUtils.isEmpty(qbConfigs.getChatDomain())){
+            QBSettings.getInstance().setEndpoints(qbConfigs.getApiDomain(), qbConfigs.getChatDomain(), ServiceZone.PRODUCTION);
             QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
         }
     }

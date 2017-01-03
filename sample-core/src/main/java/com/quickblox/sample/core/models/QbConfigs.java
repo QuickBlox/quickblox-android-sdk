@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class QbAppConfigs implements Serializable{
+public class QbConfigs implements Serializable{
 
-    public QbAppConfigs() {
+    public QbConfigs() {
     }
 
     @SerializedName("app_id")

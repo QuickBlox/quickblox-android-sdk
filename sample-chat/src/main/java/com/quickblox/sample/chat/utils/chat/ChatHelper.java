@@ -21,11 +21,10 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.models.AppConfigs;
-import com.quickblox.sample.chat.utils.Consts;
+import com.quickblox.sample.chat.models.SampleConfigs;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
-import com.quickblox.sample.chat.utils.configs.AppConfigUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -41,7 +40,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -81,23 +79,17 @@ public class ChatHelper {
 
     private static QBChatService.ConfigurationBuilder buildChatConfigs(){
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
-        AppConfigs appConfigs = null;
+        SampleConfigs sampleConfigs = App.getSampleConfigs();
 
-        try {
-            appConfigs = AppConfigUtils.getConfigs(Consts.APP_CONFIG_FILE_NAME);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (appConfigs != null) {
-            int port = appConfigs.getChatPort();
-            int socketTimeout = appConfigs.getChatSocketTimeout();
-            boolean useTls = appConfigs.isUseTls();
-            boolean keepAlive = appConfigs.isKeepAlive();
-            boolean autoJoinEnabled = appConfigs.isAutoJoinEnabled();
-            boolean autoMarkDelivered = appConfigs.isAutoMarkDelivered();
-            boolean reconnectionAllowed = appConfigs.isReconnectionAllowed();
-            boolean allowListenNetwork = appConfigs.isAllowListenNetwork();
+        if (sampleConfigs != null) {
+            int port = sampleConfigs.getChatPort();
+            int socketTimeout = sampleConfigs.getChatSocketTimeout();
+            boolean useTls = sampleConfigs.isUseTls();
+            boolean keepAlive = sampleConfigs.isKeepAlive();
+            boolean autoJoinEnabled = sampleConfigs.isAutoJoinEnabled();
+            boolean autoMarkDelivered = sampleConfigs.isAutoMarkDelivered();
+            boolean reconnectionAllowed = sampleConfigs.isReconnectionAllowed();
+            boolean allowListenNetwork = sampleConfigs.isAllowListenNetwork();
 
             if (port != 0) {
                 configurationBuilder.setPort(port);

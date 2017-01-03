@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.ui.activity;
 
 import android.os.Bundle;
 
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
@@ -28,5 +29,10 @@ public class SplashActivity extends CoreSplashActivity {
             LoginActivity.start(this);
         }
         finish();
+    }
+
+    @Override
+    protected boolean sampleConfigIsCorrect() {
+        return App.getSampleConfigs() != null;
     }
 }

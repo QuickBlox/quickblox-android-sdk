@@ -15,4 +15,6 @@
 
     <string name="splash_app_version">v %s</string>
 
+    <string name="error_parsing_configs">Parsing sample\'s configs error</string>
+
 </resources>

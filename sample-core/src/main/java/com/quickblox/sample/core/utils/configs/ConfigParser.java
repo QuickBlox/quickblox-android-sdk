@@ -10,20 +10,20 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class AppConfigParser {
+public class ConfigParser {
 
     private Context context;
 
-    public AppConfigParser() {
+    public ConfigParser() {
         context = CoreApp.getInstance().getApplicationContext();
     }
 
-    public String getAppConfigsAsString(String fileName) throws IOException {
+    public String getConfigsAsJsonString(String fileName) throws IOException {
         return AssetsUtils.getJsonAsString(fileName, context);
     }
 
-    public JSONObject getAppConfigsAsJson(String fileName) throws IOException, JSONException {
-        return new JSONObject(getAppConfigsAsString(fileName));
+    public JSONObject getConfigsAsJson(String fileName) throws IOException, JSONException {
+        return new JSONObject(getConfigsAsJsonString(fileName));
     }
 
     public String getConfigByName(JSONObject jsonObject, String fieldName) throws JSONException {

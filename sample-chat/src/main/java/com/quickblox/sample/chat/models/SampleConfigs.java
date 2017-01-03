@@ -2,9 +2,9 @@ package com.quickblox.sample.chat.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AppConfigs {
+public class SampleConfigs {
 
-    public AppConfigs() {
+    public SampleConfigs() {
     }
 
     @SerializedName("users_tag")
