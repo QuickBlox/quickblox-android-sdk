@@ -2,7 +2,7 @@ package com.quickblox.sample.chat;
 
 import com.quickblox.sample.chat.models.SampleConfigs;
 import com.quickblox.sample.chat.utils.Consts;
-import com.quickblox.sample.chat.utils.configs.AppConfigUtils;
+import com.quickblox.sample.chat.utils.configs.ConfigUtils;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
 
@@ -21,7 +21,7 @@ public class App extends CoreApp {
 
     private void initSampleConfigs() {
         try {
-            sampleConfigs = AppConfigUtils.getConfigs(Consts.SAMPLE_CONFIG_FILE_NAME);
+            sampleConfigs = ConfigUtils.getSampleConfigs(Consts.SAMPLE_CONFIG_FILE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
         }

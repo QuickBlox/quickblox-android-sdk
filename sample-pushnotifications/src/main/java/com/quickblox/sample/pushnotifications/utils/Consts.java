@@ -4,5 +4,5 @@ public interface Consts {
 
     String USER_LOGIN_FIELD_NAME = "user_login";
     String USER_PASSWORD_FIELD_NAME = "user_password";
-    String APP_CONFIG_FILE_NAME = "app_config.json";
+    String SAMPLE_CONFIG_FILE_NAME = "sample_config.json";
 }

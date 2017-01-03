@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.quickblox.sample.core.models.QbConfigs;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +12,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class CoreConfigUtils {
+
+    public static final String USER_LOGIN_FIELD_NAME = "user_login";
+    public static final String USER_PASSWORD_FIELD_NAME = "user_password";
 
     public static QbConfigs getCoreConfigs(String fileName) throws IOException {
         ConfigParser configParser = new ConfigParser();
@@ -37,5 +41,23 @@ public class CoreConfigUtils {
 
     public static boolean isStringConfigFromFileNotEmpty(String fileName, String fieldName){
         return !TextUtils.isEmpty(getStringConfigFromFileOrNull(fileName, fieldName));
+    }
+
+    public static QBUser getUserFromConfig(String fileName){
+        QBUser qbUser = null;
+
+        String userLogin;
+        String userPassword;
+
+        try {
+            JSONObject configs = new ConfigParser().getConfigsAsJson(fileName);
+            userLogin = configs.getString(USER_LOGIN_FIELD_NAME);
+            userPassword = configs.getString(USER_PASSWORD_FIELD_NAME);
+            qbUser = new QBUser(userLogin, userPassword);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return qbUser;
     }
 }

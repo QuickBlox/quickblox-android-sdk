@@ -25,10 +25,9 @@ public class SplashActivity extends CoreSplashActivity {
     }
 
     private void createSession() {
-        String userLogin = CoreConfigUtils.getStringConfigFromFileOrNull(Consts.APP_CONFIG_FILE_NAME, Consts.USER_LOGIN_FIELD_NAME);
-        String userPassword = CoreConfigUtils.getStringConfigFromFileOrNull(Consts.APP_CONFIG_FILE_NAME, Consts.USER_PASSWORD_FIELD_NAME);
+        QBUser qbUser = CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME);
 
-        QBAuth.createSession(new QBUser(userLogin, userPassword)).performAsync(new QBEntityCallback<QBSession>() {
+        QBAuth.createSession(qbUser).performAsync(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
                 proceedToTheNextActivity();
@@ -59,7 +58,6 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected boolean sampleConfigIsCorrect() {
-        return CoreConfigUtils.isStringConfigFromFileNotEmpty(Consts.APP_CONFIG_FILE_NAME, Consts.USER_LOGIN_FIELD_NAME)
-                && CoreConfigUtils.isStringConfigFromFileNotEmpty(Consts.APP_CONFIG_FILE_NAME, Consts.USER_PASSWORD_FIELD_NAME);
+        return CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
     }
 }

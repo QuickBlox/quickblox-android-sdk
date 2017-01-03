@@ -24,4 +24,9 @@ public class SplashActivity extends CoreSplashActivity {
         UsersListActivity.start(this);
         finish();
     }
+
+    @Override
+    protected boolean sampleConfigIsCorrect() {
+        return true;
+    }
 }
