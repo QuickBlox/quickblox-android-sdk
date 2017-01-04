@@ -7,6 +7,7 @@ import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.sample.pushnotifications.R;
 import com.quickblox.sample.pushnotifications.utils.Consts;
@@ -25,12 +26,15 @@ public class SplashActivity extends CoreSplashActivity {
             message = getIntent().getExtras().getString(GcmConsts.EXTRA_GCM_MESSAGE);
         }
 
-        signInQB();
+        if (checkConfigsWithSnackebarError()){
+            signInQB();
+        }
     }
 
     private void signInQB() {
         if (!checkSignIn()) {
-            QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+            QBUser qbUser = CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME);
+
             QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser qbUser, Bundle bundle) {
@@ -61,6 +65,13 @@ public class SplashActivity extends CoreSplashActivity {
     protected void proceedToTheNextActivity() {
         MessagesActivity.start(this, message);
         finish();
+    }
+
+    @Override
+    protected boolean sampleConfigIsCorrect() {
+        boolean result = super.sampleConfigIsCorrect();
+        result = result && CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
+        return result;
     }
 
     private boolean checkSignIn() {

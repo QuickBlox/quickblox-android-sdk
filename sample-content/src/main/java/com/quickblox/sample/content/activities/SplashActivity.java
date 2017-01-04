@@ -10,6 +10,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.content.R;
 import com.quickblox.sample.content.utils.Consts;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.users.model.QBUser;
 
 public class SplashActivity extends CoreSplashActivity {
@@ -17,12 +18,15 @@ public class SplashActivity extends CoreSplashActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createSession();
+
+        if (checkConfigsWithSnackebarError()){
+            createSession();
+        }
     }
 
     private void createSession() {
+        QBUser qbUser = CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME);
 
-        QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
         QBAuth.createSession(qbUser).performAsync(new QBEntityCallback<QBSession>() {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
@@ -50,5 +54,12 @@ public class SplashActivity extends CoreSplashActivity {
     protected void proceedToTheNextActivity() {
         GalleryActivity.start(this);
         finish();
+    }
+
+    @Override
+    protected boolean sampleConfigIsCorrect() {
+        boolean result = super.sampleConfigIsCorrect();
+        result = result && CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
+        return result;
     }
 }

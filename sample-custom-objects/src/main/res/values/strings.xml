@@ -5,6 +5,7 @@
     <string name="movie_sample">Custom Objects Sample</string>
     <string name="splash_app_title">@string/movie_sample</string>
     <string name="splash_create_session_error">Errors</string>
+    <string name="init_configs_error">Initializing configs error</string>
 
     <string name="movie_add_new">Add Movie</string>
     <string name="movie_details">Movie Details</string>

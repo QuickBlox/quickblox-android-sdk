@@ -8,9 +8,6 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.users.model.QBUser;
 
-/**
- * Created by tereha on 12.04.16.
- */
 public class SplashActivity extends CoreSplashActivity {
 
     private SharedPrefsHelper sharedPrefsHelper;
@@ -26,7 +23,10 @@ public class SplashActivity extends CoreSplashActivity {
             startOpponentsActivity();
             return;
         }
-        proceedToTheNextActivityWithDelay();
+
+        if (checkConfigsWithSnackebarError()) {
+            proceedToTheNextActivityWithDelay();
+        }
     }
 
     @Override
@@ -39,7 +39,6 @@ public class SplashActivity extends CoreSplashActivity {
         LoginActivity.start(this);
         finish();
     }
-
 
     protected void startLoginService(QBUser qbUser) {
         CallService.start(this, qbUser);

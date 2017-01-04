@@ -2,13 +2,9 @@ package com.quickblox.sample.location.utils;
 
 public class Consts {
 
-    public static final String APP_ID = "99";
-    public static final String AUTH_KEY = "63ebrp5VZt7qTOv";
-    public static final String AUTH_SECRET = "YavMAxm5T59-BRw";
-    public static final String ACCOUNT_KEY = "rz2sXxBt5xgSxGjALDW6";
-
-    public static final String USER_LOGIN = "bobbobbob";
-    public static final String USER_PASSWORD = "bobbobbob";
+    public static final String USER_LOGIN_FIELD_NAME = "user_login";
+    public static final String USER_PASSWORD_FIELD_NAME = "user_password";
+    public static final String SAMPLE_CONFIG_FILE_NAME = "sample_config.json";
 
     public static int LOCATION_MIN_TIME = 20000;
     public static int LOCATION_PER_PAGE = 100;

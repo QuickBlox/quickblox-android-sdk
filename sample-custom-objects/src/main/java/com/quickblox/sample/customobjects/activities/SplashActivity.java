@@ -9,6 +9,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.Performer;
 import com.quickblox.extensions.RxJavaPerformProcessor;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
+import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.customobjects.R;
 import com.quickblox.sample.customobjects.utils.Consts;
 import com.quickblox.sample.customobjects.utils.QBCustomObjectsUtils;
@@ -27,12 +28,14 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        signInQB();
+        if (checkConfigsWithSnackebarError()){
+            signInQB();
+        }
     }
 
     private void signInQB() {
         if (!checkSignIn()) {
-            QBUser qbUser = new QBUser(Consts.USER_LOGIN, Consts.USER_PASSWORD);
+            QBUser qbUser = CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME);
 
             Performer<QBUser> performer = QBUsers.signIn(qbUser);
             Observable<QBUser> observable =
@@ -81,5 +84,12 @@ public class SplashActivity extends CoreSplashActivity {
     protected void proceedToTheNextActivity() {
         MovieListActivity.start(this);
         finish();
+    }
+
+    @Override
+    protected boolean sampleConfigIsCorrect() {
+        boolean result = super.sampleConfigIsCorrect();
+        result = result && CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
+        return result;
     }
 }

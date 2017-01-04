@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.VersionUtils;
@@ -39,6 +40,10 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
 
     protected abstract void proceedToTheNextActivity();
 
+    protected boolean sampleConfigIsCorrect(){
+        return CoreApp.getInstance().getQbConfigs() != null;
+    }
+
     protected void proceedToTheNextActivityWithDelay() {
         mainThreadHandler.postDelayed(new Runnable() {
             @Override
@@ -48,9 +53,22 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         }, SPLASH_DELAY);
     }
 
+    protected boolean checkConfigsWithSnackebarError(){
+        if (!sampleConfigIsCorrect()){
+            showSnackbarErrorParsingConfigs();
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     protected void showSnackbarError(View rootLayout, @StringRes int resId, QBResponseException e, View.OnClickListener clickListener) {
         rootLayout = findViewById(R.id.layout_root);
         ErrorUtils.showSnackbar(rootLayout, resId, e, R.string.dlg_retry, clickListener);
+    }
+
+    protected void showSnackbarErrorParsingConfigs(){
+        ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.error_parsing_configs, R.string.dlg_ok, null);
     }
 }

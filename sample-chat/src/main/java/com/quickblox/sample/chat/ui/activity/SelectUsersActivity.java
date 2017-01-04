@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
-import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -136,7 +136,7 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void loadUsersFromQb() {
         List<String> tags = new ArrayList<>();
-        tags.add(Consts.QB_USERS_TAG);
+        tags.add(App.getSampleConfigs().getUsersTag());
 
         progressBar.setVisibility(View.VISIBLE);
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
