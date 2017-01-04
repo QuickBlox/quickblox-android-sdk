@@ -35,6 +35,8 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected boolean sampleConfigIsCorrect() {
-        return App.getSampleConfigs() != null;
+        boolean result = super.sampleConfigIsCorrect();
+        result = result && App.getSampleConfigs() != null;
+        return result;
     }
 }

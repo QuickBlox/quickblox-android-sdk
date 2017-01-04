@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.VersionUtils;
@@ -39,7 +40,9 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
 
     protected abstract void proceedToTheNextActivity();
 
-    protected abstract boolean sampleConfigIsCorrect();
+    protected boolean sampleConfigIsCorrect(){
+        return CoreApp.getInstance().getQbConfigs() != null;
+    }
 
     protected void proceedToTheNextActivityWithDelay() {
         mainThreadHandler.postDelayed(new Runnable() {

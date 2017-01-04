@@ -11,7 +11,9 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        proceedToTheNextActivityWithDelay();
+        if (checkConfigsWithSnackebarError()) {
+            proceedToTheNextActivityWithDelay();
+        }
     }
 
     @Override
@@ -23,10 +25,5 @@ public class SplashActivity extends CoreSplashActivity {
     protected void proceedToTheNextActivity() {
         UsersListActivity.start(this);
         finish();
-    }
-
-    @Override
-    protected boolean sampleConfigIsCorrect() {
-        return true;
     }
 }

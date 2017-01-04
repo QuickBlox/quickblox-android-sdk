@@ -69,7 +69,9 @@ public class SplashActivity extends CoreSplashActivity {
 
     @Override
     protected boolean sampleConfigIsCorrect() {
-        return CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
+        boolean result = super.sampleConfigIsCorrect();
+        result = result && CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
+        return result;
     }
 
     private boolean checkSignIn() {
