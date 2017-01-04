@@ -2,6 +2,7 @@ package com.quickblox.sample.core;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.ServiceZone;
@@ -11,9 +12,10 @@ import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import java.io.IOException;
 
 public class CoreApp extends Application {
+    public static final String TAG = CoreApp.class.getSimpleName();
 
     private static CoreApp instance;
-    private static final String CORE_APP_CONFIG_FILE_NAME = "qb_config.json";
+    private static final String QB_CONFIG_DEFAULT_FILE_NAME = "qb_config.json";
 
     @Override
     public void onCreate() {
@@ -26,11 +28,11 @@ public class CoreApp extends Application {
         return instance;
     }
 
-    //TODO VT maybe need change for init configs for all modules with own config file
     public void initCredentials(){
         QbConfigs qbConfigs;
         try {
-            qbConfigs = CoreConfigUtils.getCoreConfigs(CORE_APP_CONFIG_FILE_NAME);
+            Log.e(TAG, "QB CONFIG FILE NAME: " + getQbConfigFileName());
+            qbConfigs = CoreConfigUtils.getCoreConfigs(getQbConfigFileName());
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -43,5 +45,9 @@ public class CoreApp extends Application {
             QBSettings.getInstance().setEndpoints(qbConfigs.getApiDomain(), qbConfigs.getChatDomain(), ServiceZone.PRODUCTION);
             QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
         }
+    }
+
+    protected String getQbConfigFileName(){
+        return QB_CONFIG_DEFAULT_FILE_NAME;
     }
 }

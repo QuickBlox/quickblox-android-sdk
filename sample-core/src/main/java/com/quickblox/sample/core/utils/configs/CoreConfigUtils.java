@@ -22,6 +22,18 @@ public class CoreConfigUtils {
         return gson.fromJson(configParser.getConfigsAsJsonString(fileName), QbConfigs.class);
     }
 
+    public static QbConfigs getCoreConfigsOrNull(String fileName){
+        QbConfigs qbConfigs = null;
+
+        try {
+            qbConfigs = getCoreConfigs(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return qbConfigs;
+    }
+
     public static String getStringConfigFromFile(String fileName, String fieldName) throws IOException, JSONException {
         JSONObject appConfigs = new ConfigParser().getConfigsAsJson(fileName);
         return appConfigs.getString(fieldName);
