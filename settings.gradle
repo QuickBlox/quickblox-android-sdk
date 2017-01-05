@@ -1,6 +1,5 @@
 include 'sample-core'
 include 'sample-chat'
-include 'sample-content'
 include 'sample-videochat-webrtc'
 
 

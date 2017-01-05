@@ -113,34 +113,14 @@ public class ChatHelper {
             return;
         }
 
-        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess(Void o, Bundle bundle) {
-                super.onSuccess(o, bundle);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                super.onError(e);
-            }
-        });
+        qbChatService.login(user, callback);
     }
 
     public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback){
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
 
-        chatDialog.join(history, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess(final Void result, final Bundle b) {
-                onSuccessInMainThread(result, b);
-            }
-
-            @Override
-            public void onError(final QBResponseException e) {
-                onErrorInMainThread(e);
-            }
-        });
+        chatDialog.join(history, callback);
     }
 
     public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
