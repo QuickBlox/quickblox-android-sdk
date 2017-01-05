@@ -399,9 +399,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBChatDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle bundle) {
-                for (QBChatDialog dialog : dialogs) {
-                    Log.i(TAG, "loaded dialog:"+dialog);
-                }
                 isProcessingResultInProgress = false;
                 progressBar.setVisibility(View.GONE);
                 setOnRefreshListener.setRefreshing(false);
