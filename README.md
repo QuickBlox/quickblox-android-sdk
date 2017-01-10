@@ -23,6 +23,10 @@ Each sample depends from core module, which contains mutual dependencies such as
 
 To run samples on Android Studio go to menu **File - Import Project**. Select path to sample, select **Use default gradle wrapper(recommended)** and click OK.
 
+# Configure sample credentials
+To set your own app credentials for sample just update configuration file qb.config inside sample in assets folder:
+<img src="screenshots/Qb_config_screen.png" border="5" alt="sample settings" width="400" >
+
 # Connect SDK to your existing apps 
 
 To get the QuickBlox SDK project running you will need Android Studio and Maven installed.
