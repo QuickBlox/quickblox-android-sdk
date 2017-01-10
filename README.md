@@ -25,7 +25,7 @@ To run samples on Android Studio go to menu **File - Import Project**. Select pa
 
 # Configure sample credentials
 
-To set your own app credentials for sample just update configuration file **qb_config.json** inside sample project in assets folder:
+To set your own app credentials for sample just update configuration file **qb_config.json** inside appropriate sample project in assets folder:
 <img src="screenshots/Qb_config_screen.png" border="5" alt="sample settings" >
 
 To set additional sample settings use **sample_config.json** file inside assets folder.
