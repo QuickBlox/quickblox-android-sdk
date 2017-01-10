@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" style="@style/MatchParent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/image_preview"
+        style="@style/MatchParent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true" />
+
+</LinearLayout>

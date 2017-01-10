@@ -89,7 +89,6 @@ public class CallService extends Service {
     private void createChatService() {
         if (chatService == null) {
             QBChatService.setDebugEnabled(true);
-            QBChatService.setDefaultAutoSendPresenceInterval(60);
             chatService = QBChatService.getInstance();
         }
     }

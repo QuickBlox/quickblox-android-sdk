@@ -132,17 +132,7 @@ public class ChatHelper {
             return;
         }
 
-        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess(Void o, Bundle bundle) {
-                super.onSuccess(o, bundle);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                super.onError(e);
-            }
-        });
+        qbChatService.login(user, callback);
     }
 
     public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback) {
@@ -184,7 +174,7 @@ public class ChatHelper {
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
-        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
+        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
             QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
@@ -277,7 +267,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogById(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
+    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
         QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 

@@ -18,7 +18,7 @@
 
 
     <!-- Errors strings. -->
-    <string name="error_max_opponents_count">You can select up to %s opponents</string>
+    <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="sign_up_error">Error creating new user, please try again</string>
     <string name="sign_in_error_with_error">Sign In error. Error</string>
     <string name="sign_in_error_without_error">Sign In error</string>
@@ -41,6 +41,7 @@
     <!--menu-->
     <string name="action_start_login">Done</string>
     <string name="action_settings">Settings</string>
+    <string name="action_screen_share">Screen share</string>
     <string name="action_update_opponens_list">Update opponents list</string>
     <string name="action_logout">Logout</string>
     <string name="action_start_video_call">Video call</string>
@@ -200,6 +201,8 @@
     <string name="opponents">and %s other</string>
     <string name="opponent">and %s </string>
     <string name="ringing">Ringing</string>
+    <string name="stop_share">Stop</string>
+    <string name="camera_swicth_failed">\"Failed switch camera\"</string>
 
     <string name="sender_id">761750217637</string>
 

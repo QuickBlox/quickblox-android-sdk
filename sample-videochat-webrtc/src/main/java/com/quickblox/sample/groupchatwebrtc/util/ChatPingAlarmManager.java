@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class ChatPingAlarmManager {
 
     //Change interval for your behaviour
-    private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(30);
+    private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(60);
 
     private static final String TAG = ChatPingAlarmManager.class.getSimpleName();
     private static final String PING_ALARM_ACTION = "com.quickblox.chat.ping.ACTION";

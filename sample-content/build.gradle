@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    compile project(":quickblox-android-sdk-content")
 
     compile(project(":sample-core"))
 

@@ -1,15 +1,9 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +28,7 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
 
-/**
- * Created by tereha on 24.05.16.
- */
-public abstract class BaseConversationFragment extends Fragment implements CallActivity.CurrentCallStateCallback {
+public abstract class BaseConversationFragment extends BaseToolBarFragment implements CallActivity.CurrentCallStateCallback {
 
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
     protected QbUsersDbManager dbManager;
@@ -53,14 +44,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected Chronometer timerChronometer;
     private boolean isMessageProcessed;
     protected boolean isStarted;
-    protected FragmentLifeCycleHandler mainHandler;
     protected View outgoingOpponentsRelativeLayout;
     protected TextView allOpponentsTextView;
     protected TextView ringingTextView;
     protected QBUser currentUser;
-    protected Toolbar toolbar;
-    protected ActionBar actionBar;
-
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall) {
         Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
@@ -87,16 +74,14 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        mainHandler = new FragmentLifeCycleHandler();
-        conversationFragmentCallbackListener.addCurrentCallStateCallback(this);
         super.onCreate(savedInstanceState);
+        conversationFragmentCallbackListener.addCurrentCallStateCallback(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(getFragmentLayout(), container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
         if (currentSession == null) {
@@ -120,21 +105,13 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
     protected abstract void configureOutgoingScreen();
 
     private void initActionBar() {
-        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
-
         configureToolbar();
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-
         configureActionBar();
     }
 
     protected abstract void configureActionBar();
 
     protected abstract void configureToolbar();
-
-    abstract int getFragmentLayout();
 
     protected void initFields() {
         currentUser = QBChatService.getInstance().getUser();
@@ -160,8 +137,10 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         if (currentSession == null) {
             Log.d(TAG, "currentSession = null onStart");
             return;
+
         }
-        if (!isMessageProcessed) {
+
+        if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
             if (isIncomingCall) {
                 currentSession.acceptCall(null);
             } else {
@@ -278,15 +257,4 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
         }
     }
 
-    class FragmentLifeCycleHandler extends Handler {
-
-        @Override
-        public void dispatchMessage(Message msg) {
-            if (isAdded() && getActivity() != null) {
-                super.dispatchMessage(msg);
-            } else {
-                Log.d(TAG, "Fragment under destroying");
-            }
-        }
-    }
 }

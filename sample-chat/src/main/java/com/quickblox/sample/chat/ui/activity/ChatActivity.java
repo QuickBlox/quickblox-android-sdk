@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
@@ -74,7 +75,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private int skipPagination = 0;
     private ChatMessageListener chatMessageListener;
 
-    public static void startForResult(Activity activity, int code, String dialogId) {
+    public static void startForResult(Activity activity, int code, QBChatDialog dialogId) {
         Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_DIALOG_ID, dialogId);
         activity.startActivityForResult(intent, code);
@@ -85,10 +86,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        Log.v("ChatHelper", "onCreate ChatActivity on Thread ID = " + Thread.currentThread().getId());
+        Log.v(TAG, "onCreate ChatActivity on Thread ID = " + Thread.currentThread().getId());
 
-        qbChatDialog = QbDialogHolder.getInstance().getChatDialogById(
-                getIntent().getStringExtra(EXTRA_DIALOG_ID));
+        qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
+
+        Log.v(TAG, "deserialized dialog = " + qbChatDialog);
+        qbChatDialog.initForChat(QBChatService.getInstance());
+
         chatMessageListener = new ChatMessageListener();
 
         qbChatDialog.addMessageListener(chatMessageListener);
