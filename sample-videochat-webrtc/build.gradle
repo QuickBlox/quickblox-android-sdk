@@ -66,7 +66,7 @@ android {
 
 dependencies {
 
-    compile project(":quickblox-android-sdk-videochat-webrtc")
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
     compile (project(":sample-core"))
 

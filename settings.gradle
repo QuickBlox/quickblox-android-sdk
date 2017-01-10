@@ -1,6 +1,4 @@
 include 'sample-core'
-include 'sample-chat'
 include 'sample-videochat-webrtc'
 
 
-apply from: "sdk-settings.gradle"
