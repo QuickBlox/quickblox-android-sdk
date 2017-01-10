@@ -1,4 +1,9 @@
+include 'sample-chat'
+include 'sample-content'
 include 'sample-core'
+include 'sample-custom-objects'
+include 'sample-location'
+include 'sample-pushnotifications'
+include 'sample-users'
 include 'sample-videochat-webrtc'
-
-
+include 'snippets'

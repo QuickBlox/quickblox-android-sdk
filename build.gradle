@@ -34,13 +34,13 @@ ext {
     // QuickBlox SDK version
     qbSdkVersion = '3.3.0'
 
-    versionName = '3.2.0'
+    versionName = '3.3.0'
 
     testRunnerVersion = "0.4.1"
 
 
     // Dependency versions
-    playServicesVersion = '9.8.0'
+    playServicesVersion = '10.0.1'
     supportV4Version = '23.1.1'
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.2.1'
