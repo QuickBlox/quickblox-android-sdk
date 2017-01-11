@@ -1,0 +1,13 @@
+{
+    "users_tag": "webrtcusers",
+    "users_password": "x6Bt0VDy5",
+    "port": 5223,
+    "socket_timeout": 120,
+    "keep_alive": true,
+    "use_tls": true,
+    "auto_join": false,
+    "auto_mark_delivered": true,
+    "reconnection_allowed": true,
+    "allow_listen_network": true
+}
+

@@ -12,7 +12,6 @@ import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatInfoActivity extends BaseActivity {

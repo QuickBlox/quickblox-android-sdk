@@ -11,7 +11,9 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        proceedToTheNextActivityWithDelay();
+        if (checkConfigsWithSnackebarError()) {
+            proceedToTheNextActivityWithDelay();
+        }
     }
 
     @Override

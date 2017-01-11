@@ -1,8 +1,6 @@
 package com.quickblox.sample.chat.managers;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSystemMessagesManager;

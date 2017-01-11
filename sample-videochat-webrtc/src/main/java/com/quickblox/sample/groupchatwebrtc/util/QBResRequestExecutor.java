@@ -1,5 +1,10 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
+import android.os.Bundle;
+import android.util.Log;
+
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.users.QBUsers;

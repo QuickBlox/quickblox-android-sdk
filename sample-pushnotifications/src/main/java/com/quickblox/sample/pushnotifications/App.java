@@ -20,7 +20,6 @@ public class App extends CoreApp {
         instance = this;
         ActivityLifecycle.init(this);
 
-        initCredentials(Consts.QB_APP_ID, Consts.QB_AUTH_KEY, Consts.QB_AUTH_SECRET, Consts.QB_ACCOUNT_KEY);
         initPushManager();
     }
 

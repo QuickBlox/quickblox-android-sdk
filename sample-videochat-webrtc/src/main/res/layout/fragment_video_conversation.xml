@@ -5,6 +5,7 @@
     style="@style/MatchParent"
     android:background="@color/background_fragment_conversation">
 
+
     <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
         android:id="@+id/remote_video_view"
         android:layout_width="match_parent"
@@ -61,4 +62,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true" />
+
 </RelativeLayout>

@@ -96,6 +96,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         int userID = user.getId();
         holder.opponentsName.setText(user.getFullName());
 
+        holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);
         QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(userID).getState();
         Log.d(TAG, "state ordinal= " + state.ordinal());

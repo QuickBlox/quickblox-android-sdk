@@ -21,7 +21,9 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
+import com.quickblox.sample.chat.models.SampleConfigs;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
@@ -47,8 +49,6 @@ import java.util.Set;
 
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
-
-    private static final int CHAT_SOCKET_TIMEOUT = 0;
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
     public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
@@ -77,11 +77,32 @@ public class ChatHelper {
         qbChatService.setUseStreamManagement(true);
     }
 
-    private static QBChatService.ConfigurationBuilder buildChatConfigs() {
+    private static QBChatService.ConfigurationBuilder buildChatConfigs(){
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
-        configurationBuilder.setKeepAlive(true)
-                .setSocketTimeout(CHAT_SOCKET_TIMEOUT)
-                .setAutojoinEnabled(false);
+        SampleConfigs sampleConfigs = App.getSampleConfigs();
+
+        if (sampleConfigs != null) {
+            int port = sampleConfigs.getChatPort();
+            int socketTimeout = sampleConfigs.getChatSocketTimeout();
+            boolean useTls = sampleConfigs.isUseTls();
+            boolean keepAlive = sampleConfigs.isKeepAlive();
+            boolean autoJoinEnabled = sampleConfigs.isAutoJoinEnabled();
+            boolean autoMarkDelivered = sampleConfigs.isAutoMarkDelivered();
+            boolean reconnectionAllowed = sampleConfigs.isReconnectionAllowed();
+            boolean allowListenNetwork = sampleConfigs.isAllowListenNetwork();
+
+            if (port != 0) {
+                configurationBuilder.setPort(port);
+            }
+
+            configurationBuilder.setSocketTimeout(socketTimeout);
+            configurationBuilder.setUseTls(useTls);
+            configurationBuilder.setKeepAlive(keepAlive);
+            configurationBuilder.setAutojoinEnabled(autoJoinEnabled);
+            configurationBuilder.setAutoMarkDelivered(autoMarkDelivered);
+            configurationBuilder.setReconnectionAllowed(reconnectionAllowed);
+            configurationBuilder.setAllowListenNetwork(allowListenNetwork);
+        }
 
         return configurationBuilder;
     }
@@ -111,17 +132,7 @@ public class ChatHelper {
             return;
         }
 
-        qbChatService.login(user, new QbEntityCallbackWrapper<Void>(callback) {
-            @Override
-            public void onSuccess(Void o, Bundle bundle) {
-                super.onSuccess(o, bundle);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                super.onError(e);
-            }
-        });
+        qbChatService.login(user, callback);
     }
 
     public void join(QBChatDialog chatDialog, final QBEntityCallback<Void> callback) {
@@ -163,7 +174,7 @@ public class ChatHelper {
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
-        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
+        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
             QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
@@ -256,7 +267,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogById(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
+    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
         QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 

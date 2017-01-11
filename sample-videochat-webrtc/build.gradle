@@ -23,8 +23,9 @@ android {
         applicationId "com.quickblox.sample.groupchatwebrtc"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 200
-        versionName "2.0.0"
+        versionCode 204
+        versionName "2.0.4-scr-share"
+
     }
 
     productFlavors {
@@ -77,6 +78,7 @@ dependencies {
     compile("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
         transitive = true;
     }
+    compile 'com.github.bumptech.glide:glide:3.6.1'
 }
 
 apply from: "../artifacts.gradle"

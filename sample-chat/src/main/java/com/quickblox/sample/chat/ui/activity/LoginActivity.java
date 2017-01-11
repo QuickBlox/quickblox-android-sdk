@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
-import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
@@ -53,7 +53,8 @@ public class LoginActivity extends CoreBaseActivity {
 
     private void buildUsersList() {
         List<String> tags = new ArrayList<>();
-        tags.add(Consts.QB_USERS_TAG);
+
+        tags.add(App.getSampleConfigs().getUsersTag());
 
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
@@ -116,7 +117,7 @@ public class LoginActivity extends CoreBaseActivity {
             final QBUser user = (QBUser) parent.getItemAtPosition(position);
             // We use hardcoded password for all users for test purposes
             // Of course you shouldn't do that in your app
-            user.setPassword(Consts.QB_USERS_PASSWORD);
+            user.setPassword(App.getSampleConfigs().getUsersPassword());
 
             login(user);
         }
