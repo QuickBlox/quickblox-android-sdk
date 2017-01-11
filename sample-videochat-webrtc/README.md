@@ -7,3 +7,5 @@ Original sample description & setup guide - [http://quickblox.com/developers/Sam
 &nbsp;&nbsp;&nbsp;&nbsp; <img src="screenshots/Users.png" width=200 />
 &nbsp;&nbsp;&nbsp;&nbsp; <img src="screenshots/p2p.png" width=200 />
 &nbsp;&nbsp;&nbsp;&nbsp; <img src="screenshots/Group.png" width=200 />
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="screenshots/Screenshare_picture.png" width=200 />
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="screenshots/Screenshare_youtube.png" width=200 />
