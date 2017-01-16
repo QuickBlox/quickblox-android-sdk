@@ -647,6 +647,7 @@ public class SnippetsChat extends Snippets {
                 return;
             } else if (privateChatDialog == null){
                 log("Please create private dialog first");
+                return;
             }
 
             // create a message
@@ -692,6 +693,7 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             if (privateChatDialog == null){
                 log("Please create private dialog first");
+                return;
             }
 
             privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
@@ -709,6 +711,7 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             if (privateChatDialog == null){
                 log("Please create private dialog first");
+                return;
             }
 
             privateChatDialog.addIsTypingListener(privateChatDialogTypingListener);
@@ -767,6 +770,7 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             if (privateChatDialog == null){
                 log("Please create private dialog first");
+                return;
             }
 
             QBChatMessage status = new QBChatMessage();
@@ -786,6 +790,7 @@ public class SnippetsChat extends Snippets {
         public void execute() {
             if (privateChatDialog == null){
                 log("Please create private dialog first");
+                return;
             }
 
             QBChatMessage status = new QBChatMessage();
