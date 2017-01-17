@@ -14,11 +14,13 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.UsersAdapter;
+import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -81,8 +83,7 @@ public class LoginActivity extends CoreBaseActivity {
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
-                SharedPreferencesUtil.saveQbUser(user);
-
+                SharedPrefsHelper.getInstance().saveQbUser(user);
                 DialogsActivity.start(LoginActivity.this);
                 finish();
 

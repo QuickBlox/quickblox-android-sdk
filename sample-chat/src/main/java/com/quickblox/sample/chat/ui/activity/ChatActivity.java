@@ -100,6 +100,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         initChatConnectionListener();
 
         initViews();
+        initChat();
     }
 
     @Override
@@ -136,13 +137,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         sendDialogId();
 
         super.onBackPressed();
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            initChat();
-        }
     }
 
     @Override

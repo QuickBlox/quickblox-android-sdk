@@ -68,6 +68,10 @@ public class ChatHelper {
         return instance;
     }
 
+    public boolean isLogged(){
+        return QBChatService.getInstance().isLoggedIn();
+    }
+
     public static QBUser getCurrentUser() {
         return QBChatService.getInstance().getUser();
     }
@@ -126,7 +130,7 @@ public class ChatHelper {
         });
     }
 
-    private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
+    public void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
         if (qbChatService.isLoggedIn()) {
             callback.onSuccess(null, null);
             return;
@@ -147,7 +151,21 @@ public class ChatHelper {
     }
 
     public void logout(final QBEntityCallback<Void> callback) {
-        qbChatService.logout(callback);
+        qbChatService.logout(new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                signOut(callback);
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                callback.onError(e);
+            }
+        });
+    }
+
+    private void signOut(QBEntityCallback<Void> callback){
+        QBUsers.signOut().performAsync(callback);
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
@@ -190,7 +208,7 @@ public class ChatHelper {
         }
 
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
-        qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
+        qbRequestBuilder.removeUsers(QBChatService.getInstance().getUser().getId());
 
         QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(callback);
     }

@@ -82,6 +82,8 @@ public class SelectUsersActivity extends BaseActivity {
             setActionBarTitle(R.string.select_users_create_chat);
         }
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        loadUsersFromQb();
     }
 
     @Override
@@ -111,13 +113,6 @@ public class SelectUsersActivity extends BaseActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            loadUsersFromQb();
         }
     }
 

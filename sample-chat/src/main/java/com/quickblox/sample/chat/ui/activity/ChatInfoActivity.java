@@ -35,18 +35,13 @@ public class ChatInfoActivity extends BaseActivity {
         usersListView = _findViewById(R.id.list_login_users);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        buildUserList();
     }
 
     @Override
     protected View getSnackbarAnchorView() {
         return usersListView;
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            buildUserList();
-        }
     }
 
     private void buildUserList() {

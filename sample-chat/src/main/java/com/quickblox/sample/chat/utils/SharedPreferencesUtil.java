@@ -30,7 +30,7 @@ public class SharedPreferencesUtil {
         return helper.has(QB_USER_LOGIN) && helper.has(QB_USER_PASSWORD);
     }
 
-    public static QBUser getQbUser() {
+    private static QBUser getQbUser() {
         SharedPrefsHelper helper = SharedPrefsHelper.getInstance();
 
         if (hasQbUser()) {

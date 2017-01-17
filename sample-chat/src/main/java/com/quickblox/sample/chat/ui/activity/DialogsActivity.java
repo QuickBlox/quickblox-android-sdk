@@ -73,6 +73,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private QBSystemMessagesManager systemMessagesManager;
     private QBIncomingMessagesManager incomingMessagesManager;
     private DialogsManager dialogsManager;
+    private QBUser currentUser;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
@@ -88,14 +89,23 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
-        if (isAppSessionActive) {
-            allDialogsMessagesListener = new AllDialogsMessageListener();
-            systemMessagesListener = new SystemMessagesListener();
-        }
+        allDialogsMessagesListener = new AllDialogsMessageListener();
+        systemMessagesListener = new SystemMessagesListener();
 
         dialogsManager = new DialogsManager();
 
+        currentUser = QBChatService.getInstance().getUser();
+
         initUi();
+
+        setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
+
+        registerQbChatListeners();
+        if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
+            loadDialogsFromQb(true, true);
+        } else {
+            loadDialogsFromQb(false, true);
+        }
     }
 
     @Override
@@ -117,9 +127,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     protected void onDestroy() {
         super.onDestroy();
 
-        if (isAppSessionActive) {
-            unregisterQbChatListeners();
-        }
+        unregisterQbChatListeners();
     }
 
     @Override
@@ -144,23 +152,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            QBUser currentUser = ChatHelper.getCurrentUser();
-            if (currentUser != null) {
-                setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
-            }
-
-            registerQbChatListeners();
-            if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
-                loadDialogsFromQb(true, true);
-            } else {
-                loadDialogsFromQb(false, true);
-            }
         }
     }
 
@@ -236,8 +227,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
                 SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
-
-                SharedPreferencesUtil.removeQbUser();
                 LoginActivity.start(DialogsActivity.this);
                 QbDialogHolder.getInstance().clear();
                 ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -246,7 +235,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
             @Override
             public void onError(QBResponseException e) {
-                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+                reconnectToChatLogout(currentUser);
             }
         });
     }
@@ -269,7 +258,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                         R.string.dlg_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+                                reconnectToChatLogout(currentUser);
                             }
                         });
             }
@@ -277,11 +266,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     private void updateDialogsList() {
-        if (isAppSessionActive) {
-            requestBuilder.setSkip(skipRecords = 0);
-
-            loadDialogsFromQb(true, true);
-        }
+        requestBuilder.setSkip(skipRecords = 0);
+        loadDialogsFromQb(true, true);
     }
 
     public void onStartNewChatClick(View view) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.users.model.QBUser;
 
@@ -18,7 +19,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
     public CheckboxUsersAdapter(Context context, List<QBUser> users) {
         super(context, users);
         this.selectedUsers = new ArrayList<>();
-        this.selectedUsers.add(SharedPreferencesUtil.getQbUser());
+        this.selectedUsers.add(currentUser);
 
         this.initiallySelectedUsers = new ArrayList<>();
     }
