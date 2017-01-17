@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.quickblox.chat.QBChatService;
-import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
