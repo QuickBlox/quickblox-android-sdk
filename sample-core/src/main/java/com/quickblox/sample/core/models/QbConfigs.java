@@ -27,9 +27,6 @@ public class QbConfigs implements Serializable{
     @SerializedName("chat_domain")
     private String chatDomain;
 
-    @SerializedName("gcm_sender_id")
-    private String gcmSenderId;
-
 
     public String getAppId() {
         return appId;
@@ -78,13 +75,4 @@ public class QbConfigs implements Serializable{
     public void setChatDomain(String chatDomain) {
         this.chatDomain = chatDomain;
     }
-
-    public String getGcmSenderId() {
-        return gcmSenderId;
-    }
-
-    public void setGcmSenderId(String gcmSenderId) {
-        this.gcmSenderId = gcmSenderId;
-    }
-
 }

@@ -4,7 +4,6 @@
   "auth_secret": "YavMAxm5T59-BRw",
   "account_key": "rz2sXxBt5xgSxGjALDW6",
   "api_domain": "https://api.quickblox.com",
-  "chat_domain": "chat.quickblox.com",
-  "gcm_sender_id": "761750217637"
+  "chat_domain": "chat.quickblox.com"
 }
 
