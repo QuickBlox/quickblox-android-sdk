@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.managers.DialogsManager;
@@ -44,6 +46,7 @@ import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
 
@@ -222,21 +225,13 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     private void userLogout() {
-        ChatHelper.getInstance().logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
-                LoginActivity.start(DialogsActivity.this);
-                QbDialogHolder.getInstance().clear();
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                finish();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                reconnectToChatLogout(currentUser);
-            }
-        });
+        ChatHelper.getInstance().logout();
+        SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+        SharedPrefsHelper.getInstance().removeQbUser();
+        LoginActivity.start(DialogsActivity.this);
+        QbDialogHolder.getInstance().clear();
+        ProgressDialogFragment.hide(getSupportFragmentManager());
+        finish();
     }
 
     private void reconnectToChatLogout(final QBUser user) {

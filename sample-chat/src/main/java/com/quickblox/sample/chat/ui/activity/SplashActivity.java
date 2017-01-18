@@ -67,6 +67,11 @@ public class SplashActivity extends CoreSplashActivity {
         return user;
     }
 
+    @Override
+    protected boolean checkSignIn() {
+        return SharedPrefsHelper.getInstance().hasQbUser();
+    }
+
     private void loginToChat(final QBUser user) {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
 

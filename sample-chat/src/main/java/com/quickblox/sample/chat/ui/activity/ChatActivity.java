@@ -552,14 +552,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 skipPagination = 0;
                 chatAdapter = null;
                 switch (qbChatDialog.getType()) {
-                    case PRIVATE:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadChatHistory();
-                            }
-                        });
-                        break;
                     case GROUP:
                         // Join active room if we're in Group Chat
                         runOnUiThread(new Runnable() {

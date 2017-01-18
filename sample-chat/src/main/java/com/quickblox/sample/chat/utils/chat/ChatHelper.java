@@ -1,5 +1,6 @@
 package com.quickblox.sample.chat.utils.chat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,9 +22,11 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.models.SampleConfigs;
+import com.quickblox.sample.chat.ui.activity.DialogsActivity;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -149,22 +152,8 @@ public class ChatHelper {
         chatDialog.leave();
     }
 
-    public void logout(final QBEntityCallback<Void> callback) {
-        qbChatService.logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                signOut(callback);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                callback.onError(e);
-            }
-        });
-    }
-
-    private void signOut(QBEntityCallback<Void> callback){
-        QBUsers.signOut().performAsync(callback);
+    public void logout() {
+        qbChatService.destroy();
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
