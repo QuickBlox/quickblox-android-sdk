@@ -152,7 +152,7 @@ public class ChatHelper {
         chatDialog.leave();
     }
 
-    public void logout() {
+    public void destroy() {
         qbChatService.destroy();
     }
 
@@ -348,14 +348,16 @@ public class ChatHelper {
             userIds.add(message.getSenderId());
         }
 
-        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
-                new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
-                    @Override
-                    public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-                        QbUsersHolder.getInstance().putUsers(users);
-                        callback.onSuccess(messages, params);
-                    }
-                });
+        if (!userIds.isEmpty()) {
+            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
+            QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
+                    new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
+                        @Override
+                        public void onSuccess(ArrayList<QBUser> users, Bundle params) {
+                            QbUsersHolder.getInstance().putUsers(users);
+                            callback.onSuccess(messages, params);
+                        }
+                    });
+        }
     }
 }
