@@ -7,7 +7,6 @@ import android.util.Log;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.content.model.QBFileObjectAccess;
-import com.quickblox.content.model.amazon.PostResponse;
 import com.quickblox.core.Consts;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
@@ -189,7 +188,7 @@ public class SnippetsContent extends Snippets {
     Snippet getFileWithId = new Snippet("get file", "with id") {
         @Override
         public void execute() {
-            QBContent.getFile(212949, new QBEntityCallback<QBFile>(){
+            QBContent.getFile(212949).performAsync(new QBEntityCallback<QBFile>(){
 
                 @Override
                 public void onSuccess(QBFile file, Bundle params) {
@@ -288,7 +287,6 @@ public class SnippetsContent extends Snippets {
         public void executeAsync() {
             String params = fileObjectAccess.getParams();   // will return from the server when creating file
 
-            PostResponse amazonS3Response = null;
             try {
                 QBContent.uploadFile(file1, params, new QBProgressCallback() {
                     @Override
@@ -299,7 +297,6 @@ public class SnippetsContent extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-
         }
     };
 
@@ -311,7 +308,7 @@ public class SnippetsContent extends Snippets {
     Snippet declareFileUploaded = new Snippet("declare file uploaded") {
         @Override
         public void execute() {
-            QBContent.declareFileUploaded(212950, (int) file1.length(), new QBEntityCallback<Void>() {
+            QBContent.declareFileUploaded(212950, (int) file1.length()).performAsync(new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {

@@ -4,20 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.auth.session.BaseService;
+import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsOAuthSigning;
 import com.digits.sdk.android.DigitsSession;
-import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.Lo;
-import com.quickblox.core.server.BaseService;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBProvider;
-import com.quickblox.auth.model.QBSession;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
 import com.sdk.snippets.core.SnippetAsync;
@@ -27,7 +26,6 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterCore;
 
-import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
