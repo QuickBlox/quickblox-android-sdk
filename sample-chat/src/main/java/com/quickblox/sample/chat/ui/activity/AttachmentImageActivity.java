@@ -34,14 +34,7 @@ public class AttachmentImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
         initUI();
-    }
-
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            loadImage();
-        }
+        loadImage();
     }
 
     @Override

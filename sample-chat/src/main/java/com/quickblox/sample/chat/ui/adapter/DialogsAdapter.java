@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.StringUtils;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.core.ui.adapter.BaseSelectableListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -56,7 +55,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
         holder.nameTextView.setText(QbDialogUtils.getDialogName(dialog));
         holder.lastMessageTextView.setText(prepareTextLastMessage(dialog));
 
-        int unreadMessagesCount = dialog.getUnreadMessageCount();
+        int unreadMessagesCount = getUnreadMsgCount(dialog);
         if (unreadMessagesCount == 0) {
             holder.unreadCounterTextView.setVisibility(View.GONE);
         } else {
@@ -68,6 +67,15 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
                 ResourceUtils.getColor(android.R.color.transparent));
 
         return convertView;
+    }
+
+    private int getUnreadMsgCount(QBChatDialog chatDialog){
+        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
+        if (unreadMessageCount == null) {
+            return 0;
+        } else {
+            return unreadMessageCount;
+        }
     }
 
     private boolean isLastMessageAttachment(QBChatDialog dialog) {

@@ -100,6 +100,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         initChatConnectionListener();
 
         initViews();
+        initChat();
     }
 
     @Override
@@ -136,13 +137,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         sendDialogId();
 
         super.onBackPressed();
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            initChat();
-        }
     }
 
     @Override
@@ -508,11 +502,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     messagesListView.setAdapter(chatAdapter);
                     messagesListView.setAreHeadersSticky(false);
                     messagesListView.setDivider(null);
-                    progressBar.setVisibility(View.GONE);
                 } else {
                     chatAdapter.addList(messages);
                     messagesListView.setSelection(messages.size());
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -556,17 +550,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             public void reconnectionSuccessful() {
                 super.reconnectionSuccessful();
                 skipPagination = 0;
-                chatAdapter = null;
                 switch (qbChatDialog.getType()) {
-                    case PRIVATE:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadChatHistory();
-                            }
-                        });
-                        break;
                     case GROUP:
+                        chatAdapter = null;
                         // Join active room if we're in Group Chat
                         runOnUiThread(new Runnable() {
                             @Override

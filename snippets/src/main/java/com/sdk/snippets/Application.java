@@ -1,6 +1,6 @@
 package com.sdk.snippets;
 
-import com.quickblox.core.QBSettings;
+import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.ServiceZone;
 import com.quickblox.sample.core.CoreApp;
 import com.sdk.snippets.core.ApplicationConfig;

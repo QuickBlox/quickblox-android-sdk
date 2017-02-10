@@ -37,14 +37,13 @@ import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.managers.DialogsManager;
 import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
-import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
 
@@ -73,6 +72,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private QBSystemMessagesManager systemMessagesManager;
     private QBIncomingMessagesManager incomingMessagesManager;
     private DialogsManager dialogsManager;
+    private QBUser currentUser;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
@@ -88,14 +88,23 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
-        if (isAppSessionActive) {
-            allDialogsMessagesListener = new AllDialogsMessageListener();
-            systemMessagesListener = new SystemMessagesListener();
-        }
+        allDialogsMessagesListener = new AllDialogsMessageListener();
+        systemMessagesListener = new SystemMessagesListener();
 
         dialogsManager = new DialogsManager();
 
+        currentUser = ChatHelper.getCurrentUser();
+
         initUi();
+
+        setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
+
+        registerQbChatListeners();
+        if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
+            loadDialogsFromQb(true, true);
+        } else {
+            loadDialogsFromQb(false, true);
+        }
     }
 
     @Override
@@ -117,9 +126,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     protected void onDestroy() {
         super.onDestroy();
 
-        if (isAppSessionActive) {
-            unregisterQbChatListeners();
-        }
+        unregisterQbChatListeners();
     }
 
     @Override
@@ -144,23 +151,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onSessionCreated(boolean success) {
-        if (success) {
-            QBUser currentUser = ChatHelper.getCurrentUser();
-            if (currentUser != null) {
-                setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
-            }
-
-            registerQbChatListeners();
-            if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
-                loadDialogsFromQb(true, true);
-            } else {
-                loadDialogsFromQb(false, true);
-            }
         }
     }
 
@@ -232,56 +222,18 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     private void userLogout() {
-        ChatHelper.getInstance().logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
-
-                SharedPreferencesUtil.removeQbUser();
-                LoginActivity.start(DialogsActivity.this);
-                QbDialogHolder.getInstance().clear();
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                finish();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
-            }
-        });
-    }
-
-    private void reconnectToChatLogout(final QBUser user) {
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session_logout);
-
-        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle bundle) {
-                userLogout();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                menu.findItem(R.id.menu_dialogs_action_logout).setEnabled(true);
-                invalidateOptionsMenu();
-                ErrorUtils.showSnackbar(getSnackbarAnchorView(), R.string.no_internet_connection,
-                        R.string.dlg_retry, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
-                            }
-                        });
-            }
-        });
+        ChatHelper.getInstance().destroy();
+        SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+        SharedPrefsHelper.getInstance().removeQbUser();
+        LoginActivity.start(DialogsActivity.this);
+        QbDialogHolder.getInstance().clear();
+        ProgressDialogFragment.hide(getSupportFragmentManager());
+        finish();
     }
 
     private void updateDialogsList() {
-        if (isAppSessionActive) {
-            requestBuilder.setSkip(skipRecords = 0);
-
-            loadDialogsFromQb(true, true);
-        }
+        requestBuilder.setSkip(skipRecords = 0);
+        loadDialogsFromQb(true, true);
     }
 
     public void onStartNewChatClick(View view) {

@@ -74,7 +74,5 @@ public class SplashActivity extends CoreSplashActivity {
         return result;
     }
 
-    private boolean checkSignIn() {
-        return QBSessionManager.getInstance().getSessionParameters() != null;
-    }
+
 }

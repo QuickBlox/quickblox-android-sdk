@@ -71,10 +71,6 @@ public class SplashActivity extends CoreSplashActivity {
         }
     }
 
-    private boolean checkSignIn() {
-        return QBSessionManager.getInstance().getSessionParameters() != null;
-    }
-
     @Override
     protected String getAppName() {
         return getString(R.string.splash_app_title);

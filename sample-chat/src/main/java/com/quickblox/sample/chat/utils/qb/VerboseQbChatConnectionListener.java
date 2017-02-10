@@ -53,7 +53,9 @@ public class VerboseQbChatConnectionListener implements ConnectionListener {
     @Override
     public void reconnectionSuccessful() {
         Log.i(TAG, "reconnectionSuccessful()");
-        snackbar.dismiss();
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
     }
 
     @Override

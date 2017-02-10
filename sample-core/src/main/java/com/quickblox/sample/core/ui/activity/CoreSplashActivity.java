@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
@@ -70,5 +71,9 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
 
     protected void showSnackbarErrorParsingConfigs(){
         ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.error_parsing_configs, R.string.dlg_ok, null);
+    }
+
+    protected boolean checkSignIn() {
+        return QBSessionManager.getInstance().getSessionParameters() != null;
     }
 }

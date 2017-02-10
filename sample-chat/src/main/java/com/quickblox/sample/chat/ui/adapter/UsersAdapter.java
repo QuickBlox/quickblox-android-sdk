@@ -7,8 +7,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
 import com.quickblox.sample.core.ui.adapter.BaseListAdapter;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.sample.core.utils.UiUtils;
@@ -18,8 +18,11 @@ import java.util.List;
 
 public class UsersAdapter extends BaseListAdapter<QBUser> {
 
+    protected QBUser currentUser;
+
     public UsersAdapter(Context context, List<QBUser> users) {
         super(context, users);
+        currentUser = QBChatService.getInstance().getUser();
     }
 
     @Override
@@ -57,12 +60,10 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
     }
 
     protected boolean isUserMe(QBUser user) {
-        QBUser currentUser = SharedPreferencesUtil.getQbUser();
         return currentUser != null && currentUser.getId().equals(user.getId());
     }
 
     protected boolean isAvailableForSelection(QBUser user) {
-        QBUser currentUser = SharedPreferencesUtil.getQbUser();
         return currentUser == null || !currentUser.getId().equals(user.getId());
     }
 

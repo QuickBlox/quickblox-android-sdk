@@ -84,6 +84,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         setMessageInfo(chatMessage, holder);
         setMessageAuthor(holder, chatMessage);
 
+
         holder.messageContainerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

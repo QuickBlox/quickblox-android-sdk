@@ -1,5 +1,6 @@
 package com.quickblox.sample.chat.utils.chat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,10 +22,11 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.models.SampleConfigs;
-import com.quickblox.sample.chat.utils.SharedPreferencesUtil;
+import com.quickblox.sample.chat.ui.activity.DialogsActivity;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -68,6 +70,10 @@ public class ChatHelper {
         return instance;
     }
 
+    public boolean isLogged() {
+        return QBChatService.getInstance().isLoggedIn();
+    }
+
     public static QBUser getCurrentUser() {
         return QBChatService.getInstance().getUser();
     }
@@ -77,7 +83,7 @@ public class ChatHelper {
         qbChatService.setUseStreamManagement(true);
     }
 
-    private static QBChatService.ConfigurationBuilder buildChatConfigs(){
+    private static QBChatService.ConfigurationBuilder buildChatConfigs() {
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
         SampleConfigs sampleConfigs = App.getSampleConfigs();
 
@@ -126,7 +132,7 @@ public class ChatHelper {
         });
     }
 
-    private void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
+    public void loginToChat(final QBUser user, final QBEntityCallback<Void> callback) {
         if (qbChatService.isLoggedIn()) {
             callback.onSuccess(null, null);
             return;
@@ -146,8 +152,8 @@ public class ChatHelper {
         chatDialog.leave();
     }
 
-    public void logout(final QBEntityCallback<Void> callback) {
-        qbChatService.logout(callback);
+    public void destroy() {
+        qbChatService.destroy();
     }
 
     public void createDialogWithSelectedUsers(final List<QBUser> users,
@@ -174,7 +180,7 @@ public class ChatHelper {
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
-        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
             QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
@@ -190,7 +196,7 @@ public class ChatHelper {
         }
 
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
-        qbRequestBuilder.removeUsers(SharedPreferencesUtil.getQbUser().getId());
+        qbRequestBuilder.removeUsers(QBChatService.getInstance().getUser().getId());
 
         QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(callback);
     }
@@ -238,7 +244,17 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBChatMessage>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatMessage> qbChatMessages, Bundle bundle) {
-                        getUsersFromMessages(qbChatMessages, callback);
+
+                        Set<Integer> userIds = new HashSet<>();
+                        for (QBChatMessage message : qbChatMessages) {
+                            userIds.add(message.getSenderId());
+                        }
+
+                        if (!userIds.isEmpty()) {
+                            getUsersFromMessages(qbChatMessages, userIds, callback);
+                        } else {
+                            callback.onSuccess(qbChatMessages, bundle);
+                        }
                         // Not calling super.onSuccess() because
                         // we're want to load chat users before triggering the callback
                     }
@@ -267,7 +283,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
+    public void getDialogById(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
         QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 
@@ -336,11 +352,8 @@ public class ChatHelper {
     }
 
     private void getUsersFromMessages(final ArrayList<QBChatMessage> messages,
+                                      final Set<Integer> userIds,
                                       final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
-        Set<Integer> userIds = new HashSet<>();
-        for (QBChatMessage message : messages) {
-            userIds.add(message.getSenderId());
-        }
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
         QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
