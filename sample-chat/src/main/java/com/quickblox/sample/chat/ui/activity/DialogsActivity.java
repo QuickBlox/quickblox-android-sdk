@@ -43,7 +43,6 @@ import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.model.QBUser;
@@ -94,7 +93,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         dialogsManager = new DialogsManager();
 
-        currentUser = QBChatService.getInstance().getUser();
+        currentUser = ChatHelper.getCurrentUser();
 
         initUi();
 

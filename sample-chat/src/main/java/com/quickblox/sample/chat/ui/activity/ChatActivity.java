@@ -502,11 +502,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                     messagesListView.setAdapter(chatAdapter);
                     messagesListView.setAreHeadersSticky(false);
                     messagesListView.setDivider(null);
-                    progressBar.setVisibility(View.GONE);
                 } else {
                     chatAdapter.addList(messages);
                     messagesListView.setSelection(messages.size());
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

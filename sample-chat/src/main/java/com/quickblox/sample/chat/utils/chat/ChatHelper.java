@@ -70,7 +70,7 @@ public class ChatHelper {
         return instance;
     }
 
-    public boolean isLogged(){
+    public boolean isLogged() {
         return QBChatService.getInstance().isLoggedIn();
     }
 
@@ -83,7 +83,7 @@ public class ChatHelper {
         qbChatService.setUseStreamManagement(true);
     }
 
-    private static QBChatService.ConfigurationBuilder buildChatConfigs(){
+    private static QBChatService.ConfigurationBuilder buildChatConfigs() {
         QBChatService.ConfigurationBuilder configurationBuilder = new QBChatService.ConfigurationBuilder();
         SampleConfigs sampleConfigs = App.getSampleConfigs();
 
@@ -180,7 +180,7 @@ public class ChatHelper {
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
-        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP){
+        if (qbDialog.getType() == QBDialogType.PUBLIC_GROUP) {
             Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         } else {
             QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
@@ -244,7 +244,17 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBChatMessage>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatMessage> qbChatMessages, Bundle bundle) {
-                        getUsersFromMessages(qbChatMessages, callback);
+
+                        Set<Integer> userIds = new HashSet<>();
+                        for (QBChatMessage message : qbChatMessages) {
+                            userIds.add(message.getSenderId());
+                        }
+
+                        if (!userIds.isEmpty()) {
+                            getUsersFromMessages(qbChatMessages, userIds, callback);
+                        } else {
+                            callback.onSuccess(qbChatMessages, bundle);
+                        }
                         // Not calling super.onSuccess() because
                         // we're want to load chat users before triggering the callback
                     }
@@ -273,7 +283,7 @@ public class ChatHelper {
                 });
     }
 
-    public void getDialogById(String dialogId, final QBEntityCallback <QBChatDialog> callback) {
+    public void getDialogById(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
         QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
     }
 
@@ -342,22 +352,17 @@ public class ChatHelper {
     }
 
     private void getUsersFromMessages(final ArrayList<QBChatMessage> messages,
+                                      final Set<Integer> userIds,
                                       final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
-        Set<Integer> userIds = new HashSet<>();
-        for (QBChatMessage message : messages) {
-            userIds.add(message.getSenderId());
-        }
 
-        if (!userIds.isEmpty()) {
-            QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
-            QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
-                    new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
-                        @Override
-                        public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-                            QbUsersHolder.getInstance().putUsers(users);
-                            callback.onSuccess(messages, params);
-                        }
-                    });
-        }
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(userIds.size(), 1);
+        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
+                new QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
+                    @Override
+                    public void onSuccess(ArrayList<QBUser> users, Bundle params) {
+                        QbUsersHolder.getInstance().putUsers(users);
+                        callback.onSuccess(messages, params);
+                    }
+                });
     }
 }
