@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentIncomeCall"
+    style="@style/MatchParent">
+
+    <LinearLayout
+        android:id="@+id/layout_info_about_call"
+        style="@style/MatchWidth"
+        android:layout_marginTop="@dimen/action_bar_height"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/also_in_call_text_left_right_padding"
+        android:paddingRight="@dimen/also_in_call_text_left_right_padding">
+
+        <ImageView
+            android:id="@+id/image_caller_avatar"
+            style="@style/CallerAvatar" />
+
+        <TextView
+            android:id="@+id/text_caller_name"
+            style="@style/WrapContent"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingTop="@dimen/padding_top_large"
+            android:textColor="@color/text_color_caller_name"
+            android:textSize="@dimen/caller_name_text_size" />
+
+        <Chronometer
+            android:id="@+id/chronometer_timer_audio_call"
+            style="@style/WrapContent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_common"
+            android:textColor="@color/text_color_also_on_call"
+            android:textSize="@dimen/text_size"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/text_also_on_call"
+            style="@style/WrapContent"
+            android:layout_marginTop="24dp"
+            android:text="@string/also_on_call"
+            android:textColor="@color/text_color_also_on_call"
+            android:textSize="@dimen/also_on_call_text_size" />
+
+        <TextView
+            android:id="@+id/text_other_inc_users"
+            style="@style/WrapContent"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="@color/text_color_other_inc_users"
+            android:textSize="@dimen/other_inc_users_text_size"
+            tools:text="@string/user_list_on_call" />
+
+    </LinearLayout>
+
+    <include layout="@layout/view_outgoing_screen" />
+
+    <include layout="@layout/view_action_buttons_conversation_fragment" />
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentOpponents"
+    style="@style/MatchParent"
+    android:background="@color/background_fragment_conversation">
+
+
+    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+        android:id="@+id/remote_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/grid_opponents"
+        />
+
+    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+        android:id="@+id/local_video_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/action_bar_height"
+        android:layout_marginLeft="@dimen/margin_small"
+         />
+
+    <include layout="@layout/view_outgoing_screen" />
+
+    <TextView
+        android:id="@+id/connectionStatusLocal"
+        style="@style/MatchWidth"
+        android:layout_marginBottom="@dimen/margin_very_small"
+        android:gravity="center_horizontal"
+        android:maxLength="13"
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textStyle="normal|italic" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/grid_opponents"
+        style="@style/WrapContent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/element_set_video_buttons"
+        android:layout_marginBottom="@dimen/margin_common"
+        android:horizontalSpacing="@dimen/margin_small"
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/margin_small"
+        android:visibility="invisible"
+        tools:listitem="@layout/list_item_opponent_from_call">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <include
+        android:id="@+id/element_set_video_buttons"
+        layout="@layout/view_action_buttons_conversation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/empty_stub"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_common" />
+
+    <View
+        android:id="@+id/empty_stub"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
