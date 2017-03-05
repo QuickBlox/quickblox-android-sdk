@@ -17,8 +17,8 @@ android {
 }
 
 dependencies {
-    compile ("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion" )
-
+//    compile ("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion" )
+    compile project(":quickblox-android-sdk-messages" )
     compile "com.android.support:design:${rootProject.designVersion}"
     compile "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
 

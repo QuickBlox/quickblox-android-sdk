@@ -65,7 +65,7 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionStateCallback, QBRTCSignalingCallback,
+public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, QBRTCSignalingCallback,
         OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener, ScreenShareFragment.OnSharingEvents {
 
     private static final String TAG = CallActivity.class.getSimpleName();
@@ -306,7 +306,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this);
 
-        rtcClient.setCameraErrorHendler(new CameraVideoCapturer.CameraEventsHandler() {
+        rtcClient.setCameraErrorHandler(new CameraVideoCapturer.CameraEventsHandler() {
             @Override
             public void onCameraError(final String s) {
 
