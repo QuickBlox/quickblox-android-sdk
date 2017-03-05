@@ -42,8 +42,8 @@ public class QBResRequestExecutor {
         requestBuilder.setLimit(20);
 
 
-//        QBRestChatService.getChatDialogs(QBDialogType.GROUP, requestBuilder).performAsync(callback);
-        QBRestChatService.getChatDialogs(null, requestBuilder).performAsync(callback);
+        QBRestChatService.getChatDialogs(QBDialogType.GROUP, requestBuilder).performAsync(callback);
+//        QBRestChatService.getChatDialogs(null, requestBuilder).performAsync(callback);
     }
 
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
@@ -80,8 +80,8 @@ public class QBResRequestExecutor {
 
     private static QBChatDialog createDialog(List<QBUser> users, QBUser currentUser) {
         users.remove(currentUser);
-
-        return DialogUtils.buildDialog(users.toArray(new QBUser[users.size()]));
+        return DialogUtils.buildDialog(DialogUtils.createChatNameFromUserList(users.toArray(new QBUser[users.size()])),
+                QBDialogType.GROUP, DialogUtils.getUserIds(users));
     }
 
     public void loadUsersByTag(final String tag, final QBEntityCallback<ArrayList<QBUser>> callback) {

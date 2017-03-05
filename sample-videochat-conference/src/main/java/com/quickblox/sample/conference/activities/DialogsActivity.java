@@ -26,6 +26,7 @@ import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.PermissionsChecker;
 import com.quickblox.sample.conference.utils.UsersUtils;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
 
@@ -40,7 +41,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
-
+    private static final int REQUEST_SELECT_PEOPLE = 174;
 
     private DialogsAdapter dialogsAdapter;
     private ListView dialogsListView;
@@ -50,6 +51,7 @@ public class DialogsActivity extends BaseActivity {
     private WebRtcSessionManager webRtcSessionManager;
     private ActionMode currentActionMode;
     private FloatingActionButton fab;
+    private boolean isProcessingResultInProgress;
 
     private PermissionsChecker checker;
 
@@ -117,6 +119,7 @@ public class DialogsActivity extends BaseActivity {
             }
         });
     }
+
     @Override
     public ActionMode startSupportActionMode(ActionMode.Callback callback) {
         currentActionMode = super.startSupportActionMode(callback);
@@ -172,7 +175,7 @@ public class DialogsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.activity_opponents, menu);
+        getMenuInflater().inflate(R.menu.activity_opponents, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -207,12 +210,14 @@ public class DialogsActivity extends BaseActivity {
     private void showSettings() {
         SettingsActivity.start(this);
     }
+
     private void logOut() {
         unsubscribeFromPushes();
         startLogoutCommand();
         removeAllUserData();
         startLoginActivity();
     }
+
     private void unsubscribeFromPushes() {
         SubscribeService.unSubscribeFromPushes(this);
     }
@@ -242,67 +247,106 @@ public class DialogsActivity extends BaseActivity {
     }
 
     public void onCreateNewDialog(View view) {
-        Log.d("AMBRA", "Create new dialog");
+        SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
 
-    private class DeleteActionModeCallback implements ActionMode.Callback {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            isProcessingResultInProgress = true;
+            if (requestCode == REQUEST_SELECT_PEOPLE) {
+                ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
+                        .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
 
-        public DeleteActionModeCallback() {
-            fab.hide();
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.activity_selected_dialogs, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.delete_dialog:
-                    deleteSelectedDialogs();
-                    if (currentActionMode != null) {
-                        currentActionMode.finish();
-                    }
-                    return true;
+                ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
+                createDialog(selectedUsers);
+            } else {
+                updateDialogsAdapter();
             }
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            currentActionMode = null;
-            dialogsAdapter.clearSelection();
-            fab.show();
-        }
-
-
-        private void deleteSelectedDialogs() {
-            final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
-            requestExecutor.deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
-                @Override
-                public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
-//                    QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
-                    updateDialogsAdapter();
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                    showErrorSnackbar(R.string.dialogs_deletion_error, e,
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    deleteSelectedDialogs();
-                                }
-                            });
-                }
-            });
         }
     }
-}
+
+    private void createDialog(final ArrayList<QBUser> selectedUsers) {
+        requestExecutor.createDialogWithSelectedUsers(selectedUsers, currentUser,
+                new QBEntityCallback<QBChatDialog>() {
+                    @Override
+                    public void onSuccess(QBChatDialog dialog, Bundle args) {
+                        isProcessingResultInProgress = false;
+//                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
+                        Log.d("AMBRA", "open VideoFragment dialog name= " + dialog.getName());
+//                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
+                        ProgressDialogFragment.hide(getSupportFragmentManager());
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        isProcessingResultInProgress = false;
+                        ProgressDialogFragment.hide(getSupportFragmentManager());
+                        showErrorSnackbar(R.string.dialogs_creation_error, null, null);
+                    }
+                }
+        );
+    }
+
+        private class DeleteActionModeCallback implements ActionMode.Callback {
+
+            public DeleteActionModeCallback() {
+                fab.hide();
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.activity_selected_dialogs, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.delete_dialog:
+                        deleteSelectedDialogs();
+                        if (currentActionMode != null) {
+                            currentActionMode.finish();
+                        }
+                        return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                currentActionMode = null;
+                dialogsAdapter.clearSelection();
+                fab.show();
+            }
+
+
+            private void deleteSelectedDialogs() {
+                final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+                requestExecutor.deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
+                    @Override
+                    public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
+//                    QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
+                        updateDialogsAdapter();
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        showErrorSnackbar(R.string.dialogs_deletion_error, e,
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        deleteSelectedDialogs();
+                                    }
+                                });
+                    }
+                });
+            }
+        }
+    }

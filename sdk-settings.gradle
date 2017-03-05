@@ -28,3 +28,6 @@ project(':quickblox-android-sdk-messages').projectDir = new File( '../SDK-androi
 
 include ':quickblox-android-sdk-videochat-webrtc'
 project(':quickblox-android-sdk-videochat-webrtc').projectDir = new File( '../SDK-android/quickblox-android-sdk-videochat-webrtc')
+
+include ':quickblox-android-sdk-conference'
+project(':quickblox-android-sdk-conference').projectDir = new File( '../SDK-android/quickblox-android-sdk-conference')

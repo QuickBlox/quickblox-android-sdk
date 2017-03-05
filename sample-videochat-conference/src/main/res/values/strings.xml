@@ -87,9 +87,17 @@
     <string name="text_welcoming_message">Please enter username and chat room name. \nYou can join existed chat room.</string>
     <string name="hint_user_name">User name</string>
     <string name="hint_chat_room_name">Chat room name</string>
+    <string name="placeholder_username_you">%s (you)</string>
+    <string name="create_dialog">Creating dialog…</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
 
+    <string name="menu_select_people_done">Done</string>
     <string name="text_select_user_to_call">Select users you want to call</string>
+    <string name="text_select_user_to_create_dialog">Select users you want create dialog with</string>
     <string name="text_select_dialog_to_join">Select dialog you want to join</string>
+    <string name="select_users_create_dialog">Create new dialog</string>
+    <string name="select_users_edit_dialog">Add Users to dialog</string>
+    <string name="select_users_choose_users">Please, choose at least one participant</string>
 
     <string name="call_was_stopped_connection_lost">Call was stopped because connection was lost</string>
     <string name="connection_lost">Connection lost</string>

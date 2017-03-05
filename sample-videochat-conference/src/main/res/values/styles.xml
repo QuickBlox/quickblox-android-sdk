@@ -36,6 +36,30 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="ListHeaderStyle" parent="ListItem">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/list_item_side_margin</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+        <item name="android:textSize">14sp</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
+    <style name="UserIconStyle" parent="ListItemIconStyle">
+        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
+        <item name="android:padding">@dimen/padding_common</item>
+    </style>
+
+    <style name="UserTitleStyle" parent="WeightWidth">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="UserCheckboxStyle" parent="WrapContent">
+        <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
+        <item name="android:clickable">false</item>
+        <item name="android:gravity">right</item>
+    </style>
+
     <style name="CallerAvatar">
         <item name="android:layout_width">@dimen/call_avatar_diameter</item>
         <item name="android:layout_height">@dimen/call_avatar_diameter</item>

@@ -100,7 +100,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private List<Integer> opponentsIdsList;
     private boolean callStarted;
-    private boolean isVideoCall;
     private long expirationReconnectionTime;
     private int reconnectHangUpTimeMillis;
     private boolean headsetPlugged;
@@ -150,7 +149,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
 
-    private void startScreenSharing(final Intent data){
+    private void startScreenSharing(final Intent data) {
         ScreenShareFragment screenShareFragment = ScreenShareFragment.newIntstance();
         FragmentExecuotr.addFragmentWithBackStack(getSupportFragmentManager(), R.id.fragment_container, screenShareFragment, ScreenShareFragment.TAG);
         currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCScreenCapturer(data, null));
@@ -165,14 +164,13 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,final Intent data) {
-        Log.i(TAG, "onActivityResult requestCode="+requestCode +", resultCode= " + resultCode);
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        Log.i(TAG, "onActivityResult requestCode=" + requestCode + ", resultCode= " + resultCode);
         if (requestCode == QBRTCScreenCapturer.REQUEST_MEDIA_PROJECTION) {
             if (resultCode == Activity.RESULT_OK) {
                 startScreenSharing(data);
                 Log.i(TAG, "Starting screen capture");
-            }
-            else {
+            } else {
 
             }
         }
@@ -191,7 +189,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     private void checkPermission() {
         if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-            startPermissionsActivity(!isVideoCall);
+            startPermissionsActivity(false);
         }
     }
 
@@ -260,15 +258,8 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             }
         });
 
-        isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
-        if (isVideoCall) {
-            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
-            Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
-        } else {
-            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
-            previousDeviceEarPiece = true;
-            Log.d(TAG, "AppRTCAudioManager.AudioDevice.EARPIECE");
-        }
+        audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+        Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
 
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
@@ -642,11 +633,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     }
 
     private void addConversationFragment(boolean isIncomingCall) {
-        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
-                isVideoCall
-                        ? new VideoConversationFragment()
-                        : new AudioConversationFragment(),
-                isIncomingCall);
+        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(new VideoConversationFragment(), isIncomingCall);
         FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, conversationFragment, conversationFragment.getClass().getSimpleName());
     }
 
@@ -742,7 +729,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
 
     @Override
     public void onSwitchCamera(CameraVideoCapturer.CameraSwitchHandler cameraSwitchHandler) {
-        ((QBRTCCameraVideoCapturer)(currentSession.getMediaStreamManager().getVideoCapturer()))
+        ((QBRTCCameraVideoCapturer) (currentSession.getMediaStreamManager().getVideoCapturer()))
                 .switchCamera(cameraSwitchHandler);
     }
 

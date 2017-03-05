@@ -124,7 +124,10 @@ public class LoginActivity extends BaseActivity {
         qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
 
         userForSave = qbUser;
-        startLoginService(qbUser);
+        saveUserData(userForSave);
+
+        signInCreatedUser(userForSave, false);
+//        startLoginService(qbUser);
     }
 
     private void startDialogsActivity() {
@@ -186,6 +189,7 @@ public class LoginActivity extends BaseActivity {
                 if (deleteCurrentUser) {
                     removeAllUserData(result);
                 } else {
+                    hideProgressDialog();
                     startDialogsActivity();
                 }
             }

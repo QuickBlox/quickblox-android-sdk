@@ -49,6 +49,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.quickblox.sample.conference.activities.SelectUsersActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity android:name="com.quickblox.sample.conference.activities.PermissionsActivity" />
         <activity
             android:name="com.quickblox.sample.conference.activities.CallActivity"
