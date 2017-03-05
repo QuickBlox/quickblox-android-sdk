@@ -54,7 +54,7 @@ public class CallService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        createChatService();
+//        createChatService();
 
         Log.d(TAG, "Service onCreate()");
     }
@@ -65,7 +65,7 @@ public class CallService extends Service {
 
         parseIntentExtras(intent);
 
-        startSuitableActions();
+//        startSuitableActions();
 
         return START_REDELIVER_INTENT;
     }

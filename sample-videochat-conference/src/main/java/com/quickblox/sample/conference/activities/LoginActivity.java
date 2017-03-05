@@ -127,8 +127,8 @@ public class LoginActivity extends BaseActivity {
         startLoginService(qbUser);
     }
 
-    private void startOpponentsActivity() {
-        OpponentsActivity.start(LoginActivity.this, false);
+    private void startDialogsActivity() {
+        DialogsActivity.start(LoginActivity.this);
         finish();
     }
 
@@ -186,7 +186,7 @@ public class LoginActivity extends BaseActivity {
                 if (deleteCurrentUser) {
                     removeAllUserData(result);
                 } else {
-                    startOpponentsActivity();
+                    startDialogsActivity();
                 }
             }
 
