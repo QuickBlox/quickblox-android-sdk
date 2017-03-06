@@ -136,7 +136,8 @@ public class DialogsActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                 if (currentActionMode == null) {
-                    Log.d("AMBRA", "OPEN CALL ACTIVITY");
+                    Log.d("AMBRA", "OPEN CALL ACTIVITY selectedDialog= " + selectedDialog.getName());
+//                    CallActivity.start(DialogsActivity.this, false);
                 } else {
                     dialogsAdapter.toggleSelection(selectedDialog);
                 }

@@ -20,11 +20,11 @@ android {
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.quickblox.sample.groupchatwebrtc"
+        applicationId "com.quickblox.sample.conference"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 204
-        versionName "2.0.4-scr-share"
+        versionCode 200
+        versionName "1.0.0"
 
     }
 
@@ -66,8 +66,8 @@ android {
 
 dependencies {
 
-//    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
-    compile project(":quickblox-android-sdk-videochat-webrtc" )
+//    compile "com.quickblox:quickblox-android-sdk-conference:$rootProject.qbSdkVersion"
+    compile project(":quickblox-android-sdk-conference" )
     compile (project(":sample-core"))
 
     compile "com.android.support:recyclerview-v7:24.0.0"
