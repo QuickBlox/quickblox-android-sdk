@@ -56,6 +56,10 @@ public interface Consts {
     String EXTRA_IS_STARTED_FOR_CALL = "isRunForCall";
     String ALREADY_LOGGED_IN = "You have already logged in chat";
 
+    String JANUS_PROTOCOL = "janus-protocol";
+    String JANUS_URL = "wss://janusdev.quickblox.com:8989";
+    String JANUS_PLUGIN = "janus.plugin.videoroom";
+
     enum StartConversationReason {
         INCOME_CALL_FOR_ACCEPTION,
         OUTCOME_CALL_MADE

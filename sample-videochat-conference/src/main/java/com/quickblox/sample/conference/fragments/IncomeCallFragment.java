@@ -92,7 +92,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     }
 
     private void initFields() {
-        currentSession = WebRtcSessionManager.getInstance(getActivity()).getCurrentSession();
+//        currentSession = WebRtcSessionManager.getInstance(getActivity()).getCurrentSession();
         qbUserDbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
 
         if (currentSession != null) {

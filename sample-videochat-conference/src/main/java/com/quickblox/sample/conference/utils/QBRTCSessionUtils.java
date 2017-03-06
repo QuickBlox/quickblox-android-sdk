@@ -11,6 +11,8 @@ public class QBRTCSessionUtils {
 
     static {
         peerStateDescriptions.put(
+                QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_NEW.ordinal(), R.string.new_connection);
+        peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_PENDING.ordinal(), R.string.opponent_pending);
         peerStateDescriptions.put(
                 QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CONNECTING.ordinal(), R.string.text_status_connect);

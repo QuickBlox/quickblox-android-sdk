@@ -11,9 +11,11 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.quickblox.conference.ConferenceSession;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.utils.QBRTCSessionUtils;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBPeerChannel;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
@@ -30,13 +32,13 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     private final int itemWidth;
 
     private Context context;
-    private QBRTCSession session;
+    private ConferenceSession session;
     private List<QBUser> opponents;
     private LayoutInflater inflater;
     private OnAdapterEventListener adapterListener;
 
 
-    public OpponentsFromCallAdapter(Context context, QBRTCSession session, List<QBUser> users, int width, int height) {
+    public OpponentsFromCallAdapter(Context context, ConferenceSession session, List<QBUser> users, int width, int height) {
         this.context = context;
         this.session = session;
         this.opponents = users;
@@ -98,9 +100,12 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);
-        QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(userID).getState();
-        Log.d(TAG, "state ordinal= " + state.ordinal());
-        holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
+        QBPeerChannel qbPeerChannel = session.getPeerChannel(userID);
+        if(qbPeerChannel != null){
+            QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(userID).getState();
+            Log.d(TAG, "state ordinal= " + state.ordinal());
+            holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
+        }
         if (position == (opponents.size() - 1)) {
             adapterListener.OnBindLastViewHolder(holder, position);
         }

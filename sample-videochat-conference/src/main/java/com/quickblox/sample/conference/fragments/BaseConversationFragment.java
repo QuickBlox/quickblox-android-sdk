@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.chat.QBChatService;
+import com.quickblox.conference.ConferenceSession;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
@@ -22,6 +25,8 @@ import com.quickblox.sample.conference.utils.CollectionsUtils;
 import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.UsersUtils;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -34,20 +39,19 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected QbUsersDbManager dbManager;
     protected WebRtcSessionManager sessionManager;
     private boolean isIncomingCall;
-    protected QBRTCSession currentSession;
+    protected ConferenceSession currentSession;
     protected ArrayList<QBUser> opponents;
-    private QBRTCTypes.QBConferenceType qbConferenceType;
 
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
-    protected Chronometer timerChronometer;
     private boolean isMessageProcessed;
     protected boolean isStarted;
     protected View outgoingOpponentsRelativeLayout;
     protected TextView allOpponentsTextView;
     protected TextView ringingTextView;
     protected QBUser currentUser;
+    protected SharedPrefsHelper sharedPrefsHelper;
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall) {
         Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
@@ -75,6 +79,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPrefsHelper = SharedPrefsHelper.getInstance();
         conversationFragmentCallbackListener.addCurrentCallStateCallback(this);
     }
 
@@ -114,7 +119,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected abstract void configureToolbar();
 
     protected void initFields() {
-        currentUser = QBChatService.getInstance().getUser();
+        currentUser = sharedPrefsHelper.getQbUser();
         dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
@@ -124,8 +129,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         }
 
         initOpponentsList();
-
-        qbConferenceType = currentSession.getConferenceType();
 
         Log.d(TAG, "opponents: " + opponents.toString());
         Log.d(TAG, "currentSession " + currentSession.toString());
@@ -137,15 +140,10 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         if (currentSession == null) {
             Log.d(TAG, "currentSession = null onStart");
             return;
-
         }
 
         if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
-            if (isIncomingCall) {
-                currentSession.acceptCall(null);
-            } else {
-                currentSession.startCall(null);
-            }
+            startJoinConference();
             isMessageProcessed = true;
         }
     }
@@ -154,6 +152,10 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     public void onDestroy() {
         conversationFragmentCallbackListener.removeCurrentCallStateCallback(this);
         super.onDestroy();
+    }
+
+    private void startJoinConference(){
+        conversationFragmentCallbackListener.onStartJoinConference();
     }
 
     protected void initViews(View view) {
@@ -198,22 +200,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         micToggleVideoCall.setActivated(inability);
     }
 
-    private void startTimer() {
-        if (!isStarted) {
-            timerChronometer.setVisibility(View.VISIBLE);
-            timerChronometer.setBase(SystemClock.elapsedRealtime());
-            timerChronometer.start();
-            isStarted = true;
-        }
-    }
-
-    private void stopTimer() {
-        if (timerChronometer != null) {
-            timerChronometer.stop();
-            isStarted = false;
-        }
-    }
-
     private void hideOutgoingScreen() {
         outgoingOpponentsRelativeLayout.setVisibility(View.GONE);
     }
@@ -221,7 +207,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     @Override
     public void onCallStarted() {
         hideOutgoingScreen();
-        startTimer();
         actionButtonsEnabled(true);
     }
 
@@ -231,12 +216,12 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             Log.d(TAG, "currentSession = null onCallStopped");
             return;
         }
-        stopTimer();
         actionButtonsEnabled(false);
     }
 
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
+        Log.v("UPDATE_USERS", "super initOpponentsList()");
         initOpponentsList();
     }
 
@@ -256,5 +241,4 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             opponents.remove(QBChatService.getInstance().getUser());
         }
     }
-
 }

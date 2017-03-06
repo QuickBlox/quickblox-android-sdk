@@ -14,6 +14,8 @@ import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.conference.ConferenceClient;
+import com.quickblox.conference.ConferenceSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
@@ -52,6 +54,7 @@ public class DialogsActivity extends BaseActivity {
     private ActionMode currentActionMode;
     private FloatingActionButton fab;
     private boolean isProcessingResultInProgress;
+    private  ConferenceClient client;
 
     private PermissionsChecker checker;
 
@@ -136,8 +139,11 @@ public class DialogsActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                 if (currentActionMode == null) {
-                    Log.d("AMBRA", "OPEN CALL ACTIVITY selectedDialog= " + selectedDialog.getName());
-//                    CallActivity.start(DialogsActivity.this, false);
+                    Log.d(TAG, "START CALL ACTIVITY selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
+                            + "currentUser.getId()= " + currentUser.getId());
+
+                    startConference(selectedDialog.getDialogId(), currentUser.getId());
+
                 } else {
                     dialogsAdapter.toggleSelection(selectedDialog);
                 }
@@ -153,6 +159,10 @@ public class DialogsActivity extends BaseActivity {
                 return true;
             }
         });
+    }
+
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivity(this, false, Consts.PERMISSIONS);
     }
 
     private void updateActionBar(int countSelectedUsers) {
@@ -350,4 +360,31 @@ public class DialogsActivity extends BaseActivity {
                 });
             }
         }
+
+    private void startConference(String dialogID, int userID) {
+        Log.d(TAG, "startConference()");
+        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
+        client = ConferenceClient.getInstance(getApplicationContext());
+
+        client.createSession(Consts.JANUS_URL, Consts.JANUS_PROTOCOL, Consts.JANUS_PLUGIN, dialogID, userID, new QBEntityCallback<ConferenceSession>() {
+            @Override
+            public void onSuccess(ConferenceSession session, Bundle params) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                WebRtcSessionManager.getInstance(DialogsActivity.this).setCurrentSession(session);
+                Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
+                CallActivity.start(DialogsActivity.this, false);
+
+//                ToDo FixMe
+                if (checker.lacksPermissions(Consts.PERMISSIONS)) {
+                    startPermissionsActivity();
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                ProgressDialogFragment.hide(getSupportFragmentManager());
+                showErrorSnackbar(R.string.join_conference_error, null, null);
+            }
+        });
     }
+}

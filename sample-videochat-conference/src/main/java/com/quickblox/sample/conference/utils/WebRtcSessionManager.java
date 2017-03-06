@@ -3,7 +3,7 @@ package com.quickblox.sample.conference.utils;
 import android.content.Context;
 import android.util.Log;
 
-import com.quickblox.sample.conference.activities.OpponentsActivity;
+import com.quickblox.conference.ConferenceSession;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 
@@ -16,7 +16,7 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
     private static WebRtcSessionManager instance;
     private Context context;
 
-    private static QBRTCSession currentSession;
+    private static ConferenceSession currentSession;
 
     private WebRtcSessionManager(Context context) {
         this.context = context;
@@ -30,11 +30,11 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
         return instance;
     }
 
-    public QBRTCSession getCurrentSession() {
+    public ConferenceSession getCurrentSession() {
         return currentSession;
     }
 
-    public void setCurrentSession(QBRTCSession qbCurrentSession) {
+    public void setCurrentSession(ConferenceSession qbCurrentSession) {
         currentSession = qbCurrentSession;
     }
 
@@ -42,18 +42,11 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
     public void onReceiveNewSession(QBRTCSession session) {
         Log.d(TAG, "onReceiveNewSession to WebRtcSessionManager");
 
-        if (currentSession == null){
-            setCurrentSession(session);
-            OpponentsActivity.start(context, true);
-        }
     }
 
     @Override
     public void onSessionClosed(QBRTCSession session) {
         Log.d(TAG, "onSessionClosed WebRtcSessionManager");
 
-        if (session.equals(getCurrentSession())){
-            setCurrentSession(null);
-        }
     }
 }

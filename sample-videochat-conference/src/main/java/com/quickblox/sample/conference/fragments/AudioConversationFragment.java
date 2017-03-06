@@ -72,7 +72,6 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void initViews(View view) {
         super.initViews(view);
-        timerChronometer = (Chronometer) view.findViewById(R.id.chronometer_timer_audio_call);
 
         ImageView firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
         firstOpponentAvatarImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponents.get(0).getId()));

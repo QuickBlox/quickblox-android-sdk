@@ -268,7 +268,7 @@ public class OpponentsActivity extends BaseActivity {
 
         QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
 
-        WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
+//        WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
 
         PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
 

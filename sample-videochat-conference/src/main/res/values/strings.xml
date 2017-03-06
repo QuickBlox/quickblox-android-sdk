@@ -69,6 +69,7 @@
 
 
     <string name="opponent_pending">Pending</string>
+    <string name="new_connection">new connection</string>
     <string name="opponent_closed">Closed</string>
     <string name="text_incoming_audio_call">Incoming Audio Call</string>
     <string name="text_incoming_video_call">Incoming Video Call</string>
@@ -89,7 +90,9 @@
     <string name="hint_chat_room_name">Chat room name</string>
     <string name="placeholder_username_you">%s (you)</string>
     <string name="create_dialog">Creating dialog…</string>
+    <string name="join_conference">Join to conference…</string>
     <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="join_conference_error">Join to conference errors</string>
 
     <string name="menu_select_people_done">Done</string>
     <string name="text_select_user_to_call">Select users you want to call</string>
@@ -213,6 +216,7 @@
     <string name="opponents">and %s other</string>
     <string name="opponent">and %s </string>
     <string name="ringing">Ringing</string>
+    <string name="in_conference">In Conference</string>
     <string name="stop_share">Stop</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
 

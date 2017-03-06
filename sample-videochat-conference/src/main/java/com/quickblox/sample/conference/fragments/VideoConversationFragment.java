@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.quickblox.conference.ConferenceSession;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
@@ -59,8 +60,8 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 /**
  * QuickBlox team
  */
-public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<QBRTCSession>,
-        QBRTCSessionStateCallback<QBRTCSession>, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<ConferenceSession>,
+        QBRTCSessionStateCallback<ConferenceSession>, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -139,19 +140,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
 
-        timerChronometer = (Chronometer) getActivity().findViewById(R.id.timer_chronometer_action_bar);
-
-        isPeerToPeerCall = opponents.size() == 1;
+        isPeerToPeerCall = false;
     }
 
     public void setDuringCallActionBar() {
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(currentUser.getFullName());
-        if (isPeerToPeerCall) {
-            actionBar.setSubtitle(getString(R.string.opponent, opponents.get(0).getFullName()));
-        } else {
-            actionBar.setSubtitle(getString(R.string.opponents, amountOpponents));
-        }
+
+        actionBar.setSubtitle(getString(R.string.opponents, amountOpponents));
 
         actionButtonsEnabled(true);
     }
@@ -182,7 +178,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.i(TAG, "onStart");
         if (!allCallbacksInit) {
             conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
-            conversationFragmentCallbackListener.addRTCSessionEventsCallback(this);
             initVideoTrackSListener();
             allCallbacksInit = true;
         }
@@ -287,6 +282,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
         int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
+        Log.d("AMBRA", "opponents size= " + opponents.size());
         opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, cellSizeWidth,
                 (int) getResources().getDimension(R.dimen.item_height));
         opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
@@ -305,7 +301,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private int defineColumnsCount() {
-        return opponents.size() - 1;
+//        return opponents.size() - 1;
+        return opponents.size();
     }
 
 
@@ -378,7 +375,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void removeConnectionStateListeners(){
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
-        conversationFragmentCallbackListener.removeRTCSessionEventsCallback(this);
     }
 
     private void releaseViews() {
@@ -467,7 +463,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     ////////////////////////////  callbacks from QBRTCClientVideoTracksCallbacks ///////////////////
     @Override
-    public void onLocalVideoTrackReceive(QBRTCSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
+    public void onLocalVideoTrackReceive(ConferenceSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run");
         localVideoTrack = videoTrack;
         isLocalVideoFullScreen = true;
@@ -480,7 +476,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void onRemoteVideoTrackReceive(QBRTCSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
+    public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
         if (localVideoTrack != null) {
@@ -488,18 +484,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
         isLocalVideoFullScreen = false;
 
-        if (isPeerToPeerCall) {
-            setDuringCallActionBar();
-            fillVideoView(userID, remoteFullScreenVideoView, videoTrack, true);
-            updateVideoView(remoteFullScreenVideoView, false);
-        } else {
+//        if (isPeerToPeerCall) {
+//            setDuringCallActionBar();
+//            fillVideoView(userID, remoteFullScreenVideoView, videoTrack, true);
+//            updateVideoView(remoteFullScreenVideoView, false);
+//        } else {
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     setRemoteViewMultiCall(userID, videoTrack);
                 }
             }, LOCAL_TRACk_INITIALIZE_DELAY);
-        }
+//        }
     }
     /////////////////////////////////////////    end    ////////////////////////////////////////////
 
@@ -733,14 +729,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
     @Override
-    public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {
+    public void onConnectedToUser(ConferenceSession qbrtcSession, final Integer userId) {
         connectionEstablished = true;
         setStatusForOpponent(userId, getString(R.string.text_status_connected));
         setProgressBarForOpponentGone(userId);
     }
 
     @Override
-    public void onConnectionClosedForUser(QBRTCSession qbrtcSession, Integer userId) {
+    public void onConnectionClosedForUser(ConferenceSession qbrtcSession, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.text_status_closed));
         if (!isPeerToPeerCall) {
             Log.d(TAG, "onConnectionClosedForUser videoTrackMap.remove(userId)= " + userId);
@@ -750,7 +746,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void onDisconnectedFromUser(QBRTCSession qbrtcSession, Integer integer) {
+    public void onDisconnectedFromUser(ConferenceSession qbrtcSession, Integer integer) {
         setStatusForOpponent(integer, getString(R.string.text_status_disconnected));
     }
 
