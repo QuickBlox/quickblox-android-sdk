@@ -111,6 +111,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         }
     }
 
+     public void add(QBUser item) {
+         opponents.add(item);
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getItemId(int position) {
         return position;

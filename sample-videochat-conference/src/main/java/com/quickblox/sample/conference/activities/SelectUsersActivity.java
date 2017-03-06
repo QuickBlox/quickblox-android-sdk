@@ -65,6 +65,7 @@ public class SelectUsersActivity extends BaseActivity {
 
     public static void startForResult(Activity activity, int code, QBChatDialog dialog) {
         Intent intent = new Intent(activity, SelectUsersActivity.class);
+//        FixMe dialog's never used
         intent.putExtra(EXTRA_QB_DIALOG, dialog);
         activity.startActivityForResult(intent, code);
     }

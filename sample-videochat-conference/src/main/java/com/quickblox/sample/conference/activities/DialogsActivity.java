@@ -286,6 +286,8 @@ public class DialogsActivity extends BaseActivity {
                         isProcessingResultInProgress = false;
 //                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         Log.d("AMBRA", "open VideoFragment dialog name= " + dialog.getName());
+                        //                ToDo implement dbManager.saveAllUsers after start join to dialog as below
+                        dbManager.saveAllUsers(selectedUsers, true);
 //                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }

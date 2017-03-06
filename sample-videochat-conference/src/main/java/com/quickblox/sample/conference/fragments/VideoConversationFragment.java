@@ -277,13 +277,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setGrid(int columnsCount) {
-        int gridWidth = view.getMeasuredWidth();
-        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth + " columnsCount= " + columnsCount);
-        float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
-        int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
-        Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
-        Log.d("AMBRA", "opponents size= " + opponents.size());
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents, cellSizeWidth,
+//        int gridWidth = view.getMeasuredWidth();
+//        Log.i(TAG, "onGlobalLayout : gridWidth=" + gridWidth + " columnsCount= " + columnsCount);
+//        float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
+//        int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
+//        Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
+        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, opponents,
+                (int) getResources().getDimension(R.dimen.item_width),
                 (int) getResources().getDimension(R.dimen.item_height));
         opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
         recyclerView.setAdapter(opponentsAdapter);
