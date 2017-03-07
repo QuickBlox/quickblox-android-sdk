@@ -18,6 +18,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.CheckboxUsersAdapter;
+import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
@@ -39,8 +40,9 @@ public class SelectUsersActivity extends BaseActivity {
 
     private static final String EXTRA_QB_DIALOG = "qb_dialog";
 
+    private QbUsersDbManager dbManager;
+
     private ListView usersListView;
-    private ProgressBar progressBar;
     private CheckboxUsersAdapter usersAdapter;
     private long lastClickTime = 0l;
     private QBUser currentUser;
@@ -75,7 +77,6 @@ public class SelectUsersActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
 
-        progressBar = _findViewById(R.id.progress_select_users);
         usersListView = _findViewById(R.id.list_select_users);
         currentUser = sharedPrefsHelper.getQbUser();
         if (isEditingChat()) {
@@ -85,7 +86,8 @@ public class SelectUsersActivity extends BaseActivity {
         }
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        loadUsersFromQb();
+        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
+        initUsersAdapter();
     }
 
     @Override
@@ -131,35 +133,14 @@ public class SelectUsersActivity extends BaseActivity {
         finish();
     }
 
-    private void loadUsersFromQb() {
-        progressBar.setVisibility(View.VISIBLE);
-        String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
-
-        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
-            @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
-                usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, result, currentUser);
-                if (dialog != null) {
-                    usersAdapter.addSelectedUsers(dialog.getOccupants());
-                }
-                usersListView.setAdapter(usersAdapter);
-
-                progressBar.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-                hideProgressDialog();
-                showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        loadUsersFromQb();
-                    }
-                });
-            }
-        });
+    private void initUsersAdapter() {
+        ArrayList<QBUser> users = dbManager.getAllUsers();
+        QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+        usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users, currentUser);
+        if (dialog != null) {
+            usersAdapter.addSelectedUsers(dialog.getOccupants());
+        }
+        usersListView.setAdapter(usersAdapter);
     }
 
     private boolean isEditingChat() {

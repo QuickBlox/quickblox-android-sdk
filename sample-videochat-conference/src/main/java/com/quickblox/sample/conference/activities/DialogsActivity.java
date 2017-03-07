@@ -21,6 +21,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.adapters.CheckboxUsersAdapter;
 import com.quickblox.sample.conference.adapters.DialogsAdapter;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.services.CallService;
@@ -76,6 +77,7 @@ public class DialogsActivity extends BaseActivity {
         initUi();
 
         startLoadDialogs();
+        loadUsersFromQb();
 
         checker = new PermissionsChecker(getApplicationContext());
     }
@@ -105,7 +107,6 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBChatDialog> result, Bundle params) {
                 hideProgressDialog();
-//                dbManager.saveAllUsers(result, true);
                 chatDialogs = result;
                 initDialogsList();
             }
@@ -117,6 +118,30 @@ public class DialogsActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         startLoadDialogs();
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadUsersFromQb() {
+        showProgressDialog(R.string.dlg_loading_dialogs);
+        String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
+
+        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+                hideProgressDialog();
+                dbManager.saveAllUsers(result, true);
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadUsersFromQb();
                     }
                 });
             }
@@ -197,6 +222,7 @@ public class DialogsActivity extends BaseActivity {
         switch (id) {
             case R.id.update_opponents_list:
                 startLoadDialogs();
+                loadUsersFromQb();
                 return true;
 
             case R.id.settings:
@@ -286,8 +312,6 @@ public class DialogsActivity extends BaseActivity {
                         isProcessingResultInProgress = false;
 //                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         Log.d("AMBRA", "open VideoFragment dialog name= " + dialog.getName());
-                        //                ToDo implement dbManager.saveAllUsers after start join to dialog as below
-                        dbManager.saveAllUsers(selectedUsers, true);
 //                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }

@@ -508,8 +508,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
             finish();
         }
-////        ToDO FixMe TEMP while not realised OnSessionClosed
-//        finish();
     }
 
     @Override
