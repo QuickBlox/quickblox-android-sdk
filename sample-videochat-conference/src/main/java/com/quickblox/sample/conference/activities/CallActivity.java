@@ -417,13 +417,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     public void hangUpCurrentSession() {
-//        FixME
+
         if (getCurrentSession() != null) {
+            getCurrentSession().hangUp(new HashMap<String, String>());
+
             try {
                 getCurrentSession().leave();
-//                getCurrentSession().closeChannels();
+                getCurrentSession().destroySession();
             } catch (WsException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
         }
     }
@@ -488,7 +490,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         Log.d(TAG, "Release current session");
         if (currentSession != null) {
             this.currentSession.removeSessionCallbacksListener(CallActivity.this);
-//            this.currentSession.removeJanusListener(CallActivity.this);
+            this.currentSession.removeJanusListener(CallActivity.this);
             this.currentSession = null;
         }
     }
@@ -725,8 +727,20 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnSessionClosed() {
+    public void OnSessionClosed(final ConferenceSession session) {
+        Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
+        if (session.equals(getCurrentSession())) {
+            Log.d(TAG, "Stop session");
+
+            if (audioManager != null) {
+                audioManager.close();
+            }
+            releaseCurrentSession();
+
+            closeByWifiStateAllow = true;
+            finish();
+        }
     }
 
     //////////////////////////////////////////   end   /////////////////////////////////////////////
