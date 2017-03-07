@@ -227,8 +227,9 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
 
     private void initOpponentsList() {
         Log.v("UPDATE_USERS", "super initOpponentsList()");
-        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
-        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getOpponents());
+//        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
+//        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getDialogOccupants());
+        opponents = dbManager.getUsersByIds(currentSession.getDialogOccupants());
 
         QBUser caller = dbManager.getUserById(currentSession.getCallerID());
         if (caller == null) {

@@ -35,6 +35,7 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -167,7 +168,9 @@ public class DialogsActivity extends BaseActivity {
                     Log.d(TAG, "START CALL ACTIVITY selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
                             + "currentUser.getId()= " + currentUser.getId());
 
-                    startConference(selectedDialog.getDialogId(), currentUser.getId());
+                    List<Integer> occupants = selectedDialog.getOccupants();
+                    occupants.remove(currentUser.getId());
+                    startConference(selectedDialog.getDialogId(), currentUser.getId(), occupants);
 
                 } else {
                     dialogsAdapter.toggleSelection(selectedDialog);
@@ -387,7 +390,7 @@ public class DialogsActivity extends BaseActivity {
             }
         }
 
-    private void startConference(String dialogID, int userID) {
+    private void startConference(String dialogID, int userID, final List<Integer> occupants) {
         Log.d(TAG, "startConference()");
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
         client = ConferenceClient.getInstance(getApplicationContext());
@@ -396,6 +399,7 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onSuccess(ConferenceSession session, Bundle params) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
+                session.setDialogOccupants(occupants);
                 WebRtcSessionManager.getInstance(DialogsActivity.this).setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
                 CallActivity.start(DialogsActivity.this, false);
