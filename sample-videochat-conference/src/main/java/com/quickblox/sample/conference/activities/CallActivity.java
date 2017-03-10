@@ -742,6 +742,11 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
+    public void OnError(String error) {
+        showToast("Connection error, please rejoin if need: " + error);
+    }
+
+    @Override
     public void OnSessionClosed(final ConferenceSession session) {
         Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
