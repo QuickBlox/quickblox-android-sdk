@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,16 +28,17 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.conference.ConferenceSession;
-import com.quickblox.sample.core.utils.Toaster;
+import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
-import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.CameraVideoCapturer;
@@ -77,8 +77,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private ToggleButton cameraToggle;
     private View view;
     private LinearLayout actionVideoButtonsLayout;
-    private QBRTCSurfaceView remoteFullScreenVideoView;
-    private QBRTCSurfaceView localVideoView;
+    private QBConferenceSurfaceView remoteFullScreenVideoView;
+    private QBConferenceSurfaceView localVideoView;
     private CameraState cameraState = CameraState.DISABLED_FROM_USER;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
@@ -197,11 +197,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         opponentViewHolders = new SparseArray<>(opponents.size());
         isRemoteShown = false;
         isCurrentCameraFront = true;
-        localVideoView = (QBRTCSurfaceView) view.findViewById(R.id.local_video_view);
+        localVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
         initCorrectSizeForLocalView();
         localVideoView.setZOrderMediaOverlay(true);
 
-        remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
+        remoteFullScreenVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.remote_video_view);
         remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
         if (!isPeerToPeerCall) {
@@ -237,7 +237,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void restoreSession() {
         Log.d(TAG, "restoreSession ");
-        if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
+        if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
             return;
         }
         onCallStarted();
@@ -546,7 +546,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 //      get mainVideoTrack - opponent's video track from full screen
         QBRTCVideoTrack mainVideoTrack = getVideoTrackMap().get(userIDFullScreen);
 
-        QBRTCSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
+        QBConferenceSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
 
         if (mainVideoTrack != null) {
             fillVideoView(0, remoteVideoView, mainVideoTrack);
@@ -566,7 +566,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             Log.d(TAG, "itemHolder == null - true");
             return;
         }
-        final QBRTCSurfaceView remoteVideoView = itemHolder.getOpponentView();
+        final QBConferenceSurfaceView remoteVideoView = itemHolder.getOpponentView();
 
         if (remoteVideoView != null) {
             remoteVideoView.setZOrderMediaOverlay(true);
@@ -635,7 +635,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     /**
      * @param userId set userId if it from fullscreen videoTrack
      */
-    private void fillVideoView(int userId, QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack,
+    private void fillVideoView(int userId, QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
                                boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
         videoTrack.addRenderer(new VideoRenderer(videoView));
@@ -648,14 +648,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
-    private void fillVideoView(QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
+    private void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
        fillVideoView(0, videoView, videoTrack, remoteRenderer);
     }
 
     /**
      * @param userId set userId if it from fullscreen videoTrack
      */
-    private void fillVideoView(int userId, QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack) {
+    private void fillVideoView(int userId, QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack) {
         if (userId != 0) {
             userIDFullScreen = userId;
         }

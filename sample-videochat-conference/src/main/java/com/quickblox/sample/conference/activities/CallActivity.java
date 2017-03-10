@@ -47,6 +47,7 @@ import com.quickblox.sample.conference.utils.UsersUtils;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -64,9 +65,12 @@ import org.webrtc.CameraVideoCapturer;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * QuickBlox team
@@ -111,6 +115,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private boolean previousDeviceEarPiece;
     private boolean showToastAfterHeadsetPlugged = true;
     private PermissionsChecker checker;
+    private Set<Integer> publishers = new CopyOnWriteArraySet<>();
+    private volatile boolean connectedToJanus;
 
     public static void start(Context context,
                              boolean isIncomingCall) {
@@ -710,13 +716,24 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void OnConnected(BigInteger senderID) {
+        connectedToJanus = true;
+        Log.d(TAG, "OnConnected senderID= " + senderID);
+        subscribeToAllGotPublisher();
+    }
 
+    private void subscribeToAllGotPublisher() {
+        Log.d(TAG, "subscribeToAllGotPublisher");
+        currentSession.subscribeToPublisher(new ArrayList<>(publishers), null);
     }
 
     @Override
-    public void OnPublishersReceived(ArrayList<Integer> publishers) {
-        Log.d(TAG, "AMBRA OnPublishersReceived");
-        currentSession.subscribeToPublisher(publishers, null);
+    public void OnPublishersReceived(ArrayList<Integer> publishersList) {
+        Log.d(TAG, "OnPublishersReceived connectedToJanus" + connectedToJanus);
+        if(!connectedToJanus) {
+            publishers.addAll(publishersList);
+        } else {
+            currentSession.subscribeToPublisher(publishersList, null);
+        }
     }
 
     @Override

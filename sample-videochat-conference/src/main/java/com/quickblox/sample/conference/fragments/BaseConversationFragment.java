@@ -2,13 +2,11 @@ package com.quickblox.sample.conference.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,20 +14,15 @@ import android.widget.ToggleButton;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.conference.ConferenceSession;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.utils.CollectionsUtils;
 import com.quickblox.sample.conference.utils.Consts;
-import com.quickblox.sample.conference.utils.UsersUtils;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBRTCSession;
-import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.BaseSession;
 
 import java.util.ArrayList;
 
@@ -142,7 +135,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             return;
         }
 
-        if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
+        if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
             startJoinConference();
             isMessageProcessed = true;
         }

@@ -6,14 +6,14 @@
     android:background="@color/background_fragment_conversation">
 
 
-    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+    <com.quickblox.conference.view.QBConferenceSurfaceView
         android:id="@+id/remote_video_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/grid_opponents"
         />
 
-    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+    <com.quickblox.conference.view.QBConferenceSurfaceView
         android:id="@+id/local_video_view"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
