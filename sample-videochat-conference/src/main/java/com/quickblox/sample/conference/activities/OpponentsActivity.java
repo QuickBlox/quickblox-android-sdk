@@ -76,7 +76,7 @@ public class OpponentsActivity extends BaseActivity {
         startLoadUsers();
 
         if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
-            CallActivity.start(OpponentsActivity.this, true);
+//            CallActivity.start(OpponentsActivity.this, true);
         }
 
         checker = new PermissionsChecker(getApplicationContext());
@@ -94,7 +94,7 @@ public class OpponentsActivity extends BaseActivity {
         if (intent.getExtras() != null) {
             isRunForCall = intent.getExtras().getBoolean(Consts.EXTRA_IS_STARTED_FOR_CALL);
             if (isRunForCall && webRtcSessionManager.getCurrentSession() != null) {
-                CallActivity.start(OpponentsActivity.this, true);
+//                CallActivity.start(OpponentsActivity.this, true);
             }
         }
     }
@@ -272,7 +272,7 @@ public class OpponentsActivity extends BaseActivity {
 
         PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
 
-        CallActivity.start(this, false);
+//        CallActivity.start(this, false);
         Log.d(TAG, "conferenceType = " + conferenceType);
     }
 

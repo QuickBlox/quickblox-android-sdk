@@ -390,19 +390,19 @@ public class DialogsActivity extends BaseActivity {
             }
         }
 
-    private void startConference(String dialogID, int userID, final List<Integer> occupants) {
+    private void startConference(final String dialogID, int userID, final List<Integer> occupants) {
         Log.d(TAG, "startConference()");
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
         client = ConferenceClient.getInstance(getApplicationContext());
 
-        client.createSession(Consts.JANUS_URL, Consts.JANUS_PROTOCOL, Consts.JANUS_PLUGIN, dialogID, userID, new QBEntityCallback<ConferenceSession>() {
+        client.createSession(userID, new QBEntityCallback<ConferenceSession>() {
             @Override
             public void onSuccess(ConferenceSession session, Bundle params) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 session.setDialogOccupants(occupants);
                 WebRtcSessionManager.getInstance(DialogsActivity.this).setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
-                CallActivity.start(DialogsActivity.this, false);
+                CallActivity.start(DialogsActivity.this, dialogID, false);
 
 //                ToDo FixMe
                 if (checker.lacksPermissions(Consts.PERMISSIONS)) {

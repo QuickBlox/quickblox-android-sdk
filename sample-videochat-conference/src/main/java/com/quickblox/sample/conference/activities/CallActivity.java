@@ -22,6 +22,7 @@ import com.quickblox.chat.QBChatService;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.WsException;
+import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -75,7 +76,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseActivity implements QBRTCSessionStateCallback<ConferenceSession>, ConferenceSession.JanusCallbackListener,
+public class CallActivity extends BaseActivity implements QBRTCSessionStateCallback<ConferenceSession>, ConferenceSessionCallbacks,
         OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener, ScreenShareFragment.OnSharingEvents {
 
     private static final String TAG = CallActivity.class.getSimpleName();
@@ -117,12 +118,14 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private PermissionsChecker checker;
     private Set<Integer> publishers = new CopyOnWriteArraySet<>();
     private volatile boolean connectedToJanus;
+    private String dialogID;
 
-    public static void start(Context context,
+    public static void start(Context context, String dialogID,
                              boolean isIncomingCall) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
+        intent.putExtra(Consts.EXTRA_DIALOG_ID, dialogID);
 
         context.startActivity(intent);
     }
@@ -247,6 +250,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     private void parseIntentExtras() {
+        dialogID = getIntent().getExtras().getString(Consts.EXTRA_DIALOG_ID);
         isInCommingCall = getIntent().getExtras().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
     }
 
@@ -663,7 +667,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onStartJoinConference() {
         int userID = currentSession.getCallerID();
-        currentSession.joinDialog(new JoinedCallback(userID));
+        currentSession.joinDialog(dialogID, new JoinedCallback(userID));
     }
 
     @Override
@@ -715,9 +719,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnConnected(BigInteger senderID) {
+    public void OnConnected() {
         connectedToJanus = true;
-        Log.d(TAG, "OnConnected senderID= " + senderID);
+        Log.d(TAG, "OnConnected and begin subscribeToAllGotPublisher");
         subscribeToAllGotPublisher();
     }
 
