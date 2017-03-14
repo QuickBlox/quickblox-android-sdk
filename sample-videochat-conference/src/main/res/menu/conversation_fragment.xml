@@ -9,10 +9,4 @@
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/screen_share"
-        android:checkable="true"
-        android:icon="@drawable/ic_screen_share"
-        android:title="@string/action_screen_share"
-        app:showAsAction="ifRoom" />
 </menu>

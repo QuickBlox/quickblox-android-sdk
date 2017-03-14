@@ -109,7 +109,7 @@ public class DialogsActivity extends BaseActivity {
             public void onSuccess(ArrayList<QBChatDialog> result, Bundle params) {
                 hideProgressDialog();
                 chatDialogs = result;
-                initDialogsList();
+                initDialogAdapter();
             }
 
             @Override
@@ -189,6 +189,43 @@ public class DialogsActivity extends BaseActivity {
         });
     }
 
+    private void initDialogAdapter(){
+        Log.d(TAG, "proceedInitUsersList chatDialogs= " + chatDialogs);
+        if(dialogsAdapter == null) {
+            dialogsAdapter = new DialogsAdapter(this, chatDialogs);
+            dialogsListView.setAdapter(dialogsAdapter);
+            dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
+                    if (currentActionMode == null) {
+                        Log.d(TAG, "START CALL ACTIVITY selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
+                                + "currentUser.getId()= " + currentUser.getId());
+
+                        List<Integer> occupants = selectedDialog.getOccupants();
+                        occupants.remove(currentUser.getId());
+                        startConference(selectedDialog.getDialogId(), currentUser.getId(), occupants);
+
+                    } else {
+                        dialogsAdapter.toggleSelection(selectedDialog);
+                    }
+                    updateActionBar(dialogsAdapter.getSelectedItems().size());
+                }
+            });
+            dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
+                    startSupportActionMode(new DeleteActionModeCallback());
+                    dialogsAdapter.selectItem(selectedDialog);
+                    return true;
+                }
+            });
+        } else {
+            dialogsAdapter.updateList(chatDialogs);
+        }
+    }
+
     private void startPermissionsActivity() {
         PermissionsActivity.startActivity(this, false, Consts.PERMISSIONS);
     }
@@ -224,7 +261,7 @@ public class DialogsActivity extends BaseActivity {
 
         switch (id) {
             case R.id.update_opponents_list:
-                startLoadDialogs();
+                updateDialogsAdapter();
                 loadUsersFromQb();
                 return true;
 
@@ -316,6 +353,7 @@ public class DialogsActivity extends BaseActivity {
 //                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         Log.d("AMBRA", "open VideoFragment dialog name= " + dialog.getName());
 //                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
+                        updateDialogsAdapter();
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
 

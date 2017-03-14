@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,18 +17,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.WsException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
-import com.quickblox.sample.conference.fragments.AudioConversationFragment;
 import com.quickblox.sample.conference.fragments.BaseConversationFragment;
 import com.quickblox.sample.conference.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.conference.fragments.IncomeCallFragment;
@@ -41,35 +36,23 @@ import com.quickblox.sample.conference.util.NetworkConnectionChecker;
 import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.FragmentExecuotr;
 import com.quickblox.sample.conference.utils.PermissionsChecker;
-import com.quickblox.sample.conference.utils.QBEntityCallbackImpl;
-import com.quickblox.sample.conference.utils.RingtonePlayer;
 import com.quickblox.sample.conference.utils.SettingsUtil;
-import com.quickblox.sample.conference.utils.UsersUtils;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
-import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
-import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCSession;
-import com.quickblox.videochat.webrtc.QBRTCTypes;
-import com.quickblox.videochat.webrtc.QBSignalingSpec;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback;
-import com.quickblox.videochat.webrtc.exception.QBRTCSignalException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.webrtc.CameraVideoCapturer;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -87,8 +70,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public static final String CALLER_NAME = "caller_name";
     public static final String SESSION_ID = "sessionID";
     public static final String START_CONVERSATION_REASON = "start_conversation_reason";
-
-    private static final int REQUEST_MEDIA_PROJECTION = 1;
 
     private ConferenceSession currentSession;
     public List<QBUser> opponentsList;
@@ -191,7 +172,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void startSuitableFragment(boolean isInComingCall) {
         if (isInComingCall) {
             initIncomingCallTask();
-            startLoadAbsentUsers();
             addIncomeCallFragment();
             checkPermission();
         } else {
@@ -209,26 +189,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         PermissionsActivity.startActivity(this, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
-    private void startLoadAbsentUsers() {
-        ArrayList<QBUser> usersFromDb = dbManager.getAllUsers();
-        ArrayList<Integer> allParticipantsOfCall = new ArrayList<>();
-        allParticipantsOfCall.addAll(opponentsIdsList);
-
-        if (isInCommingCall) {
-            allParticipantsOfCall.add(currentSession.getCallerID());
-        }
-
-        ArrayList<Integer> idsUsersNeedLoad = UsersUtils.getIdsNotLoadedUsers(usersFromDb, allParticipantsOfCall);
-        if (!idsUsersNeedLoad.isEmpty()) {
-            requestExecutor.loadUsersByIds(idsUsersNeedLoad, new QBEntityCallbackImpl<ArrayList<QBUser>>() {
-                @Override
-                public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                    dbManager.saveAllUsers(result, false);
-                    needUpdateOpponentsList(result);
-                }
-            });
-        }
-    }
 
     private void needUpdateOpponentsList(ArrayList<QBUser> newUsers) {
         notifyCallStateListenersNeedUpdateOpponentsList(newUsers);
@@ -241,7 +201,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     private void initFields() {
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
-        opponentsIdsList = currentSession.getOpponents();
     }
 
     @Override

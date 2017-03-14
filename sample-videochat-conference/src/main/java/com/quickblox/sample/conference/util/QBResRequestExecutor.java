@@ -39,7 +39,7 @@ public class QBResRequestExecutor {
 
     public void loadDialogs(final QBEntityCallback<ArrayList<QBChatDialog>> callback) {
         QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
-        requestBuilder.setLimit(20);
+        requestBuilder.setLimit(100);
 
 
         QBRestChatService.getChatDialogs(QBDialogType.GROUP, requestBuilder).performAsync(callback);
