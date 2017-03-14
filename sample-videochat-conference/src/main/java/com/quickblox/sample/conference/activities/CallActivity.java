@@ -456,6 +456,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     public void releaseCurrentSession() {
+//        Todo releaseCurrentSession
         Log.d(TAG, "Release current session");
         if (currentSession != null) {
             this.currentSession.removeSessionCallbacksListener(CallActivity.this);

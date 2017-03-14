@@ -71,6 +71,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         notifyItemRangeChanged(index, opponents.size());
     }
 
+    public void removeOpponent(QBUser user){
+        opponents.remove(user);
+        notifyDataSetChanged();
+    }
+
     public void replaceUsers(int position, QBUser qbUser) {
         opponents.set(position, qbUser);
         notifyItemChanged(position);
