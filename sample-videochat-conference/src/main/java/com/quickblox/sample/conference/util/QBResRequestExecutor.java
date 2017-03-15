@@ -86,6 +86,7 @@ public class QBResRequestExecutor {
 
     public void loadUsersByTag(final String tag, final QBEntityCallback<ArrayList<QBUser>> callback) {
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
+        requestBuilder.setPerPage(50);
         List<String> tags = new LinkedList<>();
         tags.add(tag);
 

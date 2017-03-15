@@ -146,8 +146,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void setDuringCallActionBar() {
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(currentUser.getFullName());
+    }
 
-        actionBar.setSubtitle(getString(R.string.opponents, amountOpponents));
+    private void updateActionBar(int amountOpponents) {
+        actionBar.setSubtitle(getString(R.string.opponents, String.valueOf(amountOpponents)));
     }
 
     private void initVideoTrackSListener() {
@@ -579,6 +581,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             setRecyclerViewVisibleState();
             setDuringCallActionBar();
         }
+        updateActionBar(opponentsAdapter.getItemCount());
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
         if (itemHolder == null) {
             Log.d(TAG, "itemHolder == null - true");
