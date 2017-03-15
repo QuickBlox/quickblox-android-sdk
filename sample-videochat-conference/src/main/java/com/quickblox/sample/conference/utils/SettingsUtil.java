@@ -111,23 +111,12 @@ public class SettingsUtil {
     public static void configRTCTimers(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        long answerTimeInterval = getPreferenceInt(sharedPref, context,
-                R.string.pref_answer_time_interval_key,
-                R.string.pref_answer_time_interval_default_value);
-        QBRTCConfig.setAnswerTimeInterval(answerTimeInterval);
-        Log.e(TAG, "answerTimeInterval = " + answerTimeInterval);
-
         int disconnectTimeInterval = getPreferenceInt(sharedPref, context,
                 R.string.pref_disconnect_time_interval_key,
                 R.string.pref_disconnect_time_interval_default_value);
         QBRTCConfig.setDisconnectTime(disconnectTimeInterval);
         Log.e(TAG, "disconnectTimeInterval = " + disconnectTimeInterval);
 
-        long dialingTimeInterval = getPreferenceInt(sharedPref, context,
-                R.string.pref_dialing_time_interval_key,
-                R.string.pref_dialing_time_interval_default_value);
-        QBRTCConfig.setDialingTimeInterval(dialingTimeInterval);
-        Log.e(TAG, "dialingTimeInterval = " + dialingTimeInterval);
     }
 
     private static void setVideoQuality(int resolutionItem) {

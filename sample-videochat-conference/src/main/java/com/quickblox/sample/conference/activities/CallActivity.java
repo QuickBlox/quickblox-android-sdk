@@ -201,6 +201,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     private void initFields() {
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
+        opponentsIdsList = currentSession.getDialogOccupants();
     }
 
     @Override
@@ -305,9 +306,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
         // Configure
         //
-//        QBRTCConfig.setMaxOpponentsCount(Consts.MAX_OPPONENTS_COUNT);
-//        SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
-//        SettingsUtil.configRTCTimers(CallActivity.this);
+        SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, CallActivity.this);
         QBRTCConfig.setDebugEnabled(true);
 
 //        connectionListener = new ConnectionListener();
