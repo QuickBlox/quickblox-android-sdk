@@ -18,10 +18,8 @@ import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.conference.R;
-import com.quickblox.sample.conference.adapters.CheckboxUsersAdapter;
 import com.quickblox.sample.conference.adapters.DialogsAdapter;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.services.CallService;
@@ -105,8 +103,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void startLoadDialogs() {
-        showProgressDialog(R.string.dlg_loading_dialogs);
-        String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
+        showProgressDialog(R.string.dlg_loading_dialogs_users);
         requestExecutor.loadDialogs(new QBEntityCallback<ArrayList<QBChatDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBChatDialog> result, Bundle params) {
@@ -129,7 +126,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void loadUsersFromQb() {
-        showProgressDialog(R.string.dlg_loading_dialogs);
+        showProgressDialog(R.string.dlg_loading_dialogs_users);
         String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
 
         requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
@@ -184,8 +181,8 @@ public class DialogsActivity extends BaseActivity {
 
                     } else {
                         dialogsAdapter.toggleSelection(selectedDialog);
+                        updateActionBar(dialogsAdapter.getSelectedItems().size());
                     }
-                    updateActionBar(dialogsAdapter.getSelectedItems().size());
                 }
             });
             dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -194,6 +191,7 @@ public class DialogsActivity extends BaseActivity {
                     QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                     startSupportActionMode(new DeleteActionModeCallback());
                     dialogsAdapter.selectItem(selectedDialog);
+                    updateActionBar(dialogsAdapter.getSelectedItems().size());
                     return true;
                 }
             });
@@ -207,22 +205,13 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void updateActionBar(int countSelectedUsers) {
-        if (countSelectedUsers < 1) {
-            initDefaultActionBar();
-        } else {
-            removeActionbarSubTitle();
-            initActionBarWithSelectedUsers(countSelectedUsers);
-        }
-
-        invalidateOptionsMenu();
-    }
-
-    private void initActionBarWithSelectedUsers(int countSelectedUsers) {
-        setActionBarTitle(String.format(getString(
+        currentActionMode.setSubtitle(null);
+        currentActionMode.setTitle(String.format(getString(
                 countSelectedUsers > 1
-                        ? R.string.tile_many_users_selected
-                        : R.string.title_one_user_selected),
+                        ? R.string.tile_many_dialogs_selected
+                        : R.string.title_one_dialog_selected),
                 countSelectedUsers));
+        currentActionMode.invalidate();
     }
 
     @Override
@@ -256,7 +245,6 @@ public class DialogsActivity extends BaseActivity {
 
 
     private void updateDialogsAdapter() {
-//        dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
         startLoadDialogs();
     }
 
@@ -331,8 +319,7 @@ public class DialogsActivity extends BaseActivity {
                     public void onSuccess(QBChatDialog dialog, Bundle args) {
                         isProcessingResultInProgress = false;
 //                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
-                        Log.d("AMBRA", "open VideoFragment dialog name= " + dialog.getName());
-//                        ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
+                        Log.d(TAG, "createDialogWithSelectedUsers dialog name= " + dialog.getName());
                         updateDialogsAdapter();
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
@@ -390,7 +377,6 @@ public class DialogsActivity extends BaseActivity {
                 requestExecutor.deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
                     @Override
                     public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
-//                    QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
                         updateDialogsAdapter();
                     }
 

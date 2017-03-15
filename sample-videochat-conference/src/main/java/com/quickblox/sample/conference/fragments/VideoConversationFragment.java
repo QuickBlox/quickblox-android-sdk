@@ -770,6 +770,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 //            opponentsAdapter.removeOpponent(getUserById(userId));
 
             getVideoTrackMap().remove(userId);
+            updateActionBar(opponentsAdapter.getItemCount());
 //            setBackgroundOpponentView(userId);
         }
     }

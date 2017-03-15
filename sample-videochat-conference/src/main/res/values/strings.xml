@@ -15,7 +15,7 @@
     <string name="dlg_creating_new_user">Creating new user…</string>
     <string name="dlg_logout">Logout…</string>
     <string name="dlg_loading_opponents">Loading opponents…</string>
-    <string name="dlg_loading_dialogs">Loading dialogs…</string>
+    <string name="dlg_loading_dialogs_users">Loading dialogs and users…</string>
 
 
     <!-- Errors strings. -->
@@ -55,8 +55,8 @@
     <string name="actionbar_title_settings">Settings</string>
     <string name="title_login_activity">Enter to chat</string>
     <string name="subtitle_text_logged_in_as">Logged in as %s</string>
-    <string name="title_one_user_selected">%s user selected</string>
-    <string name="tile_many_users_selected">%s users selected</string>
+    <string name="title_one_dialog_selected">%s dialog selected</string>
+    <string name="tile_many_dialogs_selected">%s dialogs selected</string>
 
 
     <string name="incoming_call">Incoming Call</string>
