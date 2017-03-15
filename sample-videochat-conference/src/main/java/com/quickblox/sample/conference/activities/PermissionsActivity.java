@@ -33,6 +33,13 @@ public class PermissionsActivity extends AppCompatActivity {
         ActivityCompat.startActivity(activity, intent, null);
     }
 
+    public static void startForResult(Activity activity, int code, boolean checkOnlyAudio, String... permissions) {
+        Intent intent = new Intent(activity, PermissionsActivity.class);
+        intent.putExtra(EXTRA_PERMISSIONS, permissions);
+        intent.putExtra(CHECK_ONLY_AUDIO, checkOnlyAudio);
+        ActivityCompat.startActivityForResult(activity, intent, code, null);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +102,7 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     private void allPermissionsGranted() {
+        setResult(RESULT_OK);
         finish();
     }
 

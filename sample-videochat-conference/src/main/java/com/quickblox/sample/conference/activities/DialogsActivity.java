@@ -46,6 +46,7 @@ import io.fabric.sdk.android.Fabric;
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
     private static final int REQUEST_SELECT_PEOPLE = 174;
+    private static final int REQUEST_PERMISSION = 175;
 
     private DialogsAdapter dialogsAdapter;
     private ListView dialogsListView;
@@ -56,7 +57,9 @@ public class DialogsActivity extends BaseActivity {
     private ActionMode currentActionMode;
     private FloatingActionButton fab;
     private boolean isProcessingResultInProgress;
-    private  ConferenceClient client;
+    private ConferenceClient client;
+    private String dialogID;
+    private List<Integer> occupants;
 
     private PermissionsChecker checker;
 
@@ -155,40 +158,6 @@ public class DialogsActivity extends BaseActivity {
         return currentActionMode;
     }
 
-    private void initDialogsList() {
-        Log.d(TAG, "proceedInitUsersList chatDialogs= " + chatDialogs);
-        dialogsAdapter = new DialogsAdapter(this, chatDialogs);
-
-        dialogsListView.setAdapter(dialogsAdapter);
-        dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
-                if (currentActionMode == null) {
-                    Log.d(TAG, "START CALL ACTIVITY selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
-                            + "currentUser.getId()= " + currentUser.getId());
-
-                    List<Integer> occupants = selectedDialog.getOccupants();
-                    occupants.remove(currentUser.getId());
-                    startConference(selectedDialog.getDialogId(), currentUser.getId(), occupants);
-
-                } else {
-                    dialogsAdapter.toggleSelection(selectedDialog);
-                }
-                updateActionBar(dialogsAdapter.getSelectedItems().size());
-            }
-        });
-        dialogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
-                startSupportActionMode(new DeleteActionModeCallback());
-                dialogsAdapter.selectItem(selectedDialog);
-                return true;
-            }
-        });
-    }
-
     private void initDialogAdapter(){
         Log.d(TAG, "proceedInitUsersList chatDialogs= " + chatDialogs);
         if(dialogsAdapter == null) {
@@ -199,12 +168,19 @@ public class DialogsActivity extends BaseActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                     if (currentActionMode == null) {
-                        Log.d(TAG, "START CALL ACTIVITY selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
-                                + "currentUser.getId()= " + currentUser.getId());
+                        Log.d(TAG, "startConference selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
+                                + ", currentUser.getId()= " + currentUser.getId());
 
-                        List<Integer> occupants = selectedDialog.getOccupants();
+                        occupants = selectedDialog.getOccupants();
                         occupants.remove(currentUser.getId());
-                        startConference(selectedDialog.getDialogId(), currentUser.getId(), occupants);
+
+                        dialogID = selectedDialog.getDialogId();
+                        if (checker.lacksPermissions(Consts.PERMISSIONS)) {
+                            Log.d(TAG, "DialogActivity check permissions");
+                            startPermissionsActivity();
+                        } else {
+                            startConference(dialogID, currentUser.getId(), occupants);
+                        }
 
                     } else {
                         dialogsAdapter.toggleSelection(selectedDialog);
@@ -227,7 +203,7 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivity(this, false, Consts.PERMISSIONS);
+        PermissionsActivity.startForResult(this, REQUEST_PERMISSION, false, Consts.PERMISSIONS);
     }
 
     private void updateActionBar(int countSelectedUsers) {
@@ -338,7 +314,11 @@ public class DialogsActivity extends BaseActivity {
 
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
                 createDialog(selectedUsers);
-            } else {
+            } if(requestCode == REQUEST_PERMISSION) {
+                startConference(dialogID, currentUser.getId(), occupants);
+            }
+
+            else {
                 updateDialogsAdapter();
             }
         }
@@ -440,12 +420,8 @@ public class DialogsActivity extends BaseActivity {
                 session.setDialogOccupants(occupants);
                 WebRtcSessionManager.getInstance(DialogsActivity.this).setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
-                CallActivity.start(DialogsActivity.this, dialogID, false);
 
-//                ToDo FixMe
-                if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-                    startPermissionsActivity();
-                }
+                CallActivity.start(DialogsActivity.this, dialogID, false);
             }
 
             @Override
