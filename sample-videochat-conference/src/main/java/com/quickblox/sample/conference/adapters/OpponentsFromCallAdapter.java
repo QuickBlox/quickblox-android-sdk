@@ -84,7 +84,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
-        v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
+        v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight));
 
         ViewHolder vh = new ViewHolder(v);
         vh.setListener(new ViewHolder.ViewHolderClickListener() {
@@ -118,7 +118,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
      public void add(QBUser item) {
          opponents.add(item);
-        notifyDataSetChanged();
+         notifyItemRangeChanged((opponents.size() - 1), opponents.size());
     }
 
     @Override
