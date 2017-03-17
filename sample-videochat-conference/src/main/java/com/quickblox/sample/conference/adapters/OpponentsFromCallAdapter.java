@@ -118,6 +118,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
      public void add(QBUser item) {
          opponents.add(item);
+//         notifyItemInserted(opponents.size() - 1);
          notifyItemRangeChanged((opponents.size() - 1), opponents.size());
     }
 

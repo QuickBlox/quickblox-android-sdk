@@ -31,6 +31,7 @@ import android.widget.ToggleButton;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.adapters.OpponentsAdapter;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
@@ -105,6 +106,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isLocalVideoFullScreen;
     private QBUser localUser;
     private GridLayoutManager gridLayoutManager;
+    private SpanSizeLookupImpl spanSizeLookup;
 
 
     @Override
@@ -198,6 +200,92 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         setHasOptionsMenu(true);
     }
 
+    class GridManager extends GridLayoutManager {
+
+        public GridManager(Context context, int spanCount) {
+            super(context, spanCount);
+        }
+
+        @Override
+        public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+            super.onItemsAdded(recyclerView, positionStart, itemCount);
+            Log.d("TEMPOS", "onItemsAdded positionStart= " + positionStart);
+        }
+
+        @Override
+        public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+            super.onItemsRemoved(recyclerView, positionStart, itemCount);
+            Log.d("TEMPOS", "onItemsRemoved positionStart= " + positionStart);
+            Log.d("TEMPOS", "onItemsRemoved itemCount= " + itemCount);
+//            if(itemCount > 0){
+//                Log.d("TEMPOS", "onItemsRemoved opponentsAdapter.getItem(0)= " + opponentsAdapter.getItem(0));
+//                OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(opponentsAdapter.getItem(0));
+//                itemHolder.itemView.requestLayout();
+//            }
+        }
+
+        @Override
+        public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount,
+                                   Object payload) {
+            super.onItemsUpdated(recyclerView, positionStart, itemCount, payload);
+            Log.d("TEMPOS", "onItemsUpdated positionStart= " + positionStart);
+        }
+
+        @Override
+        public void onItemsChanged(RecyclerView recyclerView) {
+           super.onItemsChanged(recyclerView);
+            Log.d("TEMPOS", "onItemsChanged");
+        }
+
+        @Override
+        public void onLayoutCompleted(RecyclerView.State state) {
+            super.onLayoutCompleted(state);
+        }
+    }
+
+    class SpanSizeLookupImpl extends GridManager.SpanSizeLookup {
+
+
+        @Override
+        public int getSpanSize(int position) {
+            int size = opponentsAdapter.getItemCount();
+            if(size % 4 == 0) {
+                return 3;
+            }
+
+            if(size % 4 == 1) {
+//                          last position
+                if (position == opponentsAdapter.getItemCount() - 1) {
+                    Log.d("TEMPOS", "return 12 opponentsAdapter position= " + position);
+
+                    return 12;
+                } else {
+                    return 3;
+                }
+            }
+
+            if(size % 4 == 2) {
+
+                if(position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2) {
+                    return 6;
+                } else {
+                    return 3;
+                }
+            }
+
+            if(size % 4 == 3) {
+                if (position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2 || position == opponentsAdapter.getItemCount() - 3) {
+                    return 4;
+                } else {
+                    return 3;
+                }
+            }
+
+//                    never gonna happen
+            return 4;
+        }
+    }
+
     @Override
     protected void initViews(View view) {
         super.initViews(view);
@@ -220,48 +308,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             final int columnsCount = defineColumnsCount();
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
-            gridLayoutManager = new GridLayoutManager(getActivity(), 4);
+            gridLayoutManager = new GridManager(getActivity(), 12);
             gridLayoutManager.setReverseLayout(true);
-//            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//                @Override
-//                public int getSpanSize(int position) {
-//                    int size = opponentsAdapter.getItemCount();
-//     Log.d("TEMPOS", "opponentsAdapter size= " + size);
-//                    if(size % 4 == 0) {
-//                        return 3;
-//                    }
-//
-//                        if(size % 4 == 1) {
-////                          last position
-//                            if (position == opponentsAdapter.getItemCount() - 1) {
-//                                Log.d("TEMPOS", "return 12 opponentsAdapter position= " + position);
-//                                return 12;
-//                            } else {
-//                                return 3;
-//                            }
-//                        }
-//
-//                        if(size % 4 == 2) {
-//
-//                            if(position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2) {
-//                                return 6;
-//                            } else {
-//                                return 3;
-//                            }
-//                        }
-//
-//                    if(size % 4 == 3) {
-//                        if (position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2 || position == opponentsAdapter.getItemCount() - 3) {
-//                            return 4;
-//                        } else {
-//                            return 3;
-//                        }
-//                    }
-//
-////                    never gonna happen
-//                    return 4;
-//                }
-//            });
+            spanSizeLookup = new SpanSizeLookupImpl();
+            spanSizeLookup.setSpanIndexCacheEnabled(false);
+            gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
             recyclerView.setLayoutManager(gridLayoutManager);
 
 //          for correct removing item in adapter
