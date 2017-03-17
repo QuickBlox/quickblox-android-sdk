@@ -104,6 +104,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isCurrentCameraFront;
     private boolean isLocalVideoFullScreen;
     private QBUser localUser;
+    private GridLayoutManager gridLayoutManager;
 
 
     @Override
@@ -219,8 +220,48 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             final int columnsCount = defineColumnsCount();
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 4);
-
+            gridLayoutManager = new GridLayoutManager(getActivity(), 4);
+            gridLayoutManager.setReverseLayout(true);
+//            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                @Override
+//                public int getSpanSize(int position) {
+//                    int size = opponentsAdapter.getItemCount();
+//     Log.d("TEMPOS", "opponentsAdapter size= " + size);
+//                    if(size % 4 == 0) {
+//                        return 3;
+//                    }
+//
+//                        if(size % 4 == 1) {
+////                          last position
+//                            if (position == opponentsAdapter.getItemCount() - 1) {
+//                                Log.d("TEMPOS", "return 12 opponentsAdapter position= " + position);
+//                                return 12;
+//                            } else {
+//                                return 3;
+//                            }
+//                        }
+//
+//                        if(size % 4 == 2) {
+//
+//                            if(position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2) {
+//                                return 6;
+//                            } else {
+//                                return 3;
+//                            }
+//                        }
+//
+//                    if(size % 4 == 3) {
+//                        if (position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2 || position == opponentsAdapter.getItemCount() - 3) {
+//                            return 4;
+//                        } else {
+//                            return 3;
+//                        }
+//                    }
+//
+////                    never gonna happen
+//                    return 4;
+//                }
+//            });
             recyclerView.setLayoutManager(gridLayoutManager);
 
 //          for correct removing item in adapter
@@ -859,6 +900,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 if(itemHolder.getAdapterPosition() != -1) {
                     Log.d(TAG, "onConnectionClosedForUser  opponentsAdapter.removeItem");
                     opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+                    opponentViewHolders.remove(userId);
                 }
             }
 //            opponentsAdapter.removeOpponent(getUserById(userId));
