@@ -71,6 +71,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long FULL_SCREEN_CLICK_DELAY = 1000;
     private static final int REQUEST_CODE_ATTACHMENT = 100;
 
+    private static final double DISPLAY_SIZE_MEASURE = 5.0;
+    private static final int SMALL_CELLS_AMOUNT = 8;
+    private static final int LARGE_CELLS_AMOUNT = 12;
+
     private String TAG = VideoConversationFragment.class.getSimpleName();
 
     private ToggleButton cameraToggle;
@@ -81,7 +85,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private CameraState cameraState = CameraState.DISABLED_FROM_USER;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
-    private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private TextView connectionStatusLocal;
 
@@ -98,6 +101,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isCurrentCameraFront;
     private boolean isLocalVideoFullScreen;
     private QBUser localUser;
+    private DisplayMetrics displaymetrics;
+    private double displaySize;
     private GridLayoutManager gridLayoutManager;
     private SpanSizeLookupImpl spanSizeLookup;
 
@@ -143,7 +148,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
 
-        isPeerToPeerCall = false;
+        displaymetrics = getResources().getDisplayMetrics();
+        displaySize = getDisplaySize();
     }
 
     public void setDuringCallActionBar() {
@@ -241,41 +247,28 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         @Override
         public int getSpanSize(int position) {
-            int size = opponentsAdapter.getItemCount();
-            if(size % 4 == 0) {
+            int itemCount = opponentsAdapter.getItemCount();
+            if(itemCount % 4 == 0) {
                 return 3;
             }
 
-            if(size % 4 == 1) {
-//                          last position
-                if (position == opponentsAdapter.getItemCount() - 1) {
+            if(itemCount % 4 == 1) {
+//              check last position
+                if (position == itemCount - 1) {
                     Log.d("TEMPOS", "return 12 opponentsAdapter position= " + position);
-
                     return 12;
-                } else {
-                    return 3;
                 }
-            }
-
-            if(size % 4 == 2) {
-
-                if(position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2) {
+            } else if(itemCount % 4 == 2) {
+                if(position == itemCount - 1 || position == itemCount - 2) {
                     return 6;
-                } else {
-                    return 3;
                 }
-            }
-
-            if(size % 4 == 3) {
-                if (position == opponentsAdapter.getItemCount() - 1 || position == opponentsAdapter.getItemCount() - 2 || position == opponentsAdapter.getItemCount() - 3) {
+            } else if(itemCount % 4 == 3) {
+                if (position == itemCount - 1 || position == itemCount - 2 || position == itemCount - 3) {
                     return 4;
-                } else {
-                    return 3;
                 }
             }
 
-//                    never gonna happen
-            return 4;
+            return 3;
         }
     }
 
@@ -286,14 +279,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         opponentViewHolders = new SparseArray<>(opponents.size());
         isRemoteShown = false;
         isCurrentCameraFront = true;
-        localVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
-        initCorrectSizeForLocalView();
-        localVideoView.setZOrderMediaOverlay(true);
+//        localVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
+//        initCorrectSizeForLocalView();
+//        localVideoView.setZOrderMediaOverlay(true);
 
         remoteFullScreenVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.remote_video_view);
         remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
-        if (!isPeerToPeerCall) {
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
 
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.dimen.grid_item_divider));
@@ -316,7 +308,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     recyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             });
-        }
+
         connectionStatusLocal = (TextView) view.findViewById(R.id.connectionStatusLocal);
 
         cameraToggle = (ToggleButton) view.findViewById(R.id.toggle_camera);
@@ -360,7 +352,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void initCorrectSizeForLocalView() {
         ViewGroup.LayoutParams params = localVideoView.getLayoutParams();
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
 
         int screenWidthPx = displaymetrics.widthPixels;
         Log.d(TAG, "screenWidthPx " + screenWidthPx);
@@ -482,9 +473,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             remoteFullScreenVideoView.release();
         }
         remoteFullScreenVideoView = null;
-        if (!isPeerToPeerCall){
-           releseOpponentsViews();
-        }
+
+        releseOpponentsViews();
     }
 
     protected void initButtonsListener() {
@@ -566,80 +556,30 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    private void fitScaleAdapter(){
+    private void autoScaleOpponentAdapter() {
         int itemCount = opponentsAdapter.getItemCount();
+        if(displaySize < DISPLAY_SIZE_MEASURE){
 
-        if(itemCount <= 4) {
-            if (localVideoTrack != null) {
-                localVideoView.setVisibility(View.GONE);
-                fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
-                remoteFullScreenVideoView.setVisibility(View.VISIBLE);
-                setRecyclerViewVisibleStateWrapContent();
-            }
-        } else if(itemCount <= 8) {
-            if (localVideoTrack != null) {
-                remoteFullScreenVideoView.setVisibility(View.GONE);
-                localVideoView.setVisibility(View.VISIBLE);
-                fillVideoView(localVideoView, localVideoTrack, false);
-                setRecyclerViewVisibleStateBelow();
-            }
-        } else if (itemCount > 8) {
-            Log.d(TAG, "replace LocalView to adapter");
-        }
-    }
+        if (itemCount <= SMALL_CELLS_AMOUNT) {
+            setRecyclerViewBelowDecline();
+            setRemoteFullScreenVideoViewWrap();
+        } else if (itemCount > SMALL_CELLS_AMOUNT) {
+            setRemoteFullScreenVideoViewHeight();
+            setRecyclerViewBelow();
+           }
 
-    private void fitScaleAdapterTemp(){
-        int itemCount = opponentsAdapter.getItemCount();
+        } else {
 
-        if(itemCount <= 1) {
-            if (localVideoTrack != null) {
-                localVideoView.setVisibility(View.GONE);
-                fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
-                remoteFullScreenVideoView.setVisibility(View.VISIBLE);
-            }
-        } else if(itemCount <= 2) {
-            if (localVideoTrack != null) {
-                remoteFullScreenVideoView.setVisibility(View.GONE);
-                localVideoView.setVisibility(View.VISIBLE);
-                fillVideoView(localVideoView, localVideoTrack, false);
+            if (itemCount > LARGE_CELLS_AMOUNT) {
+                setRemoteFullScreenVideoViewHeight();
+                setRecyclerViewBelow();
+            } else if (itemCount <= LARGE_CELLS_AMOUNT) {
+                setRecyclerViewBelowDecline();
+                setRemoteFullScreenVideoViewWrap();
             }
         }
-//        else if (itemCount > 2) {
-//            Log.d(TAG, "replace LocalView to adapter");
-//            localVideoView.setVisibility(View.GONE);
-//            opponentsAdapter.add(localUser);
-//            setRemoteViewOnPost(localUser.getId(), localVideoTrack);
-//        }
-        setRecyclerViewVisibleStateWrapContent();
-    }
-
-    private void setRemoteViewOnPost(final int userID, final QBRTCVideoTrack videoTrack) {
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setRemoteViewMultiCall(userID, videoTrack);
-            }
-        }, LOCAL_TRACk_INITIALIZE_DELAY);
-    }
-
-    private void removeLocalViewToAdapter() {
-
-        Log.d(TAG, "removeLocalViewToAdapter");
-        if(opponentsAdapter.getOpponents().contains(localUser)){
-
-            if(opponentsAdapter.getOpponents().size() == 3) {
-                opponentsAdapter.removeOpponent(localUser);
-                Log.d(TAG, "removeLocalViewToAdapter  opponentsAdapter.getOpponents().contains(localUser)");
-                OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(localUser.getId());
-                if (itemHolder != null) {
-                    Log.d(TAG, "removeLocalViewToAdapter  opponentsAdapter.removeItem");
-//                    opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
-
-                } else {
-                    Log.d(TAG, "removeLocalViewToAdapter  itemHolder != null");
-                }
-            }
-        }
+//        TODO maybe explicit
+        recyclerView.requestLayout();
     }
 
     @Override
@@ -648,8 +588,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         setOpponentToAdapter(userID);
 
-//        fitScaleAdapterTemp();
-        fitScaleAdapter();
+        autoScaleOpponentAdapter();
 //        scheduler(); // for test
 
         isLocalVideoFullScreen = false;
@@ -667,10 +606,12 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setOpponentToAdapter(Integer userID) {
             QBUser qbUser = getUserById(userID);
-            if(qbUser !=null){
+            if(qbUser != null){
                 opponentsAdapter.add(qbUser);
             } else {
-                opponentsAdapter.add(new QBUser(userID));
+                QBUser user = new QBUser(userID);
+                user.setFullName("NoName");
+                opponentsAdapter.add(user);
             }
     }
 
@@ -727,17 +668,41 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setRecyclerViewVisibleStateWrapContent() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-//        params.height = (int) getResources().getDimension(R.dimen.item_height);
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         recyclerView.setLayoutParams(params);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void setRecyclerViewVisibleStateBelow() {
+    private void setRecyclerViewBelow() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        params.addRule(RelativeLayout.BELOW, localVideoView.getId());
+        params.addRule(RelativeLayout.BELOW, remoteFullScreenVideoView.getId());
+
         recyclerView.setLayoutParams(params);
-        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void setRecyclerViewBelowDecline() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+        params.addRule(RelativeLayout.BELOW, 0);
+        recyclerView.setLayoutParams(params);
+    }
+
+    private void setRemoteFullScreenVideoViewHeight() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) remoteFullScreenVideoView.getLayoutParams();
+        params.addRule(RelativeLayout.ABOVE, 0);
+
+        int screenWidthPx = displaymetrics.widthPixels;
+        Log.d(TAG, "screenWidthPx " + screenWidthPx);
+        int width = (int) (screenWidthPx * 0.3);
+        params.height = (width / 2) * 3;
+
+        remoteFullScreenVideoView.setLayoutParams(params);
+    }
+
+    private void setRemoteFullScreenVideoViewWrap() { RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) remoteFullScreenVideoView.getLayoutParams();
+        params.addRule(RelativeLayout.ABOVE, recyclerView.getId());
+
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        remoteFullScreenVideoView.setLayoutParams(params);
     }
 
     private OpponentsFromCallAdapter.ViewHolder getViewHolderForOpponent(Integer userID) {
@@ -822,11 +787,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setStatusForOpponent(int userId, final String status) {
-        if (isPeerToPeerCall) {
-            connectionStatusLocal.setText(status);
-            return;
-        }
-
         final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
         if (holder == null) {
             return;
@@ -836,9 +796,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void updateNameForOpponent(int userId, String newUserName) {
-        if (isPeerToPeerCall) {
-            actionBar.setSubtitle(getString(R.string.opponent, newUserName));
-        } else {
+
             OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
             if (holder == null) {
                 Log.d("UPDATE_USERS", "holder == null");
@@ -847,13 +805,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
             Log.d("UPDATE_USERS", "holder != null");
             holder.setUserName(newUserName);
-        }
     }
 
     private void setProgressBarForOpponentGone(int userId) {
-        if (isPeerToPeerCall) {
-            return;
-        }
         final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
         if (holder == null) {
             return;
@@ -876,7 +830,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onConnectionClosedForUser(ConferenceSession qbrtcSession, Integer userId) {
         setStatusForOpponent(userId, getString(R.string.text_status_closed));
-        if (!isPeerToPeerCall) {
+
             Log.d(TAG, "onConnectionClosedForUser videoTrackMap.remove(userId)= " + userId);
 
             OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
@@ -894,9 +848,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
 //            setBackgroundOpponentView(userId);
 //            removeLocalViewToAdapter();
-//            fitScaleAdapterTemp();
-            fitScaleAdapter();
-        }
+            autoScaleOpponentAdapter();
     }
 
     @Override
@@ -974,25 +926,22 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         private void hideToolBarAndButtons() {
             actionBar.hide();
 
-            localVideoView.setVisibility(View.INVISIBLE);
+//            localVideoView.setVisibility(View.INVISIBLE);
 
             actionVideoButtonsLayout.setVisibility(View.GONE);
 
-            if (!isPeerToPeerCall) {
+
                 shiftBottomListOpponents();
-            }
         }
 
         private void showToolBarAndButtons() {
             actionBar.show();
 
-            localVideoView.setVisibility(View.VISIBLE);
+//            localVideoView.setVisibility(View.VISIBLE);
 
             actionVideoButtonsLayout.setVisibility(View.VISIBLE);
 
-            if (!isPeerToPeerCall) {
                 shiftMarginListOpponents();
-            }
         }
 
         private void shiftBottomListOpponents() {
@@ -1006,14 +955,26 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         private void shiftMarginListOpponents() {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-            params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_common));
+            params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_very_small));
 
             recyclerView.setLayoutParams(params);
         }
     }
 
+    private double getDisplaySize(){
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int width=displaymetrics.widthPixels;
+        int height=displaymetrics.heightPixels;
+        double wi=(double)width/(double)displaymetrics.xdpi;
+        double hi=(double)height/(double)displaymetrics.ydpi;
+        double x = Math.pow(wi,2);
+        double y = Math.pow(hi,2);
+        double screenInches = Math.sqrt(x+y);
+        return screenInches;
+    }
+
     int i = 0;
-    int a = 10;
+    int a = 8;
     boolean cancel;
     ScheduledFuture senderHandler;
     private void scheduler() {
@@ -1023,8 +984,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         senderHandler = scheduler.scheduleAtFixedRate
                 (new Runnable() {
                     public void run() {
-                        if(i > 10){
+                        if(i > a){
                             cancel = true;
+//                            senderHandler.cancel(true);
+//                            return;
                         }
 
 
@@ -1033,11 +996,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                             @Override
                             public void run() {
                              if(cancel){
-                                 opponentsAdapter.removeItem(--i);
+                                 if(i == -1){
+                                     senderHandler.cancel(true);
+                                     return;
+                                 }
+                                 opponentsAdapter.removeItem(i--);
                              } else {
                                 opponentsAdapter.add(new QBUser(i++));
                              }
-                                fitScaleAdapter();
+                                autoScaleOpponentAdapter();
                             }
                         });
 
@@ -1051,7 +1018,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         }, LOCAL_TRACk_INITIALIZE_DELAY);
 
                     }
-                }, 0, 2, TimeUnit.SECONDS);
+                }, 0, 4, TimeUnit.SECONDS);
     }
 }
 

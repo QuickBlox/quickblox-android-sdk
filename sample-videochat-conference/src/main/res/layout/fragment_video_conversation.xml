@@ -18,6 +18,7 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/action_bar_height"
+        android:visibility="gone"
         android:layout_marginLeft="@dimen/margin_small"
          />
 
@@ -39,7 +40,7 @@
         style="@style/WrapContent"
         android:layout_height="0dp"
         android:layout_above="@+id/element_set_video_buttons"
-        android:layout_marginBottom="@dimen/margin_common"
+        android:layout_marginBottom="@dimen/margin_very_small"
         android:horizontalSpacing="@dimen/margin_small"
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small"
@@ -55,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/empty_stub"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_common" />
+        android:layout_marginBottom="@dimen/margin_very_small" />
 
     <View
         android:id="@+id/empty_stub"
