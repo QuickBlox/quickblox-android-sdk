@@ -18,11 +18,9 @@ import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.DialogsAdapter;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
-import com.quickblox.sample.conference.services.CallService;
 import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.PermissionsChecker;
 import com.quickblox.sample.conference.utils.UsersUtils;
@@ -54,8 +52,6 @@ public class DialogsActivity extends BaseActivity {
     private WebRtcSessionManager webRtcSessionManager;
     private ActionMode currentActionMode;
     private FloatingActionButton fab;
-    private boolean isProcessingResultInProgress;
-    private ConferenceClient client;
     private String dialogID;
     private List<Integer> occupants;
 
@@ -173,7 +169,7 @@ public class DialogsActivity extends BaseActivity {
 
                         dialogID = selectedDialog.getDialogId();
                         if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-                            Log.d(TAG, "DialogActivity check permissions");
+                            Log.d(TAG, "check permissions");
                             startPermissionsActivity();
                         } else {
                             startConference(dialogID, currentUser.getId(), occupants);
@@ -253,19 +249,10 @@ public class DialogsActivity extends BaseActivity {
     }
 
     private void logOut() {
-        unsubscribeFromPushes();
-        startLogoutCommand();
         removeAllUserData();
         startLoginActivity();
     }
 
-    private void unsubscribeFromPushes() {
-        SubscribeService.unSubscribeFromPushes(this);
-    }
-
-    private void startLogoutCommand() {
-        CallService.logout(this);
-    }
 
     private void removeAllUserData() {
         UsersUtils.removeUserData(getApplicationContext());
@@ -295,7 +282,6 @@ public class DialogsActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            isProcessingResultInProgress = true;
             if (requestCode == REQUEST_SELECT_PEOPLE) {
                 ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
@@ -317,8 +303,7 @@ public class DialogsActivity extends BaseActivity {
                 new QBEntityCallback<QBChatDialog>() {
                     @Override
                     public void onSuccess(QBChatDialog dialog, Bundle args) {
-                        isProcessingResultInProgress = false;
-//                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
+                        //                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
                         Log.d(TAG, "createDialogWithSelectedUsers dialog name= " + dialog.getName());
                         updateDialogsAdapter();
                         ProgressDialogFragment.hide(getSupportFragmentManager());
@@ -326,7 +311,6 @@ public class DialogsActivity extends BaseActivity {
 
                     @Override
                     public void onError(QBResponseException e) {
-                        isProcessingResultInProgress = false;
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                         showErrorSnackbar(R.string.dialogs_creation_error, null, null);
                     }
@@ -397,17 +381,17 @@ public class DialogsActivity extends BaseActivity {
     private void startConference(final String dialogID, int userID, final List<Integer> occupants) {
         Log.d(TAG, "startConference()");
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
-        client = ConferenceClient.getInstance(getApplicationContext());
+        ConferenceClient client = ConferenceClient.getInstance(getApplicationContext());
 
         client.createSession(userID, new QBEntityCallback<ConferenceSession>() {
             @Override
             public void onSuccess(ConferenceSession session, Bundle params) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 session.setDialogOccupants(occupants);
-                WebRtcSessionManager.getInstance(DialogsActivity.this).setCurrentSession(session);
+                webRtcSessionManager.setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
 
-                CallActivity.start(DialogsActivity.this, dialogID, false);
+                CallActivity.start(DialogsActivity.this, dialogID);
             }
 
             @Override

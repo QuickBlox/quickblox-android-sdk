@@ -12,13 +12,8 @@ import org.webrtc.CameraVideoCapturer;
  */
 public interface ConversationFragmentCallbackListener {
 
-    void addTCClientConnectionCallback(QBRTCSessionStateCallback<ConferenceSession> clientConnectionCallbacks);
-    void removeRTCClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks);
-
-
-
-//    void addRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback);
-//    void removeRTCSessionEventsCallback(QBRTCSessionEventsCallback eventsCallback);
+    void addClientConnectionCallback(QBRTCSessionStateCallback<ConferenceSession> clientConnectionCallbacks);
+    void removeClientConnectionCallback(QBRTCSessionStateCallback clientConnectionCallbacks);
 
     void addCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
     void removeCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);

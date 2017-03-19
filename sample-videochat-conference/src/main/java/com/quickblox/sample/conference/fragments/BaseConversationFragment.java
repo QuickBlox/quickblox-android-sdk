@@ -12,13 +12,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.utils.CollectionsUtils;
-import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
@@ -31,25 +29,20 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
     protected QbUsersDbManager dbManager;
     protected WebRtcSessionManager sessionManager;
-    private boolean isIncomingCall;
     protected ConferenceSession currentSession;
     protected ArrayList<QBUser> opponents;
 
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
     protected ConversationFragmentCallbackListener conversationFragmentCallbackListener;
-    private boolean isMessageProcessed;
-    protected boolean isStarted;
     protected View outgoingOpponentsRelativeLayout;
     protected TextView allOpponentsTextView;
     protected TextView ringingTextView;
     protected QBUser currentUser;
     protected SharedPrefsHelper sharedPrefsHelper;
 
-    public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment, boolean isIncomingCall) {
-        Log.d(TAG, "isIncomingCall =  " + isIncomingCall);
+    public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment) {
         Bundle args = new Bundle();
-        args.putBoolean(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
 
         baseConversationFragment.setArguments(args);
 
@@ -117,10 +110,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
 
-        if (getArguments() != null) {
-            isIncomingCall = getArguments().getBoolean(Consts.EXTRA_IS_INCOMING_CALL);
-        }
-
         initOpponentsList();
 
         Log.d(TAG, "opponents: " + opponents.toString());
@@ -137,7 +126,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
 
         if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
             startJoinConference();
-            isMessageProcessed = true;
         }
     }
 
@@ -157,10 +145,6 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         outgoingOpponentsRelativeLayout = view.findViewById(R.id.layout_background_outgoing_screen);
         allOpponentsTextView = (TextView) view.findViewById(R.id.text_outgoing_opponents_names);
         ringingTextView = (TextView) view.findViewById(R.id.text_ringing);
-
-        if (isIncomingCall) {
-            hideOutgoingScreen();
-        }
     }
 
     protected void initButtonsListener() {
@@ -203,36 +187,14 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         actionButtonsEnabled(true);
     }
 
-    @Override
-    public void onCallStopped() {
-        if (currentSession == null) {
-            Log.d(TAG, "currentSession = null onCallStopped");
-            return;
-        }
-        actionButtonsEnabled(false);
-    }
-
-    @Override
-    public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
-        Log.v("UPDATE_USERS", "super initOpponentsList()");
-        initOpponentsList();
-    }
-
     private void initOpponentsList() {
-        Log.v("UPDATE_USERS", "super initOpponentsList()");
-//        ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(currentSession.getOpponents());
-//        opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, currentSession.getDialogOccupants());
+        Log.v(TAG, "super initOpponentsList()");
         opponents = dbManager.getUsersByIds(currentSession.getDialogOccupants());
 
         QBUser caller = dbManager.getUserById(currentSession.getCallerID());
         if (caller == null) {
             caller = new QBUser(currentSession.getCallerID());
             caller.setFullName(String.valueOf(currentSession.getCallerID()));
-        }
-
-        if (isIncomingCall) {
-            opponents.add(caller);
-            opponents.remove(QBChatService.getInstance().getUser());
         }
     }
 }

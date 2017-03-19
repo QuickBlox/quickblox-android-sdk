@@ -1,7 +1,6 @@
 package com.quickblox.sample.conference.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,15 +29,12 @@ import android.widget.ToggleButton;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
-import com.quickblox.sample.conference.adapters.OpponentsAdapter;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.BaseSession;
-import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
@@ -60,14 +55,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-
 
 /**
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<ConferenceSession>,
-        QBRTCSessionStateCallback<ConferenceSession>, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCSessionStateCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -187,7 +180,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.onStart();
         Log.i(TAG, "onStart");
         if (!allCallbacksInit) {
-            conversationFragmentCallbackListener.addTCClientConnectionCallback(this);
+            conversationFragmentCallbackListener.addClientConnectionCallback(this);
             initVideoTrackSListener();
             allCallbacksInit = true;
         }
@@ -306,8 +299,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.dimen.grid_item_divider));
             recyclerView.setHasFixedSize(true);
             final int columnsCount = defineColumnsCount();
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
+
             gridLayoutManager = new GridManager(getActivity(), 12);
             gridLayoutManager.setReverseLayout(true);
             spanSizeLookup = new SpanSizeLookupImpl();
@@ -479,7 +471,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void removeConnectionStateListeners(){
-        conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
+        conversationFragmentCallbackListener.removeClientConnectionCallback(this);
     }
 
     private void releaseViews() {
@@ -493,12 +485,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (!isPeerToPeerCall){
            releseOpponentsViews();
         }
-    }
-
-    @Override
-    public void onCallStopped() {
-        super.onCallStopped();
-        Log.i(TAG, "onCallStopped");
     }
 
     protected void initButtonsListener() {
@@ -704,47 +690,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
             return;
         }
-
-        replaceUsersInAdapter(position);
-
-        updateViewHolders(position);
-
-        swapUsersFullscreenToPreview(userId);
-    }
-
-    private void replaceUsersInAdapter(int position) {
-        for (QBUser qbUser : opponentsAdapter.getOpponents()) {
-            if (qbUser.getId() == userIDFullScreen) {
-                opponentsAdapter.replaceUsers(position, qbUser);
-                break;
-            }
-        }
-    }
-
-    private void updateViewHolders(int position) {
-        View childView = recyclerView.getChildAt(position);
-        OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
-        opponentViewHolders.put(position, childViewHolder);
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void swapUsersFullscreenToPreview(int userId) {
-//      get opponentVideoTrack - opponent's video track from recyclerView
-        QBRTCVideoTrack opponentVideoTrack = getVideoTrackMap().get(userId);
-
-//      get mainVideoTrack - opponent's video track from full screen
-        QBRTCVideoTrack mainVideoTrack = getVideoTrackMap().get(userIDFullScreen);
-
-        QBConferenceSurfaceView remoteVideoView = findHolder(userId).getOpponentView();
-
-        if (mainVideoTrack != null) {
-            fillVideoView(0, remoteVideoView, mainVideoTrack);
-            Log.d(TAG, "_remoteVideoView enabled");
-        }
-        if (opponentVideoTrack != null) {
-            fillVideoView(userId, remoteFullScreenVideoView, opponentVideoTrack);
-            Log.d(TAG, "fullscreen enabled");
-        }
     }
 
 
@@ -790,8 +735,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setRecyclerViewVisibleStateBelow() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-//        params.height = (int) getResources().getDimension(R.dimen.item_height);
-//        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.addRule(RelativeLayout.BELOW, localVideoView.getId());
         recyclerView.setLayoutParams(params);
         recyclerView.setVisibility(View.VISIBLE);
@@ -920,16 +863,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     }
 
-    private void setBackgroundOpponentView(final Integer userId) {
-        final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
-        if (holder == null) {
-            return;
-        }
-
-        if (userId != userIDFullScreen) {
-            holder.getOpponentView().setBackgroundColor(Color.parseColor("#000000"));
-        }
-    }
 
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
@@ -974,65 +907,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     //////////////////////////////////   end     //////////////////////////////////////////
 
 
-    /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
-    @Override
-    public void onUserNotAnswer(QBRTCSession session, Integer userId) {
-        setProgressBarForOpponentGone(userId);
-        setStatusForOpponent(userId, getString(R.string.text_status_no_answer));
-    }
-
-    @Override
-    public void onCallRejectByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-        setStatusForOpponent(userId, getString(R.string.text_status_rejected));
-    }
-
-    @Override
-    public void onCallAcceptByUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-        setStatusForOpponent(userId, getString(R.string.accepted));
-    }
-
-    @Override
-    public void onReceiveHangUpFromUser(QBRTCSession session, Integer userId, Map<String, String> userInfo) {
-        setStatusForOpponent(userId, getString(R.string.text_status_hang_up));
-        Log.d(TAG, "onReceiveHangUpFromUser userId= " + userId);
-        if (!isPeerToPeerCall) {
-            if (userId == userIDFullScreen) {
-                Log.d(TAG, "setAnotherUserToFullScreen call userId= " + userId);
-                setAnotherUserToFullScreen();
-            }
-        }
-    }
-
-    @Override
-    public void onSessionClosed(QBRTCSession session) {
-
-    }
-
-    //////////////////////////////////   end     //////////////////////////////////////////
-
-    private void setAnotherUserToFullScreen() {
-        if (opponentsAdapter.getOpponents().isEmpty()) {
-            return;
-        }
-        int userId = opponentsAdapter.getItem(0);
-//      get opponentVideoTrack - opponent's video track from recyclerView
-        QBRTCVideoTrack opponentVideoTrack = getVideoTrackMap().get(userId);
-        if (opponentVideoTrack == null) {
-            Log.d(TAG, "setAnotherUserToFullScreen opponentVideoTrack == null");
-            return;
-        }
-
-        fillVideoView(userId, remoteFullScreenVideoView, opponentVideoTrack);
-        Log.d(TAG, "fullscreen enabled");
-
-        OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
-        if (itemHolder != null) {
-            opponentsAdapter.removeOpponent(getUserById(userId));
-            itemHolder.getOpponentView().release();
-            Log.d(TAG, "onConnectionClosedForUser opponentsAdapter.removeItem= " + userId);
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.conversation_fragment, menu);
@@ -1052,37 +926,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    @Override
-    public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
-        super.onOpponentsListUpdated(newUsers);
-//        updateAllOpponentsList(newUsers);
-        Log.d(TAG, "updateOpponentsList(), newUsers = " + newUsers);
-        runUpdateUsersNames(newUsers);
-    }
-
-    private void updateAllOpponentsList(ArrayList<QBUser> newUsers) {
-
-        for (int i = 0; i < allOpponents.size(); i++) {
-            for (QBUser updatedUser : newUsers) {
-                if (updatedUser.equals(allOpponents.get(i))) {
-                    allOpponents.set(i, updatedUser);
-                }
-            }
-        }
-    }
-
-    private void runUpdateUsersNames(final ArrayList<QBUser> newUsers) {
-        //need delayed for synchronization with recycler view initialization
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for (QBUser user : newUsers) {
-                    Log.d(TAG, "runUpdateUsersNames. foreach, user = " + user.getFullName());
-                    updateNameForOpponent(user.getId(), user.getFullName());
-                }
-            }
-        }, UPDATING_USERS_DELAY);
-    }
 
     private enum CameraState {
         NONE,
@@ -1209,7 +1052,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
                     }
                 }, 0, 2, TimeUnit.SECONDS);
-
     }
 }
 

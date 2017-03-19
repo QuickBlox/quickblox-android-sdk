@@ -1,6 +1,5 @@
 package com.quickblox.sample.conference.activities;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,15 +16,13 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.helper.Utils;
+import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.utils.Consts;
+import com.quickblox.sample.conference.utils.UsersUtils;
+import com.quickblox.sample.conference.utils.ValidationUtils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.conference.R;
-import com.quickblox.sample.conference.services.CallService;
-import com.quickblox.sample.conference.utils.Consts;
-import com.quickblox.sample.conference.utils.QBEntityCallbackImpl;
-import com.quickblox.sample.conference.utils.UsersUtils;
-import com.quickblox.sample.conference.utils.ValidationUtils;
 import com.quickblox.users.model.QBUser;
 
 public class LoginActivity extends BaseActivity {
@@ -104,7 +101,7 @@ public class LoginActivity extends BaseActivity {
         requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser result, Bundle params) {
-                        loginToChat(result);
+                        signInToQB(result);
                     }
 
                     @Override
@@ -120,14 +117,13 @@ public class LoginActivity extends BaseActivity {
         );
     }
 
-    private void loginToChat(final QBUser qbUser) {
+    private void signInToQB(final QBUser qbUser) {
         qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
 
         userForSave = qbUser;
         saveUserData(userForSave);
 
         signInCreatedUser(userForSave, false);
-//        startLoginService(qbUser);
     }
 
     private void startDialogsActivity() {
@@ -183,7 +179,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void signInCreatedUser(final QBUser user, final boolean deleteCurrentUser) {
-        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
+        requestExecutor.signInUser(user, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser result, Bundle params) {
                 if (deleteCurrentUser) {
@@ -216,12 +212,6 @@ public class LoginActivity extends BaseActivity {
                 Toaster.longToast(R.string.sign_up_error);
             }
         });
-    }
-
-    private void startLoginService(QBUser qbUser) {
-        Intent tempIntent = new Intent(this, CallService.class);
-        PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
-        CallService.start(this, qbUser, pendingIntent);
     }
 
     private String getCurrentDeviceId() {
