@@ -94,7 +94,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean connectionEstablished;
     private boolean allCallbacksInit;
     private boolean isCurrentCameraFront;
-    private QBUser localUser;
     private DisplayMetrics displaymetrics;
     private double displaySize;
     private GridLayoutManager gridLayoutManager;
@@ -136,7 +135,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void initFields() {
         super.initFields();
-        localUser = new QBUser(currentSession.getCurrentUserID());
         localViewOnClickListener = new LocalViewOnClickListener();
         amountOpponents = opponents.size();
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
@@ -749,24 +747,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setStatusForOpponent(int userId, final String status) {
+        if(userId == currentUser.getId()) {
+            Log.d("TEMPOS", " connectionStatusLocal.setText " + status);
+            connectionStatusLocal.setText(status);
+            return;
+        }
         final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
         if (holder == null) {
             return;
         }
 
         holder.setStatus(status);
-    }
-
-    private void updateNameForOpponent(int userId, String newUserName) {
-
-            OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
-            if (holder == null) {
-                Log.d("UPDATE_USERS", "holder == null");
-                return;
-            }
-
-            Log.d("UPDATE_USERS", "holder != null");
-            holder.setUserName(newUserName);
     }
 
     private void setProgressBarForOpponentGone(int userId) {
