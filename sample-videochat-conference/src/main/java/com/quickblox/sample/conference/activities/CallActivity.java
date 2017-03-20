@@ -290,10 +290,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
         if (getCurrentSession() != null) {
             getCurrentSession().hangUp(new HashMap<String, String>());
+            destroyCurrentSession();
+        }
+    }
 
+    private void destroyCurrentSession() {
+        if(currentSession.isConnectionActive()) {
             try {
-                getCurrentSession().leave();
-                getCurrentSession().destroySession();
+                currentSession.leave();
+                currentSession.destroySession();
             } catch (WsException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -340,9 +345,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     public void releaseCurrentSession() {
-//        Todo releaseCurrentSession
         Log.d(TAG, "Release current session");
         if (currentSession != null) {
+            currentSession.stopSendAutoPresence();
+            destroyCurrentSession();
             this.currentSession.removeSessionCallbacksListener(CallActivity.this);
             this.currentSession.removeConferenceSessionListener(CallActivity.this);
             this.currentSession = null;
