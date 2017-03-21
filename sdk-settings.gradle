@@ -11,8 +11,8 @@ project(':quickblox-android-sdk-chat-extensions').projectDir = new File( '../SDK
 /*include ':jbosh'
 project(':jbosh').projectDir = new File( '../SDK-android/jbosh')*/
 
-/*include ':quickblox-android-sdk-content'
-project(':quickblox-android-sdk-content').projectDir = new File('../SDK-android/quickblox-android-sdk-content')*/
+//include ':quickblox-android-sdk-content'
+//project(':quickblox-android-sdk-content').projectDir = new File('../SDK-android/quickblox-android-sdk-content')
 
 include ':quickblox-android-sdk-core'
 project(':quickblox-android-sdk-core').projectDir = new File('../SDK-android/quickblox-android-sdk-core')

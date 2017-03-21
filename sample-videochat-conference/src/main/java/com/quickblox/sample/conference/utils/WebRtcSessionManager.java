@@ -1,16 +1,13 @@
 package com.quickblox.sample.conference.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.quickblox.conference.ConferenceSession;
-import com.quickblox.videochat.webrtc.QBRTCSession;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacksImpl;
 
 /**
  * Created by tereha on 16.05.16.
  */
-public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
+public class WebRtcSessionManager {
     private static final String TAG = WebRtcSessionManager.class.getSimpleName();
 
     private static WebRtcSessionManager instance;
@@ -36,17 +33,5 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
 
     public void setCurrentSession(ConferenceSession qbCurrentSession) {
         currentSession = qbCurrentSession;
-    }
-
-    @Override
-    public void onReceiveNewSession(QBRTCSession session) {
-        Log.d(TAG, "onReceiveNewSession to WebRtcSessionManager");
-
-    }
-
-    @Override
-    public void onSessionClosed(QBRTCSession session) {
-        Log.d(TAG, "onSessionClosed WebRtcSessionManager");
-
     }
 }

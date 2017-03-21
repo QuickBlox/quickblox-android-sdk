@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+        <com.quickblox.conference.view.QBConferenceSurfaceView
             android:id="@+id/opponentView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

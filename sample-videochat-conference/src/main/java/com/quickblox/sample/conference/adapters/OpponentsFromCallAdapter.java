@@ -12,13 +12,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.utils.QBRTCSessionUtils;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBPeerChannel;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
-import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 
 import java.util.List;
 
@@ -71,6 +71,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         notifyItemRangeChanged(index, opponents.size());
     }
 
+    public void removeOpponent(QBUser user){
+        opponents.remove(user);
+        notifyDataSetChanged();
+    }
+
     public void replaceUsers(int position, QBUser qbUser) {
         opponents.set(position, qbUser);
         notifyItemChanged(position);
@@ -79,7 +84,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
-        v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(itemWidth, itemHeight));
+        v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight));
 
         ViewHolder vh = new ViewHolder(v);
         vh.setListener(new ViewHolder.ViewHolderClickListener() {
@@ -113,7 +118,8 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
      public void add(QBUser item) {
          opponents.add(item);
-        notifyDataSetChanged();
+//         notifyItemInserted(opponents.size() - 1);
+         notifyItemRangeChanged((opponents.size() - 1), opponents.size());
     }
 
     @Override
@@ -130,7 +136,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         TextView opponentsName;
         TextView connectionStatus;
-        QBRTCSurfaceView opponentView;
+        QBConferenceSurfaceView opponentView;
         ProgressBar progressBar;
         private int userId;
         private ViewHolderClickListener viewHolderClickListener;
@@ -140,7 +146,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             itemView.setOnClickListener(this);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
-            opponentView = (QBRTCSurfaceView) itemView.findViewById(R.id.opponentView);
+            opponentView = (QBConferenceSurfaceView) itemView.findViewById(R.id.opponentView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar_adapter);
         }
 
@@ -168,12 +174,12 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             return progressBar;
         }
 
-        public QBRTCSurfaceView getOpponentView() {
+        public QBConferenceSurfaceView getOpponentView() {
             return opponentView;
         }
 
         public void showOpponentView(boolean show) {
-            Log.d("OpponentsAdapter", "show? " + show);
+            Log.d(TAG, "show? " + show);
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
 

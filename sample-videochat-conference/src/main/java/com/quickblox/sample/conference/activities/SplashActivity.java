@@ -1,13 +1,10 @@
 package com.quickblox.sample.conference.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 
+import com.quickblox.sample.conference.R;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.sample.conference.R;
-import com.quickblox.sample.conference.services.CallService;
-import com.quickblox.users.model.QBUser;
 
 public class SplashActivity extends CoreSplashActivity {
 
@@ -20,7 +17,6 @@ public class SplashActivity extends CoreSplashActivity {
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
 
         if (sharedPrefsHelper.hasQbUser()) {
-            startLoginService(sharedPrefsHelper.getQbUser());
             startDialogsActivity();
             return;
         }
@@ -39,10 +35,6 @@ public class SplashActivity extends CoreSplashActivity {
     protected void proceedToTheNextActivity() {
         LoginActivity.start(this);
         finish();
-    }
-
-    protected void startLoginService(QBUser qbUser) {
-        CallService.start(this, qbUser);
     }
 
     private void startDialogsActivity() {

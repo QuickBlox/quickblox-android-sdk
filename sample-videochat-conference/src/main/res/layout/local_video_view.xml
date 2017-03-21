@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+<com.quickblox.conference.view.QBConferenceSurfaceView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/localView"
     style="@style/MatchParent"

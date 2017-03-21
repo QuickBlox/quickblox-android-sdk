@@ -39,11 +39,6 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.quickblox.sample.conference.activities.OpponentsActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.quickblox.sample.conference.activities.DialogsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:launchMode="singleTask"
@@ -66,39 +61,6 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.quickblox.sample.conference.services.CallService" />
-
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.quickblox.sample.groupchatwebrtc" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.quickblox.sample.conference.services.gcm.GcmPushListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name="com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-
-        <meta-data android:name="com.quickblox.messages.TYPE" android:value="GCM" />
-        <meta-data android:name="com.quickblox.messages.SENDER_ID" android:value="@string/sender_id" />
-        <meta-data android:name="com.quickblox.messages.QB_ENVIRONMENT" android:value="DEVELOPMENT" />
 
         <meta-data
             android:name="com.google.android.gms.version"
