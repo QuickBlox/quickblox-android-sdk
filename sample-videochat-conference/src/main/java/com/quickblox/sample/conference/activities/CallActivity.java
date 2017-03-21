@@ -289,8 +289,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void hangUpCurrentSession() {
 
         if (getCurrentSession() != null) {
-            getCurrentSession().hangUp(new HashMap<String, String>());
             destroyCurrentSession();
+            getCurrentSession().hangUp(new HashMap<String, String>());
         }
     }
 
@@ -300,7 +300,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
                 currentSession.leave();
                 currentSession.destroySession();
             } catch (WsException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "destroyCurrentSession: " + e.getMessage());
             }
         }
     }
@@ -602,6 +602,23 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onError(QBResponseException exception) {
             Log.d(TAG, "onError joinDialog exception= " + exception);
+            showToast("Join execption: " + exception.getMessage());
+//            FixMe
+//            if (currentSession != null) {
+//
+//                    try {
+//                        currentSession.destroySession();
+//                    } catch (WsException e) {
+//                        Log.e(TAG, "destroySession: " + e.getMessage());
+//                    }
+//
+//
+//                currentSession.removeSessionCallbacksListener(CallActivity.this);
+//                currentSession.removeConferenceSessionListener(CallActivity.this);
+//                currentSession = null;
+//            }
+//
+//            finish();
         }
     }
 }

@@ -95,7 +95,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean allCallbacksInit;
     private boolean isCurrentCameraFront;
     private DisplayMetrics displaymetrics;
-    private double displaySize;
     private GridLayoutManager gridLayoutManager;
     private SpanSizeLookupImpl spanSizeLookup;
 
@@ -141,7 +140,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         allOpponents.addAll(opponents);
 
         displaymetrics = getResources().getDisplayMetrics();
-        displaySize = getDisplaySize();
     }
 
     public void setDuringCallActionBar() {
@@ -277,7 +275,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         isRemoteShown = false;
         isCurrentCameraFront = true;
 
-        remoteFullScreenVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.remote_video_view);
+        remoteFullScreenVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
         remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
 
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
@@ -286,7 +284,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView.setHasFixedSize(true);
 
             gridLayoutManager = new GridManager(getActivity(), 12);
-            gridLayoutManager.setReverseLayout(true);
+            gridLayoutManager.setReverseLayout(false);
             spanSizeLookup = new SpanSizeLookupImpl();
             spanSizeLookup.setSpanIndexCacheEnabled(false);
             gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
@@ -518,40 +516,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    private void autoScaleOpponentAdapter() {
-        int itemCount = opponentsAdapter.getItemCount();
-        if(displaySize < DISPLAY_SIZE_MEASURE){
-
-        if (itemCount <= SMALL_CELLS_AMOUNT) {
-            setRecyclerViewBelowDecline();
-            setRemoteFullScreenVideoViewWrap();
-        } else if (itemCount > SMALL_CELLS_AMOUNT) {
-            setRemoteFullScreenVideoViewHeight();
-            setRecyclerViewBelow();
-           }
-
-        } else {
-
-            if (itemCount > LARGE_CELLS_AMOUNT) {
-                setRemoteFullScreenVideoViewHeight();
-                setRecyclerViewBelow();
-            } else if (itemCount <= LARGE_CELLS_AMOUNT) {
-                setRecyclerViewBelowDecline();
-                setRemoteFullScreenVideoViewWrap();
-            }
-        }
-////        TODO maybe explicit
-//        recyclerView.requestLayout();
-    }
-
     @Override
     public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
 
         setOpponentToAdapter(userID);
-
-        autoScaleOpponentAdapter();
-//        scheduler(); // for test
 
             mainHandler.postDelayed(new Runnable() {
                 @Override
@@ -573,6 +542,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 user.setFullName("NoName");
                 opponentsAdapter.add(user);
             }
+        recyclerView.requestLayout();
     }
 
     //last opponent view is bind
@@ -628,7 +598,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setRecyclerViewVisibleStateWrapContent() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         recyclerView.setLayoutParams(params);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -798,10 +768,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
             getVideoTrackMap().remove(userId);
             updateActionBar(opponentsAdapter.getItemCount());
-
-//            setBackgroundOpponentView(userId);
-//            removeLocalViewToAdapter();
-            autoScaleOpponentAdapter();
+            recyclerView.requestLayout();
     }
 
     @Override
@@ -912,18 +879,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
             recyclerView.setLayoutParams(params);
         }
-    }
-
-    private double getDisplaySize(){
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width=displaymetrics.widthPixels;
-        int height=displaymetrics.heightPixels;
-        double wi=(double)width/(double)displaymetrics.xdpi;
-        double hi=(double)height/(double)displaymetrics.ydpi;
-        double x = Math.pow(wi,2);
-        double y = Math.pow(hi,2);
-        double screenInches = Math.sqrt(x+y);
-        return screenInches;
     }
 }
 
