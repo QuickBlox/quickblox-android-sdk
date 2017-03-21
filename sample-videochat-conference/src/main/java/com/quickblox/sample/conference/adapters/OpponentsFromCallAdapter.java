@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
@@ -86,7 +88,13 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         View v = inflater.inflate(R.layout.list_item_opponent_from_call, null);
         v.findViewById(R.id.innerLayout).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight));
 
-        ViewHolder vh = new ViewHolder(v);
+        final ViewHolder vh = new ViewHolder(v);
+        vh.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                adapterListener.onToggleButtonItemClick(vh.getAdapterPosition(), isChecked);
+            }
+        });
         vh.setListener(new ViewHolder.ViewHolderClickListener() {
             @Override
             public void onShowOpponent(int callerId) {
@@ -131,9 +139,12 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         void OnBindLastViewHolder(ViewHolder holder, int position);
 
         void onItemClick(int position);
+
+        void onToggleButtonItemClick(int position, boolean isChecked);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+        ToggleButton toggleButton;
         TextView opponentsName;
         TextView connectionStatus;
         QBConferenceSurfaceView opponentView;
@@ -144,6 +155,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            toggleButton = (ToggleButton) itemView.findViewById(R.id.opponent_toggle_mic);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
             opponentView = (QBConferenceSurfaceView) itemView.findViewById(R.id.opponentView);

@@ -30,7 +30,9 @@ import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.BaseSession;
+import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
@@ -53,7 +55,7 @@ import java.util.Map;
  * QuickBlox team
  */
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<ConferenceSession>,
-        QBRTCSessionStateCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
+        QBRTCClientAudioTracksCallback<ConferenceSession>, QBRTCSessionStateCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -145,15 +147,27 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         actionBar.setSubtitle(getString(R.string.opponents, String.valueOf(amountOpponents)));
     }
 
-    private void initVideoTrackSListener() {
+    private void initVideoTracksListener() {
         if (currentSession != null) {
             currentSession.addVideoTrackCallbacksListener(this);
         }
     }
 
-    private void removeVideoTrackSListener() {
+    private void initAudioTracksListener() {
+        if (currentSession != null) {
+            currentSession.addAudioTrackCallbacksListener(this);
+        }
+    }
+
+    private void removeVideoTracksListener() {
         if (currentSession != null) {
             currentSession.removeVideoTrackCallbacksListener(this);
+        }
+    }
+
+    private void removeAudioTracksListener() {
+        if (currentSession != null) {
+            currentSession.removeAudioTrackCallbacksListener(this);
         }
     }
 
@@ -171,7 +185,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.i(TAG, "onStart");
         if (!allCallbacksInit) {
             conversationFragmentCallbackListener.addClientConnectionCallback(this);
-            initVideoTrackSListener();
+            initVideoTracksListener();
+            initAudioTracksListener();
             allCallbacksInit = true;
         }
     }
@@ -411,7 +426,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "onDestroyView");
         releaseViewHolders();
         removeConnectionStateListeners();
-        removeVideoTrackSListener();
+        removeVideoTracksListener();
+        removeAudioTracksListener();
         removeVideoTrackRenderers();
         releaseViews();
     }
@@ -526,6 +542,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     }
 
+
+    @Override
+    public void onLocalAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack) {
+
+    }
+
+    @Override
+    public void onRemoteAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack, Integer userID) {
+        currentSession.getMediaStreamManager().addAudioTrack(userID, audioTrack);
+    }
+
     /////////////////////////////////////////    end    ////////////////////////////////////////////
 
     private void setOpponentToAdapter(Integer userID) {
@@ -556,6 +583,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
             return;
         }
+    }
+
+    @Override
+    public void onToggleButtonItemClick(int position, boolean isAudioEnabled) {
+        int userId = opponentsAdapter.getItem(position);
+        Log.d(TAG, "onToggleButtonItemClick userId= " + userId);
+        adjustOpponentAudio(userId, isAudioEnabled);
+    }
+
+    private void adjustOpponentAudio(int userID, boolean isAudioEnabled) {
+        currentSession.getMediaStreamManager().getAudioTrack(userID).setEnabled(isAudioEnabled);
     }
 
 
