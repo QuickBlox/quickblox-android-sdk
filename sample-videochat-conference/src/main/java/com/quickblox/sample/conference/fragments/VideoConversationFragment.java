@@ -3,14 +3,12 @@ package com.quickblox.sample.conference.fragments;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -67,7 +64,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long FULL_SCREEN_CLICK_DELAY = 1000;
     private static final int REQUEST_CODE_ATTACHMENT = 100;
 
-    private static final double DISPLAY_SIZE_MEASURE = 5.0;
+    private static final int DISPLAY_ROW_AMOUNT = 3;
     private static final int SMALL_CELLS_AMOUNT = 8;
     private static final int LARGE_CELLS_AMOUNT = 12;
 
@@ -76,7 +73,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private ToggleButton cameraToggle;
     private View view;
     private LinearLayout actionVideoButtonsLayout;
-    private QBConferenceSurfaceView remoteFullScreenVideoView;
+    private QBConferenceSurfaceView localVideoView;
     private CameraState cameraState = CameraState.DISABLED_FROM_USER;
     private RecyclerView recyclerView;
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
@@ -94,7 +91,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean connectionEstablished;
     private boolean allCallbacksInit;
     private boolean isCurrentCameraFront;
-    private DisplayMetrics displaymetrics;
     private GridLayoutManager gridLayoutManager;
     private SpanSizeLookupImpl spanSizeLookup;
 
@@ -138,8 +134,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         amountOpponents = opponents.size();
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
-
-        displaymetrics = getResources().getDisplayMetrics();
     }
 
     public void setDuringCallActionBar() {
@@ -275,8 +269,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         isRemoteShown = false;
         isCurrentCameraFront = true;
 
-        remoteFullScreenVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
-        remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
+        localVideoView = (QBConferenceSurfaceView) view.findViewById(R.id.local_video_view);
+        localVideoView.setOnClickListener(localViewOnClickListener);
 
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
 
@@ -295,7 +289,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    setGrid();
+                    setGrid(recyclerView.getHeight());
                     recyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             });
@@ -341,11 +335,12 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    private void setGrid() {
+    private void setGrid(int recycleViewHeight) {
         ArrayList<QBUser> qbUsers = new ArrayList<>();
+        int itemHeight = recycleViewHeight / DISPLAY_ROW_AMOUNT;
         opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, qbUsers,
                 (int) getResources().getDimension(R.dimen.item_width),
-                (int) getResources().getDimension(R.dimen.item_height));
+                itemHeight);
         opponentsAdapter.setAdapterListener(VideoConversationFragment.this);
         recyclerView.setAdapter(opponentsAdapter);
     }
@@ -430,10 +425,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void releaseViews() {
-        if (remoteFullScreenVideoView != null) {
-            remoteFullScreenVideoView.release();
+        if (localVideoView != null) {
+            localVideoView.release();
         }
-        remoteFullScreenVideoView = null;
+        localVideoView = null;
 
         releseOpponentsViews();
     }
@@ -486,7 +481,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void toggleCameraInternal() {
         Log.d(TAG, "Camera was switched!");
-        updateVideoView(remoteFullScreenVideoView, isCurrentCameraFront);
+        updateVideoView(localVideoView, isCurrentCameraFront);
         toggleCamera(true);
     }
 
@@ -511,8 +506,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         cameraState = CameraState.NONE;
         actionButtonsEnabled(true);
 
-        if (remoteFullScreenVideoView != null) {
-            fillVideoView(remoteFullScreenVideoView, localVideoTrack, false);
+        if (localVideoView != null) {
+            fillVideoView(localVideoView, localVideoTrack, false);
         }
     }
 
@@ -568,7 +563,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         if(!isRemoteShown){
             isRemoteShown = true;
-            setRecyclerViewVisibleStateWrapContent();
+            setRecyclerViewVisibleState();
             setDuringCallActionBar();
         }
         updateActionBar(opponentsAdapter.getItemCount());
@@ -596,44 +591,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return null;
     }
 
-    private void setRecyclerViewVisibleStateWrapContent() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        recyclerView.setLayoutParams(params);
+    private void setRecyclerViewVisibleState() {
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void setRecyclerViewBelow() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        params.addRule(RelativeLayout.BELOW, remoteFullScreenVideoView.getId());
-
-        recyclerView.setLayoutParams(params);
-    }
-
-    private void setRecyclerViewBelowDecline() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        params.addRule(RelativeLayout.BELOW, 0);
-        recyclerView.setLayoutParams(params);
-    }
-
-    private void setRemoteFullScreenVideoViewHeight() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) remoteFullScreenVideoView.getLayoutParams();
-        params.addRule(RelativeLayout.ABOVE, 0);
-
-        int screenWidthPx = displaymetrics.widthPixels;
-        Log.d(TAG, "screenWidthPx " + screenWidthPx);
-        int width = (int) (screenWidthPx * 0.3);
-        params.height = (width / 2) * 3;
-
-        remoteFullScreenVideoView.setLayoutParams(params);
-    }
-
-    private void setRemoteFullScreenVideoViewWrap() { RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) remoteFullScreenVideoView.getLayoutParams();
-        params.addRule(RelativeLayout.ABOVE, recyclerView.getId());
-
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        remoteFullScreenVideoView.setLayoutParams(params);
-    }
 
     private OpponentsFromCallAdapter.ViewHolder getViewHolderForOpponent(Integer userID) {
         OpponentsFromCallAdapter.ViewHolder holder = opponentViewHolders.get(userID);
@@ -821,63 +782,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     class LocalViewOnClickListener implements View.OnClickListener {
-        private long lastFullScreenClickTime = 0L;
 
         @Override
         public void onClick(View v) {
-            if ((SystemClock.uptimeMillis() - lastFullScreenClickTime) < FULL_SCREEN_CLICK_DELAY) {
-                return;
-            }
-            lastFullScreenClickTime = SystemClock.uptimeMillis();
-
-            if (connectionEstablished) {
-                setFullScreenOnOff();
-            }
-        }
-
-        private void setFullScreenOnOff() {
-            if (actionBar.isShowing()) {
-                hideToolBarAndButtons();
-            } else {
-                showToolBarAndButtons();
-            }
-        }
-
-        private void hideToolBarAndButtons() {
-            actionBar.hide();
-
-//            localVideoView.setVisibility(View.INVISIBLE);
-
-            actionVideoButtonsLayout.setVisibility(View.GONE);
-
-
-                shiftBottomListOpponents();
-        }
-
-        private void showToolBarAndButtons() {
-            actionBar.show();
-
-//            localVideoView.setVisibility(View.VISIBLE);
-
-            actionVideoButtonsLayout.setVisibility(View.VISIBLE);
-
-                shiftMarginListOpponents();
-        }
-
-        private void shiftBottomListOpponents() {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            params.setMargins(0, 0, 0, 0);
-
-            recyclerView.setLayoutParams(params);
-        }
-
-        private void shiftMarginListOpponents() {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-            params.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.margin_very_small));
-
-            recyclerView.setLayoutParams(params);
+            Log.d(TAG, "localView onClick");
         }
     }
 }
