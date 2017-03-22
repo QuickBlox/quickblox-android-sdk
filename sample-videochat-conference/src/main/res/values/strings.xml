@@ -208,7 +208,7 @@
     <string name="pref_audiocodec_title">Default audio codec</string>
     <string name="pref_audiocodec_def">ISAC</string>
     <string name="pref_audiocodec_dlg">Select default audio codec</string>
-    <string name="pref_version">QuickBlox WebRTC\nBuild version 1.12</string>
+    <string name="pref_version">QuickBlox WebRTC\nBuild version 1.0.1</string>
     <string name="btn_screen_capture">screenShot</string>
     <string name="accepted">Accepted</string>
     <string name="connection_was_lost">Connection was lost</string>
