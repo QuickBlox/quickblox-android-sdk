@@ -111,6 +111,8 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         int userID = user.getId();
         holder.opponentsName.setText(user.getFullName());
 
+        holder.toggleButton.setChecked(session.getMediaStreamManager().getAudioTrack(userID).enabled());
+
         holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);
         QBPeerChannel qbPeerChannel = session.getPeerChannel(userID);
