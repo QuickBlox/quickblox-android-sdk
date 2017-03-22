@@ -547,7 +547,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void OnError(String error) {
-        showToast("Connection error, please rejoin if need: " + error);
+        showToast("ConferenceSession error: " + error);
     }
 
     @Override

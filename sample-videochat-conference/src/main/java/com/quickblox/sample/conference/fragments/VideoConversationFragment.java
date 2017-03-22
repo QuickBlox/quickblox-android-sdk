@@ -375,6 +375,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         // If user changed camera state few times and last state was CameraState.ENABLED_FROM_USER
         // than we turn on cam, else we nothing change
         if (cameraState != CameraState.DISABLED_FROM_USER) {
+            cameraToggle.setChecked(true);
             toggleCamera(true);
         }
     }
