@@ -296,12 +296,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     private void destroyCurrentSession() {
         if(currentSession.isConnectionActive()) {
-            try {
                 currentSession.leave();
                 currentSession.destroySession();
-            } catch (WsException e) {
-                Log.e(TAG, "destroyCurrentSession: " + e.getMessage());
-            }
         }
     }
 
@@ -602,23 +598,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onError(QBResponseException exception) {
             Log.d(TAG, "onError joinDialog exception= " + exception);
-            showToast("Join execption: " + exception.getMessage());
-//            FixMe
-//            if (currentSession != null) {
-//
-//                    try {
-//                        currentSession.destroySession();
-//                    } catch (WsException e) {
-//                        Log.e(TAG, "destroySession: " + e.getMessage());
-//                    }
-//
-//
-//                currentSession.removeSessionCallbacksListener(CallActivity.this);
-//                currentSession.removeConferenceSessionListener(CallActivity.this);
-//                currentSession = null;
-//            }
-//
-//            finish();
+            showToast("Join exception: " + exception.getMessage());
+            releaseCurrentSession();
+            finish();
         }
     }
 }
