@@ -2,9 +2,9 @@
 ////
 include ':quickblox-android-sdk-chat'
 project(':quickblox-android-sdk-chat').projectDir = new File( '../SDK-android/quickblox-android-sdk-chat')
-/*
 
-include ':quickblox-android-sdk-chat-extensions'
+
+/*include ':quickblox-android-sdk-chat-extensions'
 project(':quickblox-android-sdk-chat-extensions').projectDir = new File( '../SDK-android/quickblox-android-sdk-chat-extensions')
 */
 

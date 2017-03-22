@@ -26,6 +26,8 @@ android {
         versionCode 200
         versionName "1.0.0"
 
+        ext.betaDistrubutionGroupAliases=testers_group_name
+        ext.betaDistributionEmails=testers_emails
     }
 
     productFlavors {
