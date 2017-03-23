@@ -90,7 +90,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private int amountOpponents;
     private int userIDFullScreen;
     private List<QBUser> allOpponents;
-    private boolean connectionEstablished;
     private boolean allCallbacksInit;
     private boolean isCurrentCameraFront;
     private GridLayoutManager gridLayoutManager;
@@ -396,11 +395,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop");
-        if (connectionEstablished) {
-            allCallbacksInit = false;
-        } else {
-            Log.d(TAG, "We are in dialing process yet!");
-        }
     }
 
     private void removeVideoTrackRenderers() {
@@ -510,7 +504,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (currentSession != null && currentSession.getMediaStreamManager() != null) {
             conversationFragmentCallbackListener.onSetVideoEnabled(isNeedEnableCam);
         }
-        if (connectionEstablished && !cameraToggle.isEnabled()) {
+        if (!cameraToggle.isEnabled()) {
             cameraToggle.setEnabled(true);
         }
     }
@@ -745,7 +739,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onConnectedToUser(ConferenceSession qbrtcSession, final Integer userId) {
-        connectionEstablished = true;
         setStatusForOpponent(userId, getString(R.string.text_status_connected));
         setProgressBarForOpponentGone(userId);
     }
