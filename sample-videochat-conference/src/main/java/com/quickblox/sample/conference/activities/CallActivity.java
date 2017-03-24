@@ -297,6 +297,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void destroyCurrentSession() {
         if(currentSession.isConnectionActive()) {
                 currentSession.leave();
+//                currentSession.detachHandleIdAll();
                 currentSession.destroySession();
         }
     }
@@ -542,7 +543,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void OnPublisherLeft(Integer userID) {
-
+        Log.d(TAG, "OnPublisherLeft userID" + userID);
     }
 
     @Override

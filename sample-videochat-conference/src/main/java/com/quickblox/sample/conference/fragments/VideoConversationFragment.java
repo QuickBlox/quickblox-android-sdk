@@ -218,7 +218,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
         private void updateAdaptersItems() {
             if(opponentsAdapter.getItemCount() > 0){
-                OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(opponentsAdapter.getItem(0));
+                OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(opponentsAdapter.getItem(0));
                 if(itemHolder != null) {
                     itemHolder.itemView.requestLayout();
                 }
@@ -289,7 +289,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
 
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.dimen.grid_item_divider));
-            recyclerView.setHasFixedSize(true);
+            recyclerView.setHasFixedSize(false);
 
             gridLayoutManager = new GridManager(getActivity(), 12);
             gridLayoutManager.setReverseLayout(false);
@@ -320,8 +320,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void restoreSession() {
-        Log.d(TAG, "restoreSession ");
+        Log.d(TAG, "restoreSession currentSession.getState()= " + currentSession.getState());
         if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
+            Log.d("TEMPOS", "restoreSession return currentSession.getState()= " + currentSession.getState());
             return;
         }
         onCallStarted();
@@ -635,7 +636,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             Log.d(TAG, "holder not found in cache");
             holder = findHolder(userID);
             if (holder != null) {
-                opponentViewHolders.append(userID, holder);
+                opponentViewHolders.put(userID, holder);
             }
         }
         return holder;
@@ -716,7 +717,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             connectionStatusLocal.setText(status);
             return;
         }
-        final OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
+        final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
         if (holder == null) {
             return;
         }
@@ -749,7 +750,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
             Log.d(TAG, "onConnectionClosedForUser videoTrackMap.remove(userId)= " + userId);
 
-            OpponentsFromCallAdapter.ViewHolder itemHolder = findHolder(userId);
+            OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
             if (itemHolder != null){
                 if(itemHolder.getAdapterPosition() != -1) {
                     Log.d(TAG, "onConnectionClosedForUser  opponentsAdapter.removeItem");
