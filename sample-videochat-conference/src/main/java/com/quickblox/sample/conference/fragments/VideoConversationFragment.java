@@ -26,6 +26,7 @@ import android.widget.ToggleButton;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.activities.SelectUsersActivity;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
@@ -786,6 +787,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             case R.id.camera_switch:
                 Log.d("Conversation", "camera_switch");
                 switchCamera(item);
+                return true;
+            case R.id.add_opponent:
+                Log.d("Conversation", "add_opponent");
+                SelectUsersActivity.start(getContext());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

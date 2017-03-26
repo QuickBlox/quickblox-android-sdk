@@ -16,6 +16,7 @@
     <string name="dlg_logout">Logout…</string>
     <string name="dlg_loading_opponents">Loading opponents…</string>
     <string name="dlg_loading_dialogs_users">Loading dialogs and users…</string>
+    <string name="dlg_updating_dialog">Updating dialog…</string>
 
 
     <!-- Errors strings. -->
@@ -95,6 +96,7 @@
     <string name="join_conference_error">Join to conference errors</string>
 
     <string name="menu_select_people_done">Done</string>
+    <string name="menu_refresh_users">Refresh</string>
     <string name="text_select_user_to_call">Select users you want to call</string>
     <string name="text_select_user_to_create_dialog">Select users you want create dialog with</string>
     <string name="text_select_dialog_to_join">Select dialog you want to join</string>

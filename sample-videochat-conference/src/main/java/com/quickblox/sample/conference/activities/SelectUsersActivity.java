@@ -26,6 +26,7 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -46,9 +47,12 @@ public class SelectUsersActivity extends BaseActivity {
     private CheckboxUsersAdapter usersAdapter;
     private long lastClickTime = 0l;
     private QBUser currentUser;
+    private QBChatDialog dialog;
 
-    public static void start(Context context) {
+    public static void start(Context context, QBChatDialog dialog) {
         Intent intent = new Intent(context, SelectUsersActivity.class);
+
+        intent.putExtra(EXTRA_QB_DIALOG, dialog);
         context.startActivity(intent);
     }
 
@@ -62,13 +66,8 @@ public class SelectUsersActivity extends BaseActivity {
      * which can be obtained with SelectPeopleActivity.EXTRA_QB_USERS key
      */
     public static void startForResult(Activity activity, int code) {
-        startForResult(activity, code, null);
-    }
-
-    public static void startForResult(Activity activity, int code, QBChatDialog dialog) {
         Intent intent = new Intent(activity, SelectUsersActivity.class);
-//        FixMe dialog's never used
-        intent.putExtra(EXTRA_QB_DIALOG, dialog);
+
         activity.startActivityForResult(intent, code);
     }
 
@@ -79,11 +78,7 @@ public class SelectUsersActivity extends BaseActivity {
 
         usersListView = _findViewById(R.id.list_select_users);
         currentUser = sharedPrefsHelper.getQbUser();
-        if (isEditingChat()) {
-            setActionBarTitle(R.string.select_users_edit_dialog);
-        } else {
-            setActionBarTitle(R.string.select_users_create_dialog);
-        }
+        setActionBarTitle(isEditingChat() ? R.string.select_users_edit_dialog : R.string.select_users_create_dialog);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         dbManager = QbUsersDbManager.getInstance(getApplicationContext());
@@ -105,6 +100,9 @@ public class SelectUsersActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_select_people_action_done:
+                if(isEditingChat()){
+                    addOccupantsToDialog();
+                } else
                 if (usersAdapter != null) {
                     List<QBUser> users = usersAdapter.getSelectedUsers();
                     if (users.size() >= MINIMUM_CHAT_OCCUPANTS_SIZE) {
@@ -114,7 +112,8 @@ public class SelectUsersActivity extends BaseActivity {
                     }
                 }
                 return true;
-
+            case R.id.menu_refresh_users:
+                loadUsersFromQb();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -123,6 +122,29 @@ public class SelectUsersActivity extends BaseActivity {
     @Override
     protected View getSnackbarAnchorView() {
         return findViewById(R.id.layout_root);
+    }
+
+    private void addOccupantsToDialog() {
+        showProgressDialog(R.string.dlg_updating_dialog);
+        List<QBUser> users = usersAdapter.getSelectedUsers();
+        requestExecutor.updateDialog(dialog, (QBUser[]) users.toArray(), new QBEntityCallback<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog result, Bundle params) {
+                hideProgressDialog();
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.dlg_updating_dialog, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addOccupantsToDialog();
+                    }
+                });
+            }
+        });
     }
 
     private void passResultToCallerActivity() {
@@ -135,15 +157,40 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void initUsersAdapter() {
         ArrayList<QBUser> users = dbManager.getAllUsers();
-        QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+        dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
         usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users, currentUser);
-        if (dialog != null) {
-            usersAdapter.addSelectedUsers(dialog.getOccupants());
-        }
+//        if (dialog != null) {
+//            usersAdapter.addSelectedUsers(dialog.getOccupants());
+//        }
         usersListView.setAdapter(usersAdapter);
     }
 
     private boolean isEditingChat() {
         return getIntent().getSerializableExtra(EXTRA_QB_DIALOG) != null;
+    }
+
+    private void loadUsersFromQb() {
+        showProgressDialog(R.string.dlg_loading_dialogs_users);
+        String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
+
+        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+                hideProgressDialog();
+                usersAdapter.updateList(result);
+                dbManager.saveAllUsers(result, true);
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadUsersFromQb();
+                    }
+                });
+            }
+        });
     }
 }

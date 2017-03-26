@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.quickblox.chat.QBRestChatService;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.chat.request.QBDialogRequestBuilder;
 import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -95,5 +96,12 @@ public class QBResRequestExecutor {
 
     public void loadUsersByIds(final Collection<Integer> usersIDs, final QBEntityCallback<ArrayList<QBUser>> callback) {
         QBUsers.getUsersByIDs(usersIDs, null).performAsync(callback);
+    }
+
+    public void updateDialog(QBChatDialog dialog, QBUser[] users, QBEntityCallback<QBChatDialog> callback) {
+        QBDialogRequestBuilder requestBuilder = new QBDialogRequestBuilder();
+        requestBuilder.addUsers(users);
+
+        QBRestChatService.updateGroupChatDialog(dialog, requestBuilder).performAsync(callback);
     }
 }
