@@ -769,23 +769,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onConnectionClosedForUser(ConferenceSession qbrtcSession, Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.text_status_closed));
-
-            Log.d(TAG, "onConnectionClosedForUser videoTrackMap.remove(userId)= " + userId);
-
-            OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-            if (itemHolder != null){
-                if(itemHolder.getAdapterPosition() != -1) {
-                    Log.d(TAG, "onConnectionClosedForUser  opponentsAdapter.removeItem");
-                    opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
-                    opponentViewHolders.remove(userId);
-                }
-            }
-//            opponentsAdapter.removeOpponent(getUserById(userId));
-
-            getVideoTrackMap().remove(userId);
-            updateActionBar(opponentsAdapter.getItemCount());
-            recyclerView.requestLayout();
+        Log.d(TAG, "onConnectionClosedForUser userId= " + userId);
+        if(isNeedCleanUp) {
+            setStatusForOpponent(userId, getString(R.string.text_status_closed));
+            cleanUpAdapter(userId);
+        }
     }
 
     @Override
@@ -817,6 +805,23 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void cleanUpAdapter(int userId){
+        Log.d(TAG, "onConnectionClosedForUser cleanUpAdapter userId= " + userId);
+        OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
+        if (itemHolder != null) {
+            if (itemHolder.getAdapterPosition() != -1) {
+                Log.d(TAG, "onConnectionClosedForUser  opponentsAdapter.removeItem");
+                opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
+                opponentViewHolders.remove(userId);
+            }
+        }
+//            opponentsAdapter.removeOpponent(getUserById(userId));
+
+        getVideoTrackMap().remove(userId);
+        updateActionBar(opponentsAdapter.getItemCount());
+        recyclerView.requestLayout();
     }
 
     private void addOpponentToDialog(){

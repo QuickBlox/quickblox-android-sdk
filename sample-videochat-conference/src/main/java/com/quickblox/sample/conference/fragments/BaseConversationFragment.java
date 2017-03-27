@@ -40,6 +40,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected TextView ringingTextView;
     protected QBUser currentUser;
     protected SharedPrefsHelper sharedPrefsHelper;
+    protected boolean isNeedCleanUp = true;
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment) {
         Bundle args = new Bundle();
@@ -162,6 +163,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
                     actionButtonsEnabled(false);
                     handUpVideoCall.setEnabled(false);
                     handUpVideoCall.setActivated(false);
+                    isNeedCleanUp = false;
 
                     conversationFragmentCallbackListener.onHangUpCurrentSession();
                     Log.d(TAG, "Call is stopped");
