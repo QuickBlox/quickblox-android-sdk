@@ -1,17 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
     style="@style/MatchParent"
-    android:orientation="vertical">
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
-    <TextView
-        style="@style/MatchWidth"
-        android:layout_marginLeft="@dimen/padding_start"
-        android:paddingTop="@dimen/padding_actionbar"
-        android:text="@string/text_select_user_to_create_dialog"
-        tools:ignore="RtlHardcoded" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/MatchParent"
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/list_select_users"
-        style="@style/ListViewWithoutDividerStyle" />
+        <TextView
+            style="@style/MatchWidth"
+            android:layout_marginLeft="@dimen/padding_start"
+            android:paddingTop="@dimen/padding_actionbar"
+            android:text="@string/text_select_user_to_create_dialog"
+            tools:ignore="RtlHardcoded" />
 
-</LinearLayout>
+        <ListView
+            android:id="@+id/list_select_users"
+            style="@style/ListViewWithoutDividerStyle" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

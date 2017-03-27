@@ -1,17 +1,15 @@
 package com.quickblox.sample.conference.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.view.LayoutInflater;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
@@ -22,11 +20,12 @@ import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SelectUsersActivity extends BaseActivity {
     public static final String EXTRA_QB_USERS = "qb_users";
+    public static final String EXTRA_QB_OCCUPANTS_IDS = "qb_occupants_ids";
     public static final int MINIMUM_CHAT_OCCUPANTS_SIZE = 2;
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
 
@@ -49,11 +49,11 @@ public class SelectUsersActivity extends BaseActivity {
     private QBUser currentUser;
     private QBChatDialog dialog;
 
-    public static void start(Context context, QBChatDialog dialog) {
-        Intent intent = new Intent(context, SelectUsersActivity.class);
+    public static void startForResult(Fragment fragment, int code, QBChatDialog dialog) {
+        Intent intent = new Intent(fragment.getContext(), SelectUsersActivity.class);
 
         intent.putExtra(EXTRA_QB_DIALOG, dialog);
-        context.startActivity(intent);
+        fragment.startActivityForResult(intent, code);
     }
 
     /**
@@ -102,11 +102,10 @@ public class SelectUsersActivity extends BaseActivity {
             case R.id.menu_select_people_action_done:
                 if(isEditingChat()){
                     addOccupantsToDialog();
-                } else
-                if (usersAdapter != null) {
+                } else if (usersAdapter != null) {
                     List<QBUser> users = usersAdapter.getSelectedUsers();
                     if (users.size() >= MINIMUM_CHAT_OCCUPANTS_SIZE) {
-                        passResultToCallerActivity();
+                        passResultToCallerActivity(null);
                     } else {
                         Toaster.shortToast(R.string.select_users_choose_users);
                     }
@@ -121,17 +120,21 @@ public class SelectUsersActivity extends BaseActivity {
 
     @Override
     protected View getSnackbarAnchorView() {
-        return findViewById(R.id.layout_root);
+        return findViewById(R.id.list_select_users);
     }
 
     private void addOccupantsToDialog() {
         showProgressDialog(R.string.dlg_updating_dialog);
+
         List<QBUser> users = usersAdapter.getSelectedUsers();
-        requestExecutor.updateDialog(dialog, (QBUser[]) users.toArray(), new QBEntityCallback<QBChatDialog>() {
+        QBUser[] usersArray = users.toArray(new QBUser[users.size()]);
+        Log.d("SelectedUsersActivity", "usersArray= " + Arrays.toString(usersArray));
+
+        requestExecutor.updateDialog(dialog, usersArray, new QBEntityCallback<QBChatDialog>() {
             @Override
-            public void onSuccess(QBChatDialog result, Bundle params) {
+            public void onSuccess(QBChatDialog dialog, Bundle params) {
                 hideProgressDialog();
-                finish();
+                passResultToCallerActivity(dialog.getOccupants());
             }
 
             @Override
@@ -147,10 +150,29 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
-    private void passResultToCallerActivity() {
+    private void removeExistentOccupants(List<QBUser> users) {
+        List<Integer> userIDs = dialog.getOccupants();
+
+        Iterator<QBUser> i = users.iterator();
+        while (i.hasNext()) {
+            QBUser user = i.next();
+
+            for (Integer userID : userIDs) {
+                if(user.getId().equals(userID)) {
+                    Log.d("SelectedUsersActivity", "users.remove(user)= " + user);
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    private void passResultToCallerActivity(List<Integer> occupantsIds) {
         Intent result = new Intent();
         ArrayList<QBUser> selectedUsers = new ArrayList<>(usersAdapter.getSelectedUsers());
         result.putExtra(EXTRA_QB_USERS, selectedUsers);
+        if(occupantsIds != null) {
+            result.putExtra(EXTRA_QB_OCCUPANTS_IDS, (Serializable) occupantsIds);
+        }
         setResult(RESULT_OK, result);
         finish();
     }
@@ -158,10 +180,11 @@ public class SelectUsersActivity extends BaseActivity {
     private void initUsersAdapter() {
         ArrayList<QBUser> users = dbManager.getAllUsers();
         dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+        if(dialog != null){
+            users.remove(currentUser);
+            removeExistentOccupants(users);
+        }
         usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users, currentUser);
-//        if (dialog != null) {
-//            usersAdapter.addSelectedUsers(dialog.getOccupants());
-//        }
         usersListView.setAdapter(usersAdapter);
     }
 

@@ -278,6 +278,7 @@ public class DialogsActivity extends BaseActivity {
         SelectUsersActivity.startForResult(this, REQUEST_SELECT_PEOPLE);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

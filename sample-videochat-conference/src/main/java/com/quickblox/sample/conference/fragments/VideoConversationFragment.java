@@ -1,6 +1,8 @@
 package com.quickblox.sample.conference.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.DimenRes;
@@ -23,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
@@ -66,6 +70,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private static final long UPDATING_USERS_DELAY = 2000;
     private static final long FULL_SCREEN_CLICK_DELAY = 1000;
     private static final int REQUEST_CODE_ATTACHMENT = 100;
+    private static final int REQUEST_ADD_OCCUPANTS = 175;
 
     private static final int DISPLAY_ROW_AMOUNT = 3;
     private static final int SMALL_CELLS_AMOUNT = 8;
@@ -88,7 +93,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private LocalViewOnClickListener localViewOnClickListener;
     private boolean isRemoteShown;
 
-    private int amountOpponents;
     private int userIDFullScreen;
     private List<QBUser> allOpponents;
     private boolean allCallbacksInit;
@@ -133,7 +137,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     protected void initFields() {
         super.initFields();
         localViewOnClickListener = new LocalViewOnClickListener();
-        amountOpponents = opponents.size();
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
     }
@@ -399,6 +402,23 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Log.d(TAG, "onStop");
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_ADD_OCCUPANTS) {
+                Log.d(TAG, "onActivityResult REQUEST_ADD_OCCUPANTS");
+                ArrayList<QBUser> addedOccupants = (ArrayList<QBUser>) data
+                        .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
+                List<Integer> allOccupants = (List<Integer>) data
+                        .getSerializableExtra(SelectUsersActivity.EXTRA_QB_OCCUPANTS_IDS);
+                sessionManager.getCurrentSession().setDialogOccupants(allOccupants);
+                allOpponents.addAll(0, addedOccupants);
+            }
+        }
+    }
+
     private void removeVideoTrackRenderers() {
         Log.d(TAG, "removeVideoTrackRenderers");
         Log.d(TAG, "remove opponents video Tracks");
@@ -430,7 +450,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void releaseViewHolders() {
-        opponentViewHolders.clear();
+        if (opponentViewHolders != null) {
+            opponentViewHolders.clear();
+        }
     }
 
     private void removeConnectionStateListeners(){
@@ -790,11 +812,22 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 return true;
             case R.id.add_opponent:
                 Log.d("Conversation", "add_opponent");
-                SelectUsersActivity.start(getContext());
+                addOpponentToDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void addOpponentToDialog(){
+        SelectUsersActivity.startForResult(this, REQUEST_ADD_OCCUPANTS, getChatDialog(currentSession.getDialogID()));
+    }
+
+    private QBChatDialog getChatDialog(String dialogId) {
+        QBChatDialog chatDialog = new QBChatDialog(dialogId);
+        chatDialog.setType(QBDialogType.GROUP);
+        chatDialog.setOccupantsIds(currentSession.getDialogOccupants());
+        return chatDialog;
     }
 
 
