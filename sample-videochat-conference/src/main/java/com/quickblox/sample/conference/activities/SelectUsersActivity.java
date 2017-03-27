@@ -198,10 +198,15 @@ public class SelectUsersActivity extends BaseActivity {
 
         requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+            public void onSuccess(ArrayList<QBUser> users, Bundle params) {
+                dbManager.saveAllUsers(users, true);
+                if(isEditingChat()) {
+                    users.remove(currentUser);
+                    removeExistentOccupants(users);
+                }
+                usersAdapter.updateList(users);
+
                 hideProgressDialog();
-                usersAdapter.updateList(result);
-                dbManager.saveAllUsers(result, true);
             }
 
             @Override
