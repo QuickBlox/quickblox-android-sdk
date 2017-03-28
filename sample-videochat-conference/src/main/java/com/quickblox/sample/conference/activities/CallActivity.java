@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
-import com.quickblox.conference.WsException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -72,9 +71,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private Set<Integer> publishers = new CopyOnWriteArraySet<>();
     private volatile boolean connectedToJanus;
     private String dialogID;
+    private boolean subscribeToPublishers;
 
-    public CallActivity() {
-    }
 
     public static void start(Context context, String dialogID) {
 
@@ -318,12 +316,17 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     protected void onResume() {
         super.onResume();
+        subscribeToPublishers = true;
+        if(!publishers.isEmpty()){
+            subscribeToAllGotPublisher();
+        }
         networkConnectionChecker.registerListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        subscribeToPublishers = false;
         networkConnectionChecker.unregisterListener(this);
     }
 
@@ -530,15 +533,16 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void subscribeToAllGotPublisher() {
         Log.d(TAG, "subscribeToAllGotPublisher");
         currentSession.subscribeToPublisher(new ArrayList<>(publishers), null);
+        publishers.clear();
     }
 
     @Override
     public void OnPublishersReceived(ArrayList<Integer> publishersList) {
-        Log.d(TAG, "OnPublishersReceived connectedToJanus" + connectedToJanus);
-        if(!connectedToJanus) {
-            publishers.addAll(publishersList);
-        } else {
+        Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
+        if(connectedToJanus && subscribeToPublishers){
             currentSession.subscribeToPublisher(publishersList, null);
+        } else {
+            publishers.addAll(publishersList);
         }
     }
 
