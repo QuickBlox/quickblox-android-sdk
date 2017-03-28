@@ -68,10 +68,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private boolean callStarted;
     private boolean previousDeviceEarPiece;
     private boolean showToastAfterHeadsetPlugged = true;
-    private Set<Integer> publishers = new CopyOnWriteArraySet<>();
+    private Set<Integer> subscribedPublishers = new CopyOnWriteArraySet<>();
     private volatile boolean connectedToJanus;
     private String dialogID;
-    private boolean subscribeToPublishers;
+    private boolean readyToSubscribe;
 
 
     public static void start(Context context, String dialogID) {
@@ -316,17 +316,25 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     protected void onResume() {
         super.onResume();
-        subscribeToPublishers = true;
-        if(!publishers.isEmpty()){
-            subscribeToAllGotPublisher();
-        }
+        readyToSubscribe = true;
+        subscribeToPublishersIfNeed();
         networkConnectionChecker.registerListener(this);
+    }
+
+    private void subscribeToPublishersIfNeed() {
+        Log.d(TAG, "subscribeToPublishersIfNeed getActivePublishers= " + currentSession.getActivePublishers());
+        Log.d(TAG, "subscribeToPublishersIfNeed subscribedPublishers= " + subscribedPublishers);
+        Set<Integer> unSubscribedPublishers = new CopyOnWriteArraySet<>(currentSession.getActivePublishers());
+        unSubscribedPublishers.removeAll(subscribedPublishers);
+        if (!unSubscribedPublishers.isEmpty()) {
+            subscribeToAllGotPublisher(unSubscribedPublishers);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        subscribeToPublishers = false;
+        readyToSubscribe = false;
         networkConnectionChecker.unregisterListener(this);
     }
 
@@ -527,28 +535,28 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void OnConnected() {
         connectedToJanus = true;
         Log.d(TAG, "OnConnected and begin subscribeToAllGotPublisher");
-        subscribeToAllGotPublisher();
+        subscribeToAllGotPublisher(subscribedPublishers);
     }
 
-    private void subscribeToAllGotPublisher() {
+    private void subscribeToAllGotPublisher(Set<Integer> publisherList) {
         Log.d(TAG, "subscribeToAllGotPublisher");
-        currentSession.subscribeToPublisher(new ArrayList<>(publishers), null);
-        publishers.clear();
+        subscribedPublishers.addAll(currentSession.getActivePublishers());
+        currentSession.subscribeToPublisher(new ArrayList<>(publisherList), null);
     }
 
     @Override
     public void OnPublishersReceived(ArrayList<Integer> publishersList) {
         Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
-        if(connectedToJanus && subscribeToPublishers){
+        if(connectedToJanus && readyToSubscribe){
+            subscribedPublishers.addAll(publishersList);
             currentSession.subscribeToPublisher(publishersList, null);
-        } else {
-            publishers.addAll(publishersList);
         }
     }
 
     @Override
     public void OnPublisherLeft(Integer userID) {
         Log.d(TAG, "OnPublisherLeft userID" + userID);
+        subscribedPublishers.remove(userID);
     }
 
     @Override
