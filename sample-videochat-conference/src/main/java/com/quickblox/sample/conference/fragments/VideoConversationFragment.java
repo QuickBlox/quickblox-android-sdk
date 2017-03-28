@@ -89,6 +89,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private TextView connectionStatusLocal;
 
     private Map<Integer, QBRTCVideoTrack> videoTrackMap;
+    private Map<Integer, QBRTCVideoTrack> unSetVideoTracks;
     private OpponentsFromCallAdapter opponentsAdapter;
     private LocalViewOnClickListener localViewOnClickListener;
     private boolean isRemoteShown;
@@ -262,7 +263,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             if(itemCount % 4 == 1) {
 //              check last position
                 if (position == itemCount - 1) {
-                    Log.d("TEMPOS", "return 12 opponentsAdapter position= " + position);
                     return 12;
                 }
             } else if(itemCount % 4 == 2) {
@@ -371,6 +371,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         return videoTrackMap;
     }
 
+    private Map<Integer, QBRTCVideoTrack> getUnSetVideoTracks() {
+        if (unSetVideoTracks == null) {
+            unSetVideoTracks = new HashMap<>();
+        }
+        return unSetVideoTracks;
+    }
+
 
     @Override
     public void onResume() {
@@ -382,6 +389,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             cameraToggle.setChecked(true);
             toggleCamera(true);
         }
+        setVideoTracksReceivedInBackground();
     }
 
 
@@ -415,6 +423,26 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_OCCUPANTS_IDS);
                 sessionManager.getCurrentSession().setDialogOccupants(allOccupants);
                 allOpponents.addAll(0, addedOccupants);
+            }
+        }
+    }
+
+    private void setVideoTracksReceivedInBackground() {
+        if (!getUnSetVideoTracks().isEmpty()) {
+            for (final Iterator<Map.Entry<Integer, QBRTCVideoTrack>> entryIterator = getUnSetVideoTracks().entrySet().iterator(); entryIterator.hasNext();) {
+                final Map.Entry<Integer, QBRTCVideoTrack> entry = entryIterator.next();
+                final int userID = entry.getKey();
+                final QBRTCVideoTrack videoTrack = entry.getValue();
+                Log.d(TAG, "setVideoTracksReceivedInBackground for user:" + userID);
+
+                mainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setRemoteViewMultiCall(userID, videoTrack);
+                        setProgressBarForOpponentGone(userID);
+                    }
+                }, LOCAL_TRACk_INITIALIZE_DELAY);
+                entryIterator.remove();
             }
         }
     }
@@ -618,10 +646,16 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
+
         if(!isRemoteShown){
             isRemoteShown = true;
             setRecyclerViewVisibleState();
             setDuringCallActionBar();
+        }
+        Log.d(TAG, "setRemoteViewMultiCall isShown " + recyclerView.isShown());
+        if(!recyclerView.isShown()) {
+            getUnSetVideoTracks().put(userID, videoTrack);
+            return;
         }
         updateActionBar(opponentsAdapter.getItemCount());
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
