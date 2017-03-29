@@ -322,8 +322,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     private void subscribeToPublishersIfNeed() {
-        Log.d(TAG, "subscribeToPublishersIfNeed getActivePublishers= " + currentSession.getActivePublishers());
-        Log.d(TAG, "subscribeToPublishersIfNeed subscribedPublishers= " + subscribedPublishers);
         Set<Integer> unSubscribedPublishers = new CopyOnWriteArraySet<>(currentSession.getActivePublishers());
         unSubscribedPublishers.removeAll(subscribedPublishers);
         if (!unSubscribedPublishers.isEmpty()) {

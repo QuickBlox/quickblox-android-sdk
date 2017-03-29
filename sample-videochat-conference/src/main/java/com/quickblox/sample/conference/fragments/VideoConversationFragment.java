@@ -54,6 +54,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -99,6 +101,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isCurrentCameraFront;
     private GridLayoutManager gridLayoutManager;
     private SpanSizeLookupImpl spanSizeLookup;
+    Set<Integer> usersToDestroy = new CopyOnWriteArraySet<>();
+    private boolean isNeedCleanUp;
 
 
     @Override
@@ -381,8 +385,9 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             cameraToggle.setChecked(true);
             toggleCamera(true);
         }
+        isNeedCleanUp = true;
+        cleanAdapterIfNeed();
     }
-
 
     @Override
     public void onPause() {
@@ -391,7 +396,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (cameraState != CameraState.DISABLED_FROM_USER) {
             toggleCamera(false);
         }
-
+        isNeedCleanUp = false;
         super.onPause();
     }
 
@@ -770,9 +775,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onConnectionClosedForUser(ConferenceSession qbrtcSession, Integer userId) {
         Log.d(TAG, "onConnectionClosedForUser userId= " + userId);
-        if(isNeedCleanUp) {
-            setStatusForOpponent(userId, getString(R.string.text_status_closed));
-            cleanUpAdapter(userId);
+
+        if(!isHungUp) {
+            if(isNeedCleanUp) {
+                setStatusForOpponent(userId, getString(R.string.text_status_closed));
+                cleanUpAdapter(userId);
+            } else {
+                usersToDestroy.add(userId);
+            }
         }
     }
 
@@ -804,6 +814,16 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void cleanAdapterIfNeed() {
+        if(!usersToDestroy.isEmpty()) {
+            Iterator<Integer> iterator = usersToDestroy.iterator();
+            while (iterator.hasNext()) {
+                cleanUpAdapter(iterator.next());
+                iterator.remove();
+            }
         }
     }
 
