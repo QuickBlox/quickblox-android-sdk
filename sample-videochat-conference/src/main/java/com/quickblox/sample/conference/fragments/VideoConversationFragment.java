@@ -51,11 +51,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -101,7 +101,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isCurrentCameraFront;
     private GridLayoutManager gridLayoutManager;
     private SpanSizeLookupImpl spanSizeLookup;
-    Set<Integer> usersToDestroy = new CopyOnWriteArraySet<>();
+    Set<Integer> usersToDestroy;
     private boolean isNeedCleanUp;
 
 
@@ -141,6 +141,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     protected void initFields() {
         super.initFields();
         localViewOnClickListener = new LocalViewOnClickListener();
+        usersToDestroy = new HashSet<>();
         allOpponents = Collections.synchronizedList(new ArrayList<QBUser>(opponents.size()));
         allOpponents.addAll(opponents);
     }
