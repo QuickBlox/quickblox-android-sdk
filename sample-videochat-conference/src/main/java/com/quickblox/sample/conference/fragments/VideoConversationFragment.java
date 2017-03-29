@@ -776,14 +776,18 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onConnectionClosedForUser(ConferenceSession qbrtcSession, Integer userId) {
         Log.d(TAG, "onConnectionClosedForUser userId= " + userId);
 
-        if(!isHungUp) {
-            if(isNeedCleanUp) {
-                setStatusForOpponent(userId, getString(R.string.text_status_closed));
-                cleanUpAdapter(userId);
-            } else {
-                usersToDestroy.add(userId);
-            }
+        if (currentSession.getState() == BaseSession.QBRTCSessionState.QB_RTC_SESSION_HANG_UP) {
+            Log.d(TAG, "onConnectionClosedForUser QB_RTC_SESSION_HANG_UP state userId= " + userId);
+            return;
         }
+
+        if (isNeedCleanUp) {
+            setStatusForOpponent(userId, getString(R.string.text_status_closed));
+            cleanUpAdapter(userId);
+        } else {
+            usersToDestroy.add(userId);
+        }
+
     }
 
     @Override
