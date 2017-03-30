@@ -32,7 +32,7 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.3.0'
+    qbSdkVersion = '3.3.1'
 
     versionName = '3.3.0'
 
@@ -40,7 +40,7 @@ ext {
 
 
     // Dependency versions
-    playServicesVersion = '10.0.1'
+    playServicesVersion = '10.2.1'
     supportV4Version = '23.1.1'
     appcompatV7Version = '23.1.1'
     recyclerviewV7Version = '23.2.1'
