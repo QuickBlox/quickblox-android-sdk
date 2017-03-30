@@ -94,12 +94,6 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
                 adapterListener.onToggleButtonItemClick(vh.getAdapterPosition(), isChecked);
             }
         });
-        vh.setListener(new ViewHolder.ViewHolderClickListener() {
-            @Override
-            public void onShowOpponent(int callerId) {
-                adapterListener.onItemClick(callerId);
-            }
-        });
         vh.showOpponentView(true);
         return vh;
     }
@@ -140,8 +134,6 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
     public interface OnAdapterEventListener {
         void OnBindLastViewHolder(ViewHolder holder, int position);
-
-        void onItemClick(int position);
 
         void onToggleButtonItemClick(int position, boolean isChecked);
     }

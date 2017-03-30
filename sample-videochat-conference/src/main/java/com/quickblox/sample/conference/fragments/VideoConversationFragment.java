@@ -64,14 +64,7 @@ import java.util.Set;
 public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<ConferenceSession>,
         QBRTCClientAudioTracksCallback<ConferenceSession>, QBRTCSessionStateCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
 
-    private static final int DEFAULT_ROWS_COUNT = 2;
-    private static final int DEFAULT_COLS_COUNT = 3;
-    private static final long TOGGLE_CAMERA_DELAY = 1000;
     private static final long LOCAL_TRACk_INITIALIZE_DELAY = 500;
-    private static final int RECYCLE_VIEW_PADDING = 2;
-    private static final long UPDATING_USERS_DELAY = 2000;
-    private static final long FULL_SCREEN_CLICK_DELAY = 1000;
-    private static final int REQUEST_CODE_ATTACHMENT = 100;
     private static final int REQUEST_ADD_OCCUPANTS = 175;
 
     private static final int DISPLAY_ROW_AMOUNT = 3;
@@ -564,17 +557,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void OnBindLastViewHolder(final OpponentsFromCallAdapter.ViewHolder holder, final int position) {
         Log.i(TAG, "OnBindLastViewHolder position=" + position);
 
-    }
-
-
-    @Override
-    public void onItemClick(int position) {
-        int userId = opponentsAdapter.getItem(position);
-        Log.d(TAG, "USer onItemClick= " + userId);
-        if (!getVideoTrackMap().containsKey(userId) ||
-                currentSession.getPeerChannel(userId).getState().ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal()) {
-            return;
-        }
     }
 
     @Override
