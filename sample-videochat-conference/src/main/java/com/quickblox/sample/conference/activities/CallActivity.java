@@ -494,6 +494,16 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
+    public void OnMediaReceived(String type, boolean success) {
+        Log.d(TAG, "OnMediaReceived type " + type + ", success" + success);
+    }
+
+    @Override
+    public void OnSlowLinkReceived(boolean uplink, int nacks) {
+        Log.d(TAG, "OnSlowLinkReceived uplink " + uplink + ", nacks" + nacks);
+    }
+
+    @Override
     public void OnError(String error) {
         showToast("ConferenceSession error: " + error);
     }
