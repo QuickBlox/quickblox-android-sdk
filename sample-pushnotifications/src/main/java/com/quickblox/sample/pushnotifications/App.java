@@ -40,6 +40,11 @@ public class App extends CoreApp {
                 }
                 Toaster.shortToast(e.getLocalizedMessage());
             }
+
+            @Override
+            public void onSubscriptionDeleted(boolean success) {
+
+            }
         });
     }
 
