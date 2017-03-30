@@ -47,6 +47,11 @@ public class QBResRequestExecutor {
 //        QBRestChatService.getChatDialogs(null, requestBuilder).performAsync(callback);
     }
 
+    public void loadDialogByID(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
+        QBRestChatService.getChatDialogById(dialogId).performAsync(callback);
+    }
+
+
     public void deleteDialog(QBChatDialog qbDialog, QBEntityCallback<Void> callback) {
         QBRestChatService.deleteDialog(qbDialog.getDialogId(), false)
                 .performAsync(callback);

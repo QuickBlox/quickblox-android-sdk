@@ -112,7 +112,11 @@ public class SelectUsersActivity extends BaseActivity {
                 }
                 return true;
             case R.id.menu_refresh_users:
-                loadUsersFromQb();
+                if(isEditingChat()) {
+                    updateDialogAndUsers();
+                } else {
+                    loadUsersFromQb();
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -181,15 +185,39 @@ public class SelectUsersActivity extends BaseActivity {
         ArrayList<QBUser> users = dbManager.getAllUsers();
         dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
         if(dialog != null){
-            users.remove(currentUser);
-            removeExistentOccupants(users);
+            updateDialogAndUsers();
+            usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, new ArrayList<QBUser>(), currentUser);
+        } else {
+            usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users, currentUser);
         }
-        usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users, currentUser);
         usersListView.setAdapter(usersAdapter);
     }
 
     private boolean isEditingChat() {
         return getIntent().getSerializableExtra(EXTRA_QB_DIALOG) != null;
+    }
+
+    private void updateDialogAndUsers() {
+        showProgressDialog(R.string.dlg_loading_dialogs_users);
+        requestExecutor.loadDialogByID(dialog.getDialogId(), new QBEntityCallback<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog dialog, Bundle params) {
+                SelectUsersActivity.this.dialog.setOccupantsIds(dialog.getOccupants());
+                loadUsersFromQb();
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.loading_dialog_error, responseException, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadUsersFromQb();
+                    }
+                });
+            }
+        });
     }
 
     private void loadUsersFromQb() {
