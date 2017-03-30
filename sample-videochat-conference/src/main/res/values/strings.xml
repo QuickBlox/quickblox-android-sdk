@@ -32,6 +32,7 @@
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
     <string name="update_user_error">Update user error. Error</string>
     <string name="loading_users_error">Loading users error. Error</string>
+    <string name="loading_dialog_error">Loading dialog error. Error</string>
 
     <string name="permission_unavailable">%s is not available now!</string>
 

@@ -108,17 +108,6 @@ public class SettingsUtil {
         Log.v(TAG, "cameraFps = " + QBRTCMediaConfig.getVideoFps());
     }
 
-    public static void configRTCTimers(Context context) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        int disconnectTimeInterval = getPreferenceInt(sharedPref, context,
-                R.string.pref_disconnect_time_interval_key,
-                R.string.pref_disconnect_time_interval_default_value);
-        QBRTCConfig.setDisconnectTime(disconnectTimeInterval);
-        Log.e(TAG, "disconnectTimeInterval = " + disconnectTimeInterval);
-
-    }
-
     private static void setVideoQuality(int resolutionItem) {
         if (resolutionItem != -1) {
             setVideoFromLibraryPreferences(resolutionItem);

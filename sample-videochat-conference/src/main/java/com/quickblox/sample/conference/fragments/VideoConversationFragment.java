@@ -324,38 +324,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         actionVideoButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_video_buttons);
 
         actionButtonsEnabled(false);
-        restoreSession();
-    }
-
-    private void restoreSession() {
-        Log.d(TAG, "restoreSession currentSession.getState()= " + currentSession.getState());
-        if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
-            Log.d("TEMPOS", "restoreSession return currentSession.getState()= " + currentSession.getState());
-            return;
-        }
-        onCallStarted();
-        Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
-        if (!videoTrackMap.isEmpty()) {
-            for (final Iterator<Map.Entry<Integer, QBRTCVideoTrack>> entryIterator
-                 = videoTrackMap.entrySet().iterator(); entryIterator.hasNext();){
-                final Map.Entry<Integer, QBRTCVideoTrack> entry = entryIterator.next();
-                Log.d(TAG, "check ability to restoreSession for user:"+entry.getKey());
-                //if connection with peer wasn't closed do restore it otherwise remove from collection
-                if (currentSession.getPeerChannel(entry.getKey()).getState()!=
-                        QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED){
-                    Log.d(TAG, "execute restoreSession for user:"+entry.getKey());
-                    mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                            onConnectedToUser(currentSession, entry.getKey());
-                            onRemoteVideoTrackReceive(currentSession, entry.getValue(), entry.getKey());
-                        }
-                        }, LOCAL_TRACk_INITIALIZE_DELAY);
-                } else {
-                    entryIterator.remove();
-                }
-            }
-        }
     }
 
     private void setGrid(int recycleViewHeight) {
@@ -674,13 +642,13 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
         Log.d(TAG, "findHolder for "+userID);
         int childCount = recyclerView.getChildCount();
-        Log.d(TAG, " AMBRA findHolder for childCount= " + childCount);
+        Log.d(TAG, "findHolder for childCount= " + childCount);
         for (int i = 0; i < childCount; i++) {
             View childView = recyclerView.getChildAt(i);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
-            Log.d("AMBRA", "childViewHolder.getUserId= " + childViewHolder.getUserId());
+            Log.d(TAG, "childViewHolder.getUserId= " + childViewHolder.getUserId());
             if (userID.equals(childViewHolder.getUserId())) {
-                Log.d("AMBRA", "return childViewHolder");
+                Log.d(TAG, "return childViewHolder");
                 return childViewHolder;
             }
         }
@@ -742,8 +710,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void setStatusForOpponent(int userId, final String status) {
         if(userId == currentUser.getId()) {
-            Log.d("TEMPOS", " connectionStatusLocal.setText " + status);
-            connectionStatusLocal.setText(status);
             return;
         }
         final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
@@ -842,7 +808,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 opponentViewHolders.remove(userId);
             }
         }
-//            opponentsAdapter.removeOpponent(getUserById(userId));
 
         getVideoTrackMap().remove(userId);
         updateActionBar(opponentsAdapter.getItemCount());

@@ -163,7 +163,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
                     handUpVideoCall.setEnabled(false);
                     handUpVideoCall.setActivated(false);
 
-                    conversationFragmentCallbackListener.onHangUpCurrentSession();
+                    conversationFragmentCallbackListener.onLeaveCurrentSession();
                     Log.d(TAG, "Call is stopped");
             }
         });
