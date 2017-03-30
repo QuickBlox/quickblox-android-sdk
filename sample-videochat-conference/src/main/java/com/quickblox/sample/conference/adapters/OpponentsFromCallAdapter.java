@@ -14,12 +14,11 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.QBConferencePeerConnection;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.utils.QBRTCSessionUtils;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBPeerChannel;
-import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.List;
@@ -117,9 +116,9 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
 
         holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);
-        QBPeerChannel qbPeerChannel = session.getPeerChannel(userID);
-        if(qbPeerChannel != null){
-            QBRTCTypes.QBRTCConnectionState state = session.getPeerChannel(userID).getState();
+        QBConferencePeerConnection peerConnection = session.getPeerConnection(userID);
+        if(peerConnection != null){
+            QBRTCTypes.QBRTCConnectionState state = peerConnection.getState();
             Log.d(TAG, "state ordinal= " + state.ordinal());
             holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
         }
