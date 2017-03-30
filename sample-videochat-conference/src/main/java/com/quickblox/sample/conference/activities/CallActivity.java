@@ -228,7 +228,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             @Override
             public void onCameraFreezed(String s) {
                 showToast("Camera freezed: " + s);
-                hangUpCurrentSession();
+                leaveCurrentSession();
             }
 
             @Override
@@ -285,7 +285,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         return currentSession;
     }
 
-    public void hangUpCurrentSession() {
+    public void leaveCurrentSession() {
 
         if (getCurrentSession() != null) {
             destroyCurrentSession();
@@ -455,8 +455,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void onHangUpCurrentSession() {
-        hangUpCurrentSession();
+    public void onLeaveCurrentSession() {
+        leaveCurrentSession();
     }
 
     @TargetApi(21)

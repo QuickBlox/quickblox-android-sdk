@@ -27,7 +27,7 @@ public interface ConversationFragmentCallbackListener {
 
     void onSwitchAudio();
 
-    void onHangUpCurrentSession();
+    void onLeaveCurrentSession();
 
     void onStartScreenSharing();
 
