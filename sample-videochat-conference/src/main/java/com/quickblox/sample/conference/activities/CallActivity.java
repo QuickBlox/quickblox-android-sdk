@@ -270,10 +270,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     private void subscribeToPublishersIfNeed() {
-        Set<Integer> unSubscribedPublishers = new CopyOnWriteArraySet<>(currentSession.getActivePublishers());
-        unSubscribedPublishers.removeAll(subscribedPublishers);
-        if (!unSubscribedPublishers.isEmpty()) {
-            subscribeToAllGotPublisher(unSubscribedPublishers);
+        Set<Integer> notSubscribedPublishers = new CopyOnWriteArraySet<>(currentSession.getActivePublishers());
+        notSubscribedPublishers.removeAll(subscribedPublishers);
+        if (!notSubscribedPublishers.isEmpty()) {
+            subscribeToPublishers(new ArrayList<>(notSubscribedPublishers));
         }
     }
 
@@ -453,13 +453,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void OnConnected() {
         connectedToJanus = true;
         Log.d(TAG, "OnConnected and begin subscribeToAllGotPublisher");
-        subscribeToAllGotPublisher(subscribedPublishers);
+        subscribeToPublishers(new ArrayList<>(subscribedPublishers));
     }
 
-    private void subscribeToAllGotPublisher(Set<Integer> publisherList) {
-        Log.d(TAG, "subscribeToAllGotPublisher");
+
+    private void subscribeToPublishers(ArrayList<Integer> publishersList){
         subscribedPublishers.addAll(currentSession.getActivePublishers());
-        currentSession.subscribeToPublisher(new ArrayList<>(publisherList), null);
+        for(Integer publisher : publishersList){
+            currentSession.subscribeToPublisher(publisher);
+        }
     }
 
     @Override
@@ -467,7 +469,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
         if(connectedToJanus && readyToSubscribe){
             subscribedPublishers.addAll(publishersList);
-            currentSession.subscribeToPublisher(publishersList, null);
+            subscribeToPublishers(publishersList);
         }
     }
 
