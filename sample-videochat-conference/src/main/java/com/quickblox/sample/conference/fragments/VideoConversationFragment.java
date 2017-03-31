@@ -379,7 +379,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
                 List<Integer> allOccupants = (List<Integer>) data
                         .getSerializableExtra(SelectUsersActivity.EXTRA_QB_OCCUPANTS_IDS);
-                sessionManager.getCurrentSession().setDialogOccupants(allOccupants);
                 allOpponents.addAll(0, addedOccupants);
             }
         }
@@ -803,7 +802,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private QBChatDialog getChatDialog(String dialogId) {
         QBChatDialog chatDialog = new QBChatDialog(dialogId);
         chatDialog.setType(QBDialogType.GROUP);
-        chatDialog.setOccupantsIds(currentSession.getDialogOccupants());
         return chatDialog;
     }
 

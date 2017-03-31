@@ -35,6 +35,7 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 
 import org.webrtc.CameraVideoCapturer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
-    private List<Integer> opponentsIdsList;
+    private ArrayList<Integer> opponentsIdsList;
     private boolean callStarted;
     private boolean previousDeviceEarPiece;
     private boolean showToastAfterHeadsetPlugged = true;
@@ -69,10 +70,11 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private boolean readyToSubscribe;
 
 
-    public static void start(Context context, String dialogID) {
+    public static void start(Context context, String dialogID, List<Integer> occupants) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_DIALOG_ID, dialogID);
+        intent.putExtra(Consts.EXTRA_DIALOG_OCCUPANTS, (Serializable) occupants);
 
         context.startActivity(intent);
     }
@@ -92,7 +94,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             return;
         }
 
-        initFields();
         initCurrentSession(currentSession);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -111,10 +112,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         return currentSession != null;
     }
 
-    private void initFields() {
-        opponentsIdsList = currentSession.getDialogOccupants();
-    }
-
     @Override
     protected View getSnackbarAnchorView() {
         return null;
@@ -122,6 +119,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     private void parseIntentExtras() {
         dialogID = getIntent().getExtras().getString(Consts.EXTRA_DIALOG_ID);
+        opponentsIdsList = (ArrayList<Integer>) getIntent().getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
     }
 
     private void initAudioManager() {
@@ -382,7 +380,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     private void startVideoConversationFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS, opponentsIdsList);
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(new VideoConversationFragment());
+        conversationFragment.setArguments(bundle);
         FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, conversationFragment, conversationFragment.getClass().getSimpleName());
     }
 
@@ -418,7 +419,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void onStartJoinConference() {
-        int userID = currentSession.getCallerID();
+        int userID = currentSession.getCurrentUserID();
         currentSession.joinDialog(dialogID, new JoinedCallback(userID));
     }
 

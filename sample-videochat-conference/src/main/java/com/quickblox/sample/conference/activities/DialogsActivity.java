@@ -388,11 +388,10 @@ public class DialogsActivity extends BaseActivity {
             @Override
             public void onSuccess(ConferenceSession session, Bundle params) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-                session.setDialogOccupants(occupants);
                 webRtcSessionManager.setCurrentSession(session);
-                Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCallerID= " + session.getCallerID());
+                Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCurrentUserID= " + session.getCurrentUserID());
 
-                CallActivity.start(DialogsActivity.this, dialogID);
+                CallActivity.start(DialogsActivity.this, dialogID, occupants);
             }
 
             @Override

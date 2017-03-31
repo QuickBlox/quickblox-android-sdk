@@ -85,7 +85,6 @@ public class QBResRequestExecutor {
     }
 
     private static QBChatDialog createDialog(List<QBUser> users, QBUser currentUser) {
-//        users.remove(currentUser);
         return DialogUtils.buildDialog(DialogUtils.createChatNameFromUserList(users.toArray(new QBUser[users.size()])),
                 QBDialogType.GROUP, DialogUtils.getUserIds(users));
     }

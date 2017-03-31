@@ -17,6 +17,7 @@ import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
 import com.quickblox.sample.conference.utils.CollectionsUtils;
+import com.quickblox.sample.conference.utils.Consts;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
@@ -31,6 +32,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected WebRtcSessionManager sessionManager;
     protected ConferenceSession currentSession;
     protected ArrayList<QBUser> opponents;
+    protected ArrayList<Integer> opponentsIds;
 
     private ToggleButton micToggleVideoCall;
     private ImageButton handUpVideoCall;
@@ -73,6 +75,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        opponentsIds = this.getArguments().getIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS);
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
         if (currentSession == null) {
@@ -188,13 +191,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     }
 
     private void initOpponentsList() {
-        Log.v(TAG, "super initOpponentsList()");
-        opponents = dbManager.getUsersByIds(currentSession.getDialogOccupants());
-
-        QBUser caller = dbManager.getUserById(currentSession.getCallerID());
-        if (caller == null) {
-            caller = new QBUser(currentSession.getCallerID());
-            caller.setFullName(String.valueOf(currentSession.getCallerID()));
-        }
+        Log.v(TAG, "initOpponentsList() opponentsIds= " + opponentsIds);
+        opponents = dbManager.getUsersByIds(opponentsIds);
     }
 }

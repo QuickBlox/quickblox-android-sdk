@@ -37,6 +37,7 @@ public interface Consts {
     String EXTRA_USER_LOGIN = "user_login";
     String EXTRA_USER_PASSWORD = "user_password";
     String EXTRA_DIALOG_ID = "dialog_id";
+    String EXTRA_DIALOG_OCCUPANTS = "dialog_occupants";
     String EXTRA_PENDING_INTENT = "pending_Intent";
 
     String EXTRA_CONTEXT = "context";
