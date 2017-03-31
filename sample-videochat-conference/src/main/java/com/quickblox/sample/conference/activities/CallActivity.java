@@ -245,24 +245,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         networkConnectionChecker = new NetworkConnectionChecker(getApplication());
     }
 
-    private ConferenceSession getCurrentSession() {
-        return currentSession;
-    }
-
     public void leaveCurrentSession() {
-
-        if (getCurrentSession() != null) {
-            destroyCurrentSession();
-            getCurrentSession().hangUp(new HashMap<String, String>());
-        }
-    }
-
-    private void destroyCurrentSession() {
-        if(currentSession.isConnectionActive()) {
-                currentSession.leave();
-//                currentSession.detachHandleIdAll();
-                currentSession.destroySession();
-        }
+        currentSession.leaveSession();
     }
 
     private void setAudioEnabled(boolean isAudioEnabled) {
@@ -318,8 +302,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void releaseCurrentSession() {
         Log.d(TAG, "Release current session");
         if (currentSession != null) {
-            currentSession.stopSendAutoPresence();
-            destroyCurrentSession();
+            leaveCurrentSession();
             this.currentSession.removeSessionCallbacksListener(CallActivity.this);
             this.currentSession.removeConferenceSessionListener(CallActivity.this);
             this.currentSession = null;
@@ -513,7 +496,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void OnSessionClosed(final ConferenceSession session) {
         Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
-        if (session.equals(getCurrentSession())) {
+        if (session.equals(currentSession)) {
             Log.d(TAG, "Stop session");
 
             if (audioManager != null) {
