@@ -127,7 +127,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             return;
         }
 
-        if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
+        if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
             startJoinConference();
         }
     }

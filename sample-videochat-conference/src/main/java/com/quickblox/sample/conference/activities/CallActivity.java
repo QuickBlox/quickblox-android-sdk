@@ -29,6 +29,7 @@ import com.quickblox.sample.conference.utils.SettingsUtil;
 import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
@@ -246,7 +247,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     public void leaveCurrentSession() {
-        currentSession.leaveSession();
+        currentSession.leave();
     }
 
     private void setAudioEnabled(boolean isAudioEnabled) {
@@ -333,6 +334,14 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         Log.d(TAG, "onConnectedToUser() is started");
     }
 
+    @Override
+    public void onStateChanged(ConferenceSession session, BaseSession.QBRTCSessionState state) {
+        if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(state)) {
+            connectedToJanus = true;
+            Log.d(TAG, "OnConnected and begin subscribeToAllGotPublisher");
+            subscribeToAllGotPublisher(subscribedPublishers);
+        }
+    }
 
     @Override
     public void onDisconnectedFromUser(ConferenceSession session, Integer userID) {
@@ -449,12 +458,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     ////////////////////////////// ConferenceSessionCallbacks ////////////////////////////
-    @Override
-    public void OnConnected() {
-        connectedToJanus = true;
-        Log.d(TAG, "OnConnected and begin subscribeToAllGotPublisher");
-        subscribeToAllGotPublisher(subscribedPublishers);
-    }
 
     private void subscribeToAllGotPublisher(Set<Integer> publisherList) {
         Log.d(TAG, "subscribeToAllGotPublisher");
