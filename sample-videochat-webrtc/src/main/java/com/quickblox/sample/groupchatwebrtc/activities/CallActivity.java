@@ -41,6 +41,7 @@ import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -548,6 +549,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
             finish();
         }
+    }
+
+    @Override
+    public void onStateChanged(QBRTCSession session, BaseSession.QBRTCSessionState state) {
+        Log.d(TAG, "onStateChanged() is started");
     }
 
     @Override

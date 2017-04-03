@@ -1,6 +1,7 @@
 include 'sample-core'
 include 'sample-videochat-conference'
 include 'sample-chat'
+include 'sample-videochat-webrtc'
 /*
 include 'sample-content'
 include 'sample-custom-objects'
