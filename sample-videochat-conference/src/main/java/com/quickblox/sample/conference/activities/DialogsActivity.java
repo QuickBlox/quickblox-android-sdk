@@ -66,7 +66,6 @@ public class DialogsActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_dialogs);
         initFields();
 
