@@ -554,16 +554,18 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onStateChanged(QBRTCSession session, BaseSession.QBRTCSessionState state) {
         Log.d(TAG, "onStateChanged() is started");
+        if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(state)) {
+            callStarted = true;
+            notifyCallStateListenersCallStarted();
+            forbiddenCloseByWifiState();
+            if (isInCommingCall) {
+                stopIncomeCallTimer();
+            }
+        }
     }
 
     @Override
     public void onConnectedToUser(QBRTCSession session, final Integer userID) {
-        callStarted = true;
-        notifyCallStateListenersCallStarted();
-        forbiddenCloseByWifiState();
-        if (isInCommingCall) {
-            stopIncomeCallTimer();
-        }
         Log.d(TAG, "onConnectedToUser() is started");
     }
 
