@@ -156,6 +156,9 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void removeExistentOccupants(List<QBUser> users) {
         List<Integer> userIDs = dialog.getOccupants();
+        if(userIDs == null){
+            return;
+        }
 
         Iterator<QBUser> i = users.iterator();
         while (i.hasNext()) {

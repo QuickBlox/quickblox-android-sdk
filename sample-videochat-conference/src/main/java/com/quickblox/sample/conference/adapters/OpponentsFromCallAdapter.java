@@ -138,27 +138,21 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         void onToggleButtonItemClick(int position, boolean isChecked);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ToggleButton toggleButton;
         TextView opponentsName;
         TextView connectionStatus;
         QBConferenceSurfaceView opponentView;
         ProgressBar progressBar;
         private int userId;
-        private ViewHolderClickListener viewHolderClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             toggleButton = (ToggleButton) itemView.findViewById(R.id.opponent_toggle_mic);
             opponentsName = (TextView) itemView.findViewById(R.id.opponentName);
             connectionStatus = (TextView) itemView.findViewById(R.id.connectionStatus);
             opponentView = (QBConferenceSurfaceView) itemView.findViewById(R.id.opponentView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar_adapter);
-        }
-
-        private void setListener(ViewHolderClickListener viewHolderClickListener) {
-            this.viewHolderClickListener = viewHolderClickListener;
         }
 
         public void setStatus(String status) {
@@ -188,15 +182,6 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         public void showOpponentView(boolean show) {
             Log.d(TAG, "show? " + show);
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-
-        @Override
-        public void onClick(View v) {
-            viewHolderClickListener.onShowOpponent(getAdapterPosition());
-        }
-
-        public interface ViewHolderClickListener {
-            void onShowOpponent(int callerId);
         }
     }
 }
