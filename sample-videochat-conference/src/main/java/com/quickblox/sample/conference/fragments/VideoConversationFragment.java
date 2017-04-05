@@ -571,6 +571,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
 
     private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
+        if(currentSession.isDestroyed()){
+            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
+            return;
+        }
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         if(!isRemoteShown){
             isRemoteShown = true;
