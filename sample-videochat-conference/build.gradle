@@ -23,8 +23,8 @@ android {
         applicationId "com.quickblox.sample.conference"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 211
-        versionName "1.0.11"
+        versionCode 212
+        versionName "1.0.12"
 
         ext.betaDistrubutionGroupAliases=testers_group_name
         ext.betaDistributionEmails=testers_emails

@@ -193,7 +193,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             @Override
             public void onCameraFreezed(String s) {
                 showToast("Camera freezed: " + s);
-                leaveCurrentSession();
+                if (currentSession != null) {
+                    leaveCurrentSession();
+                }
             }
 
             @Override
