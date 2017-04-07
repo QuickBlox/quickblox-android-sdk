@@ -222,6 +222,7 @@
     <string name="in_conference">In Conference</string>
     <string name="stop_share">Stop</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
+    <string name="packet_failed">Packet loss occurs</string>
 
     <string name="sender_id">761750217637</string>
 

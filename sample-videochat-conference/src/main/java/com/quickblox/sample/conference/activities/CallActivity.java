@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.WsException;
+import com.quickblox.conference.WsNoResponseException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -38,7 +40,6 @@ import org.webrtc.CameraVideoCapturer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -494,8 +495,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnError(String error) {
-        showToast("ConferenceSession error: " + error);
+    public void OnError(WsException exception) {
+        showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
     }
 
     @Override
