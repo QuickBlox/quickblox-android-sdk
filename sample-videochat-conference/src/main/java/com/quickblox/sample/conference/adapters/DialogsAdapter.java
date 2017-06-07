@@ -52,6 +52,16 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
         return convertView;
     }
 
+    public void toggleOneItem(QBChatDialog item) {
+        if (selectedItems.contains(item)) {
+            selectedItems.remove(item);
+        } else {
+            selectedItems.clear();
+            selectedItems.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
     private static class ViewHolder {
         ViewGroup rootLayout;
         ImageView dialogImageView;
