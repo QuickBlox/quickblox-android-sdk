@@ -1029,8 +1029,8 @@ public class SnippetsChat extends Snippets {
 
             Collection<Integer> onlineRoomUsers = null;
             try {
-                onlineRoomUsers = groupChatDialog.getOnlineUsers();
-            } catch (XMPPException e) {
+                onlineRoomUsers = groupChatDialog.requestOnlineUsers();
+            } catch (XMPPException|SmackException.NotConnectedException|SmackException.NoResponseException e) {
                 log("get online users error: " + e.getLocalizedMessage());
             }
 
