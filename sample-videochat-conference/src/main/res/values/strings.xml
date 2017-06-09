@@ -79,6 +79,7 @@
     <string name="text_status_checking">Checking…</string>
     <string name="text_status_connected">Connected</string>
     <string name="text_status_disconnected">Disconnected</string>
+    <string name="text_local_name">Me</string>
 
     <string name="text_status_rejected">Rejected</string>
     <string name="text_status_no_answer">No answer</string>

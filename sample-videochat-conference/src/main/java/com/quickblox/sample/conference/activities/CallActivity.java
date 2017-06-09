@@ -20,6 +20,7 @@ import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.fragments.AudioConversationFragment;
 import com.quickblox.sample.conference.fragments.BaseConversationFragment;
 import com.quickblox.sample.conference.fragments.ConversationFragmentCallbackListener;
 import com.quickblox.sample.conference.fragments.OnCallEventsController;
@@ -34,6 +35,7 @@ import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 
 import org.webrtc.CameraVideoCapturer;
@@ -61,6 +63,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private AppRTCAudioManager audioManager;
     private NetworkConnectionChecker networkConnectionChecker;
     private WebRtcSessionManager sessionManager;
+    private boolean isVideoCall;
     private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private ArrayList<Integer> opponentsIdsList;
     private boolean callStarted;
@@ -95,7 +98,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             Log.d(TAG, "finish CallActivity");
             return;
         }
-
+        isVideoCall = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO.equals(currentSession.getConferenceType());
         initCurrentSession(currentSession);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -106,7 +109,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
 
-        startVideoConversationFragment();
+        startConversationFragment();
     }
 
     private boolean currentSessionExist() {
@@ -374,10 +377,13 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
-    private void startVideoConversationFragment() {
+    private void startConversationFragment() {
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS, opponentsIdsList);
-        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(new VideoConversationFragment());
+        BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
+                isVideoCall
+                        ? new VideoConversationFragment()
+                        : new AudioConversationFragment());
         conversationFragment.setArguments(bundle);
         FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, conversationFragment, conversationFragment.getClass().getSimpleName());
     }
