@@ -28,6 +28,7 @@ import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,7 @@ public class DialogsActivity extends BaseActivity {
     private FloatingActionButton fab;
     private String dialogID;
     private List<Integer> occupants;
+    private boolean isVideoCall;
 
     private PermissionsChecker checker;
 
@@ -150,7 +152,7 @@ public class DialogsActivity extends BaseActivity {
         return currentActionMode;
     }
 
-    private void initDialogAdapter(){
+    private void initDialogAdapter() {
         Log.d(TAG, "proceedInitUsersList chatDialogs= " + chatDialogs);
         if(dialogsAdapter == null) {
             dialogsAdapter = new DialogsAdapter(this, chatDialogs);
@@ -162,17 +164,13 @@ public class DialogsActivity extends BaseActivity {
                     if (currentActionMode == null) {
                         Log.d(TAG, "startConference selectedDialog.getDialogId()= " + selectedDialog.getDialogId()
                                 + ", currentUser.getId()= " + currentUser.getId());
-
                         occupants = selectedDialog.getOccupants();
                         occupants.remove(currentUser.getId());
-
                         dialogID = selectedDialog.getDialogId();
-                        if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-                            Log.d(TAG, "check permissions");
-                            startPermissionsActivity();
-                        } else {
-                            startConference(dialogID, currentUser.getId(), occupants);
-                        }
+
+
+                        dialogsAdapter.toggleOneItem(selectedDialog);
+                        invalidateOptionsMenu();
 
                     } else {
                         dialogsAdapter.toggleSelection(selectedDialog);
@@ -195,8 +193,8 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    private void startPermissionsActivity() {
-        PermissionsActivity.startForResult(this, REQUEST_PERMISSION, false, Consts.PERMISSIONS);
+    private void startPermissionsActivity(boolean checkOnlyAudio) {
+        PermissionsActivity.startForResult(this, REQUEST_PERMISSION, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
     private void updateActionBar(int countSelectedUsers) {
@@ -211,7 +209,12 @@ public class DialogsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_opponents, menu);
+        if (dialogsAdapter != null && !dialogsAdapter.getSelectedItems().isEmpty()) {
+            getMenuInflater().inflate(R.menu.activity_selected_opponents, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.activity_opponents, menu);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -233,11 +236,28 @@ public class DialogsActivity extends BaseActivity {
                 logOut();
                 return true;
 
+            case R.id.start_video_call:
+                isVideoCall = true;
+                startConference();
+                return true;
+
+            case R.id.start_audio_call:
+                isVideoCall = false;
+                startConference();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void startConference() {
+        if (checker.lacksPermissions(Consts.PERMISSIONS)) {
+            startPermissionsActivity(!isVideoCall);
+        } else {
+            startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
+        }
+    }
 
     private void updateDialogsAdapter() {
         startLoadDialogs();
@@ -289,9 +309,8 @@ public class DialogsActivity extends BaseActivity {
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
                 createDialog(selectedUsers);
             } if(requestCode == REQUEST_PERMISSION) {
-                startConference(dialogID, currentUser.getId(), occupants);
+                startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
             }
-
             else {
                 updateDialogsAdapter();
             }
@@ -378,12 +397,16 @@ public class DialogsActivity extends BaseActivity {
             }
         }
 
-    private void startConference(final String dialogID, int userID, final List<Integer> occupants) {
+    private void startConference(final String dialogID, int userID, boolean isVideoCall, final List<Integer> occupants) {
         Log.d(TAG, "startConference()");
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
         ConferenceClient client = ConferenceClient.getInstance(getApplicationContext());
 
-        client.createSession(userID, new QBEntityCallback<ConferenceSession>() {
+        QBRTCTypes.QBConferenceType conferenceType = isVideoCall
+                ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+                : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+
+        client.createSession(userID, conferenceType, new QBEntityCallback<ConferenceSession>() {
             @Override
             public void onSuccess(ConferenceSession session, Bundle params) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
