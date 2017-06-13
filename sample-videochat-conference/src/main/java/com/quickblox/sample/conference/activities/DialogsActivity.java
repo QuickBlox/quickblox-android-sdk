@@ -55,6 +55,7 @@ public class DialogsActivity extends BaseActivity {
     private FloatingActionButton fab;
     private String dialogID;
     private List<Integer> occupants;
+    private boolean isVideoCall;
 
     private PermissionsChecker checker;
 
@@ -192,8 +193,8 @@ public class DialogsActivity extends BaseActivity {
         }
     }
 
-    private void startPermissionsActivity() {
-        PermissionsActivity.startForResult(this, REQUEST_PERMISSION, false, Consts.PERMISSIONS);
+    private void startPermissionsActivity(boolean checkOnlyAudio) {
+        PermissionsActivity.startForResult(this, REQUEST_PERMISSION, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
     private void updateActionBar(int countSelectedUsers) {
@@ -236,23 +237,25 @@ public class DialogsActivity extends BaseActivity {
                 return true;
 
             case R.id.start_video_call:
-                if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-                    startPermissionsActivity();
-                } else {
-                    startConference(dialogID, currentUser.getId(), true, occupants);
-                }
+                isVideoCall = true;
+                startConference();
                 return true;
 
             case R.id.start_audio_call:
-                if (checker.lacksPermissions(Consts.PERMISSIONS)) {
-                    startPermissionsActivity();
-                } else {
-                    startConference(dialogID, currentUser.getId(), false, occupants);
-                }
+                isVideoCall = false;
+                startConference();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void startConference() {
+        if (checker.lacksPermissions(Consts.PERMISSIONS)) {
+            startPermissionsActivity(!isVideoCall);
+        } else {
+            startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
         }
     }
 
@@ -306,10 +309,8 @@ public class DialogsActivity extends BaseActivity {
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
                 createDialog(selectedUsers);
             } if(requestCode == REQUEST_PERMISSION) {
-                Log.d(TAG, "TEMPOS BEWARE");
-//                startConference(dialogID, currentUser.getId(), occupants);
+                startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
             }
-
             else {
                 updateDialogsAdapter();
             }

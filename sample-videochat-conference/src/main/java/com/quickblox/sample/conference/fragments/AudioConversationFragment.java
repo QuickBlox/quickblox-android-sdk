@@ -19,7 +19,7 @@ import java.io.Serializable;
  */
 
 public class AudioConversationFragment extends BaseConversationFragment implements Serializable, OpponentsFromCallAdapter.OnAdapterEventListener {
-    private String TAG = VideoConversationFragment.class.getSimpleName();
+    private String TAG = getClass().getSimpleName();
 
     private TextView localName;
 
