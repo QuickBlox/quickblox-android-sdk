@@ -6,9 +6,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.sample.conference.R;
+import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
 
@@ -18,16 +20,28 @@ import java.io.Serializable;
  * Created by roman on 6/9/17.
  */
 
-public class AudioConversationFragment extends BaseConversationFragment implements Serializable, OpponentsFromCallAdapter.OnAdapterEventListener {
+public class AudioConversationFragment extends BaseConversationFragment implements Serializable, OpponentsFromCallAdapter.OnAdapterEventListener,
+        CallActivity.OnChangeDynamicToggle {
     private String TAG = getClass().getSimpleName();
 
     private TextView localName;
+    private ToggleButton audioSwitchToggleButton;
+
+    private boolean headsetPlugged;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
+    }
 
     @Override
     protected void initViews(View view) {
-        super.initViews(view);
         localName = (TextView) view.findViewById(R.id.localName);
         localName.setVisibility(View.VISIBLE);
+        audioSwitchToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
+        audioSwitchToggleButton.setVisibility(View.VISIBLE);
+        super.initViews(view);
     }
 
     @Override
@@ -51,11 +65,11 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setRemoteViewMultiCall() {
-        if(currentSession.isDestroyed()){
+        if (currentSession.isDestroyed()) {
             Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
             return;
         }
-        if(!isRemoteShown){
+        if (!isRemoteShown) {
             isRemoteShown = true;
             setRecyclerViewVisibleState();
             setDuringCallActionBar();
@@ -68,5 +82,40 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem cameraSwitchItem = menu.findItem(R.id.camera_switch);
         cameraSwitchItem.setVisible(false);
+    }
+
+    @Override
+    protected void initButtonsListener() {
+        super.initButtonsListener();
+
+        audioSwitchToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                conversationFragmentCallbackListener.onSwitchAudio();
+            }
+        });
+    }
+
+    @Override
+    protected void actionButtonsEnabled(boolean inability) {
+        super.actionButtonsEnabled(inability);
+        if (!headsetPlugged) {
+            audioSwitchToggleButton.setEnabled(inability);
+        }
+        audioSwitchToggleButton.setActivated(inability);
+    }
+
+    @Override
+    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
+        headsetPlugged = plugged;
+        audioSwitchToggleButton.setEnabled(!plugged);
+
+        if (plugged) {
+            audioSwitchToggleButton.setChecked(true);
+        } else if (previousDeviceEarPiece) {
+            audioSwitchToggleButton.setChecked(true);
+        } else {
+            audioSwitchToggleButton.setChecked(false);
+        }
     }
 }

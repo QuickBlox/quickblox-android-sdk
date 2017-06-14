@@ -50,7 +50,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QuickBlox team
  */
 public class CallActivity extends BaseActivity implements QBRTCSessionStateCallback<ConferenceSession>, ConferenceSessionCallbacks,
-        OnCallEventsController, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener{
+        OnCallEventsController, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener {
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -144,8 +144,14 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             }
         });
 
-        audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
-        Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
+        if (isVideoCall) {
+            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
+        } else {
+            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+            previousDeviceEarPiece = true;
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.EARPIECE");
+        }
 
         audioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
             @Override
@@ -319,7 +325,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     // ---------------Chat callback methods implementation  ----------------------//
 
 
-
     @Override
     public void onConnectionClosedForUser(ConferenceSession session, Integer userID) {
         Log.d(TAG, "QBRTCSessionStateCallbackImpl onConnectionClosedForUser userID=" + userID);
@@ -468,9 +473,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     ////////////////////////////// ConferenceSessionCallbacks ////////////////////////////
 
-    private void subscribeToPublishers(ArrayList<Integer> publishersList){
+    private void subscribeToPublishers(ArrayList<Integer> publishersList) {
         subscribedPublishers.addAll(currentSession.getActivePublishers());
-        for(Integer publisher : publishersList){
+        for (Integer publisher : publishersList) {
             currentSession.subscribeToPublisher(publisher);
         }
     }
@@ -478,7 +483,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void OnPublishersReceived(ArrayList<Integer> publishersList) {
         Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
-        if(connectedToJanus && readyToSubscribe){
+        if (connectedToJanus && readyToSubscribe) {
             subscribedPublishers.addAll(publishersList);
             subscribeToPublishers(publishersList);
         }
