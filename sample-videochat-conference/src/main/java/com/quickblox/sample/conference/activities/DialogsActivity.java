@@ -371,6 +371,7 @@ public class DialogsActivity extends BaseActivity {
             public void onDestroyActionMode(ActionMode mode) {
                 currentActionMode = null;
                 dialogsAdapter.clearSelection();
+                invalidateOptionsMenu();
                 fab.show();
             }
 
