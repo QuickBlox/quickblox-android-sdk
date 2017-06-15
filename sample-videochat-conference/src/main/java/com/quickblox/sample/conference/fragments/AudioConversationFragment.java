@@ -54,27 +54,6 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onRemoteAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack, final Integer userID) {
         Log.d(TAG, "onRemoteAudioTrackReceive() run");
-        setOpponentToAdapter(userID);
-
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setRemoteViewMultiCall();
-            }
-        }, LOCAL_TRACk_INITIALIZE_DELAY);
-    }
-
-    private void setRemoteViewMultiCall() {
-        if (currentSession.isDestroyed()) {
-            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
-            return;
-        }
-        if (!isRemoteShown) {
-            isRemoteShown = true;
-            setRecyclerViewVisibleState();
-            setDuringCallActionBar();
-        }
-        updateActionBar(opponentsAdapter.getItemCount());
     }
 
     @Override
