@@ -218,15 +218,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
         Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
-
-        setOpponentToAdapter(userID);
-
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setRemoteViewMultiCall(userID, videoTrack);
-                }
-            }, LOCAL_TRACk_INITIALIZE_DELAY);
+        getVideoTrackMap().put(userID, videoTrack);
     }
 
 
@@ -236,25 +228,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     @Override
     public void onRemoteAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack, Integer userID) {
-        currentSession.getMediaStreamManager().addAudioTrack(userID, audioTrack);
     }
 
     /////////////////////////////////////////    end    ////////////////////////////////////////////
 
-
-    private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
-        if(currentSession.isDestroyed()){
-            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
-            return;
-        }
+    @Override
+    protected void setRemoteViewMultiCall(int userID) {
+        super.setRemoteViewMultiCall(userID);
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
-        if(!isRemoteShown){
-            isRemoteShown = true;
-            setRecyclerViewVisibleState();
-            setDuringCallActionBar();
-        }
 
-        updateActionBar(opponentsAdapter.getItemCount());
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
         if (itemHolder == null) {
             Log.d(TAG, "itemHolder == null - true");
@@ -266,28 +248,21 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             remoteVideoView.setZOrderMediaOverlay(true);
             updateVideoView(remoteVideoView, false);
             Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-            fillVideoView(userID, remoteVideoView, videoTrack, true);
+            QBRTCVideoTrack remoteVideoTrack = getVideoTrackMap().get(userID);
+            if(remoteVideoTrack != null){
+                fillVideoView(remoteVideoView, remoteVideoTrack, true);
+            }
         }
     }
 
-    /**
-     * @param userId set userId if it from fullscreen videoTrack
-     */
-    private void fillVideoView(int userId, QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
+    private void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
                                boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
         videoTrack.addRenderer(new VideoRenderer(videoView));
-        if (userId != 0) {
-            getVideoTrackMap().put(userId, videoTrack);
-        }
         if (!remoteRenderer) {
             updateVideoView(videoView, isCurrentCameraFront);
         }
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
-    }
-
-    private void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
-       fillVideoView(0, videoView, videoTrack, remoteRenderer);
     }
 
     protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror) {

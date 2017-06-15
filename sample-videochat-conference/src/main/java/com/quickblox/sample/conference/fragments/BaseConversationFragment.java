@@ -543,12 +543,39 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         return null;
     }
 
+    protected void setRemoteViewMultiCall(int userID) {
+        if (currentSession.isDestroyed()) {
+            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
+            return;
+        }
+        updateActionBar(opponentsAdapter.getItemCount());
+    }
+
+    private void setOpponentView(int userID) {
+        setOpponentToAdapter(userID);
+        if(!isRemoteShown){
+            isRemoteShown = true;
+            setRecyclerViewVisibleState();
+            setDuringCallActionBar();
+        }
+        updateActionBar(opponentsAdapter.getItemCount());
+    }
+
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
     @Override
     public void onConnectedToUser(ConferenceSession qbrtcSession, final Integer userId) {
-        setStatusForOpponent(userId, getString(R.string.text_status_connected));
-        setProgressBarForOpponentGone(userId);
+        setOpponentView(userId);
+
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setRemoteViewMultiCall(userId);
+
+                setStatusForOpponent(userId, getString(R.string.text_status_connected));
+                setProgressBarForOpponentGone(userId);
+            }
+        }, LOCAL_TRACk_INITIALIZE_DELAY);
     }
 
     @Override
