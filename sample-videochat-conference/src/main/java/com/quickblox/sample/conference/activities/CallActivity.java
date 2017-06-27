@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.WsException;
+import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
@@ -53,6 +54,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         OnCallEventsController, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener {
 
     private static final String TAG = CallActivity.class.getSimpleName();
+    private static final String ICE_FAILED_REASON = "ICE failed";
 
     private ConferenceSession currentSession;
     private String hangUpReason;
@@ -482,7 +484,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void OnPublishersReceived(ArrayList<Integer> publishersList) {
-        Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
+        Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus + ", readyToSubscribe= " + readyToSubscribe);
         if (connectedToJanus && readyToSubscribe) {
             subscribedPublishers.addAll(publishersList);
             subscribeToPublishers(publishersList);
@@ -507,7 +509,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     @Override
     public void OnError(WsException exception) {
+        Log.d(TAG, "OnError getClass= " + exception.getClass());
         showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
+        if (WsHangUpException.class.isInstance(exception)) {
+            Log.d(TAG, "OnError exception= " + exception.getMessage());
+            if (exception.getMessage().equals(ICE_FAILED_REASON)) {
+                releaseCurrentSession();
+                finish();
+            }
+        }
     }
 
     @Override
