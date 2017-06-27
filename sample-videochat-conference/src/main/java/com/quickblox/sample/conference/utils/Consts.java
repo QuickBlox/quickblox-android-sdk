@@ -38,6 +38,7 @@ public interface Consts {
     String EXTRA_USER_PASSWORD = "user_password";
     String EXTRA_DIALOG_ID = "dialog_id";
     String EXTRA_DIALOG_OCCUPANTS = "dialog_occupants";
+    String EXTRA_AS_LISTENER = "as_listener";
     String EXTRA_DIALOG_IS_VIDEO = "dialog_is_video";
     String EXTRA_PENDING_INTENT = "pending_Intent";
 

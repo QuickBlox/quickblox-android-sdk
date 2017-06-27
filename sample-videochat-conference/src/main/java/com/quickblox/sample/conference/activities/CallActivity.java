@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.QBJanusRole;
 import com.quickblox.conference.WsException;
 import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
@@ -44,6 +45,7 @@ import org.webrtc.CameraVideoCapturer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -75,13 +77,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private volatile boolean connectedToJanus;
     private String dialogID;
     private boolean readyToSubscribe;
+    private boolean asListener;
 
 
-    public static void start(Context context, String dialogID, List<Integer> occupants) {
+    public static void start(Context context, String dialogID, List<Integer> occupants, boolean asListener) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_DIALOG_ID, dialogID);
         intent.putExtra(Consts.EXTRA_DIALOG_OCCUPANTS, (Serializable) occupants);
+        intent.putExtra(Consts.EXTRA_AS_LISTENER, asListener);
 
         context.startActivity(intent);
     }
@@ -127,6 +131,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void parseIntentExtras() {
         dialogID = getIntent().getExtras().getString(Consts.EXTRA_DIALOG_ID);
         opponentsIdsList = (ArrayList<Integer>) getIntent().getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
+        asListener = getIntent().getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
     }
 
     private void initAudioManager() {
@@ -428,7 +433,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onStartJoinConference() {
         int userID = currentSession.getCurrentUserID();
-        currentSession.joinDialog(dialogID, new JoinedCallback(userID));
+        QBJanusRole janusRole = asListener ? QBJanusRole.LISTENER : QBJanusRole.PUBLISHER;
+        currentSession.joinDialog(dialogID, janusRole, new JoinedCallback(userID));
     }
 
     @Override
@@ -483,7 +489,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnPublishersReceived(ArrayList<Integer> publishersList) {
+    public void onPublishersReceived(ArrayList<Integer> publishersList) {
         Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus + ", readyToSubscribe= " + readyToSubscribe);
         if (connectedToJanus && readyToSubscribe) {
             subscribedPublishers.addAll(publishersList);
@@ -492,23 +498,23 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnPublisherLeft(Integer userID) {
+    public void onPublisherLeft(Integer userID) {
         Log.d(TAG, "OnPublisherLeft userID" + userID);
         subscribedPublishers.remove(userID);
     }
 
     @Override
-    public void OnMediaReceived(String type, boolean success) {
+    public void onMediaReceived(String type, boolean success) {
         Log.d(TAG, "OnMediaReceived type " + type + ", success" + success);
     }
 
     @Override
-    public void OnSlowLinkReceived(boolean uplink, int nacks) {
+    public void onSlowLinkReceived(boolean uplink, int nacks) {
         Log.d(TAG, "OnSlowLinkReceived uplink " + uplink + ", nacks" + nacks);
     }
 
     @Override
-    public void OnError(WsException exception) {
+    public void onError(WsException exception) {
         Log.d(TAG, "OnError getClass= " + exception.getClass());
         showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
         if (WsHangUpException.class.isInstance(exception)) {
@@ -521,7 +527,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnSessionClosed(final ConferenceSession session) {
+    public void onSessionClosed(final ConferenceSession session) {
         Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
         if (session.equals(currentSession)) {

@@ -246,6 +246,11 @@ public class DialogsActivity extends BaseActivity {
                 startConference();
                 return true;
 
+            case R.id.start_as_listener:
+                isVideoCall = true;
+                startConference(dialogID, currentUser.getId(), isVideoCall, occupants, true);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -255,7 +260,7 @@ public class DialogsActivity extends BaseActivity {
         if (checker.lacksPermissions(Consts.PERMISSIONS)) {
             startPermissionsActivity(!isVideoCall);
         } else {
-            startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
+            startConference(dialogID, currentUser.getId(), isVideoCall, occupants, false);
         }
     }
 
@@ -309,7 +314,7 @@ public class DialogsActivity extends BaseActivity {
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
                 createDialog(selectedUsers);
             } if(requestCode == REQUEST_PERMISSION) {
-                startConference(dialogID, currentUser.getId(), isVideoCall, occupants);
+                startConference(dialogID, currentUser.getId(), isVideoCall, occupants, false);
             }
             else {
                 updateDialogsAdapter();
@@ -398,7 +403,7 @@ public class DialogsActivity extends BaseActivity {
             }
         }
 
-    private void startConference(final String dialogID, int userID, boolean isVideoCall, final List<Integer> occupants) {
+    private void startConference(final String dialogID, int userID, boolean isVideoCall, final List<Integer> occupants, final boolean asListener) {
         Log.d(TAG, "startConference()");
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.join_conference);
         ConferenceClient client = ConferenceClient.getInstance(getApplicationContext());
@@ -414,7 +419,7 @@ public class DialogsActivity extends BaseActivity {
                 webRtcSessionManager.setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCurrentUserID= " + session.getCurrentUserID());
 
-                CallActivity.start(DialogsActivity.this, dialogID, occupants);
+                CallActivity.start(DialogsActivity.this, dialogID, occupants, asListener);
             }
 
             @Override
