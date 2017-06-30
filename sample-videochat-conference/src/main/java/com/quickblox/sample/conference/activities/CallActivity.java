@@ -405,6 +405,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         audioManager.setManageHeadsetByDefault(use);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     ////////////////////////////// ConversationFragmentCallbackListener ////////////////////////////
 
     @Override
@@ -516,13 +520,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onError(WsException exception) {
         Log.d(TAG, "OnError getClass= " + exception.getClass());
-        showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
         if (WsHangUpException.class.isInstance(exception)) {
             Log.d(TAG, "OnError exception= " + exception.getMessage());
             if (exception.getMessage().equals(ICE_FAILED_REASON)) {
+                showToast(exception.getMessage());
                 releaseCurrentSession();
                 finish();
             }
+        } else {
+            showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
         }
     }
 
