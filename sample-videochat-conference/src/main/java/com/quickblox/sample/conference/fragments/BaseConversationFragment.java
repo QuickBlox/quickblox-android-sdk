@@ -94,6 +94,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected TextView ringingTextView;
     protected QBUser currentUser;
     protected SharedPrefsHelper sharedPrefsHelper;
+    protected boolean asListenerRole;
 
 //
 private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
@@ -132,6 +133,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         opponentsIds = this.getArguments().getIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS);
+        asListenerRole = this.getArguments().getBoolean(Consts.EXTRA_AS_LISTENER);
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentSession = sessionManager.getCurrentSession();
         if (currentSession == null) {
@@ -397,6 +399,17 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         actionButtonsLayout = (LinearLayout) view.findViewById(R.id.element_set_call_buttons);
 
         actionButtonsEnabled(false);
+        setActionButtonsVisibility();
+    }
+
+    private void setActionButtonsVisibility() {
+        if(asListenerRole) {
+            setActionButtonsInvisible();
+        }
+    }
+
+    protected void setActionButtonsInvisible() {
+        micToggleCall.setVisibility(View.INVISIBLE);
     }
 
     private void setGrid(int recycleViewHeight) {
@@ -561,10 +574,24 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         updateActionBar(opponentsAdapter.getItemCount());
     }
 
+    private boolean checkIfUserInAdapter(int userId) {
+        for (QBUser user : opponentsAdapter.getOpponents()) {
+            if(user.getId() == userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
     @Override
     public void onConnectedToUser(ConferenceSession qbrtcSession, final Integer userId) {
+        if(checkIfUserInAdapter(userId)) {
+            setStatusForOpponent(userId, getString(R.string.text_status_connected));
+            Log.d(TAG, "onConnectedToUser user already in, userId= " + userId);
+            return;
+        }
         setOpponentView(userId);
 
         mainHandler.postDelayed(new Runnable() {

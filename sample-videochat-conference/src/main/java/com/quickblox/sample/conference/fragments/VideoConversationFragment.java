@@ -2,10 +2,8 @@ package com.quickblox.sample.conference.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
@@ -15,7 +13,6 @@ import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
@@ -127,6 +124,12 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         removeVideoTracksListener();
         removeVideoTrackRenderers();
         releaseViews();
+    }
+
+    @Override
+    protected void setActionButtonsInvisible() {
+        super.setActionButtonsInvisible();
+        cameraToggle.setVisibility(View.INVISIBLE);
     }
 
     private void initVideoTracksListener() {

@@ -45,7 +45,6 @@ import org.webrtc.CameraVideoCapturer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -77,15 +76,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private volatile boolean connectedToJanus;
     private String dialogID;
     private boolean readyToSubscribe;
-    private boolean asListener;
+    private boolean asListenerRole;
 
 
-    public static void start(Context context, String dialogID, List<Integer> occupants, boolean asListener) {
+    public static void start(Context context, String dialogID, List<Integer> occupants, boolean listenerRole) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_DIALOG_ID, dialogID);
         intent.putExtra(Consts.EXTRA_DIALOG_OCCUPANTS, (Serializable) occupants);
-        intent.putExtra(Consts.EXTRA_AS_LISTENER, asListener);
+        intent.putExtra(Consts.EXTRA_AS_LISTENER, listenerRole);
 
         context.startActivity(intent);
     }
@@ -131,7 +130,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void parseIntentExtras() {
         dialogID = getIntent().getExtras().getString(Consts.EXTRA_DIALOG_ID);
         opponentsIdsList = (ArrayList<Integer>) getIntent().getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
-        asListener = getIntent().getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
+        asListenerRole = getIntent().getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
     }
 
     private void initAudioManager() {
@@ -357,7 +356,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(state)) {
             connectedToJanus = true;
             Log.d(TAG, "onStateChanged and begin subscribeToAllGotPublisher");
-            subscribeToPublishers(new ArrayList<>(subscribedPublishers));
         }
     }
 
@@ -392,6 +390,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void startConversationFragment() {
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS, opponentsIdsList);
+        bundle.putBoolean(Consts.EXTRA_AS_LISTENER, asListenerRole);
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
                         ? new VideoConversationFragment()
@@ -437,7 +436,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onStartJoinConference() {
         int userID = currentSession.getCurrentUserID();
-        QBJanusRole janusRole = asListener ? QBJanusRole.LISTENER : QBJanusRole.PUBLISHER;
+        QBJanusRole janusRole = asListenerRole ? QBJanusRole.LISTENER : QBJanusRole.PUBLISHER;
         currentSession.joinDialog(dialogID, janusRole, new JoinedCallback(userID));
     }
 
@@ -575,6 +574,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onSuccess(ArrayList<Integer> publishers, Bundle params) {
             Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
+            if(asListenerRole){
+                connectedToJanus = true;
+            }
         }
 
         @Override
