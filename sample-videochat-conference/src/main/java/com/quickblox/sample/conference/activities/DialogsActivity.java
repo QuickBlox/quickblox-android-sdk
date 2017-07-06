@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.crashlytics.android.Crashlytics;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
@@ -33,8 +32,6 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Roman on 05.03.2017.

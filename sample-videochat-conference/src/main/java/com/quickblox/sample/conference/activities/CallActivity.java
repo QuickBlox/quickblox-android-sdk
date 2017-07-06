@@ -355,7 +355,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void onStateChanged(ConferenceSession session, BaseSession.QBRTCSessionState state) {
         if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(state)) {
             connectedToJanus = true;
-            Log.d(TAG, "onStateChanged and begin subscribeToAllGotPublisher");
+            Log.d(TAG, "onStateChanged and begin subscribeToPublishersIfNeed");
+            subscribeToPublishersIfNeed();
         }
     }
 
@@ -574,6 +575,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onSuccess(ArrayList<Integer> publishers, Bundle params) {
             Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
+            if(rtcClient.isAutoSubscribeAfterJoin()) {
+                subscribedPublishers.addAll(publishers);
+            }
             if(asListenerRole){
                 connectedToJanus = true;
             }

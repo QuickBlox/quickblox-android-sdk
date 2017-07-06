@@ -42,18 +42,25 @@ import com.quickblox.sample.conference.utils.WebRtcSessionManager;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.BaseSession;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
+import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
+
+import org.webrtc.RendererCommon;
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class BaseConversationFragment extends BaseToolBarFragment implements CallActivity.CurrentCallStateCallback, QBRTCSessionStateCallback<ConferenceSession>,
-        QBRTCClientAudioTracksCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener{
+        QBRTCClientVideoTracksCallbacks<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener{
 
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
 
@@ -94,6 +101,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected TextView ringingTextView;
     protected QBUser currentUser;
     protected SharedPrefsHelper sharedPrefsHelper;
+    protected Map<Integer, QBRTCVideoTrack> videoTrackMap;
     protected boolean asListenerRole;
 
 //
@@ -282,22 +290,11 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     }
 
     protected void initTrackListeners() {
-        initAudioTracksListener();
+        initVideoTracksListener();
     }
+
     protected void removeTrackListeners() {
-        removeAudioTracksListener();
-    }
-
-    private void initAudioTracksListener() {
-        if (currentSession != null) {
-            currentSession.addAudioTrackCallbacksListener(this);
-        }
-    }
-
-    private void removeAudioTracksListener() {
-        if (currentSession != null) {
-            currentSession.removeAudioTrackCallbacksListener(this);
-        }
+        removeVideoTracksListener();
     }
 
     @Override
@@ -317,6 +314,8 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
+        removeVideoTrackRenderers();
+        releaseViews();
         releaseViewHolders();
         removeConnectionStateListeners();
         removeTrackListeners();
@@ -428,6 +427,27 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         }
     }
 
+    private void removeVideoTrackRenderers() {
+        Log.d(TAG, "removeVideoTrackRenderers");
+        Log.d(TAG, "remove opponents video Tracks");
+        Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
+        for (QBRTCVideoTrack videoTrack : videoTrackMap.values()) {
+            if (videoTrack.getRenderer() != null) {
+                Log.d(TAG, "remove opponent video Tracks");
+                videoTrack.removeRenderer(videoTrack.getRenderer());
+            }
+        }
+    }
+
+    private void releaseViews() {
+        if (localVideoView != null) {
+            localVideoView.release();
+        }
+        localVideoView = null;
+
+        releaseOpponentsViews();
+    }
+
     protected void initButtonsListener() {
 
         micToggleCall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -513,6 +533,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         }
         updateActionBar(opponentsAdapter.getItemCount());
         recyclerView.requestLayout();
+        getVideoTrackMap().remove(userId);
     }
 
     protected void addOpponentToDialog(){
@@ -554,14 +575,6 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
             }
         }
         return null;
-    }
-
-    protected void setRemoteViewMultiCall(int userID) {
-        if (currentSession.isDestroyed()) {
-            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
-            return;
-        }
-        updateActionBar(opponentsAdapter.getItemCount());
     }
 
     private void setOpponentView(int userID) {
@@ -635,12 +648,87 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     //////////////////////////////////   end     //////////////////////////////////////////
 
+
+    protected Map<Integer, QBRTCVideoTrack> getVideoTrackMap() {
+        if (videoTrackMap == null) {
+            videoTrackMap = new HashMap<>();
+        }
+        return videoTrackMap;
+    }
+
+
+    @Override
+    public void onLocalVideoTrackReceive(ConferenceSession session, QBRTCVideoTrack videoTrack) {
+        Log.d(TAG, "onLocalVideoTrackReceive");
+    }
+
+    @Override
+    public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
+        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
+        getVideoTrackMap().put(userID, videoTrack);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.conversation_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    protected void setRemoteViewMultiCall(int userID) {
+        if (currentSession.isDestroyed()) {
+            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
+            return;
+        }
+        updateActionBar(opponentsAdapter.getItemCount());
+        Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
+
+        final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
+        if (itemHolder == null) {
+            Log.d(TAG, "itemHolder == null - true");
+            return;
+        }
+        final QBConferenceSurfaceView remoteVideoView = itemHolder.getOpponentView();
+
+        if (remoteVideoView != null) {
+            remoteVideoView.setZOrderMediaOverlay(true);
+            updateVideoView(remoteVideoView, false);
+            Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
+            QBRTCVideoTrack remoteVideoTrack = getVideoTrackMap().get(userID);
+            if(remoteVideoTrack != null){
+                fillVideoView(remoteVideoView, remoteVideoTrack, true);
+            }
+        }
+    }
+
+    protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror) {
+        updateVideoView(surfaceViewRenderer, mirror, RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+    }
+
+    protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror, RendererCommon.ScalingType scalingType) {
+        Log.i(TAG, "updateVideoView mirror:" + mirror + ", scalingType = " + scalingType);
+        surfaceViewRenderer.setScalingType(scalingType);
+        surfaceViewRenderer.setMirror(mirror);
+        surfaceViewRenderer.requestLayout();
+    }
+
+    protected void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
+                               boolean remoteRenderer) {
+        videoTrack.removeRenderer(videoTrack.getRenderer());
+        videoTrack.addRenderer(new VideoRenderer(videoView));
+        Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
+    }
+
+    private void initVideoTracksListener() {
+        if (currentSession != null) {
+            currentSession.addVideoTrackCallbacksListener(this);
+        }
+    }
+
+    private void removeVideoTracksListener() {
+        if (currentSession != null) {
+            currentSession.removeVideoTrackCallbacksListener(this);
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
