@@ -671,6 +671,10 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.conversation_fragment, menu);
+        if(asListenerRole) {
+            MenuItem cameraSwitchItem = menu.findItem(R.id.camera_switch);
+            cameraSwitchItem.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
