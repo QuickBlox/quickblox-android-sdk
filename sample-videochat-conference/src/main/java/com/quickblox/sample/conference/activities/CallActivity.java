@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
-import com.quickblox.conference.QBJanusRole;
+import com.quickblox.conference.QBConferenceRole;
 import com.quickblox.conference.WsException;
 import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
@@ -437,8 +437,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onStartJoinConference() {
         int userID = currentSession.getCurrentUserID();
-        QBJanusRole janusRole = asListenerRole ? QBJanusRole.LISTENER : QBJanusRole.PUBLISHER;
-        currentSession.joinDialog(dialogID, janusRole, new JoinedCallback(userID));
+        QBConferenceRole conferenceRole = asListenerRole ? QBConferenceRole.LISTENER : QBConferenceRole.PUBLISHER;
+        currentSession.joinDialog(dialogID, conferenceRole, new JoinedCallback(userID));
     }
 
     @Override
