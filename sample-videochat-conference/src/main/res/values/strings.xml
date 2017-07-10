@@ -49,6 +49,7 @@
     <string name="action_logout">Logout</string>
     <string name="action_start_video_call">Video call</string>
     <string name="action_start_audio_call">Audio call</string>
+    <string name="action_start_broadcast_call">Join to broadcast</string>
     <string name="action_leave_dialog">Leave Dialog</string>
     <string name="dialogs_deletion_error">Dialog deletion errors</string>
 

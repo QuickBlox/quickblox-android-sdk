@@ -2,10 +2,8 @@ package com.quickblox.sample.conference.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
@@ -14,25 +12,18 @@ import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
-import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.CameraVideoCapturer;
-import org.webrtc.RendererCommon;
-import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * QuickBlox team
  */
-public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<ConferenceSession>,
+public class VideoConversationFragment extends BaseConversationFragment implements Serializable,
         QBRTCSessionStateCallback<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private String TAG = VideoConversationFragment.class.getSimpleName();
@@ -41,8 +32,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private CameraState cameraState = CameraState.DISABLED_FROM_USER;
 
     private QBRTCVideoTrack localVideoTrack;
-    private Map<Integer, QBRTCVideoTrack> videoTrackMap;
-    private boolean isCurrentCameraFront;
+    protected boolean isCurrentCameraFront;
 
 
     @Override
@@ -65,18 +55,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onStart() {
         super.onStart();
         Log.i(TAG, "onStart");
-    }
-
-    @Override
-    protected void initTrackListeners() {
-        super.initTrackListeners();
-        initVideoTracksListener();
-    }
-
-    @Override
-    protected void removeTrackListeners() {
-        super.removeTrackListeners();
-        removeVideoTracksListener();
     }
 
     @Override
@@ -124,22 +102,14 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView");
-        removeVideoTracksListener();
-        removeVideoTrackRenderers();
-        releaseViews();
     }
 
-    private void initVideoTracksListener() {
-        if (currentSession != null) {
-            currentSession.addVideoTrackCallbacksListener(this);
-        }
+    @Override
+    protected void setActionButtonsInvisible() {
+        super.setActionButtonsInvisible();
+        cameraToggle.setVisibility(View.INVISIBLE);
     }
 
-    private void initAudioTracksListener() {
-        if (currentSession != null) {
-            currentSession.addAudioTrackCallbacksListener(this);
-        }
-    }
 
     protected void initButtonsListener() {
         super.initButtonsListener();
@@ -202,6 +172,15 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
+    @Override
+    protected void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
+                                 boolean remoteRenderer) {
+        super.fillVideoView(videoView, videoTrack, remoteRenderer);
+        if (!remoteRenderer) {
+            updateVideoView(videoView, isCurrentCameraFront);
+        }
+    }
+
     ////////////////////////////  callbacks from QBRTCClientVideoTracksCallbacks ///////////////////
     @Override
     public void onLocalVideoTrackReceive(ConferenceSession qbrtcSession, final QBRTCVideoTrack videoTrack) {
@@ -215,131 +194,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 
-    @Override
-    public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
-        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
-
-        setOpponentToAdapter(userID);
-
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setRemoteViewMultiCall(userID, videoTrack);
-                }
-            }, LOCAL_TRACk_INITIALIZE_DELAY);
-    }
-
-
-    @Override
-    public void onLocalAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack) {
-    }
-
-    @Override
-    public void onRemoteAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack, Integer userID) {
-        currentSession.getMediaStreamManager().addAudioTrack(userID, audioTrack);
-    }
-
     /////////////////////////////////////////    end    ////////////////////////////////////////////
-
-
-    private void setRemoteViewMultiCall(int userID, QBRTCVideoTrack videoTrack) {
-        if(currentSession.isDestroyed()){
-            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
-            return;
-        }
-        Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
-        if(!isRemoteShown){
-            isRemoteShown = true;
-            setRecyclerViewVisibleState();
-            setDuringCallActionBar();
-        }
-
-        updateActionBar(opponentsAdapter.getItemCount());
-        final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userID);
-        if (itemHolder == null) {
-            Log.d(TAG, "itemHolder == null - true");
-            return;
-        }
-        final QBConferenceSurfaceView remoteVideoView = itemHolder.getOpponentView();
-
-        if (remoteVideoView != null) {
-            remoteVideoView.setZOrderMediaOverlay(true);
-            updateVideoView(remoteVideoView, false);
-            Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-            fillVideoView(userID, remoteVideoView, videoTrack, true);
-        }
-    }
-
-    /**
-     * @param userId set userId if it from fullscreen videoTrack
-     */
-    private void fillVideoView(int userId, QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
-                               boolean remoteRenderer) {
-        videoTrack.removeRenderer(videoTrack.getRenderer());
-        videoTrack.addRenderer(new VideoRenderer(videoView));
-        if (userId != 0) {
-            getVideoTrackMap().put(userId, videoTrack);
-        }
-        if (!remoteRenderer) {
-            updateVideoView(videoView, isCurrentCameraFront);
-        }
-        Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
-    }
-
-    private void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
-       fillVideoView(0, videoView, videoTrack, remoteRenderer);
-    }
-
-    protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror) {
-        updateVideoView(surfaceViewRenderer, mirror, RendererCommon.ScalingType.SCALE_ASPECT_FILL);
-    }
-
-    protected void updateVideoView(SurfaceViewRenderer surfaceViewRenderer, boolean mirror, RendererCommon.ScalingType scalingType) {
-        Log.i(TAG, "updateVideoView mirror:" + mirror + ", scalingType = " + scalingType);
-        surfaceViewRenderer.setScalingType(scalingType);
-        surfaceViewRenderer.setMirror(mirror);
-        surfaceViewRenderer.requestLayout();
-    }
-
-    protected Map<Integer, QBRTCVideoTrack> getVideoTrackMap() {
-        if (videoTrackMap == null) {
-            videoTrackMap = new HashMap<>();
-        }
-        return videoTrackMap;
-    }
-
-    private void removeVideoTrackRenderers() {
-        Log.d(TAG, "removeVideoTrackRenderers");
-        Log.d(TAG, "remove opponents video Tracks");
-        Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
-        for (QBRTCVideoTrack videoTrack : videoTrackMap.values()) {
-            if (videoTrack.getRenderer() != null) {
-                Log.d(TAG, "remove opponent video Tracks");
-                videoTrack.removeRenderer(videoTrack.getRenderer());
-            }
-        }
-    }
-
-    private void releaseViews() {
-        if (localVideoView != null) {
-            localVideoView.release();
-        }
-        localVideoView = null;
-
-        releaseOpponentsViews();
-    }
-
-    private void removeVideoTracksListener() {
-        if (currentSession != null) {
-            currentSession.removeVideoTrackCallbacksListener(this);
-        }
-    }
-
-    @Override
-    protected void cleanUpAdapter(int userId){
-        super.cleanUpAdapter(userId);
-        getVideoTrackMap().remove(userId);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -359,5 +214,3 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         ENABLED_FROM_USER
     }
 }
-
-

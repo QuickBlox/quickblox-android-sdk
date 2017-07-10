@@ -13,6 +13,7 @@ import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.activities.CallActivity;
 import com.quickblox.sample.conference.adapters.OpponentsFromCallAdapter;
 import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
 
 import java.io.Serializable;
 
@@ -21,7 +22,7 @@ import java.io.Serializable;
  */
 
 public class AudioConversationFragment extends BaseConversationFragment implements Serializable, OpponentsFromCallAdapter.OnAdapterEventListener,
-        CallActivity.OnChangeDynamicToggle {
+        QBRTCClientAudioTracksCallback<ConferenceSession>, CallActivity.OnChangeDynamicToggle {
     private String TAG = getClass().getSimpleName();
 
     private TextView localName;
@@ -54,27 +55,6 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onRemoteAudioTrackReceive(ConferenceSession session, QBRTCAudioTrack audioTrack, final Integer userID) {
         Log.d(TAG, "onRemoteAudioTrackReceive() run");
-        setOpponentToAdapter(userID);
-
-        mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setRemoteViewMultiCall();
-            }
-        }, LOCAL_TRACk_INITIALIZE_DELAY);
-    }
-
-    private void setRemoteViewMultiCall() {
-        if (currentSession.isDestroyed()) {
-            Log.d(TAG, "setRemoteViewMultiCall currentSession.isDestroyed RETURN");
-            return;
-        }
-        if (!isRemoteShown) {
-            isRemoteShown = true;
-            setRecyclerViewVisibleState();
-            setDuringCallActionBar();
-        }
-        updateActionBar(opponentsAdapter.getItemCount());
     }
 
     @Override
@@ -116,6 +96,29 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
             audioSwitchToggleButton.setChecked(true);
         } else {
             audioSwitchToggleButton.setChecked(false);
+        }
+    }
+
+    @Override
+    protected void initTrackListeners() {
+        super.initTrackListeners();
+        initAudioTracksListener();
+    }
+
+    @Override
+    protected void removeTrackListeners() {
+        removeAudioTracksListener();
+    }
+
+    private void initAudioTracksListener() {
+        if (currentSession != null) {
+            currentSession.addAudioTrackCallbacksListener(this);
+        }
+    }
+
+    private void removeAudioTracksListener() {
+        if (currentSession != null) {
+            currentSession.removeAudioTrackCallbacksListener(this);
         }
     }
 }

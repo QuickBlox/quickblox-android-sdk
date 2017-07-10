@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.QBConferenceRole;
 import com.quickblox.conference.WsException;
+import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
 import com.quickblox.core.QBEntityCallback;
@@ -53,6 +55,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         OnCallEventsController, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener {
 
     private static final String TAG = CallActivity.class.getSimpleName();
+    private static final String ICE_FAILED_REASON = "ICE failed";
 
     private ConferenceSession currentSession;
     private String hangUpReason;
@@ -73,13 +76,15 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private volatile boolean connectedToJanus;
     private String dialogID;
     private boolean readyToSubscribe;
+    private boolean asListenerRole;
 
 
-    public static void start(Context context, String dialogID, List<Integer> occupants) {
+    public static void start(Context context, String dialogID, List<Integer> occupants, boolean listenerRole) {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.putExtra(Consts.EXTRA_DIALOG_ID, dialogID);
         intent.putExtra(Consts.EXTRA_DIALOG_OCCUPANTS, (Serializable) occupants);
+        intent.putExtra(Consts.EXTRA_AS_LISTENER, listenerRole);
 
         context.startActivity(intent);
     }
@@ -125,6 +130,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void parseIntentExtras() {
         dialogID = getIntent().getExtras().getString(Consts.EXTRA_DIALOG_ID);
         opponentsIdsList = (ArrayList<Integer>) getIntent().getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
+        asListenerRole = getIntent().getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
     }
 
     private void initAudioManager() {
@@ -349,8 +355,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     public void onStateChanged(ConferenceSession session, BaseSession.QBRTCSessionState state) {
         if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(state)) {
             connectedToJanus = true;
-            Log.d(TAG, "onStateChanged and begin subscribeToAllGotPublisher");
-            subscribeToPublishers(new ArrayList<>(subscribedPublishers));
+            Log.d(TAG, "onStateChanged and begin subscribeToPublishersIfNeed");
+            subscribeToPublishersIfNeed();
         }
     }
 
@@ -385,6 +391,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private void startConversationFragment() {
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList(Consts.EXTRA_DIALOG_OCCUPANTS, opponentsIdsList);
+        bundle.putBoolean(Consts.EXTRA_AS_LISTENER, asListenerRole);
         BaseConversationFragment conversationFragment = BaseConversationFragment.newInstance(
                 isVideoCall
                         ? new VideoConversationFragment()
@@ -396,6 +403,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     public void onUseHeadSet(boolean use) {
         audioManager.setManageHeadsetByDefault(use);
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     ////////////////////////////// ConversationFragmentCallbackListener ////////////////////////////
@@ -426,7 +437,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onStartJoinConference() {
         int userID = currentSession.getCurrentUserID();
-        currentSession.joinDialog(dialogID, new JoinedCallback(userID));
+        QBConferenceRole conferenceRole = asListenerRole ? QBConferenceRole.LISTENER : QBConferenceRole.PUBLISHER;
+        currentSession.joinDialog(dialogID, conferenceRole, new JoinedCallback(userID));
     }
 
     @Override
@@ -481,8 +493,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnPublishersReceived(ArrayList<Integer> publishersList) {
-        Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
+    public void onPublishersReceived(ArrayList<Integer> publishersList) {
+        Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus + ", readyToSubscribe= " + readyToSubscribe);
         if (connectedToJanus && readyToSubscribe) {
             subscribedPublishers.addAll(publishersList);
             subscribeToPublishers(publishersList);
@@ -490,28 +502,38 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
-    public void OnPublisherLeft(Integer userID) {
+    public void onPublisherLeft(Integer userID) {
         Log.d(TAG, "OnPublisherLeft userID" + userID);
         subscribedPublishers.remove(userID);
     }
 
     @Override
-    public void OnMediaReceived(String type, boolean success) {
+    public void onMediaReceived(String type, boolean success) {
         Log.d(TAG, "OnMediaReceived type " + type + ", success" + success);
     }
 
     @Override
-    public void OnSlowLinkReceived(boolean uplink, int nacks) {
+    public void onSlowLinkReceived(boolean uplink, int nacks) {
         Log.d(TAG, "OnSlowLinkReceived uplink " + uplink + ", nacks" + nacks);
     }
 
     @Override
-    public void OnError(WsException exception) {
-        showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
+    public void onError(WsException exception) {
+        Log.d(TAG, "OnError getClass= " + exception.getClass());
+        if (WsHangUpException.class.isInstance(exception)) {
+            Log.d(TAG, "OnError exception= " + exception.getMessage());
+            if (exception.getMessage().equals(ICE_FAILED_REASON)) {
+                showToast(exception.getMessage());
+                releaseCurrentSession();
+                finish();
+            }
+        } else {
+            showToast((WsNoResponseException.class.isInstance(exception)) ? getString(R.string.packet_failed) : exception.getMessage());
+        }
     }
 
     @Override
-    public void OnSessionClosed(final ConferenceSession session) {
+    public void onSessionClosed(final ConferenceSession session) {
         Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
 
         if (session.equals(currentSession)) {
@@ -553,6 +575,12 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onSuccess(ArrayList<Integer> publishers, Bundle params) {
             Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
+            if(rtcClient.isAutoSubscribeAfterJoin()) {
+                subscribedPublishers.addAll(publishers);
+            }
+            if(asListenerRole){
+                connectedToJanus = true;
+            }
         }
 
         @Override
