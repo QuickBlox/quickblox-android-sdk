@@ -13,7 +13,13 @@ public class SplashActivity extends CoreSplashActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (!isTaskRoot()) {
+            // Android launched another instance of the root activity into an existing task
+            //  so just quietly finish and go away, dropping the user back into the activity
+            //  at the top of the stack (ie: the last state of this task)
+            finish();
+            return;
+        }
         sharedPrefsHelper = SharedPrefsHelper.getInstance();
 
         if (sharedPrefsHelper.hasQbUser()) {

@@ -23,8 +23,8 @@ android {
         applicationId "com.quickblox.sample.conference"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 221
-        versionName "1.0.21"
+        versionCode 223
+        versionName "1.0.23"
 
         ext.betaDistrubutionGroupAliases=testers_group_name
         ext.betaDistributionEmails=testers_emails
@@ -68,8 +68,7 @@ android {
 
 dependencies {
 
-//    compile "com.quickblox:quickblox-android-sdk-conference:$rootProject.qbSdkVersion"
-    compile project(":quickblox-android-sdk-conference" )
+    compile "com.quickblox:quickblox-android-sdk-conference:$rootProject.qbSdkVersion"
     compile (project(":sample-core"))
 
     compile "com.android.support:recyclerview-v7:24.0.0"

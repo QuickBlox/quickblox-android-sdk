@@ -82,7 +82,7 @@ public abstract class BaseActivity extends CoreBaseActivity {
     }
 
     void hideProgressDialog() {
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

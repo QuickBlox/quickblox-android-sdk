@@ -69,8 +69,7 @@ android {
 
 dependencies {
 
-//    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
-    compile project(":quickblox-android-sdk-videochat-webrtc" )
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
     compile (project(":sample-core"))
 
     compile "com.android.support:recyclerview-v7:24.0.0"

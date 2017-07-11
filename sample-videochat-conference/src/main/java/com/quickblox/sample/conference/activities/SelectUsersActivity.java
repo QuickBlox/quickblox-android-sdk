@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
@@ -86,6 +87,12 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        hideProgressDialog();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_select_users, menu);
         return true;
@@ -128,7 +135,7 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     private void addOccupantsToDialog() {
-        showProgressDialog(R.string.dlg_updating_dialog);
+        showProgressDialogIfPossible(R.string.dlg_updating_dialog);
 
         List<QBUser> users = usersAdapter.getSelectedUsers();
         QBUser[] usersArray = users.toArray(new QBUser[users.size()]);
@@ -137,13 +144,13 @@ public class SelectUsersActivity extends BaseActivity {
         requestExecutor.updateDialog(dialog, usersArray, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog dialog, Bundle params) {
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
                 passResultToCallerActivity(dialog.getOccupants());
             }
 
             @Override
             public void onError(QBResponseException responseException) {
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
                 showErrorSnackbar(R.string.dlg_updating_dialog, responseException, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -201,18 +208,18 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     private void updateDialogAndUsers() {
-        showProgressDialog(R.string.dlg_loading_dialogs_users);
+        showProgressDialogIfPossible(R.string.dlg_loading_dialogs_users);
         requestExecutor.loadDialogByID(dialog.getDialogId(), new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog dialog, Bundle params) {
                 SelectUsersActivity.this.dialog.setOccupantsIds(dialog.getOccupants());
                 loadUsersFromQb();
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
             }
 
             @Override
             public void onError(QBResponseException responseException) {
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
                 showErrorSnackbar(R.string.loading_dialog_error, responseException, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -223,8 +230,20 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
+    private void showProgressDialogIfPossible(@StringRes int messageId) {
+        if(!isFinishing()){
+            showProgressDialog(messageId);
+        }
+    }
+
+    private void dismissProgressDialogIfPossible() {
+        if (!isFinishing()) {
+            hideProgressDialog();
+        }
+    }
+
     private void loadUsersFromQb() {
-        showProgressDialog(R.string.dlg_loading_dialogs_users);
+        showProgressDialogIfPossible(R.string.dlg_loading_dialogs_users);
         String currentRoomName = SharedPrefsHelper.getInstance().get(Consts.PREF_CURREN_ROOM_NAME);
 
         requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
@@ -237,12 +256,12 @@ public class SelectUsersActivity extends BaseActivity {
                 }
                 usersAdapter.updateList(users);
 
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
             }
 
             @Override
             public void onError(QBResponseException responseException) {
-                hideProgressDialog();
+                dismissProgressDialogIfPossible();
                 showErrorSnackbar(R.string.loading_users_error, responseException, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
