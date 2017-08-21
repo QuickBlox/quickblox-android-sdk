@@ -113,6 +113,7 @@ To use Proguard in your project create proguard-rules.pro file and put there the
 -keep class com.quickblox.chat.parser.** { *; }
 -keep class com.quickblox.chat.model.** { *; }
 -keep class org.jivesoftware.** { *; }
+-keep class org.jxmpp.** { *; }
 -dontwarn org.jivesoftware.smackx.**
 
 #quickblox videochat-webrtc module
