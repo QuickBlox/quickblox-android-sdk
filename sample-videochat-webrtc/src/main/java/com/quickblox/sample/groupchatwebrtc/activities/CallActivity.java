@@ -162,7 +162,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         try {
             currentSession.getMediaStreamManager().setVideoCapturer(new QBRTCCameraVideoCapturer(this, null));
         } catch (QBRTCCameraVideoCapturer.QBRTCCameraCapturerException e) {
-            e.printStackTrace();
+            Log.i(TAG, "Error: device doesn't have camera");
         }
     }
 
