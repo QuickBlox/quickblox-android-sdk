@@ -33,6 +33,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
@@ -60,8 +61,8 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 /**
  * QuickBlox team
  */
-public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks,
-        QBRTCSessionStateCallback, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+public class VideoConversationFragment extends BaseConversationFragment implements Serializable, QBRTCClientVideoTracksCallbacks<QBRTCSession>,
+        QBRTCSessionStateCallback<QBRTCSession>, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final int DEFAULT_ROWS_COUNT = 2;
     private static final int DEFAULT_COLS_COUNT = 3;
@@ -243,7 +244,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
 
     private void restoreSession() {
         Log.d(TAG, "restoreSession ");
-        if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_ACTIVE) {
+        if (currentSession.getState() != QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
             return;
         }
         onCallStarted();
@@ -732,6 +733,11 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
+
+    @Override
+    public void onStateChanged(QBRTCSession qbrtcSession, BaseSession.QBRTCSessionState qbrtcSessionState) {
+
+    }
 
     @Override
     public void onConnectedToUser(QBRTCSession qbrtcSession, final Integer userId) {

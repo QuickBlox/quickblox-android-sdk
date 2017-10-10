@@ -41,6 +41,7 @@ import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
@@ -65,8 +66,9 @@ import java.util.Map;
 /**
  * QuickBlox team
  */
-public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionStateCallback, QBRTCSignalingCallback,
-        OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener, ScreenShareFragment.OnSharingEvents {
+public class CallActivity extends BaseActivity implements QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, QBRTCSignalingCallback,
+        OnCallEventsController, IncomeCallFragmentCallbackListener, ConversationFragmentCallbackListener, NetworkConnectionChecker.OnConnectivityChangedListener,
+        ScreenShareFragment.OnSharingEvents {
 
     private static final String TAG = CallActivity.class.getSimpleName();
 
@@ -306,7 +308,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this);
 
-        rtcClient.setCameraErrorHendler(new CameraVideoCapturer.CameraEventsHandler() {
+        rtcClient.setCameraErrorHandler(new CameraVideoCapturer.CameraEventsHandler() {
             @Override
             public void onCameraError(final String s) {
 
@@ -548,6 +550,11 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             setResult(Consts.CALL_ACTIVITY_CLOSE_WIFI_DISABLED, returnIntent);
             finish();
         }
+    }
+
+    @Override
+    public void onStateChanged(QBRTCSession qbrtcSession, BaseSession.QBRTCSessionState qbrtcSessionState) {
+
     }
 
     @Override
