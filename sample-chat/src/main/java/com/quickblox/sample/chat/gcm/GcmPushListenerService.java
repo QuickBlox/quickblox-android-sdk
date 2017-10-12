@@ -13,6 +13,6 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
     protected void showNotification(String message) {
         NotificationUtils.showNotification(this, SplashActivity.class,
                 ResourceUtils.getString(R.string.notification_title), message,
-                R.mipmap.ic_launcher, NOTIFICATION_ID);
+                R.mipmap.ic_notification, NOTIFICATION_ID);
     }
 }
