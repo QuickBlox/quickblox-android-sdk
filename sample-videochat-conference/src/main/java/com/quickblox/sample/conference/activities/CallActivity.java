@@ -18,9 +18,8 @@ import com.quickblox.conference.QBConferenceRole;
 import com.quickblox.conference.WsException;
 import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
+import com.quickblox.conference.callbacks.ConferenceEntityCallback;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.fragments.AudioConversationFragment;
 import com.quickblox.sample.conference.fragments.BaseConversationFragment;
@@ -565,7 +564,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         }
     }
 
-    private class JoinedCallback implements QBEntityCallback<ArrayList<Integer>> {
+    private class JoinedCallback implements ConferenceEntityCallback<ArrayList<Integer>> {
         Integer userID;
 
         JoinedCallback(Integer userID) {
@@ -573,7 +572,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         }
 
         @Override
-        public void onSuccess(ArrayList<Integer> publishers, Bundle params) {
+        public void onSuccess(ArrayList<Integer> publishers) {
             Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
             if(rtcClient.isAutoSubscribeAfterJoin()) {
                 subscribedPublishers.addAll(publishers);
@@ -584,7 +583,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         }
 
         @Override
-        public void onError(QBResponseException exception) {
+        public void onError(WsException exception) {
             Log.d(TAG, "onError joinDialog exception= " + exception);
             showToast("Join exception: " + exception.getMessage());
             releaseCurrentSession();

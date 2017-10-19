@@ -15,6 +15,8 @@ import android.widget.ListView;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
+import com.quickblox.conference.WsException;
+import com.quickblox.conference.callbacks.ConferenceEntityCallback;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.conference.R;
@@ -409,9 +411,9 @@ public class DialogsActivity extends BaseActivity {
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
                 : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
 
-        client.createSession(userID, conferenceType, new QBEntityCallback<ConferenceSession>() {
+        client.createSession(userID, conferenceType, new ConferenceEntityCallback<ConferenceSession>() {
             @Override
-            public void onSuccess(ConferenceSession session, Bundle params) {
+            public void onSuccess(ConferenceSession session) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 webRtcSessionManager.setCurrentSession(session);
                 Log.d(TAG, "DialogActivity setCurrentSession onSuccess() session getCurrentUserID= " + session.getCurrentUserID());
@@ -420,7 +422,7 @@ public class DialogsActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(QBResponseException responseException) {
+            public void onError(WsException responseException) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 showErrorSnackbar(R.string.join_conference_error, null, null);
             }

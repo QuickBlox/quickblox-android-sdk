@@ -15,6 +15,9 @@ allprojects {
         maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 
 }
@@ -32,9 +35,9 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.3.4'
+    qbSdkVersion = '3.4.1'
 
-    versionName = '3.3.4'
+    versionName = '3.4.1'
 
     testRunnerVersion = "0.4.1"
 
