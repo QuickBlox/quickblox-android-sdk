@@ -14,7 +14,7 @@
             android:layout_marginTop="@dimen/margin_tittle_details"
             android:text="@string/title"
             android:textSize="@dimen/text_size_large"
-            app:typeface="roboto_medium" />
+            app:robotoTypeface="roboto_medium" />
 
         <TextView
             android:id="@+id/text_movie_year"
@@ -33,7 +33,7 @@
             style="@style/MovieRatingStyle"
             android:layout_marginTop="@dimen/margin_rating_details"
             android:text="@string/rating"
-            app:typeface="roboto_medium" />
+            app:robotoTypeface="roboto_medium" />
 
         <RatingBar
             android:id="@+id/rating_movie"

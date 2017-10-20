@@ -15,13 +15,16 @@ allprojects {
         maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 
 }
 
 ext {
-    compileSdkVersion = 23
-    buildToolsVersion = "23.0.2"
+    compileSdkVersion = 26
+    buildToolsVersion = "26.0.2"
 
     minSdkVersion = 14
     targetSdkVersion = 23
@@ -32,26 +35,26 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.4'
+    qbSdkVersion = '3.4.1'
 
-    versionName = '3.4'
+    versionName = '3.4.1'
 
     testRunnerVersion = "0.4.1"
 
 
     // Dependency versions
-    playServicesVersion = '10.2.1'
-    supportV4Version = '23.1.1'
-    appcompatV7Version = '23.1.1'
-    recyclerviewV7Version = '23.2.1'
-    supportAnnotationsVersion = '23.1.1'
-    designVersion = '23.1.1'
+    playServicesVersion = '11.4.2'
+    supportV4Version = '26.1.0'
+    appcompatV7Version = '26.1.0'
+    recyclerviewV7Version = '26.1.0'
+    supportAnnotationsVersion = '26.1.0'
+    designVersion = '26.1.0'
 
     uilVersion = '1.9.0'
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
     stickyListHeaders = '2.7.0'
-    robotoTextViewVersion = '2.4.3'
+    robotoTextViewVersion = '4.0.0'
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'
 }

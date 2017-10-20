@@ -11,7 +11,7 @@
         <item name="android:paddingLeft">@dimen/list_item_side_margin</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">14sp</item>
-        <item name="typeface">roboto_medium</item>
+        <item name="robotoTypeface">roboto_medium</item>
     </style>
 
     <style name="ListItemIconStyle">
@@ -26,7 +26,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
-        <item name="typeface">roboto_medium</item>
+        <item name="robotoTypeface">roboto_medium</item>
     </style>
 
     <style name="DialogNameStyle" parent="MatchWidth">
@@ -85,7 +85,7 @@
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">@dimen/chat_author_text_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="typeface">roboto_bold</item>
+        <item name="robotoTypeface">roboto_bold</item>
     </style>
 
     <style name="MessageTextStyle" parent="WrapContent">

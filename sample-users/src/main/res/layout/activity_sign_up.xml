@@ -27,7 +27,7 @@
         android:textColorHint="@color/warm_gray_two"
         android:textSize="@dimen/text_size_large"
         android:theme="@style/EditTextTheme"
-        app:typeface="roboto_regular" />
+        app:robotoTypeface="roboto_regular" />
 
     <com.devspark.robototextview.widget.RobotoEditText
         android:id="@+id/password_confirm_edittext"
@@ -41,6 +41,6 @@
         android:textColorHint="@color/warm_gray_two"
         android:textSize="@dimen/text_size_large"
         android:theme="@style/EditTextTheme"
-        app:typeface="roboto_regular" />
+        app:robotoTypeface="roboto_regular" />
 
 </LinearLayout>
