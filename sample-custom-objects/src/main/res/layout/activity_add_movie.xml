@@ -40,7 +40,7 @@
             android:layout_marginTop="@dimen/margin_rating_add"
             android:paddingLeft="@dimen/padding_small"
             android:text="@string/rating"
-            app:typeface="roboto_medium"
+            app:robotoTypeface="roboto_medium"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         <RatingBar
