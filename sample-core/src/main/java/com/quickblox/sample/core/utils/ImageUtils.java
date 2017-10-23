@@ -1,12 +1,16 @@
 package com.quickblox.sample.core.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 
+import com.quickblox.sample.core.BuildConfig;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.constant.MimeType;
@@ -30,7 +34,8 @@ public class ImageUtils {
 
     private static final String CAMERA_FILE_NAME_PREFIX = "CAMERA_";
 
-    private ImageUtils() {}
+    private ImageUtils() {
+    }
 
     public static String saveUriToFile(Uri uri) throws Exception {
         ParcelFileDescriptor parcelFileDescriptor = CoreApp.getInstance().getContentResolver().openFileDescriptor(uri, "r");
@@ -93,7 +98,7 @@ public class ImageUtils {
         }
 
         File photoFile = getTemporaryCameraFile();
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getValidUri(photoFile, fragment.getContext()));
         fragment.startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
 
@@ -124,6 +129,17 @@ public class ImageUtils {
         } else {
             return null;
         }
+    }
+
+    private static Uri getValidUri(File file, Context context) {
+        Uri outputUri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String authority = context.getPackageName() + ".provider";
+            outputUri = FileProvider.getUriForFile(context, authority, file);
+        } else {
+            outputUri = Uri.fromFile(file);
+        }
+        return outputUri;
     }
 
     private static String getTemporaryCameraFileName() {
