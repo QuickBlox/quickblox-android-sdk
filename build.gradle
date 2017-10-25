@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -23,11 +23,11 @@ allprojects {
 }
 
 ext {
-    compileSdkVersion = 23
-    buildToolsVersion = "23.0.2"
+    compileSdkVersion = 26
+    buildToolsVersion = "26.0.1"
 
     minSdkVersion = 14
-    targetSdkVersion = 23
+    targetSdkVersion = 26
 
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7

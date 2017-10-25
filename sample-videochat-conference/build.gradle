@@ -26,8 +26,8 @@ android {
         versionCode 223
         versionName "1.0.23"
 
-        ext.betaDistrubutionGroupAliases=testers_group_name
-        ext.betaDistributionEmails=testers_emails
+//        ext.betaDistrubutionGroupAliases=testers_group_name
+//        ext.betaDistributionEmails=testers_emails
     }
 
     productFlavors {

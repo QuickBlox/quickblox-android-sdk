@@ -14,7 +14,7 @@ public class CoreApp extends Application {
 
     private static CoreApp instance;
     private static final String QB_CONFIG_DEFAULT_FILE_NAME = "qb_config.json";
-    private QbConfigs qbConfigs;
+    protected QbConfigs qbConfigs;
 
     @Override
     public void onCreate() {

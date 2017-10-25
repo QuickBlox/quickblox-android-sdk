@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class QbConfigs implements Serializable{
+public class QbConfigs implements Serializable {
 
     public QbConfigs() {
     }
@@ -30,6 +30,14 @@ public class QbConfigs implements Serializable{
     @SerializedName("gcm_sender_id")
     private String gcmSenderId;
 
+    @SerializedName("janus_server_url")
+    private String janusServerUrl;
+
+    @SerializedName("janus_protocol")
+    private String janusProtocol;
+
+    @SerializedName("janus_plugin")
+    private String janusPlugin;
 
     public String getAppId() {
         return appId;
@@ -87,4 +95,27 @@ public class QbConfigs implements Serializable{
         this.gcmSenderId = gcmSenderId;
     }
 
+    public String getJanusServerUrl() {
+        return janusServerUrl;
+    }
+
+    public void setJanusServerUrl(String janusServerUrl) {
+        this.janusServerUrl = janusServerUrl;
+    }
+
+    public String getJanusProtocol() {
+        return janusProtocol;
+    }
+
+    public void setJanusProtocol(String janusProtocol) {
+        this.janusProtocol = janusProtocol;
+    }
+
+    public String getJanusPlugin() {
+        return janusPlugin;
+    }
+
+    public void setJanusPlugin(String janusPlugin) {
+        this.janusPlugin = janusPlugin;
+    }
 }

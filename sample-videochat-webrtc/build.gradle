@@ -26,8 +26,8 @@ android {
         versionCode 208
         versionName "2.0.8"
 
-        ext.betaDistrubutionGroupAliases=testers_group_name
-        ext.betaDistributionEmails=testers_emails
+//        ext.betaDistrubutionGroupAliases=testers_group_name
+//        ext.betaDistributionEmails=testers_emails
 
     }
 
