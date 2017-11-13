@@ -12,13 +12,20 @@ import android.support.v7.app.AlertDialog;
 
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ImageUtils;
+import com.quickblox.sample.core.utils.SystemPermissionHelper;
 
 public class ImageSourcePickDialogFragment extends DialogFragment {
 
     private static final int POSITION_GALLERY = 0;
     private static final int POSITION_CAMERA = 1;
 
+    private static SystemPermissionHelper systemPermissionHelper;
+
     private OnImageSourcePickedListener onImageSourcePickedListener;
+
+    public ImageSourcePickDialogFragment() {
+        systemPermissionHelper = new SystemPermissionHelper(this);
+    }
 
     public static void show(FragmentManager fm, OnImageSourcePickedListener onImageSourcePickedListener) {
         ImageSourcePickDialogFragment fragment = new ImageSourcePickDialogFragment();
@@ -34,6 +41,10 @@ public class ImageSourcePickDialogFragment extends DialogFragment {
         builder.setItems(R.array.dlg_image_pick, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (!systemPermissionHelper.isSaveImagePermissionGranted()) {
+                    systemPermissionHelper.requestPermissionsForSaveFileImage();
+                    return;
+                }
                 switch (which) {
                     case POSITION_GALLERY:
                         onImageSourcePickedListener.onImageSourcePicked(ImageSource.GALLERY);
