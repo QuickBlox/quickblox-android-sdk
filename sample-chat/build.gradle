@@ -26,8 +26,8 @@ android {
         applicationId "com.quickblox.sample.chat"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 202
-        versionName "3.2"
+        versionCode 352
+        versionName "3.5.2"
     }
 
     productFlavors {

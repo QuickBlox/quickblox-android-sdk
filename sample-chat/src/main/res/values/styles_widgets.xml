@@ -43,8 +43,14 @@
     </style>
 
     <style name="DialogUnreadCounterStyle">
-        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">20dp</item>
+        <item name="android:minWidth">20dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>

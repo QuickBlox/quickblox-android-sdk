@@ -60,7 +60,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
             holder.unreadCounterTextView.setVisibility(View.GONE);
         } else {
             holder.unreadCounterTextView.setVisibility(View.VISIBLE);
-            holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount > 99 ? 99 : unreadMessagesCount));
+            holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount > 99 ? "99+" : unreadMessagesCount));
         }
 
         holder.rootLayout.setBackgroundColor(isItemSelected(position) ? ResourceUtils.getColor(R.color.selected_list_item_color) :
