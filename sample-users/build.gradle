@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.20.1'
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
     }
 }
 
@@ -14,20 +14,23 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionCommonBuild, rootProject.dimensionSpeedBuild
 
     defaultConfig {
         applicationId "com.quickblox.sample.user"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 200
-        versionName "2.0.0"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
     }
 
     productFlavors {
         speedDev {
+            dimension rootProject.dimensionSpeedBuild
             minSdkVersion 21
         }
         dev {
+            dimension rootProject.dimensionCommonBuild
             minSdkVersion rootProject.minSdkVersion
         }
     }
@@ -57,8 +60,9 @@ android {
 }
 
 dependencies {
-    compile(project(':sample-core'))
-    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
+    implementation (project(':sample-core'))
+
+    implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
 }
 
 apply from: "../artifacts.gradle"

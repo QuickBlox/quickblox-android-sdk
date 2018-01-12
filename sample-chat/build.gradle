@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.20.1'
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
     }
 }
 
@@ -21,20 +21,23 @@ repositories {
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionCommonBuild, rootProject.dimensionSpeedBuild
 
     defaultConfig {
         applicationId "com.quickblox.sample.chat"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 352
-        versionName "3.5.2"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
     }
 
     productFlavors {
         speedDev {
+            dimension rootProject.dimensionSpeedBuild
             minSdkVersion 21
         }
         dev {
+            dimension rootProject.dimensionCommonBuild
             minSdkVersion rootProject.minSdkVersion
         }
     }
@@ -71,13 +74,14 @@ android {
 
 
 dependencies {
-    compile("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion")
-    compile("com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion")
+    implementation (project(":sample-core"))
 
-    compile(project(":sample-core"))
-    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
-    compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
-    compile(name: 'sticky-list-headers', ext: 'aar')
+    implementation ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion")
+    implementation("com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion")
+
+    implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
+    implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
+    implementation (name: 'sticky-list-headers', ext: 'aar')
 }
 
 apply from: "../artifacts.gradle"
