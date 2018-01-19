@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.20.1'
+        classpath 'io.fabric.tools:gradle:1.25.1'
     }
 }
 
@@ -18,10 +18,11 @@ repositories {
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionCommonBuild, rootProject.dimensionSpeedBuild
 
     defaultConfig {
         applicationId "com.quickblox.sample.groupchatwebrtc"
-        minSdkVersion rootProject.minSdkVersion
+        minSdkVersion 16
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 208
         versionName "2.0.8"
@@ -33,10 +34,12 @@ android {
 
     productFlavors {
         speedDev {
+            dimension rootProject.dimensionSpeedBuild
             minSdkVersion 21
         }
         dev {
-            minSdkVersion rootProject.minSdkVersion
+            dimension rootProject.dimensionCommonBuild
+            minSdkVersion 16
         }
     }
 
@@ -65,22 +68,24 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-
-    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
-    compile (project(":sample-core"))
-
-    compile "com.android.support:recyclerview-v7:24.0.0"
-    compile "com.android.support:cardview-v7:24.0.0"
-    compile "com.android.support:support-annotations:${rootProject.supportAnnotationsVersion}"
-
-    compile "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
-    compile("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
+    api "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
+    implementation project(':sample-core')
+    implementation 'com.android.support:recyclerview-v7:24.0.0'
+    implementation 'com.android.support:cardview-v7:24.0.0'
+    implementation "com.android.support:support-annotations:${rootProject.supportAnnotationsVersion}"
+    implementation "com.navercorp.pulltorefresh:library:${rootProject.pullToRefreshVersion}@aar"
+    implementation ("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
         transitive = true;
     }
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    implementation 'com.github.bumptech.glide:glide:3.6.1'
 }
 
 apply from: "../artifacts.gradle"

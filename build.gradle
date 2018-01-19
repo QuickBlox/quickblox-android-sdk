@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -24,13 +24,10 @@ allprojects {
 
 ext {
     compileSdkVersion = 26
-    buildToolsVersion = "26.0.1"
+    buildToolsVersion = "26.0.2"
 
     minSdkVersion = 14
     targetSdkVersion = 26
-
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
 
     lintAbortOnError = false
 
@@ -58,6 +55,9 @@ ext {
     robotoTextViewVersion = '2.4.3'
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'
+
+    dimensionCommonBuild = 'commonBuild'
+    dimensionSpeedBuild = 'speedBuild'
 }
 
 task wrapper(type: Wrapper) {
