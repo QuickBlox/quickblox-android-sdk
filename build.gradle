@@ -35,10 +35,10 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.5.2'
+    qbSdkVersion = '3.6.0'
 
-    versionCode = 352
-    versionName = '3.5.2'
+    versionCode = 360
+    versionName = '3.6.0'
 
     testRunnerVersion = "0.4.1"
 
