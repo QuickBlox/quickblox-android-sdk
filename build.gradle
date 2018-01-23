@@ -63,6 +63,5 @@ ext {
     fabricToolsVersion = '1.25.1'
     swipyVersion = '1.2.3'
 
-    dimensionCommonBuild = 'commonBuild'
-    dimensionSpeedBuild = 'speedBuild'
+    dimensionDefault = 'default'
 }
