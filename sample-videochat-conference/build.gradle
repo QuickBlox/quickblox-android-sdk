@@ -18,7 +18,7 @@ repositories {
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
-    flavorDimensions rootProject.dimensionCommonBuild, rootProject.dimensionSpeedBuild
+    flavorDimensions rootProject.dimensionDefault
 
     defaultConfig {
         applicationId "com.quickblox.sample.conference"
@@ -33,11 +33,11 @@ android {
 
     productFlavors {
         speedDev {
-            dimension rootProject.dimensionSpeedBuild
+            dimension rootProject.dimensionDefault
             minSdkVersion 21
         }
         dev {
-            dimension rootProject.dimensionCommonBuild
+            dimension rootProject.dimensionDefault
             minSdkVersion 16
         }
     }

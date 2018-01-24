@@ -56,8 +56,7 @@ ext {
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.2.2'
 
-    dimensionCommonBuild = 'commonBuild'
-    dimensionSpeedBuild = 'speedBuild'
+    dimensionDefault = 'default'
 }
 
 task wrapper(type: Wrapper) {
