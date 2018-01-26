@@ -12,6 +12,7 @@ import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.request.QBDialogRequestBuilder;
+import com.quickblox.chat.request.QBMessageGetBuilder;
 import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
@@ -235,12 +236,13 @@ public class ChatHelper {
 
     public void loadChatHistory(QBChatDialog dialog, int skipPagination,
                                 final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setSkip(skipPagination);
-        customObjectRequestBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
-        customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+        QBMessageGetBuilder messageGetBuilder = new QBMessageGetBuilder();
+        messageGetBuilder.setSkip(skipPagination);
+        messageGetBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
+        messageGetBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+        messageGetBuilder.markAsRead(false);
 
-        QBRestChatService.getDialogMessages(dialog, customObjectRequestBuilder).performAsync(
+        QBRestChatService.getDialogMessages(dialog, messageGetBuilder).performAsync(
                 new QbEntityCallbackWrapper<ArrayList<QBChatMessage>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatMessage> qbChatMessages, Bundle bundle) {

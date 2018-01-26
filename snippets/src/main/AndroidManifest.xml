@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sdk.snippets">
 
     <application
@@ -25,7 +26,8 @@
         <activity android:name=".activities.ChatActivity" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="06afe5b32890416c317e719380d755a99dd2d5ba" />
+            android:value="06afe5b32890416c317e719380d755a99dd2d5ba"
+            tools:replace="android:value"/>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

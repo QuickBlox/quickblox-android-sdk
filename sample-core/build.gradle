@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
     }
 
     lintOptions {
@@ -17,9 +17,9 @@ android {
 }
 
 dependencies {
-    compile ("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion" )
+    api ("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion" )
 
-    compile "com.android.support:design:${rootProject.designVersion}"
-    compile "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
+    api "com.android.support:design:${rootProject.designVersion}"
+    api "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
 
 }
