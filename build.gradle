@@ -62,6 +62,7 @@ ext {
     stickersVersion = '0.7.3'
     crashlyticsVersion = '2.8.0'
     fabricToolsVersion = '1.25.1'
+    stickylistheadersRecyclerViewVersion = '0.4.2'
     swipyVersion = '1.2.3'
 
     dimensionDefault = 'default'
