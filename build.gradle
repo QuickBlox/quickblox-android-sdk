@@ -35,6 +35,7 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
+    qbChatAdapterVersion = '2.0'
     qbSdkVersion = '3.7.1-beta2'
 
     versionCode = 370
