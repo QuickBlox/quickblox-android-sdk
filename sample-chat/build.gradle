@@ -74,14 +74,15 @@ android {
 
 
 dependencies {
-    implementation (project(":sample-core"))
+    implementation(project(":sample-core"))
 
-    implementation ("com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion")
-    implementation("com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion")
+    implementation "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:chat-message-adapter:$rootProject.qbChatAdapterVersion"
 
     implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
     implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
-    implementation (name: 'sticky-list-headers', ext: 'aar')
+    implementation(name: 'sticky-list-headers', ext: 'aar')
 }
 
 apply from: "../artifacts.gradle"
