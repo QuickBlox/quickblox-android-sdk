@@ -5,12 +5,21 @@
     style="@style/MatchParent"
     tools:ignore="RtlHardcoded">
 
-    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-        android:id="@+id/list_chat_messages"
-        style="@style/ListViewWithoutDividerStyle"
+    <!--<se.emilsjolander.stickylistheaders.StickyListHeadersListView-->
+        <!--android:id="@+id/list_chat_messages"-->
+        <!--style="@style/ListViewWithoutDividerStyle"-->
+        <!--android:layout_above="@+id/layout_attachment_preview_container"-->
+        <!--android:listSelector="@android:color/transparent"-->
+        <!--android:stackFromBottom="true" />-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_chat_messages_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/layout_attachment_preview_container"
         android:listSelector="@android:color/transparent"
-        android:stackFromBottom="true" />
+        android:stackFromBottom="true"
+        android:scrollbars="vertical" />
 
     <ProgressBar
         android:id="@+id/progress_chat"

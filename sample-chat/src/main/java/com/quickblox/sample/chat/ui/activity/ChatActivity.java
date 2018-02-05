@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +28,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
 import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
+import com.quickblox.sample.chat.ui.adapter.ChatRecycleViewAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
@@ -37,6 +41,7 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
 import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
 import com.quickblox.users.model.QBUser;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -60,13 +65,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public static final String EXTRA_DIALOG_ID = "dialogId";
 
     private ProgressBar progressBar;
-    private StickyListHeadersListView messagesListView;
+//    private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
 
     private ChatAdapter chatAdapter;
+    private ChatRecycleViewAdapter chatRecycleViewAdapter;
+    private RecyclerView chatMessagesRecyclerView;
+    protected List<QBChatMessage> messagesList;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
 
@@ -100,6 +108,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         initChatConnectionListener();
 
         initViews();
+        initMessagesRecyclerView();
         initChat();
     }
 
@@ -249,7 +258,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     @Override
     protected View getSnackbarAnchorView() {
-        return findViewById(R.id.list_chat_messages);
+        return findViewById(R.id.list_chat_messages_recycle);
     }
 
     public void onSendChatClick(View view) {
@@ -276,8 +285,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void showMessage(QBChatMessage message) {
-        if (chatAdapter != null) {
-            chatAdapter.add(message);
+        if (!messagesList.isEmpty()) {
+            chatRecycleViewAdapter.add(message);
             scrollMessageListDown();
         } else {
             if (unShownMessages == null) {
@@ -285,12 +294,22 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             }
             unShownMessages.add(message);
         }
+
+//        if (chatAdapter != null) {
+//            chatAdapter.add(message);
+//            scrollMessageListDown();
+//        } else {
+//            if (unShownMessages == null) {
+//                unShownMessages = new ArrayList<>();
+//            }
+//            unShownMessages.add(message);
+//        }
     }
 
     private void initViews() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        messagesListView = _findViewById(R.id.list_chat_messages);
+//        messagesListView = _findViewById(R.id.list_chat_messages);
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
@@ -315,6 +334,23 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 });
         AttachmentPreviewAdapterView previewAdapterView = _findViewById(R.id.adapter_view_attachment_preview);
         previewAdapterView.setAdapter(attachmentPreviewAdapter);
+    }
+
+    private void initMessagesRecyclerView() {
+        chatMessagesRecyclerView = findViewById(R.id.list_chat_messages_recycle);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        chatMessagesRecyclerView.setLayoutManager(layoutManager);
+        chatMessagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        messagesList = new ArrayList<>();
+        chatRecycleViewAdapter = new ChatRecycleViewAdapter(this, qbChatDialog, messagesList);
+
+        chatMessagesRecyclerView.addItemDecoration(
+                new StickyRecyclerHeadersDecoration(chatRecycleViewAdapter));
+
+        chatMessagesRecyclerView.setAdapter(chatRecycleViewAdapter);
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -463,49 +499,72 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // The newest messages should be in the end of list,
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
-                if (chatAdapter == null) {
-                    chatAdapter = new ChatAdapter(ChatActivity.this, qbChatDialog, messages);
-                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
+                if (messagesList.isEmpty()) {
+                    chatRecycleViewAdapter.addList(messages);
+                    chatRecycleViewAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
                         @Override
                         public void downloadMore() {
+                            Log.w(TAG, "downloadMore");
                             loadChatHistory();
                         }
                     });
-                    chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
-                        @Override
-                        public void onItemInfoExpanded(final int position) {
-                            if (isLastItem(position)) {
-                                // HACK need to allow info textview visibility change so posting it via handler
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        messagesListView.setSelection(position);
-                                    }
-                                });
-                            } else {
-                                messagesListView.smoothScrollToPosition(position);
-                            }
-                        }
-
-                        private boolean isLastItem(int position) {
-                            return position == chatAdapter.getCount() - 1;
-                        }
-                    });
                     if (unShownMessages != null && !unShownMessages.isEmpty()) {
-                        List<QBChatMessage> chatList = chatAdapter.getList();
+                        List<QBChatMessage> chatList = chatRecycleViewAdapter.getList();
                         for (QBChatMessage message : unShownMessages) {
                             if (!chatList.contains(message)) {
-                                chatAdapter.add(message);
+                                chatRecycleViewAdapter.add(message);
                             }
                         }
                     }
-                    messagesListView.setAdapter(chatAdapter);
-                    messagesListView.setAreHeadersSticky(false);
-                    messagesListView.setDivider(null);
+                    scrollMessageListDown();
                 } else {
-                    chatAdapter.addList(messages);
-                    messagesListView.setSelection(messages.size());
+                    chatRecycleViewAdapter.addToList(messages);
                 }
+
+//                if (chatAdapter == null) {
+//                    chatAdapter = new ChatAdapter(ChatActivity.this, qbChatDialog, messages);
+//                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
+//                        @Override
+//                        public void downloadMore() {
+//                            Log.w(TAG, "downloadMore");
+//                            loadChatHistory();
+//                        }
+//                    });
+//                    chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
+//                        @Override
+//                        public void onItemInfoExpanded(final int position) {
+//                            if (isLastItem(position)) {
+//                                // HACK need to allow info textview visibility change so posting it via handler
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        messagesListView.setSelection(position);
+//                                    }
+//                                });
+//                            } else {
+//                                messagesListView.smoothScrollToPosition(position);
+//                            }
+//                        }
+//
+//                        private boolean isLastItem(int position) {
+//                            return position == chatAdapter.getCount() - 1;
+//                        }
+//                    });
+//                    if (unShownMessages != null && !unShownMessages.isEmpty()) {
+//                        List<QBChatMessage> chatList = chatAdapter.getList();
+//                        for (QBChatMessage message : unShownMessages) {
+//                            if (!chatList.contains(message)) {
+//                                chatAdapter.add(message);
+//                            }
+//                        }
+//                    }
+//                    messagesListView.setAdapter(chatAdapter);
+//                    messagesListView.setAreHeadersSticky(false);
+//                    messagesListView.setDivider(null);
+//                } else {
+//                    chatAdapter.addList(messages);
+//                    messagesListView.setSelection(messages.size());
+//                }
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -520,7 +579,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void scrollMessageListDown() {
-        messagesListView.setSelection(messagesListView.getCount() - 1);
+        chatMessagesRecyclerView.getLayoutManager().scrollToPosition(messagesList.size() - 1);
+//        messagesListView.setSelection(messagesListView.getCount() - 1);
     }
 
     private void deleteChat() {
