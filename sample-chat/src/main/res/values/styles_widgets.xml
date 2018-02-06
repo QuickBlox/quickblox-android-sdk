@@ -109,4 +109,12 @@
         <item name="android:textSize">@dimen/chat_message_info_text_size</item>
         <item name="android:visibility">gone</item>
     </style>
+
+    <style name="AvatarImageViewStyle.Right">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="AvatarImageViewStyle.Left">
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>

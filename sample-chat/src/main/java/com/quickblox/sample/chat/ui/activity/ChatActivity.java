@@ -40,6 +40,7 @@ import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.imagepick.ImagePickHelper;
 import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
+import com.quickblox.ui.kit.chatmessage.adapter.listeners.QBChatAttachClickListener;
 import com.quickblox.users.model.QBUser;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -65,7 +66,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public static final String EXTRA_DIALOG_ID = "dialogId";
 
     private ProgressBar progressBar;
-//    private StickyListHeadersListView messagesListView;
+    //    private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
 
     private LinearLayout attachmentPreviewContainerLayout;
@@ -77,6 +78,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     protected List<QBChatMessage> messagesList;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
+    private ImageAttachClickListener imageAttachClickListener;
 
     private QBChatDialog qbChatDialog;
     private ArrayList<QBChatMessage> unShownMessages;
@@ -131,12 +133,14 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     @Override
     protected void onResume() {
         super.onResume();
+        addChatMessagesAdapterListeners();
         ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        removeChatMessagesAdapterListeners();
         ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
     }
 
@@ -351,6 +355,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 new StickyRecyclerHeadersDecoration(chatRecycleViewAdapter));
 
         chatMessagesRecyclerView.setAdapter(chatRecycleViewAdapter);
+        imageAttachClickListener = new ImageAttachClickListener();
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -364,7 +369,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
         chatMessage.setMarkable(true);
 
-        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType()) && !qbChatDialog.isJoined()){
+        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType()) && !qbChatDialog.isJoined()) {
             Toaster.shortToast("You're still joining a group chat, please wait a bit");
             return;
         }
@@ -438,6 +443,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             leaveGroupDialog();
         }
     }
+
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
         ChatHelper.getInstance().updateDialogUsers(qbChatDialog, selectedUsers,
                 new QBEntityCallback<QBChatDialog>() {
@@ -626,10 +632,26 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         };
     }
 
+    private void addChatMessagesAdapterListeners() {
+        chatRecycleViewAdapter.setAttachImageClickListener(imageAttachClickListener);
+    }
+
+    private void removeChatMessagesAdapterListeners() {
+        chatRecycleViewAdapter.removeAttachImageClickListener(imageAttachClickListener);
+    }
+
     public class ChatMessageListener extends QbChatDialogMessageListenerImp {
         @Override
         public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
             showMessage(qbChatMessage);
+        }
+    }
+
+    protected class ImageAttachClickListener implements QBChatAttachClickListener {
+
+        @Override
+        public void onLinkClicked(QBAttachment qbAttachment, int position) {
+            AttachmentImageActivity.start(ChatActivity.this, qbAttachment.getUrl());
         }
     }
 }
