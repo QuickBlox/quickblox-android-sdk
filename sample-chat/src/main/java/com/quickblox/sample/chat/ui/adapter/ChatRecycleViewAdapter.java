@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.sample.chat.R;
@@ -49,17 +50,23 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     }
 
     @Override
-    protected void onBindViewMsgRightHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
-        setViewVisibility(holder.avatar, View.GONE);
-
-        super.onBindViewMsgRightHolder(holder, chatMessage, position);
+    public String getImageUrl(int position) {
+        QBAttachment attachment = getQBAttach(position);
+        return attachment.getUrl();
     }
 
-    @Override
-    protected void onBindViewMsgLeftHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
-        setViewVisibility(holder.avatar, View.GONE);
-        super.onBindViewMsgLeftHolder(holder, chatMessage, position);
-    }
+//    @Override
+//    protected void onBindViewMsgRightHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
+////        setViewVisibility(holder.avatar, View.GONE);
+//
+//        super.onBindViewMsgRightHolder(holder, chatMessage, position);
+//    }
+
+//    @Override
+//    protected void onBindViewMsgLeftHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
+//        setViewVisibility(holder.avatar, View.GONE);
+//        super.onBindViewMsgLeftHolder(holder, chatMessage, position);
+//    }
 
     protected void setViewVisibility(View view, int visibility) {
         if (view != null) {
@@ -90,14 +97,13 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
 
     @Override
     public long getHeaderId(int position) {
-        Log.w("AMBRA", "getHeaderId position= " + position);
         QBChatMessage chatMessage = getItem(position);
         return TimeUtils.getDateAsHeaderId(chatMessage.getDateSent() * 1000);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        Log.w("AMBRA", "onCreateHeaderViewHolder= " + parent);
+        Log.w(TAG, "onCreateHeaderViewHolder= " + parent);
         View view = inflater.inflate(R.layout.view_chat_message_header, parent, false);
         return new RecyclerView.ViewHolder(view) {};
     }
@@ -105,7 +111,7 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
         View view = holder.itemView;
-        Log.w("AMBRA", "onBindHeaderViewHolder position= " + position);
+        Log.w(TAG, "onBindHeaderViewHolder position= " + position);
         TextView dateTextView = view.findViewById(R.id.header_date_textview);
 
         QBChatMessage chatMessage = getItem(position);
