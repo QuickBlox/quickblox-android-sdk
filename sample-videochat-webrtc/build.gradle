@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.quickblox.sample.groupchatwebrtc"
-        minSdkVersion rootProject.minSdkVersion
+        minSdkVersion 16
         targetSdkVersion rootProject.targetSdkVersion
         versionCode rootProject.versionCode
         versionName rootProject.versionName
@@ -36,7 +36,7 @@ android {
         }
         dev {
             dimension rootProject.dimensionDefault
-            minSdkVersion rootProject.minSdkVersion
+            minSdkVersion 16
         }
     }
 
@@ -65,6 +65,21 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    //There is code for excluding some native libs (it useful if you need reduce apk size and want
+    //build apk only for specific platform). This method allows you to achieve savings about 10MB
+    //of apk's size (but you need build 4 different apks).
+//    packagingOptions {
+//        exclude '**/armeabi-v7a/libjingle_peerconnection_so.so'
+//        exclude '**/arm64-v8a/libjingle_peerconnection_so.so'
+//        exclude '**/x86_64/libjingle_peerconnection_so.so'
+//        exclude '**/x86/libjingle_peerconnection_so.so'
+//    }
 }
 
 dependencies {
