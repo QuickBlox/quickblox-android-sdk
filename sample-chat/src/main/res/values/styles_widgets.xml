@@ -117,4 +117,9 @@
     <style name="AvatarImageViewStyle.Left">
         <item name="android:visibility">gone</item>
     </style>
+
+
+    <style name="TextViewTextMsg.Right" >
+        <item name="android:textColorHighlight">@color/color_grey</item>
+    </style>
 </resources>

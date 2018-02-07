@@ -11,11 +11,16 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.core.helper.CollectionsUtil;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.TimeUtils;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
+import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.ui.kit.chatmessage.adapter.QBMessagesAdapter;
+import com.quickblox.ui.kit.chatmessage.adapter.utils.LinkUtils;
+import com.quickblox.users.model.QBUser;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import org.jivesoftware.smack.SmackException;
@@ -46,6 +51,10 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     @Override
     public void onBindViewHolder(QBMessageViewHolder holder, int position) {
         downloadMore(position);
+        QBChatMessage chatMessage = getItem(position);
+        if (isIncoming(chatMessage) && !isRead(chatMessage)) {
+            readMessage(chatMessage);
+        }
         super.onBindViewHolder(holder, position);
     }
 
@@ -55,18 +64,21 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
         return attachment.getUrl();
     }
 
-//    @Override
-//    protected void onBindViewMsgRightHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
-////        setViewVisibility(holder.avatar, View.GONE);
-//
-//        super.onBindViewMsgRightHolder(holder, chatMessage, position);
-//    }
+    @Override
+    protected void onBindViewMsgLeftHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
+        holder.timeTextMessageTextView.setVisibility(View.GONE);
 
-//    @Override
-//    protected void onBindViewMsgLeftHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
-//        setViewVisibility(holder.avatar, View.GONE);
-//        super.onBindViewMsgLeftHolder(holder, chatMessage, position);
-//    }
+        QBUser sender = QbUsersHolder.getInstance().getUserById(chatMessage.getSenderId());
+        String senderName = sender.getFullName();
+
+        TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_text_view);
+        opponentNameTextView.setText(senderName);
+
+        TextView customMessageTimeTextView = holder.itemView.findViewById(R.id.custom_msg_text_time_message);
+        customMessageTimeTextView.setText(getDate(chatMessage.getDateSent()));
+
+        super.onBindViewMsgLeftHolder(holder, chatMessage, position);
+    }
 
     protected void setViewVisibility(View view, int visibility) {
         if (view != null) {
@@ -74,12 +86,17 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
         }
     }
 
-    private void readMessage(QBChatMessage chatMessage){
+    private void readMessage(QBChatMessage chatMessage) {
         try {
             chatDialog.readMessage(chatMessage);
         } catch (XMPPException | SmackException.NotConnectedException e) {
             Log.w(TAG, e);
         }
+    }
+
+    private boolean isRead(QBChatMessage chatMessage) {
+        Integer currentUserId = ChatHelper.getCurrentUser().getId();
+        return !CollectionsUtil.isEmpty(chatMessage.getReadIds()) && chatMessage.getReadIds().contains(currentUserId);
     }
 
     public void setPaginationHistoryListener(PaginationHistoryListener paginationListener) {
@@ -105,7 +122,8 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
         Log.w(TAG, "onCreateHeaderViewHolder= " + parent);
         View view = inflater.inflate(R.layout.view_chat_message_header, parent, false);
-        return new RecyclerView.ViewHolder(view) {};
+        return new RecyclerView.ViewHolder(view) {
+        };
     }
 
     @Override
