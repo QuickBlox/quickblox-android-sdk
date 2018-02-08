@@ -120,6 +120,6 @@
 
 
     <style name="TextViewTextMsg.Right" >
-        <item name="android:textColorHighlight">@color/color_grey</item>
+        <item name="android:textColorHighlight">@color/color_light_blue_qb</item>
     </style>
 </resources>

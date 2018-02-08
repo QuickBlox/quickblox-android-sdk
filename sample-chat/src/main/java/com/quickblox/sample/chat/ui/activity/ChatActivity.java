@@ -27,7 +27,6 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
-import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.ui.adapter.ChatRecycleViewAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
@@ -54,8 +53,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private static final int REQUEST_CODE_ATTACHMENT = 721;
@@ -66,13 +63,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public static final String EXTRA_DIALOG_ID = "dialogId";
 
     private ProgressBar progressBar;
-    //    private StickyListHeadersListView messagesListView;
     private EditText messageEditText;
 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
 
-    private ChatAdapter chatAdapter;
     private ChatRecycleViewAdapter chatRecycleViewAdapter;
     private RecyclerView chatMessagesRecyclerView;
     protected List<QBChatMessage> messagesList;
@@ -103,14 +98,15 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         Log.v(TAG, "deserialized dialog = " + qbChatDialog);
         qbChatDialog.initForChat(QBChatService.getInstance());
 
+        initViews();
+        initMessagesRecyclerView();
+
         chatMessageListener = new ChatMessageListener();
 
         qbChatDialog.addMessageListener(chatMessageListener);
 
         initChatConnectionListener();
 
-        initViews();
-        initMessagesRecyclerView();
         initChat();
     }
 
@@ -350,7 +346,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         messagesList = new ArrayList<>();
         chatRecycleViewAdapter = new ChatRecycleViewAdapter(this, qbChatDialog, messagesList);
-
+        chatRecycleViewAdapter.setPaginationHistoryListener(new PaginationListener());
         chatMessagesRecyclerView.addItemDecoration(
                 new StickyRecyclerHeadersDecoration(chatRecycleViewAdapter));
 
@@ -507,22 +503,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (messagesList.isEmpty()) {
                     chatRecycleViewAdapter.addList(messages);
-                    chatRecycleViewAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
-                        @Override
-                        public void downloadMore() {
-                            Log.w(TAG, "downloadMore");
-                            loadChatHistory();
-                        }
-                    });
-                    if (unShownMessages != null && !unShownMessages.isEmpty()) {
-                        List<QBChatMessage> chatList = chatRecycleViewAdapter.getList();
-                        for (QBChatMessage message : unShownMessages) {
-                            if (!chatList.contains(message)) {
-                                chatRecycleViewAdapter.add(message);
-                            }
-                        }
-                    }
-                    scrollMessageListDown();
+                    addUnShownMessagesToAdapter();
                 } else {
                     chatRecycleViewAdapter.addToList(messages);
                 }
@@ -584,9 +565,19 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
 
+    private void addUnShownMessagesToAdapter() {
+        if (unShownMessages != null && !unShownMessages.isEmpty()) {
+            List<QBChatMessage> chatList = chatRecycleViewAdapter.getList();
+            for (QBChatMessage message : unShownMessages) {
+                if (!chatList.contains(message)) {
+                    chatRecycleViewAdapter.add(message);
+                }
+            }
+        }
+    }
+
     private void scrollMessageListDown() {
         chatMessagesRecyclerView.getLayoutManager().scrollToPosition(messagesList.size() - 1);
-//        messagesListView.setSelection(messagesListView.getCount() - 1);
     }
 
     private void deleteChat() {
@@ -618,7 +609,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 skipPagination = 0;
                 switch (qbChatDialog.getType()) {
                     case GROUP:
-                        chatAdapter = null;
+//                        chatAdapter = null;
                         // Join active room if we're in Group Chat
                         runOnUiThread(new Runnable() {
                             @Override
@@ -640,18 +631,27 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         chatRecycleViewAdapter.removeAttachImageClickListener(imageAttachClickListener);
     }
 
-    public class ChatMessageListener extends QbChatDialogMessageListenerImp {
+    private class ChatMessageListener extends QbChatDialogMessageListenerImp {
         @Override
         public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
             showMessage(qbChatMessage);
         }
     }
 
-    protected class ImageAttachClickListener implements QBChatAttachClickListener {
+    private class ImageAttachClickListener implements QBChatAttachClickListener {
 
         @Override
         public void onLinkClicked(QBAttachment qbAttachment, int position) {
             AttachmentImageActivity.start(ChatActivity.this, qbAttachment.getUrl());
+        }
+    }
+
+    private class PaginationListener implements PaginationHistoryListener {
+
+        @Override
+        public void downloadMore() {
+            Log.w(TAG, "downloadMore");
+            loadChatHistory();
         }
     }
 }

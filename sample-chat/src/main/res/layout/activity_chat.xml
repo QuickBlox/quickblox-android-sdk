@@ -9,9 +9,7 @@
         android:id="@+id/list_chat_messages_recycle"
         style="@style/MatchParent"
         android:layout_above="@+id/layout_attachment_preview_container"
-        android:listSelector="@android:color/transparent"
-        android:scrollbars="vertical"
-        android:stackFromBottom="true" />
+        android:listSelector="@android:color/transparent"/>
 
     <ProgressBar
         android:id="@+id/progress_chat"
