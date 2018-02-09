@@ -49,6 +49,12 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     }
 
     @Override
+    public void add(QBChatMessage item) {
+        this.chatMessages.add(item);
+        this.notifyItemInserted(chatMessages.size() - 1);
+    }
+
+    @Override
     public void onBindViewHolder(QBMessageViewHolder holder, int position) {
         downloadMore(position);
         QBChatMessage chatMessage = getItem(position);
