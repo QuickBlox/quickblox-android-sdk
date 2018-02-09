@@ -285,31 +285,28 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     public void showMessage(QBChatMessage message) {
-        if (!messagesList.isEmpty()) {
+        if (isAdapterConnected()) {
             chatRecycleViewAdapter.add(message);
             scrollMessageListDown();
         } else {
-            if (unShownMessages == null) {
-                unShownMessages = new ArrayList<>();
-            }
-            unShownMessages.add(message);
+            delayShowMessage(message);
         }
+    }
 
-//        if (chatAdapter != null) {
-//            chatAdapter.add(message);
-//            scrollMessageListDown();
-//        } else {
-//            if (unShownMessages == null) {
-//                unShownMessages = new ArrayList<>();
-//            }
-//            unShownMessages.add(message);
-//        }
+    private boolean isAdapterConnected() {
+        return !messagesList.isEmpty();
+    }
+
+    private void delayShowMessage(QBChatMessage message) {
+        if (unShownMessages == null) {
+            unShownMessages = new ArrayList<>();
+        }
+        unShownMessages.add(message);
     }
 
     private void initViews() {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-//        messagesListView = _findViewById(R.id.list_chat_messages);
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
@@ -503,7 +500,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 Collections.reverse(messages);
                 if (messagesList.isEmpty()) {
                     chatRecycleViewAdapter.addList(messages);
-                    addUnShownMessagesToAdapter();
+                    addDelayedMessagesToAdapter();
                 } else {
                     chatRecycleViewAdapter.addToList(messages);
                 }
@@ -565,7 +562,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
 
-    private void addUnShownMessagesToAdapter() {
+    private void addDelayedMessagesToAdapter() {
         if (unShownMessages != null && !unShownMessages.isEmpty()) {
             List<QBChatMessage> chatList = chatRecycleViewAdapter.getList();
             for (QBChatMessage message : unShownMessages) {
