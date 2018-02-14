@@ -74,16 +74,26 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     protected void onBindViewMsgLeftHolder(TextMessageHolder holder, QBChatMessage chatMessage, int position) {
         holder.timeTextMessageTextView.setVisibility(View.GONE);
 
-        QBUser sender = QbUsersHolder.getInstance().getUserById(chatMessage.getSenderId());
-        String senderName = sender.getFullName();
-
         TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_text_view);
-        opponentNameTextView.setText(senderName);
+        opponentNameTextView.setText(getSenderName(chatMessage));
 
         TextView customMessageTimeTextView = holder.itemView.findViewById(R.id.custom_msg_text_time_message);
         customMessageTimeTextView.setText(getDate(chatMessage.getDateSent()));
 
         super.onBindViewMsgLeftHolder(holder, chatMessage, position);
+    }
+
+    @Override
+    protected void onBindViewAttachLeftHolder(ImageAttachHolder holder, QBChatMessage chatMessage, int position) {
+        TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_attach_view);
+        opponentNameTextView.setText(getSenderName(chatMessage));
+
+        super.onBindViewAttachLeftHolder(holder, chatMessage, position);
+    }
+
+    private String getSenderName(QBChatMessage chatMessage) {
+        QBUser sender = QbUsersHolder.getInstance().getUserById(chatMessage.getSenderId());
+        return sender.getFullName();
     }
 
     protected void setViewVisibility(View view, int visibility) {

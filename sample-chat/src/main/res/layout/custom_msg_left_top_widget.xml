@@ -5,13 +5,14 @@
     style="@style/MatchWidth"
     android:orientation="horizontal">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/opponent_name_text_view"
         style="@style/WrapContent"
         android:layout_weight="1"
         android:paddingRight="8dp"
         android:textStyle="bold"
-        tools:text="Opponent Name" />
+        tools:text="Opponent Name"
+        android:layout_width="0dp" />
 
     <TextView
         android:id="@+id/custom_msg_text_time_message"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LinearAttachWidgetFrame.Left">
+
+    <TextView
+        android:id="@+id/opponent_name_attach_view"
+        style="@style/WrapContent"
+        android:background="@drawable/badge_attach_message_time"
+        android:padding="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_common"
+        android:textStyle="bold"
+        tools:text="Opponent Name" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/msg_text_time_attach"
+        style="@style/TextViewAttach.Right"
+        tools:text="time" />
+
+</LinearLayout>
