@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,8 +21,8 @@ import android.widget.ProgressBar;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
-import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -74,6 +75,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
     private ImageAttachClickListener imageAttachClickListener;
+    private RecyclerView.SmoothScroller smoothScroller;
 
     private QBChatDialog qbChatDialog;
     private ArrayList<QBChatMessage> unShownMessages;
@@ -349,6 +351,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         chatMessagesRecyclerView.setAdapter(chatRecycleViewAdapter);
         imageAttachClickListener = new ImageAttachClickListener();
+        smoothScroller = new LinearSmoothScroller(this) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -574,7 +582,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void scrollMessageListDown() {
-        chatMessagesRecyclerView.getLayoutManager().scrollToPosition(messagesList.size() - 1);
+        smoothScroller.setTargetPosition(messagesList.size() - 1);
+        chatMessagesRecyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
     }
 
     private void deleteChat() {

@@ -119,7 +119,19 @@
     </style>
 
 
-    <style name="TextViewTextMsg.Right" >
+    <style name="TextViewTextMsg.Right">
         <item name="android:textColorHighlight">@color/color_light_blue_qb</item>
+    </style>
+
+    <style name="LinearAttachWidgetFrame.Left">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/padding_common</item>
+        <item name="android:layout_marginLeft">@dimen/padding_big</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="TextViewAttach.Right">
+        <item name="android:background">@drawable/badge_attach_message_time</item>
     </style>
 </resources>
