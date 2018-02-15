@@ -8,8 +8,6 @@
     <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/opponent_name_text_view"
         style="@style/MessageAuthorStyle"
-        android:layout_width="0dp"
-        android:layout_weight="1"
         tools:text="Opponent Name" />
 
     <TextView
