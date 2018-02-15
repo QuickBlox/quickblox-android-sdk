@@ -134,4 +134,12 @@
     <style name="TextViewAttach.Right">
         <item name="android:background">@drawable/badge_attach_message_time</item>
     </style>
+
+    <style name="OpponentNameViewStyle" parent="WrapContent">
+        <item name="android:paddingRight">@dimen/padding_common</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/badge_attach_message_time</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
 </resources>

@@ -5,11 +5,7 @@
 
     <TextView
         android:id="@+id/opponent_name_attach_view"
-        style="@style/WrapContent"
-        android:background="@drawable/badge_attach_message_time"
-        android:padding="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_common"
-        android:textStyle="bold"
+        style="@style/OpponentNameViewStyle"
         tools:text="Opponent Name" />
 
     <View

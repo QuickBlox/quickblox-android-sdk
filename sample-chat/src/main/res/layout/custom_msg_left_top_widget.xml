@@ -5,14 +5,12 @@
     style="@style/MatchWidth"
     android:orientation="horizontal">
 
-    <TextView
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/opponent_name_text_view"
-        style="@style/WrapContent"
+        style="@style/MessageAuthorStyle"
+        android:layout_width="0dp"
         android:layout_weight="1"
-        android:paddingRight="8dp"
-        android:textStyle="bold"
-        tools:text="Opponent Name"
-        android:layout_width="0dp" />
+        tools:text="Opponent Name" />
 
     <TextView
         android:id="@+id/custom_msg_text_time_message"
