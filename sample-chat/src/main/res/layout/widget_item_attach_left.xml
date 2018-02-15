@@ -3,15 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LinearAttachWidgetFrame.Left">
 
-    <TextView
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/opponent_name_attach_view"
-        style="@style/OpponentNameViewStyle"
-        tools:text="Opponent Name" />
-
-    <View
+        style="@style/MessageAuthorStyle"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="Opponent Name" />
 
     <TextView
         android:id="@+id/msg_text_time_attach"
