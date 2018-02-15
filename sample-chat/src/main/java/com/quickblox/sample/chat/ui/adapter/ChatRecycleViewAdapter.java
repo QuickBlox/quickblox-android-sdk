@@ -28,9 +28,6 @@ import org.jivesoftware.smack.XMPPException;
 
 import java.util.List;
 
-/**
- * Created by roman on 2/5/18.
- */
 
 public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     private static final String TAG = ChatRecycleViewAdapter.class.getSimpleName();
