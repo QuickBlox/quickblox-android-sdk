@@ -59,8 +59,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private static final int REQUEST_CODE_ATTACHMENT = 721;
     private static final int REQUEST_CODE_SELECT_PEOPLE = 752;
 
-    private static final String PROPERTY_SAVE_TO_HISTORY = "save_to_history";
-
     public static final String EXTRA_DIALOG_ID = "dialogId";
 
     private ProgressBar progressBar;
@@ -366,7 +364,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         } else {
             chatMessage.setBody(text);
         }
-        chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+        chatMessage.setSaveToHistory(true);
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
         chatMessage.setMarkable(true);
 
@@ -512,51 +510,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 } else {
                     chatRecycleViewAdapter.addToList(messages);
                 }
-
-//                if (chatAdapter == null) {
-//                    chatAdapter = new ChatAdapter(ChatActivity.this, qbChatDialog, messages);
-//                    chatAdapter.setPaginationHistoryListener(new PaginationHistoryListener() {
-//                        @Override
-//                        public void downloadMore() {
-//                            Log.w(TAG, "downloadMore");
-//                            loadChatHistory();
-//                        }
-//                    });
-//                    chatAdapter.setOnItemInfoExpandedListener(new ChatAdapter.OnItemInfoExpandedListener() {
-//                        @Override
-//                        public void onItemInfoExpanded(final int position) {
-//                            if (isLastItem(position)) {
-//                                // HACK need to allow info textview visibility change so posting it via handler
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        messagesListView.setSelection(position);
-//                                    }
-//                                });
-//                            } else {
-//                                messagesListView.smoothScrollToPosition(position);
-//                            }
-//                        }
-//
-//                        private boolean isLastItem(int position) {
-//                            return position == chatAdapter.getCount() - 1;
-//                        }
-//                    });
-//                    if (unShownMessages != null && !unShownMessages.isEmpty()) {
-//                        List<QBChatMessage> chatList = chatAdapter.getList();
-//                        for (QBChatMessage message : unShownMessages) {
-//                            if (!chatList.contains(message)) {
-//                                chatAdapter.add(message);
-//                            }
-//                        }
-//                    }
-//                    messagesListView.setAdapter(chatAdapter);
-//                    messagesListView.setAreHeadersSticky(false);
-//                    messagesListView.setDivider(null);
-//                } else {
-//                    chatAdapter.addList(messages);
-//                    messagesListView.setSelection(messages.size());
-//                }
                 progressBar.setVisibility(View.GONE);
             }
 
