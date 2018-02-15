@@ -19,7 +19,6 @@ import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ResourceUtils;
 import com.quickblox.ui.kit.chatmessage.adapter.QBMessagesAdapter;
-import com.quickblox.ui.kit.chatmessage.adapter.utils.LinkUtils;
 import com.quickblox.users.model.QBUser;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
@@ -133,7 +132,6 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
 
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        Log.w(TAG, "onCreateHeaderViewHolder= " + parent);
         View view = inflater.inflate(R.layout.view_chat_message_header, parent, false);
         return new RecyclerView.ViewHolder(view) {
         };
@@ -142,7 +140,6 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
         View view = holder.itemView;
-        Log.w(TAG, "onBindHeaderViewHolder position= " + position);
         TextView dateTextView = view.findViewById(R.id.header_date_textview);
 
         QBChatMessage chatMessage = getItem(position);
