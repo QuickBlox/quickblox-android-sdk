@@ -92,12 +92,6 @@ public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> imp
         return sender.getFullName();
     }
 
-    protected void setViewVisibility(View view, int visibility) {
-        if (view != null) {
-            view.setVisibility(visibility);
-        }
-    }
-
     private void readMessage(QBChatMessage chatMessage) {
         try {
             chatDialog.readMessage(chatMessage);

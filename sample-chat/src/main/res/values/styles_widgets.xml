@@ -121,6 +121,12 @@
 
     <style name="TextViewTextMsg.Right">
         <item name="android:textColorHighlight">@color/color_light_blue_qb</item>
+        <item name="android:textColor">@color/text_color_white</item>
+    </style>
+
+    <style name="TextViewTimeMsg.Right">
+        <item name="android:layout_gravity">right</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
     </style>
 
     <style name="LinearAttachWidgetFrame.Left">
@@ -136,6 +142,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/badge_attach_message_time</item>
         <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+
+    <style name="BubbleTextFrame.Right">
+        <item name="android:background">@drawable/outgoing_message_bg</item>
     </style>
 
 </resources>
