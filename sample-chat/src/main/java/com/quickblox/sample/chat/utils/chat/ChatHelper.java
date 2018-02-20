@@ -54,7 +54,7 @@ public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();
 
     public static final int DIALOG_ITEMS_PER_PAGE = 100;
-    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 20;
+    public static final int CHAT_HISTORY_ITEMS_PER_PAGE = 50;
     private static final String CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent";
 
     private static ChatHelper instance;
