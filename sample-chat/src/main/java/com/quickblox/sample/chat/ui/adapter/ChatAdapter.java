@@ -28,13 +28,13 @@ import org.jivesoftware.smack.XMPPException;
 import java.util.List;
 
 
-public class ChatRecycleViewAdapter extends QBMessagesAdapter<QBChatMessage> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
-    private static final String TAG = ChatRecycleViewAdapter.class.getSimpleName();
+public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+    private static final String TAG = ChatAdapter.class.getSimpleName();
     private final QBChatDialog chatDialog;
     private PaginationHistoryListener paginationListener;
     private int previousGetCount = 0;
 
-    public ChatRecycleViewAdapter(Context context, QBChatDialog chatDialog, List<QBChatMessage> chatMessages) {
+    public ChatAdapter(Context context, QBChatDialog chatDialog, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
         this.chatDialog = chatDialog;
     }

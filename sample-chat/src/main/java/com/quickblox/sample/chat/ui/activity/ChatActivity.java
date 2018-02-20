@@ -28,7 +28,7 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.AttachmentPreviewAdapter;
-import com.quickblox.sample.chat.ui.adapter.ChatRecycleViewAdapter;
+import com.quickblox.sample.chat.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.ui.widget.AttachmentPreviewAdapterView;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
@@ -67,7 +67,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
 
-    private ChatRecycleViewAdapter chatRecycleViewAdapter;
+    private ChatAdapter chatAdapter;
     private RecyclerView chatMessagesRecyclerView;
     protected List<QBChatMessage> messagesList;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
@@ -286,7 +286,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     public void showMessage(QBChatMessage message) {
         if (isAdapterConnected()) {
-            chatRecycleViewAdapter.add(message);
+            chatAdapter.add(message);
             scrollMessageListDown();
         } else {
             delayShowMessage(message);
@@ -342,12 +342,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         chatMessagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         messagesList = new ArrayList<>();
-        chatRecycleViewAdapter = new ChatRecycleViewAdapter(this, qbChatDialog, messagesList);
-        chatRecycleViewAdapter.setPaginationHistoryListener(new PaginationListener());
+        chatAdapter = new ChatAdapter(this, qbChatDialog, messagesList);
+        chatAdapter.setPaginationHistoryListener(new PaginationListener());
         chatMessagesRecyclerView.addItemDecoration(
-                new StickyRecyclerHeadersDecoration(chatRecycleViewAdapter));
+                new StickyRecyclerHeadersDecoration(chatAdapter));
 
-        chatMessagesRecyclerView.setAdapter(chatRecycleViewAdapter);
+        chatMessagesRecyclerView.setAdapter(chatAdapter);
         imageAttachClickListener = new ImageAttachClickListener();
         smoothScroller = new LinearSmoothScroller(this) {
             @Override
@@ -505,10 +505,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
                 if (messagesList.isEmpty()) {
-                    chatRecycleViewAdapter.addList(messages);
+                    chatAdapter.addList(messages);
                     addDelayedMessagesToAdapter();
                 } else {
-                    chatRecycleViewAdapter.addToList(messages);
+                    chatAdapter.addToList(messages);
                 }
                 progressBar.setVisibility(View.GONE);
             }
@@ -525,10 +525,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void addDelayedMessagesToAdapter() {
         if (unShownMessages != null && !unShownMessages.isEmpty()) {
-            List<QBChatMessage> chatList = chatRecycleViewAdapter.getList();
+            List<QBChatMessage> chatList = chatAdapter.getList();
             for (QBChatMessage message : unShownMessages) {
                 if (!chatList.contains(message)) {
-                    chatRecycleViewAdapter.add(message);
+                    chatAdapter.add(message);
                 }
             }
         }
@@ -583,11 +583,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void addChatMessagesAdapterListeners() {
-        chatRecycleViewAdapter.setAttachImageClickListener(imageAttachClickListener);
+        chatAdapter.setAttachImageClickListener(imageAttachClickListener);
     }
 
     private void removeChatMessagesAdapterListeners() {
-        chatRecycleViewAdapter.removeAttachImageClickListener(imageAttachClickListener);
+        chatAdapter.removeAttachImageClickListener(imageAttachClickListener);
     }
 
     private class ChatMessageListener extends QbChatDialogMessageListenerImp {
