@@ -80,9 +80,8 @@ dependencies {
     implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
     implementation "com.quickblox:chat-message-adapter:$rootProject.qbChatAdapterVersion"
 
-    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.stickylistheadersRecyclerViewVersion@aar"
+    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.stickylistheadersVersion@aar"
     implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
-    implementation(name: 'sticky-list-headers', ext: 'aar')
 }
 
 apply from: "../artifacts.gradle"

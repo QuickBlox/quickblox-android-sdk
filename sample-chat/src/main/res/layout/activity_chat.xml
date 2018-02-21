@@ -6,7 +6,7 @@
     tools:ignore="RtlHardcoded">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_chat_messages_recycle"
+        android:id="@+id/list_chat_messages"
         style="@style/MatchParent"
         android:layout_above="@+id/layout_attachment_preview_container"
         android:listSelector="@android:color/transparent"/>
