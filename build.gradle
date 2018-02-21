@@ -43,7 +43,6 @@ ext {
 
     testRunnerVersion = "0.4.1"
 
-
     // Dependency versions
     playServicesVersion = '11.4.2'
     supportLibVersion = '26.1.0'
@@ -54,15 +53,12 @@ ext {
     designVersion = supportLibVersion
     cardViewVersion = supportLibVersion
 
-    uilVersion = '1.9.0'
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
-    stickyListHeaders = '2.7.0'
     robotoTextViewVersion = '4.0.0'
-    stickersVersion = '0.7.3'
     crashlyticsVersion = '2.8.0'
     fabricToolsVersion = '1.25.1'
-    stickylistheadersRecyclerViewVersion = '0.4.2'
+    stickylistheadersVersion = '0.4.2'
     swipyVersion = '1.2.3'
 
     dimensionDefault = 'default'
