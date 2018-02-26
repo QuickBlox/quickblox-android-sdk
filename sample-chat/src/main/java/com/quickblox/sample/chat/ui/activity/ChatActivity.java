@@ -73,7 +73,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
     private ImageAttachClickListener imageAttachClickListener;
-    private RecyclerView.SmoothScroller smoothScroller;
 
     private QBChatDialog qbChatDialog;
     private ArrayList<QBChatMessage> unShownMessages;
@@ -350,12 +349,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         chatMessagesRecyclerView.setAdapter(chatAdapter);
         imageAttachClickListener = new ImageAttachClickListener();
-        smoothScroller = new LinearSmoothScroller(this) {
-            @Override
-            protected int getVerticalSnapPreference() {
-                return LinearSmoothScroller.SNAP_TO_START;
-            }
-        };
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -537,8 +530,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private void scrollMessageListDown() {
-        smoothScroller.setTargetPosition(messagesList.size() - 1);
-        chatMessagesRecyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
+        chatMessagesRecyclerView.scrollToPosition(messagesList.size() - 1);
     }
 
     private void deleteChat() {
