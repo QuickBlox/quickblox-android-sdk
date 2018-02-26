@@ -19,12 +19,16 @@ public class QbDialogUtils {
     private static final String TAG = QbDialogUtils.class.getSimpleName();
 
 
-
     public static QBChatDialog createDialog(List<QBUser> users) {
-        QBUser currentUser = ChatHelper.getCurrentUser();
-        users.remove(currentUser);
-
+        if (isPrivateChat(users)) {
+            QBUser currentUser = ChatHelper.getCurrentUser();
+            users.remove(currentUser);
+        }
         return DialogUtils.buildDialog(users.toArray(new QBUser[users.size()]));
+    }
+
+    private static boolean isPrivateChat(List<QBUser> users) {
+        return users.size() == 2;
     }
 
     public static List<QBUser> getAddedUsers(QBChatDialog dialog, List<QBUser> currentUsers) {
@@ -143,7 +147,7 @@ public class QbDialogUtils {
         return TextUtils.join(",", occupantIdsList);
     }
 
-    public static QBChatDialog buildPrivateChatDialog(String dialogId, Integer recipientId){
+    public static QBChatDialog buildPrivateChatDialog(String dialogId, Integer recipientId) {
         QBChatDialog chatDialog = DialogUtils.buildPrivateDialog(recipientId);
         chatDialog.setDialogId(dialogId);
 

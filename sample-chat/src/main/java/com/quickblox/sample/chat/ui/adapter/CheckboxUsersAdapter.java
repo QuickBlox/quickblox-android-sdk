@@ -7,16 +7,18 @@ import android.view.ViewGroup;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CheckboxUsersAdapter extends UsersAdapter {
 
     private List<Integer> initiallySelectedUsers;
-    private List<QBUser> selectedUsers;
+    private Set<QBUser> selectedUsers;
 
     public CheckboxUsersAdapter(Context context, List<QBUser> users) {
         super(context, users);
-        this.selectedUsers = new ArrayList<>();
+        selectedUsers = new HashSet<>();
         this.selectedUsers.add(currentUser);
 
         this.initiallySelectedUsers = new ArrayList<>();
@@ -63,7 +65,7 @@ public class CheckboxUsersAdapter extends UsersAdapter {
         return view;
     }
 
-    public List<QBUser> getSelectedUsers() {
+    public Set<QBUser> getSelectedUsers() {
         return selectedUsers;
     }
 
