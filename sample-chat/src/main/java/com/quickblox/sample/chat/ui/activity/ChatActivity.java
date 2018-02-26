@@ -294,7 +294,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     }
 
     private boolean isAdapterConnected() {
-        return !messagesList.isEmpty();
+        return checkAdapterInit;
     }
 
     private void delayShowMessage(QBChatMessage message) {
