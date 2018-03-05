@@ -18,6 +18,7 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.PaginationHistoryListener;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
 import com.quickblox.sample.core.utils.ResourceUtils;
+import com.quickblox.sample.core.utils.UiUtils;
 import com.quickblox.ui.kit.chatmessage.adapter.QBMessagesAdapter;
 import com.quickblox.users.model.QBUser;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -71,6 +72,7 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
         holder.timeTextMessageTextView.setVisibility(View.GONE);
 
         TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_text_view);
+        opponentNameTextView.setTextColor(UiUtils.getRandomTextColorById(chatMessage.getSenderId()));
         opponentNameTextView.setText(getSenderName(chatMessage));
 
         TextView customMessageTimeTextView = holder.itemView.findViewById(R.id.custom_msg_text_time_message);
@@ -82,6 +84,7 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
     @Override
     protected void onBindViewAttachLeftHolder(ImageAttachHolder holder, QBChatMessage chatMessage, int position) {
         TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_attach_view);
+        opponentNameTextView.setTextColor(UiUtils.getRandomTextColorById(chatMessage.getSenderId()));
         opponentNameTextView.setText(getSenderName(chatMessage));
 
         super.onBindViewAttachLeftHolder(holder, chatMessage, position);
