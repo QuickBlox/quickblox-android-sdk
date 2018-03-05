@@ -339,7 +339,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         chatMessagesRecyclerView.setLayoutManager(layoutManager);
-        chatMessagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         messagesList = new ArrayList<>();
         chatAdapter = new ChatAdapter(this, qbChatDialog, messagesList);
