@@ -109,4 +109,43 @@
         <item name="android:textSize">@dimen/chat_message_info_text_size</item>
         <item name="android:visibility">gone</item>
     </style>
+
+    <style name="OpponentNameViewStyle" parent="WrapContent">
+        <item name="android:paddingRight">@dimen/padding_common</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/badge_attach_message_time</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+
+    <style name="AvatarImageViewStyle.Right">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="AvatarImageViewStyle.Left">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="TextViewTextMsg.Right">
+        <item name="android:textColorHighlight">@color/color_light_blue_qb</item>
+        <item name="android:textColor">@color/text_color_white</item>
+    </style>
+
+    <style name="TextViewTimeMsg.Right">
+        <item name="android:layout_gravity">right</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+    </style>
+
+    <style name="LinearAttachWidgetFrame.Left">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/padding_common</item>
+        <item name="android:layout_marginLeft">@dimen/padding_big</item>
+        <item name="android:layout_alignParentRight">false</item>
+    </style>
+
+    <style name="BubbleTextFrame.Right">
+        <item name="android:background">@drawable/outgoing_message_bg</item>
+    </style>
+
 </resources>

@@ -33,6 +33,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.managers.DialogsManager;
@@ -40,11 +41,13 @@ import com.quickblox.sample.chat.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
+import com.quickblox.sample.chat.utils.qb.callback.QBPushSubscribeListenerImpl;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
@@ -223,12 +226,31 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private void userLogout() {
         ChatHelper.getInstance().destroy();
-        SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+        logout();
         SharedPrefsHelper.getInstance().removeQbUser();
         LoginActivity.start(DialogsActivity.this);
         QbDialogHolder.getInstance().clear();
         ProgressDialogFragment.hide(getSupportFragmentManager());
         finish();
+    }
+
+    private void logout() {
+        if (QBPushManager.getInstance().isSubscribedToPushes()) {
+            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
+                @Override
+                public void onSubscriptionDeleted(boolean success) {
+                    logoutREST();
+                    QBPushManager.getInstance().removeListener(this);
+                }
+            });
+            SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+        } else {
+            logoutREST();
+        }
+    }
+
+    private void logoutREST() {
+        QBUsers.signOut().performAsync(null);
     }
 
     private void updateDialogsList() {

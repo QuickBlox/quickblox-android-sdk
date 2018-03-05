@@ -11,6 +11,7 @@
     <color name="background_app_color">#ffffff</color>
 
     <color name="color_blue_qb">#046ad0</color>
+    <color name="color_light_blue_qb">#87cefa</color>
     <color name="color_green_qb">#4ad24d</color>
     <color name="color_username_rectangle">#99000000</color>
 

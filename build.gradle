@@ -36,12 +36,12 @@ ext {
 
     // QuickBlox SDK version
     qbSdkVersion = '3.7.0'
+    qbChatAdapterVersion = '2.0'
 
     versionCode = 370
     versionName = '3.7.0'
 
     testRunnerVersion = "0.4.1"
-
 
     // Dependency versions
     playServicesVersion = '11.4.2'
@@ -53,14 +53,12 @@ ext {
     designVersion = supportLibVersion
     cardViewVersion = supportLibVersion
 
-    uilVersion = '1.9.0'
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
-    stickyListHeaders = '2.7.0'
     robotoTextViewVersion = '4.0.0'
-    stickersVersion = '0.7.3'
     crashlyticsVersion = '2.8.0'
     fabricToolsVersion = '1.25.1'
+    stickylistheadersVersion = '0.4.2'
     swipyVersion = '1.2.3'
 
     dimensionDefault = 'default'
