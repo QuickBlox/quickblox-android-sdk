@@ -38,8 +38,8 @@ ext {
     qbSdkVersion = '3.7.0'
     qbChatAdapterVersion = '2.0'
 
-    versionCode = 370
-    versionName = '3.7.0'
+    versionCode = 371
+    versionName = '3.7.1'
 
     testRunnerVersion = "0.4.1"
 

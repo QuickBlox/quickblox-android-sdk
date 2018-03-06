@@ -22,8 +22,9 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="ListDateHeaderStyle" parent="MatchWidth">
-        <item name="android:gravity">center</item>
+    <style name="ListDateHeaderStyle" parent="WrapContent">
+        <item name="android:background">@drawable/chat_date_bubble</item>
+        <item name="android:padding">@dimen/padding_common</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="robotoTypeface">roboto_medium</item>
