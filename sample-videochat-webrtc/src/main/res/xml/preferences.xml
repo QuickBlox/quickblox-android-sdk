@@ -110,6 +110,12 @@
             android:dialogTitle="@string/pref_noaudioprocessing_dlg"
             android:defaultValue="@string/pref_noaudioprocessing_default" />
 
+        <CheckBoxPreference
+            android:key="@string/pref_manage_speakerphone_by_proximity_key"
+            android:title="@string/pref_manage_speakerphone_by_proximity_title"
+            android:dialogTitle="@string/pref_manage_speakerphone_by_proximity_dlg"
+            android:defaultValue="@string/pref_manage_speakerphone_by_proximity_default" />
+
     </PreferenceCategory>
 
     <Preference
