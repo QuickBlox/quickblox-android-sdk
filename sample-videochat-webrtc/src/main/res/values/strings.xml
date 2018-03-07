@@ -146,8 +146,9 @@
     <string name="pref_noaudioprocessing_default">false</string>
 
     <string name="pref_manage_speakerphone_by_proximity_key">manage_speakerphone_by_proximity_preference</string>
-    <string name="pref_manage_speakerphone_by_proximity_title">Manage Speaker Phone by Proximity Sensor (audio call only)</string>
-    <string name="pref_manage_speakerphone_by_proximity_dlg">Manage Speaker Phone by Proximity Sensor (audio call only)</string>
+    <string name="pref_manage_speakerphone_by_proximity_title">Manage Speaker Phone by Proximity Sensor</string>
+    <string name="pref_manage_speakerphone_by_proximity_dlg">Manage Speaker Phone by Proximity Sensor</string>
+    <string name="pref_manage_speakerphone_by_proximity_summary">Enables managing of Speaker Phone by Proximity Sensor for Audio calls</string>
     <string name="pref_manage_speakerphone_by_proximity_default">false</string>
 
     <!--Call Settings-->
