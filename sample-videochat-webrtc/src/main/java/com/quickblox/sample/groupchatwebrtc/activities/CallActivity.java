@@ -145,9 +145,24 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         connectionView = (LinearLayout) View.inflate(this, R.layout.connection_popup, null);
         checker = new PermissionsChecker(getApplicationContext());
 
+        if (!isInCommingCall){
+            startAudioManager();
+            ringtonePlayer.play(true);
+        }
         startSuitableFragment(isInCommingCall);
     }
 
+    private void startAudioManager() {
+        audioManager.start((audioDevice, set) -> {
+            if (callStarted) {
+            Toaster.shortToast("Audio device switched to  " + audioDevice);
+
+            if (onChangeAudioDeviceCallback != null) {
+                onChangeAudioDeviceCallback.audioDeviceChanged(audioDevice);
+            }
+            }
+        });
+    }
 
     private void startScreenSharing(final Intent data){
         ScreenShareFragment screenShareFragment = ScreenShareFragment.newIntstance();
@@ -264,16 +279,6 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
         audioManager.setBluetoothAudioDeviceStateListener(connected -> {
             if (callStarted) {
                 Toaster.shortToast("Bluetooth " + (connected ? "connected" : "disconnected"));
-            }
-        });
-
-        audioManager.start((audioDevice, set) -> {
-            if (callStarted) {
-                Toaster.shortToast("Audio device switched to  " + audioDevice);
-
-                if (onChangeAudioDeviceCallback != null) {
-                    onChangeAudioDeviceCallback.audioDeviceChanged(audioDevice);
-                }
             }
         });
     }
@@ -550,7 +555,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             Log.d(TAG, "Stop session");
 
             if (audioManager != null) {
-                audioManager.close();
+                audioManager.stop();
             }
             releaseCurrentSession();
 
@@ -657,6 +662,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
     @Override
     public void onAcceptCurrentSession() {
         if (currentSession != null) {
+            startAudioManager();
             addConversationFragment(true);
         } else {
             Log.d(TAG, "SKIP addConversationFragment method");
