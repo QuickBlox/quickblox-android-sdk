@@ -20,8 +20,8 @@ public interface ConversationFragmentCallbackListener {
     void addCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
     void removeCurrentCallStateCallback (CallActivity.CurrentCallStateCallback currentCallStateCallback);
 
-    void addOnChangeDynamicToggle (CallActivity.OnChangeDynamicToggle onChangeDynamicCallback);
-    void removeOnChangeDynamicToggle (CallActivity.OnChangeDynamicToggle onChangeDynamicCallback);
+    void addOnChangeAudioDeviceCallback(CallActivity.OnChangeAudioDevice onChangeDynamicCallback);
+    void removeOnChangeAudioDeviceCallback(CallActivity.OnChangeAudioDevice onChangeDynamicCallback);
 
     void onSetAudioEnabled(boolean isAudioEnabled);
 

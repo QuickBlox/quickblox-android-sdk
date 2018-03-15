@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LinearAttachWidgetFrame.Left">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/opponent_name_attach_view"
+        style="@style/MessageAuthorStyle"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        tools:text="Opponent Name" />
+
+    <TextView
+        android:id="@+id/msg_text_time_attach"
+        style="@style/TextViewAttach.Right"
+        tools:text="time" />
+
+</LinearLayout>
