@@ -34,12 +34,6 @@ public class App extends CoreApp {
         if (!TextUtils.isEmpty(qbConfigs.getJanusServerUrl())) {
             ConferenceConfig.setUrl(qbConfigs.getJanusServerUrl());
         }
-        if (!TextUtils.isEmpty(qbConfigs.getJanusProtocol())) {
-            ConferenceConfig.setProtocol(qbConfigs.getJanusProtocol());
-        }
-        if (!TextUtils.isEmpty(qbConfigs.getJanusPlugin())) {
-            ConferenceConfig.setPlugin(qbConfigs.getJanusPlugin());
-        }
     }
 
     private void checkMultiServer() {

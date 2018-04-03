@@ -33,12 +33,6 @@ public class QbConfigs implements Serializable {
     @SerializedName("janus_server_url")
     private String janusServerUrl;
 
-    @SerializedName("janus_protocol")
-    private String janusProtocol;
-
-    @SerializedName("janus_plugin")
-    private String janusPlugin;
-
     public String getAppId() {
         return appId;
     }
@@ -101,21 +95,5 @@ public class QbConfigs implements Serializable {
 
     public void setJanusServerUrl(String janusServerUrl) {
         this.janusServerUrl = janusServerUrl;
-    }
-
-    public String getJanusProtocol() {
-        return janusProtocol;
-    }
-
-    public void setJanusProtocol(String janusProtocol) {
-        this.janusProtocol = janusProtocol;
-    }
-
-    public String getJanusPlugin() {
-        return janusPlugin;
-    }
-
-    public void setJanusPlugin(String janusPlugin) {
-        this.janusPlugin = janusPlugin;
     }
 }
