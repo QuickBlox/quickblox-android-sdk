@@ -41,6 +41,8 @@
 
     <string name="error_name_must_not_contain_special_characters_from_app">%1$s must contain 3 &#8212; %2$s alphanumeric Latin characters without space, the first char must be a letter</string>
 
+    <string name="error_server_url_null">Multi-conference server is available only for Enterprise plans. Please refer to https://quickblox.com/developers/EnterpriseFeatures for more information and contacts.</string>
+
     <!--menu-->
     <string name="action_start_login">Done</string>
     <string name="action_settings">Settings</string>

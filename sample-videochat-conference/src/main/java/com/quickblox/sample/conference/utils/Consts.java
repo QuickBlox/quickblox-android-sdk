@@ -7,8 +7,6 @@ import android.Manifest;
  */
 public interface Consts {
 
-    String QB_CONFIG_FILE_NAME = "qb_config.json";
-
     String DEFAULT_USER_PASSWORD = "x6Bt0VDy5";
 
     String VERSION_NUMBER = "1.0";
@@ -28,10 +26,6 @@ public interface Consts {
     int MAX_OPPONENTS_COUNT = 6;
 
     String PREF_CURREN_ROOM_NAME = "current_room_name";
-    String PREF_CURRENT_TOKEN = "current_token";
-    String PREF_TOKEN_EXPIRATION_DATE = "token_expiration_date";
-
-    String EXTRA_QB_USER = "qb_user";
 
     String EXTRA_USER_ID = "user_id";
     String EXTRA_USER_LOGIN = "user_login";
@@ -42,30 +36,9 @@ public interface Consts {
     String EXTRA_DIALOG_IS_VIDEO = "dialog_is_video";
     String EXTRA_PENDING_INTENT = "pending_Intent";
 
-    String EXTRA_CONTEXT = "context";
-    String EXTRA_OPPONENTS_LIST = "opponents_list";
-    String EXTRA_CONFERENCE_TYPE = "conference_type";
-    String EXTRA_IS_INCOMING_CALL = "conversation_reason";
-
     String EXTRA_LOGIN_RESULT = "login_result";
     String EXTRA_LOGIN_ERROR_MESSAGE = "login_error_message";
     int EXTRA_LOGIN_RESULT_CODE = 1002;
 
     String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
-
-    String EXTRA_COMMAND_TO_SERVICE = "command_for_service";
-    int COMMAND_NOT_FOUND = 0;
-    int COMMAND_LOGIN = 1;
-    int COMMAND_LOGOUT = 2;
-    String EXTRA_IS_STARTED_FOR_CALL = "isRunForCall";
-    String ALREADY_LOGGED_IN = "You have already logged in chat";
-
-    String JANUS_PROTOCOL = "janus-protocol";
-    String JANUS_URL = "wss://janusdev.quickblox.com:8989";
-    String JANUS_PLUGIN = "janus.plugin.videoroom";
-
-    enum StartConversationReason {
-        INCOME_CALL_FOR_ACCEPTION,
-        OUTCOME_CALL_MADE
-    }
 }

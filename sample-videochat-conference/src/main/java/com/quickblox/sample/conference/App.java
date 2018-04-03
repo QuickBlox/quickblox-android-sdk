@@ -23,6 +23,7 @@ public class App extends CoreApp {
         Fabric.with(this, new Crashlytics());
         initApplication();
         initConferenceConfig();
+        checkMultiServer();
     }
 
     private void initApplication() {
@@ -38,6 +39,12 @@ public class App extends CoreApp {
         }
         if (!TextUtils.isEmpty(qbConfigs.getJanusPlugin())) {
             ConferenceConfig.setPlugin(qbConfigs.getJanusPlugin());
+        }
+    }
+
+    private void checkMultiServer() {
+        if (ConferenceConfig.getUrl() == null) {
+            throw new AssertionError(getString(R.string.error_server_url_null));
         }
     }
 
