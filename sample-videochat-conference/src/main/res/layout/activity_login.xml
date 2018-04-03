@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view_login_activity"
+    style="@style/MatchParent"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/padding_start"
+    >
+
+    <TextView
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_actionbar"
+        android:text="@string/text_welcoming_message"
+        />
+
+    <EditText
+        android:id="@+id/user_name"
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_top"
+        android:hint="@string/hint_user_name"
+        android:textSize="16sp"
+        android:singleLine="true"
+        />
+
+    <EditText
+        android:id="@+id/chat_room_name"
+        style="@style/MatchWidth"
+        android:paddingTop="@dimen/padding_top"
+        android:hint="@string/hint_chat_room_name"
+        android:textSize="16sp"
+        android:singleLine="true"
+        />
+
+</LinearLayout>

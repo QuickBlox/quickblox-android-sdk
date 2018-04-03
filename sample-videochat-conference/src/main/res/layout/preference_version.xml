@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text_version_name"
+    style="@style/MatchWidth"
+    android:background="@color/grey_transparent_20"
+    android:gravity="center_horizontal"
+    android:paddingBottom="@dimen/margin_common"
+    android:paddingTop="@dimen/margin_common"
+    android:text="@string/versionName"
+    android:textSize="@dimen/text_size_ringing"
+    android:textStyle="normal">
+
+</TextView>

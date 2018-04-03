@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/update_opponents_list"
+        android:title="@string/action_update_opponens_list"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/log_out"
+        android:title="@string/action_logout"
+        app:showAsAction="never"
+        />
+</menu>
