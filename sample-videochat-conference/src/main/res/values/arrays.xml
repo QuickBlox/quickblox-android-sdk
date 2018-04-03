@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cameras">
+        <item>Front</item>
+        <item>Back</item>
+    </string-array>
+
+    <string-array name="camerasValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="videoResolutions">
+        <item>Default</item>
+        <item>HD (1280 x 720)</item>
+        <item>VGA (640 x 480)</item>
+        <item>QVGA (320 x 240)</item>
+    </string-array>
+
+    <string-array name="videoResolutionsValues">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="cameraFpsValues">
+        <item>0</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="cameraFps">
+        <item>Default</item>
+        <item>15 fps</item>
+        <item>20 fps</item>
+        <item>30 fps</item>
+    </string-array>
+
+    <string-array name="startBitrate">
+        <item>Default</item>
+        <item>Manual</item>
+    </string-array>
+
+    <string-array name="videoCodecs">
+        <item>VP8</item>
+        <item>VP9</item>
+        <item>H264</item>
+    </string-array>
+
+    <string-array name="videoCodecsValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="audioCodecs">
+        <item>ISAC</item>
+        <item>opus</item>
+    </string-array>
+
+    <integer-array name="localViewCoordinates">
+        <item>0</item>
+        <item>0</item>
+        <item>100</item>
+        <item>100</item>
+    </integer-array>
+
+    <integer-array name="localViewCoordinatesOnRemote">
+        <item>70</item>
+        <item>0</item>
+        <item>30</item>
+        <item>30</item>
+    </integer-array>
+
+    <integer-array name="local_view_coordinates">
+        <item>0</item>
+        <item>0</item>
+        <item>5</item>
+        <item>5</item>
+    </integer-array>
+
+    <integer-array name="local_view_coordinates_on_remote">
+        <item>70</item>
+        <item>0</item>
+        <item>30</item>
+        <item>30</item>
+    </integer-array>
+
+    <integer-array name="local_view_coordinates_local_preview_peer2peer_screen">
+        <item>4</item>
+        <item>20</item>
+        <item>22</item>
+        <item>27</item>
+    </integer-array>
+
+    <integer-array name="local_view_coordinates_preview_multi_screen">
+        <item>4</item><!--marginleft-->
+        <item>20</item><!--margintop-->
+        <item>22</item><!--width-->
+        <item>33</item><!--height-->
+    </integer-array>
+
+</resources>
