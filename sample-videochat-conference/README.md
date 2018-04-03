@@ -1,14 +1,16 @@
-<!DOCTYPE HTML>
+# Overview
+QuickBlox provides the Multiparty Video Conferencing solution which allows to setup video conference between 10-12 people. It's built on top of WebRTC SFU technologies.
 
-<html>
+Multi-conference server is available only for **Enterprise** plans, with additional **fee**. Please refer to https://quickblox.com/developers/EnterpriseFeatures for more information and contacts.
 
-<body>
-<h1 id="toc_0">Quickblox Android WebRTC Conference documentation.</h1>
+# Features supported
+* Video/Audio Conference with 10-12 people
+* Join-Rejoin video room functionality (like Skype)
+* Mute/Unmute audio/video stream (own and opponents)
+* Display bitrate
+* Switch video input device (camera)
 
-<p>This project provides a brand new way for Quickblox WebRTC users to take part in video chats.
-That means the user can create a dialog, add occupants there and join to it for video communication.</p>
-
-<h2 id="toc_1">Getting started.</h2>
+# Getting started
 
 <p>Integrate QuickBlox Conference sdk in your application.
 For using conference chat based on WEBRTC technology in your app, you must add dependency:</p>
