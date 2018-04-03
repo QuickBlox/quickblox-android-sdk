@@ -4,5 +4,6 @@
   "auth_secret": "qTFM-eN4vN8rmAw",
   "account_key": "HpmRBz9gRf5wUGbHE5ds",
   "api_domain": "https://api.quickblox.com",
-  "chat_domain": "chat.quickblox.com"
+  "chat_domain": "chat.quickblox.com",
+  "janus_server_url": ""
 }
