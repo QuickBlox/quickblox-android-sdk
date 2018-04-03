@@ -12,6 +12,8 @@ import android.util.Log;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
+import com.quickblox.chat.connections.tcp.QBTcpChatConnectionFabric;
+import com.quickblox.chat.connections.tcp.QBTcpConfigurationBuilder;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -88,6 +90,10 @@ public class CallService extends Service {
 
     private void createChatService() {
         if (chatService == null) {
+            QBTcpConfigurationBuilder configurationBuilder = new QBTcpConfigurationBuilder();
+            configurationBuilder.setSocketTimeout(0);
+            QBChatService.setConnectionFabric(new QBTcpChatConnectionFabric(configurationBuilder));
+
             QBChatService.setDebugEnabled(true);
             chatService = QBChatService.getInstance();
         }

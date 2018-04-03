@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.25.1'
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
     }
 }
 
@@ -14,6 +14,8 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+
+    flatDir { dirs 'libs' }
 }
 
 android {
@@ -25,8 +27,8 @@ android {
         applicationId "com.quickblox.sample.chat"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 202
-        versionName "3.1"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
     }
 
     productFlavors {
@@ -72,12 +74,14 @@ android {
 
 
 dependencies {
+    implementation(project(":sample-core"))
+
     implementation "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
-    implementation project(':sample-core')
-    implementation 'com.github.orangegangsters:swipy:1.2.2@aar'
-    implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
-    implementation "se.emilsjolander:stickylistheaders:${rootProject.stickyListHeaders}"
+    implementation "com.quickblox:chat-message-adapter:$rootProject.qbChatAdapterVersion"
+
+    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.stickylistheadersVersion@aar"
+    implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
 }
 
 apply from: "../artifacts.gradle"

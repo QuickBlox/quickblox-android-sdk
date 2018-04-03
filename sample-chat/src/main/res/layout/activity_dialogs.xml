@@ -33,14 +33,14 @@
             android:text="@string/chat_empty_you_are_alone_here"
             android:textColor="@color/text_color_dark_grey"
             android:textSize="20sp"
-            app:typeface="roboto_medium" />
+            app:robotoTypeface="roboto_medium" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             style="@style/WrapContent"
             android:text="@string/chat_empty_start_new_chat"
             android:textColor="@color/text_color_green"
             android:textSize="20sp"
-            app:typeface="roboto_medium" />
+            app:robotoTypeface="roboto_medium" />
     </LinearLayout>
 
     <ProgressBar

@@ -16,13 +16,14 @@ import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.utils.CollectionsUtils;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 
 import java.util.ArrayList;
 
 /**
  * Created by tereha on 25.05.16.
  */
-public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeDynamicToggle {
+public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeAudioDevice {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 
     private ToggleButton audioSwitchToggleButton;
@@ -39,7 +40,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStart() {
         super.onStart();
-        conversationFragmentCallbackListener.addOnChangeDynamicToggle(this);
+        conversationFragmentCallbackListener.addOnChangeAudioDeviceCallback(this);
     }
 
     @Nullable
@@ -109,7 +110,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onStop() {
         super.onStop();
-        conversationFragmentCallbackListener.removeOnChangeDynamicToggle(this);
+        conversationFragmentCallbackListener.removeOnChangeAudioDeviceCallback(this);
     }
 
     @Override
@@ -127,9 +128,6 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     protected void actionButtonsEnabled(boolean inability) {
         super.actionButtonsEnabled(inability);
-        if (!headsetPlugged) {
-            audioSwitchToggleButton.setEnabled(inability);
-        }
         audioSwitchToggleButton.setActivated(inability);
     }
 
@@ -146,19 +144,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void enableDynamicToggle(boolean plugged, boolean previousDeviceEarPiece) {
-        headsetPlugged = plugged;
-
-        if (isStarted) {
-            audioSwitchToggleButton.setEnabled(!plugged);
-
-            if (plugged) {
-                audioSwitchToggleButton.setChecked(true);
-            }else if(previousDeviceEarPiece){
-                audioSwitchToggleButton.setChecked(true);
-            } else {
-                audioSwitchToggleButton.setChecked(false);
-            }
-        }
+    public void audioDeviceChanged(AppRTCAudioManager.AudioDevice newAudioDevice) {
+        audioSwitchToggleButton.setChecked(newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
     }
 }

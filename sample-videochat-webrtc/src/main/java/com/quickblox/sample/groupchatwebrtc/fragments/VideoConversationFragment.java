@@ -735,7 +735,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
 
     @Override
-    public void onStateChanged(QBRTCSession session, BaseSession.QBRTCSessionState state) {
+    public void onStateChanged(QBRTCSession qbrtcSession, BaseSession.QBRTCSessionState qbrtcSessionState) {
 
     }
 

@@ -1,10 +1,14 @@
 package com.quickblox.sample.groupchatwebrtc.utils;
 
 import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
+
+import java.io.IOException;
 
 /**
  * QuickBlox team
@@ -17,14 +21,48 @@ public class RingtonePlayer {
 
     public RingtonePlayer(Context context, int resource){
         this.context = context;
-        mediaPlayer = android.media.MediaPlayer.create(context, resource);
+        Uri beepUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + resource);
+        mediaPlayer = new MediaPlayer();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING);
+
+            mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
+        } else {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+        }
+
+        try {
+            mediaPlayer.setDataSource(context, beepUri);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public RingtonePlayer(Context context){
         this.context = context;
         Uri notification = getNotification();
         if (notification != null) {
-            mediaPlayer = android.media.MediaPlayer.create(context, notification);
+            mediaPlayer = new MediaPlayer();
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE);
+
+                mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
+            } else {
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
+            }
+
+            try {
+                mediaPlayer.setDataSource(context, notification);
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

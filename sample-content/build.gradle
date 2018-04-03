@@ -1,22 +1,36 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionDefault
 
     defaultConfig {
         applicationId "com.quickblox.sample.content"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 200
-        versionName "2.0.0"
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
     }
 
     productFlavors {
         speedDev {
+            dimension rootProject.dimensionDefault
             minSdkVersion 21
         }
         dev {
+            dimension rootProject.dimensionDefault
             minSdkVersion rootProject.minSdkVersion
         }
     }
@@ -42,11 +56,11 @@ android {
 }
 
 dependencies {
-    compile "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+    implementation (project(":sample-core"))
 
-    compile(project(":sample-core"))
+    implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
 
-    compile "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
+    implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
 }
 
 apply from: "../artifacts.gradle"

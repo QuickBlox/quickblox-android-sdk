@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:3.1.1'
     }
 }
 
@@ -17,53 +17,49 @@ allprojects {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
         maven {
-            url "https://maven.google.com"
+            url 'https://maven.google.com'
         }
     }
-
 }
 
 ext {
     compileSdkVersion = 26
-    buildToolsVersion = "26.0.2"
+    buildToolsVersion = "27.0.3"
 
     minSdkVersion = 14
     targetSdkVersion = 26
 
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.7.0'
+    qbChatAdapterVersion = '2.0'
+    qbSdkVersion = '3.8.0'
 
-    versionName = '3.7.0'
+    versionCode = 380
+    versionName = '3.8.0'
 
     testRunnerVersion = "0.4.1"
 
-
     // Dependency versions
-    ext.firebaseVersion = '10.0.1'
-    playServicesVersion = '10.0.1'
-    supportV4Version = '23.1.1'
-    appcompatV7Version = '23.1.1'
-    recyclerviewV7Version = '23.2.1'
-    supportAnnotationsVersion = '23.1.1'
-    designVersion = '23.1.1'
+    playServicesVersion = '11.4.2'
+    supportLibVersion = '26.1.0'
+    supportV4Version = supportLibVersion
+    appcompatV7Version = supportLibVersion
+    recyclerviewV7Version = supportLibVersion
+    supportAnnotationsVersion = supportLibVersion
+    designVersion = supportLibVersion
+    cardViewVersion = supportLibVersion
 
-    uilVersion = '1.9.0'
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
-    stickyListHeaders = '2.7.0'
-    robotoTextViewVersion = '2.4.3'
-    stickersVersion = '0.7.3'
-    crashlyticsVersion = '2.2.2'
+    robotoTextViewVersion = '4.0.0'
+    crashlyticsVersion = '2.8.0'
+    fabricToolsVersion = '1.25.1'
+    stickylistheadersVersion = '0.4.2'
+    swipyVersion = '1.2.3'
 
     dimensionDefault = 'default'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.10'
-}
-
-def makeJar(variant, project) {
-    //empty
 }

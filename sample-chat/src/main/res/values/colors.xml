@@ -3,6 +3,7 @@
     <color name="color_grey">#d3d3d3</color>
 
     <color name="background_chat_color">#f5f6f5</color>
+    <color name="chat_bubble_date_color">#80dedede</color>
 
     <color name="divider_color">#e0e0e0</color>
     <color name="selected_list_item_color">#e0e0e0</color>

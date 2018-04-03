@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.utils.chat;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +11,7 @@ import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.request.QBDialogRequestBuilder;
+import com.quickblox.chat.request.QBMessageGetBuilder;
 import com.quickblox.chat.utils.DialogUtils;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
@@ -22,11 +22,9 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
-import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.models.SampleConfigs;
-import com.quickblox.sample.chat.ui.activity.DialogsActivity;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.QbUsersHolder;
@@ -195,10 +193,18 @@ public class ChatHelper {
             callback.onError(new QBResponseException(e.getMessage()));
         }
 
+        QBUser currentUser = QBChatService.getInstance().getUser();
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
-        qbRequestBuilder.removeUsers(QBChatService.getInstance().getUser().getId());
+        qbRequestBuilder.removeUsers(currentUser.getId());
+
+        qbDialog.setName(buildDialogNameWithoutUser(qbDialog.getName(), currentUser.getFullName()));
 
         QBRestChatService.updateGroupChatDialog(qbDialog, qbRequestBuilder).performAsync(callback);
+    }
+
+    private static String buildDialogNameWithoutUser(String dialogName, String userName) {
+        String regex = ", " + userName + "|" + userName + ", ";
+        return dialogName.replaceAll(regex, "");
     }
 
     public void updateDialogUsers(QBChatDialog qbDialog,
@@ -235,12 +241,13 @@ public class ChatHelper {
 
     public void loadChatHistory(QBChatDialog dialog, int skipPagination,
                                 final QBEntityCallback<ArrayList<QBChatMessage>> callback) {
-        QBRequestGetBuilder customObjectRequestBuilder = new QBRequestGetBuilder();
-        customObjectRequestBuilder.setSkip(skipPagination);
-        customObjectRequestBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
-        customObjectRequestBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+        QBMessageGetBuilder messageGetBuilder = new QBMessageGetBuilder();
+        messageGetBuilder.setSkip(skipPagination);
+        messageGetBuilder.setLimit(CHAT_HISTORY_ITEMS_PER_PAGE);
+        messageGetBuilder.sortDesc(CHAT_HISTORY_ITEMS_SORT_FIELD);
+        messageGetBuilder.markAsRead(false);
 
-        QBRestChatService.getDialogMessages(dialog, customObjectRequestBuilder).performAsync(
+        QBRestChatService.getDialogMessages(dialog, messageGetBuilder).performAsync(
                 new QbEntityCallbackWrapper<ArrayList<QBChatMessage>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatMessage> qbChatMessages, Bundle bundle) {

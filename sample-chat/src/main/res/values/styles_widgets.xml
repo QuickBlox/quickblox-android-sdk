@@ -11,7 +11,7 @@
         <item name="android:paddingLeft">@dimen/list_item_side_margin</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">14sp</item>
-        <item name="typeface">roboto_medium</item>
+        <item name="robotoTypeface">roboto_medium</item>
     </style>
 
     <style name="ListItemIconStyle">
@@ -22,11 +22,12 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="ListDateHeaderStyle" parent="MatchWidth">
-        <item name="android:gravity">center</item>
+    <style name="ListDateHeaderStyle" parent="WrapContent">
+        <item name="android:background">@drawable/chat_date_bubble</item>
+        <item name="android:padding">@dimen/padding_common</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/text_color_dark_grey</item>
-        <item name="typeface">roboto_medium</item>
+        <item name="robotoTypeface">roboto_medium</item>
     </style>
 
     <style name="DialogNameStyle" parent="MatchWidth">
@@ -43,8 +44,14 @@
     </style>
 
     <style name="DialogUnreadCounterStyle">
-        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">20dp</item>
+        <item name="android:minWidth">20dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
@@ -85,7 +92,7 @@
         <item name="android:textColor">@color/text_color_dark_grey</item>
         <item name="android:textSize">@dimen/chat_author_text_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="typeface">roboto_bold</item>
+        <item name="robotoTypeface">roboto_bold</item>
     </style>
 
     <style name="MessageTextStyle" parent="WrapContent">
@@ -103,4 +110,43 @@
         <item name="android:textSize">@dimen/chat_message_info_text_size</item>
         <item name="android:visibility">gone</item>
     </style>
+
+    <style name="OpponentNameViewStyle" parent="WrapContent">
+        <item name="android:paddingRight">@dimen/padding_common</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/badge_attach_message_time</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+
+    <style name="AvatarImageViewStyle.Right">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="AvatarImageViewStyle.Left">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="TextViewTextMsg.Right">
+        <item name="android:textColorHighlight">@color/color_light_blue_qb</item>
+        <item name="android:textColor">@color/text_color_white</item>
+    </style>
+
+    <style name="TextViewTimeMsg.Right">
+        <item name="android:layout_gravity">right</item>
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+    </style>
+
+    <style name="LinearAttachWidgetFrame.Left">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/padding_common</item>
+        <item name="android:layout_marginLeft">@dimen/padding_big</item>
+        <item name="android:layout_alignParentRight">false</item>
+    </style>
+
+    <style name="BubbleTextFrame.Right">
+        <item name="android:background">@drawable/outgoing_message_bg</item>
+    </style>
+
 </resources>

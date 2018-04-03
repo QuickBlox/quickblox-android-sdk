@@ -102,7 +102,7 @@ public class SelectUsersActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.menu_select_people_action_done:
                 if (usersAdapter != null) {
-                    List<QBUser> users = usersAdapter.getSelectedUsers();
+                    List<QBUser> users = new ArrayList<>(usersAdapter.getSelectedUsers());
                     if (users.size() >= MINIMUM_CHAT_OCCUPANTS_SIZE) {
                         passResultToCallerActivity();
                     } else {
