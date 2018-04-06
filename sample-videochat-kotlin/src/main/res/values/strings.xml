@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VideoChat-kotlin</string>
+    <string name="app_title">VideoChat-kotlin Sample</string>
+    <string name="activity_title">VideoChat-kotlin Sample</string>
+</resources>

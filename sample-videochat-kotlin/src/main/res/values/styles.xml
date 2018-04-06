@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="VideoChatTheme" parent="AppTheme">
+        <item name="colorAccent">@color/color_blue_qb</item>
+        <item name="colorControlActivated">@color/color_blue_accent</item>
+        <item name="colorControlHighlight">@color/color_blue_accent</item>
+        <item name="colorControlNormal">@color/color_blue_accent</item>
+    </style>
+
+</resources>
