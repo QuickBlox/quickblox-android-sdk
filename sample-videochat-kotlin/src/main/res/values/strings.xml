@@ -2,4 +2,17 @@
     <string name="app_name">VideoChat-kotlin</string>
     <string name="app_title">VideoChat-kotlin Sample</string>
     <string name="activity_title">VideoChat-kotlin Sample</string>
+
+    <string name="login">Login as</string>
+    <string name="user">User %1$s</string>
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
+
+    <!-- Dialogs strings. -->
+    <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
+    <string name="dlg_login">Login…</string>
+    <string name="dlg_sign_in">Sign In…</string>
+    <string name="dlg_updating_user">Updating user…</string>
+    <string name="dlg_creating_new_user">Creating new user…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="dlg_loading_opponents">Loading opponents…</string>
 </resources>

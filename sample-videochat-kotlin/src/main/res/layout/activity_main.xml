@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:keepScreenOn="true"
-    tools:context="com.quickblox.sample.videochatkotlin.activities.MainActivity">
+    tools:context="com.quickblox.sample.videochatkotlin.activities.CallActivity">
 
 
     <FrameLayout
