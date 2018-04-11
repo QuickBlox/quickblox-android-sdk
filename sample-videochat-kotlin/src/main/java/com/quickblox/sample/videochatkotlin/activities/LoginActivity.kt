@@ -29,6 +29,7 @@ class LoginActivity : CoreBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        setActionBarTitle(R.string.title_login_activity)
         initFields();
         iniQBUsers()
         initButtons()

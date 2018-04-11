@@ -59,7 +59,7 @@ class CallService : Service() {
         if (intent != null && intent.extras != null) {
             currentCommand = intent.getIntExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_NOT_FOUND)
             pendingIntent = intent.getParcelableExtra(EXTRA_PENDING_INTENT)
-            currentUser = intent.getSerializableExtra(EXTRA_QB_USER) as QBUser
+            currentUser = intent.getSerializableExtra(EXTRA_QB_USER) as? QBUser
         }
         Log.d(TAG, "parseIntentExtras currentCommand= " + currentCommand)
         Log.d(TAG, "parseIntentExtras pendingIntent= " + pendingIntent)
@@ -147,7 +147,7 @@ class CallService : Service() {
             rtcClient!!.destroy()
         }
         chatService.logout(object : QBEntityCallback<Void> {
-            override fun onSuccess(aVoid: Void, bundle: Bundle) {
+            override fun onSuccess(aVoid: Void?, bundle: Bundle?) {
                 chatService.destroy()
             }
 

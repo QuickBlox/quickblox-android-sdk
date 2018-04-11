@@ -7,6 +7,11 @@
     <string name="user">User %1$s</string>
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
 
+    <!--action bar-->
+    <string name="title_login_activity">Login</string>
+    <string name="title_call_activity">Call</string>
+    <string name="action_start_logout">Logout</string>
+
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
     <string name="dlg_login">Login…</string>
