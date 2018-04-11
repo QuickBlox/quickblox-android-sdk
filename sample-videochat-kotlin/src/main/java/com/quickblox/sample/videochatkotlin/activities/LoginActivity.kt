@@ -87,11 +87,11 @@ class LoginActivity : CoreBaseActivity() {
 
         Log.d(TAG, "AMBRA loginToChat user= " + user)
         showProgressDialog(R.string.dlg_login)
-        //call listener onStartCallScreenFragment
+
         val intent = Intent(this, CallService::class.java)
+        val pendingIntent = createPendingResult(EXTRA_LOGIN_RESULT_CODE, intent, 0)
         intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGIN)
         intent.putExtra(EXTRA_QB_USER, user)
-        val pendingIntent = createPendingResult(EXTRA_LOGIN_RESULT_CODE, intent, 0)
         intent.putExtra(EXTRA_PENDING_INTENT, pendingIntent)
         startService(intent)
     }

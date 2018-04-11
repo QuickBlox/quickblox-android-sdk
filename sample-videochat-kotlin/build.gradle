@@ -1,6 +1,9 @@
 buildscript {
+    repositories {
+        mavenCentral()
+    }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.31"
     }
 }
 
@@ -36,12 +39,12 @@ android {
 
     buildTypes {
         debug {
-            resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
+            resValue "string", "versionName", "QuickBlox WebRTC\nBuild version " + defaultConfig.getVersionName()
             signingConfig signingConfigs.debug
         }
 
         release {
-            resValue  "string", "versionName", "QuickBlox WebRTC\nBuild version " +  defaultConfig.getVersionName()
+            resValue "string", "versionName", "QuickBlox WebRTC\nBuild version " + defaultConfig.getVersionName()
             signingConfig signingConfigs.debug
         }
     }
@@ -66,7 +69,7 @@ android {
 }
 
 dependencies {
-    implementation (project(":sample-core"))
+    implementation(project(":sample-core"))
     implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
