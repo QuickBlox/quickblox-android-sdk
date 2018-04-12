@@ -55,12 +55,17 @@ class CallActivity : CoreBaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST -> {
-                if (grantResults.size > 0) {
+                if (grantResults.isNotEmpty()) {
                     if (!systemPermissionHelper.isAllCameraPermissionGranted()) {
+                        Log.d(TAG, "AMBRA showToastDeniedPermissions")
                         showToastDeniedPermissions(permissions, grantResults)
+                        startLogout()
+                        finish()
+                    } else {
+                        initOutgoingFragment()
                     }
                 }
-                initSuitableFragment()
+
             }
         }
     }

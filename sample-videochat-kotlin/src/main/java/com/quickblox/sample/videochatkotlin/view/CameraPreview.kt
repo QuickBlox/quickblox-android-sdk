@@ -1,5 +1,6 @@
 package com.quickblox.sample.videochatkotlin.view
 
+import android.app.Activity
 import android.content.Context
 import android.hardware.Camera
 import android.util.Log
@@ -8,6 +9,9 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 
 import java.io.IOException
+import android.support.v4.view.ViewCompat.getRotation
+
+
 
 /**
  * Camera preview that displays a [Camera].
@@ -18,9 +22,9 @@ import java.io.IOException
  * Implementation is based directly on the documentation at
  * http://developer.android.com/guide/topics/media/camera.html
  */
-class CameraPreview(context: Context, private val mCamera: Camera, private val mCameraInfo: Camera.CameraInfo,
-                    private val mDisplayOrientation: Int) : SurfaceView(context), SurfaceHolder.Callback {
+class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(activity), SurfaceHolder.Callback {
     private val mHolder: SurfaceHolder
+    var mCamera: Camera? = null
 
     init {
 //
@@ -31,6 +35,7 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
+        mCamera = Camera.open(cameraId)
         mHolder = holder
         mHolder.addCallback(this)
     }
@@ -38,8 +43,8 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
     override fun surfaceCreated(holder: SurfaceHolder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
-            mCamera.setPreviewDisplay(holder)
-            mCamera.startPreview()
+            mCamera!!.setPreviewDisplay(holder)
+            mCamera!!.startPreview()
             Log.d(TAG, "Camera preview started.")
         } catch (e: IOException) {
             Log.d(TAG, "Error setting camera preview: " + e.message)
@@ -49,6 +54,16 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         // empty. Take care of releasing the Camera preview in your activity.
+        stop()
+    }
+
+    fun stop() {
+        if (null == mCamera) {
+            return
+        }
+        mCamera!!.stopPreview()
+        mCamera!!.release()
+        mCamera = null
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, w: Int, h: Int) {
@@ -63,19 +78,20 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
 
         // stop preview before making changes
         try {
-            mCamera.stopPreview()
+            mCamera!!.stopPreview()
             Log.d(TAG, "Preview stopped.")
         } catch (e: Exception) {
             // ignore: tried to stop a non-existent preview
             Log.d(TAG, "Error starting camera preview: " + e.message)
         }
-
-        val orientation = calculatePreviewOrientation(mCameraInfo, mDisplayOrientation)
-        mCamera.setDisplayOrientation(orientation)
+        val displayRotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation()
+        val orientation = calculatePreviewOrientation(cameraId, displayRotation)
+        mCamera!!.setDisplayOrientation(orientation)
 
         try {
-            mCamera.setPreviewDisplay(mHolder)
-            mCamera.startPreview()
+            mCamera!!.setPreviewDisplay(mHolder)
+            mCamera!!.startPreview()
             Log.d(TAG, "Camera preview started.")
         } catch (e: Exception) {
             Log.d(TAG, "Error starting camera preview: " + e.message)
@@ -93,7 +109,9 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
          * Implementation is based on the sample code provided in
          * [Camera.setDisplayOrientation].
          */
-        fun calculatePreviewOrientation(info: Camera.CameraInfo, rotation: Int): Int {
+        fun calculatePreviewOrientation(cameraId:Int, rotation: Int): Int {
+            val cameraInfo = Camera.CameraInfo()
+            Camera.getCameraInfo(cameraId, cameraInfo)
             var degrees = 0
 
             when (rotation) {
@@ -104,11 +122,11 @@ class CameraPreview(context: Context, private val mCamera: Camera, private val m
             }
 
             var result: Int
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                result = (info.orientation + degrees) % 360
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                result = (cameraInfo.orientation + degrees) % 360
                 result = (360 - result) % 360  // compensate the mirror
             } else {  // back-facing
-                result = (info.orientation - degrees + 360) % 360
+                result = (cameraInfo.orientation - degrees + 360) % 360
             }
 
             return result
