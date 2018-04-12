@@ -20,4 +20,6 @@
     <string name="dlg_creating_new_user">Creating new user…</string>
     <string name="dlg_logout">Logout…</string>
     <string name="dlg_loading_opponents">Loading opponents…</string>
+
+    <string name="denied_permission_message">Call has been started without an access to %s</string>
 </resources>

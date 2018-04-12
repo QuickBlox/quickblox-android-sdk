@@ -2,40 +2,75 @@ package com.quickblox.sample.videochatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
+import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
+import com.quickblox.sample.videochatkotlin.fragments.OutComingFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
-import com.quickblox.sample.videochatkotlin.utils.COMMAND_LOGOUT
-import com.quickblox.sample.videochatkotlin.utils.EXTRA_COMMAND_TO_SERVICE
+import com.quickblox.sample.videochatkotlin.utils.*
+import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
 
 /**
  * Created by roman on 4/6/18.
  */
 class CallActivity : CoreBaseActivity() {
     val TAG = CallActivity::class.java.simpleName
+    lateinit var systemPermissionHelper: SystemPermissionHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
         setContentView(R.layout.activity_main)
+
+        systemPermissionHelper = SystemPermissionHelper(this)
         setActionBarTitle(R.string.title_call_activity)
-        initSuitableFragment()
+        checkCameraPermissionAndStart()
     }
 
-    fun initSuitableFragment() {
-//        val loginFrag = LoginFragment()
-//        addFragment(supportFragmentManager, R.id.fragment_container, loginFrag, LOGIN_FRAGMENT)
+    fun checkCameraPermissionAndStart() {
+        if (systemPermissionHelper.isAllCameraPermissionGranted()) {
+            initSuitableFragment()
+        } else {
+            systemPermissionHelper.requestPermissionsForCallByType()
+        }
+    }
+
+    private fun initSuitableFragment() {
+        initOutgoingFragment()
     }
 
     fun initOutgoingFragment() {
-
+        val outComingFragment = OutComingFragment()
+        addFragment(supportFragmentManager, R.id.fragment_container, outComingFragment, OutComingFragment::class.java.simpleName)
     }
 
     fun initIncomingFragment() {
 
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST -> {
+                if (grantResults.size > 0) {
+                    if (!systemPermissionHelper.isAllCameraPermissionGranted()) {
+                        showToastDeniedPermissions(permissions, grantResults)
+                    }
+                }
+                initSuitableFragment()
+            }
+        }
+    }
+
+    private fun showToastDeniedPermissions(permissions: Array<String>, grantResults: IntArray) {
+        val deniedPermissions = systemPermissionHelper
+                .collectDeniedPermissionsFomResult(permissions, grantResults)
+
+        Toaster.longToast(
+                getString(R.string.denied_permission_message, createCompositeString(deniedPermissions)))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
