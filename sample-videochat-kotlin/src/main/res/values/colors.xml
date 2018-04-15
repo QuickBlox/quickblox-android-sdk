@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="color_blue_accent">#0088e7</color>
+
+    <color name="red">#FF0000</color>
+    <color name="green">#45D100</color>
+    <color name="white_green">#A9FF80</color>
+    <color name="black_transparent_50">#50000000</color>
+
+    <color name="button_end_call_pressed_color">#FC5876</color>
 </resources>

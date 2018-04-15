@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_action_buttons"
+    style="@style/MatchWidth"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/element_fragment_margin_small"
+    android:background="@android:color/transparent"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/button_start_call"
+        style="@style/StartCallImageButton"
+        android:layout_marginEnd="@dimen/element_fragment_margin"
+        android:layout_marginLeft="@dimen/padding_common_twice"
+        android:layout_marginRight="@dimen/element_fragment_margin"
+        android:layout_marginStart="@dimen/padding_common_twice"
+        android:background="@drawable/shape_oval_green" />
+
+    <ImageButton
+        android:id="@+id/button_hangup_call"
+        style="@style/EndCallImageButton"
+        android:layout_marginLeft="@dimen/element_fragment_margin"
+        android:layout_marginStart="@dimen/element_fragment_margin"
+        android:background="@drawable/shape_oval_red" />
+
+
+</LinearLayout>

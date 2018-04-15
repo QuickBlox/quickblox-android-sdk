@@ -1,18 +1,24 @@
 package com.quickblox.sample.videochatkotlin.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.OutComingFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
-import com.quickblox.sample.videochatkotlin.utils.*
+import com.quickblox.sample.videochatkotlin.utils.COMMAND_LOGOUT
+import com.quickblox.sample.videochatkotlin.utils.EXTRA_COMMAND_TO_SERVICE
 import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
+import com.quickblox.sample.videochatkotlin.utils.SystemPermissionHelper
+import com.quickblox.sample.videochatkotlin.utils.addFragment
 
 /**
  * Created by roman on 4/6/18.
@@ -25,10 +31,16 @@ class CallActivity : CoreBaseActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
         setContentView(R.layout.activity_main)
-
+        initActionBar()
         systemPermissionHelper = SystemPermissionHelper(this)
-        setActionBarTitle(R.string.title_call_activity)
         checkCameraPermissionAndStart()
+    }
+
+    @SuppressLint("InlinedApi")
+    fun initActionBar() {
+        setActionBarTitle(R.string.title_call_activity)
+        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.black_transparent_50)))
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     fun checkCameraPermissionAndStart() {
