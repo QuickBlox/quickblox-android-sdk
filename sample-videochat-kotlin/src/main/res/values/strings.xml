@@ -21,5 +21,7 @@
     <string name="dlg_logout">Logout…</string>
     <string name="dlg_loading_opponents">Loading opponents…</string>
 
+    <!-- Errors strings. -->
+    <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="denied_permission_message">You cannot continue without an access to %s</string>
 </resources>

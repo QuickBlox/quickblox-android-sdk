@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -81,12 +82,15 @@ class LoginActivity : CoreBaseActivity() {
 
     private fun startCallActivity() {
         val intent = Intent(this, CallActivity::class.java)
+        val currentUser = QBChatService.getInstance().user
+        users.remove(currentUser)
+        intent.putExtra(EXTRA_QB_USERS_LIST, users)
         startActivity(intent)
     }
 
     fun loginToChat(user: QBUser) {
 
-        Log.d(TAG, "AMBRA loginToChat user= " + user)
+        Log.d(TAG, "loginToChat user= " + user)
         showProgressDialog(R.string.dlg_login)
 
         val intent = Intent(this, CallService::class.java)

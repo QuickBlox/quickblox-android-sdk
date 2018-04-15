@@ -14,11 +14,9 @@ import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.OutComingFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
-import com.quickblox.sample.videochatkotlin.utils.COMMAND_LOGOUT
-import com.quickblox.sample.videochatkotlin.utils.EXTRA_COMMAND_TO_SERVICE
+import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
-import com.quickblox.sample.videochatkotlin.utils.SystemPermissionHelper
-import com.quickblox.sample.videochatkotlin.utils.addFragment
+import com.quickblox.users.model.QBUser
 
 /**
  * Created by roman on 4/6/18.
@@ -26,14 +24,23 @@ import com.quickblox.sample.videochatkotlin.utils.addFragment
 class CallActivity : CoreBaseActivity() {
     val TAG = CallActivity::class.java.simpleName
     lateinit var systemPermissionHelper: SystemPermissionHelper
+    lateinit var opponents: ArrayList<QBUser>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
         setContentView(R.layout.activity_main)
+        initFields()
         initActionBar()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
+    }
+
+    fun initFields() {
+        val obj= intent.getSerializableExtra(EXTRA_QB_USERS_LIST)
+        if(obj is ArrayList<*>){
+            opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
+        }
     }
 
     @SuppressLint("InlinedApi")
@@ -57,6 +64,9 @@ class CallActivity : CoreBaseActivity() {
 
     fun initOutgoingFragment() {
         val outComingFragment = OutComingFragment()
+        val args = Bundle()
+        args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
+        outComingFragment.arguments = args
         addFragment(supportFragmentManager, R.id.fragment_container, outComingFragment, OutComingFragment::class.java.simpleName)
     }
 
