@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.Menu
@@ -13,18 +14,29 @@ import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.OutComingFragment
+import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
 import com.quickblox.users.model.QBUser
+import com.quickblox.videochat.webrtc.BaseSession
+import com.quickblox.videochat.webrtc.QBRTCClient
+import com.quickblox.videochat.webrtc.QBRTCConfig
+import com.quickblox.videochat.webrtc.QBRTCSession
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity() {
+class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, OutComingFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback {
+
     val TAG = CallActivity::class.java.simpleName
     lateinit var systemPermissionHelper: SystemPermissionHelper
     lateinit var opponents: ArrayList<QBUser>
+    private var rtcClient: QBRTCClient? = null
+    var currentSession: QBRTCSession? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,13 +44,14 @@ class CallActivity : CoreBaseActivity() {
         setContentView(R.layout.activity_main)
         initFields()
         initActionBar()
+        initQBRTCClient()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
     }
 
     fun initFields() {
-        val obj= intent.getSerializableExtra(EXTRA_QB_USERS_LIST)
-        if(obj is ArrayList<*>){
+        val obj = intent.getSerializableExtra(EXTRA_QB_USERS_LIST)
+        if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
         }
     }
@@ -48,6 +61,29 @@ class CallActivity : CoreBaseActivity() {
         setActionBarTitle(R.string.title_call_activity)
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.black_transparent_50)))
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    }
+
+    private fun initQBRTCClient() {
+        rtcClient = QBRTCClient.getInstance(this)
+
+
+        // Configure
+        //
+        QBRTCConfig.setMaxOpponentsCount(MAX_OPPONENTS_COUNT)
+        setSettingsForMultiCall(opponents)
+        QBRTCConfig.setDebugEnabled(true)
+
+
+        // Add activity as callback to RTCClient
+        rtcClient!!.addSessionCallbacksListener(this)
+        // Start mange QBRTCSessions according to VideoCall parser's callbacks
+//        rtcClient.prepareToProcessCalls()
+    }
+
+    override fun onAttachFragment(fragment: Fragment){
+        if(fragment is VideoConversationFragment){
+            fragment.initSession(currentSession)
+        }
     }
 
     fun checkCameraPermissionAndStart() {
@@ -70,8 +106,9 @@ class CallActivity : CoreBaseActivity() {
         addFragment(supportFragmentManager, R.id.fragment_container, outComingFragment, OutComingFragment::class.java.simpleName)
     }
 
-    fun initIncomingFragment() {
-
+    fun initConversationFragment() {
+        val conversationFragment = VideoConversationFragment()
+        addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -87,7 +124,6 @@ class CallActivity : CoreBaseActivity() {
                         initOutgoingFragment()
                     }
                 }
-
             }
         }
     }
@@ -128,5 +164,84 @@ class CallActivity : CoreBaseActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         this.startActivity(intent)
         finish()
+    }
+
+    fun initCurrentSession(session: QBRTCSession) {
+        Log.d(TAG, "Init new QBRTCSession")
+        currentSession = session
+        currentSession!!.addSessionCallbacksListener(this@CallActivity)
+
+    }
+
+    fun releaseCurrentSession() {
+        Log.d(TAG, "Release current session")
+        if (currentSession != null) {
+            currentSession!!.removeSessionCallbacksListener(this@CallActivity)
+            rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
+            this.currentSession = null
+        }
+    }
+
+    override fun onStartCall(session: QBRTCSession) {
+        Log.d(TAG, "onStartCall = " + session)
+        initCurrentSession(session)
+        initConversationFragment()
+    }
+
+    override fun onHanUpCall() {
+    }
+
+    override fun onAcceptCurrentSession() {
+    }
+
+    override fun onRejectCurrentSession() {
+    }
+
+    //QBRTCSessionStateCallback
+    override fun onDisconnectedFromUser(p0: QBRTCSession?, p1: Int?) {
+
+    }
+
+    override fun onConnectedToUser(p0: QBRTCSession?, p1: Int?) {
+    }
+
+    override fun onConnectionClosedForUser(p0: QBRTCSession?, p1: Int?) {
+    }
+
+    override fun onStateChanged(p0: QBRTCSession?, p1: BaseSession.QBRTCSessionState?) {
+    }
+
+    //QBRTCClientSessionCallbacks
+    override fun onSessionStartClose(p0: QBRTCSession?) {
+    }
+
+    override fun onReceiveNewSession(p0: QBRTCSession?) {
+    }
+
+    override fun onUserNoActions(p0: QBRTCSession?, p1: Int?) {
+    }
+
+    //    QBRTCSessionEventsCallback
+    override fun onReceiveHangUpFromUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    }
+
+    override fun onCallAcceptByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    }
+
+    override fun onSessionClosed(session: QBRTCSession?) {
+        Log.d(TAG, "Session " + session!!.getSessionID())
+
+        if (session == currentSession) {
+            Log.d(TAG, "Stop session")
+            releaseCurrentSession()
+            finish()
+        }
+    }
+
+    override fun onCallRejectByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    }
+
+    override fun onUserNotAnswer(p0: QBRTCSession?, p1: Int?) {
+
     }
 }

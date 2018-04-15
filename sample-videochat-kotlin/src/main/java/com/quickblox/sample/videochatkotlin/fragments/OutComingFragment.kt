@@ -1,5 +1,6 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -16,8 +17,9 @@ import com.quickblox.sample.videochatkotlin.utils.getIdsSelectedOpponents
 import com.quickblox.sample.videochatkotlin.view.CameraPreview
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
+import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.QBRTCTypes
-import org.webrtc.ContextUtils.getApplicationContext
+import org.webrtc.ContextUtils
 
 
 class OutComingFragment : Fragment() {
@@ -29,6 +31,28 @@ class OutComingFragment : Fragment() {
     lateinit var startCallButton: ImageButton
     lateinit var hangUpCallButton: ImageButton
     lateinit var opponents: ArrayList<QBUser>
+    lateinit var eventListener: CallFragmentCallbackListener
+
+
+    // Container CallActivity must implement this interface
+    interface CallFragmentCallbackListener {
+        fun onStartCall(session: QBRTCSession)
+        fun onHanUpCall()
+        fun onAcceptCurrentSession()
+        fun onRejectCurrentSession()
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            eventListener = activity as CallFragmentCallbackListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException(activity.toString() + " must implement CallFragmentCallbackListener")
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
@@ -47,12 +71,12 @@ class OutComingFragment : Fragment() {
         return view
     }
 
-    fun initFields(){
-        val obj= arguments.get(EXTRA_QB_USERS_LIST)
-        if(obj is ArrayList<*>){
+    fun initFields() {
+        val obj = arguments.get(EXTRA_QB_USERS_LIST)
+        if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
         }
-        Log.d(TAG,"users= " + opponents)
+        Log.d(TAG, "users= " + opponents)
     }
 
     private fun startCall() {
@@ -66,12 +90,13 @@ class OutComingFragment : Fragment() {
         val opponentsList = getIdsSelectedOpponents(opponents)
         val conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
 
-        val qbrtcClient = QBRTCClient.getInstance(getApplicationContext())
+        val qbrtcClient = QBRTCClient.getInstance(ContextUtils.getApplicationContext())
 
         val newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType)
-
-        Log.d(TAG, "conferenceType = " + conferenceType)
+        newQbRtcSession.startCall(null)
+        eventListener.onStartCall(newQbRtcSession)
     }
+
     override fun onResume() {
         super.onResume()
         startCameraPreview()
@@ -89,9 +114,5 @@ class OutComingFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         stopCameraPreview()
-    }
-
-    fun onStartCallClick() {
-
     }
 }
