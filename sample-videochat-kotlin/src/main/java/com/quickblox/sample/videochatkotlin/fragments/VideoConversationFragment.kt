@@ -2,6 +2,7 @@ package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     private val TAG = VideoConversationFragment::class.java.simpleName
     lateinit var hangUpCallButton: ImageButton
+    lateinit var mainHandler: Handler
 
     private var isCurrentCameraFront: Boolean = true
     var currentSession: QBRTCSession? = null
@@ -46,6 +48,12 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "AMBRA onCreate")
+        mainHandler = Handler()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_conversation_call, container, false)
         initVideoTrackSListener()
@@ -59,15 +67,22 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         hangUpCallButton.setOnClickListener({ hangUp() })
     }
 
-    fun hangUp(){
+    fun hangUp() {
         eventListener.onHangUpCall()
     }
 
-    override fun onLocalVideoTrackReceive(session: QBRTCSession, localVideoTrack: QBRTCVideoTrack) {
-        fillVideoView(localFullScreenVideoView, localVideoTrack, false)
+    override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
+        Log.d(TAG, "AMBRA onLocalVideoTrackReceive")
+        fillVideoView(localFullScreenVideoView, videoTrack, false)
     }
 
-    override fun onRemoteVideoTrackReceive(p0: QBRTCSession?, p1: QBRTCVideoTrack?, p2: Int?) {
+    override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
+        Log.d(TAG, "AMBRA onRemoteVideoTrackReceive")
+        mainHandler.postDelayed(Runnable { setRemoteViewMultiCall(userId, videoTrack) }, 500)
+    }
+
+    fun setRemoteViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
+        Log.d(TAG, "AMBRA setRemoteViewMultiCall")
     }
 
     private fun fillVideoView(userId: Int, videoView: QBRTCSurfaceView, videoTrack: QBRTCVideoTrack,

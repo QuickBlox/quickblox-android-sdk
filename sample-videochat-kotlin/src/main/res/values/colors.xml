@@ -9,4 +9,6 @@
 
     <color name="button_end_call_pressed_color">#FC5876</color>
     <color name="background_fragment_conversation">#2b2a2a</color>
+
+    <color name="text_color_call_type">#6e6e6e</color>
 </resources>

@@ -12,4 +12,6 @@
     <dimen name="margin_common">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_very_small">3dp</dimen>
+
+    <dimen name="incoming_call_type_text_size">26sp</dimen>
 </resources>

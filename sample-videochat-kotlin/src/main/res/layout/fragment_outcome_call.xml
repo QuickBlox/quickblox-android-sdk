@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragmentIncomeCall"
+    android:id="@+id/fragment_call"
     style="@style/MatchParent">
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,6 +10,16 @@
     android:layout_height="match_parent">
 
 </FrameLayout>
+
+    <TextView
+        android:id="@+id/income_call_type"
+        style="@style/WrapContent"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_incoming_video_call"
+        android:layout_centerInParent="true"
+        android:textColor="@color/text_color_call_type"
+        android:textSize="@dimen/incoming_call_type_text_size"
+        android:visibility="invisible"/>
 
     <include
         android:id="@+id/element_set_video_buttons"

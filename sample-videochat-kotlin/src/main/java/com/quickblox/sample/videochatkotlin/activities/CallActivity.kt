@@ -45,6 +45,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "onCreate")
         setContentView(R.layout.activity_main)
         initFields()
+        initQBRTCClient()
         initActionBar()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
@@ -81,8 +82,8 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         rtcClient!!.prepareToProcessCalls()
     }
 
-    override fun onAttachFragment(fragment: Fragment){
-        if(fragment is VideoConversationFragment){
+    override fun onAttachFragment(fragment: Fragment) {
+        if (fragment is VideoConversationFragment) {
             fragment.initSession(currentSession)
         }
     }
@@ -110,6 +111,15 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     fun initConversationFragment() {
         val conversationFragment = VideoConversationFragment()
         addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
+    }
+
+    fun initIncomeCall() {
+        val outComeFrag = supportFragmentManager.findFragmentByTag(OutComingFragment::class.java.simpleName) as OutComingFragment?
+        Log.d(TAG, "AMBRA initIncomeCall")
+        if (outComeFrag != null) {
+            Log.d(TAG, "AMBRA updateCallButtons")
+            outComeFrag.updateCallButtons()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -178,9 +188,13 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "AMBRA1 Release current session removeSessionCallbacksListener")
         if (currentSession != null) {
             currentSession!!.removeSessionCallbacksListener(this@CallActivity)
-            rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
             this.currentSession = null
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
     }
 
     fun hangUpCurrentSession() {
@@ -194,7 +208,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     override fun onStartCall(session: QBRTCSession) {
         Log.d(TAG, "AMBRA onStartCall = " + session)
         initCurrentSession(session)
-        initQBRTCClient()
+//        initQBRTCClient()
         initConversationFragment()
     }
 
@@ -202,10 +216,16 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         hangUpCurrentSession()
     }
 
-    override fun onAcceptCurrentSession() {
+    override fun onAcceptCall() {
+        Log.d(TAG, "AMBRA onAcceptCall")
+        currentSession.acceptCall(null)
+        initConversationFragment()
     }
 
-    override fun onRejectCurrentSession() {
+    override fun onRejectCall() {
+        if (currentSession != null) {
+            currentSession!!.rejectCall(null)
+        }
     }
 
     //QBRTCSessionStateCallback
@@ -229,9 +249,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onReceiveNewSession(session: QBRTCSession?) {
-        currentSession = session
         Log.d(TAG, "AMBRA onReceiveNewSession")
-
+        if (currentSession == null) {
+            currentSession = session
+            initIncomeCall()
+        }
     }
 
     override fun onUserNoActions(p0: QBRTCSession?, p1: Int?) {
@@ -262,5 +284,9 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     override fun onUserNotAnswer(p0: QBRTCSession?, p1: Int?) {
 
+    }
+
+    interface IncomingCallStateCallback {
+        fun onIncomingCallReceive()
     }
 }
