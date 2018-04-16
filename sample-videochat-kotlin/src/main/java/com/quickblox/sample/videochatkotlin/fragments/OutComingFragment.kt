@@ -37,7 +37,6 @@ class OutComingFragment : Fragment() {
     // Container CallActivity must implement this interface
     interface CallFragmentCallbackListener {
         fun onStartCall(session: QBRTCSession)
-        fun onHanUpCall()
         fun onAcceptCurrentSession()
         fun onRejectCurrentSession()
     }

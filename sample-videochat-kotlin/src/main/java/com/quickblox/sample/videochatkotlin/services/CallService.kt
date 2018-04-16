@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import com.quickblox.chat.QBChatService
+import com.quickblox.chat.QBWebRTCSignaling
 import com.quickblox.chat.connections.tcp.QBTcpChatConnectionFabric
 import com.quickblox.chat.connections.tcp.QBTcpConfigurationBuilder
 import com.quickblox.core.QBEntityCallback
@@ -14,6 +15,7 @@ import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
+import com.quickblox.videochat.webrtc.QBRTCConfig
 
 /**
  * Created by Roman on 09.04.2018.
@@ -107,14 +109,14 @@ class CallService : Service() {
     private fun initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(applicationContext)
         // Add signalling manager
-//        chatService.videoChatWebRTCSignalingManager.addSignalingManagerListener { qbSignaling, createdLocally ->
-//            if (!createdLocally) {
-//                rtcClient!!.addSignaling(qbSignaling as QBWebRTCSignaling)
-//            }
-//        }
-//
-//        // Configure
-//        QBRTCConfig.setDebugEnabled(true)
+        chatService.videoChatWebRTCSignalingManager.addSignalingManagerListener { qbSignaling, createdLocally ->
+            if (!createdLocally) {
+                rtcClient!!.addSignaling(qbSignaling as QBWebRTCSignaling)
+            }
+        }
+
+        // Configure
+        QBRTCConfig.setDebugEnabled(true)
 //
 //        // Add service as callback to RTCClient
 //        rtcClient!!.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this))

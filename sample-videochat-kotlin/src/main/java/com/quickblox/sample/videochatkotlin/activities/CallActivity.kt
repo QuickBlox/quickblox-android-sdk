@@ -26,11 +26,13 @@ import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
+import java.util.HashMap
 
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, OutComingFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback {
+class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, OutComingFragment.CallFragmentCallbackListener,
+        VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback {
 
     val TAG = CallActivity::class.java.simpleName
     lateinit var systemPermissionHelper: SystemPermissionHelper
@@ -44,7 +46,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         setContentView(R.layout.activity_main)
         initFields()
         initActionBar()
-        initQBRTCClient()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
     }
@@ -77,7 +78,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         // Add activity as callback to RTCClient
         rtcClient!!.addSessionCallbacksListener(this)
         // Start mange QBRTCSessions according to VideoCall parser's callbacks
-//        rtcClient.prepareToProcessCalls()
+        rtcClient!!.prepareToProcessCalls()
     }
 
     override fun onAttachFragment(fragment: Fragment){
@@ -167,14 +168,14 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun initCurrentSession(session: QBRTCSession) {
-        Log.d(TAG, "Init new QBRTCSession")
+        Log.d(TAG, "AMBRA1 Init new QBRTCSession addSessionCallbacksListener")
         currentSession = session
         currentSession!!.addSessionCallbacksListener(this@CallActivity)
 
     }
 
     fun releaseCurrentSession() {
-        Log.d(TAG, "Release current session")
+        Log.d(TAG, "AMBRA1 Release current session removeSessionCallbacksListener")
         if (currentSession != null) {
             currentSession!!.removeSessionCallbacksListener(this@CallActivity)
             rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
@@ -182,13 +183,23 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
+    fun hangUpCurrentSession() {
+        Log.d(TAG, "AMBRA hangUpCurrentSession")
+        if (currentSession != null) {
+            Log.d(TAG, "AMBRA hangUpCurrentSession currentSession != null")
+            currentSession!!.hangUp(HashMap<String, String>())
+        }
+    }
+
     override fun onStartCall(session: QBRTCSession) {
-        Log.d(TAG, "onStartCall = " + session)
+        Log.d(TAG, "AMBRA onStartCall = " + session)
         initCurrentSession(session)
+        initQBRTCClient()
         initConversationFragment()
     }
 
-    override fun onHanUpCall() {
+    override fun onHangUpCall() {
+        hangUpCurrentSession()
     }
 
     override fun onAcceptCurrentSession() {
@@ -212,33 +223,41 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     //QBRTCClientSessionCallbacks
-    override fun onSessionStartClose(p0: QBRTCSession?) {
+    override fun onSessionStartClose(session: QBRTCSession) {
+        Log.d(TAG, "AMBRA onSessionStartClose")
+        currentSession!!.removeSessionCallbacksListener(this@CallActivity)
     }
 
-    override fun onReceiveNewSession(p0: QBRTCSession?) {
+    override fun onReceiveNewSession(session: QBRTCSession?) {
+        currentSession = session
+        Log.d(TAG, "AMBRA onReceiveNewSession")
+
     }
 
     override fun onUserNoActions(p0: QBRTCSession?, p1: Int?) {
     }
 
     //    QBRTCSessionEventsCallback
-    override fun onReceiveHangUpFromUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    override fun onReceiveHangUpFromUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+        Log.d(TAG, "AMBRA onReceiveHangUpFromUser")
     }
 
-    override fun onCallAcceptByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    override fun onCallAcceptByUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+        Log.d(TAG, "AMBRA onCallAcceptByUser")
     }
 
     override fun onSessionClosed(session: QBRTCSession?) {
-        Log.d(TAG, "Session " + session!!.getSessionID())
+        Log.d(TAG, "AMBRA Session " + session!!.getSessionID())
 
         if (session == currentSession) {
-            Log.d(TAG, "Stop session")
+            Log.d(TAG, "AMBRA Stop session")
             releaseCurrentSession()
-            finish()
+            initOutgoingFragment()
         }
     }
 
     override fun onCallRejectByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+        Log.d(TAG, "AMBRA onCallRejectByUser")
     }
 
     override fun onUserNotAnswer(p0: QBRTCSession?, p1: Int?) {
