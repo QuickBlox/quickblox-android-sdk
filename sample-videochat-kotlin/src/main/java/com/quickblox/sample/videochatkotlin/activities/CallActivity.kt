@@ -108,8 +108,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         addFragment(supportFragmentManager, R.id.fragment_container, outComingFragment, OutComingFragment::class.java.simpleName)
     }
 
-    fun initConversationFragment() {
+    fun initConversationFragment(incoming: Boolean) {
         val conversationFragment = VideoConversationFragment()
+        val args = Bundle()
+        args.putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
+        conversationFragment.arguments = args
         addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
@@ -209,7 +212,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "AMBRA onStartCall = " + session)
         initCurrentSession(session)
 //        initQBRTCClient()
-        initConversationFragment()
+        initConversationFragment(false)
     }
 
     override fun onHangUpCall() {
@@ -218,8 +221,8 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     override fun onAcceptCall() {
         Log.d(TAG, "AMBRA onAcceptCall")
-        currentSession.acceptCall(null)
-        initConversationFragment()
+        currentSession!!.acceptCall(null)
+        initConversationFragment(true)
     }
 
     override fun onRejectCall() {

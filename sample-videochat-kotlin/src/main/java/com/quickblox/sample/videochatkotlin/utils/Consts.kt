@@ -12,6 +12,7 @@ val EXTRA_QB_USER = "qb_user"
 val EXTRA_QB_USERS_LIST = "qb_users"
 
 val EXTRA_LOGIN_RESULT = "login_result"
+val EXTRA_IS_INCOMING_CALL = "conversation_reason"
 
 val EXTRA_LOGIN_ERROR_MESSAGE = "login_error_message"
 val EXTRA_COMMAND_TO_SERVICE = "command_for_service"
