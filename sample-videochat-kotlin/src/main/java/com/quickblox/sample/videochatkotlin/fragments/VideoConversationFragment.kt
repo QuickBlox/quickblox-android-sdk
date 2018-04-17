@@ -99,50 +99,12 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
         val columnsCount = defineColumnsCount()
-//        val layoutManager = LinearLayoutManager(activity, HORIZONTAL, false)
-        val layoutManager = GridManager(activity, 1)
+        val layoutManager = GridLayoutManager(activity, 2)
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.itemAnimator = null
         initAdapterCellSize()
     }
 
-    private inner class GridManager internal constructor(context: Context, spanCount: Int) : GridLayoutManager(context, spanCount) {
-
-        override fun onItemsAdded(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int) {
-            super.onItemsAdded(recyclerView, positionStart, itemCount)
-            Log.d("GridManager", "onItemsAdded positionStart= $positionStart")
-        }
-
-        override fun onItemsRemoved(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int) {
-            super.onItemsRemoved(recyclerView, positionStart, itemCount)
-            Log.d("GridManager", "onItemsRemoved positionStart= $positionStart")
-            updateAdaptersItems()
-        }
-
-        private fun updateAdaptersItems() {
-            if (opponentsAdapter!!.getItemCount() > 0) {
-                val itemHolder = getViewHolderForOpponent(opponentsAdapter!!.getItem(0))
-                itemHolder?.itemView?.requestLayout()
-            }
-        }
-
-        override fun onItemsUpdated(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int,
-                                    payload: Any?) {
-            super.onItemsUpdated(recyclerView, positionStart, itemCount, payload)
-            Log.d("GridManager", "onItemsUpdated positionStart= $positionStart")
-        }
-
-        override fun onItemsChanged(recyclerView: RecyclerView) {
-            super.onItemsChanged(recyclerView)
-            Log.d("GridManager", "onItemsChanged")
-        }
-
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            Log.d("GridManager", "onLayoutCompleted")
-
-        }
-    }
 
     private fun initAdapterCellSize() {
         val cellSizeWidth = cellWidth(opponents.size)
@@ -154,10 +116,10 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
     private fun cellHeight(columns: Int): Int {
-        if (columns == 1) {
+        if (columns <= 2) {
             return screenHeight() / 3
-        } else if (columns == 2) {
-
+        } else if (columns == 3) {
+            return screenHeight() / 4
         }
         return 0
     }
@@ -165,7 +127,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     private fun cellWidth(columns: Int): Int {
         if (columns == 1) {
             return screenWidth()
-        }else if (columns == 2) {
+        } else if (columns == 2) {
 
         }
         return 0
@@ -184,7 +146,10 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
     private fun defineColumnsCount(): Int {
-        return opponents.size
+        if(opponents.size > 2 ){
+            return 2
+        }
+        return 1
     }
 
     fun hangUp() {
@@ -292,16 +257,19 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     private fun adjustRecyclerViewSize(columns: Int) {
 //        TODO replace with when
-        if (columns == 1) {
-            val height = screenHeight()
-            val params = recyclerView.layoutParams
+        val height = screenHeight()
+        val params = recyclerView.layoutParams
+        if (columns <= 2) {
             params.height = height / 3
             recyclerView.layoutParams = params
-            Log.d(TAG, "adjustRecyclerViewSize height= " + height)
-        } else if (columns == 2) {
-
+            Log.d(TAG, "AMBRA columns == 2 params.height= " + params.height)
+        } else if (columns == 3) {
+            params.height = height / 2
+            recyclerView.layoutParams = params
+            Log.d(TAG, "AMBRA columns == 3 params.height= " + params.height)
         }
-
+        Log.d(TAG, "AMBRA adjustRecyclerViewSize height= " + height)
+        Log.d(TAG, "AMBRA recyclerView height= " + recyclerView.height)
     }
 
     private fun screenHeight(): Int {
