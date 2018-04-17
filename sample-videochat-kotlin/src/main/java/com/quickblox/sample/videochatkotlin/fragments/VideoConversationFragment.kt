@@ -1,21 +1,18 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.GridLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout.HORIZONTAL
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
@@ -29,7 +26,7 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoRenderer
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Roman on 15.04.2018.
@@ -81,7 +78,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         return view
     }
 
-    private fun initArguments(){
+    private fun initArguments() {
         if (arguments != null) {
             Log.d(TAG, "AMBRA arguments != null")
             isIncomingCall = arguments.getBoolean(EXTRA_IS_INCOMING_CALL)
@@ -96,28 +93,88 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         recyclerView = view.findViewById<View>(R.id.grid_opponents) as RecyclerView
 
         opponentViewHolders = SparseArray(opponents.size)
-//        recyclerView.addItemDecoration(DividerItemDecoration(activity, R.dimen.grid_item_divider))
-        recyclerView.setHasFixedSize(true)
-        val columnsCount = defineColumnsCount()
-        val layoutManager = LinearLayoutManager(activity, HORIZONTAL, false)
-//        val layoutManager = GridLayoutManager(activity, columnsCount)
-        recyclerView.setLayoutManager(layoutManager)
+        initRecyclerView()
+    }
 
-        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val cellSizeWidth = resources.getDimension(R.dimen.item_width).toInt()
-                val cellSizeHeight = resources.getDimension(R.dimen.item_height).toInt()
-                opponentsAdapter = OpponentsCallAdapter(context, opponents, cellSizeWidth, cellSizeHeight)
-                recyclerView.adapter = opponentsAdapter
-                recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+    private fun initRecyclerView() {
+        recyclerView.setHasFixedSize(false)
+        val columnsCount = defineColumnsCount()
+//        val layoutManager = LinearLayoutManager(activity, HORIZONTAL, false)
+        val layoutManager = GridManager(activity, 1)
+        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.itemAnimator = null
+        initAdapterCellSize()
+    }
+
+    private inner class GridManager internal constructor(context: Context, spanCount: Int) : GridLayoutManager(context, spanCount) {
+
+        override fun onItemsAdded(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int) {
+            super.onItemsAdded(recyclerView, positionStart, itemCount)
+            Log.d("GridManager", "onItemsAdded positionStart= $positionStart")
+        }
+
+        override fun onItemsRemoved(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int) {
+            super.onItemsRemoved(recyclerView, positionStart, itemCount)
+            Log.d("GridManager", "onItemsRemoved positionStart= $positionStart")
+            updateAdaptersItems()
+        }
+
+        private fun updateAdaptersItems() {
+            if (opponentsAdapter!!.getItemCount() > 0) {
+                val itemHolder = getViewHolderForOpponent(opponentsAdapter!!.getItem(0))
+                itemHolder?.itemView?.requestLayout()
             }
-        })
+        }
+
+        override fun onItemsUpdated(recyclerView: RecyclerView?, positionStart: Int, itemCount: Int,
+                                    payload: Any?) {
+            super.onItemsUpdated(recyclerView, positionStart, itemCount, payload)
+            Log.d("GridManager", "onItemsUpdated positionStart= $positionStart")
+        }
+
+        override fun onItemsChanged(recyclerView: RecyclerView) {
+            super.onItemsChanged(recyclerView)
+            Log.d("GridManager", "onItemsChanged")
+        }
+
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            Log.d("GridManager", "onLayoutCompleted")
+
+        }
+    }
+
+    private fun initAdapterCellSize() {
+        val cellSizeWidth = cellWidth(opponents.size)
+        val cellSizeHeight = cellHeight(opponents.size)
+//        val cellSizeHeight = recyclerView.getHeight() / 2
+        Log.d(TAG, "AMBRA initAdapterCellSize cellSizeWidth= $cellSizeWidth, cellSizeHeight= $cellSizeHeight")
+        opponentsAdapter = OpponentsCallAdapter(context, opponents, cellSizeWidth, cellSizeHeight)
+        recyclerView.adapter = opponentsAdapter
+    }
+
+    private fun cellHeight(columns: Int): Int {
+        if (columns == 1) {
+            return screenHeight() / 3
+        } else if (columns == 2) {
+
+        }
+        return 0
+    }
+
+    private fun cellWidth(columns: Int): Int {
+        if (columns == 1) {
+            return screenWidth()
+        }else if (columns == 2) {
+
+        }
+        return 0
     }
 
     fun initOpponentsList() {
         Log.d(TAG, "AMBRA initOpponentsList isIncomingCall $isIncomingCall")
         val opponentsIds = currentSession!!.opponents
-        if(isIncomingCall){
+        if (isIncomingCall) {
             opponentsIds.add(currentSession!!.callerID)
             opponentsIds.remove(QBChatService.getInstance().user.id)
         }
@@ -147,11 +204,13 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     fun setRemoteViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "AMBRA setRemoteViewMultiCall")
         val itemHolder = getViewHolderForOpponent(userId)
-        if(itemHolder !=null) {
-            val remoteVideoView = itemHolder!!.opponentView
+        if (itemHolder != null) {
+            val remoteVideoView = itemHolder.opponentView
             updateVideoView(remoteVideoView, false)
+            adjustRecyclerViewSize(opponents.size)
             setRecyclerViewVisibleState()
             Log.d(TAG, "AMBRA setRemoteViewMultiCall fillVideoView")
+            Log.d(TAG, "AMBRA setRemoteViewMultiCall remoteVideoView height= " + remoteVideoView.height)
             fillVideoView(userId, remoteVideoView, videoTrack, true)
         }
     }
@@ -228,10 +287,37 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
     private fun setRecyclerViewVisibleState() {
-        val params = recyclerView.layoutParams
-        params.height = resources.getDimension(R.dimen.item_height).toInt()
-        recyclerView.layoutParams = params
         recyclerView.visibility = View.VISIBLE
+    }
+
+    private fun adjustRecyclerViewSize(columns: Int) {
+//        TODO replace with when
+        if (columns == 1) {
+            val height = screenHeight()
+            val params = recyclerView.layoutParams
+            params.height = height / 3
+            recyclerView.layoutParams = params
+            Log.d(TAG, "adjustRecyclerViewSize height= " + height)
+        } else if (columns == 2) {
+
+        }
+
+    }
+
+    private fun screenHeight(): Int {
+        val displaymetrics = resources.displayMetrics
+
+        val screenHeightPx = displaymetrics.heightPixels
+        Log.d(TAG, "screenWidthPx $screenHeightPx")
+        return screenHeightPx
+    }
+
+    private fun screenWidth(): Int {
+        val displaymetrics = resources.displayMetrics
+
+        val screenWidthPx = displaymetrics.widthPixels
+        Log.d(TAG, "screenWidthPx $screenWidthPx")
+        return screenWidthPx
     }
 
     override fun onDestroyView() {
