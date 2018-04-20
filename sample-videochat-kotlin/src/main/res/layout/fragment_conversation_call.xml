@@ -30,7 +30,7 @@
         style="@style/MatchParent"
         android:layoutDirection="rtl"
         android:layout_above="@+id/element_set_video_buttons"
-        android:layout_marginBottom="@dimen/margin_common"
+        android:layout_marginBottom="@dimen/margin_small"
         android:horizontalSpacing="@dimen/margin_small"
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small"
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/empty_stub"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_common" />
+        android:layout_marginBottom="@dimen/margin_small" />
 
     <View
         android:id="@+id/empty_stub"

@@ -112,8 +112,8 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         initAdapterCellSize(screenHeight())
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if(setRecyclerViewHeight(recyclerView.height)) {
-                    recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                if(initCellHeight(recyclerView.height)) {
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
         })
@@ -160,12 +160,12 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
         Log.d(TAG, "AMBRA onRemoteVideoTrackReceive")
-//        setRecyclerViewHeight(screenHeight() / 2)
+//        initCellHeight(screenHeight() / 2)
         setUserToAdapter(userId)
         mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
     }
 
-    private fun setRecyclerViewHeight(height: Int):Boolean {
+    private fun initCellHeight(height: Int):Boolean {
         if( opponentsAdapter.innerLayout == null){
             return false
         }
