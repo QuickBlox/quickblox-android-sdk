@@ -17,6 +17,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     lateinit var inflater: LayoutInflater
     lateinit var opponents: ArrayList<QBUser>
+    var innerLayout:RelativeLayout? = null
     var itemHeight: Int = 0
     var itemWidth: Int = 0
 
@@ -31,8 +32,8 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int):ViewHolder {
         Log.d(TAG, "AMBRA onCreateViewHolder")
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
-        val innerLayout: RelativeLayout = view.findViewById(R.id.innerLayout)
-        innerLayout.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight)
+        innerLayout = view.findViewById(R.id.innerLayout)
+        innerLayout!!.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight)
 
         val vh = ViewHolder(view)
         vh.showOpponentView(true)
@@ -45,6 +46,11 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
 
     fun getItem(position: Int): Int? {
         return opponents[position].id
+    }
+
+    fun add(item: QBUser) {
+        opponents.add(item)
+        notifyItemRangeChanged(opponents.size - 1, opponents.size)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

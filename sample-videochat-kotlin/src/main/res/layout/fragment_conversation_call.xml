@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/grid_opponents"
+        android:visibility="gone"
         />
 
     <TextView
@@ -26,7 +27,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid_opponents"
-        style="@style/MatchWidth"
+        style="@style/MatchParent"
+        android:layoutDirection="rtl"
         android:layout_above="@+id/element_set_video_buttons"
         android:layout_marginBottom="@dimen/margin_common"
         android:horizontalSpacing="@dimen/margin_small"

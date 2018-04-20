@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -12,6 +11,8 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
@@ -37,12 +38,13 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     lateinit var hangUpCallButton: ImageButton
     lateinit var mainHandler: Handler
     private var isIncomingCall: Boolean = false
+    lateinit var layoutManager: GridLayoutManager
 
     private var isCurrentCameraFront: Boolean = true
     var currentSession: QBRTCSession? = null
     lateinit var localFullScreenVideoView: QBRTCSurfaceView
     lateinit var eventListener: CallFragmentCallbackListener
-    private var opponentsAdapter: OpponentsCallAdapter? = null
+    lateinit var opponentsAdapter: OpponentsCallAdapter
     lateinit var recyclerView: RecyclerView
     lateinit var opponents: ArrayList<QBUser>
     lateinit var opponentViewHolders: SparseArray<OpponentsCallAdapter.ViewHolder>
@@ -99,54 +101,43 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
         val columnsCount = defineColumnsCount()
-        val layoutManager = GridLayoutManager(activity, 2)
+        layoutManager = GridLayoutManager(activity, 2)
+        layoutManager.reverseLayout = true
+        val spanSizeLookup = SpanSizeLookupImpl()
+        spanSizeLookup.setSpanIndexCacheEnabled(false)
+        layoutManager.setSpanSizeLookup(spanSizeLookup)
         recyclerView.setLayoutManager(layoutManager)
+
         recyclerView.itemAnimator = null
-        initAdapterCellSize()
+        initAdapterCellSize(screenHeight())
+        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                if(setRecyclerViewHeight(recyclerView.height)) {
+                    recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                }
+            }
+        })
+
     }
 
 
-    private fun initAdapterCellSize() {
-        val cellSizeWidth = cellWidth(opponents.size)
-        val cellSizeHeight = cellHeight(opponents.size)
-//        val cellSizeHeight = recyclerView.getHeight() / 2
-        Log.d(TAG, "AMBRA initAdapterCellSize cellSizeWidth= $cellSizeWidth, cellSizeHeight= $cellSizeHeight")
-        opponentsAdapter = OpponentsCallAdapter(context, opponents, cellSizeWidth, cellSizeHeight)
+    private fun initAdapterCellSize(recycleViewHeight: Int) {
+        val cellSizeWidth = 0
+        val cellSizeHeight = recycleViewHeight
+
+        val qbUsers = ArrayList<QBUser>()
+        opponentsAdapter = OpponentsCallAdapter(context, qbUsers, cellSizeWidth, cellSizeHeight)
         recyclerView.adapter = opponentsAdapter
     }
 
-    private fun cellHeight(columns: Int): Int {
-        if (columns <= 2) {
-            return screenHeight() / 3
-        } else if (columns == 3) {
-            return screenHeight() / 4
-        }
-        return 0
-    }
-
-    private fun cellWidth(columns: Int): Int {
-        if (columns == 1) {
-            return screenWidth()
-        } else if (columns == 2) {
-
-        }
-        return 0
-    }
-
     fun initOpponentsList() {
-        Log.d(TAG, "AMBRA initOpponentsList isIncomingCall $isIncomingCall")
         val opponentsIds = currentSession!!.opponents
-        if (isIncomingCall) {
-            opponentsIds.add(currentSession!!.callerID)
-            opponentsIds.remove(QBChatService.getInstance().user.id)
-        }
+        opponentsIds.add(currentSession!!.callerID)
         opponents = getListAllUsersFromIds(opponentsIds)
-        Log.d(TAG, "AMBRA initOpponentsList opponents= " + opponents)
-        Log.d(TAG, "AMBRA initOpponentsList callerID= " + currentSession!!.callerID)
     }
 
     private fun defineColumnsCount(): Int {
-        if(opponents.size > 2 ){
+        if (opponents.size > 2) {
             return 2
         }
         return 1
@@ -158,30 +149,61 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "AMBRA onLocalVideoTrackReceive")
-        fillVideoView(localFullScreenVideoView, videoTrack, false)
+
+        val carrentUserId = QBChatService.getInstance().user.id
+        setUserToAdapter(carrentUserId)
+//        mainHandler.postDelayed(Runnable {
+//            layoutManager.reverseLayout = false
+//        }, 10000)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(QBChatService.getInstance().user.id, videoTrack) }, 500)
     }
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
         Log.d(TAG, "AMBRA onRemoteVideoTrackReceive")
-        mainHandler.postDelayed(Runnable { setRemoteViewMultiCall(userId, videoTrack) }, 500)
+//        setRecyclerViewHeight(screenHeight() / 2)
+        setUserToAdapter(userId)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
     }
 
-    fun setRemoteViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
-        Log.d(TAG, "AMBRA setRemoteViewMultiCall")
+    private fun setRecyclerViewHeight(height: Int):Boolean {
+        if( opponentsAdapter.innerLayout == null){
+            return false
+        }
+        opponentsAdapter.innerLayout?.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height)
+        return true
+    }
+
+    protected fun setUserToAdapter(userID: Int) {
+        val qbUser = getUserById(userID)
+        opponentsAdapter.add(qbUser!!)
+        recyclerView.requestLayout()
+    }
+
+    private fun getUserById(userID: Int): QBUser? {
+        for (qbUser in opponents) {
+            if (qbUser.getId() == userID) {
+                return qbUser
+            }
+        }
+        return null
+    }
+
+    fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
+        Log.d(TAG, "AMBRA setViewMultiCall")
         val itemHolder = getViewHolderForOpponent(userId)
         if (itemHolder != null) {
             val remoteVideoView = itemHolder.opponentView
             updateVideoView(remoteVideoView, false)
-            adjustRecyclerViewSize(opponents.size)
-            setRecyclerViewVisibleState()
-            Log.d(TAG, "AMBRA setRemoteViewMultiCall fillVideoView")
-            Log.d(TAG, "AMBRA setRemoteViewMultiCall remoteVideoView height= " + remoteVideoView.height)
+//            adjustRecyclerViewSize(opponents.size)
+//            setRecyclerViewVisibleState()
+            Log.d(TAG, "AMBRA setViewMultiCall fillVideoView")
+            Log.d(TAG, "AMBRA setViewMultiCall remoteVideoView height= " + remoteVideoView.height)
             fillVideoView(userId, remoteVideoView, videoTrack, true)
         }
     }
 
-    private fun getViewHolderForOpponent(userID: Int?): OpponentsCallAdapter.ViewHolder? {
-        var holder: OpponentsCallAdapter.ViewHolder? = opponentViewHolders.get(userID!!)
+    private fun getViewHolderForOpponent(userID: Int): OpponentsCallAdapter.ViewHolder? {
+        var holder: OpponentsCallAdapter.ViewHolder? = opponentViewHolders.get(userID)
         if (holder == null) {
             Log.d(TAG, "holder not found in cache")
             holder = findHolder(userID)
@@ -192,7 +214,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         return holder
     }
 
-    private fun findHolder(userID: Int?): OpponentsCallAdapter.ViewHolder? {
+    private fun findHolder(userID: Int): OpponentsCallAdapter.ViewHolder? {
         Log.d(TAG, "AMBRA findHolder for userID $userID")
         val childCount = recyclerView.childCount
         Log.d(TAG, "AMBRA childCount for $childCount")
@@ -251,26 +273,26 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         currentSession = session
     }
 
-    private fun setRecyclerViewVisibleState() {
-        recyclerView.visibility = View.VISIBLE
-    }
+//    private fun setRecyclerViewVisibleState() {
+//        recyclerView.visibility = View.VISIBLE
+//    }
 
-    private fun adjustRecyclerViewSize(columns: Int) {
-//        TODO replace with when
-        val height = screenHeight()
-        val params = recyclerView.layoutParams
-        if (columns <= 2) {
-            params.height = height / 3
-            recyclerView.layoutParams = params
-            Log.d(TAG, "AMBRA columns == 2 params.height= " + params.height)
-        } else if (columns == 3) {
-            params.height = height / 2
-            recyclerView.layoutParams = params
-            Log.d(TAG, "AMBRA columns == 3 params.height= " + params.height)
-        }
-        Log.d(TAG, "AMBRA adjustRecyclerViewSize height= " + height)
-        Log.d(TAG, "AMBRA recyclerView height= " + recyclerView.height)
-    }
+//    private fun adjustRecyclerViewSize(columns: Int) {
+////        TODO replace with when
+//        val height = screenHeight()
+//        val params = recyclerView.layoutParams
+//        if (columns <= 2) {
+//            params.height = height / 3
+//            recyclerView.layoutParams = params
+//            Log.d(TAG, "AMBRA columns == 2 params.height= " + params.height)
+//        } else if (columns == 3) {
+//            params.height = height / 2
+//            recyclerView.layoutParams = params
+//            Log.d(TAG, "AMBRA columns == 3 params.height= " + params.height)
+//        }
+//        Log.d(TAG, "AMBRA adjustRecyclerViewSize height= " + height)
+//        Log.d(TAG, "AMBRA recyclerView height= " + recyclerView.height)
+//    }
 
     private fun screenHeight(): Int {
         val displaymetrics = resources.displayMetrics
@@ -296,5 +318,30 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 //        removeVideoTrackSListener()
 //        removeVideoTrackRenderers()
 //        releaseViews()
+    }
+
+    private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
+
+
+        override fun getSpanSize(position: Int): Int {
+            Log.d("MORADIN", "position= $position")
+            if (position % 3 > 0) {
+                Log.d("MORADIN", "return 1")
+                return 1
+            } else {
+                Log.d("MORADIN", "return 2")
+                return 2
+            }
+//            val itemCount = opponentsAdapter.itemCount
+//            Log.d("MORADIN","itemCount = $itemCount")
+//            if (itemCount <= 2) {
+//                Log.d("MORADIN","return 2")
+//                return 2
+//            }
+//            else {
+//                Log.d("MORADIN","return 3")
+//                return 3
+//            }
+        }
     }
 }
