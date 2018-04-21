@@ -48,6 +48,8 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     lateinit var recyclerView: RecyclerView
     lateinit var opponents: ArrayList<QBUser>
     lateinit var opponentViewHolders: SparseArray<OpponentsCallAdapter.ViewHolder>
+    private var currentUserId: Int = 0
+    private var isRemoteShown = false
 
     interface CallFragmentCallbackListener {
         fun onHangUpCall()
@@ -85,6 +87,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
             Log.d(TAG, "AMBRA arguments != null")
             isIncomingCall = arguments.getBoolean(EXTRA_IS_INCOMING_CALL)
         }
+        currentUserId = QBChatService.getInstance().user.id
     }
 
     private fun initFields(view: View) {
@@ -109,10 +112,10 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         recyclerView.setLayoutManager(layoutManager)
 
         recyclerView.itemAnimator = null
-        initAdapterCellSize(screenHeight())
+        initAdapter()
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if(initCellHeight(recyclerView.height)) {
+                if (initCellHeight(recyclerView.height)) {
                     recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
@@ -121,9 +124,9 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
 
-    private fun initAdapterCellSize(recycleViewHeight: Int) {
+    private fun initAdapter() {
         val cellSizeWidth = 0
-        val cellSizeHeight = recycleViewHeight
+        val cellSizeHeight = screenHeight()
 
         val qbUsers = ArrayList<QBUser>()
         opponentsAdapter = OpponentsCallAdapter(context, qbUsers, cellSizeWidth, cellSizeHeight)
@@ -149,9 +152,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "AMBRA onLocalVideoTrackReceive")
-
-        val carrentUserId = QBChatService.getInstance().user.id
-        setUserToAdapter(carrentUserId)
+        setUserToAdapter(currentUserId)
 //        mainHandler.postDelayed(Runnable {
 //            layoutManager.reverseLayout = false
 //        }, 10000)
@@ -160,13 +161,24 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
         Log.d(TAG, "AMBRA onRemoteVideoTrackReceive")
-//        initCellHeight(screenHeight() / 2)
+        updateCellSizeIfNeed(recyclerView.height / 2)
         setUserToAdapter(userId)
         mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
     }
 
-    private fun initCellHeight(height: Int):Boolean {
-        if( opponentsAdapter.innerLayout == null){
+    fun updateCellSizeIfNeed(height: Int) {
+        if (!isRemoteShown) {
+            isRemoteShown = true
+
+            val itemHolder = getViewHolderForOpponent(currentUserId)
+            Log.d(TAG, "AMBRA5 updateCellSizeIfNeed itemHolder= " + itemHolder)
+            itemHolder?.cellView?.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height)
+            opponentsAdapter.itemHeight = height
+        }
+    }
+
+    private fun initCellHeight(height: Int): Boolean {
+        if (opponentsAdapter.innerLayout == null) {
             return false
         }
         opponentsAdapter.innerLayout?.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height)
@@ -190,12 +202,10 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "AMBRA setViewMultiCall")
+
         val itemHolder = getViewHolderForOpponent(userId)
         if (itemHolder != null) {
             val remoteVideoView = itemHolder.opponentView
-            updateVideoView(remoteVideoView, false)
-//            adjustRecyclerViewSize(opponents.size)
-//            setRecyclerViewVisibleState()
             Log.d(TAG, "AMBRA setViewMultiCall fillVideoView")
             Log.d(TAG, "AMBRA setViewMultiCall remoteVideoView height= " + remoteVideoView.height)
             fillVideoView(userId, remoteVideoView, videoTrack, true)

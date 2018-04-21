@@ -63,11 +63,13 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var cellView: RelativeLayout
         var opponentView: QBRTCSurfaceView
         var progressBar: ProgressBar
         var userId: Int = 0
 
         init {
+            cellView = itemView.findViewById(R.id.innerLayout)
             opponentView = itemView.findViewById<View>(R.id.opponentView) as QBRTCSurfaceView
             progressBar = itemView.findViewById<View>(R.id.progress_bar_adapter) as ProgressBar
         }
