@@ -35,6 +35,7 @@ import java.util.*
 class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QBRTCSession> {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
+    val spanCount = 2
     lateinit var hangUpCallButton: ImageButton
     lateinit var mainHandler: Handler
     private var isIncomingCall: Boolean = false
@@ -104,8 +105,8 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
         val columnsCount = defineColumnsCount()
-        layoutManager = GridLayoutManager(activity, 2)
-        layoutManager.reverseLayout = true
+        layoutManager = GridLayoutManager(activity, spanCount)
+        layoutManager.reverseLayout = false
         val spanSizeLookup = SpanSizeLookupImpl()
         spanSizeLookup.setSpanIndexCacheEnabled(false)
         layoutManager.setSpanSizeLookup(spanSizeLookup)
@@ -332,26 +333,17 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
 
-
         override fun getSpanSize(position: Int): Int {
-            Log.d("MORADIN", "position= $position")
-            if (position % 3 > 0) {
-                Log.d("MORADIN", "return 1")
+            val itemCount = opponentsAdapter.itemCount
+            if (itemCount == 4) {
                 return 1
-            } else {
-                Log.d("MORADIN", "return 2")
-                return 2
             }
-//            val itemCount = opponentsAdapter.itemCount
-//            Log.d("MORADIN","itemCount = $itemCount")
-//            if (itemCount <= 2) {
-//                Log.d("MORADIN","return 2")
-//                return 2
-//            }
-//            else {
-//                Log.d("MORADIN","return 3")
-//                return 3
-//            }
+            if (itemCount == 3) {
+                if (position % 3 > 0) {
+                    return 1
+                }
+            }
+            return 2
         }
     }
 }

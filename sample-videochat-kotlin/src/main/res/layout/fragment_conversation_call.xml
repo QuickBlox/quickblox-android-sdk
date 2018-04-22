@@ -28,7 +28,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid_opponents"
         style="@style/MatchParent"
-        android:layoutDirection="rtl"
+        android:layoutDirection="ltr"
         android:layout_above="@+id/element_set_video_buttons"
         android:layout_marginBottom="@dimen/margin_small"
         android:horizontalSpacing="@dimen/margin_small"
