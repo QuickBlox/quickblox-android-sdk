@@ -1,8 +1,11 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.DimenRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -103,6 +106,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, R.dimen.grid_item_divider))
         val columnsCount = defineColumnsCount()
         layoutManager = GridLayoutManager(activity, spanCount)
         layoutManager.reverseLayout = false
@@ -353,6 +357,19 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
                 }
             }
             return 2
+        }
+    }
+
+    private inner class DividerItemDecoration(context: Context, @DimenRes dimensionDivider: Int) : RecyclerView.ItemDecoration() {
+
+        private val space: Int
+
+        init {
+            this.space = context.resources.getDimensionPixelSize(dimensionDivider)
+        }
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+            outRect.set(space, space, space, space)
         }
     }
 }

@@ -4,6 +4,8 @@
     <dimen name="element_fragment_margin">30dp</dimen>
     <dimen name="element_fragment_margin_small">8dp</dimen>
 
+    <dimen name="grid_item_divider">1dp</dimen>
+
     <dimen name="call_buttons_diameter">64dp</dimen>
     <dimen name="call_buttons_padding">16dp</dimen>
 
