@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.quickblox.sample.videochatkotlin.R
@@ -17,7 +16,6 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     lateinit var inflater: LayoutInflater
     lateinit var opponents: ArrayList<QBUser>
-    var innerLayout:RelativeLayout? = null
     var itemHeight: Int = 0
     var itemWidth: Int = 0
 
@@ -29,15 +27,19 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
         Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int):ViewHolder {
-        Log.d(TAG, "AMBRA onCreateViewHolder")
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        Log.d(TAG, "AMBRA7 onCreateViewHolder")
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
-        innerLayout = view.findViewById(R.id.innerLayout)
-        innerLayout!!.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, itemHeight)
-
         val vh = ViewHolder(view)
+        initCellHeight(vh)
         vh.showOpponentView(true)
         return vh
+    }
+
+    fun initCellHeight(holder: ViewHolder, height: Int = itemHeight) {
+        val params = holder.itemLayout.layoutParams
+        params.height = height
+        holder.itemLayout.layoutParams = params
     }
 
     override fun getItemCount(): Int {
@@ -63,15 +65,15 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var cellView: RelativeLayout
+        var itemLayout: RelativeLayout
         var opponentView: QBRTCSurfaceView
         var progressBar: ProgressBar
         var userId: Int = 0
 
         init {
-            cellView = itemView.findViewById(R.id.innerLayout)
-            opponentView = itemView.findViewById<View>(R.id.opponentView) as QBRTCSurfaceView
-            progressBar = itemView.findViewById<View>(R.id.progress_bar_adapter) as ProgressBar
+            itemLayout = itemView.findViewById(R.id.itemLayout)
+            opponentView = itemView.findViewById(R.id.opponentView)
+            progressBar = itemView.findViewById(R.id.progress_bar_adapter)
         }
 
         fun showOpponentView(show: Boolean) {

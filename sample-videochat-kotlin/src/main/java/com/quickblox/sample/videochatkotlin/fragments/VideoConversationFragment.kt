@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
@@ -116,7 +115,12 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         initAdapter()
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if (initCellHeight(recyclerView.height)) {
+                var height = recyclerView.height
+                if (height != 0) {
+                    if (isRemoteShown) {
+                        height /= 2
+                    }
+                    updateAllCellHeight(height)
                     recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
@@ -152,38 +156,43 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
     override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
-        Log.d(TAG, "AMBRA onLocalVideoTrackReceive")
+        Log.d(TAG, "AMBRA7 onLocalVideoTrackReceive")
         setUserToAdapter(currentUserId)
 //        mainHandler.postDelayed(Runnable {
 //            layoutManager.reverseLayout = false
 //        }, 10000)
-        mainHandler.postDelayed(Runnable { setViewMultiCall(QBChatService.getInstance().user.id, videoTrack) }, 500)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack) }, 500)
     }
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
-        Log.d(TAG, "AMBRA onRemoteVideoTrackReceive")
-        updateCellSizeIfNeed(recyclerView.height / 2)
+        Log.d(TAG, "AMBRA7 onRemoteVideoTrackReceive")
+        updateCellSizeIfNeed()
         setUserToAdapter(userId)
         mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
     }
 
-    fun updateCellSizeIfNeed(height: Int) {
+    fun updateCellSizeIfNeed(height: Int = recyclerView.height / 2) {
         if (!isRemoteShown) {
             isRemoteShown = true
 
-            val itemHolder = getViewHolderForOpponent(currentUserId)
-            Log.d(TAG, "AMBRA5 updateCellSizeIfNeed itemHolder= " + itemHolder)
-            itemHolder?.cellView?.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height)
+            initCurrentUserCellHeight(height)
             opponentsAdapter.itemHeight = height
         }
     }
 
-    private fun initCellHeight(height: Int): Boolean {
-        if (opponentsAdapter.innerLayout == null) {
-            return false
+    fun updateAllCellHeight(height: Int) {
+        for (user in opponentsAdapter.opponents) {
+            val holder = getViewHolderForOpponent(user.id)
+            holder?.let { opponentsAdapter.initCellHeight(it, height) }
         }
-        opponentsAdapter.innerLayout?.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height)
-        return true
+        opponentsAdapter.itemHeight = height
+    }
+
+    private fun initCurrentUserCellHeight(height: Int) {
+        val holder = recyclerView.findViewHolderForAdapterPosition(0)
+        if (holder is OpponentsCallAdapter.ViewHolder) {
+            opponentsAdapter.initCellHeight(holder, height)
+        }
     }
 
     protected fun setUserToAdapter(userID: Int) {
@@ -202,13 +211,13 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     }
 
     fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
-        Log.d(TAG, "AMBRA setViewMultiCall")
+        Log.d(TAG, "AMBRA7 setViewMultiCall userId= $userId")
 
         val itemHolder = getViewHolderForOpponent(userId)
         if (itemHolder != null) {
             val remoteVideoView = itemHolder.opponentView
             Log.d(TAG, "AMBRA setViewMultiCall fillVideoView")
-            Log.d(TAG, "AMBRA setViewMultiCall remoteVideoView height= " + remoteVideoView.height)
+            Log.d(TAG, "AMBRA7 setViewMultiCall remoteVideoView height= " + remoteVideoView.height)
             fillVideoView(userId, remoteVideoView, videoTrack, true)
         }
     }
