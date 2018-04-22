@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -26,7 +25,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by roman on 4/6/18.
@@ -62,7 +61,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     fun initActionBar() {
         setActionBarTitle(R.string.title_call_activity)
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.black_transparent_50)))
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     private fun initQBRTCClient() {
@@ -112,6 +111,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         val conversationFragment = VideoConversationFragment()
         val args = Bundle()
         args.putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
+        args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
         conversationFragment.arguments = args
         addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
@@ -248,7 +248,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     //QBRTCClientSessionCallbacks
     override fun onSessionStartClose(session: QBRTCSession) {
         Log.d(TAG, "AMBRA onSessionStartClose")
-        currentSession!!.removeSessionCallbacksListener(this@CallActivity)
+        currentSession?.removeSessionCallbacksListener(this@CallActivity)
     }
 
     override fun onReceiveNewSession(session: QBRTCSession?) {

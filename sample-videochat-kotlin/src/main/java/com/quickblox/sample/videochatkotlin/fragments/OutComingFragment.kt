@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
+import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
@@ -79,6 +80,8 @@ class OutComingFragment : Fragment() {
         val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
+            val currentUser = QBChatService.getInstance().user
+            opponents.remove(currentUser)
         }
         Log.d(TAG, "users= " + opponents)
     }

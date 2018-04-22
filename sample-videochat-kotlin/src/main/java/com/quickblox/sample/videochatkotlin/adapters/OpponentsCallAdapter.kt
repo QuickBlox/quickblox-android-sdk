@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
@@ -32,7 +33,6 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
         val vh = ViewHolder(view)
         initCellHeight(vh)
-        vh.showOpponentView(true)
         return vh
     }
 
@@ -63,28 +63,19 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = opponents[position]
-        Log.d(TAG, "AMBRA onBindViewHolder user.id= " + user.id)
         val userID = user.id
 
         holder.opponentView.id = user.id
         holder.userId = userID
+        holder.opponentsName.text = user.fullName
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemLayout: RelativeLayout
-        var opponentView: QBRTCSurfaceView
-        var progressBar: ProgressBar
+        var itemLayout: RelativeLayout = itemView.findViewById(R.id.itemLayout)
+        var opponentsName: TextView = itemView.findViewById(R.id.opponentName)
+        var connectionStatus: TextView = itemView.findViewById(R.id.connectionStatus)
+        var opponentView: QBRTCSurfaceView = itemView.findViewById(R.id.opponentView)
+        var progressBar: ProgressBar = itemView.findViewById(R.id.progress_bar_adapter)
         var userId: Int = 0
-
-        init {
-            itemLayout = itemView.findViewById(R.id.itemLayout)
-            opponentView = itemView.findViewById(R.id.opponentView)
-            progressBar = itemView.findViewById(R.id.progress_bar_adapter)
-        }
-
-        fun showOpponentView(show: Boolean) {
-            Log.d("OpponentsAdapter", "AMBRA show? $show")
-            opponentView.visibility = if (show) View.VISIBLE else View.GONE
-        }
     }
 }

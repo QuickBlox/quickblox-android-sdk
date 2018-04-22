@@ -21,7 +21,7 @@ import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_IS_INCOMING_CALL
-import com.quickblox.sample.videochatkotlin.utils.getListAllUsersFromIds
+import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.QBRTCSession
@@ -82,7 +82,6 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_conversation_call, container, false)
         initArguments()
-        initOpponentsList()
         initFields(view)
         return view
     }
@@ -97,6 +96,10 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         if (arguments != null) {
             Log.d(TAG, "AMBRA arguments != null")
             isIncomingCall = arguments!!.getBoolean(EXTRA_IS_INCOMING_CALL)
+            val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
+            if (obj is ArrayList<*>) {
+                opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
+            }
         }
         currentUserId = QBChatService.getInstance().user.id
     }
@@ -147,12 +150,6 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         val qbUsers = ArrayList<QBUser>()
         opponentsAdapter = OpponentsCallAdapter(context!!, qbUsers, cellSizeWidth, cellSizeHeight)
         recyclerView.adapter = opponentsAdapter
-    }
-
-    fun initOpponentsList() {
-        val opponentsIds = currentSession!!.opponents
-        opponentsIds.add(currentSession!!.callerID)
-        opponents = getListAllUsersFromIds(opponentsIds)
     }
 
     private fun defineColumnsCount(): Int {
@@ -319,26 +316,15 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         currentSession = session
     }
 
-//    private fun setRecyclerViewVisibleState() {
-//        recyclerView.visibility = View.VISIBLE
-//    }
+    private fun setStatusForOpponent(userId: Int, status: String) {
+        val holder = getViewHolderForOpponent(userId)
+        holder?.connectionStatus?.text = status
+    }
 
-//    private fun adjustRecyclerViewSize(columns: Int) {
-////        TODO replace with when
-//        val height = screenHeight()
-//        val params = recyclerView.layoutParams
-//        if (columns <= 2) {
-//            params.height = height / 3
-//            recyclerView.layoutParams = params
-//            Log.d(TAG, "AMBRA columns == 2 params.height= " + params.height)
-//        } else if (columns == 3) {
-//            params.height = height / 2
-//            recyclerView.layoutParams = params
-//            Log.d(TAG, "AMBRA columns == 3 params.height= " + params.height)
-//        }
-//        Log.d(TAG, "AMBRA adjustRecyclerViewSize height= " + height)
-//        Log.d(TAG, "AMBRA recyclerView height= " + recyclerView.height)
-//    }
+    private fun updateNameForOpponent(userId: Int, userName: String) {
+        val holder = getViewHolderForOpponent(userId)
+        holder?.opponentsName?.text = userName
+    }
 
     private fun screenHeight(): Int {
         val displaymetrics = resources.displayMetrics
@@ -367,15 +353,18 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 
 
     ////////////////////////////  QBRTCSessionStateCallbacks ///////////////////
-    override fun onDisconnectedFromUser(p0: QBRTCSession?, p1: Int?) {
+    override fun onDisconnectedFromUser(session: QBRTCSession, userId: Int) {
+        setStatusForOpponent(userId, getString(R.string.text_status_disconnected))
     }
 
     override fun onConnectedToUser(session: QBRTCSession, userId: Int) {
         Log.d(TAG, "AMBRA8 onConnectedToUser userId= $userId")
+        setStatusForOpponent(userId, getString(R.string.text_status_connected))
     }
 
     override fun onConnectionClosedForUser(session: QBRTCSession, userId: Int) {
         Log.d(TAG, "AMBRA8 onConnectionClosedForUser cleanUpAdapter userId= " + userId)
+        setStatusForOpponent(userId, getString(R.string.text_status_closed))
         cleanAdapter(userId)
     }
 
@@ -416,7 +405,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         }
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
-            outRect.set(space, space, space, space)
+            outRect.set(space, 0, space, space)
         }
     }
 }
