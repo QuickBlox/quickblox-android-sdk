@@ -46,7 +46,7 @@ ext {
 
     // Dependency versions
     playServicesVersion = '11.4.2'
-    supportLibVersion = '26.1.0'
+    supportLibVersion = '27.1.0'
     supportV4Version = supportLibVersion
     appcompatV7Version = supportLibVersion
     recyclerviewV7Version = supportLibVersion

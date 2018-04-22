@@ -76,7 +76,7 @@ class OutComingFragment : Fragment() {
     }
 
     fun initFields() {
-        val obj = arguments.get(EXTRA_QB_USERS_LIST)
+        val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
         }
@@ -121,7 +121,7 @@ class OutComingFragment : Fragment() {
     }
 
     fun startCameraPreview() {
-        cameraPreview = CameraPreview(activity, cameraFront)
+        cameraPreview = CameraPreview(activity!!, cameraFront)
         frameLayout.addView(cameraPreview)
     }
 

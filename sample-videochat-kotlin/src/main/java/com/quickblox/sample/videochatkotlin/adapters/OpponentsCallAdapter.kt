@@ -27,7 +27,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
         Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.d(TAG, "AMBRA7 onCreateViewHolder")
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
         val vh = ViewHolder(view)
@@ -53,6 +53,12 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     fun add(item: QBUser) {
         opponents.add(item)
         notifyItemRangeChanged(opponents.size - 1, opponents.size)
+    }
+
+    fun removeItem(index: Int) {
+        opponents.removeAt(index)
+        notifyItemRemoved(index)
+        notifyItemRangeChanged(index, opponents.size)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

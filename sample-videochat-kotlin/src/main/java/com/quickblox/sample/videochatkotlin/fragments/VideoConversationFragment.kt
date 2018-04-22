@@ -16,14 +16,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageButton
+import androidx.core.util.forEach
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_IS_INCOMING_CALL
 import com.quickblox.sample.videochatkotlin.utils.getListAllUsersFromIds
 import com.quickblox.users.model.QBUser
+import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
 import org.webrtc.RendererCommon
@@ -34,7 +37,7 @@ import java.util.*
 /**
  * Created by Roman on 15.04.2018.
  */
-class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QBRTCSession> {
+class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
     val spanCount = 2
@@ -81,14 +84,19 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         initArguments()
         initOpponentsList()
         initFields(view)
-        initVideoTrackSListener()
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initVideoTrackSListener()
+        initSessionListeners()
     }
 
     private fun initArguments() {
         if (arguments != null) {
             Log.d(TAG, "AMBRA arguments != null")
-            isIncomingCall = arguments.getBoolean(EXTRA_IS_INCOMING_CALL)
+            isIncomingCall = arguments!!.getBoolean(EXTRA_IS_INCOMING_CALL)
         }
         currentUserId = QBChatService.getInstance().user.id
     }
@@ -106,7 +114,7 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, R.dimen.grid_item_divider))
+        recyclerView.addItemDecoration(DividerItemDecoration(context!!, R.dimen.grid_item_divider))
         val columnsCount = defineColumnsCount()
         layoutManager = GridLayoutManager(activity, spanCount)
         layoutManager.reverseLayout = false
@@ -132,13 +140,12 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
 
     }
 
-
     private fun initAdapter() {
         val cellSizeWidth = 0
         val cellSizeHeight = screenHeight()
 
         val qbUsers = ArrayList<QBUser>()
-        opponentsAdapter = OpponentsCallAdapter(context, qbUsers, cellSizeWidth, cellSizeHeight)
+        opponentsAdapter = OpponentsCallAdapter(context!!, qbUsers, cellSizeWidth, cellSizeHeight)
         recyclerView.adapter = opponentsAdapter
     }
 
@@ -281,16 +288,31 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
         surfaceViewRenderer.requestLayout()
     }
 
+    private fun initSessionListeners() {
+        currentSession!!.addSessionCallbacksListener(this)
+    }
+
+    private fun removeSessionListeners() {
+        currentSession!!.removeSessionCallbacksListener(this)
+    }
+
     private fun initVideoTrackSListener() {
-        if (currentSession != null) {
-            currentSession!!.addVideoTrackCallbacksListener(this)
-        }
+        currentSession!!.addVideoTrackCallbacksListener(this)
+
     }
 
     private fun removeVideoTrackSListener() {
-        if (currentSession != null) {
-            currentSession!!.removeVideoTrackCallbacksListener(this)
+        currentSession!!.removeVideoTrackCallbacksListener(this)
+    }
+
+    protected fun releaseOpponentsViews() {
+        opponentViewHolders.forEach { key, itemView ->
+            itemView.opponentView.release()
         }
+    }
+
+    private fun releaseViewHolders() {
+        opponentViewHolders.clear()
     }
 
     fun initSession(session: QBRTCSession?) {
@@ -337,11 +359,36 @@ class VideoConversationFragment : Fragment(), QBRTCClientVideoTracksCallbacks<QB
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "AMBRA onDestroyView")
-//        releaseViewHolders()
-//        removeConnectionStateListeners()
-//        removeVideoTrackSListener()
-//        removeVideoTrackRenderers()
-//        releaseViews()
+        removeSessionListeners()
+        removeVideoTrackSListener()
+        releaseOpponentsViews()
+        releaseViewHolders()
+    }
+
+
+    ////////////////////////////  QBRTCSessionStateCallbacks ///////////////////
+    override fun onDisconnectedFromUser(p0: QBRTCSession?, p1: Int?) {
+    }
+
+    override fun onConnectedToUser(session: QBRTCSession, userId: Int) {
+        Log.d(TAG, "AMBRA8 onConnectedToUser userId= $userId")
+    }
+
+    override fun onConnectionClosedForUser(session: QBRTCSession, userId: Int) {
+        Log.d(TAG, "AMBRA8 onConnectionClosedForUser cleanUpAdapter userId= " + userId)
+        cleanAdapter(userId)
+    }
+
+    override fun onStateChanged(p0: QBRTCSession?, p1: BaseSession.QBRTCSessionState?) {
+    }
+
+    fun cleanAdapter(userId: Int) {
+        val itemHolder = getViewHolderForOpponent(userId)
+        if (itemHolder != null) {
+            Log.d(TAG, "onConnectionClosedForUser  opponentsAdapter.removeItem")
+            opponentsAdapter.removeItem(itemHolder.adapterPosition)
+            opponentViewHolders.remove(userId)
+        }
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
