@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
@@ -19,13 +17,11 @@ import com.quickblox.sample.videochatkotlin.services.CallService
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
 import com.quickblox.users.model.QBUser
-import com.quickblox.videochat.webrtc.BaseSession
-import com.quickblox.videochat.webrtc.QBRTCClient
-import com.quickblox.videochat.webrtc.QBRTCConfig
-import com.quickblox.videochat.webrtc.QBRTCSession
+import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
+import org.webrtc.CameraVideoCapturer
 import java.util.*
 
 /**
@@ -39,6 +35,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     lateinit var opponents: ArrayList<QBUser>
     private var rtcClient: QBRTCClient? = null
     var currentSession: QBRTCSession? = null
+    lateinit var audioManager: AppRTCAudioManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +44,20 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         initFields()
         initQBRTCClient()
         initActionBar()
+        initAudioManager()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
+    }
+
+    private fun initAudioManager() {
+        audioManager = AppRTCAudioManager.create(this)
+
+        audioManager.defaultAudioDevice = AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+        Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE")
+
+        audioManager.setOnWiredHeadsetStateListener({ plugged, hasMicrophone ->
+            Log.d(TAG, "setOnWiredHeadsetStateListener plugged= $plugged")
+        })
     }
 
     fun initFields() {
@@ -153,24 +162,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
                 getString(R.string.denied_permission_message, createCompositeString(deniedPermissions)))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_call, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-            R.id.menu_logout_user_done -> {
-                startLogout()
-                startLoginActivity()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun startLogout() {
         val intent = Intent(this, CallService::class.java)
         intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGOUT)
@@ -234,6 +225,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
+    override fun onLogout() {
+        startLogout()
+        startLoginActivity()
+    }
+
     //QBRTCSessionStateCallback
     override fun onDisconnectedFromUser(p0: QBRTCSession?, p1: Int?) {
 
@@ -292,7 +288,24 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     }
 
-    interface IncomingCallStateCallback {
-        fun onIncomingCallReceive()
+    override fun onSetAudioEnabled(isAudioEnabled: Boolean) {
+
+    }
+
+    override fun onSetVideoEnabled(isNeedEnableCam: Boolean) {
+
+    }
+
+    override fun onSwitchAudio() {
+
+    }
+
+    override fun onStartScreenSharing() {
+
+    }
+
+    override fun onSwitchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler) {
+        (currentSession!!.mediaStreamManager.videoCapturer as QBRTCCameraVideoCapturer)
+                .switchCamera(cameraSwitchHandler)
     }
 }

@@ -14,6 +14,10 @@
     <string name="title_current_user">Logged in as %1$s</string>
     <string name="action_start_logout">Logout</string>
 
+    <!--menu-->
+    <string name="action_switch_camera">Switch camera</string>
+    <string name="action_screen_share">Screen share</string>
+
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
     <string name="dlg_login">Login…</string>
@@ -31,4 +35,5 @@
     <!-- Errors strings. -->
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="denied_permission_message">You cannot continue without an access to %s</string>
+    <string name="camera_swicth_failed">\"Failed switch camera\"</string>
 </resources>

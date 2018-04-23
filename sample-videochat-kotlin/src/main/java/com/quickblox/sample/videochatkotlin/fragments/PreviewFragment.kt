@@ -4,9 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
@@ -43,6 +41,7 @@ class PreviewFragment : Fragment() {
         fun onStartCall(session: QBRTCSession)
         fun onAcceptCall()
         fun onRejectCall()
+        fun onLogout()
     }
 
     override fun onAttach(activity: Activity) {
@@ -59,9 +58,9 @@ class PreviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
-
         Log.d(TAG, "onCreate() from PreviewFragment")
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -159,5 +158,22 @@ class PreviewFragment : Fragment() {
 
     fun incomeTextViewVisibility(visibility: Int) {
         incomeTextView.visibility = visibility
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.activity_call, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.menu_logout_user_done -> {
+                eventListener.onLogout()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

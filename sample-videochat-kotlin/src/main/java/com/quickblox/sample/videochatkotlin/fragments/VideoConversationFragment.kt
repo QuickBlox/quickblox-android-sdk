@@ -11,13 +11,12 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.ImageButton
+import android.widget.ToggleButton
 import androidx.core.util.forEach
 import com.quickblox.chat.QBChatService
+import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_IS_INCOMING_CALL
@@ -29,6 +28,7 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
+import org.webrtc.CameraVideoCapturer
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoRenderer
@@ -42,9 +42,14 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     private val TAG = VideoConversationFragment::class.java.simpleName
     val spanCount = 2
     lateinit var hangUpCallButton: ImageButton
+    lateinit var cameraToggle: ToggleButton
+    lateinit var audioSwitchToggle: ToggleButton
+
     lateinit var mainHandler: Handler
     private var isIncomingCall: Boolean = false
     lateinit var layoutManager: GridLayoutManager
+
+    private var cameraState = CameraState.DISABLED_FROM_USER
 
     private var isCurrentCameraFront: Boolean = true
     var currentSession: QBRTCSession? = null
@@ -57,8 +62,19 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     private var currentUserId: Int = 0
     private var isRemoteShown = false
 
+    private enum class CameraState {
+        NONE,
+        DISABLED_FROM_USER,
+        ENABLED_FROM_USER
+    }
+
     interface CallFragmentCallbackListener {
         fun onHangUpCall()
+        fun onSetAudioEnabled(isAudioEnabled: Boolean)
+        fun onSetVideoEnabled(isNeedEnableCam: Boolean)
+        fun onSwitchAudio()
+        fun onStartScreenSharing()
+        fun onSwitchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler)
     }
 
     override fun onAttach(activity: Activity) {
@@ -77,6 +93,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         super.onCreate(savedInstanceState)
         Log.d(TAG, "AMBRA onCreate")
         mainHandler = Handler()
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,8 +125,12 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         localFullScreenVideoView = view.findViewById<View>(R.id.local_video_view) as QBRTCSurfaceView
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({ hangUp() })
+        cameraToggle = view.findViewById(R.id.toggle_camera)
+        cameraToggle.visibility = View.VISIBLE
+        audioSwitchToggle = view.findViewById(R.id.toggle_speaker)
+        audioSwitchToggle.setVisibility(View.VISIBLE)
 
-        recyclerView = view.findViewById<View>(R.id.grid_opponents) as RecyclerView
+        recyclerView = view.findViewById(R.id.grid_opponents)
 
         opponentViewHolders = SparseArray(opponents.size)
         initRecyclerView()
@@ -165,6 +186,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 
     override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "AMBRA7 onLocalVideoTrackReceive")
+        cameraState = CameraState.NONE
         setUserToAdapter(currentUserId)
 //        mainHandler.postDelayed(Runnable {
 //            layoutManager.reverseLayout = false
@@ -378,6 +400,70 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
             opponentsAdapter.removeItem(itemHolder.adapterPosition)
             opponentViewHolders.remove(userId)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.conversation_fragment, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.camera_switch -> {
+                switchCamera(item)
+                return true
+            }
+            R.id.screen_share -> {
+                startScreenSharing()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun startScreenSharing() {
+        eventListener.onStartScreenSharing()
+    }
+
+    private fun switchCamera(item: MenuItem) {
+        if (cameraState == CameraState.DISABLED_FROM_USER) {
+            return
+        }
+        cameraToggle.setEnabled(false)
+        eventListener.onSwitchCamera(object : CameraVideoCapturer.CameraSwitchHandler {
+            override fun onCameraSwitchDone(b: Boolean) {
+                Log.d(TAG, "camera switched, bool = " + b)
+                isCurrentCameraFront = b
+                updateSwitchCameraIcon(item)
+                toggleCamera(true)
+            }
+
+            override fun onCameraSwitchError(s: String) {
+                Log.d(TAG, "camera switch error " + s)
+                Toaster.shortToast(getString(R.string.camera_swicth_failed) + s)
+                cameraToggle.setEnabled(true)
+            }
+        })
+    }
+
+    private fun updateSwitchCameraIcon(item: MenuItem) {
+        if (isCurrentCameraFront) {
+            Log.d(TAG, "CameraFront now!")
+            item.setIcon(R.drawable.ic_camera_front)
+        } else {
+            Log.d(TAG, "CameraRear now!")
+            item.setIcon(R.drawable.ic_camera_rear)
+        }
+    }
+
+    private fun toggleCamera(isNeedEnableCam: Boolean) {
+        if (currentSession?.mediaStreamManager != null) {
+            eventListener.onSetVideoEnabled(isNeedEnableCam)
+        }
+//        if (connectionEstablished && !cameraToggle.isEnabled()) {
+//            cameraToggle.setEnabled(true)
+//        }
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
