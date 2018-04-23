@@ -24,8 +24,8 @@ import com.quickblox.videochat.webrtc.QBRTCTypes
 import org.webrtc.ContextUtils
 
 
-class OutComingFragment : Fragment() {
-    private val TAG = OutComingFragment::class.java.simpleName
+class PreviewFragment : Fragment() {
+    private val TAG = PreviewFragment::class.java.simpleName
 
     val cameraFront = 1
     lateinit var cameraPreview: CameraPreview
@@ -60,17 +60,19 @@ class OutComingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
 
-        Log.d(TAG, "onCreate() from OutComingFragment")
+        Log.d(TAG, "onCreate() from PreviewFragment")
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_outcome_call, container, false)
-        frameLayout = view.findViewById(R.id.camera_preview)
+        val view = inflater.inflate(R.layout.fragment_preview, container, false)
+        frameLayout = view.findViewById<FrameLayout>(R.id.camera_preview)
         startCallButton = view.findViewById(R.id.button_start_call)
         startCallButton.setOnClickListener({ startOrAcceptCall() })
+        startCallButtonVisibility(View.VISIBLE)
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({rejectCall()})
+        hangUpButtonvisibility(View.GONE)
         incomeTextView = view.findViewById(R.id.income_call_type)
         initFields()
         return view
@@ -90,6 +92,7 @@ class OutComingFragment : Fragment() {
         if (isIncomingCall) {
             isIncomingCall = false
             incomeTextViewVisibility(View.INVISIBLE)
+            startCallButtonVisibility(View.GONE)
             eventListener.onAcceptCall()
         } else {
             startCall()
@@ -98,6 +101,8 @@ class OutComingFragment : Fragment() {
 
     fun rejectCall(){
         eventListener.onRejectCall()
+        hangUpButtonvisibility(View.GONE)
+        incomeTextViewVisibility(View.INVISIBLE)
     }
 
     private fun startCall() {
@@ -140,7 +145,16 @@ class OutComingFragment : Fragment() {
     fun updateCallButtons() {
         Log.d(TAG, "AMBRA updateCallButtons")
         isIncomingCall = true
+        hangUpButtonvisibility(View.VISIBLE)
         incomeTextViewVisibility(View.VISIBLE)
+    }
+
+    fun startCallButtonVisibility(visibility: Int){
+        startCallButton.visibility = visibility
+    }
+
+    fun hangUpButtonvisibility(visibility: Int){
+        hangUpCallButton.visibility = visibility
     }
 
     fun incomeTextViewVisibility(visibility: Int) {

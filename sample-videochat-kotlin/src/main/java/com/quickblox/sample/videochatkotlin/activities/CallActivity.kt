@@ -13,7 +13,7 @@ import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.fragments.OutComingFragment
+import com.quickblox.sample.videochatkotlin.fragments.PreviewFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
 import com.quickblox.sample.videochatkotlin.utils.*
@@ -31,7 +31,7 @@ import java.util.*
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, OutComingFragment.CallFragmentCallbackListener,
+class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, PreviewFragment.CallFragmentCallbackListener,
         VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback {
 
     val TAG = CallActivity::class.java.simpleName
@@ -90,22 +90,24 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     fun checkCameraPermissionAndStart() {
         if (systemPermissionHelper.isAllCameraPermissionGranted()) {
-            initSuitableFragment()
+            initPreviewFragment()
         } else {
             systemPermissionHelper.requestPermissionsForCallByType()
         }
     }
 
-    private fun initSuitableFragment() {
-        initOutgoingFragment()
+    fun initPreviewFragIfNeed() {
+        if (supportFragmentManager.findFragmentByTag(PreviewFragment::class.java.simpleName) !is PreviewFragment) {
+            initPreviewFragment()
+        }
     }
 
-    fun initOutgoingFragment() {
-        val outComingFragment = OutComingFragment()
+    fun initPreviewFragment() {
+        val previewFragment = PreviewFragment()
         val args = Bundle()
         args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
-        outComingFragment.arguments = args
-        addFragment(supportFragmentManager, R.id.fragment_container, outComingFragment, OutComingFragment::class.java.simpleName)
+        previewFragment.arguments = args
+        addFragment(supportFragmentManager, R.id.fragment_container, previewFragment, PreviewFragment::class.java.simpleName)
     }
 
     fun initConversationFragment(incoming: Boolean) {
@@ -118,11 +120,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun initIncomeCall() {
-        val outComeFrag = supportFragmentManager.findFragmentByTag(OutComingFragment::class.java.simpleName) as OutComingFragment?
+        val previewFrag = supportFragmentManager.findFragmentByTag(PreviewFragment::class.java.simpleName) as PreviewFragment?
         Log.d(TAG, "AMBRA initIncomeCall")
-        if (outComeFrag != null) {
+        if (previewFrag != null) {
             Log.d(TAG, "AMBRA updateCallButtons")
-            outComeFrag.updateCallButtons()
+            previewFrag.updateCallButtons()
         }
     }
 
@@ -136,7 +138,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
                         startLogout()
                         finish()
                     } else {
-                        initOutgoingFragment()
+                        initPreviewFragment()
                     }
                 }
             }
@@ -278,7 +280,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         if (session == currentSession) {
             Log.d(TAG, "AMBRA Stop session")
             releaseCurrentSession()
-            initOutgoingFragment()
+            initPreviewFragIfNeed()
         }
     }
 

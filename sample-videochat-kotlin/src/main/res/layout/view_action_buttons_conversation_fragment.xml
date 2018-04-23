@@ -16,6 +16,7 @@
         android:layout_marginLeft="@dimen/padding_common_twice"
         android:layout_marginRight="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/padding_common_twice"
+        android:visibility="gone"
         android:background="@drawable/shape_oval_green" />
 
     <ImageButton
