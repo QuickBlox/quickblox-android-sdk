@@ -35,7 +35,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     lateinit var opponents: ArrayList<QBUser>
     private var rtcClient: QBRTCClient? = null
     var currentSession: QBRTCSession? = null
-    lateinit var audioManager: AppRTCAudioManager
+    private var audioManager: AppRTCAudioManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,24 +44,26 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         initFields()
         initQBRTCClient()
         initActionBar()
-        initAudioManager()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
     }
 
-    private fun initAudioManager() {
-        audioManager = AppRTCAudioManager.create(this)
+    private fun initAudioManagerIfNeed() {
+        if (audioManager == null) {
+            audioManager = AppRTCAudioManager.create(this)
 
-        audioManager.defaultAudioDevice = AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
-        Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE")
+            audioManager!!.defaultAudioDevice = AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE")
 
-        audioManager.setOnWiredHeadsetStateListener({ plugged, hasMicrophone ->
-            Log.d(TAG, "setOnWiredHeadsetStateListener plugged= $plugged")
-        })
+            audioManager!!.setOnWiredHeadsetStateListener({ plugged, hasMicrophone ->
+                Log.d(TAG, "setOnWiredHeadsetStateListener plugged= $plugged")
+            })
+        }
     }
 
     private fun startAudioManager() {
-        audioManager.start { selectedAudioDevice, availableAudioDevices ->
+        initAudioManagerIfNeed()
+        audioManager!!.start { selectedAudioDevice, availableAudioDevices ->
             Toaster.shortToast("Audio device switched to  " + selectedAudioDevice)
             updateAudioDevice()
         }
@@ -149,7 +151,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "AMBRA updateAudioDevice")
         if (videoFrag != null) {
             Log.d(TAG, "AMBRA updateCallButtons")
-            videoFrag.audioDeviceChanged(audioManager.selectedAudioDevice)
+            videoFrag.audioDeviceChanged(audioManager!!.selectedAudioDevice)
         }
     }
 
@@ -215,6 +217,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         if (currentSession != null) {
             Log.d(TAG, "AMBRA hangUpCurrentSession currentSession != null")
             currentSession!!.hangUp(HashMap<String, String>())
+        }
+    }
+
+    private fun setVideoEnabled(isVideoEnabled: Boolean) {
+        if (currentSession?.mediaStreamManager != null) {
+            currentSession?.mediaStreamManager?.localVideoTrack?.setEnabled(isVideoEnabled)
         }
     }
 
@@ -293,7 +301,8 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
         if (session.equals(currentSession)) {
             Log.d(TAG, "AMBRA Stop session")
-            audioManager.stop()
+            audioManager?.stop()
+            audioManager = null
             releaseCurrentSession()
             initPreviewFragIfNeed()
         }
@@ -312,20 +321,20 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onSetVideoEnabled(isNeedEnableCam: Boolean) {
-
+        setVideoEnabled(isNeedEnableCam)
     }
 
     override fun onSwitchAudio() {
-        Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + audioManager.selectedAudioDevice)
-        if (audioManager.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
-            audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
+        Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + audioManager!!.selectedAudioDevice)
+        if (audioManager!!.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
+            audioManager!!.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
         } else {
-            if (audioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
-                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
-            } else if (audioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
-                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
+            if (audioManager!!.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
+                audioManager!!.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
+            } else if (audioManager!!.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
+                audioManager!!.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
             } else {
-                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+                audioManager!!.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
             }
         }
     }

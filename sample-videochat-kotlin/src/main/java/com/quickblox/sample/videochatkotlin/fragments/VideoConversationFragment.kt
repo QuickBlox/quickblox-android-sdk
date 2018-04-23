@@ -127,6 +127,11 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({ hangUp() })
         cameraToggle = view.findViewById(R.id.toggle_camera)
+        cameraToggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (cameraState != CameraState.DISABLED_FROM_USER) {
+                toggleCamera(isChecked)
+            }
+        }
         cameraToggle.visibility = View.VISIBLE
         audioSwitchToggle = view.findViewById(R.id.toggle_speaker)
         audioSwitchToggle.setOnClickListener({ eventListener.onSwitchAudio() })
@@ -327,7 +332,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     protected fun releaseOpponentsViews() {
-        opponentViewHolders.forEach { key, itemView ->
+        opponentViewHolders.forEach { _, itemView ->
             itemView.opponentView.release()
         }
     }
@@ -463,9 +468,9 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         if (currentSession?.mediaStreamManager != null) {
             eventListener.onSetVideoEnabled(isNeedEnableCam)
         }
-//        if (connectionEstablished && !cameraToggle.isEnabled()) {
-//            cameraToggle.setEnabled(true)
-//        }
+        if (!cameraToggle.isEnabled) {
+            cameraToggle.isEnabled = true
+        }
     }
 
     fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
