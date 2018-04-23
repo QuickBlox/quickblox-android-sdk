@@ -11,7 +11,7 @@
 
     <!--action bar-->
     <string name="title_login_activity">Login</string>
-    <string name="title_call_activity">CallScreen</string>
+    <string name="title_current_user">Logged in as %1$s</string>
     <string name="action_start_logout">Logout</string>
 
     <!-- Dialogs strings. -->
