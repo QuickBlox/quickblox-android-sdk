@@ -14,10 +14,8 @@
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/element_fragment_margin"
-        android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/call_speaker_toggle_background"
-        android:checked="true"
+        android:checked="false"
         android:visibility="gone"
         android:textOff=""
         android:textOn="" />
@@ -25,10 +23,10 @@
     <ImageButton
         android:id="@+id/button_start_call"
         style="@style/StartCallImageButton"
+        android:layout_marginLeft="@dimen/element_fragment_margin"
+        android:layout_marginStart="@dimen/element_fragment_margin"
         android:layout_marginEnd="@dimen/element_fragment_margin"
-        android:layout_marginLeft="@dimen/padding_common_twice"
         android:layout_marginRight="@dimen/element_fragment_margin"
-        android:layout_marginStart="@dimen/padding_common_twice"
         android:visibility="gone"
         android:background="@drawable/shape_oval_green" />
 
@@ -37,6 +35,8 @@
         style="@style/EndCallImageButton"
         android:layout_marginLeft="@dimen/element_fragment_margin"
         android:layout_marginStart="@dimen/element_fragment_margin"
+        android:layout_marginEnd="@dimen/element_fragment_margin"
+        android:layout_marginRight="@dimen/element_fragment_margin"
         android:background="@drawable/shape_oval_red" />
 
     <ToggleButton
@@ -44,8 +44,6 @@
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/element_fragment_margin"
-        android:layout_marginStart="@dimen/element_fragment_margin"
         android:background="@drawable/call_cam_toggle_background"
         android:checked="true"
         android:visibility="gone"

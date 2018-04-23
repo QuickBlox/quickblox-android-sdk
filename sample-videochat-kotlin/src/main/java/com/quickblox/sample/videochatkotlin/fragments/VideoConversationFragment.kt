@@ -22,6 +22,7 @@ import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_IS_INCOMING_CALL
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.users.model.QBUser
+import com.quickblox.videochat.webrtc.AppRTCAudioManager
 import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
@@ -128,6 +129,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         cameraToggle = view.findViewById(R.id.toggle_camera)
         cameraToggle.visibility = View.VISIBLE
         audioSwitchToggle = view.findViewById(R.id.toggle_speaker)
+        audioSwitchToggle.setOnClickListener({ eventListener.onSwitchAudio() })
         audioSwitchToggle.setVisibility(View.VISIBLE)
 
         recyclerView = view.findViewById(R.id.grid_opponents)
@@ -464,6 +466,10 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 //        if (connectionEstablished && !cameraToggle.isEnabled()) {
 //            cameraToggle.setEnabled(true)
 //        }
+    }
+
+    fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
+        audioSwitchToggle.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {

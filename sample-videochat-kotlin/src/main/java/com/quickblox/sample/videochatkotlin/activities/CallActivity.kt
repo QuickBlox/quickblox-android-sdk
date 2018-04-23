@@ -60,6 +60,13 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         })
     }
 
+    private fun startAudioManager() {
+        audioManager.start { selectedAudioDevice, availableAudioDevices ->
+            Toaster.shortToast("Audio device switched to  " + selectedAudioDevice)
+            updateAudioDevice()
+        }
+    }
+
     fun initFields() {
         val obj = intent.getSerializableExtra(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
@@ -137,6 +144,15 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
+    fun updateAudioDevice() {
+        val videoFrag = supportFragmentManager.findFragmentByTag(VideoConversationFragment::class.java.simpleName) as VideoConversationFragment?
+        Log.d(TAG, "AMBRA updateAudioDevice")
+        if (videoFrag != null) {
+            Log.d(TAG, "AMBRA updateCallButtons")
+            videoFrag.audioDeviceChanged(audioManager.selectedAudioDevice)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST -> {
@@ -206,6 +222,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "AMBRA onStartCall = " + session)
         initCurrentSession(session)
 //        initQBRTCClient()
+        startAudioManager()
         initConversationFragment(false)
     }
 
@@ -215,6 +232,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     override fun onAcceptCall() {
         Log.d(TAG, "AMBRA onAcceptCall")
+        startAudioManager()
         currentSession!!.acceptCall(null)
         initConversationFragment(true)
     }
@@ -270,11 +288,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         Log.d(TAG, "AMBRA onCallAcceptByUser")
     }
 
-    override fun onSessionClosed(session: QBRTCSession?) {
-        Log.d(TAG, "AMBRA Session " + session!!.getSessionID())
+    override fun onSessionClosed(session: QBRTCSession) {
+        Log.d(TAG, "AMBRA Session " + session.sessionID)
 
-        if (session == currentSession) {
+        if (session.equals(currentSession)) {
             Log.d(TAG, "AMBRA Stop session")
+            audioManager.stop()
             releaseCurrentSession()
             initPreviewFragIfNeed()
         }
@@ -297,7 +316,18 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onSwitchAudio() {
-
+        Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + audioManager.selectedAudioDevice)
+        if (audioManager.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
+            audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
+        } else {
+            if (audioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
+                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
+            } else if (audioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
+                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
+            } else {
+                audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+            }
+        }
     }
 
     override fun onStartScreenSharing() {
