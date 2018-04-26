@@ -92,7 +92,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "AMBRA onCreate")
+        Log.d(TAG, "onCreate")
         mainHandler = Handler()
         setHasOptionsMenu(true)
     }
@@ -106,13 +106,20 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 
     override fun onStart() {
         super.onStart()
+        if (currentSession!!.state != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
+            if (isIncomingCall) {
+                currentSession!!.acceptCall(null)
+            } else {
+                currentSession!!.startCall(null)
+            }
+        }
         initVideoTrackSListener()
         initSessionListeners()
     }
 
     private fun initArguments() {
         if (arguments != null) {
-            Log.d(TAG, "AMBRA arguments != null")
+            Log.d(TAG, "arguments != null")
             isIncomingCall = arguments!!.getBoolean(EXTRA_IS_INCOMING_CALL)
             val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
             if (obj is ArrayList<*>) {
@@ -192,17 +199,14 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     override fun onLocalVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack) {
-        Log.d(TAG, "AMBRA7 onLocalVideoTrackReceive")
+        Log.d(TAG, "onLocalVideoTrackReceive")
         cameraState = CameraState.NONE
         setUserToAdapter(currentUserId)
-//        mainHandler.postDelayed(Runnable {
-//            layoutManager.reverseLayout = false
-//        }, 10000)
         mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack) }, 500)
     }
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
-        Log.d(TAG, "AMBRA7 onRemoteVideoTrackReceive")
+        Log.d(TAG, "onRemoteVideoTrackReceive")
         updateCellSizeIfNeed()
         setUserToAdapter(userId)
         mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
@@ -248,14 +252,14 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
-        Log.d(TAG, "AMBRA7 setViewMultiCall userId= $userId")
+        Log.d(TAG, "setViewMultiCall userId= $userId")
 
         val itemHolder = getViewHolderForOpponent(userId)
         if (itemHolder != null) {
-            val remoteVideoView = itemHolder.opponentView
-            Log.d(TAG, "AMBRA setViewMultiCall fillVideoView")
-            Log.d(TAG, "AMBRA7 setViewMultiCall remoteVideoView height= " + remoteVideoView.height)
-            fillVideoView(userId, remoteVideoView, videoTrack, true)
+            val videoView = itemHolder.opponentView
+            Log.d(TAG, "setViewMultiCall fillVideoView")
+            Log.d(TAG, "setViewMultiCall videoView height= " + videoView.height)
+            fillVideoView(userId, videoView, videoTrack, true)
         }
     }
 
@@ -272,16 +276,15 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     private fun findHolder(userID: Int): OpponentsCallAdapter.ViewHolder? {
-        Log.d(TAG, "AMBRA findHolder for userID $userID")
+        Log.d(TAG, "findHolder for userID $userID")
         val childCount = recyclerView.childCount
-        Log.d(TAG, "AMBRA childCount for $childCount")
+        Log.d(TAG, "childCount for $childCount")
         for (i in 0 until childCount) {
-            Log.d(TAG, "AMBRA findHolder childCount $childCount , i= $i")
+            Log.d(TAG, "findHolder childCount $childCount , i= $i")
             val childView = recyclerView.getChildAt(i)
-            Log.d(TAG, "AMBRA childView= " + childView)
+            Log.d(TAG, "childView= " + childView)
             val childViewHolder = recyclerView.getChildViewHolder(childView) as OpponentsCallAdapter.ViewHolder
-            Log.d(TAG, "AMBRA childViewHolder= " + childViewHolder)
-            Log.d(TAG, "AMBRA childViewHolder.userId= " + childViewHolder.userId)
+            Log.d(TAG, "childViewHolder= " + childViewHolder)
             if (userID == childViewHolder.userId) {
                 return childViewHolder
             }
@@ -373,7 +376,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "AMBRA onDestroyView")
+        Log.d(TAG, "onDestroyView")
         removeSessionListeners()
         removeVideoTrackSListener()
         releaseOpponentsViews()
@@ -387,12 +390,12 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     override fun onConnectedToUser(session: QBRTCSession, userId: Int) {
-        Log.d(TAG, "AMBRA8 onConnectedToUser userId= $userId")
+        Log.d(TAG, "onConnectedToUser userId= $userId")
         setStatusForOpponent(userId, getString(R.string.text_status_connected))
     }
 
     override fun onConnectionClosedForUser(session: QBRTCSession, userId: Int) {
-        Log.d(TAG, "AMBRA8 onConnectionClosedForUser cleanUpAdapter userId= " + userId)
+        Log.d(TAG, "onConnectionClosedForUser cleanUpAdapter userId= " + userId)
         setStatusForOpponent(userId, getString(R.string.text_status_closed))
         cleanAdapter(userId)
     }

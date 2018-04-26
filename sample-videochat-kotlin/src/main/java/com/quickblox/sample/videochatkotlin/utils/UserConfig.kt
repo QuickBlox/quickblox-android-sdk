@@ -33,7 +33,7 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
             qbUser.id = userId
             qbUser.fullName = userName
             qbUsers.add(qbUser)
-            Log.d("AMBRA", "userLogin= $userLogin, userPassword= $userPassword, userId= $userId, userName= $userName")
+            Log.d("UserConfig", "userLogin= $userLogin, userPassword= $userPassword, userId= $userId, userName= $userName")
         }
     } catch (e: JSONException) {
         e.printStackTrace()

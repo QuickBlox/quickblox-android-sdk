@@ -52,7 +52,7 @@ class LoginActivity : CoreBaseActivity() {
             val myButton = Button(this)
             myButton.text = String.format(getString(R.string.user), i)
             myButton.setOnClickListener({
-                Log.d(TAG, "AMBRA users.get(i)= " + i)
+                Log.d(TAG, "users.get(i)= $i")
                 loginToChat(users.get(i - 1))
 //                myButton.isEnabled = false
             })

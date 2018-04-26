@@ -118,7 +118,6 @@ class PreviewFragment : Fragment() {
         val qbrtcClient = QBRTCClient.getInstance(ContextUtils.getApplicationContext())
 
         val newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType)
-        newQbRtcSession.startCall(null)
         eventListener.onStartCall(newQbRtcSession)
     }
 
@@ -142,7 +141,7 @@ class PreviewFragment : Fragment() {
     }
 
     fun updateCallButtons() {
-        Log.d(TAG, "AMBRA updateCallButtons")
+        Log.d(TAG, "updateCallButtons")
         isIncomingCall = true
         hangUpButtonvisibility(View.VISIBLE)
         incomeTextViewVisibility(View.VISIBLE)

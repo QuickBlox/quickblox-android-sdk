@@ -139,18 +139,18 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     fun initIncomeCall() {
         val previewFrag = supportFragmentManager.findFragmentByTag(PreviewFragment::class.java.simpleName) as PreviewFragment?
-        Log.d(TAG, "AMBRA initIncomeCall")
+        Log.d(TAG, "initIncomeCall")
         if (previewFrag != null) {
-            Log.d(TAG, "AMBRA updateCallButtons")
+            Log.d(TAG, "updateCallButtons")
             previewFrag.updateCallButtons()
         }
     }
 
     fun updateAudioDevice() {
         val videoFrag = supportFragmentManager.findFragmentByTag(VideoConversationFragment::class.java.simpleName) as VideoConversationFragment?
-        Log.d(TAG, "AMBRA updateAudioDevice")
+        Log.d(TAG, "updateAudioDevice")
         if (videoFrag != null) {
-            Log.d(TAG, "AMBRA updateCallButtons")
+            Log.d(TAG, "updateCallButtons")
             videoFrag.audioDeviceChanged(audioManager!!.selectedAudioDevice)
         }
     }
@@ -160,7 +160,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
             SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST -> {
                 if (grantResults.isNotEmpty()) {
                     if (!systemPermissionHelper.isAllCameraPermissionGranted()) {
-                        Log.d(TAG, "AMBRA showToastDeniedPermissions")
+                        Log.d(TAG, "showToastDeniedPermissions")
                         showToastDeniedPermissions(permissions, grantResults)
                         startLogout()
                         finish()
@@ -193,14 +193,14 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun initCurrentSession(session: QBRTCSession) {
-        Log.d(TAG, "AMBRA1 Init new QBRTCSession addSessionCallbacksListener")
+        Log.d(TAG, "Init new QBRTCSession addSessionCallbacksListener")
         currentSession = session
         currentSession!!.addSessionCallbacksListener(this@CallActivity)
 
     }
 
     fun releaseCurrentSession() {
-        Log.d(TAG, "AMBRA1 Release current session removeSessionCallbacksListener")
+        Log.d(TAG, "Release current session removeSessionCallbacksListener")
         if (currentSession != null) {
             currentSession!!.removeSessionCallbacksListener(this@CallActivity)
             this.currentSession = null
@@ -213,9 +213,9 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun hangUpCurrentSession() {
-        Log.d(TAG, "AMBRA hangUpCurrentSession")
+        Log.d(TAG, "hangUpCurrentSession")
         if (currentSession != null) {
-            Log.d(TAG, "AMBRA hangUpCurrentSession currentSession != null")
+            Log.d(TAG, "hangUpCurrentSession currentSession != null")
             currentSession!!.hangUp(HashMap<String, String>())
         }
     }
@@ -227,7 +227,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onStartCall(session: QBRTCSession) {
-        Log.d(TAG, "AMBRA onStartCall = " + session)
+        Log.d(TAG, "onStartCall = " + session)
         initCurrentSession(session)
 //        initQBRTCClient()
         startAudioManager()
@@ -239,9 +239,8 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onAcceptCall() {
-        Log.d(TAG, "AMBRA onAcceptCall")
+        Log.d(TAG, "onAcceptCall")
         startAudioManager()
-        currentSession!!.acceptCall(null)
         initConversationFragment(true)
     }
 
@@ -272,12 +271,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     //QBRTCClientSessionCallbacks
     override fun onSessionStartClose(session: QBRTCSession) {
-        Log.d(TAG, "AMBRA onSessionStartClose")
+        Log.d(TAG, "onSessionStartClose")
         currentSession?.removeSessionCallbacksListener(this@CallActivity)
     }
 
     override fun onReceiveNewSession(session: QBRTCSession?) {
-        Log.d(TAG, "AMBRA onReceiveNewSession")
+        Log.d(TAG, "onReceiveNewSession")
         if (currentSession == null) {
             currentSession = session
             initIncomeCall()
@@ -289,18 +288,18 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     //    QBRTCSessionEventsCallback
     override fun onReceiveHangUpFromUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
-        Log.d(TAG, "AMBRA onReceiveHangUpFromUser")
+        Log.d(TAG, "onReceiveHangUpFromUser")
     }
 
     override fun onCallAcceptByUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
-        Log.d(TAG, "AMBRA onCallAcceptByUser")
+        Log.d(TAG, "onCallAcceptByUser")
     }
 
     override fun onSessionClosed(session: QBRTCSession) {
-        Log.d(TAG, "AMBRA Session " + session.sessionID)
+        Log.d(TAG, "Session " + session.sessionID)
 
         if (session.equals(currentSession)) {
-            Log.d(TAG, "AMBRA Stop session")
+            Log.d(TAG, "Stop session")
             audioManager?.stop()
             audioManager = null
             releaseCurrentSession()
@@ -309,7 +308,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onCallRejectByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
-        Log.d(TAG, "AMBRA onCallRejectByUser")
+        Log.d(TAG, "onCallRejectByUser")
     }
 
     override fun onUserNotAnswer(p0: QBRTCSession?, p1: Int?) {
