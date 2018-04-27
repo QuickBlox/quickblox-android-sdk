@@ -6,9 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
@@ -17,6 +15,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     lateinit var inflater: LayoutInflater
     lateinit var opponents: ArrayList<QBUser>
+    var adapterListener: OnAdapterEventListener? = null
     var itemHeight: Int = 0
     var itemWidth: Int = 0
 
@@ -32,6 +31,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
         val vh = ViewHolder(view)
         initCellHeight(vh)
+        vh.toggleButton.setOnCheckedChangeListener { _, isChecked -> adapterListener!!.onToggleButtonItemClick(vh.adapterPosition, isChecked) }
         return vh
     }
 
@@ -69,12 +69,17 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
         holder.opponentsName.text = user.fullName
     }
 
+    interface OnAdapterEventListener {
+        fun onToggleButtonItemClick(position: Int, isChecked: Boolean)
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemLayout: RelativeLayout = itemView.findViewById(R.id.itemLayout)
         var opponentsName: TextView = itemView.findViewById(R.id.opponentName)
         var connectionStatus: TextView = itemView.findViewById(R.id.connectionStatus)
         var opponentView: QBRTCSurfaceView = itemView.findViewById(R.id.opponentView)
         var progressBar: ProgressBar = itemView.findViewById(R.id.progress_bar_adapter)
+        var toggleButton: ToggleButton = itemView.findViewById(R.id.opponent_toggle_mic);
         var userId: Int = 0
     }
 }

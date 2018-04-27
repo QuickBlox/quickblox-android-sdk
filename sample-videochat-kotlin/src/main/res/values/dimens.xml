@@ -10,6 +10,7 @@
     <dimen name="call_buttons_padding">16dp</dimen>
 
     <dimen name="action_bar_height">80dp</dimen>
+    <dimen name="toggle_button_params_small">30dp</dimen>
 
     <dimen name="margin_common">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>

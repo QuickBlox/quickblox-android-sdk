@@ -37,7 +37,7 @@ import java.util.*
 /**
  * Created by Roman on 15.04.2018.
  */
-class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
+class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession>, OpponentsCallAdapter.OnAdapterEventListener {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
     val spanCount = 2
@@ -204,6 +204,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
         val qbUsers = ArrayList<QBUser>()
         opponentsAdapter = OpponentsCallAdapter(context!!, qbUsers, cellSizeWidth, cellSizeHeight)
+        opponentsAdapter.adapterListener = this
         recyclerView.adapter = opponentsAdapter
     }
 
@@ -498,6 +499,15 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
         audioSwitchToggle.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+    }
+
+    override fun onToggleButtonItemClick(position: Int, isAudioEnabled: Boolean) {
+        val userId = opponentsAdapter.getItem(position)!!
+        if(userId == currentUserId){
+            currentSession!!.mediaStreamManager.localAudioTrack.setEnabled(isAudioEnabled)
+        } else {
+            currentSession!!.mediaStreamManager.getAudioTrack(userId).setEnabled(isAudioEnabled)
+        }
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
