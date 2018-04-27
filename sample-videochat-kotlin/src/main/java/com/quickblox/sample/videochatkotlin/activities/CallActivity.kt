@@ -1,15 +1,11 @@
 package com.quickblox.sample.videochatkotlin.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -46,7 +42,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         setContentView(R.layout.activity_main)
         initFields()
         initQBRTCClient()
-        initActionBar()
         systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
     }
@@ -77,13 +72,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
         }
-    }
-
-    @SuppressLint("InlinedApi")
-    fun initActionBar() {
-        setActionBarTitle(String.format(QBChatService.getInstance().user.fullName))
-        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.black_transparent_50)))
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     private fun initQBRTCClient() {

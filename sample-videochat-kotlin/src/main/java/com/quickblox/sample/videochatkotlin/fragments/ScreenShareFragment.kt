@@ -1,10 +1,12 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.*
@@ -26,8 +28,11 @@ class ScreenShareFragment : BaseToolBarFragment() {
         val pager = view.findViewById<View>(R.id.pager) as ViewPager
         pager.adapter = adapter
 
-//        toolbar.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.white))
         return view
+    }
+
+    override fun initActionBar() {
+        actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context!!, R.color.white)))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

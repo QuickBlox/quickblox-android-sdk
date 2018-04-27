@@ -61,7 +61,6 @@ class PreviewCallFragment : BaseToolBarFragment() {
         retainInstance = true
         Log.d(TAG, "onCreate() from PreviewCallFragment")
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

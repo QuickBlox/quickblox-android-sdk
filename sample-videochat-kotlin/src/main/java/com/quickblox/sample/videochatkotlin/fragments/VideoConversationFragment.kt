@@ -96,7 +96,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
         mainHandler = Handler()
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -175,7 +174,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private fun initRecyclerView() {
         recyclerView.setHasFixedSize(false)
         recyclerView.addItemDecoration(DividerItemDecoration(context!!, R.dimen.grid_item_divider))
-        val columnsCount = defineColumnsCount()
         layoutManager = GridLayoutManager(activity, spanCount)
         layoutManager.reverseLayout = false
         val spanSizeLookup = SpanSizeLookupImpl()
@@ -209,13 +207,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         recyclerView.adapter = opponentsAdapter
     }
 
-    private fun defineColumnsCount(): Int {
-        if (opponents.size > 2) {
-            return 2
-        }
-        return 1
-    }
-
     fun hangUp() {
         eventListener.onHangUpCall()
     }
@@ -224,14 +215,14 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         Log.d(TAG, "onLocalVideoTrackReceive")
         cameraState = CameraState.NONE
         setUserToAdapter(currentUserId)
-        mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack) }, 500)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack, false) }, 500)
     }
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
         Log.d(TAG, "onRemoteVideoTrackReceive")
         updateCellSizeIfNeed()
         setUserToAdapter(userId)
-        mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack) }, 500)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack, true) }, 500)
     }
 
     fun updateCellSizeIfNeed(height: Int = recyclerView.height / 2) {
@@ -273,7 +264,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         return null
     }
 
-    fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
+    fun setViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack, remoteRenderer: Boolean) {
         Log.d(TAG, "setViewMultiCall userId= $userId")
 
         val itemHolder = getViewHolderForOpponent(userId)
@@ -281,7 +272,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             val videoView = itemHolder.opponentView
             Log.d(TAG, "setViewMultiCall fillVideoView")
             Log.d(TAG, "setViewMultiCall videoView height= " + videoView.height)
-            fillVideoView(userId, videoView, videoTrack, true)
+            fillVideoView(userId, videoView, videoTrack, remoteRenderer)
         }
     }
 
@@ -323,10 +314,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             updateVideoView(videoView, isCurrentCameraFront)
         }
         Log.d(TAG, (if (remoteRenderer) "remote" else "local") + " Track is rendering")
-    }
-
-    private fun fillVideoView(videoView: QBRTCSurfaceView, videoTrack: QBRTCVideoTrack, remoteRenderer: Boolean) {
-        fillVideoView(0, videoView, videoTrack, remoteRenderer)
     }
 
     protected fun updateVideoView(surfaceViewRenderer: SurfaceViewRenderer, mirror: Boolean) {
