@@ -29,7 +29,6 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d(TAG, "AMBRA7 onCreateViewHolder")
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
         val vh = ViewHolder(view)
         initCellHeight(vh)

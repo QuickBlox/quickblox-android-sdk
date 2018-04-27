@@ -15,6 +15,7 @@ import android.view.*
 import android.widget.ImageButton
 import android.widget.ToggleButton
 import androidx.core.util.forEach
+import androidx.core.util.isEmpty
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -25,20 +26,18 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.AppRTCAudioManager
 import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.QBRTCSession
+import com.quickblox.videochat.webrtc.QBRTCTypes
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
-import org.webrtc.CameraVideoCapturer
-import org.webrtc.RendererCommon
-import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoRenderer
+import org.webrtc.*
 import java.util.*
 
 /**
  * Created by Roman on 15.04.2018.
  */
-class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
+class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
     val spanCount = 2
@@ -46,7 +45,6 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     lateinit var cameraToggle: ToggleButton
     lateinit var audioSwitchToggle: ToggleButton
 
-    lateinit var mainHandler: Handler
     private var isIncomingCall: Boolean = false
     lateinit var layoutManager: GridLayoutManager
 
@@ -60,8 +58,12 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     lateinit var recyclerView: RecyclerView
     lateinit var opponents: ArrayList<QBUser>
     lateinit var opponentViewHolders: SparseArray<OpponentsCallAdapter.ViewHolder>
+    private val videoTrackMap: SparseArray<QBRTCVideoTrack> = SparseArray()
     private var currentUserId: Int = 0
     private var isRemoteShown = false
+
+    override val fragmentLayout: Int
+        get() = R.layout.fragment_conversation_call
 
     private enum class CameraState {
         NONE,
@@ -98,9 +100,10 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_conversation_call, container, false)
+        val view = super.onCreateView(inflater, container, savedInstanceState)
         initArguments()
-        initFields(view)
+        initFields(view!!)
+        restoreSession()
         return view
     }
 
@@ -115,6 +118,25 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         }
         initVideoTrackSListener()
         initSessionListeners()
+    }
+
+    private fun restoreSession() {
+        Log.d(TAG, "restoreSession ")
+        if (currentSession!!.state != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
+            return
+        }
+        if (!videoTrackMap.isEmpty()) {
+            videoTrackMap.forEach { userId, track ->
+                if (currentSession!!.getPeerConnection(userId) != null && currentSession!!.getPeerConnection(userId).state != QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED) {
+                    mainHandler.post({
+                        onConnectedToUser(currentSession!!, userId)
+                        onRemoteVideoTrackReceive(currentSession!!, track, userId)
+                    })
+                } else {
+                    videoTrackMap.remove(userId)
+                }
+            }
+        }
     }
 
     private fun initArguments() {
@@ -296,6 +318,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
                               remoteRenderer: Boolean) {
         videoTrack.removeRenderer(videoTrack.renderer)
         videoTrack.addRenderer(VideoRenderer(videoView))
+        videoTrackMap.put(userId, videoTrack)
         if (!remoteRenderer) {
             updateVideoView(videoView, isCurrentCameraFront)
         }
@@ -340,6 +363,14 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         }
     }
 
+    private fun removeVideoTrackRenderers() {
+//        Log.d(TAG, "removeVideoTrackRenderers")
+//        videoTrackMap.forEach{ _, videoTrack ->
+//            Log.d(TAG, "remove opponent video Tracks")
+//            videoTrack.removeRenderer(videoTrack.getRenderer())
+//        }
+    }
+
     private fun releaseViewHolders() {
         opponentViewHolders.clear()
     }
@@ -380,6 +411,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
         removeSessionListeners()
         removeVideoTrackSListener()
         releaseOpponentsViews()
+        removeVideoTrackRenderers()
         releaseViewHolders()
     }
 
@@ -397,6 +429,7 @@ class VideoConversationFragment : Fragment(), QBRTCSessionStateCallback<QBRTCSes
     override fun onConnectionClosedForUser(session: QBRTCSession, userId: Int) {
         Log.d(TAG, "onConnectionClosedForUser cleanUpAdapter userId= " + userId)
         setStatusForOpponent(userId, getString(R.string.text_status_closed))
+        videoTrackMap.remove(userId)
         cleanAdapter(userId)
     }
 

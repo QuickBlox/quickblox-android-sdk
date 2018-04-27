@@ -17,6 +17,7 @@
     <!--menu-->
     <string name="action_switch_camera">Switch camera</string>
     <string name="action_screen_share">Screen share</string>
+    <string name="action_stop_share">Stop share</string>
 
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>

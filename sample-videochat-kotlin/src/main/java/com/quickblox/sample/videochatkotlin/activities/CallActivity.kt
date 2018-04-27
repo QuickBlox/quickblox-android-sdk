@@ -1,8 +1,10 @@
 package com.quickblox.sample.videochatkotlin.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,7 +13,8 @@ import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.fragments.PreviewFragment
+import com.quickblox.sample.videochatkotlin.fragments.PreviewCallFragment
+import com.quickblox.sample.videochatkotlin.fragments.ScreenShareFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
 import com.quickblox.sample.videochatkotlin.services.CallService
 import com.quickblox.sample.videochatkotlin.utils.*
@@ -27,8 +30,8 @@ import java.util.*
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, PreviewFragment.CallFragmentCallbackListener,
-        VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback {
+class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, PreviewCallFragment.CallFragmentCallbackListener,
+        VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback, ScreenShareFragment.OnSharingEvents {
 
     val TAG = CallActivity::class.java.simpleName
     lateinit var systemPermissionHelper: SystemPermissionHelper
@@ -115,17 +118,17 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun initPreviewFragIfNeed() {
-        if (supportFragmentManager.findFragmentByTag(PreviewFragment::class.java.simpleName) !is PreviewFragment) {
+        if (supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) !is PreviewCallFragment) {
             initPreviewFragment()
         }
     }
 
     fun initPreviewFragment() {
-        val previewFragment = PreviewFragment()
+        val previewFragment = PreviewCallFragment()
         val args = Bundle()
         args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
         previewFragment.arguments = args
-        addFragment(supportFragmentManager, R.id.fragment_container, previewFragment, PreviewFragment::class.java.simpleName)
+        addFragment(supportFragmentManager, R.id.fragment_container, previewFragment, PreviewCallFragment::class.java.simpleName)
     }
 
     fun initConversationFragment(incoming: Boolean) {
@@ -138,7 +141,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     fun initIncomeCall() {
-        val previewFrag = supportFragmentManager.findFragmentByTag(PreviewFragment::class.java.simpleName) as PreviewFragment?
+        val previewFrag = supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) as PreviewCallFragment?
         Log.d(TAG, "initIncomeCall")
         if (previewFrag != null) {
             Log.d(TAG, "updateCallButtons")
@@ -168,6 +171,19 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
                         initPreviewFragment()
                     }
                 }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i(TAG, "onActivityResult requestCode=$requestCode, resultCode= $resultCode")
+        if (requestCode == QBRTCScreenCapturer.REQUEST_MEDIA_PROJECTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                startScreenSharing(data!!)
+                Log.i(TAG, "Starting screen capture")
+            } else {
+                Toaster.longToast(
+                        getString(R.string.denied_permission_message, "screen"))
             }
         }
     }
@@ -210,6 +226,32 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     override fun onDestroy() {
         super.onDestroy()
         rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
+    }
+
+    override fun onBackPressed() {
+        val fragmentByTag = supportFragmentManager.findFragmentByTag(ScreenShareFragment::class.java.simpleName)
+        if (fragmentByTag is ScreenShareFragment) {
+            returnToCamera()
+            super.onBackPressed()
+        }
+    }
+
+    private fun returnToCamera() {
+        try {
+            currentSession!!.mediaStreamManager.videoCapturer = QBRTCCameraVideoCapturer(this, null)
+        } catch (e: QBRTCCameraVideoCapturer.QBRTCCameraCapturerException) {
+            Log.i(TAG, "Error: device doesn't have camera")
+        }
+    }
+
+    private fun startScreenSharing(data: Intent) {
+        val screenShareFragment = ScreenShareFragment()
+        addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, screenShareFragment, ScreenShareFragment::class.java.simpleName)
+        currentSession!!.getMediaStreamManager().videoCapturer = QBRTCScreenCapturer(data, null)
+    }
+
+    override fun onStopSharingPreview() {
+        onBackPressed()
     }
 
     fun hangUpCurrentSession() {
@@ -339,7 +381,10 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     override fun onStartScreenSharing() {
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return
+        }
+        QBRTCScreenCapturer.requestPermissions(this@CallActivity)
     }
 
     override fun onSwitchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler) {

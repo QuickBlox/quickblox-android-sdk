@@ -2,7 +2,6 @@ package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -22,8 +21,8 @@ import com.quickblox.videochat.webrtc.QBRTCTypes
 import org.webrtc.ContextUtils
 
 
-class PreviewFragment : Fragment() {
-    private val TAG = PreviewFragment::class.java.simpleName
+class PreviewCallFragment : BaseToolBarFragment() {
+    private val TAG = PreviewCallFragment::class.java.simpleName
 
     val cameraFront = 1
     lateinit var cameraPreview: CameraPreview
@@ -35,6 +34,8 @@ class PreviewFragment : Fragment() {
     lateinit var eventListener: CallFragmentCallbackListener
     var isIncomingCall: Boolean = false
 
+    override val fragmentLayout: Int
+        get() = R.layout.fragment_preview
 
     // Container CallActivity must implement this interface
     interface CallFragmentCallbackListener {
@@ -58,14 +59,14 @@ class PreviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
-        Log.d(TAG, "onCreate() from PreviewFragment")
+        Log.d(TAG, "onCreate() from PreviewCallFragment")
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_preview, container, false)
-        frameLayout = view.findViewById<FrameLayout>(R.id.camera_preview)
+        val view = super.onCreateView(inflater, container, savedInstanceState)!!
+        frameLayout = view.findViewById(R.id.camera_preview)
         startCallButton = view.findViewById(R.id.button_start_call)
         startCallButton.setOnClickListener({ startOrAcceptCall() })
         startCallButtonVisibility(View.VISIBLE)

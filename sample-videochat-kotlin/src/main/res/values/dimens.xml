@@ -19,4 +19,9 @@
 
     <dimen name="item_width">80dp</dimen>
     <dimen name="item_height">136dp</dimen>
+
+    <!--Pager fragment-->
+
+    <dimen name="pager_image_width">400dp</dimen>
+    <dimen name="pager_image_height">500dp</dimen>
 </resources>
