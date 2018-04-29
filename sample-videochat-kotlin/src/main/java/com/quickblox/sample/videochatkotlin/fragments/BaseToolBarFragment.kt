@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,7 @@ abstract class BaseToolBarFragment : Fragment() {
     }
 
     open fun initActionBar() {
-        actionBar.setTitle(String.format(QBChatService.getInstance().user.fullName))
+        actionBar.setTitle(String.format(QBChatService.getInstance().user.login))
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context!!, R.color.black_transparent_50)))
         //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }

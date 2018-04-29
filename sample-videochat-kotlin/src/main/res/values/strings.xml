@@ -6,6 +6,7 @@
     <string name="login">Login as</string>
     <string name="user">User %1$s</string>
     <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
+    <string name="loading_users_error">Loading users error. Error</string>
 
     <string name="text_incoming_video_call">Incoming Video Call</string>
 

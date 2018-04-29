@@ -12,7 +12,6 @@ import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.PreviewCallFragment
 import com.quickblox.sample.videochatkotlin.fragments.ScreenShareFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
-import com.quickblox.sample.videochatkotlin.services.CallService
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
 import com.quickblox.users.model.QBUser
@@ -108,6 +107,8 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     fun initPreviewFragIfNeed() {
         if (supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) !is PreviewCallFragment) {
             initPreviewFragment()
+        } else {
+            popBackStackFragment(supportFragmentManager)
         }
     }
 
@@ -125,7 +126,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         args.putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
         args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
         conversationFragment.arguments = args
-        addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
+        addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
     fun initIncomeCall() {
@@ -185,15 +186,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     private fun startLogout() {
-        val intent = Intent(this, CallService::class.java)
-        intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGOUT)
-        startService(intent)
-    }
-
-    private fun startLoginActivity() {
-        val intent = Intent(this, LoginActivity::class.java)
-        this.startActivity(intent)
-        finish()
+        ChatHelper.instance.destroy()
     }
 
     fun initCurrentSession(session: QBRTCSession) {
@@ -221,6 +214,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         if (fragmentByTag is ScreenShareFragment) {
             returnToCamera()
             super.onBackPressed()
+            Log.i(TAG, "onBackPressed")
         }
     }
 
@@ -282,7 +276,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     override fun onLogout() {
         startLogout()
-        startLoginActivity()
+        finish()
     }
 
     //QBRTCSessionStateCallback

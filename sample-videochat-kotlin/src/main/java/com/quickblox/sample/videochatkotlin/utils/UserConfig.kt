@@ -15,25 +15,17 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     val qbUsers = ArrayList<QBUser>()
     var userLogin: String
     var userPassword: String
-    var userId: Int
-    var userName: String
     try {
         val json = ConfigParser().getConfigsAsJson(fileName)
         val keys = json.keys()
         while (keys.hasNext()) {
             val loginField = keys.next()
             val passwordField = keys.next()
-            val idField = keys.next()
-            val nameField = keys.next()
             userLogin = json.getString(loginField)
             userPassword = json.getString(passwordField)
-            userId = json.getInt(idField)
-            userName = json.getString(nameField)
             val qbUser = QBUser(userLogin, userPassword)
-            qbUser.id = userId
-            qbUser.fullName = userName
             qbUsers.add(qbUser)
-            Log.d("UserConfig", "userLogin= $userLogin, userPassword= $userPassword, userId= $userId, userName= $userName")
+            Log.d("UserConfig", "userLogin= $userLogin, userPassword= $userPassword")
         }
     } catch (e: JSONException) {
         e.printStackTrace()

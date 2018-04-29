@@ -1,18 +1,20 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import com.quickblox.chat.QBChatService
+import com.quickblox.core.QBEntityCallback
+import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
-import com.quickblox.sample.videochatkotlin.utils.MAX_OPPONENTS_COUNT
-import com.quickblox.sample.videochatkotlin.utils.getIdsSelectedOpponents
+import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.sample.videochatkotlin.view.CameraPreview
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
@@ -32,6 +34,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
     lateinit var incomeTextView: TextView
     lateinit var opponents: ArrayList<QBUser>
     lateinit var eventListener: CallFragmentCallbackListener
+    private var progressDialog: ProgressDialog? = null
     var isIncomingCall: Boolean = false
 
     override val fragmentLayout: Int
@@ -60,6 +63,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
         Log.d(TAG, "onCreate() from PreviewCallFragment")
+        initFields()
+        loadUsers()
         super.onCreate(savedInstanceState)
     }
 
@@ -70,10 +75,9 @@ class PreviewCallFragment : BaseToolBarFragment() {
         startCallButton.setOnClickListener({ startOrAcceptCall() })
         startCallButtonVisibility(View.VISIBLE)
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
-        hangUpCallButton.setOnClickListener({rejectCall()})
+        hangUpCallButton.setOnClickListener({ rejectCall() })
         hangUpButtonvisibility(View.GONE)
         incomeTextView = view.findViewById(R.id.income_call_type)
-        initFields()
         return view
     }
 
@@ -87,6 +91,24 @@ class PreviewCallFragment : BaseToolBarFragment() {
         Log.d(TAG, "users= " + opponents)
     }
 
+    fun loadUsers() {
+        showProgress(R.string.dlg_loading_opponents)
+        val logins = ArrayList<String>()
+        opponents.forEach { logins.add(it.login) }
+        loadUsersByLogins(logins, object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(users: ArrayList<QBUser>, p1: Bundle?) {
+                hideProgress()
+                opponents = users
+            }
+
+            override fun onError(responseException: QBResponseException?) {
+                hideProgress()
+                showErrorSnackbar(view, R.string.loading_users_error, responseException!!, View.OnClickListener { loadUsers() })
+            }
+        })
+
+    }
+
     fun startOrAcceptCall() {
         if (isIncomingCall) {
             isIncomingCall = false
@@ -98,7 +120,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         }
     }
 
-    fun rejectCall(){
+    fun rejectCall() {
         eventListener.onRejectCall()
         hangUpButtonvisibility(View.GONE)
         incomeTextViewVisibility(View.INVISIBLE)
@@ -147,11 +169,11 @@ class PreviewCallFragment : BaseToolBarFragment() {
         incomeTextViewVisibility(View.VISIBLE)
     }
 
-    fun startCallButtonVisibility(visibility: Int){
+    fun startCallButtonVisibility(visibility: Int) {
         startCallButton.visibility = visibility
     }
 
-    fun hangUpButtonvisibility(visibility: Int){
+    fun hangUpButtonvisibility(visibility: Int) {
         hangUpCallButton.visibility = visibility
     }
 
@@ -173,6 +195,19 @@ class PreviewCallFragment : BaseToolBarFragment() {
             }
 
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showProgress(@StringRes messageId: Int) {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(context)
+        }
+        showProgressDialog(context!!, progressDialog!!, messageId)
+    }
+
+    fun hideProgress() {
+        if (progressDialog != null) {
+            hideProgressDialog(progressDialog!!)
         }
     }
 }
