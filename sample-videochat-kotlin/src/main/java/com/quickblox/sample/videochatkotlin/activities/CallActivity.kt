@@ -74,6 +74,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     private fun initQBRTCClient() {
+        QBRTCConfig.setDebugEnabled(true)
         rtcClient = QBRTCClient.getInstance(this)
 
 

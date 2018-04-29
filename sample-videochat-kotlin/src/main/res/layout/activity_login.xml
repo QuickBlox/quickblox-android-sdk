@@ -16,15 +16,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/button_layout"
-        android:orientation="vertical"
+    <ListView
+        android:id="@+id/list_users"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="@dimen/padding_common"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        android:dividerHeight="3dp"
+        android:drawSelectorOnTop="true"
+        app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
-    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
