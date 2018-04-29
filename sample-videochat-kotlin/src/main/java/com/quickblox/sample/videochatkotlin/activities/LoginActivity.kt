@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -24,6 +25,7 @@ class LoginActivity : CoreBaseActivity() {
     val TAG = LoginActivity::class.java.simpleName
     var progressDialog: ProgressDialog? = null
     lateinit var users: ArrayList<QBUser>
+    private var opponents: ArrayList<QBUser>? = null
     private var adapter: ArrayAdapter<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +55,7 @@ class LoginActivity : CoreBaseActivity() {
 
     private fun startCallActivity() {
         val intent = Intent(this, CallActivity::class.java)
-        intent.putExtra(EXTRA_QB_USERS_LIST, users)
+        intent.putExtra(EXTRA_QB_USERS_LIST, opponents)
         startActivity(intent)
     }
 
@@ -63,7 +65,7 @@ class LoginActivity : CoreBaseActivity() {
         ChatHelper.instance.login(user, object : QBEntityCallback<Void> {
             override fun onSuccess(void: Void?, p1: Bundle?) {
                 hideProgress()
-                startCallActivity()
+                loadUsers()
             }
 
             override fun onError(ex: QBResponseException) {
@@ -71,6 +73,26 @@ class LoginActivity : CoreBaseActivity() {
                 Toaster.longToast(getString(R.string.login_chat_login_error) + ex.message)
             }
         })
+    }
+
+
+    fun loadUsers() {
+        showProgress(R.string.dlg_loading_opponents)
+        val logins = ArrayList<String>()
+        users.forEach { logins.add(it.login) }
+        loadUsersByLogins(logins, object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>, p1: Bundle?) {
+                hideProgress()
+                opponents = qbUsers
+                startCallActivity()
+            }
+
+            override fun onError(responseException: QBResponseException?) {
+                hideProgress()
+                showErrorSnackbar(findViewById(android.R.id.content), R.string.loading_users_error, responseException!!, View.OnClickListener { loadUsers() })
+            }
+        })
+
     }
 
     fun showProgress(@StringRes messageId: Int) {

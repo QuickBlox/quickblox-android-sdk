@@ -3,18 +3,17 @@ package com.quickblox.sample.videochatkotlin.fragments
 import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import com.quickblox.chat.QBChatService
-import com.quickblox.core.QBEntityCallback
-import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.utils.*
+import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
+import com.quickblox.sample.videochatkotlin.utils.MAX_OPPONENTS_COUNT
+import com.quickblox.sample.videochatkotlin.utils.getIdsSelectedOpponents
 import com.quickblox.sample.videochatkotlin.view.CameraPreview
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
@@ -64,7 +63,6 @@ class PreviewCallFragment : BaseToolBarFragment() {
         retainInstance = true
         Log.d(TAG, "onCreate() from PreviewCallFragment")
         initFields()
-        loadUsers()
         super.onCreate(savedInstanceState)
     }
 
@@ -89,24 +87,6 @@ class PreviewCallFragment : BaseToolBarFragment() {
             opponents.remove(currentUser)
         }
         Log.d(TAG, "users= " + opponents)
-    }
-
-    fun loadUsers() {
-        showProgress(R.string.dlg_loading_opponents)
-        val logins = ArrayList<String>()
-        opponents.forEach { logins.add(it.login) }
-        loadUsersByLogins(logins, object : QBEntityCallback<ArrayList<QBUser>> {
-            override fun onSuccess(users: ArrayList<QBUser>, p1: Bundle?) {
-                hideProgress()
-                opponents = users
-            }
-
-            override fun onError(responseException: QBResponseException?) {
-                hideProgress()
-                showErrorSnackbar(view, R.string.loading_users_error, responseException!!, View.OnClickListener { loadUsers() })
-            }
-        })
-
     }
 
     fun startOrAcceptCall() {
@@ -195,19 +175,6 @@ class PreviewCallFragment : BaseToolBarFragment() {
             }
 
             else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun showProgress(@StringRes messageId: Int) {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(context)
-        }
-        showProgressDialog(context!!, progressDialog!!, messageId)
-    }
-
-    fun hideProgress() {
-        if (progressDialog != null) {
-            hideProgressDialog(progressDialog!!)
         }
     }
 }

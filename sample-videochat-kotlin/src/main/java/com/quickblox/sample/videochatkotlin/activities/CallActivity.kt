@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
+import com.quickblox.chat.QBChatService
+import com.quickblox.chat.QBWebRTCSignaling
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -74,9 +76,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     }
 
     private fun initQBRTCClient() {
-        QBRTCConfig.setDebugEnabled(true)
         rtcClient = QBRTCClient.getInstance(this)
-
+        QBChatService.getInstance().videoChatWebRTCSignalingManager.addSignalingManagerListener { qbSignaling, createdLocally ->
+            if (!createdLocally) {
+                rtcClient!!.addSignaling(qbSignaling as QBWebRTCSignaling)
+            }
+        }
 
         // Configure
         //
