@@ -4,7 +4,7 @@ import android.util.Log
 import com.quickblox.sample.core.utils.configs.ConfigParser
 import com.quickblox.users.model.QBUser
 import org.json.JSONException
-import java.io.IOException
+import org.json.JSONObject
 
 
 /**
@@ -13,19 +13,14 @@ import java.io.IOException
 
 fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     val qbUsers = ArrayList<QBUser>()
-    var userLogin: String
-    var userPassword: String
     try {
         val json = ConfigParser().getConfigsAsJson(fileName)
         val keys = json.keys()
         while (keys.hasNext()) {
             val loginField = keys.next()
             val passwordField = keys.next()
-            userLogin = json.getString(loginField)
-            userPassword = json.getString(passwordField)
-            val qbUser = QBUser(userLogin, userPassword)
-            qbUsers.add(qbUser)
-            Log.d("UserConfig", "userLogin= $userLogin, userPassword= $userPassword")
+            val qbUser = getUser(json, loginField, passwordField)
+            qbUsers.add(qbUser!!)
         }
     } catch (e: JSONException) {
         e.printStackTrace()
@@ -34,24 +29,14 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     return qbUsers
 }
 
-fun getUserFromFile(fileName: String, userLoginField: String, userPasswordField: String): QBUser? {
-    var qbUser: QBUser? = null
+fun isConfigUserExist(fileName: String): Boolean {
+    val json = ConfigParser().getConfigsAsJson(fileName)
+    val qbUser = getUser(json, json.keys().next(), json.keys().next())
+    return !qbUser?.login.isNullOrEmpty() || !qbUser?.password.isNullOrEmpty()
+}
 
-    val userLogin: String
-    val userPassword: String
-
-    try {
-        val configs = ConfigParser().getConfigsAsJson(fileName)
-        userLogin = configs.getString(userLoginField)
-        userPassword = configs.getString(userPasswordField)
-        qbUser = QBUser(userLogin, userPassword)
-    } catch (e: IOException) {
-        e.printStackTrace()
-    } catch (e: JSONException) {
-        e.printStackTrace()
-    }
-
-    return qbUser
+private fun getUser(json: JSONObject, loginField: String, passwordField: String): QBUser? {
+    return QBUser(json.getString(loginField), json.getString(passwordField))
 }
 
 fun getIdsSelectedOpponents(selectedUsers: Collection<QBUser>): java.util.ArrayList<Int> {
