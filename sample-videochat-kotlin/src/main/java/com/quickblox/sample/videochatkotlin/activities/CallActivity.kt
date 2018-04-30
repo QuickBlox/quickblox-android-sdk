@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.util.Log
+import androidx.core.os.postDelayed
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBWebRTCSignaling
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
@@ -114,8 +116,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         if (supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) !is PreviewCallFragment) {
             initPreviewFragment()
         } else {
-            popBackStackFragment(supportFragmentManager)
+            initPreviewFragDelayed()
         }
+    }
+
+    fun initPreviewFragDelayed() {
+        Handler().postDelayed(CAMERA_RELEASE_DELAY) { popBackStackFragment(supportFragmentManager) }
     }
 
     fun initPreviewFragment() {
@@ -213,6 +219,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     override fun onDestroy() {
         super.onDestroy()
         rtcClient!!.removeSessionsCallbacksListener(this@CallActivity)
+        rtcClient!!.destroy()
     }
 
     override fun onBackPressed() {
@@ -259,7 +266,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     override fun onStartCall(session: QBRTCSession) {
         Log.d(TAG, "onStartCall = " + session)
         initCurrentSession(session)
-//        initQBRTCClient()
         startAudioManager()
         initConversationFragment(false)
     }

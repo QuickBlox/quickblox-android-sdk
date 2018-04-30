@@ -2,6 +2,7 @@ package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -25,7 +26,6 @@ import org.webrtc.ContextUtils
 class PreviewCallFragment : BaseToolBarFragment() {
     private val TAG = PreviewCallFragment::class.java.simpleName
 
-    val cameraFront = 1
     lateinit var cameraPreview: CameraPreview
     lateinit var frameLayout: FrameLayout
     lateinit var startCallButton: ImageButton
@@ -129,7 +129,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
     }
 
     fun startCameraPreview() {
-        cameraPreview = CameraPreview(activity!!, cameraFront)
+        cameraPreview = CameraPreview(activity!!, Camera.CameraInfo.CAMERA_FACING_FRONT)
         frameLayout.addView(cameraPreview)
     }
 

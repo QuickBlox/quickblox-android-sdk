@@ -40,6 +40,7 @@ import java.util.*
 class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession>, OpponentsCallAdapter.OnAdapterEventListener {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
+    private val TRACK_INITIALIZE_DELAY = 500L
     val spanCount = 2
     lateinit var hangUpCallButton: ImageButton
     lateinit var cameraToggle: ToggleButton
@@ -151,7 +152,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     }
 
     private fun initFields(view: View) {
-        localFullScreenVideoView = view.findViewById<View>(R.id.local_video_view) as QBRTCSurfaceView
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({ hangUp() })
         cameraToggle = view.findViewById(R.id.toggle_camera)
@@ -216,14 +216,14 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         Log.d(TAG, "onLocalVideoTrackReceive")
         cameraState = CameraState.NONE
         setUserToAdapter(currentUserId)
-        mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack, false) }, 500)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(currentUserId, videoTrack, false) }, TRACK_INITIALIZE_DELAY)
     }
 
     override fun onRemoteVideoTrackReceive(session: QBRTCSession, videoTrack: QBRTCVideoTrack, userId: Int) {
         Log.d(TAG, "onRemoteVideoTrackReceive")
         updateCellSizeIfNeed()
         setUserToAdapter(userId)
-        mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack, true) }, 500)
+        mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack, true) }, TRACK_INITIALIZE_DELAY)
     }
 
     fun updateCellSizeIfNeed(height: Int = recyclerView.height / 2) {
@@ -467,7 +467,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
                 Log.d(TAG, "camera switched, bool = " + b)
                 isCurrentCameraFront = b
                 updateSwitchCameraIcon(item)
-                toggleCamera(true)
+                toggleCameraInternal()
             }
 
             override fun onCameraSwitchError(s: String) {
@@ -486,6 +486,13 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             Log.d(TAG, "CameraRear now!")
             item.setIcon(R.drawable.ic_camera_rear)
         }
+    }
+
+    private fun toggleCameraInternal() {
+        Log.d(TAG, "Camera was switched!")
+        val localView = getViewHolderForOpponent(currentUserId)!!.opponentView
+        updateVideoView(localView, isCurrentCameraFront)
+        toggleCamera(true)
     }
 
     private fun toggleCamera(isNeedEnableCam: Boolean) {

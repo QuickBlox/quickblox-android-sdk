@@ -5,15 +5,6 @@
     style="@style/MatchParent"
     android:background="@color/background_fragment_conversation">
 
-
-    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
-        android:id="@+id/local_video_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/grid_opponents"
-        android:visibility="gone"
-        />
-
     <TextView
         android:id="@+id/connectionStatusLocal"
         style="@style/MatchWidth"
@@ -28,10 +19,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid_opponents"
         style="@style/MatchParent"
-        android:layoutDirection="ltr"
         android:layout_above="@+id/element_set_video_buttons"
         android:layout_marginBottom="@dimen/margin_small"
         android:horizontalSpacing="@dimen/margin_small"
+        android:layoutDirection="ltr"
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small"
         android:visibility="visible"
