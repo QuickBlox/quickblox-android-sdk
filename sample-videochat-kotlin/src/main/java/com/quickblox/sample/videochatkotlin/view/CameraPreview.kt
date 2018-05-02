@@ -10,7 +10,7 @@ import android.view.SurfaceView
 
 import java.io.IOException
 import android.support.v4.view.ViewCompat.getRotation
-
+import android.view.View
 
 
 /**
@@ -25,6 +25,8 @@ import android.support.v4.view.ViewCompat.getRotation
 class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(activity), SurfaceHolder.Callback {
     private val mHolder: SurfaceHolder
     var mCamera: Camera? = null
+    var mSupportedPreviewSizes: List<Camera.Size>? = null
+    var mPreviewSize: Camera.Size? = null
 
     init {
 //
@@ -38,6 +40,7 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
         mCamera = Camera.open(cameraId)
         mHolder = holder
         mHolder.addCallback(this)
+        mSupportedPreviewSizes = mCamera!!.getParameters().getSupportedPreviewSizes()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -50,6 +53,48 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
             Log.d(TAG, "Error setting camera preview: " + e.message)
         }
 
+    }
+
+    private fun getOptimalPreviewSize(sizes: List<Camera.Size>?, w: Int, h: Int): Camera.Size? {
+        val ASPECT_TOLERANCE = 0.1
+        val targetRatio = h.toDouble() / w
+
+        if (sizes == null) return null
+
+        var optimalSize: Camera.Size? = null
+        var minDiff = java.lang.Double.MAX_VALUE
+
+        val targetHeight = h
+
+        for (size in sizes) {
+            val ratio = size.width.toDouble() / size.height
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size
+                minDiff = Math.abs(size.height - targetHeight).toDouble()
+            }
+        }
+
+        if (optimalSize == null) {
+            minDiff = java.lang.Double.MAX_VALUE
+            for (size in sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size
+                    minDiff = Math.abs(size.height - targetHeight).toDouble()
+                }
+            }
+        }
+        return optimalSize
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val width = View.resolveSize(suggestedMinimumWidth, widthMeasureSpec)
+        val height = View.resolveSize(suggestedMinimumHeight, heightMeasureSpec)
+        setMeasuredDimension(width, height)
+
+        if (mSupportedPreviewSizes != null) {
+            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height)
+        }
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -87,6 +132,9 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
         val displayRotation = activity.getWindowManager().getDefaultDisplay()
                 .getRotation()
         val orientation = calculatePreviewOrientation(cameraId, displayRotation)
+        val parameters = mCamera!!.parameters
+        parameters.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height)
+        mCamera!!.parameters = parameters
         mCamera!!.setDisplayOrientation(orientation)
 
         try {
@@ -109,7 +157,7 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
          * Implementation is based on the sample code provided in
          * [Camera.setDisplayOrientation].
          */
-        fun calculatePreviewOrientation(cameraId:Int, rotation: Int): Int {
+        fun calculatePreviewOrientation(cameraId: Int, rotation: Int): Int {
             val cameraInfo = Camera.CameraInfo()
             Camera.getCameraInfo(cameraId, cameraInfo)
             var degrees = 0
