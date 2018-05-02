@@ -1,16 +1,13 @@
 package com.quickblox.sample.videochatkotlin.view
 
 import android.app.Activity
-import android.content.Context
 import android.hardware.Camera
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-
-import java.io.IOException
-import android.support.v4.view.ViewCompat.getRotation
 import android.view.View
+import java.io.IOException
 
 
 /**
@@ -24,23 +21,17 @@ import android.view.View
  */
 class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(activity), SurfaceHolder.Callback {
     private val mHolder: SurfaceHolder
-    var mCamera: Camera? = null
-    var mSupportedPreviewSizes: List<Camera.Size>? = null
-    var mPreviewSize: Camera.Size? = null
+    private var mCamera: Camera? = null
+    private var mSupportedPreviewSizes: List<Camera.Size>? = null
+    private var mPreviewSize: Camera.Size? = null
 
     init {
-//
-//        // Do not initialise if no camera has been set
-//        if (mCamera == null || mCameraInfo == null) {
-//            return
-//        }
-
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mCamera = Camera.open(cameraId)
         mHolder = holder
         mHolder.addCallback(this)
-        mSupportedPreviewSizes = mCamera!!.getParameters().getSupportedPreviewSizes()
+        mSupportedPreviewSizes = mCamera!!.parameters.supportedPreviewSizes
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {

@@ -29,12 +29,6 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     return qbUsers
 }
 
-fun isConfigUserExist(fileName: String): Boolean {
-    val json = ConfigParser().getConfigsAsJson(fileName)
-    val qbUser = getUser(json, json.keys().next(), json.keys().next())
-    return !qbUser?.login.isNullOrEmpty() || !qbUser?.password.isNullOrEmpty()
-}
-
 private fun getUser(json: JSONObject, loginField: String, passwordField: String): QBUser? {
     return QBUser(json.getString(loginField), json.getString(passwordField))
 }

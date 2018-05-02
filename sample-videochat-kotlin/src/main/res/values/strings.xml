@@ -35,8 +35,8 @@
     <string name="text_status_closed">Closed</string>
 
     <!-- Errors strings. -->
-    <string name="error_qb_credentials_empty">You should insert QuickBlox credentials (https://quickblox.com/developers/5_Mins_Guide#Create_your_QuickBlox_account) to qb_config.json in this format: %s</string>
-    <string name="error_users_empty">You should insert login &amp; password to sample_config.json in this format (max 4): %s</string>
+    <string name="error_qb_credentials_empty">The qb_config.json file should contain QuickBlox credentials. Register new account and application at https://admin.quickblox.com then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings page here: %s</string>
+    <string name="error_users_empty">The sample_config.json file should contain at least 2 and max 4 users with format [login:password]. Please go to https://admin.quickblox.com and create users in \'Users\' module.</string>
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="denied_permission_message">You cannot continue without an access to %s</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
