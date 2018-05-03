@@ -125,7 +125,9 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             return
         }
         if (!videoTrackMap.isEmpty()) {
-            videoTrackMap.forEach { userId, track ->
+            for (i in 0 until videoTrackMap.size()) {
+                val userId = videoTrackMap.keyAt(i)
+                val track = videoTrackMap.get(userId)
                 if (currentSession!!.getPeerConnection(userId) != null && currentSession!!.getPeerConnection(userId).state != QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED) {
                     mainHandler.post({
                         onConnectedToUser(currentSession!!, userId)
@@ -350,14 +352,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         }
     }
 
-    private fun removeVideoTrackRenderers() {
-//        Log.d(TAG, "removeVideoTrackRenderers")
-//        videoTrackMap.forEach{ _, videoTrack ->
-//            Log.d(TAG, "remove opponent video Tracks")
-//            videoTrack.removeRenderer(videoTrack.getRenderer())
-//        }
-    }
-
     private fun releaseViewHolders() {
         opponentViewHolders.clear()
     }
@@ -398,7 +392,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         removeSessionListeners()
         removeVideoTrackSListener()
         releaseOpponentsViews()
-        removeVideoTrackRenderers()
         releaseViewHolders()
     }
 
@@ -509,7 +502,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     override fun onToggleButtonItemClick(position: Int, isAudioEnabled: Boolean) {
         val userId = opponentsAdapter.getItem(position)!!
-        if(userId == currentUserId){
+        if (userId == currentUserId) {
             currentSession!!.mediaStreamManager.localAudioTrack.setEnabled(isAudioEnabled)
         } else {
             currentSession!!.mediaStreamManager.getAudioTrack(userId).setEnabled(isAudioEnabled)

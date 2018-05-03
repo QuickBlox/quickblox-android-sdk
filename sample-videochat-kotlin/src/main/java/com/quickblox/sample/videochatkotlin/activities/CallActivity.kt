@@ -79,7 +79,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
 
     private fun initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(this)
-        QBChatService.getInstance().videoChatWebRTCSignalingManager.addSignalingManagerListener { qbSignaling, createdLocally ->
+        QBChatService.getInstance().videoChatWebRTCSignalingManager?.addSignalingManagerListener { qbSignaling, createdLocally ->
             if (!createdLocally) {
                 rtcClient!!.addSignaling(qbSignaling as QBWebRTCSignaling)
             }
