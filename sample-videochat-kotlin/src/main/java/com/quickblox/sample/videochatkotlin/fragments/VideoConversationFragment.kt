@@ -121,7 +121,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun restoreSession() {
         Log.d(TAG, "restoreSession ")
-        if (currentSession!!.state != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
+        if (currentSession?.state != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
             return
         }
         if (!videoTrackMap.isEmpty()) {

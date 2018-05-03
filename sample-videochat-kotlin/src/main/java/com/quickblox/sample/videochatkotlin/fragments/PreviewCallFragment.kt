@@ -76,6 +76,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         hangUpCallButton.setOnClickListener({ rejectCall() })
         hangUpButtonvisibility(View.GONE)
         incomeTextView = view.findViewById(R.id.income_call_type)
+        isIncomingCall = false
         return view
     }
 
@@ -142,11 +143,17 @@ class PreviewCallFragment : BaseToolBarFragment() {
         stopCameraPreview()
     }
 
-    fun updateCallButtons() {
-        Log.d(TAG, "updateCallButtons")
-        isIncomingCall = true
-        hangUpButtonvisibility(View.VISIBLE)
-        incomeTextViewVisibility(View.VISIBLE)
+    fun updateCallButtons(show: Boolean) {
+        Log.d(TAG, "updateCallButtons show= $show")
+        if(show) {
+            isIncomingCall = true
+            hangUpButtonvisibility(View.VISIBLE)
+            incomeTextViewVisibility(View.VISIBLE)
+        } else {
+            isIncomingCall = false
+            hangUpButtonvisibility(View.GONE)
+            incomeTextViewVisibility(View.GONE)
+        }
     }
 
     fun startCallButtonVisibility(visibility: Int) {

@@ -141,12 +141,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
-    fun initIncomeCall() {
+    fun updatePreviewCallButtons(show: Boolean) {
         val previewFrag = supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) as PreviewCallFragment?
-        Log.d(TAG, "initIncomeCall")
+        Log.d(TAG, "updatePreviewCallButtons")
         if (previewFrag != null) {
             Log.d(TAG, "updateCallButtons")
-            previewFrag.updateCallButtons()
+            previewFrag.updateCallButtons(show)
         }
     }
 
@@ -154,7 +154,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         val videoFrag = supportFragmentManager.findFragmentByTag(VideoConversationFragment::class.java.simpleName) as VideoConversationFragment?
         Log.d(TAG, "updateAudioDevice")
         if (videoFrag != null) {
-            Log.d(TAG, "updateCallButtons")
             videoFrag.audioDeviceChanged(audioManager!!.selectedAudioDevice)
         }
     }
@@ -308,14 +307,20 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
     //QBRTCClientSessionCallbacks
     override fun onSessionStartClose(session: QBRTCSession) {
         Log.d(TAG, "onSessionStartClose")
+        if (session == currentSession) {
+            updatePreviewCallButtons(false)
+        }
         currentSession?.removeSessionCallbacksListener(this@CallActivity)
     }
 
-    override fun onReceiveNewSession(session: QBRTCSession?) {
+    override fun onReceiveNewSession(session: QBRTCSession) {
         Log.d(TAG, "onReceiveNewSession")
         if (currentSession == null) {
             currentSession = session
-            initIncomeCall()
+            updatePreviewCallButtons(true)
+        } else {
+            Log.d(TAG, "Stop new session. Device now is busy")
+            session.rejectCall(null)
         }
     }
 

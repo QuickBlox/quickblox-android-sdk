@@ -3,7 +3,5 @@
   "app_id": "",
   "auth_key": "",
   "auth_secret": "",
-  "account_key": "",
-  "api_domain": "",
-  "chat_domain": ""
+  "account_key": ""
 }
