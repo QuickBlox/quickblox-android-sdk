@@ -18,19 +18,14 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
         val keys = json.keys()
         while (keys.hasNext()) {
             val loginField = keys.next()
-            val passwordField = keys.next()
-            val qbUser = getUser(json, loginField, passwordField)
-            qbUsers.add(qbUser!!)
+            val qbUser = QBUser(loginField, json.getString(loginField))
+            qbUsers.add(qbUser)
         }
     } catch (e: JSONException) {
         e.printStackTrace()
     }
 
     return qbUsers
-}
-
-private fun getUser(json: JSONObject, loginField: String, passwordField: String): QBUser? {
-    return QBUser(json.getString(loginField), json.getString(passwordField))
 }
 
 fun getIdsSelectedOpponents(selectedUsers: Collection<QBUser>): java.util.ArrayList<Int> {

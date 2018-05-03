@@ -53,7 +53,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private var isCurrentCameraFront: Boolean = true
     var currentSession: QBRTCSession? = null
-    lateinit var localFullScreenVideoView: QBRTCSurfaceView
     lateinit var eventListener: CallFragmentCallbackListener
     lateinit var opponentsAdapter: OpponentsCallAdapter
     lateinit var recyclerView: RecyclerView

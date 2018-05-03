@@ -32,11 +32,11 @@ class LoginActivity : CoreBaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         setActionBarTitle(R.string.title_login_activity)
-        iniQBUsers()
+        initQBUsers()
         initUserAdapter()
     }
 
-    private fun iniQBUsers() {
+    private fun initQBUsers() {
         users = getAllUsersFromFile(SAMPLE_CONFIG_FILE_NAME)
     }
 

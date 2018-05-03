@@ -28,7 +28,7 @@ class App : CoreApp() {
     }
 
     private fun isUsersEmpty(users: ArrayList<QBUser>): Boolean {
-        users.forEach { user -> if (user.login.isEmpty() || user.password.isEmpty()) return true }
+        users.forEach { user -> if (user.login.isBlank() || user.password.isBlank()) return true }
         return false
     }
 }

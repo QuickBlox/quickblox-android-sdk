@@ -66,7 +66,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
 
         holder.opponentView.id = user.id
         holder.userId = userID
-        holder.opponentsName.text = user.fullName
+        holder.opponentsName.text = user.fullName ?: user.login
     }
 
     interface OnAdapterEventListener {
