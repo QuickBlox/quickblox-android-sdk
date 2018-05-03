@@ -69,18 +69,14 @@ class ScreenShareFragment : BaseToolBarFragment() {
 
     class MyAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-        private val images = intArrayOf(R.drawable.pres_img)
+        private val images = intArrayOf(R.drawable.pres_img, R.drawable.splash_screen, R.drawable.users_screen)
 
         override fun getCount(): Int {
-            return NUM_ITEMS
+            return images.size
         }
 
         override fun getItem(position: Int): Fragment {
             return PreviewSharingFragment.newInstance(images[position])
-        }
-
-        companion object {
-            private val NUM_ITEMS = 1
         }
     }
 }
