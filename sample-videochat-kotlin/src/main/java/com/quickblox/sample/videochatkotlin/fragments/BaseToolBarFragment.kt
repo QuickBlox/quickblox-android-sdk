@@ -37,7 +37,7 @@ abstract class BaseToolBarFragment : Fragment() {
     }
 
     open fun initActionBar() {
-        actionBar.setTitle(String.format(QBChatService.getInstance().user.login))
+        actionBar.title = String.format(QBChatService.getInstance().user.login)
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context!!, R.color.black_transparent_50)))
         //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }

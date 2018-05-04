@@ -33,6 +33,7 @@
     <string name="text_status_connected">Connected</string>
     <string name="text_status_disconnected">Disconnected</string>
     <string name="text_status_closed">Closed</string>
+    <string name="text_status_hang_up">Hung up</string>
 
     <!-- Errors strings. -->
     <string name="error_qb_credentials_empty">The qb_config.json file should contain QuickBlox credentials. Register new account and application at https://admin.quickblox.com

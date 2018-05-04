@@ -73,8 +73,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     interface CallFragmentCallbackListener {
         fun onHangUpCall()
-        fun onSetAudioEnabled(isAudioEnabled: Boolean)
-        fun onSetVideoEnabled(isNeedEnableCam: Boolean)
         fun onSwitchAudio()
         fun onStartScreenSharing()
         fun onSwitchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler)
@@ -488,9 +486,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     }
 
     private fun toggleCamera(isNeedEnableCam: Boolean) {
-        if (currentSession?.mediaStreamManager != null) {
-            eventListener.onSetVideoEnabled(isNeedEnableCam)
-        }
+        currentSession?.mediaStreamManager?.localVideoTrack?.setEnabled(isNeedEnableCam)
         if (!cameraToggle.isEnabled) {
             cameraToggle.isEnabled = true
         }

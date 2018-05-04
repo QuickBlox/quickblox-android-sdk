@@ -29,14 +29,14 @@ import java.util.*
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessionStateCallback<QBRTCSession>, PreviewCallFragment.CallFragmentCallbackListener,
+class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCallFragment.CallFragmentCallbackListener,
         VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback, ScreenShareFragment.OnSharingEvents {
 
     val TAG = CallActivity::class.java.simpleName
-    lateinit var systemPermissionHelper: SystemPermissionHelper
-    lateinit var opponents: ArrayList<QBUser>
+    private lateinit var systemPermissionHelper: SystemPermissionHelper
+    private lateinit var opponents: ArrayList<QBUser>
     private var rtcClient: QBRTCClient? = null
-    var currentSession: QBRTCSession? = null
+    private var currentSession: QBRTCSession? = null
     private var audioManager: AppRTCAudioManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    fun initFields() {
+    private fun initFields() {
         val obj = intent.getSerializableExtra(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
@@ -104,7 +104,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    fun checkCameraPermissionAndStart() {
+    private fun checkCameraPermissionAndStart() {
         if (systemPermissionHelper.isAllCameraPermissionGranted()) {
             initPreviewFragment()
         } else {
@@ -112,7 +112,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    fun initPreviewFragIfNeed() {
+    private fun initPreviewFragIfNeed() {
         if (supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) !is PreviewCallFragment) {
             initPreviewFragment()
         } else {
@@ -120,11 +120,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    fun initPreviewFragDelayed() {
+    private fun initPreviewFragDelayed() {
         Handler().postDelayed(CAMERA_RELEASE_DELAY) { popBackStackFragment(supportFragmentManager) }
     }
 
-    fun initPreviewFragment() {
+    private fun initPreviewFragment() {
         val previewFragment = PreviewCallFragment()
         val args = Bundle()
         args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
@@ -132,7 +132,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         addFragment(supportFragmentManager, R.id.fragment_container, previewFragment, PreviewCallFragment::class.java.simpleName)
     }
 
-    fun initConversationFragment(incoming: Boolean) {
+    private fun initConversationFragment(incoming: Boolean) {
         val conversationFragment = VideoConversationFragment()
         val args = Bundle()
         args.putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
@@ -141,7 +141,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
-    fun updatePreviewCallButtons(show: Boolean) {
+    private fun updatePreviewCallButtons(show: Boolean) {
         val previewFrag = supportFragmentManager.findFragmentByTag(PreviewCallFragment::class.java.simpleName) as PreviewCallFragment?
         Log.d(TAG, "updatePreviewCallButtons")
         if (previewFrag != null) {
@@ -150,7 +150,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    fun updateAudioDevice() {
+    private fun updateAudioDevice() {
         val videoFrag = supportFragmentManager.findFragmentByTag(VideoConversationFragment::class.java.simpleName) as VideoConversationFragment?
         Log.d(TAG, "updateAudioDevice")
         if (videoFrag != null) {
@@ -200,17 +200,14 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         ChatHelper.instance.destroy()
     }
 
-    fun initCurrentSession(session: QBRTCSession) {
+    private fun initCurrentSession(session: QBRTCSession) {
         Log.d(TAG, "Init new QBRTCSession addSessionCallbacksListener")
         currentSession = session
-        currentSession!!.addSessionCallbacksListener(this@CallActivity)
-
     }
 
-    fun releaseCurrentSession() {
+    private fun releaseCurrentSession() {
         Log.d(TAG, "Release current session removeSessionCallbacksListener")
         if (currentSession != null) {
-            currentSession!!.removeSessionCallbacksListener(this@CallActivity)
             this.currentSession = null
         }
     }
@@ -248,17 +245,11 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         onBackPressed()
     }
 
-    fun hangUpCurrentSession() {
+    private fun hangUpCurrentSession() {
         Log.d(TAG, "hangUpCurrentSession")
         if (currentSession != null) {
             Log.d(TAG, "hangUpCurrentSession currentSession != null")
             currentSession!!.hangUp(HashMap<String, String>())
-        }
-    }
-
-    private fun setVideoEnabled(isVideoEnabled: Boolean) {
-        if (currentSession?.mediaStreamManager != null) {
-            currentSession?.mediaStreamManager?.localVideoTrack?.setEnabled(isVideoEnabled)
         }
     }
 
@@ -290,27 +281,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         finish()
     }
 
-    //QBRTCSessionStateCallback
-    override fun onDisconnectedFromUser(p0: QBRTCSession?, p1: Int?) {
-
-    }
-
-    override fun onConnectedToUser(p0: QBRTCSession?, p1: Int?) {
-    }
-
-    override fun onConnectionClosedForUser(p0: QBRTCSession?, p1: Int?) {
-    }
-
-    override fun onStateChanged(p0: QBRTCSession?, p1: BaseSession.QBRTCSessionState?) {
-    }
-
     //QBRTCClientSessionCallbacks
     override fun onSessionStartClose(session: QBRTCSession) {
         Log.d(TAG, "onSessionStartClose")
         if (session == currentSession) {
             updatePreviewCallButtons(false)
         }
-        currentSession?.removeSessionCallbacksListener(this@CallActivity)
     }
 
     override fun onReceiveNewSession(session: QBRTCSession) {
@@ -324,12 +300,17 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    override fun onUserNoActions(p0: QBRTCSession?, p1: Int?) {
+    override fun onUserNoActions(session: QBRTCSession, userId: Int) {
     }
 
     //    QBRTCSessionEventsCallback
-    override fun onReceiveHangUpFromUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    override fun onReceiveHangUpFromUser(session: QBRTCSession, userId: Int, userInfo: MutableMap<String, String>?) {
         Log.d(TAG, "onReceiveHangUpFromUser")
+        fun getUserNameOrLogin(userId: Int): String {
+            opponents.forEach { if (it.id == userId) return it.fullName ?: it.login }
+            return ""
+        }
+        Toaster.shortToast("User " + getUserNameOrLogin(userId) + " " + getString(R.string.text_status_hang_up) + " conversation")
     }
 
     override fun onCallAcceptByUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
@@ -348,20 +329,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, QBRTCSessi
         }
     }
 
-    override fun onCallRejectByUser(p0: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {
+    override fun onCallRejectByUser(session: QBRTCSession, userId: Int, userInfo: MutableMap<String, String>?) {
         Log.d(TAG, "onCallRejectByUser")
     }
 
-    override fun onUserNotAnswer(p0: QBRTCSession?, p1: Int?) {
+    override fun onUserNotAnswer(session: QBRTCSession, userId: Int) {
 
-    }
-
-    override fun onSetAudioEnabled(isAudioEnabled: Boolean) {
-
-    }
-
-    override fun onSetVideoEnabled(isNeedEnableCam: Boolean) {
-        setVideoEnabled(isNeedEnableCam)
     }
 
     override fun onSwitchAudio() {

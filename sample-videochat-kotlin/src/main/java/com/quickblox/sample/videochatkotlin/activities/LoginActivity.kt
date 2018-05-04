@@ -11,7 +11,6 @@ import android.widget.ListView
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
-import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.users.model.QBUser
@@ -23,10 +22,10 @@ import com.quickblox.users.model.QBUser
 class LoginActivity : CoreBaseActivity() {
 
     val TAG = LoginActivity::class.java.simpleName
+    private lateinit var users: ArrayList<QBUser>
+    private lateinit var adapter: ArrayAdapter<String>
     var progressDialog: ProgressDialog? = null
-    lateinit var users: ArrayList<QBUser>
     private var opponents: ArrayList<QBUser>? = null
-    private var adapter: ArrayAdapter<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,7 @@ class LoginActivity : CoreBaseActivity() {
     private fun initUserAdapter() {
         val userList: ArrayList<String> = ArrayList(users.size)
 
-        users.forEachIndexed { index, _ ->  userList.add(String.format(getString(R.string.user), index + 1))}
+        users.forEachIndexed { index, _ -> userList.add(String.format(getString(R.string.user), index + 1)) }
         adapter = ArrayAdapter(this, R.layout.list_item_user, userList)
         val listView = findViewById<ListView>(R.id.list_users)
         listView.adapter = adapter
@@ -70,7 +69,7 @@ class LoginActivity : CoreBaseActivity() {
 
             override fun onError(ex: QBResponseException) {
                 hideProgress()
-                Toaster.longToast(getString(R.string.login_chat_login_error) + ex.message)
+                showErrorSnackbar(findViewById(android.R.id.content), R.string.login_chat_login_error, ex, View.OnClickListener { loginToQB(user) })
             }
         })
     }
@@ -87,22 +86,22 @@ class LoginActivity : CoreBaseActivity() {
                 startCallActivity()
             }
 
-            override fun onError(responseException: QBResponseException?) {
+            override fun onError(responseException: QBResponseException) {
                 hideProgress()
-                showErrorSnackbar(findViewById(android.R.id.content), R.string.loading_users_error, responseException!!, View.OnClickListener { loadUsers() })
+                showErrorSnackbar(findViewById(android.R.id.content), R.string.loading_users_error, responseException, View.OnClickListener { loadUsers() })
             }
         })
 
     }
 
-    fun showProgress(@StringRes messageId: Int) {
+    private fun showProgress(@StringRes messageId: Int) {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
         }
         showProgressDialog(this, progressDialog!!, messageId)
     }
 
-    fun hideProgress() {
+    private fun hideProgress() {
         if (progressDialog != null) {
             hideProgressDialog(progressDialog!!)
         }
