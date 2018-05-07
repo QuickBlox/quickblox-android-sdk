@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
@@ -26,15 +25,14 @@ import org.webrtc.ContextUtils
 class PreviewCallFragment : BaseToolBarFragment() {
     private val TAG = PreviewCallFragment::class.java.simpleName
 
-    lateinit var cameraPreview: CameraPreview
-    lateinit var frameLayout: FrameLayout
-    lateinit var startCallButton: ImageButton
-    lateinit var hangUpCallButton: ImageButton
-    lateinit var incomeTextView: TextView
-    lateinit var opponents: ArrayList<QBUser>
-    lateinit var eventListener: CallFragmentCallbackListener
-    private var progressDialog: ProgressDialog? = null
-    var isIncomingCall: Boolean = false
+    private lateinit var cameraPreview: CameraPreview
+    private lateinit var frameLayout: FrameLayout
+    private lateinit var startCallButton: ImageButton
+    private lateinit var hangUpCallButton: ImageButton
+    private lateinit var incomeTextView: TextView
+    private lateinit var opponents: ArrayList<QBUser>
+    private lateinit var eventListener: CallFragmentCallbackListener
+    private var isIncomingCall: Boolean = false
 
     override val fragmentLayout: Int
         get() = R.layout.fragment_preview
@@ -80,17 +78,17 @@ class PreviewCallFragment : BaseToolBarFragment() {
         return view
     }
 
-    fun initFields() {
+    private fun initFields() {
         val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
             val currentUser = QBChatService.getInstance().user
             opponents.remove(currentUser)
         }
-        Log.d(TAG, "users= " + opponents)
+        Log.d(TAG, "users= $opponents")
     }
 
-    fun startOrAcceptCall() {
+    private fun startOrAcceptCall() {
         if (isIncomingCall) {
             isIncomingCall = false
             incomeTextViewVisibility(View.INVISIBLE)
@@ -101,7 +99,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         }
     }
 
-    fun rejectCall() {
+    private fun rejectCall() {
         eventListener.onRejectCall()
         hangUpButtonvisibility(View.GONE)
         incomeTextViewVisibility(View.INVISIBLE)
@@ -129,12 +127,12 @@ class PreviewCallFragment : BaseToolBarFragment() {
         startCameraPreview()
     }
 
-    fun startCameraPreview() {
+    private fun startCameraPreview() {
         cameraPreview = CameraPreview(activity!!, Camera.CameraInfo.CAMERA_FACING_FRONT)
         frameLayout.addView(cameraPreview)
     }
 
-    fun stopCameraPreview() {
+    private fun stopCameraPreview() {
         cameraPreview.stop()
     }
 
@@ -145,7 +143,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     fun updateCallButtons(show: Boolean) {
         Log.d(TAG, "updateCallButtons show= $show")
-        if(show) {
+        if (show) {
             isIncomingCall = true
             hangUpButtonvisibility(View.VISIBLE)
             incomeTextViewVisibility(View.VISIBLE)
@@ -156,15 +154,15 @@ class PreviewCallFragment : BaseToolBarFragment() {
         }
     }
 
-    fun startCallButtonVisibility(visibility: Int) {
+    private fun startCallButtonVisibility(visibility: Int) {
         startCallButton.visibility = visibility
     }
 
-    fun hangUpButtonvisibility(visibility: Int) {
+    private fun hangUpButtonvisibility(visibility: Int) {
         hangUpCallButton.visibility = visibility
     }
 
-    fun incomeTextViewVisibility(visibility: Int) {
+    private fun incomeTextViewVisibility(visibility: Int) {
         incomeTextView.visibility = visibility
     }
 
@@ -175,13 +173,13 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.menu_logout_user_done -> {
                 eventListener.onLogout()
-                return true
+                true
             }
 
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

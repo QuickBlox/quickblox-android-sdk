@@ -120,8 +120,8 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
             // ignore: tried to stop a non-existent preview
             Log.d(TAG, "Error starting camera preview: " + e.message)
         }
-        val displayRotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation()
+        val displayRotation = activity.windowManager.defaultDisplay
+                .rotation
         val orientation = calculatePreviewOrientation(cameraId, displayRotation)
         val parameters = mCamera!!.parameters
         parameters.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height)
@@ -140,7 +140,7 @@ class CameraPreview(val activity: Activity, val cameraId: Int) : SurfaceView(act
 
     companion object {
 
-        private val TAG = "CameraPreview"
+        private const val TAG = "CameraPreview"
 
         /**
          * Calculate the correct orientation for a [Camera] preview that is displayed on screen.

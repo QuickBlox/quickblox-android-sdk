@@ -22,7 +22,6 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
-import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 import org.webrtc.CameraVideoCapturer
 import java.util.*
 
@@ -238,7 +237,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     private fun startScreenSharing(data: Intent) {
         val screenShareFragment = ScreenShareFragment()
         addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, screenShareFragment, ScreenShareFragment::class.java.simpleName)
-        currentSession!!.getMediaStreamManager().videoCapturer = QBRTCScreenCapturer(data, null)
+        currentSession!!.mediaStreamManager.videoCapturer = QBRTCScreenCapturer(data, null)
     }
 
     override fun onStopSharingPreview() {
@@ -254,7 +253,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     }
 
     override fun onStartCall(session: QBRTCSession) {
-        Log.d(TAG, "onStartCall = " + session)
+        Log.d(TAG, "onStartCall = $session")
         initCurrentSession(session)
         startAudioManager()
         initConversationFragment(false)

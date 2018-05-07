@@ -7,21 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.users.model.QBUser
+import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 
-class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
+class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
     private val TAG = OpponentsCallAdapter::class.java.simpleName
-    lateinit var inflater: LayoutInflater
-    lateinit var opponents: ArrayList<QBUser>
+    var inflater: LayoutInflater = LayoutInflater.from(context)
+    var opponents: ArrayList<QBUser> = users
     var adapterListener: OnAdapterEventListener? = null
+    var currentUserId: Int = 0
     var itemHeight: Int = 0
     var itemWidth: Int = 0
 
     init {
-        this.opponents = users
-        this.inflater = LayoutInflater.from(context)
+        currentUserId = QBChatService.getInstance().user.id
         itemWidth = width
         itemHeight = height
         Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")
@@ -63,7 +65,7 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = opponents[position]
         val userID = user.id
-
+        holder.toggleButton.isChecked = if (currentUserId == userID) session.mediaStreamManager.localAudioTrack.enabled() else session.mediaStreamManager.getAudioTrack(userID).enabled()
         holder.opponentView.id = user.id
         holder.userId = userID
         holder.opponentsName.text = user.fullName ?: user.login
