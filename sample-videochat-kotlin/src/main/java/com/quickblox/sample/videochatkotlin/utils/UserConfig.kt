@@ -6,7 +6,6 @@ import com.quickblox.sample.core.utils.configs.ConfigParser
 import com.quickblox.users.model.QBUser
 import org.json.JSONException
 
-
 /**
  * Created by Roman on 08.04.2018.
  */
@@ -26,7 +25,6 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     } catch (e: JSONException) {
         e.printStackTrace()
     }
-
     return qbUsers
 }
 
@@ -37,6 +35,5 @@ fun getIdsSelectedOpponents(selectedUsers: Collection<QBUser>): java.util.ArrayL
             opponentsIds.add(qbUser.id)
         }
     }
-
     return opponentsIds
 }

@@ -6,9 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import com.quickblox.chat.QBChatService
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.ToggleButton
 import com.quickblox.sample.videochatkotlin.R
+import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
@@ -23,7 +26,7 @@ class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: A
     var itemWidth: Int = 0
 
     init {
-        currentUserId = QBChatService.getInstance().user.id
+        currentUserId = ChatHelper.instance.currentUser.id
         itemWidth = width
         itemHeight = height
         Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")

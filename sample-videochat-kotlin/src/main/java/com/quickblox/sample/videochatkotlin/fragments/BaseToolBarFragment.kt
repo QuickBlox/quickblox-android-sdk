@@ -12,8 +12,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
+import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import java.lang.ref.WeakReference
 
 abstract class BaseToolBarFragment : Fragment() {
@@ -37,7 +37,7 @@ abstract class BaseToolBarFragment : Fragment() {
     }
 
     open fun initActionBar() {
-        actionBar.title = String.format(QBChatService.getInstance().user.login)
+        actionBar.title = String.format(ChatHelper.instance.currentUser.login)
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context!!, R.color.black_transparent_50)))
         //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }

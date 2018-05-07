@@ -8,9 +8,9 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
-import com.quickblox.chat.QBChatService
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
+import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.sample.videochatkotlin.utils.MAX_OPPONENTS_COUNT
 import com.quickblox.sample.videochatkotlin.utils.getIdsSelectedOpponents
@@ -82,7 +82,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
         if (obj is ArrayList<*>) {
             opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
-            val currentUser = QBChatService.getInstance().user
+            val currentUser = ChatHelper.instance.currentUser
             opponents.remove(currentUser)
         }
         Log.d(TAG, "users= $opponents")

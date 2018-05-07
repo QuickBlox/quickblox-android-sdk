@@ -9,7 +9,6 @@ import android.view.SurfaceView
 import android.view.View
 import java.io.IOException
 
-
 /**
  * Camera preview that displays a [Camera].
  *

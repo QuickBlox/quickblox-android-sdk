@@ -14,10 +14,9 @@ import com.quickblox.users.model.QBUser
  */
 class ChatHelper private constructor() {
 
-    private val qbChatService: QBChatService
+    private val qbChatService: QBChatService = QBChatService.getInstance()
     val currentUser: QBUser
         get() = QBChatService.getInstance().user
-
 
     private object Holder {
         val INSTANCE: ChatHelper = ChatHelper()
@@ -31,7 +30,6 @@ class ChatHelper private constructor() {
         get() = QBChatService.getInstance().isLoggedIn
 
     init {
-        qbChatService = QBChatService.getInstance()
         QBSettings.getInstance().logLevel = LogLevel.DEBUG
         QBChatService.setDebugEnabled(true)
         QBChatService.setConfigurationBuilder(buildChatConfigs())
@@ -51,6 +49,7 @@ class ChatHelper private constructor() {
                 user.setId(qbUser.id!!)
                 loginToChat(user, callback)
             }
+
             override fun onError(ex: QBResponseException?) {
                 callback.onError(ex)
             }

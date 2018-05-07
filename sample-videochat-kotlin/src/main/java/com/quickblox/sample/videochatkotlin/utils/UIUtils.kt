@@ -20,11 +20,9 @@ fun showProgressDialog(context: Context, progressDialog: ProgressDialog, @String
     val keyListener = DialogInterface.OnKeyListener { dialog, keyCode, event -> keyCode == KeyEvent.KEYCODE_BACK }
     progressDialog.setOnKeyListener(keyListener)
 
-
     progressDialog.setMessage(context.getString(messageId))
 
     progressDialog.show()
-
 }
 
 fun hideProgressDialog(progressDialog: ProgressDialog) {
@@ -32,7 +30,7 @@ fun hideProgressDialog(progressDialog: ProgressDialog) {
 }
 
 fun showErrorSnackbar(rootView: View?, @StringRes resId: Int, e: Exception,
-                                clickListener: View.OnClickListener) {
+                      clickListener: View.OnClickListener) {
     if (rootView != null) {
         ErrorUtils.showSnackbar(rootView, resId, e,
                 com.quickblox.sample.core.R.string.dlg_retry, clickListener)
