@@ -4,22 +4,12 @@
     android:id="@+id/fragment_call"
     style="@style/MatchParent">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/camera_preview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</FrameLayout>
-
-    <TextView
-        android:id="@+id/income_call_type"
-        style="@style/WrapContent"
-        android:layout_marginTop="8dp"
-        android:text="@string/text_incoming_video_call"
-        android:layout_centerInParent="true"
-        android:textColor="@color/text_color_call_type"
-        android:textSize="@dimen/incoming_call_type_text_size"
-        android:visibility="invisible"/>
+    </FrameLayout>
 
     <include
         android:id="@+id/element_set_video_buttons"
@@ -28,5 +18,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/padding_common" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/snackbar_position_coordinatorlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

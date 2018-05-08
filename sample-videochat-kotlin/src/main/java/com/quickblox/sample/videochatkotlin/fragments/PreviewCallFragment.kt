@@ -1,8 +1,12 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.hardware.Camera
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
+import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -29,9 +33,10 @@ class PreviewCallFragment : BaseToolBarFragment() {
     private lateinit var frameLayout: FrameLayout
     private lateinit var startCallButton: ImageButton
     private lateinit var hangUpCallButton: ImageButton
-    private lateinit var incomeTextView: TextView
     private lateinit var opponents: ArrayList<QBUser>
     private lateinit var eventListener: CallFragmentCallbackListener
+    private lateinit var snackBarView: View
+    private lateinit var snackBar: Snackbar
     private var isIncomingCall: Boolean = false
 
     override val fragmentLayout: Int
@@ -72,9 +77,9 @@ class PreviewCallFragment : BaseToolBarFragment() {
         startCallButtonVisibility(View.VISIBLE)
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({ rejectCall() })
-        hangUpButtonvisibility(View.GONE)
-        incomeTextView = view.findViewById(R.id.income_call_type)
+        hangUpButtonVisibility(View.GONE)
         isIncomingCall = false
+        initSnackBar(view)
         return view
     }
 
@@ -88,10 +93,18 @@ class PreviewCallFragment : BaseToolBarFragment() {
         Log.d(TAG, "users= $opponents")
     }
 
+    @SuppressLint("NewApi")
+    private fun initSnackBar(view: View) {
+        snackBarView = view.findViewById(R.id.snackbar_position_coordinatorlayout)
+        snackBar = Snackbar.make(snackBarView, R.string.text_incoming_video_call, Snackbar.LENGTH_INDEFINITE)
+        val textView = snackBar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+    }
+
     private fun startOrAcceptCall() {
         if (isIncomingCall) {
             isIncomingCall = false
-            incomeTextViewVisibility(View.INVISIBLE)
+            snackBar.dismiss()
             startCallButtonVisibility(View.GONE)
             eventListener.onAcceptCall()
         } else {
@@ -101,8 +114,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     private fun rejectCall() {
         eventListener.onRejectCall()
-        hangUpButtonvisibility(View.GONE)
-        incomeTextViewVisibility(View.INVISIBLE)
+        hangUpButtonVisibility(View.GONE)
+        snackBar.dismiss()
     }
 
     private fun startCall() {
@@ -145,12 +158,12 @@ class PreviewCallFragment : BaseToolBarFragment() {
         Log.d(TAG, "updateCallButtons show= $show")
         if (show) {
             isIncomingCall = true
-            hangUpButtonvisibility(View.VISIBLE)
-            incomeTextViewVisibility(View.VISIBLE)
+            hangUpButtonVisibility(View.VISIBLE)
+            snackBar.show()
         } else {
             isIncomingCall = false
-            hangUpButtonvisibility(View.GONE)
-            incomeTextViewVisibility(View.GONE)
+            hangUpButtonVisibility(View.GONE)
+            snackBar.dismiss()
         }
     }
 
@@ -158,12 +171,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
         startCallButton.visibility = visibility
     }
 
-    private fun hangUpButtonvisibility(visibility: Int) {
+    private fun hangUpButtonVisibility(visibility: Int) {
         hangUpCallButton.visibility = visibility
-    }
-
-    private fun incomeTextViewVisibility(visibility: Int) {
-        incomeTextView.visibility = visibility
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
