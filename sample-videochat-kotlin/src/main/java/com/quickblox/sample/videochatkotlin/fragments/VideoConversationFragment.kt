@@ -40,14 +40,16 @@ import java.util.*
 /**
  * Created by Roman on 15.04.2018.
  */
-class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession>, OpponentsCallAdapter.OnAdapterEventListener {
+class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
     private val TRACK_INITIALIZE_DELAY = 500L
     private val spanCount = 2
     private lateinit var hangUpCallButton: ImageButton
-    private lateinit var cameraToggle: ToggleButton
+    private lateinit var cameraMuteToggle: ToggleButton
+    private lateinit var cameraSwitchToggle: ToggleButton
     private lateinit var audioSwitchToggle: ToggleButton
+    private lateinit var audioMuteToggle: ToggleButton
 
     private var isIncomingCall: Boolean = false
     lateinit var layoutManager: GridLayoutManager
@@ -157,16 +159,25 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private fun initFields(view: View) {
         hangUpCallButton = view.findViewById(R.id.button_hangup_call)
         hangUpCallButton.setOnClickListener({ hangUp() })
-        cameraToggle = view.findViewById(R.id.toggle_camera)
-        cameraToggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        cameraSwitchToggle = view.findViewById(R.id.toggle_switch_camera)
+        cameraSwitchToggle.setOnCheckedChangeListener { _, isChecked ->
+            switchCamera()
+        }
+        cameraSwitchToggle.visibility = View.VISIBLE
+        cameraMuteToggle = view.findViewById(R.id.toggle_camera)
+        cameraMuteToggle.setOnCheckedChangeListener { _, isChecked ->
             if (cameraState != CameraState.DISABLED_FROM_USER) {
                 toggleCamera(isChecked)
             }
         }
-        cameraToggle.visibility = View.VISIBLE
+        cameraMuteToggle.visibility = View.VISIBLE
         audioSwitchToggle = view.findViewById(R.id.toggle_speaker)
         audioSwitchToggle.setOnClickListener({ eventListener.onSwitchAudio() })
         audioSwitchToggle.visibility = View.VISIBLE
+
+        audioMuteToggle = view.findViewById(R.id.toggle_mute_mic)
+        audioMuteToggle.setOnCheckedChangeListener { _, isChecked -> toggleMic(isChecked) }
+        audioMuteToggle.visibility = View.VISIBLE
 
         recyclerView = view.findViewById(R.id.grid_opponents)
 
@@ -206,8 +217,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         val cellSizeHeight = screenHeight()
 
         val qbUsers = ArrayList<QBUser>()
-        opponentsAdapter = OpponentsCallAdapter(context!!, currentSession!!, qbUsers, cellSizeWidth, cellSizeHeight)
-        opponentsAdapter.adapterListener = this
+        opponentsAdapter = OpponentsCallAdapter(context!!, qbUsers, cellSizeWidth, cellSizeHeight)
         recyclerView.adapter = opponentsAdapter
     }
 
@@ -436,7 +446,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.camera_switch -> {
-                switchCamera(item)
                 return true
             }
             R.id.screen_share -> {
@@ -451,35 +460,28 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         eventListener.onStartScreenSharing()
     }
 
-    private fun switchCamera(item: MenuItem) {
+    private fun switchCamera() {
         if (cameraState == CameraState.DISABLED_FROM_USER) {
             return
         }
-        cameraToggle.isEnabled = false
+        cameraMuteToggle.isEnabled = false
         eventListener.onSwitchCamera(object : CameraVideoCapturer.CameraSwitchHandler {
             override fun onCameraSwitchDone(b: Boolean) {
                 Log.d(TAG, "camera switched, bool = $b")
                 isCurrentCameraFront = b
-                updateSwitchCameraIcon(item)
                 toggleCameraInternal()
             }
 
             override fun onCameraSwitchError(s: String) {
                 Log.d(TAG, "camera switch error $s")
                 Toaster.shortToast(getString(R.string.camera_swicth_failed) + s)
-                cameraToggle.setEnabled(true)
+                cameraMuteToggle.setEnabled(true)
             }
         })
     }
 
-    private fun updateSwitchCameraIcon(item: MenuItem) {
-        if (isCurrentCameraFront) {
-            Log.d(TAG, "CameraFront now!")
-            item.setIcon(R.drawable.ic_camera_front)
-        } else {
-            Log.d(TAG, "CameraRear now!")
-            item.setIcon(R.drawable.ic_camera_rear)
-        }
+    private fun toggleMic(isAudioEnabled: Boolean) {
+        currentSession!!.mediaStreamManager.localAudioTrack.setEnabled(isAudioEnabled)
     }
 
     private fun toggleCameraInternal() {
@@ -491,22 +493,13 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun toggleCamera(isNeedEnableCam: Boolean) {
         currentSession?.mediaStreamManager?.localVideoTrack?.setEnabled(isNeedEnableCam)
-        if (!cameraToggle.isEnabled) {
-            cameraToggle.isEnabled = true
+        if (!cameraMuteToggle.isEnabled) {
+            cameraMuteToggle.isEnabled = true
         }
     }
 
     fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
         audioSwitchToggle.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
-    }
-
-    override fun onToggleButtonItemClick(position: Int, isAudioEnabled: Boolean) {
-        val userId = opponentsAdapter.getItem(position)!!
-        if (userId == currentUserId) {
-            currentSession!!.mediaStreamManager.localAudioTrack.setEnabled(isAudioEnabled)
-        } else {
-            currentSession!!.mediaStreamManager.getAudioTrack(userId).setEnabled(isAudioEnabled)
-        }
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {

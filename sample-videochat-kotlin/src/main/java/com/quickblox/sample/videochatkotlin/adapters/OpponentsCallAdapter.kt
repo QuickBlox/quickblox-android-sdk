@@ -6,21 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.ToggleButton
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.users.model.QBUser
-import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 
-class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
+class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     var inflater: LayoutInflater = LayoutInflater.from(context)
     var opponents: ArrayList<QBUser> = users
-    var adapterListener: OnAdapterEventListener? = null
     var currentUserId: Int = 0
     var itemHeight: Int = 0
     var itemWidth: Int = 0
@@ -36,7 +32,6 @@ class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: A
         val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
         val vh = ViewHolder(view)
         initCellHeight(vh)
-        vh.toggleButton.setOnCheckedChangeListener { _, isChecked -> adapterListener!!.onToggleButtonItemClick(vh.adapterPosition, isChecked) }
         return vh
     }
 
@@ -68,14 +63,9 @@ class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: A
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = opponents[position]
         val userID = user.id
-        holder.toggleButton.isChecked = if (currentUserId == userID) session.mediaStreamManager.localAudioTrack.enabled() else session.mediaStreamManager.getAudioTrack(userID).enabled()
         holder.opponentView.id = user.id
         holder.userId = userID
         holder.opponentsName.text = user.fullName ?: user.login
-    }
-
-    interface OnAdapterEventListener {
-        fun onToggleButtonItemClick(position: Int, isChecked: Boolean)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -83,8 +73,6 @@ class OpponentsCallAdapter(context: Context, var session: QBRTCSession, users: A
         var opponentsName: TextView = itemView.findViewById(R.id.opponentName)
         var connectionStatus: TextView = itemView.findViewById(R.id.connectionStatus)
         var opponentView: QBRTCSurfaceView = itemView.findViewById(R.id.opponentView)
-        var progressBar: ProgressBar = itemView.findViewById(R.id.progress_bar_adapter)
-        var toggleButton: ToggleButton = itemView.findViewById(R.id.opponent_toggle_mic);
         var userId: Int = 0
     }
 }
