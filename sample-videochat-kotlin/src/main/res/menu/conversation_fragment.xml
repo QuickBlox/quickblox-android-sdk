@@ -3,16 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/camera_switch"
-        android:checkable="true"
-        android:icon="@drawable/ic_camera_front"
-        android:title="@string/action_switch_camera"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/screen_share"
         android:checkable="true"
-        android:icon="@drawable/ic_screen_share"
+        android:icon="@drawable/baseline_screen_share_white_36"
         android:title="@string/action_screen_share"
         app:showAsAction="ifRoom" />
 </menu>

@@ -425,7 +425,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         cleanAdapter(userId)
     }
 
-    override fun onStateChanged(p0: QBRTCSession?, p1: BaseSession.QBRTCSessionState?) {
+    override fun onStateChanged(session: QBRTCSession, state: BaseSession.QBRTCSessionState) {
     }
 
     private fun cleanAdapter(userId: Int) {
@@ -445,9 +445,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.camera_switch -> {
-                return true
-            }
             R.id.screen_share -> {
                 startScreenSharing()
                 return true
