@@ -13,6 +13,7 @@ import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.*
+import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 
 
@@ -79,7 +80,7 @@ class LoginActivity : CoreBaseActivity() {
         showProgress(R.string.dlg_loading_opponents)
         val logins = ArrayList<String>()
         users.forEach { logins.add(it.login) }
-        loadUsersByLogins(logins, object : QBEntityCallback<ArrayList<QBUser>> {
+        QBUsers.getUsersByLogins(logins, null).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>, p1: Bundle?) {
                 hideProgress()
                 opponents = qbUsers
@@ -91,7 +92,6 @@ class LoginActivity : CoreBaseActivity() {
                 showErrorSnackbar(findViewById(android.R.id.content), R.string.loading_users_error, responseException, View.OnClickListener { loadUsers() })
             }
         })
-
     }
 
     private fun showProgress(@StringRes messageId: Int) {
