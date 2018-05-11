@@ -11,13 +11,13 @@ import androidx.core.os.postDelayed
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBWebRTCSignaling
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity
+import com.quickblox.sample.core.utils.SystemPermissionHelper
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.PreviewCallFragment
 import com.quickblox.sample.videochatkotlin.fragments.ScreenShareFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
 import com.quickblox.sample.videochatkotlin.utils.*
-import com.quickblox.sample.videochatkotlin.utils.StringUtils.createCompositeString
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
@@ -104,7 +104,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     }
 
     private fun checkCameraPermissionAndStart() {
-        if (systemPermissionHelper.isAllCameraPermissionGranted()) {
+        if (systemPermissionHelper.isCallPermissionsGranted) {
             initPreviewFragment()
         } else {
             systemPermissionHelper.requestPermissionsForCallByType()
@@ -159,18 +159,17 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST -> {
+            SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST ->
                 if (grantResults.isNotEmpty()) {
-                    if (!systemPermissionHelper.isAllCameraPermissionGranted()) {
+                    if (!systemPermissionHelper.isCallPermissionsGranted) {
                         Log.d(TAG, "showToastDeniedPermissions")
-                        showToastDeniedPermissions(permissions, grantResults)
+                        showToastDeniedPermissions(permissions)
                         startLogout()
                         finish()
                     } else {
                         initPreviewFragment()
                     }
                 }
-            }
         }
     }
 
@@ -187,12 +186,9 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
         }
     }
 
-    private fun showToastDeniedPermissions(permissions: Array<String>, grantResults: IntArray) {
-        val deniedPermissions = systemPermissionHelper
-                .collectDeniedPermissionsFomResult(permissions, grantResults)
-
+    private fun showToastDeniedPermissions(permissions: Array<String>) {
         Toaster.longToast(
-                getString(R.string.denied_permission_message, createCompositeString(deniedPermissions)))
+                getString(R.string.denied_permission_message, Arrays.toString(permissions)))
     }
 
     private fun startLogout() {
