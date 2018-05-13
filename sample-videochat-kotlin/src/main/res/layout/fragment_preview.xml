@@ -20,7 +20,7 @@
         android:layout_marginBottom="@dimen/padding_common" />
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/snackbar_position_coordinatorlayout"
+        android:id="@+id/snackbar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

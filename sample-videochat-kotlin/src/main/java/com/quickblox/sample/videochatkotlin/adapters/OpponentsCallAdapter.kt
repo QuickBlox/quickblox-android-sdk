@@ -6,12 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.users.model.QBUser
-import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.list_item_opponent_from_call.*
 
 class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
     private val TAG = OpponentsCallAdapter::class.java.simpleName
@@ -36,9 +35,9 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     }
 
     fun initCellHeight(holder: ViewHolder, height: Int = itemHeight) {
-        val params = holder.itemLayout.layoutParams
+        val params = holder.item_layout.layoutParams
         params.height = height
-        holder.itemLayout.layoutParams = params
+        holder.item_layout.layoutParams = params
     }
 
     override fun getItemCount(): Int {
@@ -63,16 +62,12 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = opponents[position]
         val userID = user.id
-        holder.opponentView.id = user.id
+        holder.opponent_name.id = user.id
         holder.userId = userID
-        holder.opponentsName.text = user.fullName ?: user.login
+        holder.opponent_name.text = user.fullName ?: user.login
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemLayout: RelativeLayout = itemView.findViewById(R.id.itemLayout)
-        var opponentsName: TextView = itemView.findViewById(R.id.opponentName)
-        var connectionStatus: TextView = itemView.findViewById(R.id.connectionStatus)
-        var opponentView: QBRTCSurfaceView = itemView.findViewById(R.id.opponentView)
+    class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         var userId: Int = 0
     }
 }

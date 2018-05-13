@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import com.quickblox.sample.videochatkotlin.R
+import kotlinx.android.synthetic.main.fragment_pager.*
 
 class ScreenShareFragment : BaseToolBarFragment() {
     val TAG = ScreenShareFragment::class.java.simpleName
@@ -19,16 +22,9 @@ class ScreenShareFragment : BaseToolBarFragment() {
     override val fragmentLayout: Int
         get() = R.layout.fragment_pager
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)!!
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val adapter = MyAdapter(childFragmentManager)
-
-        val pager = view.findViewById<View>(R.id.pager) as ViewPager
         pager.adapter = adapter
-
-        return view
     }
 
     override fun initActionBar() {

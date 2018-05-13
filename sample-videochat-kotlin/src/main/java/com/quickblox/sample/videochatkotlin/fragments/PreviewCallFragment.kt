@@ -3,14 +3,13 @@ package com.quickblox.sample.videochatkotlin.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.hardware.Camera
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.design.widget.Snackbar
 import android.util.Log
-import android.view.*
-import android.widget.FrameLayout
-import android.widget.ImageButton
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
@@ -23,6 +22,8 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.QBRTCTypes
+import kotlinx.android.synthetic.main.fragment_preview.*
+import kotlinx.android.synthetic.main.view_action_buttons_conversation_fragment.*
 import org.webrtc.ContextUtils
 
 
@@ -30,12 +31,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
     private val TAG = PreviewCallFragment::class.java.simpleName
 
     private lateinit var cameraPreview: CameraPreview
-    private lateinit var frameLayout: FrameLayout
-    private lateinit var startCallButton: ImageButton
-    private lateinit var hangUpCallButton: ImageButton
     private lateinit var opponents: ArrayList<QBUser>
     private lateinit var eventListener: CallFragmentCallbackListener
-    private lateinit var snackBarView: View
     private lateinit var snackBar: Snackbar
     private var isIncomingCall: Boolean = false
 
@@ -69,18 +66,13 @@ class PreviewCallFragment : BaseToolBarFragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)!!
-        frameLayout = view.findViewById(R.id.camera_preview)
-        startCallButton = view.findViewById(R.id.button_start_call)
-        startCallButton.setOnClickListener({ startOrAcceptCall() })
-        startCallButtonVisibility(View.VISIBLE)
-        hangUpCallButton = view.findViewById(R.id.button_hangup_call)
-        hangUpCallButton.setOnClickListener({ rejectCall() })
-        hangUpButtonVisibility(View.GONE)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         isIncomingCall = false
-        initSnackBar(view)
-        return view
+        button_start_call.setOnClickListener({ startOrAcceptCall() })
+        startCallButtonVisibility(View.VISIBLE)
+        button_hangup_call.setOnClickListener({ rejectCall() })
+        hangUpButtonVisibility(View.GONE)
+        initSnackBar()
     }
 
     private fun initFields() {
@@ -94,9 +86,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
     }
 
     @SuppressLint("NewApi")
-    private fun initSnackBar(view: View) {
-        snackBarView = view.findViewById(R.id.snackbar_position_coordinatorlayout)
-        snackBar = Snackbar.make(snackBarView, R.string.text_incoming_video_call, Snackbar.LENGTH_INDEFINITE)
+    private fun initSnackBar() {
+        snackBar = Snackbar.make(snackbar_view, R.string.text_incoming_video_call, Snackbar.LENGTH_INDEFINITE)
         val textView = snackBar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
         textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
     }
@@ -142,7 +133,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     private fun startCameraPreview() {
         cameraPreview = CameraPreview(activity!!, Camera.CameraInfo.CAMERA_FACING_FRONT)
-        frameLayout.addView(cameraPreview)
+        camera_preview.addView(cameraPreview)
     }
 
     private fun stopCameraPreview() {
@@ -162,17 +153,16 @@ class PreviewCallFragment : BaseToolBarFragment() {
             snackBar.show()
         } else {
             isIncomingCall = false
-            hangUpButtonVisibility(View.GONE)
             snackBar.dismiss()
         }
     }
 
     private fun startCallButtonVisibility(visibility: Int) {
-        startCallButton.visibility = visibility
+        button_start_call.visibility = visibility
     }
 
     private fun hangUpButtonVisibility(visibility: Int) {
-        hangUpCallButton.visibility = visibility
+        button_hangup_call.visibility = visibility
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

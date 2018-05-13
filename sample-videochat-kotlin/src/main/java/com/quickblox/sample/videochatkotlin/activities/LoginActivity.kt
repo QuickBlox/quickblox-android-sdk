@@ -15,7 +15,7 @@ import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
-
+import kotlinx.android.synthetic.main.activity_login.*
 
 /**
  * Created by Roman on 09.04.2018.
@@ -42,13 +42,12 @@ class LoginActivity : CoreBaseActivity() {
 
     private fun initUserAdapter() {
         val userList: ArrayList<String> = ArrayList(users.size)
-
         users.forEachIndexed { index, _ -> userList.add(String.format(getString(R.string.user), index + 1)) }
         adapter = ArrayAdapter(this, R.layout.list_item_user, userList)
-        val listView = findViewById<ListView>(R.id.list_users)
-        listView.adapter = adapter
-        listView.choiceMode = ListView.CHOICE_MODE_SINGLE
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        list_users.adapter = adapter
+        list_users.adapter = adapter
+        list_users.choiceMode = ListView.CHOICE_MODE_SINGLE
+        list_users.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             loginToQB(users[position])
         }
     }

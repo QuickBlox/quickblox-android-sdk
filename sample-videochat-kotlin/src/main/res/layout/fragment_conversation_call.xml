@@ -17,7 +17,7 @@
         android:textStyle="normal|italic" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/grid_opponents"
+        android:id="@+id/recycler_view_opponents"
         style="@style/MatchParent"
         android:layout_above="@+id/element_set_video_buttons"
         android:layout_marginBottom="@dimen/margin_small"

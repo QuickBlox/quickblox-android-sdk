@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.*
-import android.widget.ImageButton
-import android.widget.ToggleButton
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import androidx.core.util.putAll
@@ -31,6 +29,9 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
+import kotlinx.android.synthetic.main.fragment_conversation_call.*
+import kotlinx.android.synthetic.main.list_item_opponent_from_call.*
+import kotlinx.android.synthetic.main.view_action_buttons_conversation_fragment.*
 import org.webrtc.CameraVideoCapturer
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
@@ -45,11 +46,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private val TAG = VideoConversationFragment::class.java.simpleName
     private val TRACK_INITIALIZE_DELAY = 500L
     private val spanCount = 2
-    private lateinit var hangUpCallButton: ImageButton
-    private lateinit var cameraMuteToggle: ToggleButton
-    private lateinit var cameraSwitchToggle: ToggleButton
-    private lateinit var audioSwitchToggle: ToggleButton
-    private lateinit var audioMuteToggle: ToggleButton
 
     private var isIncomingCall: Boolean = false
     lateinit var layoutManager: GridLayoutManager
@@ -60,7 +56,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private var currentSession: QBRTCSession? = null
     private lateinit var eventListener: CallFragmentCallbackListener
     lateinit var opponentsAdapter: OpponentsCallAdapter
-    lateinit var recyclerView: RecyclerView
     private lateinit var opponents: ArrayList<QBUser>
     private lateinit var opponentViewHolders: SparseArray<OpponentsCallAdapter.ViewHolder>
     private val videoTracks: SparseArray<QBRTCVideoTrack> = SparseArray()
@@ -104,9 +99,12 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         initArguments()
-        initFields(view!!)
         restoreSession()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initFields()
     }
 
     override fun onStart() {
@@ -156,56 +154,49 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         isCurrentCameraFront = true
     }
 
-    private fun initFields(view: View) {
-        hangUpCallButton = view.findViewById(R.id.button_hangup_call)
-        hangUpCallButton.setOnClickListener({ hangUp() })
-        cameraSwitchToggle = view.findViewById(R.id.toggle_switch_camera)
-        cameraSwitchToggle.setOnCheckedChangeListener { _, isChecked ->
+    private fun initFields() {
+        button_hangup_call.setOnClickListener({ hangUp() })
+        toggle_switch_camera.setOnCheckedChangeListener { _, _ ->
             switchCamera()
         }
-        cameraSwitchToggle.visibility = View.VISIBLE
-        cameraMuteToggle = view.findViewById(R.id.toggle_camera)
-        cameraMuteToggle.setOnCheckedChangeListener { _, isChecked ->
+        toggle_switch_camera.visibility = View.VISIBLE
+        toggle_camera.setOnCheckedChangeListener { _, isChecked ->
             if (cameraState != CameraState.DISABLED_FROM_USER) {
                 toggleCamera(isChecked)
             }
         }
-        cameraMuteToggle.visibility = View.VISIBLE
-        audioSwitchToggle = view.findViewById(R.id.toggle_speaker)
-        audioSwitchToggle.setOnClickListener({ eventListener.onSwitchAudio() })
-        audioSwitchToggle.visibility = View.VISIBLE
+        toggle_camera.visibility = View.VISIBLE
+        toggle_speaker.setOnClickListener({ eventListener.onSwitchAudio() })
+        toggle_speaker.visibility = View.VISIBLE
 
-        audioMuteToggle = view.findViewById(R.id.toggle_mute_mic)
-        audioMuteToggle.setOnCheckedChangeListener { _, isChecked -> toggleMic(isChecked) }
-        audioMuteToggle.visibility = View.VISIBLE
-
-        recyclerView = view.findViewById(R.id.grid_opponents)
+        toggle_mute_mic.setOnCheckedChangeListener { _, isChecked -> toggleMic(isChecked) }
+        toggle_mute_mic.visibility = View.VISIBLE
 
         opponentViewHolders = SparseArray(opponents.size)
         initRecyclerView()
     }
 
     private fun initRecyclerView() {
-        recyclerView.setHasFixedSize(false)
-        recyclerView.addItemDecoration(DividerItemDecoration(context!!, R.dimen.grid_item_divider))
+        recycler_view_opponents.setHasFixedSize(false)
+        recycler_view_opponents.addItemDecoration(DividerItemDecoration(context!!, R.dimen.grid_item_divider))
         layoutManager = GridLayoutManager(activity, spanCount)
         layoutManager.reverseLayout = false
         val spanSizeLookup = SpanSizeLookupImpl()
         spanSizeLookup.isSpanIndexCacheEnabled = false
         layoutManager.spanSizeLookup = spanSizeLookup
-        recyclerView.layoutManager = layoutManager
+        recycler_view_opponents.layoutManager = layoutManager
 
-        recyclerView.itemAnimator = null
+        recycler_view_opponents.itemAnimator = null
         initAdapter()
-        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        recycler_view_opponents.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                var height = recyclerView.height
+                var height = recycler_view_opponents.height
                 if (height != 0) {
                     if (isRemoteShown) {
                         height /= 2
                     }
                     updateAllCellHeight(height)
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    recycler_view_opponents.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
         })
@@ -218,7 +209,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
         val qbUsers = ArrayList<QBUser>()
         opponentsAdapter = OpponentsCallAdapter(context!!, qbUsers, cellSizeWidth, cellSizeHeight)
-        recyclerView.adapter = opponentsAdapter
+        recycler_view_opponents.adapter = opponentsAdapter
     }
 
     private fun hangUp() {
@@ -239,7 +230,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         mainHandler.postDelayed(Runnable { setViewMultiCall(userId, videoTrack, true) }, TRACK_INITIALIZE_DELAY)
     }
 
-    private fun updateCellSizeIfNeed(height: Int = recyclerView.height / 2) {
+    private fun updateCellSizeIfNeed(height: Int = recycler_view_opponents.height / 2) {
         if (!isRemoteShown) {
             isRemoteShown = true
 
@@ -257,7 +248,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     }
 
     private fun initCurrentUserCellHeight(height: Int) {
-        val holder = recyclerView.findViewHolderForAdapterPosition(0)
+        val holder = recycler_view_opponents.findViewHolderForAdapterPosition(0)
         if (holder is OpponentsCallAdapter.ViewHolder) {
             opponentsAdapter.initCellHeight(holder, height)
         }
@@ -266,7 +257,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     protected fun setUserToAdapter(userID: Int) {
         val qbUser = getUserById(userID)
         opponentsAdapter.add(qbUser!!)
-        recyclerView.requestLayout()
+        recycler_view_opponents.requestLayout()
     }
 
     private fun getUserById(userID: Int): QBUser? {
@@ -283,7 +274,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
         val itemHolder = getViewHolderForOpponent(userId)
         if (itemHolder != null) {
-            val videoView = itemHolder.opponentView
+            val videoView = itemHolder.opponent_view
             Log.d(TAG, "setViewMultiCall fillVideoView")
             Log.d(TAG, "setViewMultiCall videoView height= " + videoView.height)
             fillVideoView(userId, videoView, videoTrack, remoteRenderer)
@@ -304,13 +295,13 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun findHolder(userID: Int): OpponentsCallAdapter.ViewHolder? {
         Log.d(TAG, "findHolder for userID $userID")
-        val childCount = recyclerView.childCount
+        val childCount = recycler_view_opponents.childCount
         Log.d(TAG, "childCount for $childCount")
         for (i in 0 until childCount) {
             Log.d(TAG, "findHolder childCount $childCount , i= $i")
-            val childView = recyclerView.getChildAt(i)
+            val childView = recycler_view_opponents.getChildAt(i)
             Log.d(TAG, "childView= $childView")
-            val childViewHolder = recyclerView.getChildViewHolder(childView) as OpponentsCallAdapter.ViewHolder
+            val childViewHolder = recycler_view_opponents.getChildViewHolder(childView) as OpponentsCallAdapter.ViewHolder
             Log.d(TAG, "childViewHolder= $childViewHolder")
             if (userID == childViewHolder.userId) {
                 return childViewHolder
@@ -360,7 +351,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     protected fun releaseOpponentsViews() {
         opponentViewHolders.forEach { _, itemView ->
-            itemView.opponentView.release()
+            itemView.opponent_view.release()
         }
     }
 
@@ -374,12 +365,12 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun setStatusForOpponent(userId: Int, status: String) {
         val holder = getViewHolderForOpponent(userId)
-        holder?.connectionStatus?.text = status
+        holder?.connection_status?.text = status
     }
 
     private fun updateNameForOpponent(userId: Int, userName: String) {
         val holder = getViewHolderForOpponent(userId)
-        holder?.opponentsName?.text = userName
+        holder?.opponent_name?.text = userName
     }
 
     private fun screenHeight(): Int {
@@ -461,7 +452,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         if (cameraState == CameraState.DISABLED_FROM_USER) {
             return
         }
-        cameraMuteToggle.isEnabled = false
+        toggle_camera.isEnabled = false
         eventListener.onSwitchCamera(object : CameraVideoCapturer.CameraSwitchHandler {
             override fun onCameraSwitchDone(b: Boolean) {
                 Log.d(TAG, "camera switched, bool = $b")
@@ -472,7 +463,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             override fun onCameraSwitchError(s: String) {
                 Log.d(TAG, "camera switch error $s")
                 Toaster.shortToast(getString(R.string.camera_swicth_failed) + s)
-                cameraMuteToggle.setEnabled(true)
+                toggle_camera.isEnabled = true
             }
         })
     }
@@ -483,20 +474,20 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun toggleCameraInternal() {
         Log.d(TAG, "Camera was switched!")
-        val localView = getViewHolderForOpponent(currentUserId)!!.opponentView
+        val localView = getViewHolderForOpponent(currentUserId)!!.opponent_view
         updateVideoView(localView, isCurrentCameraFront)
         toggleCamera(true)
     }
 
     private fun toggleCamera(isNeedEnableCam: Boolean) {
         currentSession?.mediaStreamManager?.localVideoTrack?.setEnabled(isNeedEnableCam)
-        if (!cameraMuteToggle.isEnabled) {
-            cameraMuteToggle.isEnabled = true
+        if (!toggle_camera.isEnabled) {
+            toggle_camera.isEnabled = true
         }
     }
 
     fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
-        audioSwitchToggle.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+        toggle_speaker.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
