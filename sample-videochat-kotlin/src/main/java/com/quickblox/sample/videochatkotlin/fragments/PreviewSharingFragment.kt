@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.quickblox.sample.core.utils.ResourceUtils
@@ -18,25 +19,27 @@ class PreviewSharingFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Glide.with(this)
-                .load(arguments!!.getInt(PREVIEW_IMAGE))
+        image_preview.loadUrl(arguments!!.getInt(PREVIEW_IMAGE))
+    }
+
+    private fun ImageView.loadUrl(resourceId: Int) {
+        Glide.with(this@PreviewSharingFragment)
+                .load(resourceId)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .override(ResourceUtils.getDimen(R.dimen.pager_image_width),
                         ResourceUtils.getDimen(R.dimen.pager_image_height))
-                .into(image_preview)
+                .into(this)
     }
 
     companion object {
 
-        val PREVIEW_IMAGE = "preview_image"
+        const val PREVIEW_IMAGE = "preview_image"
 
-        fun newInstance(imageResourceId: Int): Fragment {
-            val previewFragment = PreviewSharingFragment()
-            val bundle = Bundle()
-            bundle.putInt(PREVIEW_IMAGE, imageResourceId)
-            previewFragment.arguments = bundle
-            return previewFragment
-
-        }
+        fun newInstance(imageResourceId: Int) =
+                PreviewSharingFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt(PREVIEW_IMAGE, imageResourceId)
+                    }
+                }
     }
 }

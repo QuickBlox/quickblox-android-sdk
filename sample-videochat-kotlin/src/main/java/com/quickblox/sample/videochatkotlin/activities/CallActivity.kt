@@ -124,19 +124,12 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     }
 
     private fun initPreviewFragment() {
-        val previewFragment = PreviewCallFragment()
-        val args = Bundle()
-        args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
-        previewFragment.arguments = args
+        val previewFragment = PreviewCallFragment.newInstance(opponents)
         addFragment(supportFragmentManager, R.id.fragment_container, previewFragment, PreviewCallFragment::class.java.simpleName)
     }
 
     private fun initConversationFragment(incoming: Boolean) {
-        val conversationFragment = VideoConversationFragment()
-        val args = Bundle()
-        args.putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
-        args.putSerializable(EXTRA_QB_USERS_LIST, opponents)
-        conversationFragment.arguments = args
+        val conversationFragment = VideoConversationFragment.newInstance(incoming, opponents)
         addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, conversationFragment, VideoConversationFragment::class.java.simpleName)
     }
 
@@ -231,7 +224,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     }
 
     private fun startScreenSharing(data: Intent) {
-        val screenShareFragment = ScreenShareFragment()
+        val screenShareFragment = ScreenShareFragment.newInstance()
         addFragmentWithBackStack(supportFragmentManager, R.id.fragment_container, screenShareFragment, ScreenShareFragment::class.java.simpleName)
         currentSession!!.mediaStreamManager.videoCapturer = QBRTCScreenCapturer(data, null)
     }

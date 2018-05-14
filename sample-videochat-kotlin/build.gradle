@@ -76,7 +76,7 @@ dependencies {
     implementation(project(":sample-core"))
     implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
     implementation 'androidx.core:core-ktx:0.3'
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"

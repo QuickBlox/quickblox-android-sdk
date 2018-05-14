@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochatkotlin.adapters
 
 import android.content.Context
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,22 +17,24 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     var inflater: LayoutInflater = LayoutInflater.from(context)
     var opponents: ArrayList<QBUser> = users
-    var currentUserId: Int = 0
     var itemHeight: Int = 0
     var itemWidth: Int = 0
 
     init {
-        currentUserId = ChatHelper.instance.currentUser.id
         itemWidth = width
         itemHeight = height
         Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = inflater.inflate(R.layout.list_item_opponent_from_call, null)
+        val view = parent.inflate(R.layout.list_item_opponent_from_call)
         val vh = ViewHolder(view)
         initCellHeight(vh)
         return vh
+    }
+
+    private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
+        return inflater.inflate(layoutRes, this, attachToRoot)
     }
 
     fun initCellHeight(holder: ViewHolder, height: Int = itemHeight) {
@@ -42,10 +45,6 @@ class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: In
 
     override fun getItemCount(): Int {
         return opponents.size
-    }
-
-    fun getItem(position: Int): Int? {
-        return opponents[position].id
     }
 
     fun add(item: QBUser) {

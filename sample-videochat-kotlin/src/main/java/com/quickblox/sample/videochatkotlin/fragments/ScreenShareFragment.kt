@@ -37,15 +37,15 @@ class ScreenShareFragment : BaseToolBarFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        return when (item!!.itemId) {
             R.id.stop_screen_share -> {
                 Log.d(TAG, "stop_screen_share")
                 if (onSharingEvents != null) {
                     onSharingEvents!!.onStopSharingPreview()
                 }
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -61,6 +61,10 @@ class ScreenShareFragment : BaseToolBarFragment() {
 
     interface OnSharingEvents {
         fun onStopSharingPreview()
+    }
+
+    companion object {
+        fun newInstance() = ScreenShareFragment()
     }
 
     class MyAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

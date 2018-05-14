@@ -76,11 +76,12 @@ class PreviewCallFragment : BaseToolBarFragment() {
     }
 
     private fun initFields() {
-        val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
-        if (obj is ArrayList<*>) {
-            opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
-            val currentUser = ChatHelper.instance.currentUser
-            opponents.remove(currentUser)
+        arguments!!.get(EXTRA_QB_USERS_LIST).let {
+            if (it is ArrayList<*>) {
+                opponents = it.filterIsInstance<QBUser>() as ArrayList<QBUser>
+                val currentUser = ChatHelper.instance.currentUser
+                opponents.remove(currentUser)
+            }
         }
         Log.d(TAG, "users= $opponents")
     }
@@ -153,6 +154,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
             snackBar.show()
         } else {
             isIncomingCall = false
+            hangUpButtonVisibility(View.GONE)
             snackBar.dismiss()
         }
     }
@@ -162,7 +164,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
     }
 
     private fun hangUpButtonVisibility(visibility: Int) {
-        button_hangup_call.visibility = visibility
+        button_hangup_call?.visibility = visibility
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -180,5 +182,15 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    companion object {
+
+        fun newInstance(opponents: ArrayList<QBUser>) =
+                PreviewCallFragment().apply {
+                    arguments = Bundle().apply {
+                        putSerializable(EXTRA_QB_USERS_LIST, opponents)
+                    }
+                }
     }
 }

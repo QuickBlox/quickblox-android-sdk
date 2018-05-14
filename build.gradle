@@ -32,7 +32,7 @@ ext {
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7
 
-    kotlin_version = '1.1.51'
+    kotlinVersion = '1.1.51'
     lintAbortOnError = false
 
     // QuickBlox SDK version

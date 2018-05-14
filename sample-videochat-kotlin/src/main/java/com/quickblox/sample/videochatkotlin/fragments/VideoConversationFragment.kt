@@ -142,10 +142,9 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     }
 
     private fun initArguments() {
-        if (arguments != null) {
-            Log.d(TAG, "arguments != null")
-            isIncomingCall = arguments!!.getBoolean(EXTRA_IS_INCOMING_CALL)
-            val obj = arguments!!.get(EXTRA_QB_USERS_LIST)
+        arguments!!.let {
+            isIncomingCall = it.getBoolean(EXTRA_IS_INCOMING_CALL)
+            val obj = it.get(EXTRA_QB_USERS_LIST)
             if (obj is ArrayList<*>) {
                 opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
             }
@@ -299,7 +298,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         Log.d(TAG, "childCount for $childCount")
         for (i in 0 until childCount) {
             Log.d(TAG, "findHolder childCount $childCount , i= $i")
-            val childView = recycler_view_opponents.getChildAt(i)
+            val childView = recycler_view_opponents[i]
             Log.d(TAG, "childView= $childView")
             val childViewHolder = recycler_view_opponents.getChildViewHolder(childView) as OpponentsCallAdapter.ViewHolder
             Log.d(TAG, "childViewHolder= $childViewHolder")
@@ -309,6 +308,8 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         }
         return null
     }
+
+    operator fun ViewGroup.get(pos: Int): View = getChildAt(pos)
 
     private fun fillVideoView(userId: Int, videoView: QBRTCSurfaceView, videoTrack: QBRTCVideoTrack,
                               remoteRenderer: Boolean) {
@@ -435,12 +436,12 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.screen_share -> {
                 startScreenSharing()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -488,6 +489,17 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
         toggle_speaker.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+    }
+
+    companion object {
+
+        fun newInstance(incoming: Boolean, opponents: ArrayList<QBUser>) =
+                VideoConversationFragment().apply {
+                    arguments = Bundle().apply {
+                        putBoolean(EXTRA_IS_INCOMING_CALL, incoming)
+                        putSerializable(EXTRA_QB_USERS_LIST, opponents)
+                    }
+                }
     }
 
     private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {

@@ -36,10 +36,10 @@
     <ImageButton
         android:id="@+id/button_start_call"
         style="@style/StartCallImageButton"
-        android:layout_marginEnd="@dimen/element_fragment_margin"
-        android:layout_marginLeft="@dimen/element_fragment_margin"
-        android:layout_marginRight="@dimen/element_fragment_margin"
-        android:layout_marginStart="@dimen/element_fragment_margin"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginStart="@dimen/margin_common"
         android:background="@drawable/shape_oval_green"
         android:visibility="gone" />
 
