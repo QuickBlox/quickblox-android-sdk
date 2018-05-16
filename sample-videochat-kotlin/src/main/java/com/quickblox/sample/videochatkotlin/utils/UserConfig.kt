@@ -28,8 +28,8 @@ fun getAllUsersFromFile(fileName: String): ArrayList<QBUser> {
     return qbUsers
 }
 
-fun getIdsSelectedOpponents(selectedUsers: Collection<QBUser>): java.util.ArrayList<Int> {
-    val opponentsIds = java.util.ArrayList<Int>()
+fun getIdsSelectedOpponents(selectedUsers: Collection<QBUser>): ArrayList<Int> {
+    val opponentsIds = ArrayList<Int>()
     if (!selectedUsers.isEmpty()) {
         for (qbUser in selectedUsers) {
             opponentsIds.add(qbUser.id)

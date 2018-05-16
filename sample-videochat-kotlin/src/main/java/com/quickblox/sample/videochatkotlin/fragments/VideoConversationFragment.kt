@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -78,16 +77,15 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         fun onSwitchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler)
     }
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            eventListener = activity as CallFragmentCallbackListener
+            eventListener = context as CallFragmentCallbackListener
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement CallFragmentCallbackListener")
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,7 +197,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
                 }
             }
         })
-
     }
 
     private fun initAdapter() {
@@ -253,7 +250,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
         }
     }
 
-    protected fun setUserToAdapter(userID: Int) {
+    private fun setUserToAdapter(userID: Int) {
         val qbUser = getUserById(userID)
         opponentsAdapter.add(qbUser!!)
         recycler_view_opponents.requestLayout()
@@ -343,7 +340,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
     private fun initVideoTrackSListener() {
         currentSession!!.addVideoTrackCallbacksListener(this)
-
     }
 
     private fun removeVideoTrackSListener() {
@@ -432,7 +428,6 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.conversation_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

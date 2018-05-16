@@ -3,28 +3,17 @@ package com.quickblox.sample.videochatkotlin.adapters
 import android.content.Context
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.users.model.QBUser
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_opponent_from_call.*
 
-class OpponentsCallAdapter(context: Context, users: ArrayList<QBUser>, width: Int, height: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
+class OpponentsCallAdapter(context: Context, val opponents: ArrayList<QBUser>, var itemWidth: Int, var itemHeight: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
     private val TAG = OpponentsCallAdapter::class.java.simpleName
-    var inflater: LayoutInflater = LayoutInflater.from(context)
-    var opponents: ArrayList<QBUser> = users
-    var itemHeight: Int = 0
-    var itemWidth: Int = 0
-
-    init {
-        itemWidth = width
-        itemHeight = height
-        Log.d(TAG, "item width=$itemWidth, item height=$itemHeight")
-    }
+    private var inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.list_item_opponent_from_call)

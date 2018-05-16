@@ -1,7 +1,7 @@
 package com.quickblox.sample.videochatkotlin.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.hardware.Camera
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -47,12 +47,12 @@ class PreviewCallFragment : BaseToolBarFragment() {
         fun onLogout()
     }
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            eventListener = activity as CallFragmentCallbackListener
+            eventListener = context as CallFragmentCallbackListener
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement CallFragmentCallbackListener")
         }
@@ -173,13 +173,11 @@ class PreviewCallFragment : BaseToolBarFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when (item.itemId) {
             R.id.menu_logout_user_done -> {
                 eventListener.onLogout()
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
     }

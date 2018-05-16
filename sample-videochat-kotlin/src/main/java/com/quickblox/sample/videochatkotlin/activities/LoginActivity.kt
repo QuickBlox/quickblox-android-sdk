@@ -45,7 +45,6 @@ class LoginActivity : CoreBaseActivity() {
         users.forEachIndexed { index, _ -> userList.add(String.format(getString(R.string.user), index + 1)) }
         adapter = ArrayAdapter(this, R.layout.list_item_user, userList)
         list_users.adapter = adapter
-        list_users.adapter = adapter
         list_users.choiceMode = ListView.CHOICE_MODE_SINGLE
         list_users.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             loginToQB(users[position])
@@ -77,9 +76,9 @@ class LoginActivity : CoreBaseActivity() {
 
     fun loadUsers() {
         showProgress(R.string.dlg_loading_opponents)
-        val logins = ArrayList<String>()
-        users.forEach { logins.add(it.login) }
-        QBUsers.getUsersByLogins(logins, null).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+        val usersLogins = ArrayList<String>()
+        users.forEach { usersLogins.add(it.login) }
+        QBUsers.getUsersByLogins(usersLogins, null).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>, p1: Bundle?) {
                 hideProgress()
                 opponents = qbUsers

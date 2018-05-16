@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:keepScreenOn="true"
+    android:orientation="vertical"
     tools:context="com.quickblox.sample.videochatkotlin.activities.CallActivity">
 
 
@@ -11,7 +11,5 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!--<include layout="@layout/toolbar_call" />-->
 
 </FrameLayout>

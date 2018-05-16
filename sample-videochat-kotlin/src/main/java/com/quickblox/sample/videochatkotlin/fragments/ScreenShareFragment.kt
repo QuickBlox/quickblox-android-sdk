@@ -49,9 +49,9 @@ class ScreenShareFragment : BaseToolBarFragment() {
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        onSharingEvents = context as OnSharingEvents?
+        onSharingEvents = context as OnSharingEvents
     }
 
     override fun onDetach() {

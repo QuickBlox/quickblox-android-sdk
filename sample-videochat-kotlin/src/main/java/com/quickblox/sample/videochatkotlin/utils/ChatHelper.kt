@@ -26,7 +26,7 @@ class ChatHelper private constructor() {
         val instance: ChatHelper by lazy { Holder.INSTANCE }
     }
 
-    val isLogged: Boolean
+    val isLoggedIn: Boolean
         get() = QBChatService.getInstance().isLoggedIn
 
     init {
@@ -46,7 +46,7 @@ class ChatHelper private constructor() {
         // Create REST API session on QuickBlox
         QBUsers.signIn(user).performAsync(object : QBEntityCallback<QBUser> {
             override fun onSuccess(qbUser: QBUser, args: Bundle) {
-                user.setId(qbUser.id!!)
+                user.id = qbUser.id!!
                 loginToChat(user, callback)
             }
 
@@ -57,7 +57,7 @@ class ChatHelper private constructor() {
     }
 
     fun loginToChat(user: QBUser, callback: QBEntityCallback<Void>) {
-        if (isLogged) {
+        if (isLoggedIn) {
             callback.onSuccess(null, null)
             return
         }

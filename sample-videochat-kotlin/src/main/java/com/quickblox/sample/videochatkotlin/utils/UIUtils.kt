@@ -12,12 +12,12 @@ import com.quickblox.sample.core.utils.ErrorUtils
  * Created by Roman on 29.04.2018.
  */
 fun showProgressDialog(context: Context, progressDialog: ProgressDialog, @StringRes messageId: Int) {
-    progressDialog.setIndeterminate(true)
+    progressDialog.isIndeterminate = true
     progressDialog.setCancelable(false)
     progressDialog.setCanceledOnTouchOutside(false)
 
     // Disable the back button
-    val keyListener = DialogInterface.OnKeyListener { dialog, keyCode, event -> keyCode == KeyEvent.KEYCODE_BACK }
+    val keyListener = DialogInterface.OnKeyListener { _, keyCode, _ -> keyCode == KeyEvent.KEYCODE_BACK }
     progressDialog.setOnKeyListener(keyListener)
 
     progressDialog.setMessage(context.getString(messageId))

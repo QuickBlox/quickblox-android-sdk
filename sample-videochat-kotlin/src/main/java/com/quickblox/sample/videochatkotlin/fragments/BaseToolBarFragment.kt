@@ -21,7 +21,7 @@ abstract class BaseToolBarFragment : Fragment() {
     lateinit var mainHandler: Handler
     lateinit var actionBar: ActionBar
 
-    internal abstract val fragmentLayout: Int
+    protected abstract val fragmentLayout: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -39,25 +39,19 @@ abstract class BaseToolBarFragment : Fragment() {
     open fun initActionBar() {
         actionBar.title = String.format(ChatHelper.instance.currentUser.login)
         actionBar.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(context!!, R.color.black_transparent_50)))
-        //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
 
-    inner class FragmentLifeCycleHandler(fragment: Fragment) : Handler() {
+    class FragmentLifeCycleHandler(fragment: Fragment) : Handler() {
 
-        private val fragmentRef: WeakReference<Fragment>
-
-        init {
-
-            this.fragmentRef = WeakReference(fragment)
-        }
+        private val fragmentRef: WeakReference<Fragment> = WeakReference(fragment)
 
         override fun dispatchMessage(msg: Message) {
             val fragment = fragmentRef.get() ?: return
             if (fragment.isAdded && fragment.activity != null) {
                 super.dispatchMessage(msg)
             } else {
-                Log.d(TAG, "Fragment under destroying")
+                Log.d("BaseToolBarFragment", "Fragment under destroying")
             }
         }
     }
