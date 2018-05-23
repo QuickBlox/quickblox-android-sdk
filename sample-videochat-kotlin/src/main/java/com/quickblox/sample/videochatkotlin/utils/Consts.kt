@@ -10,3 +10,5 @@ const val EXTRA_IS_INCOMING_CALL = "conversation_reason"
 
 const val MAX_OPPONENTS_COUNT = 4
 const val CAMERA_RELEASE_DELAY = 1000L
+
+const val PERMISSIONS_FOR_CALL_REQUEST = 3

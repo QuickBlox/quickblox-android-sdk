@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black">#000000</color>
+    <color name="color_grey">#d3d3d3</color>
+    <color name="white">#ffffff</color>
+
+    <color name="color_primary">@color/white</color>
+    <color name="color_primary_dark">#d0d0d0</color>
+    <color name="color_accent">@color/color_green_qb</color>
+
+    <color name="color_blue_qb">#046ad0</color>
+    <color name="color_light_blue_qb">#87cefa</color>
+    <color name="color_green_qb">#4ad24d</color>
+
+    <color name="background_app_color">#ffffff</color>
+
     <color name="color_blue_accent">#0088e7</color>
 
     <color name="red">#FF0000</color>

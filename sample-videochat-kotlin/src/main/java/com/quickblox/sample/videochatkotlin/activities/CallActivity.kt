@@ -1,19 +1,21 @@
 package com.quickblox.sample.videochatkotlin.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Toast
 import androidx.core.os.postDelayed
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBWebRTCSignaling
-import com.quickblox.sample.core.ui.activity.CoreBaseActivity
-import com.quickblox.sample.core.utils.SystemPermissionHelper
-import com.quickblox.sample.core.utils.Toaster
-import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.PreviewCallFragment
 import com.quickblox.sample.videochatkotlin.fragments.ScreenShareFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
@@ -23,16 +25,16 @@ import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import org.webrtc.CameraVideoCapturer
+import com.quickblox.sample.videochatkotlin.R
 import java.util.*
 
 /**
  * Created by roman on 4/6/18.
  */
-class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCallFragment.CallFragmentCallbackListener,
+class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCallFragment.CallFragmentCallbackListener,
         VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback, ScreenShareFragment.OnSharingEvents {
 
     val TAG = CallActivity::class.java.simpleName
-    private lateinit var systemPermissionHelper: SystemPermissionHelper
     private lateinit var opponents: ArrayList<QBUser>
     private var rtcClient: QBRTCClient? = null
     private var currentSession: QBRTCSession? = null
@@ -44,7 +46,6 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
         setContentView(R.layout.activity_main)
         initFields()
         initQBRTCClient()
-        systemPermissionHelper = SystemPermissionHelper(this)
         checkCameraPermissionAndStart()
     }
 
@@ -64,7 +65,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     private fun startAudioManager() {
         initAudioManagerIfNeed()
         audioManager!!.start { selectedAudioDevice, availableAudioDevices ->
-            Toaster.shortToast("Audio device switched to  " + selectedAudioDevice)
+            Toast.makeText(applicationContext, "Audio device switched to  $selectedAudioDevice", Toast.LENGTH_SHORT).show()
             updateAudioDevice()
         }
     }
@@ -104,11 +105,24 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
     }
 
     private fun checkCameraPermissionAndStart() {
-        if (systemPermissionHelper.isCallPermissionsGranted) {
-            initPreviewFragment()
+        if (!isCallPermissionsGranted()) {
+            requestCameraPermission()
         } else {
-            systemPermissionHelper.requestPermissionsForCallByType()
+            initPreviewFragment()
         }
+    }
+
+    private fun isCallPermissionsGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), PERMISSIONS_FOR_CALL_REQUEST)
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+//            ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG)
+//        } else {
+//        }
     }
 
     private fun initPreviewFragIfNeed() {
@@ -152,9 +166,9 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            SystemPermissionHelper.PERMISSIONS_FOR_CALL_REQUEST ->
+            PERMISSIONS_FOR_CALL_REQUEST ->
                 if (grantResults.isNotEmpty()) {
-                    if (!systemPermissionHelper.isCallPermissionsGranted) {
+                    if (isCallPermissionsGranted()) {
                         Log.d(TAG, "showToastDeniedPermissions")
                         showToastDeniedPermissions(permissions)
                         startLogout()
@@ -173,15 +187,13 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
                 startScreenSharing(data!!)
                 Log.i(TAG, "Starting screen capture")
             } else {
-                Toaster.longToast(
-                        getString(R.string.denied_permission_message, "screen"))
+                Toast.makeText(applicationContext, getString(R.string.denied_permission_message, "screen"), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun showToastDeniedPermissions(permissions: Array<String>) {
-        Toaster.longToast(
-                getString(R.string.denied_permission_message, Arrays.toString(permissions)))
+        Toast.makeText(applicationContext, getString(R.string.denied_permission_message, Arrays.toString(permissions)), Toast.LENGTH_LONG).show()
     }
 
     private fun startLogout() {
@@ -298,7 +310,7 @@ class CallActivity : CoreBaseActivity(), QBRTCClientSessionCallbacks, PreviewCal
             opponents.forEach { if (it.id == userId) return it.fullName ?: it.login }
             return ""
         }
-        Toaster.shortToast("User " + getUserNameOrLogin(userId) + " " + getString(R.string.text_status_hang_up) + " conversation")
+        Toast.makeText(applicationContext, "User " + getUserNameOrLogin(userId) + " " + getString(R.string.text_status_hang_up), Toast.LENGTH_SHORT).show()
     }
 
     override fun onCallAcceptByUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {

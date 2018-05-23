@@ -73,9 +73,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":sample-core"))
     implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
+    implementation "com.android.support:design:$designVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
     implementation 'androidx.core:core-ktx:0.3'
     implementation "com.android.support:appcompat-v7:$supportLibVersion"

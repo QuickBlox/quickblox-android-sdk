@@ -4,13 +4,13 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.view.View
+import android.support.v7.app.AppCompatActivity
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
-import com.quickblox.sample.core.ui.activity.CoreBaseActivity
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.*
 import com.quickblox.users.QBUsers
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 /**
  * Created by Roman on 09.04.2018.
  */
-class LoginActivity : CoreBaseActivity() {
+class LoginActivity : AppCompatActivity() {
 
     val TAG = LoginActivity::class.java.simpleName
     private lateinit var users: ArrayList<QBUser>
@@ -31,13 +31,13 @@ class LoginActivity : CoreBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        setActionBarTitle(R.string.title_login_activity)
+        supportActionBar?.setTitle(R.string.title_login_activity)
         initQBUsers()
         initUserAdapter()
     }
 
     private fun initQBUsers() {
-        users = getAllUsersFromFile(SAMPLE_CONFIG_FILE_NAME)
+        users = getAllUsersFromFile(SAMPLE_CONFIG_FILE_NAME, this)
     }
 
     private fun initUserAdapter() {
@@ -68,7 +68,7 @@ class LoginActivity : CoreBaseActivity() {
 
             override fun onError(ex: QBResponseException) {
                 hideProgress()
-                showErrorSnackbar(findViewById(android.R.id.content), R.string.login_chat_login_error, ex, View.OnClickListener { loginToQB(user) })
+                Toast.makeText(applicationContext, getString(R.string.login_chat_login_error, ex.message), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -85,9 +85,9 @@ class LoginActivity : CoreBaseActivity() {
                 startCallActivity()
             }
 
-            override fun onError(responseException: QBResponseException) {
+            override fun onError(ex: QBResponseException) {
                 hideProgress()
-                showErrorSnackbar(findViewById(android.R.id.content), R.string.loading_users_error, responseException, View.OnClickListener { loadUsers() })
+                Toast.makeText(applicationContext, getString(R.string.loading_users_error, ex.message), Toast.LENGTH_SHORT).show()
             }
         })
     }

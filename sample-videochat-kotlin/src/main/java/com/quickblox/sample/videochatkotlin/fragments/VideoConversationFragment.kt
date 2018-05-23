@@ -10,10 +10,10 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.*
+import android.widget.Toast
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import androidx.core.util.putAll
-import com.quickblox.sample.core.utils.Toaster
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
 import com.quickblox.sample.videochatkotlin.utils.ChatHelper
@@ -458,7 +458,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
 
             override fun onCameraSwitchError(s: String) {
                 Log.d(TAG, "camera switch error $s")
-                Toaster.shortToast(getString(R.string.camera_swicth_failed) + s)
+                Toast.makeText(activity, getString(R.string.loading_users_error, s), Toast.LENGTH_SHORT).show()
                 toggle_camera.isEnabled = true
             }
         })

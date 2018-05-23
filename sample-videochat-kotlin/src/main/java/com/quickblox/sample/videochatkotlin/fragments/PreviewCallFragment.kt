@@ -11,7 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import com.quickblox.sample.core.utils.Toaster
+import android.widget.Toast
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
@@ -112,8 +112,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     private fun startCall() {
         if (opponents.size > MAX_OPPONENTS_COUNT) {
-            Toaster.longToast(String.format(getString(R.string.error_max_opponents_count),
-                    MAX_OPPONENTS_COUNT))
+            Toast.makeText(activity, String.format(getString(R.string.error_max_opponents_count),
+                    MAX_OPPONENTS_COUNT), Toast.LENGTH_LONG).show()
             return
         }
 

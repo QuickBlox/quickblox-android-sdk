@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="padding_common">8dp</dimen>
+
     <dimen name="toggle_button_params">60dp</dimen>
     <dimen name="element_fragment_margin">30dp</dimen>
     <dimen name="element_fragment_margin_small">8dp</dimen>

@@ -1,11 +1,17 @@
 <resources>
+    <style name="MatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
 
-    <!-- Base application theme. -->
-    <style name="VideoChatTheme" parent="AppTheme">
-        <item name="colorAccent">@color/color_blue_qb</item>
-        <item name="colorControlActivated">@color/color_blue_accent</item>
-        <item name="colorControlHighlight">@color/color_blue_accent</item>
-        <item name="colorControlNormal">@color/color_blue_accent</item>
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MatchWidth">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="RoundedImageButton">

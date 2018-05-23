@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.quickblox.sample.core.utils.ResourceUtils
 import com.quickblox.sample.videochatkotlin.R
 import kotlinx.android.synthetic.main.fragment_item_screen_share.*
 
@@ -26,8 +25,8 @@ class PreviewSharingFragment : Fragment() {
         Glide.with(this@PreviewSharingFragment)
                 .load(resourceId)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .override(ResourceUtils.getDimen(R.dimen.pager_image_width),
-                        ResourceUtils.getDimen(R.dimen.pager_image_height))
+                .override((activity!!.resources.getDimension(R.dimen.pager_image_width)).toInt(),
+                        (activity!!.resources.getDimension(R.dimen.pager_image_height)).toInt())
                 .into(this)
     }
 
