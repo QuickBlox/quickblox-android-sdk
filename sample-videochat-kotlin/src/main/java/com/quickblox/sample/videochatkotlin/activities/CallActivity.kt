@@ -88,14 +88,25 @@ class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCa
         // Configure
         //
         QBRTCConfig.setMaxOpponentsCount(MAX_OPPONENTS_COUNT)
-        setSettingsForMultiCall(opponents)
+        setSettingsForMultiCall()
         QBRTCConfig.setDebugEnabled(true)
-
 
         // Add activity as callback to RTCClient
         rtcClient!!.addSessionCallbacksListener(this)
         // Start mange QBRTCSessions according to VideoCall parser's callbacks
         rtcClient!!.prepareToProcessCalls()
+    }
+
+    private fun setSettingsForMultiCall() {
+        if (opponents.size == 2) {
+            QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.HD_VIDEO.width)
+            QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.HD_VIDEO.height)
+        } else {
+            //set to minimum settings
+            QBRTCMediaConfig.setVideoWidth(QBRTCMediaConfig.VideoQuality.QBGA_VIDEO.width)
+            QBRTCMediaConfig.setVideoHeight(QBRTCMediaConfig.VideoQuality.QBGA_VIDEO.height)
+            QBRTCMediaConfig.setVideoHWAcceleration(false)
+        }
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -119,10 +130,6 @@ class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCa
 
     private fun requestCameraPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), PERMISSIONS_FOR_CALL_REQUEST)
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-//            ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG)
-//        } else {
-//        }
     }
 
     private fun initPreviewFragIfNeed() {
@@ -168,7 +175,7 @@ class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCa
         when (requestCode) {
             PERMISSIONS_FOR_CALL_REQUEST ->
                 if (grantResults.isNotEmpty()) {
-                    if (isCallPermissionsGranted()) {
+                    if (!isCallPermissionsGranted()) {
                         Log.d(TAG, "showToastDeniedPermissions")
                         showToastDeniedPermissions(permissions)
                         startLogout()
@@ -197,7 +204,7 @@ class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCa
     }
 
     private fun startLogout() {
-        ChatHelper.instance.destroy()
+        QBChatService.getInstance().destroy()
     }
 
     private fun initCurrentSession(session: QBRTCSession) {

@@ -12,11 +12,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
-import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.sample.videochatkotlin.utils.MAX_OPPONENTS_COUNT
-import com.quickblox.sample.videochatkotlin.utils.getIdsSelectedOpponents
 import com.quickblox.sample.videochatkotlin.view.CameraPreview
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
@@ -61,7 +60,6 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         retainInstance = true
-        Log.d(TAG, "onCreate() from PreviewCallFragment")
         initFields()
         super.onCreate(savedInstanceState)
     }
@@ -79,7 +77,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         arguments!!.get(EXTRA_QB_USERS_LIST).let {
             if (it is ArrayList<*>) {
                 opponents = it.filterIsInstance<QBUser>() as ArrayList<QBUser>
-                val currentUser = ChatHelper.instance.currentUser
+                val currentUser = QBChatService.getInstance().user
                 opponents.remove(currentUser)
             }
         }
@@ -118,7 +116,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
         }
 
         Log.d(TAG, "startCall()")
-        val opponentsList = getIdsSelectedOpponents(opponents)
+        val opponentsList = getIdsOpponents(opponents)
         val conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
 
         val qbrtcClient = QBRTCClient.getInstance(ContextUtils.getApplicationContext())
@@ -165,6 +163,16 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     private fun hangUpButtonVisibility(visibility: Int) {
         button_hangup_call?.visibility = visibility
+    }
+
+    private fun getIdsOpponents(selectedUsers: Collection<QBUser>): ArrayList<Int> {
+        val opponentsIds = ArrayList<Int>()
+        if (!selectedUsers.isEmpty()) {
+            for (qbUser in selectedUsers) {
+                opponentsIds.add(qbUser.id)
+            }
+        }
+        return opponentsIds
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

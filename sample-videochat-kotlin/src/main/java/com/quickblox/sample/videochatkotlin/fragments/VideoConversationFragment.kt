@@ -14,9 +14,9 @@ import android.widget.Toast
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import androidx.core.util.putAll
+import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
-import com.quickblox.sample.videochatkotlin.utils.ChatHelper
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_IS_INCOMING_CALL
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.users.model.QBUser
@@ -147,7 +147,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
                 opponents = obj.filterIsInstance<QBUser>() as ArrayList<QBUser>
             }
         }
-        currentUserId = ChatHelper.instance.currentUser.id
+        currentUserId = QBChatService.getInstance().user.id
         isCurrentCameraFront = true
     }
 

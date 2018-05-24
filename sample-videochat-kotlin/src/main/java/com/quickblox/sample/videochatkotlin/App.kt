@@ -1,18 +1,16 @@
 package com.quickblox.sample.videochatkotlin
 
 import android.app.Application
-import android.text.TextUtils
 import com.quickblox.auth.session.QBSettings
-import com.quickblox.core.ServiceZone
 import com.quickblox.sample.videochatkotlin.utils.SAMPLE_CONFIG_FILE_NAME
 import com.quickblox.sample.videochatkotlin.utils.getAllUsersFromFile
 import com.quickblox.users.model.QBUser
 
 class App : Application() {
-    private val applicationID = "29949"
-    private val authKey = "9HTvhpTECXcfLfR"
-    private val authSecret = "KBA8tPCPFpsXFCw"
-    private val accountKey = "zKQrk7gkoqQsFhY1pNzv"
+    private val applicationID = ""
+    private val authKey = ""
+    private val authSecret = ""
+    private val accountKey = ""
 
     override fun onCreate() {
         super.onCreate()
@@ -22,10 +20,8 @@ class App : Application() {
     }
 
     private fun checkQBConfigJson() {
-        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty()) {
-            val errorText = resources.openRawResource(R.raw.qb_config_example_file)
-                    .bufferedReader().use { it.readText() }
-            throw AssertionError(String.format(getString(R.string.error_qb_credentials_empty), errorText))
+        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty() || accountKey.isEmpty()) {
+            throw AssertionError(getString(R.string.error_qb_credentials_empty))
         }
     }
 
