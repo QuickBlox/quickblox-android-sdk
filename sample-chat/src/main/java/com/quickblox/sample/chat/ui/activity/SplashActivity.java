@@ -9,7 +9,6 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
-import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
@@ -24,7 +23,7 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (checkConfigsWithSnackebarError()){
+        if (checkConfigsWithSnackebarError()) {
             proceedToTheNextActivityWithDelay();
         }
     }
@@ -51,19 +50,29 @@ public class SplashActivity extends CoreSplashActivity {
         return result;
     }
 
-    private void restoreChatSession(){
+    private void restoreChatSession() {
         if (ChatHelper.getInstance().isLogged()) {
             DialogsActivity.start(this);
             finish();
         } else {
             QBUser currentUser = getUserFromSession();
-            loginToChat(currentUser);
+            if (currentUser == null) {
+                LoginActivity.start(this);
+            } else {
+                loginToChat(currentUser);
+            }
         }
     }
 
-    private QBUser getUserFromSession(){
+    private QBUser getUserFromSession() {
         QBUser user = SharedPrefsHelper.getInstance().getQbUser();
-        user.setId(QBSessionManager.getInstance().getSessionParameters().getUserId());
+        QBSessionManager qbSessionManager = QBSessionManager.getInstance();
+        if (qbSessionManager.getSessionParameters() == null) {
+            ChatHelper.getInstance().destroy();
+            return null;
+        }
+        Integer userId = qbSessionManager.getSessionParameters().getUserId();
+        user.setId(userId);
         return user;
     }
 
@@ -89,7 +98,7 @@ public class SplashActivity extends CoreSplashActivity {
             public void onError(QBResponseException e) {
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 Log.w(TAG, "Chat login onError(): " + e);
-                showSnackbarError( findViewById(R.id.layout_root), R.string.error_recreate_session, e,
+                showSnackbarError(findViewById(R.id.layout_root), R.string.error_recreate_session, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
