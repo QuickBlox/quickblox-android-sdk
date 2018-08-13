@@ -53,6 +53,9 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+            if (TextUtils.isEmpty(message)) {
+                message = GcmConsts.EMPTY_GCM_MESSAGE;
+            }
             Log.i(TAG, "Receiving event " + GcmConsts.ACTION_NEW_GCM_EVENT + " with data: " + message);
             retrieveMessage(message);
         }

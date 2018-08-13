@@ -7,7 +7,6 @@ import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.pushnotifications.utils.Consts;
 
 public class App extends CoreApp {
 
