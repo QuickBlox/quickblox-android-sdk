@@ -1,58 +1,27 @@
 {
   "project_info": {
-    "project_number": "507034883086",
-    "firebase_url": "https://testpushes-c0aa5.firebaseio.com",
-    "project_id": "testpushes-c0aa5",
-    "storage_bucket": "testpushes-c0aa5.appspot.com"
+    "project_number": "785642683386",
+    "firebase_url": "https://qb-samples.firebaseio.com",
+    "project_id": "qb-samples",
+    "storage_bucket": "qb-samples.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:507034883086:android:d150eafea3b1427e",
+        "mobilesdk_app_id": "1:785642683386:android:d150eafea3b1427e",
         "android_client_info": {
           "package_name": "com.quickblox.sample.chat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "507034883086-p8bcprhvijld7q0j95114mjp9nualrm1.apps.googleusercontent.com",
+          "client_id": "785642683386-mq65h7ksgvabe7lbmdgvfokdut4ik1vh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCtPI5f1yXe84yrOhd9UAzfslb5UpmQEsw"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:507034883086:android:3fc90835c862e9b5",
-        "android_client_info": {
-          "package_name": "com.quickblox.sample.pushnotifications"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "507034883086-p8bcprhvijld7q0j95114mjp9nualrm1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCtPI5f1yXe84yrOhd9UAzfslb5UpmQEsw"
+          "current_key": "AIzaSyCuoPFXWfO3yyIyPNvRW8zXn5EI6t_R5Gk"
         }
       ],
       "services": {
