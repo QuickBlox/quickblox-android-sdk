@@ -11,7 +11,6 @@ public abstract class CoreGcmPushListenerService extends QBGcmPushListenerServic
 
     @Override
     public void sendPushMessage(Bundle data, String from, String message) {
-        super.sendPushMessage(data, from, message);
         Log.v(TAG, "From: " + from);
         Log.v(TAG, "Message: " + message);
 
