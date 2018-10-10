@@ -77,7 +77,7 @@ public class DialogsManager {
     }
 
     public void onGlobalMessageReceived(String dialogId, QBChatMessage chatMessage){
-        if (chatMessage.isMarkable()) { //for excluding status messages until will be released v.3.1
+        if (chatMessage.isMarkable()) {
             if (QbDialogHolder.getInstance().hasDialogWithId(dialogId)) {
                 QbDialogHolder.getInstance().updateDialog(dialogId, chatMessage);
                 notifyListenersDialogUpdated(dialogId);
