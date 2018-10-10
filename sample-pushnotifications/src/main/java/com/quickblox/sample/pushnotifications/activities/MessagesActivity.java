@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -27,12 +29,15 @@ import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
+import com.quickblox.messages.model.QBNotificationChannel;
 import com.quickblox.messages.model.QBNotificationType;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.KeyboardUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
+import com.quickblox.sample.pushnotifications.App;
 import com.quickblox.sample.pushnotifications.R;
 
 import java.util.ArrayList;
@@ -44,6 +49,8 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
 
     private EditText outgoingMessageEditText;
     private ProgressBar progressBar;
+    private CheckBox fcm;
+    private CheckBox gcm;
     private ArrayAdapter<String> adapter;
 
     private List<String> receivedPushes;
@@ -52,12 +59,12 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
-            if (TextUtils.isEmpty(message)) {
-                message = GcmConsts.EMPTY_GCM_MESSAGE;
-            }
-            Log.i(TAG, "Receiving event " + GcmConsts.ACTION_NEW_GCM_EVENT + " with data: " + message);
-            retrieveMessage(message);
+                String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
+                if (TextUtils.isEmpty(message)) {
+                    message = GcmConsts.EMPTY_GCM_MESSAGE;
+                }
+                Log.i(TAG, "Receiving event " + GcmConsts.ACTION_NEW_GCM_EVENT + " with data: " + message);
+                retrieveMessage(message);
         }
     };
 
@@ -80,7 +87,6 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         googlePlayServicesHelper = new GooglePlayServicesHelper();
 
         initUI();
-
         String message = getIntent().getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
 
         if (message != null) {
@@ -140,6 +146,8 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     }
 
     private void initUI() {
+        fcm = _findViewById(R.id.fcm);
+        gcm = _findViewById(R.id.gcm);
         progressBar = _findViewById(R.id.progress_bar);
         outgoingMessageEditText = _findViewById(R.id.edit_message_out);
         outgoingMessageEditText.addTextChangedListener(this);
@@ -148,6 +156,26 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
         adapter = new ArrayAdapter<>(this, R.layout.list_item_message, R.id.item_message, receivedPushes);
         incomingMessagesListView.setAdapter(adapter);
         incomingMessagesListView.setEmptyView(_findViewById(R.id.text_empty_messages));
+
+        fcm.setChecked(App.getInstance().isFcmEnabled());
+        gcm.setChecked(App.getInstance().isGcmEnabled());
+        initNotificationChannels();
+    }
+
+    private void initNotificationChannels() {
+        fcm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                App.getInstance().setEnableFcmChannel(isChecked);
+            }
+        });
+
+        gcm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                App.getInstance().setEnableGcmChannel(isChecked);
+            }
+        });
     }
 
     private void registerReceiver() {
@@ -160,7 +188,6 @@ public class MessagesActivity extends CoreBaseActivity implements TextWatcher {
     private void retrieveMessage(String message) {
         receivedPushes.add(0, message);
         adapter.notifyDataSetChanged();
-
         progressBar.setVisibility(View.INVISIBLE);
     }
 

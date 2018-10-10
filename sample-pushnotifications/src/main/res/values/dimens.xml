@@ -5,6 +5,7 @@
 
     <dimen name="line_width">1dp</dimen>
 
+    <dimen name="margin_small">12dp</dimen>
     <dimen name="margin_medium">46dp</dimen>
     <dimen name="margin_large">80dp</dimen>
 

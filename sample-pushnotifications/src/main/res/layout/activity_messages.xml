@@ -31,13 +31,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/gcm"
+                android:text="@string/gcm"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/fcm"
+                android:text="@string/fcm"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_messages_header"
             style="@style/HeaderStyle"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@string/received_messages" />
 
         <TextView
@@ -50,5 +70,4 @@
             android:id="@+id/list_messages"
             style="@style/MatchParent" />
     </LinearLayout>
-
 </LinearLayout>
