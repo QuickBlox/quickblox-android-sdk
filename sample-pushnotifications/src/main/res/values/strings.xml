@@ -17,8 +17,10 @@
 
     <string name="enable_notification">Enable Notification</string>
     <string name="disable_notification">Disable Notification</string>
+    <string name="gcm">GCM</string>
+    <string name="fcm">FCM</string>
     <string name="subtitle_enabled">Notification enabled</string>
     <string name="subtitle_disabled">Notification disabled</string>
-    <string name="sender_id">763802285074</string>
+    <string name="sender_id">785642683386</string>
 
 </resources>
