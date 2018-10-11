@@ -275,14 +275,6 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBChatDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle args) {
-                        Iterator<QBChatDialog> dialogIterator = dialogs.iterator();
-                        while (dialogIterator.hasNext()) {
-                            QBChatDialog dialog = dialogIterator.next();
-                            if (dialog.getType() == QBDialogType.PUBLIC_GROUP) {
-                                dialogIterator.remove();
-                            }
-                        }
-
                         getUsersFromDialogs(dialogs, callback);
                         // Not calling super.onSuccess() because
                         // we want to load chat users before triggering callback
