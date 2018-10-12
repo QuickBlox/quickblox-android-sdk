@@ -1,19 +1,18 @@
 {
     "servers":{
         "production": {
-            "app_id": "92",
-            "auth_key": "wJHdOcQSxXQGWx5",
-            "auth_secret": "BTFsj7Rtt27DAmT",
+            "app_id": "72448",
+            "auth_key": "f4HYBYdeqTZ7KNb",
+            "auth_secret": "ZC7dK39bOjVc-Z8",
             "api_domain": "api.quickblox.com",
             "chat_domain": "chat.quickblox.com",
             "bucket_name": "qbprod",
-            "test_user_id1": 11109547,
-            "test_user_login1": "supersample-ios2",
-            "test_user_password1": "supersample-ios2",
-            "test_user_id2": 11108871,
-            "test_user_login2": "supersample-ios1",
-            "test_user_password2": "supersample-ios1",
-//            "dialog_id": "561cffc2a28f9a97ec0001d9"
+            "test_user_id1": 55746068,
+            "test_user_login1": "test_user_id1",
+            "test_user_password1": "test_user_id1",
+            "test_user_id2": 55746159,
+            "test_user_login2": "test_user_id2",
+            "test_user_password2": "test_user_id2",
             "dialog_id": "56f3fac3a0eb4786ae00003f"
         }
     },
