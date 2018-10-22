@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initUserAdapter() {
         val userList: ArrayList<String> = ArrayList(users.size)
-        users.forEachIndexed { index, _ -> userList.add(String.format(getString(R.string.user), index + 1)) }
+        users.forEachIndexed { index, _ -> userList.add(users[index].login) }
         adapter = ArrayAdapter(this, R.layout.list_item_user, userList)
         list_users.adapter = adapter
         list_users.choiceMode = ListView.CHOICE_MODE_SINGLE
