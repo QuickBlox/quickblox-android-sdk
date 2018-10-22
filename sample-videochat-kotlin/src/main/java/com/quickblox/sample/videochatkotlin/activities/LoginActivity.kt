@@ -15,8 +15,6 @@ import com.quickblox.chat.QBChatService
 import com.quickblox.core.LogLevel
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
-import com.quickblox.sample.core.CoreApp
-import com.quickblox.sample.core.utils.ErrorUtils
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.utils.EXTRA_QB_USERS_LIST
 import com.quickblox.sample.videochatkotlin.utils.SAMPLE_CONFIG_FILE_NAME
@@ -25,6 +23,9 @@ import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import kotlinx.android.synthetic.main.activity_login.*
 
+/**
+ * Created by Roman on 09.04.2018.
+ */
 class LoginActivity : AppCompatActivity() {
 
     val TAG = LoginActivity::class.java.simpleName
@@ -40,37 +41,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.setTitle(R.string.title_login_activity)
-        if (isCorrectConfig() && isCorrectUsers()) {
-            initChat()
-            initQBUsers()
-            initUserAdapter()
-        } else {
-            textView.setText(R.string.dlg_error)
-        }
-    }
-
-    private fun isCorrectConfig(): Boolean {
-        val isCorrect = CoreApp.getInstance().qbConfigs != null
-        if (!isCorrect) {
-            ErrorUtils.showSnackbar(findViewById(R.id.layoutRoot), R.string.error_parsing_configs,
-                    R.string.dlg_ok, null)
-        }
-        return isCorrect
-    }
-
-    private fun isCorrectUsers(): Boolean {
-        val users = getAllUsersFromFile(SAMPLE_CONFIG_FILE_NAME, this)
-        val isCorrect = users.size in 2..4 && !isUsersEmpty(users)
-        if (!isCorrect) {
-            ErrorUtils.showSnackbar(findViewById(R.id.layoutRoot), R.string.error_users_empty,
-                    R.string.dlg_ok, null)
-        }
-        return isCorrect
-    }
-
-    private fun isUsersEmpty(users: ArrayList<QBUser>): Boolean {
-        users.forEach { user -> if (user.login.isBlank() || user.password.isBlank()) return true }
-        return false
+        initChat()
+        initQBUsers()
+        initUserAdapter()
     }
 
     private fun initQBUsers() {
@@ -79,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initUserAdapter() {
         val userList: ArrayList<String> = ArrayList(users.size)
-        users.forEachIndexed { index, _ -> userList.add(users[index].login) }
+        users.forEachIndexed { index, _ -> userList.add(String.format(getString(R.string.user), index + 1)) }
         adapter = ArrayAdapter(this, R.layout.list_item_user, userList)
         list_users.adapter = adapter
         list_users.choiceMode = ListView.CHOICE_MODE_SINGLE
@@ -99,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_QB_USERS_LIST, opponents)
         startActivity(intent)
     }
+
 
     private fun loginToQB(user: QBUser) {
         showProgress(R.string.dlg_login)

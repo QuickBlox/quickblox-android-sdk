@@ -73,7 +73,6 @@ android {
 }
 
 dependencies {
-    implementation (project(":sample-core"))
     implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
 
     implementation "com.android.support:design:$designVersion"

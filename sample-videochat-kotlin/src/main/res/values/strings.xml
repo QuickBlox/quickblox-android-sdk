@@ -38,7 +38,7 @@
     <!-- Errors strings. -->
     <string name="error_qb_credentials_empty">The App class should contain QuickBlox credentials. Register new account and application at https://admin.quickblox.com
         then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
-    <string name="error_users_empty">The user_config.json file should contain at least 2 and max 4 users</string>
+    <string name="error_users_empty">The user_config.json file should contain at least 2 and max 4 users with format [\"login\":\"password\"]. Please go to https://admin.quickblox.com and create users in \'Users\' module.</string>
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="denied_permission_message">You cannot continue without an access to %s</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
