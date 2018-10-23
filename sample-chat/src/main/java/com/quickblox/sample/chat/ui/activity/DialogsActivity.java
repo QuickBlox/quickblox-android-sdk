@@ -43,13 +43,20 @@ import com.quickblox.sample.chat.utils.qb.QbChatDialogMessageListenerImp;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.callback.QBPushSubscribeListenerImpl;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
+import com.quickblox.sample.core.async.BaseAsyncTask;
 import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -369,15 +376,11 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBChatDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle bundle) {
-                isProcessingResultInProgress = false;
-                progressBar.setVisibility(View.GONE);
-                setOnRefreshListener.setRefreshing(false);
-
                 if (clearDialogHolder) {
                     QbDialogHolder.getInstance().clear();
                 }
-                QbDialogHolder.getInstance().addDialogs(dialogs);
-                updateDialogsAdapter();
+                DialogJoinerAsyncTask dialogJoinerAsyncTask = new DialogJoinerAsyncTask(DialogsActivity.this, dialogs);
+                dialogJoinerAsyncTask.execute();
             }
 
             @Override
@@ -388,6 +391,27 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 Toast.makeText(DialogsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * It is better to call this method in a separate thread using AsyncTask, not in UI thread.
+     */
+    private void joinDialogs (ArrayList<QBChatDialog> dialogs) {
+        for (QBChatDialog dialog : dialogs) {
+            try {
+                dialog.join(new DiscussionHistory());
+            } catch (XMPPException xmppException) {
+                Toaster.shortToast(xmppException.getMessage());
+            } catch (SmackException smackException) {
+                Toaster.shortToast(smackException.getMessage());
+            }
+        }
+    }
+
+    private void disableProgress() {
+        isProcessingResultInProgress = false;
+        progressBar.setVisibility(View.GONE);
+        setOnRefreshListener.setRefreshing(false);
     }
 
     private void updateDialogsAdapter() {
@@ -411,7 +435,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private class DeleteActionModeCallback implements ActionMode.Callback {
 
-        public DeleteActionModeCallback() {
+        DeleteActionModeCallback() {
             fab.hide();
         }
 
@@ -498,6 +522,40 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             if (!senderId.equals(ChatHelper.getCurrentUser().getId())) {
                 dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
             }
+        }
+    }
+
+    /**
+     * It is better to use WeakReference to prevent memory leaks.
+     */
+    private static class DialogJoinerAsyncTask extends BaseAsyncTask<Void, Void, Void> {
+        private WeakReference<DialogsActivity> dialogsActivityWeakReference;
+        private ArrayList<QBChatDialog> dialogs;
+
+        DialogJoinerAsyncTask(DialogsActivity dialogsActivity, ArrayList<QBChatDialog> dialogs){
+            dialogsActivityWeakReference = new WeakReference<DialogsActivity>(dialogsActivity);
+            this.dialogs = dialogs;
+        }
+
+        @Override
+        public Void performInBackground(Void... voids) throws Exception {
+            if (dialogsActivityWeakReference != null && dialogsActivityWeakReference.get() != null){
+                dialogsActivityWeakReference.get().joinDialogs(dialogs);
+            }
+            return null;
+        }
+
+        @Override
+        public void onResult(Void aVoid) {
+            dialogsActivityWeakReference.get().disableProgress();
+            QbDialogHolder.getInstance().addDialogs(dialogs);
+            dialogsActivityWeakReference.get().updateDialogsAdapter();
+        }
+
+        @Override
+        public void onException(Exception e) {
+            super.onException(e);
+            Toaster.shortToast("Error: " + e.getMessage());
         }
     }
 }

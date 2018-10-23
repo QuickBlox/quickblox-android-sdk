@@ -67,6 +67,7 @@
     <string name="group_chat_join_error">Could not join chat, errors:</string>
     <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
     <string name="error_leave_chat">Error leaving room</string>
+    <string name="error_unknown">Unknown Error</string>
 
     <string name="sender_id">761750217637</string>
 </resources>
