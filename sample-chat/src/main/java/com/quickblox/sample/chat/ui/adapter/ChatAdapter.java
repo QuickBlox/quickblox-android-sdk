@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.content.QBContent;
+import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.helper.CollectionsUtil;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.TimeUtils;
@@ -59,12 +61,6 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
             readMessage(chatMessage);
         }
         super.onBindViewHolder(holder, position);
-    }
-
-    @Override
-    public String getImageUrl(int position) {
-        QBAttachment attachment = getQBAttach(position);
-        return attachment.getUrl();
     }
 
     @Override
