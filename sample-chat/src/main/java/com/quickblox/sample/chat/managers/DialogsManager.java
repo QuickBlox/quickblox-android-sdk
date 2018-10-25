@@ -104,11 +104,11 @@ public class DialogsManager {
             chatDialog.initForChat(QBChatService.getInstance());
 
             try {
-                chatDialog.join(new DiscussionHistory());
-            } catch (XMPPException xmppException) {
-                Toaster.shortToast(xmppException.getMessage());
-            } catch (SmackException smackException) {
-                Toaster.shortToast(smackException.getMessage());
+                DiscussionHistory history = new DiscussionHistory();
+                history.setMaxStanzas(0);
+                chatDialog.join(history);
+            } catch (Exception e) {
+                Toaster.shortToast(e.getMessage());
             }
             QbDialogHolder.getInstance().addDialog(chatDialog);
             notifyListenersDialogCreated(chatDialog);
