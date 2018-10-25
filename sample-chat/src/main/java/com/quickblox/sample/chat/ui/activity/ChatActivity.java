@@ -24,6 +24,7 @@ import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
@@ -594,7 +595,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         @Override
         public void onLinkClicked(QBAttachment qbAttachment, int position) {
-            AttachmentImageActivity.start(ChatActivity.this, qbAttachment.getUrl());
+            if (qbAttachment != null) {
+                String url = QBFile.getPrivateUrlForUID(qbAttachment.getId());
+                AttachmentImageActivity.start(ChatActivity.this, url);
+            }
         }
     }
 
