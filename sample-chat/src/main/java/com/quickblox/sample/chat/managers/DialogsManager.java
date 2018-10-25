@@ -11,9 +11,12 @@ import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
+import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,11 +26,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class DialogsManager {
 
-    public static final String PROPERTY_OCCUPANTS_IDS = "occupants_ids";
-    public static final String PROPERTY_DIALOG_TYPE = "dialog_type";
-    public static final String PROPERTY_DIALOG_NAME = "dialog_name";
+    public static final String PROPERTY_OCCUPANTS_IDS = "current_occupant_ids";
+    public static final String PROPERTY_DIALOG_TYPE = "type";
+    public static final String PROPERTY_DIALOG_NAME = "room_name";
     public static final String PROPERTY_NOTIFICATION_TYPE = "notification_type";
-    public static final String CREATING_DIALOG = "creating_dialog";
+    public static final String CREATING_DIALOG = "1";
 
     private Set<ManagingDialogsCallbacks> managingDialogsCallbackListener = new CopyOnWriteArraySet<>();
 
@@ -42,6 +45,7 @@ public class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_TYPE, String.valueOf(dialog.getType().getCode()));
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, String.valueOf(dialog.getName()));
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
+        qbChatMessage.setBody("New Chat Created");
 
         return qbChatMessage;
     }
@@ -98,8 +102,19 @@ public class DialogsManager {
         if (isMessageCreatingDialog(systemMessage)) {
             QBChatDialog chatDialog = buildChatDialogFromSystemMessage(systemMessage);
             chatDialog.initForChat(QBChatService.getInstance());
+
+            try {
+                chatDialog.join(new DiscussionHistory());
+            } catch (XMPPException xmppException) {
+                Toaster.shortToast(xmppException.getMessage());
+            } catch (SmackException smackException) {
+                Toaster.shortToast(smackException.getMessage());
+            }
             QbDialogHolder.getInstance().addDialog(chatDialog);
             notifyListenersDialogCreated(chatDialog);
+            QbDialogHolder.getInstance().updateDialog(chatDialog.getDialogId(), systemMessage);
+            onGlobalMessageReceived(chatDialog.getDialogId(), systemMessage);
+            notifyListenersDialogUpdated(chatDialog.getDialogId());
         }
     }
 
