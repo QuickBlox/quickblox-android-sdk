@@ -52,10 +52,6 @@ import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.muc.DiscussionHistory;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -376,36 +372,16 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         ChatHelper.getInstance().getDialogs(requestBuilder, new QBEntityCallback<ArrayList<QBChatDialog>>() {
             @Override
             public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle bundle) {
-                if (clearDialogHolder) {
-                    QbDialogHolder.getInstance().clear();
-                }
-                DialogJoinerAsyncTask dialogJoinerAsyncTask = new DialogJoinerAsyncTask(DialogsActivity.this, dialogs);
+                DialogJoinerAsyncTask dialogJoinerAsyncTask = new DialogJoinerAsyncTask(DialogsActivity.this, dialogs, clearDialogHolder);
                 dialogJoinerAsyncTask.execute();
             }
 
             @Override
             public void onError(QBResponseException e) {
-                isProcessingResultInProgress = false;
-                progressBar.setVisibility(View.GONE);
-                setOnRefreshListener.setRefreshing(false);
+                disableProgress();
                 Toast.makeText(DialogsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * It is better to call this method in a separate thread using AsyncTask, not in UI thread.
-     */
-    private void joinDialogs (ArrayList<QBChatDialog> dialogs) {
-        for (QBChatDialog dialog : dialogs) {
-            try {
-                dialog.join(new DiscussionHistory());
-            } catch (XMPPException xmppException) {
-                Toaster.shortToast(xmppException.getMessage());
-            } catch (SmackException smackException) {
-                Toaster.shortToast(smackException.getMessage());
-            }
-        }
     }
 
     private void disableProgress() {
@@ -525,31 +501,33 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         }
     }
 
-    /**
-     * It is better to use WeakReference to prevent memory leaks.
-     */
     private static class DialogJoinerAsyncTask extends BaseAsyncTask<Void, Void, Void> {
-        private WeakReference<DialogsActivity> dialogsActivityWeakReference;
+        private WeakReference<DialogsActivity> activityRef;
         private ArrayList<QBChatDialog> dialogs;
+        private boolean clearDialogHolder;
 
-        DialogJoinerAsyncTask(DialogsActivity dialogsActivity, ArrayList<QBChatDialog> dialogs){
-            dialogsActivityWeakReference = new WeakReference<DialogsActivity>(dialogsActivity);
+        DialogJoinerAsyncTask(DialogsActivity dialogsActivity, ArrayList<QBChatDialog> dialogs, boolean clearDialogHolder) {
+            activityRef = new WeakReference<>(dialogsActivity);
             this.dialogs = dialogs;
+            this.clearDialogHolder = clearDialogHolder;
         }
 
         @Override
         public Void performInBackground(Void... voids) throws Exception {
-            if (dialogsActivityWeakReference != null && dialogsActivityWeakReference.get() != null){
-                dialogsActivityWeakReference.get().joinDialogs(dialogs);
-            }
+            ChatHelper.getInstance().join(dialogs);
             return null;
         }
 
         @Override
         public void onResult(Void aVoid) {
-            dialogsActivityWeakReference.get().disableProgress();
-            QbDialogHolder.getInstance().addDialogs(dialogs);
-            dialogsActivityWeakReference.get().updateDialogsAdapter();
+            if (activityRef.get() != null) {
+                activityRef.get().disableProgress();
+                if (clearDialogHolder) {
+                    QbDialogHolder.getInstance().clear();
+                }
+                QbDialogHolder.getInstance().addDialogs(dialogs);
+                activityRef.get().updateDialogsAdapter();
+            }
         }
 
         @Override

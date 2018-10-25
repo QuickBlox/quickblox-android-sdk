@@ -146,6 +146,14 @@ public class ChatHelper {
         chatDialog.join(history, callback);
     }
 
+    public void join(List<QBChatDialog> dialogs) throws Exception {
+        for (QBChatDialog dialog : dialogs) {
+            DiscussionHistory history = new DiscussionHistory();
+            history.setMaxStanzas(0);
+            dialog.join(history);
+        }
+    }
+
     public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
         chatDialog.leave();
     }
