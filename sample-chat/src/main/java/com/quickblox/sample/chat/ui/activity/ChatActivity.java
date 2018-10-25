@@ -432,9 +432,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void releaseChat() {
         qbChatDialog.removeMessageListrener(chatMessageListener);
-        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
-            leaveGroupDialog();
-        }
     }
 
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
