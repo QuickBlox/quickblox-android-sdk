@@ -142,6 +142,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
     override fun onPause() {
         super.onPause()
         stopCameraPreview()
+        camera_preview.removeAllViews()
     }
 
     fun updateCallButtons(show: Boolean) {
