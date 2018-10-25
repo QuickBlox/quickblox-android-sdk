@@ -595,9 +595,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         @Override
         public void onLinkClicked(QBAttachment qbAttachment, int position) {
-            if (!TextUtils.isEmpty(qbAttachment.getUrl())) {
-                AttachmentImageActivity.start(ChatActivity.this, qbAttachment.getUrl());
-            } else  {
+            if (qbAttachment != null) {
                 String url = QBFile.getPrivateUrlForUID(qbAttachment.getId());
                 AttachmentImageActivity.start(ChatActivity.this, url);
             }
