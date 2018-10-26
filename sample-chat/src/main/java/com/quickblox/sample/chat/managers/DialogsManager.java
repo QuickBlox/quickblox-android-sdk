@@ -43,6 +43,7 @@ public class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_TYPE, String.valueOf(dialog.getType().getCode()));
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, String.valueOf(dialog.getName()));
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
+        qbChatMessage.setDateSent(System.currentTimeMillis() / 1000);
         qbChatMessage.setBody("New Chat Created");
         return qbChatMessage;
     }
