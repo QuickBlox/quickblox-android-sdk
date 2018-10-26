@@ -44,7 +44,6 @@ public class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, String.valueOf(dialog.getName()));
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
         qbChatMessage.setBody("New Chat Created");
-
         return qbChatMessage;
     }
 
@@ -55,7 +54,6 @@ public class DialogsManager {
         chatDialog.setType(QBDialogType.parseByCode(Integer.parseInt(qbChatMessage.getProperty(PROPERTY_DIALOG_TYPE).toString())));
         chatDialog.setName(qbChatMessage.getProperty(PROPERTY_DIALOG_NAME).toString());
         chatDialog.setUnreadMessageCount(0);
-
         return chatDialog;
     }
 
