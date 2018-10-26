@@ -4,6 +4,7 @@ import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.session.QBSession;
 import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.auth.session.QBSessionParameters;
@@ -11,6 +12,8 @@ import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.ServiceZone;
 import com.quickblox.sample.core.models.QbConfigs;
 import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
+
+import io.fabric.sdk.android.Fabric;
 
 public class CoreApp extends Application {
     public static final String TAG = CoreApp.class.getSimpleName();
@@ -22,6 +25,7 @@ public class CoreApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         instance = this;
         initQBSessionManager();
         initQbConfigs();
@@ -37,7 +41,7 @@ public class CoreApp extends Application {
         return instance;
     }
 
-    public void initCredentials(){
+    public void initCredentials() {
         if (qbConfigs != null) {
             QBSettings.getInstance().init(getApplicationContext(), qbConfigs.getAppId(), qbConfigs.getAuthKey(), qbConfigs.getAuthSecret());
             QBSettings.getInstance().setAccountKey(qbConfigs.getAccountKey());
@@ -49,11 +53,11 @@ public class CoreApp extends Application {
         }
     }
 
-    public QbConfigs getQbConfigs(){
+    public QbConfigs getQbConfigs() {
         return qbConfigs;
     }
 
-    protected String getQbConfigFileName(){
+    protected String getQbConfigFileName() {
         return QB_CONFIG_DEFAULT_FILE_NAME;
     }
 

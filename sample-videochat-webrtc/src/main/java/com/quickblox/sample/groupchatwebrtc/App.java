@@ -1,7 +1,10 @@
 package com.quickblox.sample.groupchatwebrtc;
 
+import com.crashlytics.android.Crashlytics;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.groupchatwebrtc.util.QBResRequestExecutor;
+
+import io.fabric.sdk.android.Fabric;
 
 public class App extends CoreApp {
     private static App instance;
@@ -14,10 +17,11 @@ public class App extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         initApplication();
     }
 
-    private void initApplication(){
+    private void initApplication() {
         instance = this;
     }
 
