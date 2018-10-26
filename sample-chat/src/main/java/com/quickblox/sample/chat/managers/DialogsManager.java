@@ -7,13 +7,10 @@ import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
 import com.quickblox.sample.chat.utils.qb.callback.QbEntityCallbackImpl;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.SmackException;
@@ -107,7 +104,7 @@ public class DialogsManager {
             DiscussionHistory history = new DiscussionHistory();
             history.setMaxStanzas(0);
 
-            chatDialog.join(history, new QBEntityCallback() {
+            chatDialog.join(history, new QbEntityCallbackImpl() {
                 @Override
                 public void onSuccess(Object o, Bundle bundle) {
                     QbDialogHolder.getInstance().addDialog(chatDialog);
@@ -115,11 +112,6 @@ public class DialogsManager {
                     QbDialogHolder.getInstance().updateDialog(chatDialog.getDialogId(), systemMessage);
                     onGlobalMessageReceived(chatDialog.getDialogId(), systemMessage);
                     notifyListenersDialogUpdated(chatDialog.getDialogId());
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                    Toaster.shortToast(e.getMessage());
                 }
             });
         }
