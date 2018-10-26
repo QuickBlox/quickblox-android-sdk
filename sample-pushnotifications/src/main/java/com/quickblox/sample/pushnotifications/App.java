@@ -2,11 +2,14 @@ package com.quickblox.sample.pushnotifications;
 
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
 import com.quickblox.sample.core.utils.Toaster;
+
+import io.fabric.sdk.android.Fabric;
 
 public class App extends CoreApp {
 
@@ -16,9 +19,9 @@ public class App extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         instance = this;
         ActivityLifecycle.init(this);
-
         initPushManager();
     }
 

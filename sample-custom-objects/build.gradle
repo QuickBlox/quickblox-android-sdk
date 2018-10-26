@@ -11,6 +11,10 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -60,13 +64,16 @@ android {
 }
 
 dependencies {
-    implementation (project(":sample-core"))
+    implementation(project(":sample-core"))
 
     implementation "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-extensions:$rootProject.qbSdkVersion"
 
     implementation 'io.reactivex:rxandroid:1.2.1'
     implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
+    implementation("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
+        transitive = true
+    }
 }
 
 apply from: "../artifacts.gradle"
