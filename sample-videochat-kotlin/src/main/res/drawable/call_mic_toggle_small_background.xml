@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/background"
+        android:drawable="@drawable/call_toggle_button_small_background" />
+    <item
+        android:id="@+id/toggle"
+        android:drawable="@drawable/selector_toggle_mic" />
+</layer-list>

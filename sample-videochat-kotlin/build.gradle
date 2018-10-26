@@ -1,0 +1,90 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.31"
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
+androidExtensions {
+    experimental = true
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.videochatkotlin"
+        minSdkVersion 16
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
+
+    }
+
+    productFlavors {
+        speedDev {
+            dimension rootProject.dimensionDefault
+            minSdkVersion 21
+        }
+        dev {
+            dimension rootProject.dimensionDefault
+            minSdkVersion 16
+        }
+    }
+
+
+    buildTypes {
+        debug {
+            resValue "string", "versionName", "QuickBlox WebRTC\nBuild version " + defaultConfig.getVersionName()
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            resValue "string", "versionName", "QuickBlox WebRTC\nBuild version " + defaultConfig.getVersionName()
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$rootProject.qbSdkVersion"
+
+    implementation "com.android.support:design:$designVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
+    implementation 'androidx.core:core-ktx:0.3'
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.github.bumptech.glide:glide:${rootProject.glideVersion}"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true
+    }
+}
