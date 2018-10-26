@@ -7,6 +7,8 @@ import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.utils.qb.QbDialogUtils;
@@ -15,7 +17,6 @@ import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public class DialogsManager {
 
     private Set<ManagingDialogsCallbacks> managingDialogsCallbackListener = new CopyOnWriteArraySet<>();
 
-    private boolean isMessageCreatingDialog(QBChatMessage systemMessage){
+    private boolean isMessageCreatingDialog(QBChatMessage systemMessage) {
         return CREATING_DIALOG.equals(systemMessage.getProperty(PROPERTY_NOTIFICATION_TYPE));
     }
 
-    private QBChatMessage buildSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog){
+    private QBChatMessage buildSystemMessageAboutCreatingGroupDialog(QBChatDialog dialog) {
         QBChatMessage qbChatMessage = new QBChatMessage();
         qbChatMessage.setDialogId(dialog.getDialogId());
         qbChatMessage.setProperty(PROPERTY_OCCUPANTS_IDS, QbDialogUtils.getOccupantsIdsStringFromList(dialog.getOccupants()));
@@ -50,7 +51,7 @@ public class DialogsManager {
         return qbChatMessage;
     }
 
-    private QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage){
+    private QBChatDialog buildChatDialogFromSystemMessage(QBChatMessage qbChatMessage) {
         QBChatDialog chatDialog = new QBChatDialog();
         chatDialog.setDialogId(qbChatMessage.getDialogId());
         chatDialog.setOccupantsIds(QbDialogUtils.getOccupantsIdsListFromString((String) qbChatMessage.getProperty(PROPERTY_OCCUPANTS_IDS)));
@@ -76,11 +77,11 @@ public class DialogsManager {
         }
     }
 
-    private void loadUsersFromDialog(QBChatDialog chatDialog){
+    private void loadUsersFromDialog(QBChatDialog chatDialog) {
         ChatHelper.getInstance().getUsersFromDialog(chatDialog, new QbEntityCallbackImpl<ArrayList<QBUser>>());
     }
 
-    public void onGlobalMessageReceived(String dialogId, QBChatMessage chatMessage){
+    public void onGlobalMessageReceived(String dialogId, QBChatMessage chatMessage) {
         if (chatMessage.isMarkable()) {
             if (QbDialogHolder.getInstance().hasDialogWithId(dialogId)) {
                 QbDialogHolder.getInstance().updateDialog(dialogId, chatMessage);
@@ -98,23 +99,29 @@ public class DialogsManager {
         }
     }
 
-    public void onSystemMessageReceived(QBChatMessage systemMessage){
+    public void onSystemMessageReceived(final QBChatMessage systemMessage) {
         if (isMessageCreatingDialog(systemMessage)) {
-            QBChatDialog chatDialog = buildChatDialogFromSystemMessage(systemMessage);
+            final QBChatDialog chatDialog = buildChatDialogFromSystemMessage(systemMessage);
             chatDialog.initForChat(QBChatService.getInstance());
 
-            try {
-                DiscussionHistory history = new DiscussionHistory();
-                history.setMaxStanzas(0);
-                chatDialog.join(history);
-            } catch (Exception e) {
-                Toaster.shortToast(e.getMessage());
-            }
-            QbDialogHolder.getInstance().addDialog(chatDialog);
-            notifyListenersDialogCreated(chatDialog);
-            QbDialogHolder.getInstance().updateDialog(chatDialog.getDialogId(), systemMessage);
-            onGlobalMessageReceived(chatDialog.getDialogId(), systemMessage);
-            notifyListenersDialogUpdated(chatDialog.getDialogId());
+            DiscussionHistory history = new DiscussionHistory();
+            history.setMaxStanzas(0);
+
+            chatDialog.join(history, new QBEntityCallback() {
+                @Override
+                public void onSuccess(Object o, Bundle bundle) {
+                    QbDialogHolder.getInstance().addDialog(chatDialog);
+                    notifyListenersDialogCreated(chatDialog);
+                    QbDialogHolder.getInstance().updateDialog(chatDialog.getDialogId(), systemMessage);
+                    onGlobalMessageReceived(chatDialog.getDialogId(), systemMessage);
+                    notifyListenersDialogUpdated(chatDialog.getDialogId());
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    Toaster.shortToast(e.getMessage());
+                }
+            });
         }
     }
 
@@ -136,8 +143,8 @@ public class DialogsManager {
         }
     }
 
-    public void addManagingDialogsCallbackListener(ManagingDialogsCallbacks listener){
-        if (listener != null){
+    public void addManagingDialogsCallbackListener(ManagingDialogsCallbacks listener) {
+        if (listener != null) {
             managingDialogsCallbackListener.add(listener);
         }
     }
@@ -150,7 +157,7 @@ public class DialogsManager {
         return Collections.unmodifiableCollection(managingDialogsCallbackListener);
     }
 
-    public interface ManagingDialogsCallbacks{
+    public interface ManagingDialogsCallbacks {
 
         void onDialogCreated(QBChatDialog chatDialog);
 
