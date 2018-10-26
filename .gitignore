@@ -38,3 +38,6 @@ build
 
 # Mac
 .DS_Store
+
+# Fabric
+*/fabric.properties
