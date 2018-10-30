@@ -7,9 +7,9 @@
     android:background="@color/color_grey"
     android:gravity="center"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?android:attr/listPreferredItemPaddingRight"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:paddingRight="?android:attr/listPreferredItemPaddingRight"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     tools:text="@string/user" />

@@ -9,5 +9,4 @@
         style="@style/MatchParent"
         android:layout_gravity="center"
         android:adjustViewBounds="true" />
-
 </LinearLayout>

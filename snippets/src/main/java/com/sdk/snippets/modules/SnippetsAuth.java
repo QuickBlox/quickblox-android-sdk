@@ -4,23 +4,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.auth.session.BaseService;
-import com.quickblox.auth.session.QBSession;
-import com.quickblox.core.QBEntityCallback;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsOAuthSigning;
 import com.digits.sdk.android.DigitsSession;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBProvider;
+import com.quickblox.auth.session.BaseService;
+import com.quickblox.auth.session.QBSession;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.BaseServiceException;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.Lo;
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBProvider;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippets;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterAuthToken;
@@ -30,10 +30,8 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by vfite on 22.01.14.
- */
-public class SnippetsAuth extends Snippets{
+
+public class SnippetsAuth extends Snippets {
 
     private static final String TAG = SnippetsAuth.class.getSimpleName();
 
@@ -66,6 +64,7 @@ public class SnippetsAuth extends Snippets{
     /////////////////////////////////// Create session /////////////////////////////////////////////
     //
 
+
     Snippet createSession = new Snippet("create session") {
         @Override
         public void execute() {
@@ -95,7 +94,7 @@ public class SnippetsAuth extends Snippets{
                 setException(e);
             }
 
-            if(session != null){
+            if (session != null) {
                 Log.i(TAG, "session created, token = " + session.getToken());
             }
         }
@@ -143,7 +142,7 @@ public class SnippetsAuth extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(session != null){
+            if (session != null) {
                 Log.i(TAG, "session created, token = " + session.getToken());
             }
         }
@@ -164,8 +163,8 @@ public class SnippetsAuth extends Snippets{
             QBAuth.createSessionUsingSocialProvider(QBProvider.FACEBOOK, facebookAccessToken, null).performAsync(new QBEntityCallback<QBSession>() {
 
                 @Override
-                public void onSuccess(QBSession session,  Bundle args) {
-                    Log.i(TAG, "session created, token = "+session.getToken());
+                public void onSuccess(QBSession session, Bundle args) {
+                    Log.i(TAG, "session created, token = " + session.getToken());
                 }
 
                 @Override
@@ -187,7 +186,7 @@ public class SnippetsAuth extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(session != null){
+            if (session != null) {
                 Log.i(TAG, "session created, token = " + session.getToken());
             }
         }
@@ -217,7 +216,7 @@ public class SnippetsAuth extends Snippets{
     };
 
     private void initTwitterDigits() {
-        if(authConfig == null) {
+        if (authConfig == null) {
             // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
             String consumerKey = "A1NXq7BxZ74NZ3dDzXA1HcSN7";
             String consumerSecret = "Piuy52Kf2m2iHVKpfpffi6xjvOYVI904O6sl1c50TLpntTVsl6";
@@ -238,21 +237,21 @@ public class SnippetsAuth extends Snippets{
                 String xAuthServiceProvider = authHeaders.get("X-Auth-Service-Provider");
                 String xVerifyCredentialsAuthorization = authHeaders.get("X-Verify-Credentials-Authorization");
 
-                if(isSync){
+                if (isSync) {
                     QBSession qbSession = null;
                     try {
                         qbSession = QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization).perform();
                     } catch (QBResponseException e) {
                         e.printStackTrace();
                     }
-                    if(session != null){
+                    if (session != null) {
                         Log.i(TAG, "session created: " + qbSession);
                     }
-                }else{
+                } else {
                     QBAuth.createSessionUsingTwitterDigits(xAuthServiceProvider, xVerifyCredentialsAuthorization).performAsync(new QBEntityCallback<QBSession>() {
                         @Override
                         public void onSuccess(QBSession qbSession, Bundle params) {
-                            Log.i(TAG, "session created: "+qbSession);
+                            Log.i(TAG, "session created: " + qbSession);
                         }
 
                         @Override
@@ -349,5 +348,4 @@ public class SnippetsAuth extends Snippets{
             }
         }
     };
-
 }

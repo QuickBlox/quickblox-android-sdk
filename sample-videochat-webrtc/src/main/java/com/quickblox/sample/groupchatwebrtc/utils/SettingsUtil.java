@@ -130,7 +130,7 @@ public class SettingsUtil {
         Log.e(TAG, "dialingTimeInterval = " + dialingTimeInterval);
     }
 
-    public static boolean isManageSpeakerPhoneByProximity(Context context){
+    public static boolean isManageSpeakerPhoneByProximity(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean manageSpeakerPhoneByProximity = sharedPref.getBoolean(context.getString(R.string.pref_manage_speakerphone_by_proximity_key),
                 Boolean.valueOf(context.getString(R.string.pref_manage_speakerphone_by_proximity_default)));

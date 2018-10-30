@@ -36,20 +36,20 @@
     <ImageButton
         android:id="@+id/button_start_call"
         style="@style/StartCallImageButton"
-        android:layout_marginEnd="@dimen/margin_common"
-        android:layout_marginLeft="@dimen/margin_common"
-        android:layout_marginRight="@dimen/margin_common"
         android:layout_marginStart="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
         android:background="@drawable/shape_oval_green"
         android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/button_hangup_call"
         style="@style/EndCallImageButton"
-        android:layout_marginEnd="@dimen/margin_common"
-        android:layout_marginLeft="@dimen/margin_common"
-        android:layout_marginRight="@dimen/margin_common"
         android:layout_marginStart="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
         android:background="@drawable/shape_oval_red" />
 
     <ToggleButton
@@ -68,12 +68,11 @@
         android:layout_width="@dimen/toggle_button_params"
         android:layout_height="@dimen/toggle_button_params"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
         android:background="@drawable/call_mic_toggle_background"
         android:checked="true"
         android:textOff=""
         android:textOn=""
         android:visibility="gone" />
-
 </LinearLayout>

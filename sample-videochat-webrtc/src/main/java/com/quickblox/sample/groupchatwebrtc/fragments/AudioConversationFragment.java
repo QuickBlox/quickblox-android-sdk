@@ -1,8 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +18,10 @@ import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 
 import java.util.ArrayList;
 
-/**
- * Created by tereha on 25.05.16.
- */
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+
 public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeAudioDevice {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 

@@ -18,7 +18,7 @@ public class Snippets {
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    public void log(final String data){
+    public void log(final String data) {
         handler.post(new Runnable() {
             @Override
             public void run() {

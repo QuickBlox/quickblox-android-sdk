@@ -4,12 +4,12 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v7.app.AppCompatActivity
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.chat.QBChatService
 import com.quickblox.core.LogLevel
@@ -23,9 +23,7 @@ import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import kotlinx.android.synthetic.main.activity_login.*
 
-/**
- * Created by Roman on 09.04.2018.
- */
+
 class LoginActivity : AppCompatActivity() {
 
     val TAG = LoginActivity::class.java.simpleName

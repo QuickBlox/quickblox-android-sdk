@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import androidx.fragment.app.Fragment;
+
 /**
  * QuickBlox team
  */
@@ -97,7 +99,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
         sessionManager = WebRtcSessionManager.getInstance(this);
         if (!currentSessionExist()) {
-//            we have already currentSession == null, so it's no reason to do further initialization
+            //we have already currentSession == null, so it's no reason to do further initialization
             finish();
             Log.d(TAG, "finish CallActivity");
             return;
@@ -383,7 +385,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
 
-    private android.support.v4.app.Fragment getCurrentFragment() {
+    private Fragment getCurrentFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
@@ -574,10 +576,10 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         @Override
         public void onSuccess(ArrayList<Integer> publishers) {
             Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
-            if(rtcClient.isAutoSubscribeAfterJoin()) {
+            if (rtcClient.isAutoSubscribeAfterJoin()) {
                 subscribedPublishers.addAll(publishers);
             }
-            if(asListenerRole){
+            if (asListenerRole) {
                 connectedToJanus = true;
             }
         }

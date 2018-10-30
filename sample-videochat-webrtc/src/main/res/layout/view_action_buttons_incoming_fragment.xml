@@ -5,13 +5,11 @@
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="@dimen/padding_bottom"
-    android:gravity="center"
-    >
+    android:gravity="center">
 
     <ImageButton
         android:id="@+id/image_button_reject_call"
-        style="@style/EndCallImageButton"
-        />
+        style="@style/EndCallImageButton" />
 
     <ImageButton
         android:id="@+id/image_button_accept_call"
@@ -19,7 +17,5 @@
         android:layout_marginStart="@dimen/income_call_buttons_margin"
         android:layout_toEndOf="@id/image_button_reject_call"
         android:src="@drawable/ic_call"
-        tools:ignore="RtlCompat"
-        />
-
+        tools:ignore="RtlCompat" />
 </RelativeLayout>

@@ -69,7 +69,8 @@ dependencies {
     implementation "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-extensions:$rootProject.qbSdkVersion"
 
-    implementation 'io.reactivex:rxandroid:1.2.1'
+    implementation "androidx.lifecycle:lifecycle-runtime:2.0.0"
+    implementation "io.reactivex:rxandroid:${rootProject.rxAndroidVersion}"
     implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
     implementation("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
         transitive = true

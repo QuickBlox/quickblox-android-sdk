@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 
 import com.quickblox.sample.core.utils.ImageUtils;
 import com.quickblox.sample.core.utils.imagepick.GetFilepathFromUriTask;
 import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 public class ImagePickHelperFragment extends Fragment {
 
@@ -55,7 +56,8 @@ public class ImagePickHelperFragment extends Fragment {
         }
     }
 
-    public ImagePickHelperFragment() {}
+    public ImagePickHelperFragment() {
+    }
 
     @Override
     public void onAttach(Context context) {

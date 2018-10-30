@@ -16,7 +16,6 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsAdapter;
 import com.quickblox.sample.groupchatwebrtc.db.QbUsersDbManager;
@@ -155,7 +154,7 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void initUsersList() {
-//      checking whether currentOpponentsList is actual, if yes - return
+        //checking whether currentOpponentsList is actual, if yes - return
         if (currentOpponentsList != null) {
             ArrayList<QBUser> actualCurrentOpponentsList = dbManager.getAllUsers();
             actualCurrentOpponentsList.remove(sharedPrefsHelper.getQbUser());

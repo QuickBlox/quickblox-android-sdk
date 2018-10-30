@@ -29,5 +29,4 @@
         android:text="@string/ringing"
         android:textSize="@dimen/text_size_ringing"
         android:textStyle="normal" />
-
 </LinearLayout>

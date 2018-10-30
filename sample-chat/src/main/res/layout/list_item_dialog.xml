@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/ListItem"
     android:id="@+id/root"
+    style="@style/ListItem"
     android:paddingLeft="@dimen/list_item_side_margin"
     android:paddingRight="@dimen/list_item_side_margin"
     tools:ignore="RtlHardcoded">

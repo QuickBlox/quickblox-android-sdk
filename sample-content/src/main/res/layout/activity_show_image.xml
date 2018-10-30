@@ -13,5 +13,4 @@
         style="@style/WrapContent"
         android:layout_gravity="center"
         android:visibility="gone" />
-
 </FrameLayout>

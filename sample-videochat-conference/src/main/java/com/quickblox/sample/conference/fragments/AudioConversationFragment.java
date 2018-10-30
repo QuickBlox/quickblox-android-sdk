@@ -17,9 +17,6 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
 
 import java.io.Serializable;
 
-/**
- * Created by roman on 6/9/17.
- */
 
 public class AudioConversationFragment extends BaseConversationFragment implements Serializable, OpponentsFromCallAdapter.OnAdapterEventListener,
         QBRTCClientAudioTracksCallback<ConferenceSession>, CallActivity.OnChangeDynamicToggle {

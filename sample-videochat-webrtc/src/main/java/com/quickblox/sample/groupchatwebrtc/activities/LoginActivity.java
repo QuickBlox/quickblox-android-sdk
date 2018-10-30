@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,7 +19,6 @@ import com.quickblox.core.helper.Utils;
 import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
-import com.quickblox.sample.core.utils.configs.CoreConfigUtils;
 import com.quickblox.sample.groupchatwebrtc.R;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.sample.groupchatwebrtc.utils.Consts;
@@ -28,6 +26,8 @@ import com.quickblox.sample.groupchatwebrtc.utils.QBEntityCallbackImpl;
 import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.ValidationUtils;
 import com.quickblox.users.model.QBUser;
+
+import androidx.annotation.Nullable;
 
 public class LoginActivity extends BaseActivity {
 

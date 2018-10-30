@@ -6,9 +6,7 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
     <include
         android:id="@+id/element_set_video_buttons"
@@ -18,9 +16,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/padding_common" />
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/snackbar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 </RelativeLayout>

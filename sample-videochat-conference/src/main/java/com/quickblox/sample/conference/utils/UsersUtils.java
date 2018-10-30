@@ -3,16 +3,14 @@ package com.quickblox.sample.conference.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.conference.db.QbUsersDbManager;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tereha on 09.06.16.
- */
+
 public class UsersUtils {
 
     private static SharedPrefsHelper sharedPrefsHelper;

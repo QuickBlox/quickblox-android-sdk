@@ -2,11 +2,9 @@ package com.quickblox.sample.conference.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.quickblox.sample.conference.R;
-import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
 
 import java.util.List;

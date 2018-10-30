@@ -14,5 +14,4 @@
         android:id="@+id/msg_text_time_attach"
         style="@style/TextViewAttach.Right"
         tools:text="time" />
-
 </LinearLayout>

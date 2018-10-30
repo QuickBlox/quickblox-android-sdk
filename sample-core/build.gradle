@@ -33,9 +33,11 @@ android {
 
 dependencies {
     api("com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion")
-    api "com.android.support:design:${rootProject.designVersion}"
+
+    api "com.google.android.material:material:${rootProject.materialVersion}"
+    api "androidx.fragment:fragment:${rootProject.fragmentAndroidXVersion}"
     api "com.github.johnkil.android-robototextview:robototextview:${rootProject.robotoTextViewVersion}"
-    implementation("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
+    api("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
         transitive = true
     }
 }

@@ -1,8 +1,6 @@
 package com.quickblox.sample.videochatkotlin.utils
 
-/**
- * Created by Roman on 08.04.2018.
- */
+
 const val SAMPLE_CONFIG_FILE_NAME = "user_config.json"
 const val EXTRA_QB_USERS_LIST = "qb_users"
 

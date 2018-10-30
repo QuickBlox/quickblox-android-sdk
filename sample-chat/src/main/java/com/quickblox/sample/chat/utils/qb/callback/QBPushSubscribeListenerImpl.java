@@ -2,9 +2,6 @@ package com.quickblox.sample.chat.utils.qb.callback;
 
 import com.quickblox.messages.services.QBPushManager;
 
-/**
- * Created by roman on 2/28/18.
- */
 
 public class QBPushSubscribeListenerImpl implements QBPushManager.QBSubscribeListener {
 

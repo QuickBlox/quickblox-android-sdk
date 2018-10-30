@@ -1,17 +1,16 @@
 package com.quickblox.sample.videochatkotlin.adapters
 
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.users.model.QBUser
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item_opponent_from_call.*
 
-class OpponentsCallAdapter(context: Context, val opponents: ArrayList<QBUser>, var itemWidth: Int, var itemHeight: Int) : RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
+class OpponentsCallAdapter(context: Context, val opponents: ArrayList<QBUser>, var itemWidth: Int, var itemHeight: Int) : androidx.recyclerview.widget.RecyclerView.Adapter<OpponentsCallAdapter.ViewHolder>() {
     private val TAG = OpponentsCallAdapter::class.java.simpleName
     private var inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -55,7 +54,7 @@ class OpponentsCallAdapter(context: Context, val opponents: ArrayList<QBUser>, v
         holder.opponent_name.text = user.fullName ?: user.login
     }
 
-    class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    class ViewHolder(override val containerView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView), LayoutContainer {
         var userId: Int = 0
     }
 }

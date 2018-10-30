@@ -1,11 +1,11 @@
 package com.quickblox.sample.core.utils.imagepick;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-
 import com.quickblox.sample.core.utils.imagepick.fragment.ImagePickHelperFragment;
 import com.quickblox.sample.core.utils.imagepick.fragment.ImageSourcePickDialogFragment;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 public class ImagePickHelper {
 

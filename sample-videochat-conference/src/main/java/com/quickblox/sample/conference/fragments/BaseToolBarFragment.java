@@ -3,11 +3,6 @@ package com.quickblox.sample.conference.fragments;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +11,12 @@ import android.view.ViewGroup;
 import com.quickblox.sample.conference.R;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 public abstract class BaseToolBarFragment extends Fragment {
 
@@ -53,7 +54,7 @@ public abstract class BaseToolBarFragment extends Fragment {
 
         private WeakReference<Fragment> fragmentRef;
 
-        FragmentLifeCycleHandler(Fragment fragment){
+        FragmentLifeCycleHandler(Fragment fragment) {
 
             this.fragmentRef = new WeakReference<>(fragment);
         }
@@ -61,7 +62,7 @@ public abstract class BaseToolBarFragment extends Fragment {
         @Override
         public void dispatchMessage(Message msg) {
             Fragment fragment = fragmentRef.get();
-            if (fragment == null){
+            if (fragment == null) {
                 return;
             }
             if (fragment.isAdded() && (fragment.getActivity() != null)) {

@@ -10,7 +10,7 @@ public class CameraUtils {
 
     private static final String TAG = CameraUtils.class.getSimpleName();
 
-    public static Camera.CameraInfo getCameraInfo(int deviceId){
+    public static Camera.CameraInfo getCameraInfo(int deviceId) {
 
         Camera.CameraInfo info = null;
 
@@ -24,7 +24,7 @@ public class CameraUtils {
         return info;
     }
 
-    public static boolean isCameraFront(int deviceId){
+    public static boolean isCameraFront(int deviceId) {
         Camera.CameraInfo cameraInfo = getCameraInfo(deviceId);
 
         return (cameraInfo != null && cameraInfo.facing == 1);

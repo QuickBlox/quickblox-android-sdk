@@ -1,11 +1,9 @@
 package com.quickblox.sample.conference.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -22,6 +20,8 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * QuickBlox team
@@ -72,7 +72,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         notifyItemRangeChanged(index, opponents.size());
     }
 
-    public void removeOpponent(QBUser user){
+    public void removeOpponent(QBUser user) {
         opponents.remove(user);
         notifyDataSetChanged();
     }
@@ -104,14 +104,14 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         int userID = user.getId();
         holder.opponentsName.setText(user.getFullName());
 
-        if(session.getMediaStreamManager() != null){
+        if (session.getMediaStreamManager() != null) {
             holder.toggleButton.setChecked(session.getMediaStreamManager().getAudioTrack(userID).enabled());
         }
 
         holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);
         QBConferencePeerConnection peerConnection = session.getPeerConnection(userID);
-        if(peerConnection != null){
+        if (peerConnection != null) {
             QBRTCTypes.QBRTCConnectionState state = peerConnection.getState();
             Log.d(TAG, "state ordinal= " + state.ordinal());
             holder.setStatus(context.getResources().getString(QBRTCSessionUtils.getStatusDescriptionResource(state)));
@@ -121,10 +121,9 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         }
     }
 
-     public void add(QBUser item) {
-         opponents.add(item);
-//         notifyItemInserted(opponents.size() - 1);
-         notifyItemRangeChanged((opponents.size() - 1), opponents.size());
+    public void add(QBUser item) {
+        opponents.add(item);
+        notifyItemRangeChanged((opponents.size() - 1), opponents.size());
     }
 
     @Override
@@ -159,7 +158,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             connectionStatus.setText(status);
         }
 
-        public void setUserName(String userName){
+        public void setUserName(String userName) {
             opponentsName.setText(userName);
         }
 

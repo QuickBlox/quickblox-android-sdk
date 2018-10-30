@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.core.helper.StringifyArrayList;
@@ -13,9 +12,7 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tereha on 17.05.16.
- */
+
 public class QbUsersDbManager {
     private static String TAG = QbUsersDbManager.class.getSimpleName();
 
@@ -148,4 +145,3 @@ public class QbUsersDbManager {
         return qbUsers;
     }
 }
-

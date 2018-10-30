@@ -14,9 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-/**
- * Created by igorkhomenko on 10/22/15.
- */
+
 public class Utils {
     public static String getContentFromFile(InputStream is) {
         char[] buffer = new char[1024];
@@ -39,7 +37,7 @@ public class Utils {
         return file;
     }
 
-    public static void downloadFile(final InputStream inputStream, final Context ctx){
+    public static void downloadFile(final InputStream inputStream, final Context ctx) {
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -53,7 +51,7 @@ public class Utils {
                     while ((len = inputStream.read(buffer)) != -1) {
                         stream.write(buffer, 0, len);
                     }
-                    if(stream != null) {
+                    if (stream != null) {
                         Lo.g("download done");
                         stream.close();
                     }

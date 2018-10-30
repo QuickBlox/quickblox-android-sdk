@@ -9,7 +9,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.InflateException;
 import android.widget.ImageView;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import com.quickblox.sample.chat.R;
 
 public class MaskedImageView extends ImageView {
+    private static final int HAS_ALPHA_LAYER_SAVE_FLAG = 0x04;
+    private static final int FULL_COLOR_LAYER_SAVE_FLAG = 0x08;
 
     private Paint maskedPaint;
     private Paint copyPaint;
@@ -59,7 +61,7 @@ public class MaskedImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         int sc = canvas.saveLayer(boundsRectF, copyPaint,
-                Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.FULL_COLOR_LAYER_SAVE_FLAG);
+                HAS_ALPHA_LAYER_SAVE_FLAG | FULL_COLOR_LAYER_SAVE_FLAG);
         maskDrawable.setBounds(boundsRect);
         maskDrawable.draw(canvas);
         canvas.saveLayer(boundsRectF, maskedPaint, 0);

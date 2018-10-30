@@ -7,10 +7,6 @@ import com.quickblox.users.model.QBUser
 import java.io.BufferedReader
 
 
-/**
- * Created by Roman on 08.04.2018.
- */
-
 fun getAllUsersFromFile(filename: String, context: Context): ArrayList<QBUser> {
     val jsonInputStream = context.assets.open(filename)
     val jsonUsers = jsonInputStream.bufferedReader().use(BufferedReader::readText)

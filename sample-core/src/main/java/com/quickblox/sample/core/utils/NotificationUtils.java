@@ -2,8 +2,8 @@ package com.quickblox.sample.core.utils;
 
 import android.app.Activity;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +11,12 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 
 import com.quickblox.sample.core.utils.constant.GcmConsts;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 public class NotificationUtils {
     private static final String CHANNEL_ONE_ID = "com.quickblox.samples.ONE";// The id of the channel.

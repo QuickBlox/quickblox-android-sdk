@@ -23,5 +23,6 @@
         <item name="actionBarTheme">@style/DarkActionBarTheme</item>
     </style>
 
-    <style name="DarkActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="DarkActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

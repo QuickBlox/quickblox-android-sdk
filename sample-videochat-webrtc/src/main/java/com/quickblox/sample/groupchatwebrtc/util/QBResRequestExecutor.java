@@ -1,10 +1,5 @@
 package com.quickblox.sample.groupchatwebrtc.util;
 
-import android.os.Bundle;
-import android.util.Log;
-
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.session.QBSession;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.users.QBUsers;
@@ -15,9 +10,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by tereha on 26.04.16.
- */
+
 public class QBResRequestExecutor {
     private String TAG = QBResRequestExecutor.class.getSimpleName();
 

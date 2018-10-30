@@ -6,7 +6,6 @@
     <string name="splash_app_title">@string/app_name</string>
     <string name="splash_create_session_error">Create session errors:</string>
 
-
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
     <string name="dlg_login">Login…</string>
@@ -17,7 +16,6 @@
     <string name="dlg_loading_opponents">Loading opponents…</string>
     <string name="dlg_loading_dialogs_users">Loading dialogs and users…</string>
     <string name="dlg_updating_dialog">Updating dialog…</string>
-
 
     <!-- Errors strings. -->
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
@@ -55,14 +53,12 @@
     <string name="action_leave_dialog">Leave Dialog</string>
     <string name="dialogs_deletion_error">Dialog deletion errors</string>
 
-
     <!--action bar-->
     <string name="actionbar_title_settings">Settings</string>
     <string name="title_login_activity">Enter to chat</string>
     <string name="subtitle_text_logged_in_as">Logged in as %s</string>
     <string name="title_one_dialog_selected">%s dialog selected</string>
     <string name="tile_many_dialogs_selected">%s dialogs selected</string>
-
 
     <string name="incoming_call">Incoming Call</string>
     <string name="also_on_call">Also on call:</string>
@@ -71,7 +67,6 @@
     <string name="incoming_video_call">Incoming Video Call</string>
     <string name="outgoing_audio_video_call_title">%s\n\nRinging</string>
     <string name="user_list_on_call">User 1, User 2, User 3, User 4, User 5, User 6</string>
-
 
     <string name="opponent_pending">Pending</string>
     <string name="new_connection">new connection</string>
@@ -113,7 +108,6 @@
     <string name="connection_lost">Connection lost</string>
 
     <string name="text_push_notification_message">"%s is calling you"</string>
-
 
     <!-- Settings strings. -->
     <string name="title_video_category">Video</string>
@@ -168,7 +162,6 @@
     <string name="pref_noaudioprocessing_default">false</string>
 
     <!--Call Settings-->
-
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
     <string name="pref_answer_time_interval_title">Answer Time Interval (15&#8211;90s)</string>
     <string name="pref_answer_time_interval_default_value">60</string>

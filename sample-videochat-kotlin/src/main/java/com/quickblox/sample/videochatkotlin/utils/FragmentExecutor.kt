@@ -1,8 +1,7 @@
 package com.quickblox.sample.videochatkotlin.utils
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 
 fun addFragment(fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, tag: String) {
     fragmentManager.beginTransaction().replace(containerId, fragment, tag).commitAllowingStateLoss()

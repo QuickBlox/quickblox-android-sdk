@@ -1,8 +1,6 @@
 package com.quickblox.sample.core.utils;
 
 import android.graphics.Rect;
-import android.support.annotation.IntDef;
-import android.support.annotation.StringRes;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -11,10 +9,14 @@ import android.widget.Toast;
 
 import com.quickblox.sample.core.CoreApp;
 
+import androidx.annotation.IntDef;
+import androidx.annotation.StringRes;
+
 public class Toaster {
 
     @IntDef({Toast.LENGTH_LONG, Toast.LENGTH_SHORT})
-    private @interface ToastLength {}
+    private @interface ToastLength {
+    }
 
     public static void shortToast(View view, Window window, @StringRes int text) {
         Toast toast = makeToast(CoreApp.getInstance().getString(text), Toast.LENGTH_SHORT);

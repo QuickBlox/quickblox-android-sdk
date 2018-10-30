@@ -16,7 +16,7 @@
         android:textColor="@color/white"
         android:textStyle="normal|italic" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_opponents"
         style="@style/MatchParent"
         android:layout_above="@+id/element_set_video_buttons"
@@ -26,9 +26,7 @@
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small"
         android:visibility="visible"
-        tools:listitem="@layout/list_item_opponent_from_call">
-
-    </android.support.v7.widget.RecyclerView>
+        tools:listitem="@layout/list_item_opponent_from_call" />
 
     <include
         android:id="@+id/element_set_video_buttons"
@@ -44,5 +42,4 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true" />
-
 </RelativeLayout>

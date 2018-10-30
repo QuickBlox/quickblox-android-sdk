@@ -1,7 +1,6 @@
 package com.quickblox.sample.customobjects.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +12,8 @@ import com.quickblox.sample.customobjects.model.Movie;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+
+import androidx.databinding.DataBindingUtil;
 
 public class MovieListAdapter extends BaseListAdapter<Movie> {
 

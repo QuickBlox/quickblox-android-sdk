@@ -12,7 +12,7 @@ public class DialogUtil {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
-    public static  void showToast(Context context, int messageId) {
+    public static void showToast(Context context, int messageId) {
         Toast.makeText(context, context.getString(messageId), Toast.LENGTH_LONG).show();
     }
 }

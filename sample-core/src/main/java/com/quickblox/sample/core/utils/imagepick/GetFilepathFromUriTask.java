@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +17,8 @@ import com.quickblox.sample.core.utils.constant.SchemeType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+
+import androidx.fragment.app.FragmentManager;
 
 public class GetFilepathFromUriTask extends BaseAsyncTask<Intent, Void, File> {
 

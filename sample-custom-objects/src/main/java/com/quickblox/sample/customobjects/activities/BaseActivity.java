@@ -2,12 +2,13 @@ package com.quickblox.sample.customobjects.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
 import com.quickblox.sample.core.utils.DialogUtils;
 
-public class BaseActivity extends CoreBaseActivity {
+import androidx.appcompat.app.ActionBar;
+
+public abstract class BaseActivity extends CoreBaseActivity {
 
     protected ProgressDialog progressDialog;
     protected ActionBar actionBar;

@@ -9,9 +9,7 @@ import com.quickblox.sample.core.utils.constant.GcmConsts;
 import com.quickblox.sample.groupchatwebrtc.services.CallService;
 import com.quickblox.users.model.QBUser;
 
-/**
- * Created by tereha on 13.05.16.
- */
+
 public class GcmPushListenerService extends GcmListenerService {
     private static final String TAG = GcmPushListenerService.class.getSimpleName();
 
@@ -29,7 +27,7 @@ public class GcmPushListenerService extends GcmListenerService {
         }
     }
 
-    private void startLoginService(QBUser qbUser){
+    private void startLoginService(QBUser qbUser) {
         CallService.start(this, qbUser);
     }
 }

@@ -47,6 +47,5 @@
             android:id="@+id/add_movie_ratingBar"
             style="@style/MovieRatingBarStyle"
             android:stepSize="1.0" />
-
     </LinearLayout>
 </ScrollView>

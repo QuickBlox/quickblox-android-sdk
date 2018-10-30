@@ -7,15 +7,16 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.postDelayed
+import androidx.fragment.app.Fragment
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBWebRTCSignaling
+import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.fragments.PreviewCallFragment
 import com.quickblox.sample.videochatkotlin.fragments.ScreenShareFragment
 import com.quickblox.sample.videochatkotlin.fragments.VideoConversationFragment
@@ -25,12 +26,9 @@ import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import org.webrtc.CameraVideoCapturer
-import com.quickblox.sample.videochatkotlin.R
 import java.util.*
 
-/**
- * Created by roman on 4/6/18.
- */
+
 class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCallFragment.CallFragmentCallbackListener,
         VideoConversationFragment.CallFragmentCallbackListener, QBRTCSessionEventsCallback, ScreenShareFragment.OnSharingEvents {
 
@@ -56,15 +54,15 @@ class CallActivity : AppCompatActivity(), QBRTCClientSessionCallbacks, PreviewCa
             audioManager!!.defaultAudioDevice = AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE")
 
-            audioManager!!.setOnWiredHeadsetStateListener({ plugged, hasMicrophone ->
+            audioManager!!.setOnWiredHeadsetStateListener { plugged, hasMicrophone ->
                 Log.d(TAG, "setOnWiredHeadsetStateListener plugged= $plugged")
-            })
+            }
         }
     }
 
     private fun startAudioManager() {
         initAudioManagerIfNeed()
-        audioManager!!.start { selectedAudioDevice, availableAudioDevices ->
+        audioManager!!.start { selectedAudioDevice, _ ->
             Toast.makeText(applicationContext, "Audio device switched to  $selectedAudioDevice", Toast.LENGTH_SHORT).show()
             updateAudioDevice()
         }

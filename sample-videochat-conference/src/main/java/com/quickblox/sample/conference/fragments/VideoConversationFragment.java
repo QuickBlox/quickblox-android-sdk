@@ -16,7 +16,6 @@ import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.CameraVideoCapturer;
-import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
 

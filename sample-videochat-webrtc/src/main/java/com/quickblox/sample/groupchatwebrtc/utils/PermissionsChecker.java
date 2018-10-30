@@ -2,7 +2,8 @@ package com.quickblox.sample.groupchatwebrtc.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
 
 public class PermissionsChecker {
     private final Context context;
@@ -23,5 +24,4 @@ public class PermissionsChecker {
     private boolean lacksPermission(String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED;
     }
-
 }

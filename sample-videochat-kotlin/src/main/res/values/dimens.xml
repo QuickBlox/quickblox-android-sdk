@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="padding_common">8dp</dimen>
 
     <dimen name="toggle_button_params">60dp</dimen>
@@ -24,7 +25,7 @@
     <dimen name="item_height">136dp</dimen>
 
     <!--Pager fragment-->
-
     <dimen name="pager_image_width">400dp</dimen>
     <dimen name="pager_image_height">500dp</dimen>
+
 </resources>
