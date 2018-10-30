@@ -40,7 +40,7 @@
     <string name="select_users_create_chat">Create new chat</string>
     <string name="select_users_edit_chat">Add Users to chat</string>
     <string name="select_users_get_users_error">Get users errors</string>
-    <string name="select_users_update_dialog_error">Update dialog error</string>
+    <string name="select_users_update_dialog_error">Error getting dialog from server</string>
     <string name="select_users_choose_users">Please, choose at least one participant</string>
 
     <string name="chat_sticker">Sticker</string>

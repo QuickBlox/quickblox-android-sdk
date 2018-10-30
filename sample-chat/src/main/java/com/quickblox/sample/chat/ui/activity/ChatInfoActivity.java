@@ -39,15 +39,16 @@ public class ChatInfoActivity extends BaseActivity {
         usersListView = _findViewById(R.id.list_login_users);
         qbDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
 
-        updateCurrentDialog();
+        refreshCurrentDialog();
     }
 
-    private void updateCurrentDialog() {
+    private void refreshCurrentDialog() {
         String dialogID = qbDialog.getDialogId();
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
-                buildUserList(qbChatDialog);
+                qbDialog = qbChatDialog;
+                buildUserList();
             }
 
             @Override
@@ -63,8 +64,8 @@ public class ChatInfoActivity extends BaseActivity {
         return usersListView;
     }
 
-    private void buildUserList(QBChatDialog qbChatDialog) {
-        List<Integer> userIds = qbChatDialog.getOccupants();
+    private void buildUserList() {
+        List<Integer> userIds = qbDialog.getOccupants();
         List<QBUser> users = QbUsersHolder.getInstance().getUsersByIds(userIds);
         UsersAdapter adapter = new UsersAdapter(this, users);
         usersListView.setAdapter(adapter);

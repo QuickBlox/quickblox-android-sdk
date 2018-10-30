@@ -141,10 +141,10 @@ public class SelectUsersActivity extends BaseActivity {
         progressBar.setVisibility(View.VISIBLE);
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
-            public void onSuccess(ArrayList<QBUser> users, Bundle params) {
-                setUserList(users);
-                QBChatDialog oldDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
-                updateDialog(oldDialog);
+            public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
+                users = usersByTags;
+                QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+                refreshDialog(dialog);
             }
 
             @Override
@@ -161,16 +161,17 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
-    private void setUserList (List<QBUser> userList) {
-        this.users = userList;
-    }
-
-    private void updateDialog(QBChatDialog qbChatDialog) {
+    private void refreshDialog(QBChatDialog qbChatDialog) {
         String dialogID = qbChatDialog.getDialogId();
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
-                setCheckboxes(qbChatDialog);
+                usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users);
+                if (qbChatDialog != null) {
+                    usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
+                }
+                usersListView.setAdapter(usersAdapter);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -185,15 +186,6 @@ public class SelectUsersActivity extends BaseActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
-    }
-
-    private void setCheckboxes(QBChatDialog qbChatDialog) {
-        usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users);
-        if (qbChatDialog != null) {
-            usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
-        }
-        usersListView.setAdapter(usersAdapter);
-        progressBar.setVisibility(View.GONE);
     }
 
     private boolean isEditingChat() {
