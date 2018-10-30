@@ -39,10 +39,10 @@ public class ChatInfoActivity extends BaseActivity {
         usersListView = _findViewById(R.id.list_login_users);
         qbDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
 
-        refreshCurrentDialog();
+        getDialog();
     }
 
-    private void refreshCurrentDialog() {
+    private void getDialog() {
         String dialogID = qbDialog.getDialogId();
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override

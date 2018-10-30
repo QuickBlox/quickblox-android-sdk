@@ -144,7 +144,7 @@ public class SelectUsersActivity extends BaseActivity {
             public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
                 users = usersByTags;
                 QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
-                refreshDialog(dialog);
+                getDialog(dialog);
             }
 
             @Override
@@ -161,7 +161,7 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
-    private void refreshDialog(QBChatDialog qbChatDialog) {
+    private void getDialog(QBChatDialog qbChatDialog) {
         String dialogID = qbChatDialog.getDialogId();
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override
@@ -176,7 +176,7 @@ public class SelectUsersActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.select_users_update_dialog_error, e,
+                showErrorSnackbar(R.string.select_users_get_dialog_error, e,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
