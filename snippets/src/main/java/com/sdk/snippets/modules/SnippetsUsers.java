@@ -4,25 +4,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.quickblox.core.QBEntityCallback;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsOAuthSigning;
 import com.digits.sdk.android.DigitsSession;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.QBRequestCanceler;
+import com.quickblox.auth.model.QBProvider;
+import com.quickblox.core.Consts;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.Lo;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.core.Consts;
-import com.quickblox.auth.model.QBProvider;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippets;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterAuthToken;
@@ -34,11 +32,8 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by vfite on 04.02.14.
- */
 
-public class SnippetsUsers extends Snippets{
+public class SnippetsUsers extends Snippets {
     private static final String TAG = SnippetsUsers.class.getSimpleName();
 
     private TwitterAuthConfig authConfig;
@@ -159,13 +154,13 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                       handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
     };
 
-    Snippet signInUserWithLoginSynchronous = new SnippetAsync("sign in user (synchronous)", "with login" , context) {
+    Snippet signInUserWithLoginSynchronous = new SnippetAsync("sign in user (synchronous)", "with login", context) {
         @Override
         public void executeAsync() {
             QBUser user = new QBUser();
@@ -173,12 +168,12 @@ public class SnippetsUsers extends Snippets{
             user.setPassword(ApplicationConfig.getInstance().getTestUserPassword1());
             QBUser userResult = null;
             try {
-                userResult =  QBUsers.signIn(user).perform();
+                userResult = QBUsers.signIn(user).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(userResult != null){
-                Log.i(TAG, "User was successfully signed in: "+userResult);
+            if (userResult != null) {
+                Log.i(TAG, "User was successfully signed in: " + userResult);
             }
         }
     };
@@ -218,12 +213,12 @@ public class SnippetsUsers extends Snippets{
 
             QBUser userResult = null;
             try {
-                userResult =  QBUsers.signInByEmail(email, password).perform();
+                userResult = QBUsers.signInByEmail(email, password).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(userResult != null){
-                Log.i(TAG, "User was successfully signed in,"+userResult);
+            if (userResult != null) {
+                Log.i(TAG, "User was successfully signed in," + userResult);
             }
         }
     };
@@ -254,7 +249,6 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-
     Snippet signInUsingSocialProviderSynchronous = new SnippetAsync("sign in user (synchronous)", "with social provider", context) {
         @Override
         public void executeAsync() {
@@ -267,8 +261,8 @@ public class SnippetsUsers extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(userResult != null){
-                Log.i(TAG, "User was successfully signed in,"+userResult);
+            if (userResult != null) {
+                Log.i(TAG, "User was successfully signed in," + userResult);
             }
         }
     };
@@ -297,7 +291,7 @@ public class SnippetsUsers extends Snippets{
     };
 
     private void initTwitterDigits() {
-        if(authConfig == null) {
+        if (authConfig == null) {
             // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
             String consumerKey = "A1NXq7BxZ74NZ3dDzXA1HcSN7";
             String consumerSecret = "Piuy52Kf2m2iHVKpfpffi6xjvOYVI904O6sl1c50TLpntTVsl6";
@@ -367,7 +361,7 @@ public class SnippetsUsers extends Snippets{
     Snippet signOut = new Snippet("sign out") {
         @Override
         public void execute() {
-            QBUsers.signOut().performAsync(new QBEntityCallback<Void>(){
+            QBUsers.signOut().performAsync(new QBEntityCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result, Bundle bundle) {
@@ -404,10 +398,6 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
 
             final QBUser user = new QBUser("testu33ser12344443", "testpassword");
-//            user.setEmail("test123456789w0@test.com");
-//            user.setExternalId("02345777");
-//            user.setFacebookId("1233453457767");
-//            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             user.setCustomData("my custom data");
@@ -438,10 +428,6 @@ public class SnippetsUsers extends Snippets{
         public void executeAsync() {
 
             final QBUser user = new QBUser("tes33tuser12344443", "testpassword");
-//            user.setEmail("test1234567589w0@test.com");
-//            user.setExternalId("02345777");
-//            user.setFacebookId("1233453457767");
-//            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             user.setCustomData("my custom data");
@@ -458,7 +444,7 @@ public class SnippetsUsers extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(qbUserResult != null){
+            if (qbUserResult != null) {
                 Log.i(TAG, ">>> User was successfully signed up, " + qbUserResult);
             }
         }
@@ -475,10 +461,6 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
 
             final QBUser user = new QBUser("testu33ser12344443", "testpassword");
-//            user.setEmail("test3123456789w0@test.com");
-//            user.setExternalId("02345777");
-//            user.setFacebookId("1233453457767");
-//            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             StringifyArrayList tags = new StringifyArrayList();
@@ -499,8 +481,6 @@ public class SnippetsUsers extends Snippets{
                 public void onError(QBResponseException errors) {
                 }
             });
-
-
         }
     };
 
@@ -508,10 +488,6 @@ public class SnippetsUsers extends Snippets{
         @Override
         public void executeAsync() {
             final QBUser user = new QBUser("te12stuser12344443", "testpassword");
-//            user.setEmail("test1233456789w0@test.com");
-//            user.setExternalId("02345777");
-//            user.setFacebookId("1233453457767");
-//            user.setTwitterId("12334635457");
             user.setFullName("fullName5");
             user.setPhone("+18904567812");
             StringifyArrayList tags = new StringifyArrayList();
@@ -522,7 +498,6 @@ public class SnippetsUsers extends Snippets{
             user.setTags(tags);
             user.setWebsite("website.com");
 
-
             QBUser userResult = null;
             try {
                 userResult = QBUsers.signUpSignInTask(user).perform();
@@ -531,7 +506,6 @@ public class SnippetsUsers extends Snippets{
             }
         }
     };
-
 
 
     //
@@ -544,20 +518,11 @@ public class SnippetsUsers extends Snippets{
             final QBUser user = new QBUser();
             user.setId(1501966);
             user.setFullName("Monro");
-//            user.setEmail("test987@te2st.com");
-//            user.setExternalId("987");
-//            user.setFacebookId("987");
-//            user.setTwitterId("987");
-//            user.setFullName("galog");
-//            user.setPhone("+123123123");
-//            user.setCustomData("my new custom data");
             StringifyArrayList<String> tags = new StringifyArrayList();
             tags.add("man");
             user.setTags(tags);
-//            user.setWebsite("google.com");
-//            user.setFileId(-1);
 
-            QBUsers.updateUser(user).performAsync(new QBEntityCallback<QBUser>(){
+            QBUsers.updateUser(user).performAsync(new QBEntityCallback<QBUser>() {
                 @Override
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User: " + user);
@@ -730,12 +695,9 @@ public class SnippetsUsers extends Snippets{
 
                 @Override
                 public void onError(QBResponseException errors) {
-                   handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
-
-
-//            QBUsers.getUsersByFilter()
         }
     };
 
@@ -754,7 +716,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -801,7 +763,6 @@ public class SnippetsUsers extends Snippets{
         }
     };
 
-
     Snippet getUsersByIdsSynchronous = new SnippetAsync("get users (synchronous)", "by ids", context) {
         @Override
         public void executeAsync() {
@@ -822,7 +783,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -885,10 +846,10 @@ public class SnippetsUsers extends Snippets{
             try {
                 users = (ArrayList<QBUser>) QBUsers.getUsersByLogins(usersLogins, pagedRequestBuilder, params).perform();
             } catch (QBResponseException e) {
-               setException(e);
+                setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -952,7 +913,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1005,7 +966,8 @@ public class SnippetsUsers extends Snippets{
 
             StringifyArrayList usersPhones = new StringifyArrayList();
             usersPhones.add("980028312");
-            usersPhones.add("765172323");;
+            usersPhones.add("765172323");
+            ;
 
             Bundle params = new Bundle();
 
@@ -1016,7 +978,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1079,7 +1041,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1142,7 +1104,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1203,7 +1165,7 @@ public class SnippetsUsers extends Snippets{
                 handleErrors(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1223,7 +1185,6 @@ public class SnippetsUsers extends Snippets{
         public void execute() {
             StringifyArrayList userTags = new StringifyArrayList();
             userTags.add("man");
-//            userTags.add("car");
 
             QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
             pagedRequestBuilder.setPage(1);
@@ -1266,7 +1227,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1319,7 +1280,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(users != null){
+            if (users != null) {
                 Log.i(TAG, ">>> Users: " + users.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -1361,7 +1322,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }
@@ -1403,7 +1364,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }
@@ -1445,7 +1406,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }
@@ -1487,7 +1448,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }
@@ -1509,6 +1470,7 @@ public class SnippetsUsers extends Snippets{
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
+
                 @Override
                 public void onError(QBResponseException errors) {
                 }
@@ -1528,7 +1490,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }
@@ -1550,6 +1512,7 @@ public class SnippetsUsers extends Snippets{
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
+
                 @Override
                 public void onError(QBResponseException errors) {
                 }
@@ -1560,6 +1523,7 @@ public class SnippetsUsers extends Snippets{
     Snippet getUserWithEmailSynchronous = new SnippetAsync("get user (synchronous)", "with email", context) {
 
         QBUser userByEmail;
+
         @Override
         public void executeAsync() {
             String email = "test123@test.com";
@@ -1573,7 +1537,7 @@ public class SnippetsUsers extends Snippets{
         @Override
         protected void postExecute() {
             super.postExecute();
-            if( userByEmail != null){
+            if (userByEmail != null) {
                 Log.i(TAG, ">>> User: " + userByEmail.toString());
             }
         }
@@ -1595,6 +1559,7 @@ public class SnippetsUsers extends Snippets{
                 public void onSuccess(QBUser user, Bundle args) {
                     Log.i(TAG, ">>> User: " + user.toString());
                 }
+
                 @Override
                 public void onError(QBResponseException errors) {
                 }
@@ -1614,7 +1579,7 @@ public class SnippetsUsers extends Snippets{
                 setException(e);
             }
 
-            if(user != null){
+            if (user != null) {
                 Log.i(TAG, ">>> User: " + user.toString());
             }
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
@@ -14,7 +14,6 @@
         <ListView
             android:id="@+id/list_dialogs_chats"
             style="@style/ListViewWithoutDividerStyle" />
-
     </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
     <LinearLayout
@@ -48,9 +47,9 @@
         style="@style/CenterProgressBarStyle"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_dialogs_new_chat"
         style="@style/FabStyle"
         android:onClick="onStartNewChatClick"
         android:src="@drawable/ic_action_start_chat" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,8 +3,6 @@ package com.quickblox.sample.conference.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
@@ -35,9 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Roman on 05.03.2017.
- */
+import androidx.appcompat.view.ActionMode;
+
 
 public class DialogsActivity extends BaseActivity {
     private static final String TAG = DialogsActivity.class.getSimpleName();
@@ -153,7 +151,7 @@ public class DialogsActivity extends BaseActivity {
 
     private void initDialogAdapter() {
         Log.d(TAG, "proceedInitUsersList chatDialogs= " + chatDialogs);
-        if(dialogsAdapter == null) {
+        if (dialogsAdapter == null) {
             dialogsAdapter = new DialogsAdapter(this, chatDialogs);
             dialogsListView.setAdapter(dialogsAdapter);
             dialogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -312,10 +310,10 @@ public class DialogsActivity extends BaseActivity {
 
                 ProgressDialogFragment.show(getSupportFragmentManager(), R.string.create_dialog);
                 createDialog(selectedUsers);
-            } if(requestCode == REQUEST_PERMISSION) {
-                startConference(dialogID, currentUser.getId(), isVideoCall, occupants, false);
             }
-            else {
+            if (requestCode == REQUEST_PERMISSION) {
+                startConference(dialogID, currentUser.getId(), isVideoCall, occupants, false);
+            } else {
                 updateDialogsAdapter();
             }
         }
@@ -341,66 +339,66 @@ public class DialogsActivity extends BaseActivity {
         );
     }
 
-        private class DeleteActionModeCallback implements ActionMode.Callback {
+    private class DeleteActionModeCallback implements ActionMode.Callback {
 
-            public DeleteActionModeCallback() {
-                fab.hide();
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.getMenuInflater().inflate(R.menu.activity_selected_dialogs, menu);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.delete_dialog:
-                        deleteSelectedDialogs();
-                        if (currentActionMode != null) {
-                            currentActionMode.finish();
-                        }
-                        return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                currentActionMode = null;
-                dialogsAdapter.clearSelection();
-                invalidateOptionsMenu();
-                fab.show();
-            }
-
-
-            private void deleteSelectedDialogs() {
-                final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
-                requestExecutor.deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
-                    @Override
-                    public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
-                        updateDialogsAdapter();
-                    }
-
-                    @Override
-                    public void onError(QBResponseException e) {
-                        showErrorSnackbar(R.string.dialogs_deletion_error, e,
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        deleteSelectedDialogs();
-                                    }
-                                });
-                    }
-                });
-            }
+        public DeleteActionModeCallback() {
+            fab.hide();
         }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.activity_selected_dialogs, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.delete_dialog:
+                    deleteSelectedDialogs();
+                    if (currentActionMode != null) {
+                        currentActionMode.finish();
+                    }
+                    return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            currentActionMode = null;
+            dialogsAdapter.clearSelection();
+            invalidateOptionsMenu();
+            fab.show();
+        }
+
+
+        private void deleteSelectedDialogs() {
+            final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+            requestExecutor.deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
+                @Override
+                public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
+                    updateDialogsAdapter();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    showErrorSnackbar(R.string.dialogs_deletion_error, e,
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    deleteSelectedDialogs();
+                                }
+                            });
+                }
+            });
+        }
+    }
 
     private void startConference(final String dialogID, int userID, boolean isVideoCall, final List<Integer> occupants, final boolean asListener) {
         Log.d(TAG, "startConference()");

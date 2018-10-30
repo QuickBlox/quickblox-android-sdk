@@ -19,7 +19,7 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (checkConfigsWithSnackebarError()){
+        if (checkConfigsWithSnackebarError()) {
             createSession();
         }
     }

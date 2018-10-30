@@ -22,7 +22,7 @@ public class CoreConfigUtils {
         return gson.fromJson(configParser.getConfigsAsJsonString(fileName), QbConfigs.class);
     }
 
-    public static QbConfigs getCoreConfigsOrNull(String fileName){
+    public static QbConfigs getCoreConfigsOrNull(String fileName) {
         QbConfigs qbConfigs = null;
 
         try {
@@ -51,11 +51,11 @@ public class CoreConfigUtils {
         return fieldValue;
     }
 
-    public static boolean isStringConfigFromFileNotEmpty(String fileName, String fieldName){
+    public static boolean isStringConfigFromFileNotEmpty(String fileName, String fieldName) {
         return !TextUtils.isEmpty(getStringConfigFromFileOrNull(fileName, fieldName));
     }
 
-    public static QBUser getUserFromConfig(String fileName){
+    public static QBUser getUserFromConfig(String fileName) {
         QBUser qbUser = null;
 
         String userLogin;

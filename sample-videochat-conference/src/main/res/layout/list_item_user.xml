@@ -15,5 +15,4 @@
     <CheckBox
         android:id="@+id/checkbox_user"
         style="@style/UserCheckboxStyle" />
-
 </LinearLayout>

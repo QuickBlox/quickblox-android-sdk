@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">VideoChat-kotlin</string>
     <string name="app_title">VideoChat-kotlin Sample</string>
     <string name="activity_title">VideoChat-kotlin Sample</string>
@@ -42,4 +43,5 @@
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="denied_permission_message">You cannot continue without an access to %s</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
+
 </resources>

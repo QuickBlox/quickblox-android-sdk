@@ -4,16 +4,15 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.DimenRes
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.DimenRes
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import androidx.core.util.putAll
+import androidx.recyclerview.widget.RecyclerView
 import com.quickblox.chat.QBChatService
 import com.quickblox.sample.videochatkotlin.R
 import com.quickblox.sample.videochatkotlin.adapters.OpponentsCallAdapter
@@ -37,9 +36,7 @@ import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoRenderer
 import java.util.*
 
-/**
- * Created by Roman on 15.04.2018.
- */
+
 class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallback<QBRTCSession>, QBRTCClientVideoTracksCallbacks<QBRTCSession> {
 
     private val TAG = VideoConversationFragment::class.java.simpleName
@@ -47,7 +44,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private val spanCount = 2
 
     private var isIncomingCall: Boolean = false
-    lateinit var layoutManager: GridLayoutManager
+    lateinit var layoutManager: androidx.recyclerview.widget.GridLayoutManager
 
     private var cameraState = CameraState.DISABLED_FROM_USER
 
@@ -128,10 +125,10 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
             videoTracks.putAll(this.videoTracks)
             videoTracks.forEach { userId, videoTrack ->
                 if (currentSession!!.getPeerConnection(userId) != null && currentSession!!.getPeerConnection(userId).state != QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED) {
-                    mainHandler.post({
+                    mainHandler.post {
                         onConnectedToUser(currentSession!!, userId)
                         onRemoteVideoTrackReceive(currentSession!!, videoTrack, userId)
-                    })
+                    }
                 } else {
                     this.videoTracks.remove(userId)
                 }
@@ -176,7 +173,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private fun initRecyclerView() {
         recycler_view_opponents.setHasFixedSize(false)
         recycler_view_opponents.addItemDecoration(DividerItemDecoration(context!!, R.dimen.grid_item_divider))
-        layoutManager = GridLayoutManager(activity, spanCount)
+        layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, spanCount)
         layoutManager.reverseLayout = false
         val spanSizeLookup = SpanSizeLookupImpl()
         spanSizeLookup.isSpanIndexCacheEnabled = false
@@ -497,7 +494,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
                 }
     }
 
-    private inner class SpanSizeLookupImpl : GridLayoutManager.SpanSizeLookup() {
+    private inner class SpanSizeLookupImpl : androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup() {
 
         override fun getSpanSize(position: Int): Int {
             val itemCount = opponentsAdapter.itemCount
@@ -516,8 +513,8 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private inner class DividerItemDecoration(context: Context, @DimenRes dimensionDivider: Int) : RecyclerView.ItemDecoration() {
 
         private val space: Int = context.resources.getDimensionPixelSize(dimensionDivider)
-
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
             outRect.set(space, 0, space, space)
         }
     }

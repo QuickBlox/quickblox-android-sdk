@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="selected_list_item_color">#e0e0e0</color>
 
     <color name="white">#FFFFFF</color>
@@ -36,4 +37,5 @@
     <color name="text_color_also_on_call">@color/text_color_call_type</color>
     <color name="text_color_other_inc_users">#1f1f1f</color>
     <color name="text_color_caller_name">#1f1f1f</color>
+
 </resources>

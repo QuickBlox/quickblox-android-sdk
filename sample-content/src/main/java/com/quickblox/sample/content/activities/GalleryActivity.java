@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -29,6 +28,8 @@ import com.quickblox.sample.core.utils.imagepick.OnImagePickedListener;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import androidx.core.content.ContextCompat;
 
 public class GalleryActivity extends BaseActivity
         implements AdapterView.OnItemClickListener, OnImagePickedListener, DownloadMoreListener {

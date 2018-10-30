@@ -2,7 +2,6 @@ package com.quickblox.sample.content.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.core.exception.BaseServiceException;
@@ -11,7 +10,9 @@ import com.quickblox.sample.core.utils.DialogUtils;
 
 import java.util.Date;
 
-public class BaseActivity extends CoreBaseActivity {
+import androidx.appcompat.app.ActionBar;
+
+public abstract class BaseActivity extends CoreBaseActivity {
 
     protected ActionBar actionBar;
     protected ProgressDialog progressDialog;

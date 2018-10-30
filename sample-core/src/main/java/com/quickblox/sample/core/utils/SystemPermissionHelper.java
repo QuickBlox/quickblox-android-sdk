@@ -3,15 +3,12 @@ package com.quickblox.sample.core.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 
-/**
- * Created by roman on 10/23/17.
- */
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 public class SystemPermissionHelper {
     public static final int PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1;
@@ -48,6 +45,7 @@ public class SystemPermissionHelper {
             return ContextCompat.checkSelfPermission(activity.getApplicationContext(), permission) == PackageManager.PERMISSION_GRANTED;
         }
     }
+
     public void requestPermissionsForCallByType() {
         checkAndRequestPermissions(PERMISSIONS_FOR_CALL_REQUEST, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA);
     }

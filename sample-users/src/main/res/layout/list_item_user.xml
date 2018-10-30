@@ -55,9 +55,6 @@
                 android:text="@{user.fullName}"
                 android:textColor="@color/brownish_gray"
                 android:textSize="@dimen/text_size_middle" />
-
         </LinearLayout>
-
     </RelativeLayout>
-
 </layout>

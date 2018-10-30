@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.user.R;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;

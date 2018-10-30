@@ -14,9 +14,6 @@ import com.quickblox.sample.core.utils.UiUtils;
 
 import java.util.List;
 
-/**
- * Created by Roman on 05.03.2017.
- */
 
 public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
 
@@ -41,7 +38,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
         }
 
         QBChatDialog dialog = getItem(position);
-            holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
+        holder.dialogImageView.setBackgroundDrawable(UiUtils.getGreyCircleDrawable());
 
         holder.nameTextView.setText(dialog.getName());
 

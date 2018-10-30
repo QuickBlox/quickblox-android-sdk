@@ -21,7 +21,5 @@
             style="@style/TextSecondaryStyle"
             android:singleLine="true"
             android:text="@{movie.description}" />
-
     </LinearLayout>
-
 </layout>

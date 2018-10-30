@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.quickblox.chat.QBChatService;
@@ -55,6 +53,9 @@ import com.quickblox.users.model.QBUser;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import androidx.appcompat.view.ActionMode;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class DialogsActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks {
     private static final String TAG = DialogsActivity.class.getSimpleName();

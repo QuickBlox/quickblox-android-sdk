@@ -20,4 +20,5 @@
         <item name="colorControlHighlight">@color/color_blue_accent</item>
         <item name="colorControlNormal">@color/color_blue_accent</item>
     </style>
+
 </resources>

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.server.Performer;
 import com.quickblox.extensions.RxJavaPerformProcessor;
@@ -28,7 +27,7 @@ public class SplashActivity extends CoreSplashActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (checkConfigsWithSnackebarError()){
+        if (checkConfigsWithSnackebarError()) {
             signInQB();
         }
     }

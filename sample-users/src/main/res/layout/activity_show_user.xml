@@ -8,14 +8,14 @@
             type="com.quickblox.users.model.QBUser" />
     </data>
 
-    <android.support.design.widget.CoordinatorLayout style="@style/MatchParent">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout style="@style/MatchParent">
 
         <ScrollView xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/activity_show_user"
             style="@style/MatchWidth"
             android:layout_marginLeft="@dimen/padding_small"
-            android:layout_marginRight="@dimen/margin_middle"
             android:layout_marginTop="@dimen/margin_middle"
+            android:layout_marginRight="@dimen/margin_middle"
             android:background="@color/background_app_color"
             tools:ignore="RtlHardcoded">
 
@@ -107,5 +107,5 @@
 
             </LinearLayout>
         </ScrollView>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

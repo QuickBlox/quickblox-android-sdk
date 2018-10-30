@@ -1,7 +1,6 @@
 package com.quickblox.sample.user.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +10,8 @@ import com.quickblox.sample.user.databinding.ListItemUserBinding;
 import com.quickblox.users.model.QBUser;
 
 import java.util.List;
+
+import androidx.databinding.DataBindingUtil;
 
 public class UserListAdapter extends BaseListAdapter<QBUser> {
 

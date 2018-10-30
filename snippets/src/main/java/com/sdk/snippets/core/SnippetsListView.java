@@ -38,7 +38,6 @@ public class SnippetsListView extends ListView {
         super(context, attrs, defStyle);
     }
 
-
     class SnippetsAdapter extends BaseAdapter {
 
         Context context;
@@ -97,6 +96,5 @@ public class SnippetsListView extends ListView {
             TextView snippetTitle;
             TextView snippetSubTitle;
         }
-
     }
 }

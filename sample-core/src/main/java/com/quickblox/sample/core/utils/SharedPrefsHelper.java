@@ -3,15 +3,9 @@ package com.quickblox.sample.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.quickblox.core.helper.StringUtils;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.users.model.QBUser;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 public class SharedPrefsHelper {
     private static final String SHARED_PREFS_NAME = "qb";
@@ -127,7 +121,7 @@ public class SharedPrefsHelper {
         return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD);
     }
 
-    public void clearAllData(){
+    public void clearAllData() {
         SharedPreferences.Editor editor = getEditor();
         editor.clear().commit();
     }

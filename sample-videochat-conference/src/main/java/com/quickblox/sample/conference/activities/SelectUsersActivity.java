@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Roman on 05.03.2017.
- */
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+
 
 public class SelectUsersActivity extends BaseActivity {
     public static final String EXTRA_QB_USERS = "qb_users";
@@ -61,10 +59,10 @@ public class SelectUsersActivity extends BaseActivity {
      * Start activity for picking users
      *
      * @param activity activity to return result
-     * @param code request code for onActivityResult() method
-     *
-     * in onActivityResult there will be 'ArrayList<QBUser>' in the intent extras
-     * which can be obtained with SelectPeopleActivity.EXTRA_QB_USERS key
+     * @param code     request code for onActivityResult() method
+     *                 <p>
+     *                 in onActivityResult there will be 'ArrayList<QBUser>' in the intent extras
+     *                 which can be obtained with SelectPeopleActivity.EXTRA_QB_USERS key
      */
     public static void startForResult(Activity activity, int code) {
         Intent intent = new Intent(activity, SelectUsersActivity.class);
@@ -107,7 +105,7 @@ public class SelectUsersActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_select_people_action_done:
-                if(isEditingChat()){
+                if (isEditingChat()) {
                     addOccupantsToDialog();
                 } else if (usersAdapter != null) {
                     List<QBUser> users = usersAdapter.getSelectedUsers();
@@ -119,7 +117,7 @@ public class SelectUsersActivity extends BaseActivity {
                 }
                 return true;
             case R.id.menu_refresh_users:
-                if(isEditingChat()) {
+                if (isEditingChat()) {
                     updateDialogAndUsers();
                 } else {
                     loadUsersFromQb();
@@ -163,7 +161,7 @@ public class SelectUsersActivity extends BaseActivity {
 
     private void removeExistentOccupants(List<QBUser> users) {
         List<Integer> userIDs = dialog.getOccupants();
-        if(userIDs == null){
+        if (userIDs == null) {
             return;
         }
 
@@ -172,7 +170,7 @@ public class SelectUsersActivity extends BaseActivity {
             QBUser user = i.next();
 
             for (Integer userID : userIDs) {
-                if(user.getId().equals(userID)) {
+                if (user.getId().equals(userID)) {
                     Log.d("SelectedUsersActivity", "users.remove(user)= " + user);
                     i.remove();
                 }
@@ -184,7 +182,7 @@ public class SelectUsersActivity extends BaseActivity {
         Intent result = new Intent();
         ArrayList<QBUser> selectedUsers = new ArrayList<>(usersAdapter.getSelectedUsers());
         result.putExtra(EXTRA_QB_USERS, selectedUsers);
-        if(occupantsIds != null) {
+        if (occupantsIds != null) {
             result.putExtra(EXTRA_QB_OCCUPANTS_IDS, (Serializable) occupantsIds);
         }
         setResult(RESULT_OK, result);
@@ -194,7 +192,7 @@ public class SelectUsersActivity extends BaseActivity {
     private void initUsersAdapter() {
         ArrayList<QBUser> users = dbManager.getAllUsers();
         dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
-        if(dialog != null){
+        if (dialog != null) {
             updateDialogAndUsers();
             usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, new ArrayList<QBUser>(), currentUser);
         } else {
@@ -231,7 +229,7 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     private void showProgressDialogIfPossible(@StringRes int messageId) {
-        if(!isFinishing()){
+        if (!isFinishing()) {
             showProgressDialog(messageId);
         }
     }
@@ -250,7 +248,7 @@ public class SelectUsersActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> users, Bundle params) {
                 dbManager.saveAllUsers(users, true);
-                if(isEditingChat()) {
+                if (isEditingChat()) {
                     users.remove(currentUser);
                     removeExistentOccupants(users);
                 }

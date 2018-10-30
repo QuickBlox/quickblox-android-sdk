@@ -3,7 +3,6 @@ package com.quickblox.sample.core.ui.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -14,6 +13,8 @@ import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 import com.quickblox.sample.core.utils.VersionUtils;
+
+import androidx.annotation.StringRes;
 
 public abstract class CoreSplashActivity extends CoreBaseActivity {
     private static final int SPLASH_DELAY = 1500;
@@ -41,7 +42,7 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
 
     protected abstract void proceedToTheNextActivity();
 
-    protected boolean sampleConfigIsCorrect(){
+    protected boolean sampleConfigIsCorrect() {
         return CoreApp.getInstance().getQbConfigs() != null;
     }
 
@@ -54,8 +55,8 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         }, SPLASH_DELAY);
     }
 
-    protected boolean checkConfigsWithSnackebarError(){
-        if (!sampleConfigIsCorrect()){
+    protected boolean checkConfigsWithSnackebarError() {
+        if (!sampleConfigIsCorrect()) {
             showSnackbarErrorParsingConfigs();
             return false;
         }
@@ -69,7 +70,7 @@ public abstract class CoreSplashActivity extends CoreBaseActivity {
         ErrorUtils.showSnackbar(rootLayout, resId, e, R.string.dlg_retry, clickListener);
     }
 
-    protected void showSnackbarErrorParsingConfigs(){
+    protected void showSnackbarErrorParsingConfigs() {
         ErrorUtils.showSnackbar(findViewById(R.id.layout_root), R.string.error_parsing_configs, R.string.dlg_ok, null);
     }
 

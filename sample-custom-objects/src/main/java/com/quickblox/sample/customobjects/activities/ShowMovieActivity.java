@@ -7,9 +7,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.quickblox.sample.customobjects.R;
-import com.quickblox.sample.customobjects.utils.Consts;
 import com.quickblox.sample.customobjects.helper.DataHolder;
 import com.quickblox.sample.customobjects.model.Movie;
+import com.quickblox.sample.customobjects.utils.Consts;
 
 public class ShowMovieActivity extends BaseActivity {
 

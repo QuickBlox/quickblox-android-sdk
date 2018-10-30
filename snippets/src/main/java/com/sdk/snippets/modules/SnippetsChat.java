@@ -61,13 +61,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-/**
- * User: Igor Khomenko
- * Date: 1.07.14
- */
+
 public class SnippetsChat extends Snippets {
 
     private static final String TAG = SnippetsChat.class.getSimpleName();
+
 
     // Chat service
     //
@@ -240,9 +238,7 @@ public class SnippetsChat extends Snippets {
 
         // stream management
         chatService.setUseStreamManagement(true);
-//        chatService.setUseStreamManagementResumption(true);
     }
-
 
     private void initMessageSentListener() {
         privateChatDialogMessageSentListener = new QBChatDialogMessageSentListener() {
@@ -297,8 +293,8 @@ public class SnippetsChat extends Snippets {
                 QBRestChatService.getChatDialogById(dialogId).performAsync(new QBEntityCallback<QBChatDialog>() {
                     @Override
                     public void onSuccess(QBChatDialog chatDialog, Bundle bundle) {
-                        log(chatDialog.getType().toString() +  " chat with id " + chatDialog.getDialogId() + " downloaded");
-                        if (QBDialogType.PRIVATE.equals(chatDialog.getType())){
+                        log(chatDialog.getType().toString() + " chat with id " + chatDialog.getDialogId() + " downloaded");
+                        if (QBDialogType.PRIVATE.equals(chatDialog.getType())) {
                             privateChatDialog = chatDialog;
                             privateChatDialog.addMessageListener(privateChatDialogMessageListener);
                             privateChatDialog.addMessageSentListener(privateChatDialogMessageSentListener);
@@ -327,6 +323,7 @@ public class SnippetsChat extends Snippets {
         QBChatService.getInstance().getIncomingMessagesManager().addDialogMessageListener(globalChatDialogMessageListener);
     }
 
+
     //
     ///////////////////////////////////////////// Login/Logout /////////////////////////////////////////////
     //
@@ -336,8 +333,6 @@ public class SnippetsChat extends Snippets {
         @Override
         public void execute() {
 
-            // Init Chat service
-//            initChatService();
 
             // init test user
             final QBUser qbUser = new QBUser();
@@ -352,7 +347,7 @@ public class SnippetsChat extends Snippets {
 
                     initGlobalMessageListener();
 
-//                    // Add Chat message listener
+                    // Add Chat message listener
                     initRoster();
 
                     initPrivacyListsManager();
@@ -373,9 +368,6 @@ public class SnippetsChat extends Snippets {
     Snippet loginInChatSynchronous = new SnippetAsync("login to Chat (synchronous)", context) {
         @Override
         public void executeAsync() {
-
-            // Init Chat service
-//            initChatService();
 
             // init test user
             QBUser qbUser = new QBUser();
@@ -436,7 +428,7 @@ public class SnippetsChat extends Snippets {
                 public void onSuccess(Void result, Bundle bundle) {
                     log("Logout success");
 
-//                    chatService.destroy();
+                    //chatService.destroy();
                 }
 
                 @Override
@@ -452,8 +444,8 @@ public class SnippetsChat extends Snippets {
         public void executeAsync() {
             try {
                 chatService.logout();
-                //
-//                chatService.destroy();
+
+                //chatService.destroy();
             } catch (SmackException.NotConnectedException e) {
                 setException(e);
             }
@@ -517,6 +509,7 @@ public class SnippetsChat extends Snippets {
     //
     ////////////////////////////////////////// Carbons /////////////////////////////////////////////
     //
+
 
     Snippet enableCarbons = new Snippet("enable carbons") {
         @Override
@@ -595,9 +588,8 @@ public class SnippetsChat extends Snippets {
     }
 
     private void initIsTypingListener() {
-//
-//        // Create 'is typing' listener
-//        //
+
+        // Create 'is typing' listener
         groupChatDialogTypingListener = new QBChatDialogTypingListener() {
             @Override
             public void processUserIsTyping(String dialogId, Integer senderId) {
@@ -645,7 +637,7 @@ public class SnippetsChat extends Snippets {
             if (!chatService.isLoggedIn()) {
                 log("Please login first");
                 return;
-            } else if (privateChatDialog == null){
+            } else if (privateChatDialog == null) {
                 log("Please create private dialog first");
                 return;
             }
@@ -658,15 +650,12 @@ public class SnippetsChat extends Snippets {
             chatMessage.setSaveToHistory(true);
             chatMessage.setMarkable(true);
 
-//                long time = System.currentTimeMillis()/1000;
-//                chatMessage.setProperty("date_sent", time + ".431");
-
             // attach a photo
             QBAttachment attachment = new QBAttachment("photo");
             attachment.setId("111");
             attachment.setUrl("www.img.com");
             chatMessage.addAttachment(attachment);
-            //
+
             QBAttachment attachment2 = new QBAttachment("video");
             attachment2.setId("222");
             attachment2.setUrl("www.video.com");
@@ -688,10 +677,11 @@ public class SnippetsChat extends Snippets {
     ////////////////////////////////////// Typing notifications //////////////////////////////////////////
     //
 
+
     Snippet sendIsTypingInPrivateChat = new Snippet("send is typing (private chat)") {
         @Override
         public void execute() {
-            if (privateChatDialog == null){
+            if (privateChatDialog == null) {
                 log("Please create private dialog first");
                 return;
             }
@@ -709,7 +699,7 @@ public class SnippetsChat extends Snippets {
     Snippet sendStopTypingInPrivateChat = new Snippet("send stop typing (private chat)") {
         @Override
         public void execute() {
-            if (privateChatDialog == null){
+            if (privateChatDialog == null) {
                 log("Please create private dialog first");
                 return;
             }
@@ -765,10 +755,11 @@ public class SnippetsChat extends Snippets {
     /////////////////////////////////////// Read/Delivered //////////////////////////////////////////
     //
 
+
     Snippet readMessagePrivateChat = new Snippet("read message (private chat)") {
         @Override
         public void execute() {
-            if (privateChatDialog == null){
+            if (privateChatDialog == null) {
                 log("Please create private dialog first");
                 return;
             }
@@ -788,7 +779,7 @@ public class SnippetsChat extends Snippets {
     Snippet deliverMessagePrivateChat = new Snippet("deliver message (private chat)") {
         @Override
         public void execute() {
-            if (privateChatDialog == null){
+            if (privateChatDialog == null) {
                 log("Please create private dialog first");
                 return;
             }
@@ -858,7 +849,7 @@ public class SnippetsChat extends Snippets {
 
 
     private void initGroupChatMessageListener() {
-        groupChatDialogMessageListener = new QBChatDialogMessageListener(){
+        groupChatDialogMessageListener = new QBChatDialogMessageListener() {
             @Override
             public void processMessage(String s, QBChatMessage qbChatMessage, Integer integer) {
                 log("group chat: " + s + ", processMessage: " + qbChatMessage);
@@ -967,7 +958,7 @@ public class SnippetsChat extends Snippets {
             if (groupChatDialog == null) {
                 log("Please create group dialog first");
                 return;
-            } else if (!groupChatDialog.isJoined()){
+            } else if (!groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -1022,7 +1013,7 @@ public class SnippetsChat extends Snippets {
             if (groupChatDialog == null) {
                 log("Please create group dialog first");
                 return;
-            } else if (!groupChatDialog.isJoined()){
+            } else if (!groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -1030,7 +1021,7 @@ public class SnippetsChat extends Snippets {
             Collection<Integer> onlineRoomUsers = null;
             try {
                 onlineRoomUsers = groupChatDialog.requestOnlineUsers();
-            } catch (XMPPException|SmackException.NotConnectedException|SmackException.NoResponseException e) {
+            } catch (XMPPException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
                 log("get online users error: " + e.getLocalizedMessage());
             }
 
@@ -1051,7 +1042,7 @@ public class SnippetsChat extends Snippets {
             if (groupChatDialog == null) {
                 log("Please create group dialog first");
                 return;
-            } else if (!groupChatDialog.isJoined()){
+            } else if (!groupChatDialog.isJoined()) {
                 log("Please join room first");
                 return;
             }
@@ -1091,7 +1082,7 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogs = new Snippet("Get Dialogs") {
         @Override
         public void execute() {
-            if (!chatService.isLoggedIn()){   //TODO VT need delete after fix QBANDRSDK-526
+            if (!chatService.isLoggedIn()) {   //TODO VT need delete after fix QBANDRSDK-526
                 log("Please login first");
                 return;
             }
@@ -1131,7 +1122,7 @@ public class SnippetsChat extends Snippets {
     Snippet getDialogsSynchronous = new SnippetAsync("Get Dialogs (synchronous)", context) {
         @Override
         public void executeAsync() {
-            if (!chatService.isLoggedIn()){   //TODO VT need delete after fix QBANDRSDK-526
+            if (!chatService.isLoggedIn()) {   //TODO VT need delete after fix QBANDRSDK-526
                 log("Please login first");
                 return;
             }
@@ -1139,8 +1130,7 @@ public class SnippetsChat extends Snippets {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(100);
             requestBuilder.addRule("data[class_name]", QueryRule.EQ, "Advert");
-//            requestBuilder.addParameter("data[class_name]", "Advert");
-            //
+
             List<QBChatDialog> chatDialogsList = null;
 
             try {
@@ -1155,13 +1145,11 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-
     Snippet getDialogsCount = new Snippet("Get Dialogs count") {
         @Override
         public void execute() {
             //
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
-//            requestBuilder.all("occupants_ids", "76,58");
 
             Bundle bundle = new Bundle();
             //
@@ -1183,10 +1171,9 @@ public class SnippetsChat extends Snippets {
         @Override
         public void executeAsync() {
             Bundle bundle = new Bundle();
-            //
+
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
-//            requestBuilder.all("occupants_ids", "76,58");
-            //
+
             int dialogsCount = -1;
 
             try {
@@ -1198,7 +1185,6 @@ public class SnippetsChat extends Snippets {
             Log.i(TAG, "dialogsCount: " + dialogsCount);
         }
     };
-
 
     Snippet createGroupDialog = new Snippet("Create Group Dialog") {
         @Override
@@ -1218,12 +1204,8 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.GROUP);
             dialog.setOccupantsIds(occupantIdsList);
 
-//            HashMap<String, Object> data = new HashMap<>();
-//            data.put("data[class_name]", "Advert");
-//            data.put("data[name]", "bingo");
+            //init location
             final String myLocation = Double.toString(23.45454) + "," + Double.toString(0.4456);
-//            data.put("data[arr]", myLocation);
-//            dialog.setData(data);
 
             QBDialogCustomData data = new QBDialogCustomData("Advert");
             data.putString("name", "bingo");
@@ -1314,12 +1296,8 @@ public class SnippetsChat extends Snippets {
             dialog.setType(QBDialogType.PRIVATE);
             dialog.setOccupantsIds(occupantIdsList);
 
-//            HashMap<String, Object> data = new HashMap<>();
-//            data.put("data[class_name]", "Advert");
-//            data.put("data[name]", "bingo");
+            //init location
             final String myLocation = Double.toString(23.45454) + "," + Double.toString(0.4456);
-//            data.put("data[arr]", myLocation);
-//            dialog.setData(data);
 
             QBDialogCustomData data = new QBDialogCustomData("Advert");
             data.putString("name", "bingo");
@@ -1392,7 +1370,6 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-
     Snippet updateDialog = new Snippet("Update Dialog") {
         @Override
         public void execute() {
@@ -1402,22 +1379,16 @@ public class SnippetsChat extends Snippets {
             }
 
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
-//            requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
 
             QBChatDialog dialog = new QBChatDialog("56aa3d7da28f9a5b1f0000cf");
             dialog.setName("Chat with Garry and John");
             dialog.setPhoto("452444");
 
-//            HashMap<String, Object> data = new HashMap<>();
-//            data.put("data[class_name]", "Advert");
-//            data.put("data[name]", "bingo2");
-//            dialog.setData(data);
             QBDialogCustomData data = new QBDialogCustomData("Advert");
             data.putString("name", "bingo4");
             data.putArray("arr", Arrays.asList(new Double[]{99.0, 100.0, 101.0}));
 
             dialog.setCustomData(data);
-
 
             QBRestChatService.updateGroupChatDialog(dialog, requestBuilder).performAsync(new QBEntityCallback<QBChatDialog>() {
                 @Override
@@ -1462,11 +1433,6 @@ public class SnippetsChat extends Snippets {
             QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
             requestBuilder.pullAll(com.quickblox.chat.Consts.DIALOG_OCCUPANTS, 378);
 
-//            Map<String, String> data = new HashMap<String, String>();
-//            data.put("data[class_name]", "Advert");
-//            data.put("data[title]", "bingo");
-//            dialog.setData(data);
-
             QBChatDialog updatedDialog = null;
             try {
                 updatedDialog = QBRestChatService.updateGroupChatDialog(dialog, requestBuilder).perform();
@@ -1479,7 +1445,6 @@ public class SnippetsChat extends Snippets {
             }
         }
     };
-
 
     Snippet deleteDialog = new Snippet("Delete Dialog") {
         @Override
@@ -1525,7 +1490,6 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-
     Snippet getMessages = new Snippet("Get Messages", "with dialog id") {
         @Override
         public void execute() {
@@ -1539,24 +1503,6 @@ public class SnippetsChat extends Snippets {
                 public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                     for (QBChatMessage msg : messages) {
                         Log.i(TAG, "message\n: " + msg);
-
-// Deliver messages (group)
-//                        try {
-//                            groupChatDialog.deliverMessage(msg);
-//                        } catch (XMPPException e) {
-//                            e.printStackTrace();
-//                        } catch (SmackException.NotConnectedException e) {
-//                            e.printStackTrace();
-//                        }
-
-// Deliver messages (private)
-//                        try {
-//                            privateChatDialog.deliverMessage(msg);
-//                        } catch (XMPPException e) {
-//                            log("deliver message error: " + e.getLocalizedMessage());
-//                        } catch (SmackException.NotConnectedException e) {
-//                            log("deliver message error: " + e.getClass().getSimpleName());
-//                        }
                     }
                 }
 
@@ -1590,7 +1536,6 @@ public class SnippetsChat extends Snippets {
             }
         }
     };
-
 
     Snippet markMessagesAsRead = new Snippet("Mark Messages as read") {
         @Override
@@ -1670,7 +1615,6 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-
     Snippet createMessage = new Snippet("Create Message ") {
         @Override
         public void execute() {
@@ -1737,6 +1681,7 @@ public class SnippetsChat extends Snippets {
     ///////////////////////////////////////////// Roster /////////////////////////////////////////////
     //
 
+
     private void initRoster() {
         сhatRoster = chatService.getRoster(QBRoster.SubscriptionMode.mutual, subscriptionListener);
         сhatRoster.addRosterListener(rosterListener);
@@ -1783,7 +1728,6 @@ public class SnippetsChat extends Snippets {
                 return;
             }
 
-//            QBPresence presence = new QBPresence(QBPresence.Type.online);
             QBPresence presence = new QBPresence(QBPresence.Type.online, "I'm at home", 1, QBPresence.Mode.available);
             try {
                 сhatRoster.sendPresence(presence);
@@ -1865,7 +1809,6 @@ public class SnippetsChat extends Snippets {
         }
     };
 
-
     Snippet confirmAddRequest = new Snippet("confirm add request") {
         @Override
         public void execute() {
@@ -1899,6 +1842,7 @@ public class SnippetsChat extends Snippets {
     ///////////////////////////////////// Privacy List /////////////////////////////////////////////
     //
 
+
     private void initPrivacyListsManager() {
         privacyListsManager = chatService.getPrivacyListsManager();
     }
@@ -1917,7 +1861,6 @@ public class SnippetsChat extends Snippets {
         };
         privacyListsManager.addPrivacyListListener(privacyListListener);
     }
-
 
     Snippet getPrivacyLists = new SnippetAsync("get privacy lists (synchronous)", context) {
         @Override
@@ -2040,6 +1983,7 @@ public class SnippetsChat extends Snippets {
     //////////////////////////////////////// Ping manager //////////////////////////////////////////
     //
 
+
     Snippet pingServer = new Snippet("ping server") {
         @Override
         public void execute() {
@@ -2076,6 +2020,7 @@ public class SnippetsChat extends Snippets {
     //
     //////// System Message /////
     //
+
 
     Snippet sendSystemMessage = new Snippet("send system message") {
         @Override

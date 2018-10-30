@@ -20,9 +20,9 @@ import com.quickblox.customobjects.model.QBCustomObjectFileField;
 import com.quickblox.customobjects.model.QBPermissions;
 import com.quickblox.customobjects.model.QBPermissionsLevel;
 import com.quickblox.customobjects.request.QBAggregationRequestBuilder;
-import com.sdk.snippets.*;
-import com.sdk.snippets.core.SnippetAsync;
+import com.sdk.snippets.R;
 import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippets;
 
 import java.io.File;
@@ -35,16 +35,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by QuickBlox on 22.01.14.
- */
+
 public class SnippetsCustomObjects extends Snippets {
 
     private static final String TAG = SnippetsCustomObjects.class.getSimpleName();
     // Define custom object model in QB Admin Panel
     // http://quickblox.com/developers/Custom_Objects
     //
-//    private final String MOVIE_CLASS = "Post";
     private final String MOVIE_CLASS = "Advert";
 
     private File imageFile;
@@ -124,14 +121,14 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBCustomObject object = new QBCustomObject("JSON", "561cbde9a28f9a520c001c35");
 
-            QBCustomObjects.getObject(object).performAsync(new QBEntityCallback<QBCustomObject>(){
+            QBCustomObjects.getObject(object).performAsync(new QBEntityCallback<QBCustomObject>() {
                 @Override
                 public void onSuccess(QBCustomObject customObject, Bundle params) {
                     Log.i(TAG, ">>> custom object: " + customObject);
 
-                    ArrayList<Object> arr = (ArrayList<Object>)customObject.getFields().get("arrint");
+                    ArrayList<Object> arr = (ArrayList<Object>) customObject.getFields().get("arrint");
 
-                    for(Object o : arr){
+                    for (Object o : arr) {
                         Log.i(TAG, o.getClass().getCanonicalName());
                     }
                 }
@@ -218,10 +215,7 @@ public class SnippetsCustomObjects extends Snippets {
         public void execute() {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.setLimit(10);
-//            requestBuilder.all("tags", "a", "b");
             requestBuilder.in("_id", "56aa4760a0eb47c299000019");
-//            requestBuilder.near("location", new Double[]{2.,3.}, 1000);
-            
 
             QBCustomObjects.getObjects(MOVIE_CLASS, requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBCustomObject>>() {
 
@@ -292,19 +286,20 @@ public class SnippetsCustomObjects extends Snippets {
             QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
             requestBuilder.gt("rating", 1);
 
-            QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder).performAsync(new QBEntityCallback<Integer>() {
+            QBCustomObjects.countObjects(MOVIE_CLASS, requestBuilder)
+                    .performAsync(new QBEntityCallback<Integer>() {
 
-                    @Override
-                    public void onSuccess(Integer count, Bundle params) {
-                        Log.i(TAG, "count=" + count);
-                    }
+                                      @Override
+                                      public void onSuccess(Integer count, Bundle params) {
+                                          Log.i(TAG, "count=" + count);
+                                      }
 
-                    @Override
-                    public void onError(QBResponseException errors) {
-                        handleErrors(errors);
-                    }
-                }
-            );
+                                      @Override
+                                      public void onError(QBResponseException errors) {
+                                          handleErrors(errors);
+                                      }
+                                  }
+                    );
         }
     };
 
@@ -474,10 +469,6 @@ public class SnippetsCustomObjects extends Snippets {
         @Override
         public void execute() {
             QBCustomObject record = new QBCustomObject(MOVIE_CLASS, "56aa4045a28f9a2297000455");
-            //
-            HashMap<String, Object> fields = new HashMap<>();
-//            fields.put("rating", 10);
-//            record.setFields(fields);
 
             record.putString("name", "bingo2");
             record.putArray("arr", Arrays.asList(new Double[]{11.32, 12.56}));
@@ -663,8 +654,8 @@ public class SnippetsCustomObjects extends Snippets {
                 @Override
                 public void onSuccess(ArrayList<String> deletedObjects, Bundle params) {
                     Log.i(TAG, ">>> deleted: " + deletedObjects.toString());
-                    ArrayList<String>  notFound = params.getStringArrayList(com.quickblox.customobjects.Consts.NOT_FOUND_IDS);
-                    ArrayList<String>  wrongPermissions = params.getStringArrayList(com.quickblox.customobjects.Consts.WRONG_PERMISSIONS_IDS);
+                    ArrayList<String> notFound = params.getStringArrayList(com.quickblox.customobjects.Consts.NOT_FOUND_IDS);
+                    ArrayList<String> wrongPermissions = params.getStringArrayList(com.quickblox.customobjects.Consts.WRONG_PERMISSIONS_IDS);
                     Log.i(TAG, ">>> notFound: " + notFound.toString());
                     Log.i(TAG, ">>> wrongPermissions: " + wrongPermissions.toString());
                 }
@@ -691,7 +682,7 @@ public class SnippetsCustomObjects extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(deleted != null){
+            if (deleted != null) {
                 Log.i(TAG, ">>> deleted: " + deleted.toString());
                 ArrayList<String> notFound = params.getStringArrayList(com.quickblox.customobjects.Consts.NOT_FOUND_IDS);
                 ArrayList<String> wrongPermissions = params.getStringArrayList(com.quickblox.customobjects.Consts.WRONG_PERMISSIONS_IDS);
@@ -735,7 +726,7 @@ public class SnippetsCustomObjects extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(permissions != null){
+            if (permissions != null) {
                 Log.i(TAG, ">>> permissions: " + permissions);
             }
         }
@@ -758,13 +749,13 @@ public class SnippetsCustomObjects extends Snippets {
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
+            StringifyArrayList openPermissionsForUserIDS = new StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
             //
             // UPDATE
-            StringifyArrayList openPermissionsForGroups = new  StringifyArrayList();
+            StringifyArrayList openPermissionsForGroups = new StringifyArrayList();
             openPermissionsForGroups.add("man");
             openPermissionsForGroups.add("car");
             permissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, openPermissionsForGroups);
@@ -796,13 +787,13 @@ public class SnippetsCustomObjects extends Snippets {
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
+            StringifyArrayList openPermissionsForUserIDS = new StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
             //
             // UPDATE
-            StringifyArrayList openPermissionsForGroups = new  StringifyArrayList();
+            StringifyArrayList openPermissionsForGroups = new StringifyArrayList();
             openPermissionsForGroups.add("man");
             openPermissionsForGroups.add("car");
             permissions.setUpdatePermission(QBPermissionsLevel.OPEN_FOR_GROUPS, openPermissionsForGroups);
@@ -840,7 +831,7 @@ public class SnippetsCustomObjects extends Snippets {
             permissions.setReadPermission(QBPermissionsLevel.OPEN);
             //
             // DELETE
-            StringifyArrayList openPermissionsForUserIDS = new  StringifyArrayList();
+            StringifyArrayList openPermissionsForUserIDS = new StringifyArrayList();
             openPermissionsForUserIDS.add("33");
             openPermissionsForUserIDS.add("92");
             permissions.setDeletePermission(QBPermissionsLevel.OPEN_FOR_USER_IDS, openPermissionsForUserIDS);
@@ -925,7 +916,7 @@ public class SnippetsCustomObjects extends Snippets {
 
                 @Override
                 public void onError(QBResponseException errors) {
-                       handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -947,7 +938,7 @@ public class SnippetsCustomObjects extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(uploadFileResult != null){
+            if (uploadFileResult != null) {
                 Log.i(TAG, ">>>upload response:" + uploadFileResult.getFileName() + " " + uploadFileResult.getFileId() + " " +
                         uploadFileResult.getContentType());
             }
@@ -970,7 +961,7 @@ public class SnippetsCustomObjects extends Snippets {
                 public void onProgressUpdate(int progress) {
                     Log.i(TAG, "progress: " + progress);
                 }
-            }).performAsync(new QBEntityCallback<InputStream>(){
+            }).performAsync(new QBEntityCallback<InputStream>() {
                 @Override
                 public void onSuccess(InputStream inputStream, Bundle params) {
                     Log.i(TAG, "file downloaded");
@@ -1001,7 +992,7 @@ public class SnippetsCustomObjects extends Snippets {
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(inputStream != null){
+            if (inputStream != null) {
                 Log.i(TAG, "file downloaded");
             }
         }
@@ -1027,7 +1018,7 @@ public class SnippetsCustomObjects extends Snippets {
 
                 @Override
                 public void onError(QBResponseException errors) {
-                     handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -1039,13 +1030,12 @@ public class SnippetsCustomObjects extends Snippets {
             QBCustomObject qbCustomObject = new QBCustomObject(MOVIE_CLASS, "53f370cc535c1276290447d9");
 
             try {
-                 QBCustomObjectsFiles.deleteFile(qbCustomObject, "image").perform();
+                QBCustomObjectsFiles.deleteFile(qbCustomObject, "image").perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
         }
     };
-
 
 
     Snippet aggregateCustomObjects = new Snippet("aggregate objects") {
@@ -1059,16 +1049,16 @@ public class SnippetsCustomObjects extends Snippets {
 
             QBCustomObjects.getAggregationObjects("SuperSample",
                     aggregationRequestBuilder, requestGetBuilder).performAsync(new QBEntityCallback<ArrayList<QBAggregationItem>>() {
-                        @Override
-                        public void onSuccess(ArrayList<QBAggregationItem> qbAggregationItems, Bundle bundle) {
-                            Log.i(TAG, "aggregationObjects: " + qbAggregationItems);
-                        }
+                @Override
+                public void onSuccess(ArrayList<QBAggregationItem> qbAggregationItems, Bundle bundle) {
+                    Log.i(TAG, "aggregationObjects: " + qbAggregationItems);
+                }
 
-                        @Override
-                        public void onError(QBResponseException e) {
-                            handleErrors(e);
-                        }
-                    });
+                @Override
+                public void onError(QBResponseException e) {
+                    handleErrors(e);
+                }
+            });
         }
     };
 

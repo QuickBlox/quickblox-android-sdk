@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.Camera
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -32,7 +31,7 @@ class PreviewCallFragment : BaseToolBarFragment() {
     private lateinit var cameraPreview: CameraPreview
     private lateinit var opponents: ArrayList<QBUser>
     private lateinit var eventListener: CallFragmentCallbackListener
-    private lateinit var snackBar: Snackbar
+    private lateinit var snackBar: com.google.android.material.snackbar.Snackbar
     private var isIncomingCall: Boolean = false
 
     override val fragmentLayout: Int
@@ -86,8 +85,8 @@ class PreviewCallFragment : BaseToolBarFragment() {
 
     @SuppressLint("NewApi")
     private fun initSnackBar() {
-        snackBar = Snackbar.make(snackbar_view, R.string.text_incoming_video_call, Snackbar.LENGTH_INDEFINITE)
-        val textView = snackBar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+        snackBar = com.google.android.material.snackbar.Snackbar.make(snackbar_view, R.string.text_incoming_video_call, com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE)
+        val textView = snackBar.view.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
         textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
     }
 

@@ -1,18 +1,14 @@
 package com.quickblox.sample.chat.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.content.QBContent;
-import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.helper.CollectionsUtil;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.utils.TimeUtils;
@@ -29,6 +25,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {

@@ -19,7 +19,7 @@ public class RingtonePlayer {
     private MediaPlayer mediaPlayer;
     private Context context;
 
-    public RingtonePlayer(Context context, int resource){
+    public RingtonePlayer(Context context, int resource) {
         this.context = context;
         Uri beepUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + resource);
         mediaPlayer = new MediaPlayer();
@@ -41,7 +41,7 @@ public class RingtonePlayer {
         }
     }
 
-    public RingtonePlayer(Context context){
+    public RingtonePlayer(Context context) {
         this.context = context;
         Uri notification = getNotification();
         if (notification != null) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Chat</string>
     <string name="chat_sample">Chat Sample</string>
 
@@ -70,4 +71,5 @@
     <string name="error_leave_chat">Error leaving room</string>
 
     <string name="sender_id">761750217637</string>
+
 </resources>

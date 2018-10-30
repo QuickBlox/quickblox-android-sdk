@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MatchParent"
     android:id="@+id/layout_root"
+    style="@style/MatchParent"
     android:background="@color/black">
 
     <ImageView
@@ -14,5 +14,4 @@
         style="@style/WrapContent"
         android:layout_gravity="center"
         android:visibility="gone" />
-
 </FrameLayout>
