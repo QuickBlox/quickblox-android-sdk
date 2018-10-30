@@ -44,8 +44,7 @@ ext {
     // Dependency versions
     playServicesVersion = '16.0.0'
 
-    constraintLayoutAndroidXVersion = '2.0.0-alpha2'
-    fragmentAndroidXVersion = '2.0.0'
+    constraintLayoutAndroidXVersion = '1.1.3'
     viewPagerAndroidXVersion = '1.0.0'
     fragmentAndroidXVersion = '1.0.0'
     lifecycleViewmodelAndroidXVersion = '1.0.0'
