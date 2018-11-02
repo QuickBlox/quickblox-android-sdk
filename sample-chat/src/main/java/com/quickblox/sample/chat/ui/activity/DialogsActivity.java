@@ -155,6 +155,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 item.setEnabled(false);
                 invalidateOptionsMenu();
                 return true;
+            case R.id.menu_appinfo:
+                AppInfoActivity.start(this);
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);

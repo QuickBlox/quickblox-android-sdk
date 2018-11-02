@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    tools:ignore="ContentDescription">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/qb_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/appinfo_application_version" />
+
+            <TextView
+                android:id="@+id/tv_app_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                tools:text="1.5.22"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/appinfo_qbsdk_version" />
+
+            <TextView
+                android:id="@+id/tv_sdk_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                tools:text="3.8.1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/appinfo_application_id" />
+
+            <TextView
+                android:id="@+id/tv_app_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                tools:text="72448"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/appinfo_authorization_key" />
+
+            <TextView
+                android:id="@+id/tv_auth_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                tools:text="f4HYBYdeqTZ7KNb"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/appinfo_authorization_secret" />
+
+            <TextView
+                android:id="@+id/tv_auth_secret"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                tools:text="ZC7dK39bOjVc-Z8"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appinfo_account_key"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_account_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:textSize="15sp"
+                tools:text="C4_z7nuaANnBYmsG_k98" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appinfo_api_domain"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_api_domain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:textSize="15sp"
+                tools:text="https://api.quickblox.com" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appinfo_chat_domain"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_chat_domain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:textSize="15sp"
+                tools:text="chat.quickblox.com" />
+        </LinearLayout>
+</RelativeLayout>

@@ -11,6 +11,7 @@
     <string name="menu_delete_chat">Delete Chat</string>
     <string name="menu_dialogs_logout">Logout</string>
     <string name="menu_dialogs_delete">Delete</string>
+    <string name="menu_dialogs_app_info">App Info</string>
     <string name="menu_select_people_done">Done</string>
 
     <string name="dlg_loading">Loading</string>
@@ -71,5 +72,13 @@
     <string name="error_leave_chat">Error leaving room</string>
 
     <string name="sender_id">761750217637</string>
+    <string name="appinfo_application_version">Application Version:</string>
+    <string name="appinfo_qbsdk_version">QB-SDK Version:</string>
+    <string name="appinfo_application_id">Application ID:</string>
+    <string name="appinfo_authorization_key">Authorization key:</string>
+    <string name="appinfo_authorization_secret">Authorization secret:</string>
+    <string name="appinfo_account_key">Account key:</string>
+    <string name="appinfo_api_domain">API domain:</string>
+    <string name="appinfo_chat_domain">Chat domain:</string>
 
 </resources>

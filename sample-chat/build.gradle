@@ -41,16 +41,19 @@ android {
     }
 
     buildTypes {
+        def IntToString = { k -> "\"${(k)}\"" }
         debug {
             signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
             proguardFile 'proguard-rules.pro'
             zipAlignEnabled false
+            buildConfigField "String", "qbSdkVer", IntToString(rootProject.qbSdkVersion)
         }
 
         release {
             signingConfig signingConfigs.debug
+            buildConfigField "String", "qbSdkVer", rootProject.qbSdkVersion
         }
     }
 

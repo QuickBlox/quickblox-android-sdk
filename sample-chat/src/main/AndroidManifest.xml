@@ -63,6 +63,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
 
+        <activity
+            android:name=".ui.activity.AppInfoActivity"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
