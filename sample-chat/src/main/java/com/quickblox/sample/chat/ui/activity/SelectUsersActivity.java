@@ -40,6 +40,7 @@ public class SelectUsersActivity extends BaseActivity {
     private CheckboxUsersAdapter usersAdapter;
     private List<QBUser> users;
     private long lastClickTime = 0l;
+    private QBChatDialog qbChatDialog;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SelectUsersActivity.class);
@@ -69,6 +70,7 @@ public class SelectUsersActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
+        qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
 
         initUi();
         loadUsersFromQb();
@@ -146,9 +148,10 @@ public class SelectUsersActivity extends BaseActivity {
                 QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
 
                 if(dialog != null) {
-                    getDialog(dialog);
+                    qbChatDialog = dialog;
+                    getDialog();
                 } else {
-                    updateUsersAdapter(dialog);
+                    updateUsersAdapter();
                 }
             }
 
@@ -166,12 +169,12 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
-    private void getDialog(QBChatDialog qbChatDialog) {
+    private void getDialog() {
         String dialogID = qbChatDialog.getDialogId();
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
-                updateUsersAdapter(qbChatDialog);
+                updateUsersAdapter();
             }
 
             @Override
@@ -188,8 +191,8 @@ public class SelectUsersActivity extends BaseActivity {
         });
     }
 
-    private void updateUsersAdapter(QBChatDialog qbChatDialog) {
-        usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users);
+    private void updateUsersAdapter() {
+        usersAdapter = new CheckboxUsersAdapter(this, users);
         if (qbChatDialog != null) {
             usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
         }
