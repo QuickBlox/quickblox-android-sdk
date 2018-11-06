@@ -144,7 +144,12 @@ public class SelectUsersActivity extends BaseActivity {
             public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
                 users = usersByTags;
                 QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
-                getDialog(dialog);
+
+                if(dialog != null) {
+                    getDialog(dialog);
+                } else {
+                    updateUsersAdapter(dialog);
+                }
             }
 
             @Override
@@ -166,12 +171,7 @@ public class SelectUsersActivity extends BaseActivity {
         ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
-                usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users);
-                if (qbChatDialog != null) {
-                    usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
-                }
-                usersListView.setAdapter(usersAdapter);
-                progressBar.setVisibility(View.GONE);
+                updateUsersAdapter(qbChatDialog);
             }
 
             @Override
@@ -186,6 +186,15 @@ public class SelectUsersActivity extends BaseActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void updateUsersAdapter(QBChatDialog qbChatDialog) {
+        usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, users);
+        if (qbChatDialog != null) {
+            usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
+        }
+        usersListView.setAdapter(usersAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     private boolean isEditingChat() {
