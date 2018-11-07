@@ -51,10 +51,10 @@ public class SelectUsersActivity extends BaseActivity {
      * Start activity for picking users
      *
      * @param activity activity to return result
-     * @param code request code for onActivityResult() method
-     *
-     * in onActivityResult there will be 'ArrayList<QBUser>' in the intent extras
-     * which can be obtained with SelectPeopleActivity.EXTRA_QB_USERS key
+     * @param code     request code for onActivityResult() method
+     *                 <p>
+     *                 in onActivityResult there will be 'ArrayList<QBUser>' in the intent extras
+     *                 which can be obtained with SelectPeopleActivity.EXTRA_QB_USERS key
      */
     public static void startForResult(Activity activity, int code) {
         startForResult(activity, code, null);
@@ -145,10 +145,12 @@ public class SelectUsersActivity extends BaseActivity {
             @Override
             public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
                 users = usersByTags;
-                QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
 
-                if(dialog != null) {
-                    qbChatDialog = dialog;
+                // This Activity used in two cases:
+                // 1. When we want to create new Dialog and appear users then qbChatDialog = null
+                // 2. When we want to add users to existing dialog, appear users, and set
+                // checkboxes "on" if user already exist in this Dialog then qbChatDialog != null
+                if (qbChatDialog != null) {
                     getDialog();
                 } else {
                     updateUsersAdapter();
