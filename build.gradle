@@ -34,7 +34,7 @@ ext {
 
     // QuickBlox SDK version
     qbChatAdapterVersion = '2.0'
-    qbSdkVersion = '3.8.1'
+    qbSdkVersion = '3.9.0'
 
     versionCode = 381
     versionName = '3.8.1'

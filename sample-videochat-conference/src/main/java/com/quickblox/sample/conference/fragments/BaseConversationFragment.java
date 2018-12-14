@@ -41,7 +41,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -718,7 +717,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
                                  boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
-        videoTrack.addRenderer(new VideoRenderer(videoView));
+        videoTrack.addRenderer(videoView);
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
