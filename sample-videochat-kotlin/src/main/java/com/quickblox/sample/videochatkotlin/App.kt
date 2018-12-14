@@ -14,8 +14,6 @@ class App : Application() {
     private val authKey = "f4HYBYdeqTZ7KNb"
     private val authSecret = "ZC7dK39bOjVc-Z8"
     private val accountKey = "C4_z7nuaANnBYmsG_k98"
-    private val apiEndpoint = "https://api.quickblox.com"
-    private val chatEndpoint = "chat.quickblox.com"
 
     override fun onCreate() {
         super.onCreate()
@@ -26,8 +24,7 @@ class App : Application() {
     }
 
     private fun checkQBConfigJson() {
-        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty() || accountKey.isEmpty()
-                || apiEndpoint.isEmpty() || chatEndpoint.isEmpty()) {
+        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty() || accountKey.isEmpty()) {
             throw AssertionError(getString(R.string.error_qb_credentials_empty))
         }
     }
@@ -46,7 +43,9 @@ class App : Application() {
     private fun initCredentials() {
         QBSettings.getInstance().init(applicationContext, applicationID, authKey, authSecret)
         QBSettings.getInstance().accountKey = accountKey
-        QBSettings.getInstance().setEndpoints(apiEndpoint, chatEndpoint, ServiceZone.PRODUCTION)
+        QBSettings.getInstance().setEndpoints(QBSettings.getInstance().apiEndpoint,
+                QBSettings.getInstance().chatEndpoint,
+                ServiceZone.PRODUCTION)
         QBSettings.getInstance().zone = ServiceZone.PRODUCTION
     }
 
