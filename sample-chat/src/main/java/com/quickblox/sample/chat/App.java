@@ -18,7 +18,7 @@ public class App extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        initFabric();
         ActivityLifecycle.init(this);
         initSampleConfigs();
     }
@@ -33,5 +33,11 @@ public class App extends CoreApp {
 
     public static SampleConfigs getSampleConfigs() {
         return sampleConfigs;
+    }
+
+    private void initFabric() {
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 }
