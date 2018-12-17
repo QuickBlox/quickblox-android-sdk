@@ -24,15 +24,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-/**
- * Created by vfite on 04.02.14.
- */
+
 public class SnippetsContent extends Snippets {
     private static final String TAG = SnippetsContent.class.getSimpleName();
 
     private static final String FILE_UID = "6221dd49a1bb46cfb61efe62c4526bd800";
 
-    File file1 = null;
+    File file1;
     QBFileObjectAccess fileObjectAccess;
 
     public SnippetsContent(Context context) {
@@ -145,7 +143,7 @@ public class SnippetsContent extends Snippets {
             QBFile qbfile = new QBFile();
             qbfile.setId(212949);
             qbfile.setName("my Car1");
-            QBContent.updateFile(qbfile).performAsync(new QBEntityCallback<QBFile>(){
+            QBContent.updateFile(qbfile).performAsync(new QBEntityCallback<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile updatedFile, Bundle params) {
@@ -154,7 +152,7 @@ public class SnippetsContent extends Snippets {
 
                 @Override
                 public void onError(QBResponseException errors) {
-                         handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -188,7 +186,7 @@ public class SnippetsContent extends Snippets {
     Snippet getFileWithId = new Snippet("get file", "with id") {
         @Override
         public void execute() {
-            QBContent.getFile(212949).performAsync(new QBEntityCallback<QBFile>(){
+            QBContent.getFile(212949).performAsync(new QBEntityCallback<QBFile>() {
 
                 @Override
                 public void onSuccess(QBFile file, Bundle params) {
@@ -218,6 +216,7 @@ public class SnippetsContent extends Snippets {
             }
         }
     };
+
 
     //
     ///////////////////////////////////// Delete file ///////////////////////////////////////////////
@@ -259,6 +258,7 @@ public class SnippetsContent extends Snippets {
     /////////////////////////////////////// Upload file ////////////////////////////////////////////
     //
 
+
     Snippet uploadFile = new Snippet("upload file") {
         @Override
         public void execute() {
@@ -299,6 +299,7 @@ public class SnippetsContent extends Snippets {
             }
         }
     };
+
 
     //
     //////////////////////////////////// Declare file uploaded /////////////////////////////////////
@@ -353,7 +354,7 @@ public class SnippetsContent extends Snippets {
 
                 @Override
                 public void onError(QBResponseException errors) {
-                           handleErrors(errors);
+                    handleErrors(errors);
                 }
             });
         }
@@ -369,7 +370,7 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(fileObjectAccess != null){
+            if (fileObjectAccess != null) {
                 Log.i(TAG, ">>> FileObjectAccess: " + fileObjectAccess);
             }
         }
@@ -422,7 +423,7 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(inputStream != null){
+            if (inputStream != null) {
                 long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                 Log.i(TAG, "content.length: " + length);
             }
@@ -476,7 +477,7 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(inputStream != null){
+            if (inputStream != null) {
                 long length = params.getLong(Consts.CONTENT_LENGTH_TAG);
                 Log.i(TAG, "content.length  : " + length);
 
@@ -523,8 +524,8 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(files != null){
-                Log.i(TAG, "files: "+ files);
+            if (files != null) {
+                Log.i(TAG, "files: " + files);
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
                 Log.i(TAG, "totalPages: " + params.getInt(Consts.TOTAL_ENTRIES));
@@ -585,12 +586,11 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(qbFile != null){
-                Log.i(TAG, "files: "+ qbFile);
+            if (qbFile != null) {
+                Log.i(TAG, "files: " + qbFile);
             }
         }
     };
-
 
     Snippet updateFileTask = new Snippet("TASK: update file") {
         final int fileId = 231089;
@@ -635,7 +635,7 @@ public class SnippetsContent extends Snippets {
                 setException(e);
             }
 
-            if(qbFile != null) {
+            if (qbFile != null) {
                 Log.i(TAG, "file: " + qbFile);
             }
         }

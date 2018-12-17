@@ -2,7 +2,8 @@ package com.quickblox.sample.conference.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
 
 public class PermissionsChecker {
     private final Context context;

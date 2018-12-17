@@ -9,5 +9,4 @@
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/list_movies"
         style="@style/ListViewWithoutDividerStyle" />
-
 </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>

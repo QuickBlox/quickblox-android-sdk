@@ -8,9 +8,7 @@ import com.sdk.snippets.R;
 import com.sdk.snippets.core.Snippets;
 import com.sdk.snippets.core.SnippetsListView;
 
-/**
- * Created by Вадим on 13.06.2015.
- */
+
 public abstract class BaseSnippetsActivity extends Activity {
 
     @Override

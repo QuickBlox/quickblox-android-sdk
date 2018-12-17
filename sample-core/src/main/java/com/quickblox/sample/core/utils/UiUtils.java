@@ -3,8 +3,6 @@ package com.quickblox.sample.core.utils;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntRange;
 
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
@@ -12,6 +10,9 @@ import com.quickblox.sample.core.R;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
 
 public class UiUtils {
 

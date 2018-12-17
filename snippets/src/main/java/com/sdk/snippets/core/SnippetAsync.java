@@ -1,5 +1,6 @@
 package com.sdk.snippets.core;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,17 +21,19 @@ public abstract class SnippetAsync extends Snippet {
         this.context = context;
     }
 
-    public void setException(Exception exception){
-         this.exception = exception;
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
-    public Exception getException(){
+
+    public Exception getException() {
         return exception;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void execute() {
         exception = null;
-        (new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... objects) {
@@ -40,18 +43,17 @@ public abstract class SnippetAsync extends Snippet {
 
             @Override
             protected void onPostExecute(Void result) {
-               postExecute();
+                postExecute();
             }
-        }).execute();
+        }.execute();
     }
 
-    protected void postExecute(){
-        if(exception == null){
+    protected void postExecute() {
+        if (exception == null) {
             Log.i(TAG, ">>> executed successful");
             Toast.makeText(context, " executed successful", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Log.i(TAG, ">>> errors:"+exception.getLocalizedMessage());
+        } else {
+            Log.i(TAG, ">>> errors:" + exception.getLocalizedMessage());
         }
     }
 

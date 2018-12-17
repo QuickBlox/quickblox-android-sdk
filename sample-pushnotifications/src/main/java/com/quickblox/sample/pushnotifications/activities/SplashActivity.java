@@ -3,7 +3,6 @@ package com.quickblox.sample.pushnotifications.activities;
 import android.os.Bundle;
 import android.view.View;
 
-import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.ui.activity.CoreSplashActivity;
@@ -26,7 +25,7 @@ public class SplashActivity extends CoreSplashActivity {
             message = getIntent().getExtras().getString(GcmConsts.EXTRA_GCM_MESSAGE);
         }
 
-        if (checkConfigsWithSnackebarError()){
+        if (checkConfigsWithSnackebarError()) {
             signInQB();
         }
     }
@@ -73,6 +72,4 @@ public class SplashActivity extends CoreSplashActivity {
         result = result && CoreConfigUtils.getUserFromConfig(Consts.SAMPLE_CONFIG_FILE_NAME) != null;
         return result;
     }
-
-
 }

@@ -39,6 +39,5 @@
             android:id="@+id/rating_movie"
             style="@style/MovieRatingBarStyle"
             android:isIndicator="true" />
-
     </LinearLayout>
 </ScrollView>

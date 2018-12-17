@@ -3,18 +3,19 @@ package com.quickblox.sample.conference.activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
-import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
-import com.quickblox.sample.core.utils.ErrorUtils;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.conference.App;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.util.QBResRequestExecutor;
 import com.quickblox.sample.conference.utils.Consts;
+import com.quickblox.sample.core.gcm.GooglePlayServicesHelper;
+import com.quickblox.sample.core.ui.activity.CoreBaseActivity;
+import com.quickblox.sample.core.utils.ErrorUtils;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
+
+import androidx.annotation.StringRes;
 
 /**
  * QuickBlox team
@@ -97,7 +98,3 @@ public abstract class BaseActivity extends CoreBaseActivity {
 
     protected abstract View getSnackbarAnchorView();
 }
-
-
-
-

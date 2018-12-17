@@ -72,19 +72,19 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         if (key.equals(bitrateStringKey)) {
             int bitrateValue = sharedPreferences.getInt(bitrateStringKey, Integer.parseInt(
                     getString(R.string.pref_startbitratevalue_default)));
-            if (bitrateValue == 0){
+            if (bitrateValue == 0) {
                 setDefaultstartingBitrate(sharedPreferences);
                 return;
             }
             int startBitrate = bitrateValue;
-            if (startBitrate > MAX_VIDEO_START_BITRATE){
+            if (startBitrate > MAX_VIDEO_START_BITRATE) {
                 Toaster.longToast("Max value is:" + MAX_VIDEO_START_BITRATE);
                 setDefaultstartingBitrate(sharedPreferences);
             }
         }
     }
 
-    private void setDefaultstartingBitrate(SharedPreferences sharedPreferences){
+    private void setDefaultstartingBitrate(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(bitrateStringKey,
                 Integer.parseInt(getString(R.string.pref_startbitratevalue_default)));
@@ -97,7 +97,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         // Set summary to be the user-description for the selected value
         if (updatedPref instanceof EditTextPreference) {
             ((EditTextPreference) updatedPref).setText(sharedPreferences.getString(key, ""));
-        } else if (updatedPref instanceof SeekBarPreference){
+        } else if (updatedPref instanceof SeekBarPreference) {
             updatedPref.setSummary(String.valueOf(sharedPreferences.getInt(key, 0)));
         } else {
             updatedPref.setSummary(sharedPreferences.getString(key, ""));

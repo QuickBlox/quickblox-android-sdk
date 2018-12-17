@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
 
     <style name="ListHeaderStyle" parent="ListItem">
@@ -13,13 +12,12 @@
         <item name="colorControlNormal">@color/warm_white</item>
         <item name="colorControlActivated">@color/warm_white</item>
         <item name="colorControlHighlight">@color/warm_white</item>
-
     </style>
 
     <style name="EditTextTheme">
         <item name="colorControlNormal">@color/warm_white</item>
         <item name="colorControlActivated">@color/color_accent</item>
         <item name="colorControlHighlight">@color/warm_white</item>
-
     </style>
+
 </resources>

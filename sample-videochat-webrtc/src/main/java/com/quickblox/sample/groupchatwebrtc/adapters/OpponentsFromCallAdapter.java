@@ -1,7 +1,6 @@
 package com.quickblox.sample.groupchatwebrtc.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,8 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * QuickBlox team
@@ -142,7 +143,7 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
             connectionStatus.setText(status);
         }
 
-        public void setUserName(String userName){
+        public void setUserName(String userName) {
             opponentsName.setText(userName);
         }
 

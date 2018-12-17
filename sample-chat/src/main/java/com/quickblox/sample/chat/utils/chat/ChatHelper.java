@@ -146,6 +146,14 @@ public class ChatHelper {
         chatDialog.join(history, callback);
     }
 
+    public void join(List<QBChatDialog> dialogs) throws Exception {
+        for (QBChatDialog dialog : dialogs) {
+            DiscussionHistory history = new DiscussionHistory();
+            history.setMaxStanzas(0);
+            dialog.join(history);
+        }
+    }
+
     public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
         chatDialog.leave();
     }
@@ -275,14 +283,6 @@ public class ChatHelper {
                 new QbEntityCallbackWrapper<ArrayList<QBChatDialog>>(callback) {
                     @Override
                     public void onSuccess(ArrayList<QBChatDialog> dialogs, Bundle args) {
-                        Iterator<QBChatDialog> dialogIterator = dialogs.iterator();
-                        while (dialogIterator.hasNext()) {
-                            QBChatDialog dialog = dialogIterator.next();
-                            if (dialog.getType() == QBDialogType.PUBLIC_GROUP) {
-                                dialogIterator.remove();
-                            }
-                        }
-
                         getUsersFromDialogs(dialogs, callback);
                         // Not calling super.onSuccess() because
                         // we want to load chat users before triggering callback
@@ -331,9 +331,12 @@ public class ChatHelper {
                 new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     @Override
                     public void onSuccess(QBFile qbFile, Bundle bundle) {
-                        QBAttachment attachment = new QBAttachment(QBAttachment.PHOTO_TYPE);
-                        attachment.setId(qbFile.getId().toString());
+                        QBAttachment attachment = new QBAttachment(QBAttachment.IMAGE_TYPE);
+                        attachment.setId(qbFile.getUid());
                         attachment.setUrl(qbFile.getPublicUrl());
+                        attachment.setSize(qbFile.getSize());
+                        attachment.setName(qbFile.getName());
+                        attachment.setContentType(qbFile.getContentType());
                         callback.onSuccess(attachment, bundle);
                     }
                 });

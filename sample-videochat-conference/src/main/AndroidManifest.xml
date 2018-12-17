@@ -51,16 +51,17 @@
             android:screenOrientation="portrait" />
 
         <activity android:name="com.quickblox.sample.conference.activities.PermissionsActivity" />
+
         <activity
             android:name="com.quickblox.sample.conference.activities.CallActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
+
         <activity
             android:name="com.quickblox.sample.conference.activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait" />
-
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -68,7 +69,6 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="7aea78439bec41a9005c7488bb6751c5e33fe270" />
+            android:value="4b96a3f33893a42103eae91d2166d0c517b833d3" />
     </application>
-
 </manifest>

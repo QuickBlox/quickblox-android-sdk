@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -19,11 +13,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.R;
@@ -53,6 +49,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -431,9 +431,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void releaseChat() {
         qbChatDialog.removeMessageListrener(chatMessageListener);
-        if (!QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
-            leaveGroupDialog();
-        }
     }
 
     private void updateDialog(final ArrayList<QBUser> selectedUsers) {
@@ -594,7 +591,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
         @Override
         public void onLinkClicked(QBAttachment qbAttachment, int position) {
-            AttachmentImageActivity.start(ChatActivity.this, qbAttachment.getUrl());
+            if (qbAttachment != null) {
+                String url = QBFile.getPrivateUrlForUID(qbAttachment.getId());
+                AttachmentImageActivity.start(ChatActivity.this, url);
+            }
         }
     }
 

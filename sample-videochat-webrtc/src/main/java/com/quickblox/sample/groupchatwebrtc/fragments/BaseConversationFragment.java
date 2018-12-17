@@ -3,7 +3,6 @@ package com.quickblox.sample.groupchatwebrtc.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +22,12 @@ import com.quickblox.sample.groupchatwebrtc.utils.Consts;
 import com.quickblox.sample.groupchatwebrtc.utils.UsersUtils;
 import com.quickblox.sample.groupchatwebrtc.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 public abstract class BaseConversationFragment extends BaseToolBarFragment implements CallActivity.CurrentCallStateCallback {
 
@@ -181,12 +181,12 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
         handUpVideoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    actionButtonsEnabled(false);
-                    handUpVideoCall.setEnabled(false);
-                    handUpVideoCall.setActivated(false);
+                actionButtonsEnabled(false);
+                handUpVideoCall.setEnabled(false);
+                handUpVideoCall.setActivated(false);
 
-                    conversationFragmentCallbackListener.onHangUpCurrentSession();
-                    Log.d(TAG, "Call is stopped");
+                conversationFragmentCallbackListener.onHangUpCurrentSession();
+                Log.d(TAG, "Call is stopped");
             }
         });
     }
@@ -257,5 +257,4 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             opponents.remove(QBChatService.getInstance().getUser());
         }
     }
-
 }

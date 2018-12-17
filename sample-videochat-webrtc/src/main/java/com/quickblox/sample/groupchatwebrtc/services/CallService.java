@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.quickblox.chat.QBChatService;
@@ -26,6 +25,8 @@ import com.quickblox.videochat.webrtc.QBRTCClient;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 
 import org.jivesoftware.smackx.ping.PingFailedListener;
+
+import androidx.annotation.Nullable;
 
 /**
  * QuickBlox team

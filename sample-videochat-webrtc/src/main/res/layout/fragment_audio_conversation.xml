@@ -51,11 +51,9 @@
             android:textColor="@color/text_color_other_inc_users"
             android:textSize="@dimen/other_inc_users_text_size"
             tools:text="@string/user_list_on_call" />
-
     </LinearLayout>
 
     <include layout="@layout/view_outgoing_screen" />
 
     <include layout="@layout/view_action_buttons_conversation_fragment" />
-
 </RelativeLayout>

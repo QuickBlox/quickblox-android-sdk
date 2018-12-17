@@ -52,7 +52,6 @@
             android:textColor="@color/text_color_other_inc_users"
             android:textSize="@dimen/other_inc_users_text_size"
             tools:text="@string/user_list_on_call" />
-
     </LinearLayout>
 
     <RelativeLayout
@@ -73,6 +72,5 @@
             android:layout_toEndOf="@id/image_button_reject_call"
             android:src="@drawable/ic_call"
             tools:ignore="RtlCompat" />
-
     </RelativeLayout>
 </RelativeLayout>

@@ -53,7 +53,6 @@
             android:key="@string/pref_videocodec_key"
             android:summary="%s"
             android:title="@string/pref_videocodec_title" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_call_settings_category">
@@ -64,27 +63,26 @@
             android:title="@string/pref_hwcodec_title" />
 
         <CheckBoxPreference
-            android:key="@string/pref_disable_built_in_aec_key"
-            android:title="@string/pref_disable_built_in_aec_title"
+            android:defaultValue="@string/pref_disable_built_in_aec_default"
             android:dialogTitle="@string/pref_disable_built_in_aec_dlg"
-            android:defaultValue="@string/pref_disable_built_in_aec_default" />
+            android:key="@string/pref_disable_built_in_aec_key"
+            android:title="@string/pref_disable_built_in_aec_title" />
 
         <CheckBoxPreference
-            android:key="@string/pref_opensles_key"
-            android:title="@string/pref_opensles_title"
+            android:defaultValue="@string/pref_opensles_default"
             android:dialogTitle="@string/pref_opensles_dlg"
-            android:defaultValue="@string/pref_opensles_default" />
+            android:key="@string/pref_opensles_key"
+            android:title="@string/pref_opensles_title" />
 
         <CheckBoxPreference
-            android:key="@string/pref_noaudioprocessing_key"
-            android:title="@string/pref_noaudioprocessing_title"
+            android:defaultValue="@string/pref_noaudioprocessing_default"
             android:dialogTitle="@string/pref_noaudioprocessing_dlg"
-            android:defaultValue="@string/pref_noaudioprocessing_default" />
+            android:key="@string/pref_noaudioprocessing_key"
+            android:title="@string/pref_noaudioprocessing_title" />
 
     </PreferenceCategory>
 
     <Preference
         android:layout="@layout/preference_version"
         android:selectable="false" />
-
 </PreferenceScreen>

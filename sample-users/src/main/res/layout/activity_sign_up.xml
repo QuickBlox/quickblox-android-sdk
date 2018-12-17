@@ -42,5 +42,4 @@
         android:textSize="@dimen/text_size_large"
         android:theme="@style/EditTextTheme"
         app:robotoTypeface="roboto_regular" />
-
 </LinearLayout>

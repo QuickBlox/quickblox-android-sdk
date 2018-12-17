@@ -1,9 +1,6 @@
 package com.quickblox.sample.core.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -14,6 +11,10 @@ import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.ErrorUtils;
 
 import java.lang.reflect.Field;
+
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class CoreBaseActivity extends AppCompatActivity {
     protected ActionBar actionBar;

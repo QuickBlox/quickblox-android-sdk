@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Content</string>
     <string name="splash_app_title">Content Sample</string>
     <string name="splash_create_session_error">Errors</string>
@@ -14,4 +15,5 @@
 
     <string name="no_photo">No photos</string>
     <string name="press_button">Press plus button to add images</string>
+
 </resources>

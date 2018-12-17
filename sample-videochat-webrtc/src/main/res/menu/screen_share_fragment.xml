@@ -7,6 +7,4 @@
         android:icon="@drawable/ic_stop_screenshare"
         android:title="@string/stop_share"
         app:showAsAction="ifRoom" />
-
-
 </menu>

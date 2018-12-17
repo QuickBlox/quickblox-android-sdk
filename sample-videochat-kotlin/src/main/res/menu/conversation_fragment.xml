@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/screen_share"
+        android:checkable="true"
+        android:icon="@drawable/baseline_screen_share_white_24"
+        android:title="@string/action_screen_share"
+        app:showAsAction="ifRoom" />
+</menu>

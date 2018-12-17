@@ -17,7 +17,7 @@ public class AssetsUtils {
         BufferedReader in = new BufferedReader(new InputStreamReader(json, "UTF-8"));
         String str;
 
-        while ((str=in.readLine()) != null) {
+        while ((str = in.readLine()) != null) {
             buf.append(str);
         }
 

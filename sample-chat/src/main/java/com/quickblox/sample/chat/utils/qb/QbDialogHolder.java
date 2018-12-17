@@ -32,7 +32,7 @@ public class QbDialogHolder {
         return getSortedMap(dialogsMap);
     }
 
-    public QBChatDialog getChatDialogById(String dialogId){
+    public QBChatDialog getChatDialogById(String dialogId) {
         return dialogsMap.get(dialogId);
     }
 
@@ -64,26 +64,26 @@ public class QbDialogHolder {
         }
     }
 
-    public void deleteDialog(QBChatDialog chatDialog){
+    public void deleteDialog(QBChatDialog chatDialog) {
         dialogsMap.remove(chatDialog.getDialogId());
     }
 
-    public void deleteDialog(String dialogId){
+    public void deleteDialog(String dialogId) {
         dialogsMap.remove(dialogId);
     }
 
-    public boolean hasDialogWithId(String dialogId){
+    public boolean hasDialogWithId(String dialogId) {
         return dialogsMap.containsKey(dialogId);
     }
 
-    public boolean hasPrivateDialogWithUser(QBUser user){
+    public boolean hasPrivateDialogWithUser(QBUser user) {
         return getPrivateDialogWithUser(user) != null;
     }
 
-    public QBChatDialog getPrivateDialogWithUser(QBUser user){
-        for (QBChatDialog chatDialog : dialogsMap.values()){
+    public QBChatDialog getPrivateDialogWithUser(QBUser user) {
+        for (QBChatDialog chatDialog : dialogsMap.values()) {
             if (QBDialogType.PRIVATE.equals(chatDialog.getType())
-                    && chatDialog.getOccupants().contains(user.getId())){
+                    && chatDialog.getOccupants().contains(user.getId())) {
                 return chatDialog;
             }
         }
@@ -91,13 +91,13 @@ public class QbDialogHolder {
         return null;
     }
 
-    private Map<String, QBChatDialog> getSortedMap(Map <String, QBChatDialog> unsortedMap){
-        Map <String, QBChatDialog> sortedMap = new TreeMap(new LastMessageDateSentComparator(unsortedMap));
+    private Map<String, QBChatDialog> getSortedMap(Map<String, QBChatDialog> unsortedMap) {
+        Map<String, QBChatDialog> sortedMap = new TreeMap(new LastMessageDateSentComparator(unsortedMap));
         sortedMap.putAll(unsortedMap);
         return sortedMap;
     }
 
-    public void updateDialog(String dialogId, QBChatMessage qbChatMessage){
+    public void updateDialog(String dialogId, QBChatMessage qbChatMessage) {
         QBChatDialog updatedDialog = getChatDialogById(dialogId);
         updatedDialog.setLastMessage(qbChatMessage.getBody());
         updatedDialog.setLastMessageDateSent(qbChatMessage.getDateSent());
@@ -109,9 +109,9 @@ public class QbDialogHolder {
     }
 
     static class LastMessageDateSentComparator implements Comparator<String> {
-        Map <String, QBChatDialog> map;
+        Map<String, QBChatDialog> map;
 
-        public LastMessageDateSentComparator(Map <String, QBChatDialog> map) {
+        public LastMessageDateSentComparator(Map<String, QBChatDialog> map) {
 
             this.map = map;
         }
@@ -121,7 +121,7 @@ public class QbDialogHolder {
             long valueA = map.get(keyA).getLastMessageDateSent();
             long valueB = map.get(keyB).getLastMessageDateSent();
 
-            if (valueB < valueA){
+            if (valueB < valueA) {
                 return -1;
             } else {
                 return 1;

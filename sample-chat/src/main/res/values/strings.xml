@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Chat</string>
     <string name="chat_sample">Chat Sample</string>
 
@@ -40,6 +41,7 @@
     <string name="select_users_create_chat">Create new chat</string>
     <string name="select_users_edit_chat">Add Users to chat</string>
     <string name="select_users_get_users_error">Get users errors</string>
+    <string name="select_users_get_dialog_error">Error getting dialog from server</string>
     <string name="select_users_choose_users">Please, choose at least one participant</string>
 
     <string name="chat_sticker">Sticker</string>
@@ -69,4 +71,5 @@
     <string name="error_leave_chat">Error leaving room</string>
 
     <string name="sender_id">761750217637</string>
+
 </resources>

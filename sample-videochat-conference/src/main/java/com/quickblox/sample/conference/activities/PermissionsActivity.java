@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 
-import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.conference.R;
 import com.quickblox.sample.conference.utils.PermissionsChecker;
+import com.quickblox.sample.core.utils.Toaster;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class PermissionsActivity extends AppCompatActivity {
 
