@@ -1,8 +1,10 @@
 package com.quickblox.sample.videochatkotlin
 
 import android.app.Application
+import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.quickblox.auth.session.QBSettings
+import com.quickblox.core.ConstsInternal
 import com.quickblox.core.ServiceZone
 import com.quickblox.sample.videochatkotlin.utils.SAMPLE_CONFIG_FILE_NAME
 import com.quickblox.sample.videochatkotlin.utils.getAllUsersFromFile
@@ -43,13 +45,18 @@ class App : Application() {
     private fun initCredentials() {
         QBSettings.getInstance().init(applicationContext, applicationID, authKey, authSecret)
         QBSettings.getInstance().accountKey = accountKey
-        QBSettings.getInstance().setEndpoints(QBSettings.getInstance().apiEndpoint,
-                QBSettings.getInstance().chatEndpoint,
-                ServiceZone.PRODUCTION)
+        var apiEndpoint = QBSettings.getInstance().apiEndpoint
+        if (TextUtils.isEmpty(apiEndpoint)) {
+            apiEndpoint = ConstsInternal.API_QB_DOMAIN
+        }
+        val chatEndpoint = QBSettings.getInstance().chatEndpoint
+        QBSettings.getInstance().setEndpoints(apiEndpoint, chatEndpoint, ServiceZone.PRODUCTION)
         QBSettings.getInstance().zone = ServiceZone.PRODUCTION
     }
 
     private fun initFabric() {
-        Fabric.with(this, Crashlytics())
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, Crashlytics())
+        }
     }
 }
