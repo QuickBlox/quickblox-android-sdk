@@ -10,9 +10,7 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tereha on 09.06.16.
- */
+
 public class UsersUtils {
 
     private static SharedPrefsHelper sharedPrefsHelper;

@@ -39,7 +39,7 @@
             android:theme="@style/AppTheme.Dark" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -47,7 +47,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4b96a3f33893a42103eae91d2166d0c517b833d3" />
     </application>
-
-
 </manifest>

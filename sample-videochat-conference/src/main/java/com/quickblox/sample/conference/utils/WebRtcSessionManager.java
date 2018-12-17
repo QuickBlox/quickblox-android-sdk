@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.quickblox.conference.ConferenceSession;
 
-/**
- * Created by tereha on 16.05.16.
- */
+
 public class WebRtcSessionManager {
     private static final String TAG = WebRtcSessionManager.class.getSimpleName();
 
@@ -19,8 +17,8 @@ public class WebRtcSessionManager {
         this.context = context;
     }
 
-    public static WebRtcSessionManager getInstance(Context context){
-        if (instance == null){
+    public static WebRtcSessionManager getInstance(Context context) {
+        if (instance == null) {
             instance = new WebRtcSessionManager(context);
         }
 

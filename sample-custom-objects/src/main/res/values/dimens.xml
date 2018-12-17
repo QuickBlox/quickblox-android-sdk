@@ -21,4 +21,5 @@
     <dimen name="text_size_large">20sp</dimen>
 
     <integer name="field_max_length">1024</integer>
+
 </resources>

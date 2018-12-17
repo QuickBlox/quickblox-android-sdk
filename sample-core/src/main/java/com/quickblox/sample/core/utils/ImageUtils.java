@@ -7,10 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 
-import com.quickblox.sample.core.BuildConfig;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.constant.MimeType;
@@ -26,6 +23,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 public class ImageUtils {
 

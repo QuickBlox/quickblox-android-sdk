@@ -1,9 +1,9 @@
 package com.quickblox.sample.chat.utils.qb;
 
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 
@@ -45,7 +45,7 @@ public class VerboseQbChatConnectionListener implements ConnectionListener {
     public void reconnectingIn(final int seconds) {
         if (seconds % 5 == 0 && seconds != 0) {
             Log.i(TAG, "reconnectingIn(): " + seconds);
-            snackbar = Snackbar.make(rootView, App.getInstance().getString(R.string.reconnect_alert, seconds), Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(rootView, App.getInstance().getString(R.string.reconnect_alert, String.valueOf(seconds)), Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         }
     }

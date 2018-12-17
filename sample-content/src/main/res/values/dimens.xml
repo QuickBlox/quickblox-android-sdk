@@ -9,4 +9,5 @@
     <dimen name="item_gallery_column_width">@dimen/item_gallery_width</dimen>
 
     <dimen name="gridview_spacing">5dp</dimen>
+
 </resources>

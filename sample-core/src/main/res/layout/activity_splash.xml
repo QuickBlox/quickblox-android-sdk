@@ -14,13 +14,13 @@
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_title"
             style="@style/SplashAppTitleStyle"
-            tools:text="AppName"/>
+            tools:text="AppName" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/text_splash_app_version"
             style="@style/SplashAppVersionStyle"
             android:layout_marginTop="20dp"
-            tools:text="@string/splash_chat_version" />
+            tools:text="1.0.0" />
     </LinearLayout>
 
     <ImageView

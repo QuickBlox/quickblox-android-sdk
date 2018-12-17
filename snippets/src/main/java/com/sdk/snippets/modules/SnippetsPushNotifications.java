@@ -11,20 +11,24 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.messages.QBPushNotifications;
-import com.quickblox.messages.model.*;
+import com.quickblox.messages.model.QBEnvironment;
+import com.quickblox.messages.model.QBEvent;
+import com.quickblox.messages.model.QBEventType;
+import com.quickblox.messages.model.QBNotificationChannel;
+import com.quickblox.messages.model.QBNotificationType;
+import com.quickblox.messages.model.QBPushType;
+import com.quickblox.messages.model.QBSubscription;
 import com.sdk.snippets.core.ApplicationConfig;
-import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by vfite on 10.02.14.
- */
-public class SnippetsPushNotifications extends Snippets{
+
+public class SnippetsPushNotifications extends Snippets {
     private static final String TAG = SnippetsPushNotifications.class.getSimpleName();
 
     public SnippetsPushNotifications(Context context) {
@@ -74,7 +78,7 @@ public class SnippetsPushNotifications extends Snippets{
             subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
             //
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            if(deviceId == null){
+            if (deviceId == null) {
                 deviceId = "UniversalDeviceId";
             }
             subscription.setDeviceUdid(deviceId);
@@ -105,7 +109,7 @@ public class SnippetsPushNotifications extends Snippets{
             subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
             //
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            if(deviceId == null){
+            if (deviceId == null) {
                 deviceId = "UniversalDeviceId";
             }
             subscription.setDeviceUdid(deviceId);
@@ -116,11 +120,11 @@ public class SnippetsPushNotifications extends Snippets{
 
             ArrayList<QBSubscription> createdSubscriptions = null;
             try {
-                createdSubscriptions =  QBPushNotifications.createSubscription(subscription).perform();
+                createdSubscriptions = QBPushNotifications.createSubscription(subscription).perform();
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(createdSubscriptions != null){
+            if (createdSubscriptions != null) {
                 Log.i(TAG, ">>> Subscription: " + createdSubscriptions.toString());
             }
         }
@@ -159,7 +163,7 @@ public class SnippetsPushNotifications extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(subscriptions != null){
+            if (subscriptions != null) {
                 Log.i(TAG, ">>> Subscriptions: " + subscriptions.toString());
             }
         }
@@ -206,7 +210,7 @@ public class SnippetsPushNotifications extends Snippets{
     ///////////////////////////////////////// Create Event /////////////////////////////////////////
     //
 
-    protected QBEvent buildEvent(){
+    protected QBEvent buildEvent() {
         // recipient
         StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
         userIds.add(ApplicationConfig.getInstance().getTestUserId1());
@@ -220,44 +224,14 @@ public class SnippetsPushNotifications extends Snippets{
         event.setEnvironment(QBEnvironment.DEVELOPMENT);
         event.setNotificationType(QBNotificationType.PUSH);
 
-//            // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-//            //
-//            event.setMessage("This is simple generic push notification!");
-
-
-//            // generic push with custom parameters - http://quickblox.com/developers/Messages#Use_custom_parameters
-//            //
-//            JSONObject json = new JSONObject();
-//            try {
-//                json.put("message", "This is generic push notification with custom params!");
-//                json.put("param1", "value1");
-//                json.put("ios_badge", "4"); // iOS badge value
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            //
-//            event.setMessage(json.toString());
-
-
-//            // Android based push
-//            //
-//            event.setPushType(QBPushType.GCM);
-//            HashMap<String, Object> data = new HashMap<>();
-//            data.put("data.message", "This is Android based push notification!");
-//            data.put("data.param1", "value1");
-//            //
-//            event.setMessage(data);
-
-
         // iOS based push
-        //
         event.setPushType(QBPushType.APNS);
         HashMap<String, Object> data = new HashMap<>();
         Map<String, String> aps = new HashMap<>();
         aps.put("alert", "You have 3 new messages");
         aps.put("badge", "3");
         data.put("aps", aps);
-        //
+
         event.setMessage(data);
 
         return event;
@@ -283,7 +257,6 @@ public class SnippetsPushNotifications extends Snippets{
         }
     };
 
-
     Snippet createEventSynchronous = new SnippetAsync("create event (send push) (synchronous)", context) {
         @Override
         public void executeAsync() {
@@ -295,7 +268,7 @@ public class SnippetsPushNotifications extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(createdEvent != null){
+            if (createdEvent != null) {
                 Log.i(TAG, ">>> Event: " + createdEvent.toString());
             }
         }
@@ -337,7 +310,7 @@ public class SnippetsPushNotifications extends Snippets{
                 setException(e);
             }
 
-            if(event != null){
+            if (event != null) {
                 Log.i(TAG, ">>> event: " + event.toString());
             }
         }
@@ -384,7 +357,7 @@ public class SnippetsPushNotifications extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(events != null){
+            if (events != null) {
                 Log.i(TAG, ">>> Events: " + events.toString());
                 Log.i(TAG, "currentPage: " + params.getInt(Consts.CURR_PAGE));
                 Log.i(TAG, "perPage: " + params.getInt(Consts.PER_PAGE));
@@ -435,7 +408,7 @@ public class SnippetsPushNotifications extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(updatedEvent != null){
+            if (updatedEvent != null) {
                 Log.i(TAG, ">>> Event: " + updatedEvent.toString());
             }
         }
@@ -520,7 +493,7 @@ public class SnippetsPushNotifications extends Snippets{
         public void executeAsync() {
             String registrationID = "APA91bGr9AcS9Wgv4p4BkBQAg_1YrJZpfa5GMXg7LAQU0lya8gbf9Iw1360602PunkWk_NOsLS2xEK8tPeBCBfSH4fobt7zW4KVlWGjUfR3itFbVa_UreBf6c-rZ8uP_0_vxPCO65ceqgnjvQqD6j8DjLykok7VF7UBBjsMZrTIFjKwmVeJqb1o";
             String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            if(deviceId == null){
+            if (deviceId == null) {
                 deviceId = "UniversalDeviceId";
             }
 
@@ -535,10 +508,9 @@ public class SnippetsPushNotifications extends Snippets{
             } catch (QBResponseException e) {
                 setException(e);
             }
-            if(subscriptions != null){
+            if (subscriptions != null) {
                 Log.i(TAG, ">>> subscription created: " + subscriptions);
             }
         }
     };
-
 }

@@ -12,8 +12,8 @@ import com.quickblox.sample.conference.R;
 
 public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
-    private static final String ANDROID_NS ="http://schemas.android.com/apk/res/android";
-    private static final String SEEKBAR_NS ="http://schemas.android.com/apk/res-auto";
+    private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
+    private static final String SEEKBAR_NS = "http://schemas.android.com/apk/res-auto";
 
 
     private Context context;

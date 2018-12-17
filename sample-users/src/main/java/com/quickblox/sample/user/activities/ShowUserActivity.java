@@ -2,7 +2,6 @@ package com.quickblox.sample.user.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +18,8 @@ import com.quickblox.sample.user.databinding.ActivityShowUserBinding;
 import com.quickblox.sample.user.helper.DataHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+
+import androidx.databinding.DataBindingUtil;
 
 public class ShowUserActivity extends BaseActivity {
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="VideoChatTheme" parent="AppTheme">
         <item name="colorAccent">@color/color_blue_accent</item>
         <item name="colorControlActivated">@color/color_blue_accent</item>
@@ -65,7 +66,6 @@
         <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
     </style>
 
-
     <style name="SeekBarPreferenceTitle" parent="WrapContent">
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginTop">16dp</item>
@@ -75,4 +75,5 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">16sp</item>
     </style>
+
 </resources>

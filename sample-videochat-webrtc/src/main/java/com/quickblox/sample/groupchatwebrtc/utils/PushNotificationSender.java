@@ -9,9 +9,7 @@ import com.quickblox.sample.groupchatwebrtc.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by tereha on 13.05.16.
- */
+
 public class PushNotificationSender {
 
     public static void sendPushMessage(ArrayList<Integer> recipients, String senderName) {

@@ -20,9 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by tereha on 26.04.16.
- */
+
 public class QBResRequestExecutor {
     private String TAG = QBResRequestExecutor.class.getSimpleName();
 
@@ -44,7 +42,6 @@ public class QBResRequestExecutor {
 
 
         QBRestChatService.getChatDialogs(QBDialogType.GROUP, requestBuilder).performAsync(callback);
-//        QBRestChatService.getChatDialogs(null, requestBuilder).performAsync(callback);
     }
 
     public void loadDialogByID(String dialogId, final QBEntityCallback<QBChatDialog> callback) {
@@ -72,8 +69,6 @@ public class QBResRequestExecutor {
         QBRestChatService.createChatDialog(createDialog(users, currentUser)).performAsync(new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog dialog, Bundle args) {
-//                        QbDialogHolder.getInstance().addDialog(dialog);
-//                        QbUsersHolder.getInstance().putUsers(users);
                 callback.onSuccess(dialog, args);
             }
 

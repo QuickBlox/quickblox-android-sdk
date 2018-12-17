@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="color_grey">#d3d3d3</color>
 
     <color name="background_chat_color">#f5f6f5</color>

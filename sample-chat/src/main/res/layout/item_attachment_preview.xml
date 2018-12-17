@@ -34,5 +34,4 @@
         android:indeterminateOnly="false"
         android:max="100"
         android:progressDrawable="@drawable/shape_progressbar_circle" />
-
 </FrameLayout>

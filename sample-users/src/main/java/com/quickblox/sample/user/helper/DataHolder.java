@@ -59,5 +59,4 @@ public class DataHolder {
     public boolean isSignedIn() {
         return signInQbUser != null;
     }
-
 }

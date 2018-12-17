@@ -42,4 +42,3 @@ public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<
         Log.w(TAG, e);
     }
 }
-

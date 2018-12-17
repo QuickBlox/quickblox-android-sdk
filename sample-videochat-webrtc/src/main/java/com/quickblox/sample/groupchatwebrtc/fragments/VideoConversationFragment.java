@@ -5,12 +5,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.DimenRes;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
@@ -30,7 +24,6 @@ import android.widget.ToggleButton;
 
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.sample.groupchatwebrtc.R;
-import com.quickblox.sample.groupchatwebrtc.activities.CallActivity;
 import com.quickblox.sample.groupchatwebrtc.adapters.OpponentsFromCallAdapter;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.BaseSession;
@@ -45,7 +38,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoRenderer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,7 +47,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
+import androidx.annotation.DimenRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static android.widget.LinearLayout.HORIZONTAL;
 
 
 /**
@@ -221,7 +220,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                     = new LinearLayoutManager(getActivity(), HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
 
-//          for correct removing item in adapter
+            //for correct removing item in adapter
             recyclerView.setItemAnimator(null);
             recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -251,20 +250,20 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         Map<Integer, QBRTCVideoTrack> videoTrackMap = getVideoTrackMap();
         if (!videoTrackMap.isEmpty()) {
             for (final Iterator<Map.Entry<Integer, QBRTCVideoTrack>> entryIterator
-                 = videoTrackMap.entrySet().iterator(); entryIterator.hasNext();){
+                 = videoTrackMap.entrySet().iterator(); entryIterator.hasNext(); ) {
                 final Map.Entry<Integer, QBRTCVideoTrack> entry = entryIterator.next();
-                Log.d(TAG, "check ability to restoreSession for user:"+entry.getKey());
+                Log.d(TAG, "check ability to restoreSession for user:" + entry.getKey());
                 //if connection with peer wasn't closed do restore it otherwise remove from collection
-                if (currentSession.getPeerChannel(entry.getKey()).getState()!=
-                        QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED){
-                    Log.d(TAG, "execute restoreSession for user:"+entry.getKey());
+                if (currentSession.getPeerChannel(entry.getKey()).getState() !=
+                        QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED) {
+                    Log.d(TAG, "execute restoreSession for user:" + entry.getKey());
                     mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                        @Override
+                        public void run() {
                             onConnectedToUser(currentSession, entry.getKey());
                             onRemoteVideoTrackReceive(currentSession, entry.getValue(), entry.getKey());
                         }
-                        }, LOCAL_TRACk_INITIALIZE_DELAY);
+                    }, LOCAL_TRACk_INITIALIZE_DELAY);
                 } else {
                     entryIterator.remove();
                 }
@@ -378,21 +377,21 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         opponentViewHolders.clear();
     }
 
-    private void removeConnectionStateListeners(){
+    private void removeConnectionStateListeners() {
         conversationFragmentCallbackListener.removeRTCClientConnectionCallback(this);
         conversationFragmentCallbackListener.removeRTCSessionEventsCallback(this);
     }
 
     private void releaseViews() {
-        if (localVideoView != null){
+        if (localVideoView != null) {
             localVideoView.release();
         }
         if (remoteFullScreenVideoView != null) {
             remoteFullScreenVideoView.release();
         }
         remoteFullScreenVideoView = null;
-        if (!isPeerToPeerCall){
-           releseOpponentsViews();
+        if (!isPeerToPeerCall) {
+            releseOpponentsViews();
         }
     }
 
@@ -614,7 +613,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
-        Log.d(TAG, "findHolder for "+userID);
+        Log.d(TAG, "findHolder for " + userID);
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childView = recyclerView.getChildAt(i);
@@ -624,15 +623,17 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             }
         }
         return null;
-    };
+    }
 
-    private void releseOpponentsViews(){
+    ;
+
+    private void releseOpponentsViews() {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int childCount = layoutManager.getChildCount();
-        Log.d(TAG, " releseOpponentsViews for  "+childCount + " views");
+        Log.d(TAG, " releseOpponentsViews for  " + childCount + " views");
         for (int i = 0; i < childCount; i++) {
             View childView = layoutManager.getChildAt(i);
-            Log.d(TAG, " relese View for  " + i +", "+childView);
+            Log.d(TAG, " relese View for  " + i + ", " + childView);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
             childViewHolder.getOpponentView().release();
         }
@@ -644,7 +645,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private void fillVideoView(int userId, QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack,
                                boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
-        videoTrack.addRenderer(new VideoRenderer(videoView));
+        videoTrack.addRenderer(videoView);
         if (userId != 0) {
             getVideoTrackMap().put(userId, videoTrack);
         }
@@ -655,7 +656,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void fillVideoView(QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack, boolean remoteRenderer) {
-       fillVideoView(0, videoView, videoTrack, remoteRenderer);
+        fillVideoView(0, videoView, videoTrack, remoteRenderer);
     }
 
     /**
@@ -966,5 +967,3 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
     }
 }
-
-

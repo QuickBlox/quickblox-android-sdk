@@ -1,63 +1,64 @@
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.google.gms:google-services:4.1.0'
     }
 }
 
 allprojects {
     repositories {
+        google()
         jcenter()
         maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
-        }
-        maven {
-            url 'https://maven.google.com'
         }
     }
 }
 
 ext {
-    compileSdkVersion = 26
-    buildToolsVersion = "27.0.3"
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.3"
 
     minSdkVersion = 14
-    targetSdkVersion = 26
+    targetSdkVersion = 28
 
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     lintAbortOnError = false
 
     // QuickBlox SDK version
     qbChatAdapterVersion = '2.0'
-    qbSdkVersion = '3.8.1'
+    qbSdkVersion = '3.9.0'
 
     versionCode = 381
     versionName = '3.8.1'
 
-    testRunnerVersion = "0.4.1"
+    testRunnerVersion = "1.0.2"
 
     // Dependency versions
-    playServicesVersion = '11.4.2'
-    supportLibVersion = '26.1.0'
-    supportV4Version = supportLibVersion
-    appcompatV7Version = supportLibVersion
-    recyclerviewV7Version = supportLibVersion
-    supportAnnotationsVersion = supportLibVersion
-    designVersion = supportLibVersion
-    cardViewVersion = supportLibVersion
+    playServicesVersion = '16.0.0'
+
+    constraintLayoutAndroidXVersion = '1.1.3'
+    viewPagerAndroidXVersion = '1.0.0'
+    fragmentAndroidXVersion = '1.0.0'
+    lifecycleViewmodelAndroidXVersion = '1.0.0'
+    coreKtxVersion = '1.0.0'
+
+    rxAndroidVersion = '1.2.1'
+    materialVersion = '1.0.0'
 
     glideVersion = '3.6.1'
     pullToRefreshVersion = '3.2.3'
     robotoTextViewVersion = '4.0.0'
-    crashlyticsVersion = '2.8.0'
-    fabricToolsVersion = '1.25.1'
+    crashlyticsVersion = '2.9.5'
+    fabricToolsVersion = '1.25.4'
+    kotlinGradlePlugin = '1.2.71'
     stickylistheadersVersion = '0.4.2'
     swipyVersion = '1.2.3'
 

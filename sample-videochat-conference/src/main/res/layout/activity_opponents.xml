@@ -15,5 +15,4 @@
         style="@style/MatchWidth"
         android:divider="@android:color/transparent"
         android:paddingTop="@dimen/padding_top" />
-
 </LinearLayout>

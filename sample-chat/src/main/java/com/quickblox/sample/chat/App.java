@@ -1,5 +1,6 @@
 package com.quickblox.sample.chat;
 
+import com.crashlytics.android.Crashlytics;
 import com.quickblox.sample.chat.models.SampleConfigs;
 import com.quickblox.sample.chat.utils.Consts;
 import com.quickblox.sample.chat.utils.configs.ConfigUtils;
@@ -8,6 +9,8 @@ import com.quickblox.sample.core.utils.ActivityLifecycle;
 
 import java.io.IOException;
 
+import io.fabric.sdk.android.Fabric;
+
 public class App extends CoreApp {
     private static final String TAG = App.class.getSimpleName();
     private static SampleConfigs sampleConfigs;
@@ -15,6 +18,7 @@ public class App extends CoreApp {
     @Override
     public void onCreate() {
         super.onCreate();
+        initFabric();
         ActivityLifecycle.init(this);
         initSampleConfigs();
     }
@@ -29,5 +33,11 @@ public class App extends CoreApp {
 
     public static SampleConfigs getSampleConfigs() {
         return sampleConfigs;
+    }
+
+    private void initFabric() {
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 }

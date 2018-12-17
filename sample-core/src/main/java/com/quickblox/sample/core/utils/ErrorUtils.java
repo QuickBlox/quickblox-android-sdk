@@ -3,16 +3,17 @@ package com.quickblox.sample.core.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.R;
 
 import java.util.List;
+
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 
 public class ErrorUtils {
 

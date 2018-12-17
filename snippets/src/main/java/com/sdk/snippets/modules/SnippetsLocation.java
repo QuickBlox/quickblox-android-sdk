@@ -4,22 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.quickblox.core.Consts;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.Consts;
 import com.quickblox.location.QBLocations;
 import com.quickblox.location.model.QBEnvironment;
 import com.quickblox.location.model.QBLocation;
 import com.quickblox.location.request.QBLocationRequestBuilder;
-import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippet;
+import com.sdk.snippets.core.SnippetAsync;
 import com.sdk.snippets.core.Snippets;
 
 import java.util.ArrayList;
 
-/**
- * Created by vfite on 10.02.14.
- */
+
 public class SnippetsLocation extends Snippets {
     private static final String TAG = SnippetsLocation.class.getSimpleName();
 
@@ -294,23 +292,6 @@ public class SnippetsLocation extends Snippets {
             int distanceInMeters = 1000;
 
             QBLocationRequestBuilder locationRequestBuilder = new QBLocationRequestBuilder();
-//            locationRequestBuilder.setCreatedAt(1326471371);
-//            locationRequestBuilder.setUserId(8330);
-//            locationRequestBuilder.setUserIds(8330, 53779, 55022);
-//            locationRequestBuilder.setUserName("testUser");
-//            locationRequestBuilder.setUserExternalIds("987", "123456");
-//            locationRequestBuilder.setMinCreatedAt(1326471371);
-//            locationRequestBuilder.setMaxCreatedAt(1326471371);
-//            locationRequestBuilder.setGeoRect(12.4, 7.4, 8.1, 1.2);
-//
-//            locationRequestBuilder.setSort(SortField.CREATED_AT, SortOrder.ASCENDING);
-//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.ASCENDING);
-//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.DESCENDING);
-//
-//            locationRequestBuilder.setLastOnly();
-//            locationRequestBuilder.setHasStatus();
-//            locationRequestBuilder.setCurrentPosition(lat1, lng1);
-
             locationRequestBuilder.setRadius(latitude, longitude, distanceInMeters);
 
             locationRequestBuilder.setPage(1);
@@ -344,25 +325,6 @@ public class SnippetsLocation extends Snippets {
             int distanceInMeters = 1000;
 
             QBLocationRequestBuilder locationRequestBuilder = new QBLocationRequestBuilder();
-//            locationRequestBuilder.setCreatedAt(1326471371);
-//            locationRequestBuilder.setUserId(8330);
-//            locationRequestBuilder.setUserIds(8330, 53779, 55022);
-//            locationRequestBuilder.setUserName("testUser");
-//            locationRequestBuilder.setUserExternalIds("987", "123456");
-//            locationRequestBuilder.setMinCreatedAt(1326471371);
-//            locationRequestBuilder.setMaxCreatedAt(1326471371);
-//            locationRequestBuilder.setGeoRect(borderPointLat1, borderPointLng1, borderPointLat2, borderPointLng2);
-//
-//            locationRequestBuilder.setSort(SortField.CREATED_AT, SortOrder.ASCENDING);
-//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.ASCENDING);
-//            locationRequestBuilder.setSort(SortField.LATITUDE, SortOrder.DESCENDING);
-//
-//            locationRequestBuilder.setLastOnly();
-//            locationRequestBuilder.setHasStatus();
-//            locationRequestBuilder.setCurrentPosition(lat1, lng1);
-
-//            locationRequestBuilder.setRadius(latitude, longitude, distanceInMeters);
-
             locationRequestBuilder.setPage(1);
             locationRequestBuilder.setPerPage(10);
 

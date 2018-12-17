@@ -38,5 +38,8 @@
             android:label="@string/movie_details"
             android:screenOrientation="portrait" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4b96a3f33893a42103eae91d2166d0c517b833d3" />
     </application>
 </manifest>

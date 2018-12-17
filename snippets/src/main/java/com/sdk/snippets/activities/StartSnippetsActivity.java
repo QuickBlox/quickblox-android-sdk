@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.TabHost;
+
 import com.sdk.snippets.R;
 
 public class StartSnippetsActivity extends TabActivity {

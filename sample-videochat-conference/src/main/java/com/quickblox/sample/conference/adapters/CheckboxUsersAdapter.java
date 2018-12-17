@@ -16,9 +16,6 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Roman on 05.03.2017.
- */
 
 public class CheckboxUsersAdapter extends BaseListAdapter<QBUser> {
     private QBUser currentUser;

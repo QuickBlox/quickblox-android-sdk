@@ -3,7 +3,6 @@ package com.quickblox.sample.conference.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,6 +23,8 @@ import com.quickblox.sample.core.utils.KeyboardUtils;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.model.QBUser;
+
+import androidx.annotation.Nullable;
 
 public class LoginActivity extends BaseActivity {
 

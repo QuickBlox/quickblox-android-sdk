@@ -5,13 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.DimenRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -48,7 +41,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,8 +51,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.annotation.DimenRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public abstract class BaseConversationFragment extends BaseToolBarFragment implements CallActivity.CurrentCallStateCallback, QBRTCSessionStateCallback<ConferenceSession>,
-        QBRTCClientVideoTracksCallbacks<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener{
+        QBRTCClientVideoTracksCallbacks<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener {
 
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
 
@@ -104,8 +104,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected Map<Integer, QBRTCVideoTrack> videoTrackMap;
     protected boolean asListenerRole;
 
-//
-private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
+    private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     public static BaseConversationFragment newInstance(BaseConversationFragment baseConversationFragment) {
         Bundle args = new Bundle();
@@ -209,7 +208,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     protected void setOpponentToAdapter(Integer userID) {
         QBUser qbUser = getUserById(userID);
-        if(qbUser != null){
+        if (qbUser != null) {
             opponentsAdapter.add(qbUser);
         } else {
             QBUser user = new QBUser(userID);
@@ -321,18 +320,18 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         removeTrackListeners();
     }
 
-    private void removeConnectionStateListeners(){
+    private void removeConnectionStateListeners() {
         conversationFragmentCallbackListener.removeClientConnectionCallback(this);
     }
 
 
-    protected void releaseOpponentsViews(){
+    protected void releaseOpponentsViews() {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int childCount = layoutManager.getChildCount();
-        Log.d(TAG, " releaseOpponentsViews for  "+childCount + " views");
+        Log.d(TAG, " releaseOpponentsViews for  " + childCount + " views");
         for (int i = 0; i < childCount; i++) {
             View childView = layoutManager.getChildAt(i);
-            Log.d(TAG, " release View for  " + i +", "+childView);
+            Log.d(TAG, " release View for  " + i + ", " + childView);
             OpponentsFromCallAdapter.ViewHolder childViewHolder = (OpponentsFromCallAdapter.ViewHolder) recyclerView.getChildViewHolder(childView);
             childViewHolder.getOpponentView().release();
         }
@@ -340,7 +339,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     private QBUser getUserById(int userID) {
         for (QBUser qbUser : allOpponents) {
-            if(qbUser.getId().equals(userID)){
+            if (qbUser.getId().equals(userID)) {
                 return qbUser;
             }
         }
@@ -353,7 +352,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         super.onDestroy();
     }
 
-    private void startJoinConference(){
+    private void startJoinConference() {
         conversationFragmentCallbackListener.onStartJoinConference();
     }
 
@@ -402,7 +401,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     }
 
     private void setActionButtonsVisibility() {
-        if(asListenerRole) {
+        if (asListenerRole) {
             setActionButtonsInvisible();
         }
     }
@@ -460,12 +459,12 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         handUpCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    actionButtonsEnabled(false);
-                    handUpCall.setEnabled(false);
-                    handUpCall.setActivated(false);
+                actionButtonsEnabled(false);
+                handUpCall.setEnabled(false);
+                handUpCall.setActivated(false);
 
-                    conversationFragmentCallbackListener.onLeaveCurrentSession();
-                    Log.d(TAG, "Call is stopped");
+                conversationFragmentCallbackListener.onLeaveCurrentSession();
+                Log.d(TAG, "Call is stopped");
             }
         });
     }
@@ -506,7 +505,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     }
 
     private void setStatusForOpponent(int userId, final String status) {
-        if(userId == currentUser.getId()) {
+        if (userId == currentUser.getId()) {
             return;
         }
         final OpponentsFromCallAdapter.ViewHolder holder = getViewHolderForOpponent(userId);
@@ -536,7 +535,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         getVideoTrackMap().remove(userId);
     }
 
-    protected void addOpponentToDialog(){
+    protected void addOpponentToDialog() {
         SelectUsersActivity.startForResult(this, REQUEST_ADD_OCCUPANTS, getChatDialog(currentSession.getDialogID()));
     }
 
@@ -547,7 +546,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     }
 
     protected void cleanAdapterIfNeed() {
-        if(!usersToDestroy.isEmpty()) {
+        if (!usersToDestroy.isEmpty()) {
             Iterator<Integer> iterator = usersToDestroy.iterator();
             while (iterator.hasNext()) {
                 cleanUpAdapter(iterator.next());
@@ -562,7 +561,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
 
     protected OpponentsFromCallAdapter.ViewHolder findHolder(Integer userID) {
-        Log.d(TAG, "findHolder for "+userID);
+        Log.d(TAG, "findHolder for " + userID);
         int childCount = recyclerView.getChildCount();
         Log.d(TAG, "findHolder for childCount= " + childCount);
         for (int i = 0; i < childCount; i++) {
@@ -579,7 +578,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     private void setOpponentView(int userID) {
         setOpponentToAdapter(userID);
-        if(!isRemoteShown){
+        if (!isRemoteShown) {
             isRemoteShown = true;
             setRecyclerViewVisibleState();
             setDuringCallActionBar();
@@ -589,7 +588,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     private boolean checkIfUserInAdapter(int userId) {
         for (QBUser user : opponentsAdapter.getOpponents()) {
-            if(user.getId() == userId) {
+            if (user.getId() == userId) {
                 return true;
             }
         }
@@ -600,7 +599,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
 
     @Override
     public void onConnectedToUser(ConferenceSession qbrtcSession, final Integer userId) {
-        if(checkIfUserInAdapter(userId)) {
+        if (checkIfUserInAdapter(userId)) {
             setStatusForOpponent(userId, getString(R.string.text_status_connected));
             Log.d(TAG, "onConnectedToUser user already in, userId= " + userId);
             return;
@@ -671,7 +670,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.conversation_fragment, menu);
-        if(asListenerRole) {
+        if (asListenerRole) {
             MenuItem cameraSwitchItem = menu.findItem(R.id.camera_switch);
             cameraSwitchItem.setVisible(false);
         }
@@ -698,7 +697,7 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
             updateVideoView(remoteVideoView, false);
             Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
             QBRTCVideoTrack remoteVideoTrack = getVideoTrackMap().get(userID);
-            if(remoteVideoTrack != null){
+            if (remoteVideoTrack != null) {
                 fillVideoView(remoteVideoView, remoteVideoTrack, true);
             }
         }
@@ -716,9 +715,9 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
     }
 
     protected void fillVideoView(QBConferenceSurfaceView videoView, QBRTCVideoTrack videoTrack,
-                               boolean remoteRenderer) {
+                                 boolean remoteRenderer) {
         videoTrack.removeRenderer(videoTrack.getRenderer());
-        videoTrack.addRenderer(new VideoRenderer(videoView));
+        videoTrack.addRenderer(videoView);
         Log.d(TAG, (remoteRenderer ? "remote" : "local") + " Track is rendering");
     }
 
@@ -766,9 +765,9 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         }
 
         private void updateAdaptersItems() {
-            if(opponentsAdapter.getItemCount() > 0){
+            if (opponentsAdapter.getItemCount() > 0) {
                 OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(opponentsAdapter.getItem(0));
-                if(itemHolder != null) {
+                if (itemHolder != null) {
                     itemHolder.itemView.requestLayout();
                 }
             }
@@ -800,20 +799,20 @@ private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
         @Override
         public int getSpanSize(int position) {
             int itemCount = opponentsAdapter.getItemCount();
-            if(itemCount % 4 == 0) {
+            if (itemCount % 4 == 0) {
                 return 3;
             }
 
-            if(itemCount % 4 == 1) {
-//              check last position
+            if (itemCount % 4 == 1) {
+                //check last position
                 if (position == itemCount - 1) {
                     return 12;
                 }
-            } else if(itemCount % 4 == 2) {
-                if(position == itemCount - 1 || position == itemCount - 2) {
+            } else if (itemCount % 4 == 2) {
+                if (position == itemCount - 1 || position == itemCount - 2) {
                     return 6;
                 }
-            } else if(itemCount % 4 == 3) {
+            } else if (itemCount % 4 == 3) {
                 if (position == itemCount - 1 || position == itemCount - 2 || position == itemCount - 3) {
                     return 4;
                 }

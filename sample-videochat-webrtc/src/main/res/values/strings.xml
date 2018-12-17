@@ -6,7 +6,6 @@
     <string name="splash_app_title">Video &amp; Audio \nChat Sample</string>
     <string name="splash_create_session_error">Create session errors:</string>
 
-
     <!-- Dialogs strings. -->
     <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
     <string name="dlg_login">Login…</string>
@@ -15,7 +14,6 @@
     <string name="dlg_creating_new_user">Creating new user…</string>
     <string name="dlg_logout">Logout…</string>
     <string name="dlg_loading_opponents">Loading opponents…</string>
-
 
     <!-- Errors strings. -->
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
@@ -47,14 +45,12 @@
     <string name="action_start_video_call">Video call</string>
     <string name="action_start_audio_call">Audio call</string>
 
-
     <!--action bar-->
     <string name="actionbar_title_settings">Settings</string>
     <string name="title_login_activity">Enter to chat</string>
     <string name="subtitle_text_logged_in_as">Logged in as %s</string>
     <string name="title_one_user_selected">%s user selected</string>
     <string name="tile_many_users_selected">%s users selected</string>
-
 
     <string name="incoming_call">Incoming Call</string>
     <string name="also_on_call">Also on call:</string>
@@ -63,7 +59,6 @@
     <string name="incoming_video_call">Incoming Video Call</string>
     <string name="outgoing_audio_video_call_title">%s\n\nRinging</string>
     <string name="user_list_on_call">User 1, User 2, User 3, User 4, User 5, User 6</string>
-
 
     <string name="opponent_pending">Pending</string>
     <string name="opponent_closed">Closed</string>
@@ -91,7 +86,6 @@
     <string name="connection_lost">Connection lost</string>
 
     <string name="text_push_notification_message">"%s is calling you"</string>
-
 
     <!-- Settings strings. -->
     <string name="title_video_category">Video</string>
@@ -152,7 +146,6 @@
     <string name="pref_manage_speakerphone_by_proximity_default">false</string>
 
     <!--Call Settings-->
-
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
     <string name="pref_answer_time_interval_title">Answer Time Interval (15&#8211;90s)</string>
     <string name="pref_answer_time_interval_default_value">60</string>

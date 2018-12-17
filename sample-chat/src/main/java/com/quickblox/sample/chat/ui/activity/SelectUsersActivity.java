@@ -19,6 +19,7 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.App;
 import com.quickblox.sample.chat.R;
 import com.quickblox.sample.chat.ui.adapter.CheckboxUsersAdapter;
+import com.quickblox.sample.chat.utils.chat.ChatHelper;
 import com.quickblox.sample.core.utils.Toaster;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -37,7 +38,9 @@ public class SelectUsersActivity extends BaseActivity {
     private ListView usersListView;
     private ProgressBar progressBar;
     private CheckboxUsersAdapter usersAdapter;
+    private List<QBUser> users;
     private long lastClickTime = 0l;
+    private QBChatDialog qbChatDialog;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SelectUsersActivity.class);
@@ -67,7 +70,13 @@ public class SelectUsersActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
+        qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
 
+        initUi();
+        loadUsersFromQb();
+    }
+
+    private void initUi() {
         progressBar = _findViewById(R.id.progress_select_users);
         usersListView = _findViewById(R.id.list_select_users);
 
@@ -82,8 +91,6 @@ public class SelectUsersActivity extends BaseActivity {
             setActionBarTitle(R.string.select_users_create_chat);
         }
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        loadUsersFromQb();
     }
 
     @Override
@@ -136,16 +143,15 @@ public class SelectUsersActivity extends BaseActivity {
         progressBar.setVisibility(View.VISIBLE);
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                QBChatDialog dialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
+            public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
+                users = usersByTags;
 
-                usersAdapter = new CheckboxUsersAdapter(SelectUsersActivity.this, result);
-                if (dialog != null) {
-                    usersAdapter.addSelectedUsers(dialog.getOccupants());
+                if (qbChatDialog != null) {
+                    // update occupants list form server
+                    getDialog();
+                } else {
+                    updateUsersAdapter();
                 }
-                usersListView.setAdapter(usersAdapter);
-
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -160,6 +166,37 @@ public class SelectUsersActivity extends BaseActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void getDialog() {
+        String dialogID = qbChatDialog.getDialogId();
+        ChatHelper.getInstance().getDialogById(dialogID, new QBEntityCallback<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
+                updateUsersAdapter();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                showErrorSnackbar(R.string.select_users_get_dialog_error, e,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loadUsersFromQb();
+                            }
+                        });
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void updateUsersAdapter() {
+        usersAdapter = new CheckboxUsersAdapter(this, users);
+        if (qbChatDialog != null) {
+            usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
+        }
+        usersListView.setAdapter(usersAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     private boolean isEditingChat() {

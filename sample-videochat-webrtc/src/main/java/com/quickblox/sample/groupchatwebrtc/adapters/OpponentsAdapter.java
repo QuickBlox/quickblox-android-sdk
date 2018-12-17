@@ -45,7 +45,7 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         if (user != null) {
             holder.opponentName.setText(user.getFullName());
 
-            if (selectedItems.contains(user)){
+            if (selectedItems.contains(user)) {
                 convertView.setBackgroundResource(R.color.background_color_selected_user_item);
                 holder.opponentIcon.setBackgroundDrawable(
                         UiUtils.getColoredCircleDrawable(ResourceUtils.getColor(R.color.icon_background_color_selected_user)));
@@ -57,12 +57,9 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
             }
         }
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleSelection(position);
-                selectedItemsCountChangedListener.onCountSelectedItemsChanged(selectedItems.size());
-            }
+        convertView.setOnClickListener(v -> {
+            toggleSelection(position);
+            selectedItemsCountChangedListener.onCountSelectedItemsChanged(selectedItems.size());
         });
 
         return convertView;
@@ -73,13 +70,13 @@ public class OpponentsAdapter extends BaseSelectableListAdapter<QBUser> {
         TextView opponentName;
     }
 
-    public void setSelectedItemsCountsChangedListener(SelectedItemsCountsChangedListener selectedItemsCountsChanged){
+    public void setSelectedItemsCountsChangedListener(SelectedItemsCountsChangedListener selectedItemsCountsChanged) {
         if (selectedItemsCountsChanged != null) {
             this.selectedItemsCountChangedListener = selectedItemsCountsChanged;
         }
     }
 
-    public interface SelectedItemsCountsChangedListener{
+    public interface SelectedItemsCountsChangedListener {
         void onCountSelectedItemsChanged(int count);
     }
 }

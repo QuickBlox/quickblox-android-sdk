@@ -57,7 +57,6 @@ public class ChatPingAlarmManager {
         }
     };
 
-
     private static Context sContext;
     private static PendingIntent sPendingIntent;
     private static AlarmManager sAlarmManager;
