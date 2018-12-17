@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.view_action_buttons_conversation_fragment.
 import org.webrtc.CameraVideoCapturer
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoRenderer
 import java.util.*
 
 
@@ -308,7 +307,7 @@ class VideoConversationFragment : BaseToolBarFragment(), QBRTCSessionStateCallba
     private fun fillVideoView(userId: Int, videoView: QBRTCSurfaceView, videoTrack: QBRTCVideoTrack,
                               remoteRenderer: Boolean) {
         videoTrack.removeRenderer(videoTrack.renderer)
-        videoTrack.addRenderer(VideoRenderer(videoView))
+        videoTrack.addRenderer(videoView)
         videoTracks.put(userId, videoTrack)
         if (!remoteRenderer) {
             updateVideoView(videoView, isCurrentCameraFront)

@@ -3,7 +3,6 @@ package com.quickblox.sample.videochatkotlin
 import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.quickblox.auth.session.QBSettings
-import com.quickblox.core.ServiceZone
 import com.quickblox.sample.videochatkotlin.utils.SAMPLE_CONFIG_FILE_NAME
 import com.quickblox.sample.videochatkotlin.utils.getAllUsersFromFile
 import com.quickblox.users.model.QBUser
@@ -14,8 +13,6 @@ class App : Application() {
     private val authKey = "f4HYBYdeqTZ7KNb"
     private val authSecret = "ZC7dK39bOjVc-Z8"
     private val accountKey = "C4_z7nuaANnBYmsG_k98"
-    private val apiEndpoint = "https://api.quickblox.com"
-    private val chatEndpoint = "chat.quickblox.com"
 
     override fun onCreate() {
         super.onCreate()
@@ -26,8 +23,7 @@ class App : Application() {
     }
 
     private fun checkQBConfigJson() {
-        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty() || accountKey.isEmpty()
-                || apiEndpoint.isEmpty() || chatEndpoint.isEmpty()) {
+        if (applicationID.isEmpty() || authKey.isEmpty() || authSecret.isEmpty() || accountKey.isEmpty()) {
             throw AssertionError(getString(R.string.error_qb_credentials_empty))
         }
     }
@@ -46,11 +42,20 @@ class App : Application() {
     private fun initCredentials() {
         QBSettings.getInstance().init(applicationContext, applicationID, authKey, authSecret)
         QBSettings.getInstance().accountKey = accountKey
-        QBSettings.getInstance().setEndpoints(apiEndpoint, chatEndpoint, ServiceZone.PRODUCTION)
-        QBSettings.getInstance().zone = ServiceZone.PRODUCTION
+
+        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // against your own server.
+        //
+        // Please note. If you plan to migrate from the shared instance to enterprise,
+        // you shouldn't set the custom endpoints
+        //
+        // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);
+        // QBSettings.getInstance().zone = ServiceZone.PRODUCTION
     }
 
     private fun initFabric() {
-        Fabric.with(this, Crashlytics())
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, Crashlytics())
+        }
     }
 }

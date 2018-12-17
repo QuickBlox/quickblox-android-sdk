@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.google.gms:google-services:4.1.0'
     }
 }
 
@@ -34,10 +34,10 @@ ext {
 
     // QuickBlox SDK version
     qbChatAdapterVersion = '2.0'
-    qbSdkVersion = '3.8.1'
+    qbSdkVersion = '3.9.0'
 
     versionCode = 381
-    versionName = '3.8.1'
+    versionName = '3.9.0'
 
     testRunnerVersion = "1.0.2"
 
