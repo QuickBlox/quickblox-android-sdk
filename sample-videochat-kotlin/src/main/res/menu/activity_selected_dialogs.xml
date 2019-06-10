@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/delete_dialog"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/action_leave_dialog"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+</menu>

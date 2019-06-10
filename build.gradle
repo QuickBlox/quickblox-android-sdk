@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.google.gms:google-services:4.1.0'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+    }
+}
+
+ext {
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.3"
+
+    minSdkVersion = 14
+    targetSdkVersion = 28
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    lintAbortOnError = false
+
+    // QuickBlox SDK version
+    qbSdkVersion = '3.9.1'
+
+    //Samples versions
+
+    //Content
+    versionContentCode = 400000
+    versionContentName = '4.0.0'
+
+    //Core
+    versionCoreCode = 400000
+    versionCoreName = '4.0.0'
+
+    //Custom Objects
+    versionCustomObjectsCode = 400000
+    versionCustomObjectsName = '4.0.0'
+
+    //Users
+    versionUsersCode = 400000
+    versionUsersName = '4.0.0'
+
+    //Snippets
+    versionSnippetsCode = 400000
+    versionSnippetsName = '4.0.0'
+
+    fragmentAndroidXVersion = '1.0.0'
+
+    rxAndroidVersion = '1.2.1'
+    materialVersion = '1.0.0'
+
+    glideVersion = '3.6.1'
+    robotoTextViewVersion = '4.0.0'
+    crashlyticsVersion = '2.9.5'
+    fabricToolsVersion = '1.25.4'
+    kotlinGradlePluginVersion = '1.2.71'
+    swipyVersion = '1.2.3'
+
+    dimensionDefault = 'default'
+}

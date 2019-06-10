@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+    flavorDimensions rootProject.dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.customobjects"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCustomObjectsCode
+        versionName rootProject.versionCustomObjectsName
+    }
+
+    productFlavors {
+        speedDev {
+            dimension rootProject.dimensionDefault
+            minSdkVersion 21
+        }
+        dev {
+            dimension rootProject.dimensionDefault
+            minSdkVersion rootProject.minSdkVersion
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation(project(":sample-core"))
+
+    implementation "com.quickblox:quickblox-android-sdk-customobjects:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-extensions:$rootProject.qbSdkVersion"
+
+    implementation "io.reactivex:rxandroid:${rootProject.rxAndroidVersion}"
+    implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
+    implementation("com.crashlytics.sdk.android:crashlytics:${rootProject.crashlyticsVersion}@aar") {
+        transitive = true
+    }
+}
+
+apply from: "../artifacts.gradle"
