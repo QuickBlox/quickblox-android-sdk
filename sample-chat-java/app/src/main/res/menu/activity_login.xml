@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_login_user_done"
+        android:icon="@drawable/ic_action_done"
+        android:title="@string/menu_start_login_done"
+        app:showAsAction="always" />
+</menu>

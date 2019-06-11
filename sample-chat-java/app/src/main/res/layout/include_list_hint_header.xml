@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.devspark.robototextview.widget.RobotoTextView xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ListHeaderStyle"
+    tools:ignore="RtlHardcoded,RtlSymmetry"
+    tools:text="@string/dialogs_list_hint" />
