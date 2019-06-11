@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msg_linear_frame_right"
+    style="@style/WidgetTextMessage.Right">
+
+    <LinearLayout
+        android:id="@+id/msg_bubble_background"
+        style="@style/BubbleTextFrame.Right">
+
+        <LinearLayout
+            android:id="@+id/msg_linear_list_item_right"
+            style="@style/LinearWidgetTextMsg.Right">
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_top"
+                style="@style/CustomWidgetFrame.Right" />
+
+            <TextView
+                android:id="@+id/msg_text_time_message"
+                style="@style/TextViewTimeMsg.Right"
+                tools:text="current time August" />
+
+            <TextView
+                android:id="@+id/msg_text_message"
+                style="@style/TextViewTextMsg.Right"
+                tools:text="message the long one message" />
+
+            <TextView
+                android:id="@+id/msg_text_status_message"
+                style="@style/TextViewTimeMsg.Right"
+                android:textSize="9sp"
+                tools:text="Delivered" />
+
+            <LinearLayout
+                android:id="@+id/msg_link_preview"
+                style="@style/LinkPreviewFrame.Right" />
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_bottom"
+                style="@style/CustomWidgetFrame.Right" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/msg_image_avatar"
+        style="@style/AvatarImageViewStyle.Right" />
+</LinearLayout>
