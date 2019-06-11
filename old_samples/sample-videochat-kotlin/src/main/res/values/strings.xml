@@ -1,0 +1,47 @@
+<resources>
+
+    <string name="app_name">VideoChat-kotlin</string>
+    <string name="app_title">VideoChat-kotlin Sample</string>
+    <string name="activity_title">VideoChat-kotlin Sample</string>
+
+    <string name="login">Login as</string>
+    <string name="user">User %1$s</string>
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error %s</string>
+    <string name="loading_users_error">Loading users error. Error %s</string>
+
+    <string name="text_incoming_video_call">Incoming Video Call</string>
+
+    <!--action bar-->
+    <string name="title_login_activity">Login</string>
+    <string name="title_current_user">Logged in as %1$s</string>
+    <string name="action_start_logout">Logout</string>
+
+    <!--menu-->
+    <string name="action_switch_camera">Switch camera</string>
+    <string name="action_screen_share">Screen share</string>
+    <string name="action_stop_share">Stop share</string>
+
+    <!-- Dialogs strings. -->
+    <string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
+    <string name="dlg_login">Login…</string>
+    <string name="dlg_sign_in">Sign In…</string>
+    <string name="dlg_updating_user">Updating user…</string>
+    <string name="dlg_creating_new_user">Creating new user…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="dlg_loading_opponents">Loading opponents…</string>
+
+    <string name="text_status_connect">Connect…</string>
+    <string name="text_status_connected">Connected</string>
+    <string name="text_status_disconnected">Disconnected</string>
+    <string name="text_status_closed">Closed</string>
+    <string name="text_status_hang_up">Hung up</string>
+
+    <!-- Errors strings. -->
+    <string name="error_qb_credentials_empty">The App class should contain QuickBlox credentials. Register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+    <string name="error_users_empty">The user_config.json file should contain at least 2 and max 4 users with format [\"login\":\"password\"]. Please go to https://admin.quickblox.com and create users in \'Users\' module.</string>
+    <string name="error_max_opponents_count">You can select up to %d opponents</string>
+    <string name="denied_permission_message">You cannot continue without an access to %s</string>
+    <string name="camera_swicth_failed">\"Failed switch camera\"</string>
+
+</resources>
