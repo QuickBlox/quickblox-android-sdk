@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_save_movie"
+        android:icon="@drawable/ic_action_check"
+        android:title="@string/save_movie"
+        app:showAsAction="always" />
+</menu>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msg_widget_attach_right"
+    style="@style/ListItemAttachMessage.Right">
+
+    <RelativeLayout
+        android:id="@+id/msg_bubble_background"
+        style="@style/BubbleAttachFrame.Right">
+
+        <ProgressBar
+            android:id="@+id/msg_progressbar_attach"
+            style="@style/ProgressBarAttach.Right" />
+
+        <ImageView
+            android:id="@+id/msg_image_attach"
+            style="@style/ImageViewAttach.Right"
+            tools:background="@color/black" />
+
+        <include layout="@layout/widget_item_attach_right" />
+
+        <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+            style="@style/LinearAttachWidgetFrame.Right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_bottom_small">
+
+            <TextView
+                android:id="@+id/msg_attach_status_message"
+                style="@style/TextViewAttach.Right"
+                android:textSize="9sp"
+                tools:text="Delivered" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/msg_image_avatar"
+        style="@style/AvatarImageViewStyle.Right" />
+</LinearLayout>

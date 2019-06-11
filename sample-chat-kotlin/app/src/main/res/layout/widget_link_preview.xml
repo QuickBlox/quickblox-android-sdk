@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/WrapContent"
+    android:orientation="horizontal">
+
+    <View style="@style/LinkPreviewVerticalLine" />
+
+    <LinearLayout
+        style="@style/WrapContent"
+        android:layout_marginLeft="@dimen/padding_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/link_preview_title"
+            style="@style/LinkPreviewTitle"
+            tools:text="Tittle" />
+
+        <ImageView
+            android:id="@+id/link_preview_image"
+            style="@style/LinkPreviewImage"
+            tools:src="@drawable/placeholder_user" />
+
+        <TextView
+            android:id="@+id/link_preview_description"
+            style="@style/LinkPreviewDescription"
+            tools:text="Description" />
+
+        <LinearLayout style="@style/HostView">
+
+            <ImageView
+                android:id="@+id/link_host_icon"
+                style="@style/HostViewIcon"
+                tools:src="@drawable/placeholder_user" />
+
+            <TextView
+                android:id="@+id/link_host_url"
+                style="@style/HostViewUrl"
+                tools:text="site.host.com" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

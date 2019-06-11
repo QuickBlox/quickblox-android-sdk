@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MaskedImageView">
+        <attr name="mask" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="MessageTextView">
+        <attr name="widget_id_top" format="integer" />
+        <attr name="widget_id_bottom" format="integer" />
+        <attr name="widget_id_link_preview" format="integer" />
+    </declare-styleable>
+
+</resources>

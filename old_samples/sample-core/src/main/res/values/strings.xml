@@ -1,0 +1,20 @@
+<resources>
+
+    <string name="please_wait">Please wait…</string>
+
+    <string name="dlg_error">Error</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_loading">Loading…</string>
+    <string name="dlg_choose_image_from">Select photo from…</string>
+    <string name="dlg_retry">Retry</string>
+
+    <string name="init_configs_error">Initializing configs error</string>
+
+    <string name="no_internet_connection">No internet connection</string>
+
+    <string name="splash_app_version">v %s</string>
+
+    <string name="error_parsing_configs">Parsing sample\'s configs error</string>
+
+</resources>

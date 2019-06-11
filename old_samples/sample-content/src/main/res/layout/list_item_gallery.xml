@@ -1,0 +1,14 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent">
+
+    <ImageView
+        android:id="@+id/image_preview"
+        android:layout_width="@dimen/item_gallery_width"
+        android:layout_height="@dimen/item_gallery_height"
+        android:adjustViewBounds="true" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_adapter"
+        style="@style/MatchWidth"
+        android:layout_gravity="center" />
+</FrameLayout>

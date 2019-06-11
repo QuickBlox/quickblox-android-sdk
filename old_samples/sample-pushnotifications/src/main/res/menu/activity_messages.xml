@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_send_message"
+        android:icon="@drawable/ic_send"
+        android:title="@string/send_push"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_enable_notification"
+        android:title="@string/enable_notification" />
+
+    <item
+        android:id="@+id/menu_disable_notification"
+        android:title="@string/disable_notification" />
+
+</menu>

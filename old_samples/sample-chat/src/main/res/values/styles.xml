@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="ChatActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/background_chat_color</item>
+    </style>
+
+    <style name="AppTheme.BlueAccent">
+        <item name="colorAccent">@color/color_blue_qb</item>
+    </style>
+
+</resources>
