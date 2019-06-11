@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/msg_widget_text_frame"
+    style="@style/WidgetTextMsgFrame">
+
+    <LinearLayout
+        android:id="@+id/msg_linear_frame"
+        style="@style/LinearTextMsgFrame">
+
+        <ViewStub
+            android:id="@+id/msg_stub_message"
+            style="@style/ViewStubTextMsgFrame"
+            android:inflatedId="@+id/subTree_frame" />
+    </LinearLayout>
+</FrameLayout>
