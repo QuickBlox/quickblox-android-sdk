@@ -37,7 +37,7 @@ ext {
     qbSdkVersion = '3.9.0'
 
     versionCode = 381
-    versionName = '3.8.1'
+    versionName = '3.9.0'
 
     testRunnerVersion = "1.0.2"
 
