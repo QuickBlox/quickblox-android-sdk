@@ -1,0 +1,32 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/MatchParent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/MatchWidth"
+            android:layout_marginLeft="@dimen/padding_start"
+            android:paddingTop="@dimen/padding_actionbar"
+            android:text="@string/text_select_dialog_to_join"
+            tools:ignore="RtlHardcoded" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_dialogs"
+            style="@style/MatchWidth"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:paddingTop="@dimen/padding_top"
+            tools:listitem="@layout/list_item_dialog" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_dialogs_new_chat"
+        style="@style/FabStyle"
+        android:src="@drawable/ic_person" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

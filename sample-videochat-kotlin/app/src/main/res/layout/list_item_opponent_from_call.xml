@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/inner_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+            android:id="@+id/opponent_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <ToggleButton
+            android:id="@+id/opponent_toggle_mic"
+            android:layout_width="@dimen/toggle_button_params_small"
+            android:layout_height="@dimen/toggle_button_params_small"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/margin_very_small"
+            android:background="@drawable/call_mic_toggle_small_background"
+            android:checked="true"
+            android:textOff=""
+            android:textOn="" />
+
+        <TextView
+            android:id="@+id/connection_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="3dp"
+            android:gravity="center_horizontal"
+            android:maxLength="13"
+            android:maxLines="2"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic" />
+
+        <TextView
+            android:id="@+id/opponent_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_adapter"
+        style="@style/MatchWidth"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+</FrameLayout>
