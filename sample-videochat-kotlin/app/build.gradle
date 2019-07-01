@@ -1,0 +1,116 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradlePluginVersion"
+        classpath "io.fabric.tools:gradle:$fabricToolsVersion"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
+androidExtensions {
+    experimental = true
+}
+
+repositories {
+    google()
+    jcenter()
+    maven {
+        url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+    }
+    maven { url 'https://maven.fabric.io/public' }
+    flatDir { dirs 'libs' }
+}
+
+android {
+    def versionQACode = 5
+
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+    flavorDimensions dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.videochat.kotlin"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 400000
+        versionName '4.0.0'
+        multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            dimension dimensionDefault
+            buildConfigField('boolean', "IS_QA", "false")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+
+        qa {
+            dimension dimensionDefault
+            buildConfigField("boolean", "IS_QA", "true")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
+            proguardFile 'proguard-rules.pro'
+            zipAlignEnabled false
+            resValue "string", "versionName", "QuickBlox Video Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+
+        release {
+            signingConfig signingConfigs.debug
+            resValue "string", "versionName", "QuickBlox Video Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-messages:$qbSdkVersion"
+
+    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion"
+    implementation "androidx.fragment:fragment:$fragmentAndroidXVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycleViewmodelAndroidXVersion"
+    implementation "androidx.core:core-ktx:$coreKtxVersion"
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
+        transitive = true
+    }
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion"
+}
+
+apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'
