@@ -314,19 +314,14 @@ public class ChatHelper {
                 });
     }
 
-    public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback) {
-        loadFileAsAttachment(file, callback, null);
-    }
-
     public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback,
                                      QBProgressCallback progressCallback) {
-        QBContent.uploadFileTask(file, true, null, progressCallback).performAsync(
+        QBContent.uploadFileTask(file, false, null, progressCallback).performAsync(
                 new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     @Override
                     public void onSuccess(QBFile qbFile, Bundle bundle) {
                         QBAttachment attachment = new QBAttachment(QBAttachment.IMAGE_TYPE);
                         attachment.setId(qbFile.getUid());
-                        attachment.setUrl(qbFile.getPublicUrl());
                         attachment.setSize(qbFile.getSize());
                         attachment.setName(qbFile.getName());
                         attachment.setContentType(qbFile.getContentType());
