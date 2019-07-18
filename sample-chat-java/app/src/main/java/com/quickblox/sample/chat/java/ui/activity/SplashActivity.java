@@ -87,7 +87,6 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 Log.v(TAG, "Chat login onSuccess()");
-
                 ProgressDialogFragment.hide(getSupportFragmentManager());
                 DialogsActivity.start(SplashActivity.this);
                 finish();
@@ -95,15 +94,19 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getSupportFragmentManager());
-                Log.w(TAG, "Chat login onError(): " + e);
-                showErrorSnackbar(R.string.error_recreate_session, e,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loginToChat(user);
-                            }
-                        });
+                if (e.getMessage().equals("You have already logged in chat")) {
+                    loginToChat(user);
+                } else {
+                    ProgressDialogFragment.hide(getSupportFragmentManager());
+                    Log.w(TAG, "Chat login onError(): " + e);
+                    showErrorSnackbar(R.string.error_recreate_session, e,
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    loginToChat(user);
+                                }
+                            });
+                }
             }
         });
     }

@@ -137,9 +137,27 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+    public void onResumeFinished() {
+        if (ChatHelper.getInstance().isLogged()) {
+            checkPlayServicesAvailable();
+            registerQbChatListeners();
+        } else {
+            showProgressDialog(R.string.dlg_loading);
+            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    checkPlayServicesAvailable();
+                    registerQbChatListeners();
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    hideProgressDialog();
+                    finish();
+                }
+            });
+        }
     }
 
     @Override
@@ -163,6 +181,10 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         }
 
         dialogsManager.addManagingDialogsCallbackListener(this);
+
+        pushBroadcastReceiver = new PushBroadcastReceiver();
+        LocalBroadcastManager.getInstance(DialogsActivity.this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter(FcmConsts.ACTION_NEW_FCM_EVENT));
     }
 
     private void unregisterQbChatListeners() {

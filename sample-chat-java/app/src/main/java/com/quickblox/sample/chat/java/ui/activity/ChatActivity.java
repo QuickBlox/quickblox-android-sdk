@@ -35,6 +35,7 @@ import com.quickblox.sample.chat.java.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.java.ui.adapter.listeners.AttachClickListener;
 import com.quickblox.sample.chat.java.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.java.ui.widget.AttachmentPreviewAdapterView;
+import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.SystemPermissionHelper;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
@@ -158,8 +159,33 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onResumeFinished() {
+        if (ChatHelper.getInstance().isLogged()) {
+            if (qbChatDialog == null) {
+                qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
+            }
+            qbChatDialog.initForChat(QBChatService.getInstance());
+            returnListeners();
+        } else {
+            showProgressDialog(R.string.dlg_loading);
+            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    qbChatDialog.initForChat(QBChatService.getInstance());
+                    returnListeners();
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    hideProgressDialog();
+                    finish();
+                }
+            });
+        }
+    }
+
+    private void returnListeners() {
         if (systemMessagesManager != null) {
             systemMessagesManager.addSystemMessageListener(systemMessagesListener != null
                     ? systemMessagesListener : new SystemMessagesListener());

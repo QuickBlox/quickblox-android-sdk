@@ -23,6 +23,7 @@ import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.sample.chat.java.App;
 import com.quickblox.sample.chat.java.R;
+import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.java.utils.qb.QbDialogUtils;
@@ -70,7 +71,7 @@ public class ChatHelper {
     }
 
     public static QBUser getCurrentUser() {
-        return QBChatService.getInstance().getUser();
+        return SharedPrefsHelper.getInstance().getQbUser();
     }
 
     private ChatHelper() {
