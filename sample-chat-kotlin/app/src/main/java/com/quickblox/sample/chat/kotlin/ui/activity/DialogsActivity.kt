@@ -93,9 +93,9 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
             restartApp(this)
         }
 
-        dialogsManager.addManagingDialogsCallbackListener(this)
-        systemMessagesManager = QBChatService.getInstance().systemMessagesManager
-        incomingMessagesManager = QBChatService.getInstance().incomingMessagesManager
+        //dialogsManager.addManagingDialogsCallbackListener(this)
+        //systemMessagesManager = QBChatService.getInstance().systemMessagesManager
+        //incomingMessagesManager = QBChatService.getInstance().incomingMessagesManager
         currentUser = ChatHelper.getCurrentUser()
 
         initUi()
@@ -109,13 +109,25 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkPlayServicesAvailable()
-        registerQbChatListeners()
-        pushBroadcastReceiver = PushBroadcastReceiver()
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                IntentFilter(ACTION_NEW_FCM_EVENT))
+    override fun onResumeFinished() {
+        if (ChatHelper.isLogged()) {
+            checkPlayServicesAvailable()
+            registerQbChatListeners()
+        } else {
+            showProgressDialog(R.string.dlg_loading)
+            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+                override fun onSuccess(aVoid: Void, bundle: Bundle) {
+                    checkPlayServicesAvailable()
+                    registerQbChatListeners()
+                    hideProgressDialog()
+                }
+
+                override fun onError(e: QBResponseException) {
+                    hideProgressDialog()
+                    finish()
+                }
+            })
+        }
     }
 
     private fun checkPlayServicesAvailable() {
@@ -142,10 +154,16 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
     }
 
     private fun registerQbChatListeners() {
+        systemMessagesManager = QBChatService.getInstance().systemMessagesManager
+        incomingMessagesManager = QBChatService.getInstance().incomingMessagesManager
         systemMessagesManager.addSystemMessageListener(systemMessagesListener)
 
         incomingMessagesManager.addDialogMessageListener(allDialogsMessagesListener)
         dialogsManager.addManagingDialogsCallbackListener(this)
+
+        pushBroadcastReceiver = PushBroadcastReceiver()
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                IntentFilter(ACTION_NEW_FCM_EVENT))
     }
 
     private fun unregisterQbChatListeners() {

@@ -37,6 +37,7 @@ import com.quickblox.sample.chat.kotlin.ui.adapter.ChatAdapter
 import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.AttachClickListener
 import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
 import com.quickblox.sample.chat.kotlin.ui.views.AttachmentPreviewAdapterView
+import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.SystemPermissionHelper
 import com.quickblox.sample.chat.kotlin.utils.chat.CHAT_HISTORY_ITEMS_PER_PAGE
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
@@ -49,6 +50,7 @@ import com.quickblox.users.model.QBUser
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.SmackException
+import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.io.File
 
 private const val REQUEST_CODE_ATTACHMENT = 721
@@ -142,8 +144,32 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         qbChatDialog = QbDialogHolder.getChatDialogById(dialogId)!!
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onResumeFinished() {
+        if (ChatHelper.isLogged()) {
+            if (!::qbChatDialog.isInitialized) {
+                qbChatDialog = intent.getSerializableExtra(EXTRA_DIALOG_ID) as QBChatDialog
+            }
+            qbChatDialog.initForChat(QBChatService.getInstance())
+            qbChatDialog.join(DiscussionHistory())
+            returnListeners()
+        } else {
+            showProgressDialog(R.string.dlg_loading)
+            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+                override fun onSuccess(aVoid: Void, bundle: Bundle) {
+                    qbChatDialog.initForChat(QBChatService.getInstance())
+                    returnListeners()
+                    hideProgressDialog()
+                }
+
+                override fun onError(e: QBResponseException) {
+                    hideProgressDialog()
+                    finish()
+                }
+            })
+        }
+    }
+
+    fun returnListeners() {
         dialogsManager.addManagingDialogsCallbackListener(this)
         systemMessagesManager = QBChatService.getInstance().systemMessagesManager
         systemMessagesManager.addSystemMessageListener(systemMessagesListener)
@@ -457,6 +483,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             chatMessage.isMarkable = true
 
             if (qbChatDialog.type != QBDialogType.PRIVATE && !qbChatDialog.isJoined) {
+                qbChatDialog.join(DiscussionHistory())
                 shortToast(R.string.chat_still_joining)
                 return
             }

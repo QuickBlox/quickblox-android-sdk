@@ -21,6 +21,7 @@ import com.quickblox.core.helper.StringifyArrayList
 import com.quickblox.core.request.QBPagedRequestBuilder
 import com.quickblox.core.request.QBRequestGetBuilder
 import com.quickblox.sample.chat.kotlin.*
+import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.qb.*
 import com.quickblox.sample.chat.kotlin.utils.qb.callback.QbEntityCallbackTwoTypeWrapper
 import com.quickblox.sample.chat.kotlin.utils.qb.callback.QbEntityCallbackWrapper
@@ -75,7 +76,7 @@ object ChatHelper {
     }
 
     fun getCurrentUser(): QBUser {
-        return QBChatService.getInstance().user
+        return SharedPrefsHelper.getQbUser()!!
     }
 
     fun addConnectionListener(listener: ConnectionListener?) {

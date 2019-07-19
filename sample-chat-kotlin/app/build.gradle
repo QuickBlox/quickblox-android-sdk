@@ -115,6 +115,8 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
         transitive = true
     }
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 }
 
 apply from: "../artifacts.gradle"

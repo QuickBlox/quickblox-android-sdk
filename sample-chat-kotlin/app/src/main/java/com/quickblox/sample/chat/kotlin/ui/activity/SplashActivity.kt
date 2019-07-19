@@ -79,9 +79,13 @@ class SplashActivity : BaseActivity() {
             }
 
             override fun onError(e: QBResponseException) {
-                hideProgressDialog()
-                Log.w(TAG, "Chat login onError(): $e")
-                showErrorSnackbar(R.string.error_recreate_session, e, View.OnClickListener { loginToChat(user) })
+                if (e.message.equals("You have already logged in chat")) {
+                    loginToChat(user)
+                } else {
+                    hideProgressDialog()
+                    Log.w(TAG, "Chat login onError(): $e")
+                    showErrorSnackbar(R.string.error_recreate_session, e, View.OnClickListener { loginToChat(user) })
+                }
             }
         })
     }
