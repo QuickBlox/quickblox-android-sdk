@@ -93,9 +93,6 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
             restartApp(this)
         }
 
-        //dialogsManager.addManagingDialogsCallbackListener(this)
-        //systemMessagesManager = QBChatService.getInstance().systemMessagesManager
-        //incomingMessagesManager = QBChatService.getInstance().incomingMessagesManager
         currentUser = ChatHelper.getCurrentUser()
 
         initUi()
