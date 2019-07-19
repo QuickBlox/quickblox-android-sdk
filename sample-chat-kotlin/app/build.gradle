@@ -30,7 +30,7 @@ repositories {
 }
 
 android {
-    def versionQACode = 4
+    def versionQACode = 1
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -40,8 +40,8 @@ android {
         applicationId "com.quickblox.sample.chat.kotlin"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 400000
-        versionName '4.0.0'
+        versionCode 410000
+        versionName '4.1.0'
         multiDexEnabled true
     }
 
