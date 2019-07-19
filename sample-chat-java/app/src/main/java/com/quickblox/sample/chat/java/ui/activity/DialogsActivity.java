@@ -114,29 +114,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServicesAvailable();
-        registerQbChatListeners();
-        pushBroadcastReceiver = new PushBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(FcmConsts.ACTION_NEW_FCM_EVENT));
-    }
-
-    private void checkPlayServicesAvailable() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_REQUEST_CODE).show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-        }
-    }
-
-    @Override
     public void onResumeFinished() {
         if (ChatHelper.getInstance().isLogged()) {
             checkPlayServicesAvailable();
@@ -158,6 +135,25 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 }
             });
         }
+    }
+
+    private void checkPlayServicesAvailable() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_REQUEST_CODE).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
     }
 
     @Override
