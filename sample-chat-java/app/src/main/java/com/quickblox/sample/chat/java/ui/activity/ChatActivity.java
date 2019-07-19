@@ -53,6 +53,7 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -165,6 +166,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                 qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
             }
             qbChatDialog.initForChat(QBChatService.getInstance());
+            try {
+                qbChatDialog.join(new DiscussionHistory());
+            } catch (Exception ignored) {
+
+            }
             returnListeners();
         } else {
             showProgressDialog(R.string.dlg_loading);
