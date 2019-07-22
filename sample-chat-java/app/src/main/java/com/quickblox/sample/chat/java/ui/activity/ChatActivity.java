@@ -168,8 +168,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             qbChatDialog.initForChat(QBChatService.getInstance());
             try {
                 qbChatDialog.join(new DiscussionHistory());
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                finish();
             }
             returnListeners();
         } else {
@@ -236,7 +236,22 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         MenuItem menuItemAdd = menu.findItem(R.id.menu_chat_action_add);
         MenuItem menuItemDelete = menu.findItem(R.id.menu_chat_action_delete);
 
-        if (qbChatDialog.getType() == QBDialogType.PRIVATE) {
+        switch (qbChatDialog.getType()) {
+            case GROUP:
+                menuItemDelete.setVisible(false);
+                break;
+            case PRIVATE:
+                menuItemAdd.setVisible(false);
+                menuItemLeave.setVisible(false);
+                break;
+            case PUBLIC_GROUP:
+                menuItemAdd.setVisible(false);
+                menuItemLeave.setVisible(false);
+                menuItemDelete.setVisible(false);
+                break;
+        }
+
+        /*if (qbChatDialog.getType() == QBDialogType.PRIVATE) {
             menuItemLeave.setVisible(false);
             menuItemAdd.setVisible(false);
         } else {
@@ -245,7 +260,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
         if (qbChatDialog.getType() != QBDialogType.GROUP) {
             menu.findItem(R.id.menu_chat_action_add).setVisible(false);
-        }
+        }*/
 
         return true;
     }

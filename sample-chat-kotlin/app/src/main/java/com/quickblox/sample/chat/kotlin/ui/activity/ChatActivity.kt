@@ -50,6 +50,7 @@ import com.quickblox.users.model.QBUser
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.SmackException
+import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.io.File
 
@@ -150,7 +151,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 qbChatDialog = intent.getSerializableExtra(EXTRA_DIALOG_ID) as QBChatDialog
             }
             qbChatDialog.initForChat(QBChatService.getInstance())
-            qbChatDialog.join(DiscussionHistory())
+            try{
+                qbChatDialog.join(DiscussionHistory())
+            } catch (e : Exception) {
+                finish()
+            }
             returnListeners()
         } else {
             showProgressDialog(R.string.dlg_loading)
@@ -207,11 +212,24 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         val menuItemDelete = menu.findItem(R.id.menu_chat_action_delete)
 
         when (qbChatDialog.type) {
+            QBDialogType.GROUP -> {
+                menuItemDelete.isVisible = false
+            }
+
             QBDialogType.PRIVATE -> {
                 menuItemLeave.isVisible = false
                 menuItemAdd.isVisible = false
             }
-            else -> menuItemDelete.isVisible = false
+
+            QBDialogType.PUBLIC_GROUP -> {
+                menuItemAdd.isVisible = false
+                menuItemLeave.isVisible = false
+                menuItemDelete.isVisible = false
+            }
+
+            else -> {
+
+            }
         }
 
         if (qbChatDialog.type != QBDialogType.GROUP) {

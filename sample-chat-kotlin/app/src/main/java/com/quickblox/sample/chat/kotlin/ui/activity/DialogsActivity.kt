@@ -27,8 +27,10 @@ import com.quickblox.chat.listeners.QBChatDialogMessageListener
 import com.quickblox.chat.listeners.QBSystemMessageListener
 import com.quickblox.chat.model.QBChatDialog
 import com.quickblox.chat.model.QBChatMessage
+import com.quickblox.chat.model.QBDialogType
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
+import com.quickblox.core.helper.CollectionUtils
 import com.quickblox.core.request.QBRequestGetBuilder
 import com.quickblox.messages.services.QBPushManager
 import com.quickblox.messages.services.SubscribeService
@@ -459,24 +461,38 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
 
         private fun deleteSelectedDialogs() {
             val selectedDialogs = dialogsAdapter.selectedItems
+            var dialogsToDelete = ArrayList<QBChatDialog>()
             for (dialog in selectedDialogs) {
-                dialogsManager.sendMessageLeftUser(dialog)
-                dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, dialog)
+                when {
+                    dialog.type == QBDialogType.PUBLIC_GROUP -> {
+                        shortToast(getString(R.string.dialogs_cannot_delete_chat, dialog.name))
+                    }
+                    dialog.type == QBDialogType.GROUP -> {
+                        dialogsToDelete.add(dialog)
+                        dialogsManager.sendMessageLeftUser(dialog)
+                        dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, dialog)
+                    }
+                    dialog.type == QBDialogType.PRIVATE -> {
+                        dialogsToDelete.add(dialog)
+                    }
+                }
             }
 
-            ChatHelper.deleteDialogs(selectedDialogs, object : QBEntityCallback<ArrayList<String>> {
-                override fun onSuccess(dialogsIds: ArrayList<String>, bundle: Bundle?) {
-                    Log.d(TAG, "Dialogs Deleting Successful")
-                    QbDialogHolder.deleteDialogs(dialogsIds)
-                    updateDialogsAdapter()
-                }
+            if (!CollectionUtils.isEmpty(dialogsToDelete)) {
+                ChatHelper.deleteDialogs(dialogsToDelete, object : QBEntityCallback<ArrayList<String>> {
+                    override fun onSuccess(dialogsIds: ArrayList<String>, bundle: Bundle?) {
+                        Log.d(TAG, "Dialogs Deleting Successful")
+                        QbDialogHolder.deleteDialogs(dialogsIds)
+                        updateDialogsAdapter()
+                    }
 
-                override fun onError(e: QBResponseException) {
-                    Log.d(TAG, "Deleting Dialogs Error: " + e.message)
-                    showErrorSnackbar(R.string.dialogs_deletion_error, e,
-                            View.OnClickListener { deleteSelectedDialogs() })
-                }
-            })
+                    override fun onError(e: QBResponseException) {
+                        Log.d(TAG, "Deleting Dialogs Error: " + e.message)
+                        showErrorSnackbar(R.string.dialogs_deletion_error, e,
+                                View.OnClickListener { deleteSelectedDialogs() })
+                    }
+                })
+            }
         }
     }
 
