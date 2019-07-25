@@ -30,10 +30,10 @@
     <string name="pref_videocodec_key">videocodec_preference</string>
 
     <string name="error_name_must_not_contain_special_characters_from_app">%1$s must contain 3 &#8212;
-        %2$s alphanumeric Latin characters without space, the first char must be a letter</string>
+        %2$s alphanumeric Latin characters without spaces, the first char must be a letter</string>
 
-    <string name="field_name_user_name">User name</string>
-    <string name="field_name_chat_room_name">Chat room name</string>
+    <string name="field_name_user_login">User name</string>
+    <string name="field_name_user_fullname">User Full Name</string>
 
     <integer name="pref_default_int_value">0</integer>
     <integer name="pref_seekbar_step_default_int_value">1</integer>
