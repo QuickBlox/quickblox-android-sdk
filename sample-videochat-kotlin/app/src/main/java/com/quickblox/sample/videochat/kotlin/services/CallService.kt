@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -234,6 +235,10 @@ class CallService : Service() {
         appRTCAudioManager.start { selectedAudioDevice, availableAudioDevices ->
             shortToast("Audio device switched to  $selectedAudioDevice")
         }
+
+        if (currentSession!!.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
+            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+        }
     }
 
     fun releaseAudioManager() {
@@ -374,6 +379,21 @@ class CallService : Service() {
     fun switchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler) {
         val videoCapturer = currentSession?.mediaStreamManager?.videoCapturer as QBRTCCameraVideoCapturer
         videoCapturer.switchCamera(cameraSwitchHandler)
+    }
+
+    fun switchAudio() {
+        Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + appRTCAudioManager.selectedAudioDevice)
+        if (appRTCAudioManager.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
+            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
+        } else {
+            if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
+            } else if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
+            } else {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+            }
+        }
     }
 
     fun isSharingScreenState(): Boolean {

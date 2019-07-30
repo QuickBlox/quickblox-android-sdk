@@ -105,8 +105,12 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
     protected abstract fun configureOutgoingScreen()
 
     protected open fun initFields() {
-        val user = QBChatService.getInstance().user
-        currentUser = user
+        if (QBChatService.getInstance().user == null) {
+            currentUser = SharedPrefsHelper.getQbUser()
+        } else {
+            currentUser = QBChatService.getInstance().user
+        }
+
         arguments?.let {
             isIncomingCall = it.getBoolean(EXTRA_IS_INCOMING_CALL, false)
         }

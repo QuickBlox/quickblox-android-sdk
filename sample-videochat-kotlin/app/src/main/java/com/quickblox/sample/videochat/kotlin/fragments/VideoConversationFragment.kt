@@ -402,8 +402,10 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
         userID?.let {
             if (isPeerToPeerCall) {
                 setDuringCallActionBar()
-                fillVideoView(remoteFullScreenVideoView!!, videoTrack, true)
-                updateVideoView(remoteFullScreenVideoView!!, false)
+                remoteFullScreenVideoView?.let {
+                    fillVideoView(remoteFullScreenVideoView!!, videoTrack, true)
+                    updateVideoView(remoteFullScreenVideoView!!, false)
+                }
             } else {
                 mainHandler.postDelayed({ setRemoteViewMultiCall(it, videoTrack) }, LOCAL_TRACK_INITIALIZE_DELAY)
             }
@@ -484,15 +486,17 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
 
         Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView")
         if (isRemoteShown) {
-            Log.d(TAG, "USer onRemoteVideoTrackReceive = $userID")
+            Log.d(TAG, "onRemoteVideoTrackReceive User = $userID")
             fillVideoView(remoteVideoView, videoTrack, true)
         } else {
             isRemoteShown = true
             opponentsAdapter.removeItem(itemHolder.adapterPosition)
             setDuringCallActionBar()
             setRecyclerViewVisibleState()
-            fillVideoView(userID, remoteFullScreenVideoView!!, videoTrack)
-            updateVideoView(remoteFullScreenVideoView!!, false)
+            remoteFullScreenVideoView?.let {
+                fillVideoView(userID, it, videoTrack)
+                updateVideoView(remoteFullScreenVideoView!!, false)
+            }
         }
     }
 

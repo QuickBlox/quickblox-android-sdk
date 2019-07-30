@@ -478,7 +478,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onSwitchAudio() {
-
+        callService.switchAudio()
     }
 
     override fun removeSessionStateListener(clientConnectionCallbacks: QBRTCSessionStateCallback<*>?) {
