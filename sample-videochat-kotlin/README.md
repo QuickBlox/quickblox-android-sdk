@@ -39,7 +39,7 @@ How Push-Notifications API works:
 
 
 This Sample demonstrates how to work with [Android VideoChat](https://quickblox.com/developers/Sample-webrtc-android) QuickBlox module.
-*this is original sample description & setup guide.
+*this is the original sample description & setup guide.
 
 The sample allows to:
 
