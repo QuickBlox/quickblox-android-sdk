@@ -15,8 +15,8 @@ Welcome to QuickBlox [5 Minute Guide](https://quickblox.com/developers/5_Minute_
 
 # Push Notifications in VideoChat Sample
 
-Push Notifications in this sample used to notify offline user about incoming call.
-To send and receive push notifications in sample you should have a Firebase account and Firebase Cloud Messaging project
+Push Notifications in this sample are used to notify offline user about an incoming call.
+To send and receive push notifications in the sample you should have a Firebase account and Firebase Cloud Messaging project.
 
 How QuickBlox Push Notifications work:
 (https://quickblox.com/developers/SimpleSample-messages_users-android#How_QuickBlox_Push_Notifications_work)
@@ -35,7 +35,7 @@ How Push-Notifications API works:
 # To launch the sample
 
 1. Register a free QuickBlox account and add your App there.
-2. Update credentials in your application code.[Chat](https://quickblox.com/developers/5_Minute_Guide#Update_authentication_credentials_2)
+2. Update credentials in your application code. [Video Chat](https://quickblox.com/developers/5_Minute_Guide#Update_authentication_credentials_2)
 
 
 This Sample demonstrates how to work with [Android VideoChat](https://quickblox.com/developers/Sample-webrtc-android) QuickBlox module.
@@ -43,8 +43,8 @@ This Sample demonstrates how to work with [Android VideoChat](https://quickblox.
 
 The sample allows to:
 
-1. Authenticate with Quickblox.
-2. Receive and display users list.
+1. Authenticate with Quickblox
+2. Receive and display users list
 3. Make audio calls
 4. Make video calls
 5. Make one-to-one calls
