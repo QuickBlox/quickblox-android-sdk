@@ -59,6 +59,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             val intent = Intent(context, CallActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(EXTRA_IS_INCOMING_CALL, isIncomingCall)
+            SharedPrefsHelper.save(EXTRA_IS_INCOMING_CALL, isIncomingCall)
             context.startActivity(intent)
             CallService.start(context)
         }
@@ -89,7 +90,11 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             }
             addConversationFragment(isInComingCall)
         } else {
-            isInComingCall = intent?.extras?.getBoolean(EXTRA_IS_INCOMING_CALL) ?: true
+            if (intent != null && intent.extras != null) {
+                isInComingCall = intent?.extras?.getBoolean(EXTRA_IS_INCOMING_CALL) ?: true
+            } else {
+                isInComingCall = SharedPrefsHelper.get(EXTRA_IS_INCOMING_CALL, false)
+            }
 
             if (!isInComingCall) {
                 callService.playRingtone()
@@ -153,14 +158,20 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     private fun startSuitableFragment(isInComingCall: Boolean) {
-        if (isInComingCall) {
-            initIncomingCallTask()
-            startLoadAbsentUsers()
-            addIncomeCallFragment()
-            checkPermission()
+        val session = WebRtcSessionManager.getCurrentSession()
+        if (session != null) {
+            if (isInComingCall) {
+                initIncomingCallTask()
+                startLoadAbsentUsers()
+                addIncomeCallFragment()
+                checkPermission()
+            } else {
+                addConversationFragment(isInComingCall)
+                intent.removeExtra(EXTRA_IS_INCOMING_CALL)
+                SharedPrefsHelper.save(EXTRA_IS_INCOMING_CALL, false)
+            }
         } else {
-            addConversationFragment(isInComingCall)
-            intent.removeExtra(EXTRA_IS_INCOMING_CALL)
+            finish()
         }
     }
 

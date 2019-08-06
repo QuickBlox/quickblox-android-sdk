@@ -14,11 +14,18 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.quickblox.chat.QBChatService
+import com.quickblox.core.QBEntityCallback
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.activities.CallActivity
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
+import com.quickblox.sample.videochat.kotlin.fragments.CAMERA_ENABLED
+import com.quickblox.sample.videochat.kotlin.fragments.IS_CURRENT_CAMERA_FRONT
+import com.quickblox.sample.videochat.kotlin.fragments.MIC_ENABLED
+import com.quickblox.sample.videochat.kotlin.fragments.SPEAKER_ENABLED
 import com.quickblox.sample.videochat.kotlin.util.NetworkConnectionChecker
+import com.quickblox.sample.videochat.kotlin.util.loadUsersByIds
 import com.quickblox.sample.videochat.kotlin.utils.*
+import com.quickblox.users.QBUsers
 import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.*
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException
@@ -99,7 +106,10 @@ class CallService : Service() {
         releaseAudioManager()
 
         stopCallTimer()
+        clearButtonsState()
         stopForeground(true)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -236,7 +246,7 @@ class CallService : Service() {
             shortToast("Audio device switched to  $selectedAudioDevice")
         }
 
-        if (currentSession!!.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
+        if (currentSessionExist() && currentSession!!.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
             appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
         }
     }
@@ -461,6 +471,14 @@ class CallService : Service() {
 
         callTimer.cancel()
         callTimer.purge()
+    }
+
+    fun clearButtonsState() {
+        SharedPrefsHelper.delete(MIC_ENABLED)
+        SharedPrefsHelper.delete(SPEAKER_ENABLED)
+        SharedPrefsHelper.delete(CAMERA_ENABLED)
+        SharedPrefsHelper.delete(IS_CURRENT_CAMERA_FRONT)
+        SharedPrefsHelper.delete(EXTRA_IS_INCOMING_CALL)
     }
 
     private inner class CallTimerTask : TimerTask() {
