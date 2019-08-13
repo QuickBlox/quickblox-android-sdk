@@ -81,7 +81,7 @@ class CallService : Service() {
 
     override fun onCreate() {
         currentSession = WebRtcSessionManager.getCurrentSession()
-
+        clearButtonsState()
         initNetworkChecker()
         initRTCClient()
         initListeners()

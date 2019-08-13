@@ -185,7 +185,6 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
     }
 
     override fun onCallStarted() {
-        clearButtonsState()
         hideOutgoingScreen()
         startTimer()
         actionButtonsEnabled(true)
