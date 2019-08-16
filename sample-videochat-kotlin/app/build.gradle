@@ -30,7 +30,7 @@ repositories {
 }
 
 android {
-    def versionQACode = 2
+    def versionQACode = 3
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
