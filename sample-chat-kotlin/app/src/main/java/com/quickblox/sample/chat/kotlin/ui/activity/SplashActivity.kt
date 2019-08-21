@@ -33,6 +33,10 @@ class SplashActivity : BaseActivity() {
         }, SPLASH_DELAY.toLong())
     }
 
+    override fun onBackPressed() {
+
+    }
+
     private fun fillVersion() {
         val appName = getString(R.string.app_name)
         findViewById<TextView>(R.id.text_splash_app_title).text = appName

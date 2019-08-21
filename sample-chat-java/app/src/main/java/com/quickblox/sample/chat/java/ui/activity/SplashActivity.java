@@ -42,6 +42,11 @@ public class SplashActivity extends BaseActivity {
         }, SPLASH_DELAY);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     private void fillVersion() {
         String appName = getString(R.string.app_name);
         ((TextView) findViewById(R.id.text_splash_app_title)).setText(appName);
