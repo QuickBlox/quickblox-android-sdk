@@ -112,12 +112,14 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
         if (ChatHelper.isLogged()) {
             checkPlayServicesAvailable()
             registerQbChatListeners()
+            loadDialogsFromQb(true, true)
         } else {
             showProgressDialog(R.string.dlg_loading)
             ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
                 override fun onSuccess(aVoid: Void, bundle: Bundle) {
                     checkPlayServicesAvailable()
                     registerQbChatListeners()
+                    loadDialogsFromQb(true, true)
                     hideProgressDialog()
                 }
 

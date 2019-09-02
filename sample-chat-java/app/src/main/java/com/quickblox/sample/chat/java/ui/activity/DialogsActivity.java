@@ -122,6 +122,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         if (ChatHelper.getInstance().isLogged()) {
             checkPlayServicesAvailable();
             registerQbChatListeners();
+            loadDialogsFromQb(true, true);
         } else {
             showProgressDialog(R.string.dlg_loading);
             ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
@@ -129,6 +130,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 public void onSuccess(Void aVoid, Bundle bundle) {
                     checkPlayServicesAvailable();
                     registerQbChatListeners();
+                    loadDialogsFromQb(true, true);
                     hideProgressDialog();
                 }
 
