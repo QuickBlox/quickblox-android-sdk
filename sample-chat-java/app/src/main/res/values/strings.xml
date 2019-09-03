@@ -17,6 +17,10 @@
     <string name="menu_select_people_done">Done</string>
     <string name="menu_start_login_done">Done</string>
 
+    <string name="error_name_must_not_contain_special_characters_from_app">%1$s must contain 3 &#8212; %2$s alphanumeric Latin characters without spaces, the first char must be a letter</string>
+    <string name="field_name_user_login">User name</string>
+    <string name="field_name_user_fullname">User Full Name</string>
+
     <string name="dlg_loading">Loading</string>
     <string name="dlg_restoring_chat_session">Restoring chat session…</string>
     <string name="dlg_restoring_chat_session_logout">Restoring session and logout</string>

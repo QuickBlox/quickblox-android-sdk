@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +15,13 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.App;
 import com.quickblox.sample.chat.java.R;
 import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
+import com.quickblox.sample.chat.java.utils.ValidationUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 public class LoginActivity extends BaseActivity {
     private static final int UNAUTHORIZED = 401;
-    private static final int MIN_LENGTH = 3;
 
     private EditText loginEt;
     private EditText usernameEt;
@@ -40,8 +39,8 @@ public class LoginActivity extends BaseActivity {
         loginEt = findViewById(R.id.login);
         usernameEt = findViewById(R.id.user_name);
 
-        loginEt.addTextChangedListener(new TextWatcherListener());
-        usernameEt.addTextChangedListener(new TextWatcherListener());
+        loginEt.addTextChangedListener(new TextWatcherListener(loginEt));
+        usernameEt.addTextChangedListener(new TextWatcherListener(usernameEt));
     }
 
     @Override
@@ -54,7 +53,7 @@ public class LoginActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                if (isValidInputtedData()) {
+                if (ValidationUtils.isLoginValid(this, loginEt) && ValidationUtils.isFullNameValid(this, usernameEt)) {
                     QBUser qbUser = new QBUser();
                     qbUser.setLogin(loginEt.getText().toString().trim());
                     qbUser.setFullName(usernameEt.getText().toString().trim());
@@ -134,21 +133,6 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    private Boolean isValidInputtedData() {
-        boolean valid = true;
-        if (TextUtils.isEmpty(loginEt.getText().toString().trim())
-                || loginEt.getText().toString().trim().length() < MIN_LENGTH) {
-            loginEt.setError(getString(R.string.login_data_error));
-            valid = false;
-        }
-        if (TextUtils.isEmpty(usernameEt.getText().toString().trim())
-                || usernameEt.getText().toString().trim().length() < MIN_LENGTH) {
-            usernameEt.setError(getString(R.string.username_data_error));
-            valid = false;
-        }
-        return valid;
-    }
-
     private void signUp(final QBUser newUser) {
         SharedPrefsHelper.getInstance().removeQbUser();
         QBUsers.signUp(newUser).performAsync(new QBEntityCallback<QBUser>() {
@@ -167,6 +151,11 @@ public class LoginActivity extends BaseActivity {
     }
 
     private class TextWatcherListener implements TextWatcher {
+        private EditText editText;
+
+        private TextWatcherListener(EditText editText) {
+            this.editText = editText;
+        }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -175,7 +164,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            isValidInputtedData();
+            editText.setError(null);
         }
 
         @Override
