@@ -107,13 +107,15 @@ class SelectUsersActivity : BaseActivity() {
 
         when (item.itemId) {
             R.id.menu_select_people_action_done -> {
-                if (usersAdapter.selectedUsers.size < MINIMUM_CHAT_OCCUPANTS_SIZE) {
-                    shortToast(R.string.select_users_choose_users)
-                } else {
-                    if (qbChatDialog == null && usersAdapter.selectedUsers.size >= PRIVATE_CHAT_OCCUPANTS_SIZE) {
-                        showChatNameDialog()
+                if (::usersAdapter.isInitialized) {
+                    if (usersAdapter.selectedUsers.size < MINIMUM_CHAT_OCCUPANTS_SIZE) {
+                        shortToast(R.string.select_users_choose_users)
                     } else {
-                        passResultToCallerActivity()
+                        if (qbChatDialog == null && usersAdapter.selectedUsers.size >= PRIVATE_CHAT_OCCUPANTS_SIZE) {
+                            showChatNameDialog()
+                        } else {
+                            passResultToCallerActivity()
+                        }
                     }
                 }
                 return true
