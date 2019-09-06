@@ -107,6 +107,7 @@ class CallService : Service() {
 
         stopCallTimer()
         clearButtonsState()
+        clearCallState()
         stopForeground(true)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
@@ -152,9 +153,9 @@ class CallService : Service() {
         builder.setLargeIcon(bitmapIcon)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            builder.priority = NotificationManager.IMPORTANCE_MAX
+            builder.priority = NotificationManager.IMPORTANCE_LOW
         } else {
-            builder.priority = Notification.PRIORITY_MAX
+            builder.priority = Notification.PRIORITY_LOW
         }
         builder.apply {
             setContentIntent(notifyPendingIntent)
@@ -164,9 +165,9 @@ class CallService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String): String {
-        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
         channel.lightColor = getColor(R.color.green)
-        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(channel)
         return channelId
@@ -478,6 +479,9 @@ class CallService : Service() {
         SharedPrefsHelper.delete(SPEAKER_ENABLED)
         SharedPrefsHelper.delete(CAMERA_ENABLED)
         SharedPrefsHelper.delete(IS_CURRENT_CAMERA_FRONT)
+    }
+
+    fun clearCallState() {
         SharedPrefsHelper.delete(EXTRA_IS_INCOMING_CALL)
     }
 
