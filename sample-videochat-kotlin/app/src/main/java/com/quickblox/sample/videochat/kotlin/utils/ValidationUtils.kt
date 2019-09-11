@@ -9,9 +9,9 @@ private fun isEnteredTextValid(context: Context, editText: EditText, resFieldNam
     var isCorrect = false
     val p: Pattern
     if (checkName) {
-        p = Pattern.compile("^[a-zA-Z][a-zA-Z 0-9]{2," + (maxLength - 1) + "}+$")
-    } else {
         p = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{2," + (maxLength - 1) + "}+$")
+    } else {
+        p = Pattern.compile("^[a-zA-Z][a-zA-Z 0-9]{2," + (maxLength - 1) + "}+$")
     }
     if (editText.text.toString().isNotBlank()) {
         val m = p.matcher(editText.text.toString().trim { it <= ' ' })
@@ -27,10 +27,10 @@ private fun isEnteredTextValid(context: Context, editText: EditText, resFieldNam
     }
 }
 
-fun isUserNameValid(context: Context, editText: EditText): Boolean {
-    return isEnteredTextValid(context, editText, R.string.field_name_user_name, 20, true)
+fun isLoginValid(context: Context, editText: EditText): Boolean {
+    return isEnteredTextValid(context, editText, R.string.field_name_user_login, MAX_LOGIN_LENGTH, true)
 }
 
-fun isRoomNameValid(context: Context, editText: EditText): Boolean {
-    return isEnteredTextValid(context, editText, R.string.field_name_chat_room_name, 15, false)
+fun isFoolNameValid(context: Context, editText: EditText): Boolean {
+    return isEnteredTextValid(context, editText, R.string.field_name_user_fullname, MAX_FULLNAME_LENGTH, false)
 }

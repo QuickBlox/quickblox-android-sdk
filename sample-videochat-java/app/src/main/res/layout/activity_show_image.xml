@@ -1,0 +1,17 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/image_full_view"
+        style="@style/MatchParent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_show_image"
+        style="@style/WrapContent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

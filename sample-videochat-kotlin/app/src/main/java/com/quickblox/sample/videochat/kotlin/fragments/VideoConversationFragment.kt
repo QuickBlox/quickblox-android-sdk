@@ -38,13 +38,16 @@ import java.io.Serializable
 import java.util.*
 
 const val CAMERA_ENABLED = "is_camera_enabled"
+const val IS_CURRENT_CAMERA_FRONT = "is_camera_front"
 private const val LOCAL_TRACK_INITIALIZE_DELAY: Long = 800
 private const val RECYCLE_VIEW_PADDING = 2
 private const val UPDATING_USERS_DELAY: Long = 2000
 private const val FULL_SCREEN_CLICK_DELAY: Long = 1000
 
-class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRTCClientVideoTracksCallbacks<QBRTCSession>,
-        QBRTCSessionStateCallback<QBRTCSession>, QBRTCSessionEventsCallback, OpponentsFromCallAdapter.OnAdapterEventListener {
+class VideoConversationFragment : BaseConversationFragment(), Serializable,
+    QBRTCClientVideoTracksCallbacks<QBRTCSession>,
+    QBRTCSessionStateCallback<QBRTCSession>, QBRTCSessionEventsCallback,
+    OpponentsFromCallAdapter.OnAdapterEventListener {
     private val TAG = VideoConversationFragment::class.java.simpleName
 
     //Views
@@ -62,6 +65,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
     private lateinit var localViewOnClickListener: LocalViewOnClickListener
     private var isPeerToPeerCall: Boolean = false
     private var localVideoTrack: QBRTCVideoTrack? = null
+    private var optionsMenu: Menu? = null
     private var isRemoteShown: Boolean = false
     private var amountOpponents: Int = 0
     private var userIDFullScreen: Int = 0
@@ -197,8 +201,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
         cameraToggle.visibility = View.VISIBLE
         cameraToggle.isChecked = SharedPrefsHelper.get(CAMERA_ENABLED, true)
         toggleCamera(cameraToggle.isChecked)
-
         actionVideoButtonsLayout = view.findViewById(R.id.element_set_video_buttons)
+
+        isCurrentCameraFront = SharedPrefsHelper.get(IS_CURRENT_CAMERA_FRONT, true)
+        if (!isCurrentCameraFront) {
+            switchCamera(null)
+        }
 
         actionButtonsEnabled(false)
         restoreSession()
@@ -333,13 +341,18 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
         }
     }
 
-    private fun switchCamera(item: MenuItem) {
+    private fun switchCamera(item: MenuItem?) {
         cameraToggle.isEnabled = false
         conversationFragmentCallback?.onSwitchCamera(object : CameraVideoCapturer.CameraSwitchHandler {
             override fun onCameraSwitchDone(b: Boolean) {
                 Log.d(TAG, "camera switched, bool = $b")
                 isCurrentCameraFront = b
-                updateSwitchCameraIcon(item)
+                SharedPrefsHelper.save(IS_CURRENT_CAMERA_FRONT, b)
+                if (item != null) {
+                    updateSwitchCameraIcon(item)
+                } else {
+                    optionsMenu?.findItem(R.id.camera_switch)?.setIcon(R.drawable.ic_camera_rear)
+                }
                 toggleCameraInternal()
             }
 
@@ -402,8 +415,10 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
         userID?.let {
             if (isPeerToPeerCall) {
                 setDuringCallActionBar()
-                fillVideoView(remoteFullScreenVideoView!!, videoTrack, true)
-                updateVideoView(remoteFullScreenVideoView!!, false)
+                remoteFullScreenVideoView?.let {
+                    fillVideoView(remoteFullScreenVideoView!!, videoTrack, true)
+                    updateVideoView(remoteFullScreenVideoView!!, false)
+                }
             } else {
                 mainHandler.postDelayed({ setRemoteViewMultiCall(it, videoTrack) }, LOCAL_TRACK_INITIALIZE_DELAY)
             }
@@ -484,15 +499,17 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
 
         Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView")
         if (isRemoteShown) {
-            Log.d(TAG, "USer onRemoteVideoTrackReceive = $userID")
+            Log.d(TAG, "onRemoteVideoTrackReceive User = $userID")
             fillVideoView(remoteVideoView, videoTrack, true)
         } else {
             isRemoteShown = true
             opponentsAdapter.removeItem(itemHolder.adapterPosition)
             setDuringCallActionBar()
             setRecyclerViewVisibleState()
-            fillVideoView(userID, remoteFullScreenVideoView!!, videoTrack)
-            updateVideoView(remoteFullScreenVideoView!!, false)
+            remoteFullScreenVideoView?.let {
+                fillVideoView(userID, it, videoTrack)
+                updateVideoView(remoteFullScreenVideoView!!, false)
+            }
         }
     }
 
@@ -700,7 +717,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.conversation_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
-
+        optionsMenu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -754,7 +771,8 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable, QBRT
         }, UPDATING_USERS_DELAY)
     }
 
-    internal inner class DividerItemDecoration(context: Context, @DimenRes dimensionDivider: Int) : RecyclerView.ItemDecoration() {
+    internal inner class DividerItemDecoration(context: Context, @DimenRes dimensionDivider: Int) :
+        RecyclerView.ItemDecoration() {
         private val space: Int = context.resources.getDimensionPixelSize(dimensionDivider)
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

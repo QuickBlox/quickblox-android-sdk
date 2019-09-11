@@ -68,11 +68,11 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun isEnteredUserNameValid(): Boolean {
-        return isUserNameValid(this, userLoginEditText)
+        return isLoginValid(this, userLoginEditText)
     }
 
     private fun isEnteredRoomNameValid(): Boolean {
-        return isRoomNameValid(this, userFullNameEditText)
+        return isFoolNameValid(this, userFullNameEditText)
     }
 
     private fun hideKeyboard() {

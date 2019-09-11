@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -13,11 +14,18 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.quickblox.chat.QBChatService
+import com.quickblox.core.QBEntityCallback
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.activities.CallActivity
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
+import com.quickblox.sample.videochat.kotlin.fragments.CAMERA_ENABLED
+import com.quickblox.sample.videochat.kotlin.fragments.IS_CURRENT_CAMERA_FRONT
+import com.quickblox.sample.videochat.kotlin.fragments.MIC_ENABLED
+import com.quickblox.sample.videochat.kotlin.fragments.SPEAKER_ENABLED
 import com.quickblox.sample.videochat.kotlin.util.NetworkConnectionChecker
+import com.quickblox.sample.videochat.kotlin.util.loadUsersByIds
 import com.quickblox.sample.videochat.kotlin.utils.*
+import com.quickblox.users.QBUsers
 import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.*
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException
@@ -73,7 +81,7 @@ class CallService : Service() {
 
     override fun onCreate() {
         currentSession = WebRtcSessionManager.getCurrentSession()
-
+        clearButtonsState()
         initNetworkChecker()
         initRTCClient()
         initListeners()
@@ -98,7 +106,11 @@ class CallService : Service() {
         releaseAudioManager()
 
         stopCallTimer()
+        clearButtonsState()
+        clearCallState()
         stopForeground(true)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -141,9 +153,9 @@ class CallService : Service() {
         builder.setLargeIcon(bitmapIcon)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            builder.priority = NotificationManager.IMPORTANCE_MAX
+            builder.priority = NotificationManager.IMPORTANCE_LOW
         } else {
-            builder.priority = Notification.PRIORITY_MAX
+            builder.priority = Notification.PRIORITY_LOW
         }
         builder.apply {
             setContentIntent(notifyPendingIntent)
@@ -153,9 +165,9 @@ class CallService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String): String {
-        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
         channel.lightColor = getColor(R.color.green)
-        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(channel)
         return channelId
@@ -233,6 +245,10 @@ class CallService : Service() {
 
         appRTCAudioManager.start { selectedAudioDevice, availableAudioDevices ->
             shortToast("Audio device switched to  $selectedAudioDevice")
+        }
+
+        if (currentSessionExist() && currentSession!!.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
+            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
         }
     }
 
@@ -376,6 +392,21 @@ class CallService : Service() {
         videoCapturer.switchCamera(cameraSwitchHandler)
     }
 
+    fun switchAudio() {
+        Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + appRTCAudioManager.selectedAudioDevice)
+        if (appRTCAudioManager.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
+            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
+        } else {
+            if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
+            } else if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
+            } else {
+                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+            }
+        }
+    }
+
     fun isSharingScreenState(): Boolean {
         return sharingScreenState
     }
@@ -441,6 +472,17 @@ class CallService : Service() {
 
         callTimer.cancel()
         callTimer.purge()
+    }
+
+    fun clearButtonsState() {
+        SharedPrefsHelper.delete(MIC_ENABLED)
+        SharedPrefsHelper.delete(SPEAKER_ENABLED)
+        SharedPrefsHelper.delete(CAMERA_ENABLED)
+        SharedPrefsHelper.delete(IS_CURRENT_CAMERA_FRONT)
+    }
+
+    fun clearCallState() {
+        SharedPrefsHelper.delete(EXTRA_IS_INCOMING_CALL)
     }
 
     private inner class CallTimerTask : TimerTask() {
