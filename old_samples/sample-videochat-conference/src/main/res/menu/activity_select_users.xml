@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_refresh_users"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/menu_refresh_users"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_select_people_action_done"
+        android:icon="@drawable/ic_group"
+        android:title="@string/menu_select_people_done"
+        app:showAsAction="ifRoom" />
+</menu>

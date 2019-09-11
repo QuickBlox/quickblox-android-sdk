@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    style="@style/ListItem"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingLeft="@dimen/list_item_side_margin"
+    android:paddingRight="@dimen/list_item_side_margin"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/image_dialog_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="16dp"
+        android:scaleType="centerInside"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_chat_group" />
+
+    <LinearLayout
+        style="@style/WeightWidth"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_dialog_name"
+            style="@style/MatchWidth"
+            android:singleLine="true"
+            android:textColor="@color/text_color_primary"
+            android:textSize="16sp"
+            tools:text="Room name" />
+
+        <TextView
+            android:id="@+id/text_dialog_last_message"
+            style="@style/MatchWidth"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_color_dark_grey"
+            android:textSize="14sp"
+            tools:text="Long last message to see how margin on the right side works" />
+    </LinearLayout>
+</LinearLayout>

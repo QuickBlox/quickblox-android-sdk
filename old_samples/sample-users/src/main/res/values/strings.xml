@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Users</string>
+    <string name="splash_app_title">Users Sample</string>
+    <string name="user_details">User Details</string>
+    <string name="users">Users</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="user_log_out_msg">User successfully logout!</string>
+    <string name="user_successfully_sign_in">User was successfully sign in!</string>
+
+    <string name="signed_in">Signed In</string>
+    <string name="not_signed_in">Not Signed In</string>
+
+    <string name="select">Select User</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="check">Check</string>
+    <string name="profile">Profile</string>
+    <string name="logout">LogOut</string>
+    <string name="update">Updated!</string>
+
+    <string name="user">User</string>
+    <string name="username">Username</string>
+    <string name="full_name">Full name</string>
+    <string name="alex_bass">Alex Bass</string>
+    <string name="alex_full">Alex "the King" Bass</string>
+    <string name="alex_email">alex@bass.com</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="tags">Tags</string>
+
+    <string name="confirm_password">Confirm password</string>
+    <string name="confirm_error">Passwords does not match!</string>
+    <string name="error">error</string>
+    <string name="errors">Errors</string>
+    <string name="error_field_is_empty">Field is empty!</string>
+
+</resources>

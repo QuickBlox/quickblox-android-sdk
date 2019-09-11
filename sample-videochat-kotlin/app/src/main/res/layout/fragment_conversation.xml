@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentOpponents"
+    style="@style/MatchParent"
+    android:background="@color/background_fragment_conversation">
+
+    <FrameLayout
+        android:id="@+id/inner_frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_above="@+id/element_set_call_buttons"
+        android:layout_gravity="center">
+
+        <com.quickblox.conference.view.QBConferenceSurfaceView
+            android:id="@+id/local_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_margin="@dimen/margin_very_small" />
+
+        <TextView
+            android:id="@+id/local_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/text_local_name"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/connection_status_local"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="3dp"
+            android:gravity="center_horizontal"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            android:textStyle="normal|italic"
+            tools:text="@string/text_status_disconnected" />
+    </FrameLayout>
+
+    <include layout="@layout/view_outgoing_screen" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grid_opponents"
+        style="@style/MatchParent"
+        android:layout_above="@+id/inner_frameLayout"
+        android:layout_marginTop="@dimen/toggle_button_params"
+        android:layout_marginBottom="@dimen/margin_very_small"
+        android:horizontalSpacing="@dimen/margin_small"
+        android:verticalSpacing="@dimen/margin_small"
+        android:visibility="invisible"
+        tools:listitem="@layout/list_item_opponent_from_call" />
+
+    <include
+        android:id="@+id/element_set_call_buttons"
+        layout="@layout/view_action_buttons_conversation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/empty_stub"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_very_small" />
+
+    <View
+        android:id="@+id/empty_stub"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

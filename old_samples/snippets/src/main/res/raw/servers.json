@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "production": {
+      "app_id": "72448",
+      "auth_key": "f4HYBYdeqTZ7KNb",
+      "auth_secret": "ZC7dK39bOjVc-Z8",
+      "api_domain": "api.quickblox.com",
+      "chat_domain": "chat.quickblox.com",
+      "bucket_name": "qbprod",
+      "test_user_id1": 55746068,
+      "test_user_login1": "test_user_id1",
+      "test_user_password1": "test_user_id1",
+      "test_user_id2": 55746159,
+      "test_user_login2": "test_user_id2",
+      "test_user_password2": "test_user_id2",
+      "dialog_id": "56f3fac3a0eb4786ae00003f"
+    }
+  },
+  "active": "production",
+  "use_first_user": false
+}
