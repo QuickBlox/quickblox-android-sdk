@@ -6,6 +6,8 @@ import com.quickblox.messages.model.QBEnvironment
 import com.quickblox.messages.model.QBEvent
 import com.quickblox.messages.model.QBNotificationType
 import com.quickblox.sample.videochat.kotlin.R
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 fun sendPushMessage(recipients: ArrayList<Int>, senderName: String) {
@@ -16,7 +18,17 @@ fun sendPushMessage(recipients: ArrayList<Int>, senderName: String) {
     qbEvent.notificationType = QBNotificationType.PUSH
     qbEvent.environment = QBEnvironment.DEVELOPMENT
     // Generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
-    qbEvent.message = outMessage
+
+    val json = JSONObject()
+    try {
+        json.put("message", outMessage)
+        json.put("ios_voip", "1")
+        json.put("VOIPCall", "1")
+    } catch (e: JSONException) {
+        e.printStackTrace()
+    }
+
+    qbEvent.message = json.toString()
 
     val userIds = StringifyArrayList(recipients)
     qbEvent.userIds = userIds

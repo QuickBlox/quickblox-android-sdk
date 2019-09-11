@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochat.kotlin.activities
 
 import android.app.ActivityManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -60,11 +61,12 @@ class OpponentsActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        val isIncomingCall = SharedPrefsHelper.get(EXTRA_IS_INCOMING_CALL, false)
         if (isCallServiceRunning(CallService::class.java)) {
             Log.d(TAG, "CallService is running now")
-            CallActivity.start(this, false)
+            CallActivity.start(this, isIncomingCall)
         }
-
+        clearAppNotifications()
         loadUsers()
     }
 
@@ -77,6 +79,11 @@ class OpponentsActivity : BaseActivity() {
             }
         }
         return false
+    }
+
+    private fun clearAppNotifications() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
     private fun startPermissionsActivity(checkOnlyAudio: Boolean) {
