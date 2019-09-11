@@ -278,12 +278,11 @@ object ChatHelper {
     }
 
     fun loadFileAsAttachment(file: File, callback: QBEntityCallback<QBAttachment>, progressCallback: QBProgressCallback?) {
-        QBContent.uploadFileTask(file, true, null, progressCallback).performAsync(
+        QBContent.uploadFileTask(file, false, null, progressCallback).performAsync(
                 object : QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     override fun onSuccess(qbFile: QBFile, bundle: Bundle?) {
                         val attachment = QBAttachment(QBAttachment.IMAGE_TYPE)
                         attachment.id = qbFile.uid
-                        attachment.url = qbFile.publicUrl
                         attachment.size = qbFile.size.toDouble()
                         attachment.name = qbFile.name
                         attachment.contentType = qbFile.contentType
