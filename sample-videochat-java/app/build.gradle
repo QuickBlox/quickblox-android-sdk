@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath "io.fabric.tools:gradle:$fabricToolsVersion"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    google()
+    jcenter()
+    maven {
+        url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+    }
+    maven { url 'https://maven.fabric.io/public' }
+    flatDir { dirs 'libs' }
+}
+
+android {
+    def versionQACode = 4
+
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+    flavorDimensions dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.videochat.java"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 401000
+        versionName '4.0.1'
+        multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            dimension dimensionDefault
+            buildConfigField('boolean', "IS_QA", "false")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+
+        qa {
+            dimension dimensionDefault
+            buildConfigField("boolean", "IS_QA", "true")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
+            proguardFile 'proguard-rules.pro'
+            zipAlignEnabled false
+            resValue "string", "versionName", "QuickBlox Video Chat Java\nBuild version " + defaultConfig.getVersionName()
+        }
+
+        release {
+            signingConfig signingConfigs.debug
+            resValue "string", "versionName", "QuickBlox Video Chat Java\nBuild version " + defaultConfig.getVersionName()
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-messages:$qbSdkVersion"
+
+    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
+    implementation "com.navercorp.pulltorefresh:library:$pullToRefreshVersion@aar"
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
+        transitive = true
+    }
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+}
+
+apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'
