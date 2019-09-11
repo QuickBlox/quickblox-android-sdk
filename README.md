@@ -5,6 +5,8 @@
 * New Quickblox Samples:
   * [Sample Chat Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-java)
   * [Sample Chat Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-kotlin)
+  * [Sample VideoChat Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-java)
+  * [Sample VideoChat Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-kotlin)
 
 * QuickBlox Android SDK, which includes
   * [Core module](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-core) which contains base classes and util components for old samples
