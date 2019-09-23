@@ -30,7 +30,7 @@ repositories {
 }
 
 android {
-    def versionQACode = 4
+    def versionQACode = 0
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -40,8 +40,8 @@ android {
         applicationId "com.quickblox.sample.chat.kotlin"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 400000
-        versionName '4.0.0'
+        versionCode 411000
+        versionName '4.1.1'
         multiDexEnabled true
     }
 
@@ -115,6 +115,8 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
         transitive = true
     }
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 }
 
 apply from: "../artifacts.gradle"

@@ -18,7 +18,7 @@ object SharedPrefsHelper {
     private var sharedPreferences: SharedPreferences =
             App.instance.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
-    private fun save(key: String, value: Any?) {
+    fun save(key: String, value: Any?) {
         val editor = sharedPreferences.edit()
         when {
             value is Boolean -> editor.putBoolean(key, (value as Boolean?)!!)
@@ -32,7 +32,7 @@ object SharedPrefsHelper {
         editor.apply()
     }
 
-    private fun delete(key: String) {
+    fun delete(key: String) {
         if (sharedPreferences.contains(key)) {
             getEditor().remove(key).commit()
         }

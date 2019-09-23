@@ -33,6 +33,10 @@ class SplashActivity : BaseActivity() {
         }, SPLASH_DELAY.toLong())
     }
 
+    override fun onBackPressed() {
+
+    }
+
     private fun fillVersion() {
         val appName = getString(R.string.app_name)
         findViewById<TextView>(R.id.text_splash_app_title).text = appName
@@ -79,9 +83,13 @@ class SplashActivity : BaseActivity() {
             }
 
             override fun onError(e: QBResponseException) {
-                hideProgressDialog()
-                Log.w(TAG, "Chat login onError(): $e")
-                showErrorSnackbar(R.string.error_recreate_session, e, View.OnClickListener { loginToChat(user) })
+                if (e.message.equals("You have already logged in chat")) {
+                    loginToChat(user)
+                } else {
+                    hideProgressDialog()
+                    Log.w(TAG, "Chat login onError(): $e")
+                    showErrorSnackbar(R.string.error_recreate_session, e, View.OnClickListener { loginToChat(user) })
+                }
             }
         })
     }

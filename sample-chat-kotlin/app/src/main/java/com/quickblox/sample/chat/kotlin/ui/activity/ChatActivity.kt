@@ -37,6 +37,7 @@ import com.quickblox.sample.chat.kotlin.ui.adapter.ChatAdapter
 import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.AttachClickListener
 import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
 import com.quickblox.sample.chat.kotlin.ui.views.AttachmentPreviewAdapterView
+import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.SystemPermissionHelper
 import com.quickblox.sample.chat.kotlin.utils.chat.CHAT_HISTORY_ITEMS_PER_PAGE
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
@@ -49,6 +50,8 @@ import com.quickblox.users.model.QBUser
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.SmackException
+import org.jivesoftware.smack.XMPPException
+import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.io.File
 
 private const val REQUEST_CODE_ATTACHMENT = 721
@@ -58,6 +61,7 @@ private const val PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1010
 
 const val EXTRA_DIALOG_ID = "dialogId"
 const val EXTRA_IS_NEW_DIALOG = "isNewDialog"
+const val IS_IN_BACKGROUND = "is_in_background"
 
 private const val ORDER_RULE = "order"
 private const val ORDER_VALUE = "desc string created_at"
@@ -106,6 +110,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        SharedPrefsHelper.delete(IS_IN_BACKGROUND)
         Log.v(TAG, "onCreate ChatActivity on Thread ID = " + Thread.currentThread().id)
 
         if (!ChatHelper.isLogged()) {
@@ -142,8 +147,50 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         qbChatDialog = QbDialogHolder.getChatDialogById(dialogId)!!
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onResumeFinished() {
+        if (ChatHelper.isLogged()) {
+            if (!::qbChatDialog.isInitialized) {
+                qbChatDialog = intent.getSerializableExtra(EXTRA_DIALOG_ID) as QBChatDialog
+            }
+            returnToChat()
+        } else {
+            showProgressDialog(R.string.dlg_loading)
+            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+                override fun onSuccess(aVoid: Void, bundle: Bundle) {
+                    returnToChat()
+                    hideProgressDialog()
+                }
+
+                override fun onError(e: QBResponseException) {
+                    hideProgressDialog()
+                    finish()
+                }
+            })
+        }
+    }
+
+    private fun returnToChat() {
+        qbChatDialog.initForChat(QBChatService.getInstance())
+        if (!qbChatDialog.isJoined){
+            try {
+                qbChatDialog.join(DiscussionHistory())
+            } catch (e : Exception) {
+                finish()
+            }
+        }
+
+        // Loading unread messages received in background
+        if (qbChatDialog.type != QBDialogType.PRIVATE && SharedPrefsHelper.get(IS_IN_BACKGROUND, false)) {
+            progressBar.visibility = View.VISIBLE
+            skipPagination = 0
+            checkAdapterInit = false
+            loadChatHistory()
+        }
+
+        returnListeners()
+    }
+
+    fun returnListeners() {
         dialogsManager.addManagingDialogsCallbackListener(this)
         systemMessagesManager = QBChatService.getInstance().systemMessagesManager
         systemMessagesManager.addSystemMessageListener(systemMessagesListener)
@@ -158,6 +205,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         chatAdapter.removeAttachImageClickListener()
         ChatHelper.removeConnectionListener(chatConnectionListener)
         qbMessageStatusesManager.removeMessageStatusListener(this)
+        SharedPrefsHelper.save(IS_IN_BACKGROUND, true)
     }
 
     override fun onDestroy() {
@@ -165,6 +213,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         systemMessagesManager.removeSystemMessageListener(systemMessagesListener)
         qbChatDialog.removeMessageListrener(chatMessageListener)
         dialogsManager.removeManagingDialogsCallbackListener(this)
+        SharedPrefsHelper.delete(IS_IN_BACKGROUND)
     }
 
     override fun onBackPressed() {
@@ -181,11 +230,24 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         val menuItemDelete = menu.findItem(R.id.menu_chat_action_delete)
 
         when (qbChatDialog.type) {
+            QBDialogType.GROUP -> {
+                menuItemDelete.isVisible = false
+            }
+
             QBDialogType.PRIVATE -> {
                 menuItemLeave.isVisible = false
                 menuItemAdd.isVisible = false
             }
-            else -> menuItemDelete.isVisible = false
+
+            QBDialogType.PUBLIC_GROUP -> {
+                menuItemAdd.isVisible = false
+                menuItemLeave.isVisible = false
+                menuItemDelete.isVisible = false
+            }
+
+            else -> {
+
+            }
         }
 
         if (qbChatDialog.type != QBDialogType.GROUP) {
@@ -372,7 +434,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     fun showMessage(message: QBChatMessage) {
         if (isAdapterConnected()) {
             chatAdapter.addMessage(message)
-            chatMessagesRecyclerView.scrollToPosition(messagesList.size - 1)
+            scrollMessageListDown()
         } else {
             delayShowMessage(message)
         }
@@ -457,6 +519,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             chatMessage.isMarkable = true
 
             if (qbChatDialog.type != QBDialogType.PRIVATE && !qbChatDialog.isJoined) {
+                qbChatDialog.join(DiscussionHistory())
                 shortToast(R.string.chat_still_joining)
                 return
             }
@@ -580,16 +643,18 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                     chatAdapter.setMessages(messages)
                     addDelayedMessagesToAdapter()
                 }
+                if (skipPagination == 0) {
+                    scrollMessageListDown()
+                }
+                skipPagination += CHAT_HISTORY_ITEMS_PER_PAGE
                 progressBar.visibility = View.GONE
             }
 
             override fun onError(e: QBResponseException) {
                 progressBar.visibility = View.GONE
-                skipPagination -= CHAT_HISTORY_ITEMS_PER_PAGE
                 showErrorSnackbar(R.string.connection_error, e, null)
             }
         })
-        skipPagination += CHAT_HISTORY_ITEMS_PER_PAGE
     }
 
     private fun addDelayedMessagesToAdapter() {
@@ -603,6 +668,10 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 }
             }
         }
+    }
+
+    private fun scrollMessageListDown() {
+        chatMessagesRecyclerView.scrollToPosition(messagesList.size - 1)
     }
 
     private fun deleteChat() {
