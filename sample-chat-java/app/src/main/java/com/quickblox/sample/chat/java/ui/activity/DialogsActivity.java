@@ -29,8 +29,10 @@ import com.quickblox.chat.listeners.QBChatDialogMessageListener;
 import com.quickblox.chat.listeners.QBSystemMessageListener;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.CollectionUtils;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
@@ -39,6 +41,7 @@ import com.quickblox.sample.chat.java.async.BaseAsyncTask;
 import com.quickblox.sample.chat.java.managers.DialogsManager;
 import com.quickblox.sample.chat.java.ui.adapter.DialogsAdapter;
 import com.quickblox.sample.chat.java.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.chat.java.utils.ErrorUtils;
 import com.quickblox.sample.chat.java.utils.FcmConsts;
 import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
@@ -53,6 +56,7 @@ import com.quickblox.users.model.QBUser;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import androidx.appcompat.view.ActionMode;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -114,13 +118,29 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServicesAvailable();
-        registerQbChatListeners();
-        pushBroadcastReceiver = new PushBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
-                new IntentFilter(FcmConsts.ACTION_NEW_FCM_EVENT));
+    public void onResumeFinished() {
+        if (ChatHelper.getInstance().isLogged()) {
+            checkPlayServicesAvailable();
+            registerQbChatListeners();
+            loadDialogsFromQb(true, true);
+        } else {
+            showProgressDialog(R.string.dlg_loading);
+            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    checkPlayServicesAvailable();
+                    registerQbChatListeners();
+                    loadDialogsFromQb(true, true);
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    hideProgressDialog();
+                    finish();
+                }
+            });
+        }
     }
 
     private void checkPlayServicesAvailable() {
@@ -163,6 +183,10 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         }
 
         dialogsManager.addManagingDialogsCallbackListener(this);
+
+        pushBroadcastReceiver = new PushBroadcastReceiver();
+        LocalBroadcastManager.getInstance(DialogsActivity.this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter(FcmConsts.ACTION_NEW_FCM_EVENT));
     }
 
     private void unregisterQbChatListeners() {
@@ -490,31 +514,43 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         private void deleteSelectedDialogs() {
             final Collection<QBChatDialog> selectedDialogs = dialogsAdapter.getSelectedItems();
+            List<QBChatDialog> dialogsToDelete = new ArrayList<>();
             for (QBChatDialog dialog : selectedDialogs) {
-                dialogsManager.sendMessageLeftUser(dialog);
-                dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, dialog);
+                if (dialog.getType().equals(QBDialogType.PUBLIC_GROUP)) {
+                    ToastUtils.shortToast(getString(R.string.dialogs_cannot_delete_chat, dialog.getName()));
+
+                } else if (dialog.getType().equals(QBDialogType.GROUP)) {
+                    dialogsToDelete.add(dialog);
+                    dialogsManager.sendMessageLeftUser(dialog);
+                    dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, dialog);
+
+                } else if (dialog.getType().equals(QBDialogType.PRIVATE)) {
+                    dialogsToDelete.add(dialog);
+                }
             }
 
-            ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
-                @Override
-                public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
-                    Log.d(TAG, "Dialogs Deleting Successful");
-                    QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
-                    updateDialogsAdapter();
-                }
+            if (!CollectionUtils.isEmpty(dialogsToDelete)) {
+                ChatHelper.getInstance().deleteDialogs(dialogsToDelete, new QBEntityCallback<ArrayList<String>>() {
+                    @Override
+                    public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
+                        Log.d(TAG, "Dialogs Deleting Successful");
+                        QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
+                        updateDialogsAdapter();
+                    }
 
-                @Override
-                public void onError(QBResponseException e) {
-                    Log.d(TAG, "Deleting Dialogs Error: " + e.getMessage());
-                    showErrorSnackbar(R.string.dialogs_deletion_error, e,
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    deleteSelectedDialogs();
-                                }
-                            });
-                }
-            });
+                    @Override
+                    public void onError(QBResponseException e) {
+                        Log.d(TAG, "Deleting Dialogs Error: " + e.getMessage());
+                        showErrorSnackbar(R.string.dialogs_deletion_error, e,
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        deleteSelectedDialogs();
+                                    }
+                                });
+                    }
+                });
+            }
         }
     }
 

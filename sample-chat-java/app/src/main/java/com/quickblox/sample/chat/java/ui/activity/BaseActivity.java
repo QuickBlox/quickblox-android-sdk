@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.java.ui.activity;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,8 +13,13 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.R;
 import com.quickblox.sample.chat.java.utils.ErrorUtils;
+import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
+import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
@@ -88,5 +94,37 @@ public abstract class BaseActivity extends AppCompatActivity {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         manager.set(AlarmManager.RTC, System.currentTimeMillis() + RESTART_DELAY, intent);
         System.exit(0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideNotifications();
+        if (SharedPrefsHelper.getInstance().hasQbUser() && !QBChatService.getInstance().isLoggedIn()) {
+            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    onResumeFinished();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    onResumeFinished();
+                }
+            });
+        } else {
+            onResumeFinished();
+        }
+    }
+
+    private void hideNotifications() {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
+    }
+
+    public void onResumeFinished() {
+        // Need to Override onResumeFinished() method in nested classes if we need to handle returning from background in Activity
     }
 }
