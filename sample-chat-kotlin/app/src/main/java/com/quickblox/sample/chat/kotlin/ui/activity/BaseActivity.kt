@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.kotlin.ui.activity
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.ProgressDialog
 import android.content.Context
@@ -12,7 +13,12 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import com.quickblox.chat.QBChatService
+import com.quickblox.core.QBEntityCallback
+import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.chat.kotlin.R
+import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
+import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
 import com.quickblox.sample.chat.kotlin.utils.showSnackbar
 
 private const val DUMMY_VALUE = "dummy_value"
@@ -83,5 +89,32 @@ abstract class BaseActivity : AppCompatActivity() {
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.set(AlarmManager.RTC, System.currentTimeMillis() + RESTART_DELAY, intent)
         System.exit(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hideNotifications()
+        if (SharedPrefsHelper.hasQbUser() && !QBChatService.getInstance().isLoggedIn) {
+            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+                override fun onSuccess(aVoid: Void?, bundle: Bundle) {
+                    onResumeFinished()
+                }
+
+                override fun onError(e: QBResponseException) {
+                    onResumeFinished()
+                }
+            })
+        } else {
+            onResumeFinished()
+        }
+    }
+
+    private fun hideNotifications() {
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    open fun onResumeFinished() {
+        // Need to Override onResumeFinished() method in nested classes if we need to handle returning from background in Activity
     }
 }

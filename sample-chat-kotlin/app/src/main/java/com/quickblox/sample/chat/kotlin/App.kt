@@ -1,8 +1,10 @@
 package com.quickblox.sample.chat.kotlin
 
 import android.app.Application
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.crashlytics.android.Crashlytics
 import com.quickblox.auth.session.QBSettings
+import com.quickblox.sample.chat.kotlin.managers.BackgroundListener
 import com.quickblox.sample.chat.kotlin.utils.ActivityLifecycle
 import io.fabric.sdk.android.Fabric
 
@@ -44,6 +46,7 @@ class App : Application() {
         checkAppCredentials()
         checkChatSettings()
         initCredentials()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(BackgroundListener())
     }
 
     private fun checkAppCredentials() {
