@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Custom Objects</string>
+    <string name="movie_sample">Custom Objects Sample</string>
+    <string name="splash_app_title">@string/movie_sample</string>
+    <string name="splash_create_session_error">Errors</string>
+    <string name="init_configs_error">Initializing configs error</string>
+
+    <string name="movie_add_new">Add Movie</string>
+    <string name="movie_details">Movie Details</string>
+    <string name="movies">Movies</string>
+
+    <string name="movie">Movie</string>
+    <string name="comment">Comment</string>
+
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="year">Year</string>
+    <string name="rating">Rating</string>
+
+    <string name="add_movie">Add</string>
+    <string name="save_movie">Save</string>
+    <string name="done">Done</string>
+
+    <string name="error">error</string>
+    <string name="error_fields_is_empty">Field(s) is empty!</string>
+    <string name="error_too_long_text">You can enter only 1024 symbols!</string>
+    <string name="error_rating_is_empty">Please, rate this movie!</string>
+
+</resources>

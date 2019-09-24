@@ -1,0 +1,123 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$rootProject.kotlinGradlePluginVersion"
+        classpath "io.fabric.tools:gradle:$rootProject.fabricToolsVersion"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
+androidExtensions {
+    experimental = true
+}
+
+repositories {
+    google()
+    jcenter()
+    maven {
+        url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+    }
+    maven { url 'https://maven.fabric.io/public' }
+    flatDir { dirs 'libs' }
+}
+
+android {
+    def versionQACode = 0
+
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+    flavorDimensions dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.chat.kotlin"
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 411000
+        versionName '4.1.1'
+        multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            dimension dimensionDefault
+            buildConfigField('boolean', "IS_QA", "false")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+
+        qa {
+            dimension dimensionDefault
+            buildConfigField("boolean", "IS_QA", "true")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
+            proguardFile 'proguard-rules.pro'
+            zipAlignEnabled false
+            resValue "string", "versionName", "QuickBlox Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+
+        release {
+            signingConfig signingConfigs.debug
+            resValue "string", "versionName", "QuickBlox Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+
+    implementation "com.google.firebase:firebase-core:$rootProject.firebaseCoreVersion"
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
+    implementation "androidx.fragment:fragment:$rootProject.fragmentAndroidXVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleViewmodelAndroidXVersion"
+    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
+
+    implementation "com.github.johnkil.android-robototextview:robototextview:$rootProject.robotoTextViewVersion"
+    implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    implementation "de.hdodenhof:circleimageview:$rootProject.circleImageVersion"
+
+    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.stickylistheadersVersion@aar"
+    implementation "com.github.orangegangsters:swipy:$rootProject.swipyVersion@aar"
+    implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
+        transitive = true
+    }
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+}
+
+apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'

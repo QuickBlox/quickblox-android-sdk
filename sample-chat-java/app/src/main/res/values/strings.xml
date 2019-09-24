@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="sender_id"></string>
+
+    <string name="app_name">Sample Chat Java</string>
+    <string name="chat_sample">Sample Chat Java</string>
+
+    <string name="menu_new_chat">New Chat</string>
+    <string name="menu_chat_info">Chat info</string>
+    <string name="menu_add_users_to_chat">Add Users to Chat</string>
+    <string name="menu_leave_chat">Leave Chat</string>
+    <string name="menu_delete_chat">Delete Chat</string>
+    <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_dialogs_delete">Delete</string>
+    <string name="menu_dialogs_app_info">App Info</string>
+    <string name="menu_select_people_done">Done</string>
+    <string name="menu_start_login_done">Done</string>
+
+    <string name="error_name_must_not_contain_special_characters_from_app">%1$s must contain 3 &#8212; %2$s alphanumeric Latin characters without spaces, the first char must be a letter</string>
+    <string name="field_name_user_login">User name</string>
+    <string name="field_name_user_fullname">User Full Name</string>
+
+    <string name="dlg_loading">Loading</string>
+    <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+    <string name="dlg_restoring_chat_session_logout">Restoring session and logout</string>
+    <string name="create_chat">Creating chat…</string>
+    <string name="dlg_login">Login…</string>
+    <string name="new_chat_created">%s created new chat </string>
+    <string name="occupant_added">%s added %s</string>
+    <string name="occupant_left">%s has left</string>
+
+    <string name="chat_still_joining">You\'re still joining a group chat, please wait a bit</string>
+    <string name="chat_error_send_message">Can\'t send a message, You are not connected to chat</string>
+
+    <string name="placeholder_username_you">%s (you)</string>
+    <string name="error_recreate_session">Login Chat error</string>
+
+    <string name="login_title">@string/chat_sample</string>
+
+    <string name="splash_app_title">@string/chat_sample</string>
+    <string name="splash_create_session_error">Create session errors:</string>
+
+    <string name="login_select_user_for_login">Select User for Login to Chat</string>
+    <string name="login_cant_obtain_users">Can\'t obtain users errors</string>
+    <string name="login_chat_login_error">Login Chat error. Please relogin. Error</string>
+    <string name="login_welcoming_message">Please enter username and password.</string>
+    <string name="login_hint_login">Login</string>
+    <string name="login_hint_username">Username</string>
+    <string name="login_sign_up_error">Sign up error.</string>
+    <string name="login_data_error">Wrong login</string>
+    <string name="username_data_error">Wrong username</string>
+
+    <string name="dialogs_logged_in_as">Logged in as %s</string>
+    <string name="dialogs_cannot_delete_chat">You can not leave from dialog %s</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="dialogs_deletion_error">Dialog deletion errors</string>
+    <string name="dialogs_list_hint">Select a Dialog to Chat</string>
+    <string name="dialogs_get_error">Get dialogs errors</string>
+
+    <string name="select_users_list_hint">Select Users you want to chat</string>
+    <string name="select_users_create_chat">Create new chat</string>
+    <string name="select_users_edit_chat">Add Users to chat</string>
+    <string name="select_users_get_users_error">Get users errors</string>
+    <string name="select_users_get_dialog_error">Error getting dialog from server</string>
+    <string name="select_users_get_users_dialog_error">Error getting users dialog from server</string>
+    <string name="select_users_choose_users">Please, choose at least one participant</string>
+
+    <string name="chat_sticker">Sticker</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_edit_text_hint">Message</string>
+    <string name="chat_me">Me</string>
+    <string name="chat_friend">Friend</string>
+    <string name="chat_join_error">Error join group chat</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+    <string name="chat_load_history_error">Load chat history errors</string>
+    <string name="chat_load_users_error">Load chat users errors</string>
+    <string name="chat_attachment_error">Can\'t load chosen file</string>
+    <string name="chat_attachment">Attachment</string>
+    <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
+    <string name="chat_empty_start_new_chat">Start new chat.</string>
+    <string name="chat_unsupported_type">Unsupported dialog type</string>
+    <string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>
+    <string name="notification_title">Quickblox Chat Notification</string>
+    <string name="connection_error">Chat connection has been dropped</string>
+    <string name="update_dialog_error">Update Dialog error</string>
+    <string name="reconnect_alert">Reconnecting in %s seconds</string>
+
+    <string name="restriction_upload_files">Max attachment number: %d</string>
+
+    <string name="added_users">The users have been added</string>
+
+    <string name="chat_info">Chat info</string>
+    <string name="chat_info_add_people_error">Add people errors</string>
+
+    <string name="group_chat_join_error">Could not join chat, errors:</string>
+    <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
+    <string name="error_leave_chat">Error leaving room</string>
+
+    <string name="appinfo_application_version">Application version:</string>
+    <string name="appinfo_qbsdk_version">QuickBlox SDK version:</string>
+    <string name="appinfo_application_id">Application ID:</string>
+    <string name="appinfo_authorization_key">Authorization key:</string>
+    <string name="appinfo_authorization_secret">Authorization secret:</string>
+    <string name="appinfo_account_key">Account key:</string>
+    <string name="appinfo_api_domain">API domain:</string>
+    <string name="appinfo_chat_domain">Chat domain:</string>
+    <string name="appinfo_qa_verion">QA version:</string>
+    <string name="appinfo_title">App Info</string>
+
+    <string name="statuses_delivered">Delivered</string>
+    <string name="statuses_read">Read</string>
+    <string name="statuses_sent">Sent</string>
+
+    <string name="dialog_enter_chat_name">Enter chat name</string>
+    <string name="dialog_OK">OK</string>
+    <string name="dialog_Cancel">Cancel</string>
+    <string name="dialog_retry">Retry</string>
+    <string name="dialog_choose_image_from">Select photo from…</string>
+
+    <string name="error_credentials_empty">Credentials are wrong or empty. You have to set:
+        Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
+        and you have to set Sender ID in the string resources to launch application.
+        If you haven\'t them you can register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="no_server_connection">Server connection timeout</string>
+    <string name="error">Error</string>
+
+</resources>

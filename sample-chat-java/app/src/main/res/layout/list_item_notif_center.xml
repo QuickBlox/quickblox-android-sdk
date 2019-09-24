@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.quickblox.sample.chat.java.ui.widget.MessageTextViewCenter xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/msg_notification_center"
+    style="@style/ListItemNotification" />

@@ -1,0 +1,108 @@
+{
+  "project_info": {
+    "project_id": "quickblox.com:api-project-761750217637",
+    "project_number": "761750217637",
+    "name": "QuickBlox Android samples"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761750217637:android:c4299bc46191b0d7",
+        "client_id": "android:com.quickblox.sample.groupchatwebrtc",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.groupchatwebrtc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761750217637:android:f7ceaf9593b66d36",
+        "client_id": "android:com.quickblox.sample.pushnotifications",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.pushnotifications"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761750217637:android:d150eafea3b1427e",
+        "client_id": "android:com.quickblox.sample.chat",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

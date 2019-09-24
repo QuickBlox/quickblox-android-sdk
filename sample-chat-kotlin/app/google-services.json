@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "247738611464",
+    "firebase_url": "https://qb-prod-samples.firebaseio.com",
+    "project_id": "qb-prod-samples",
+    "storage_bucket": "qb-prod-samples.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:beb270faa2c3a789",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.chat.java"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:1cdc72e9ffd29448",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.chat.kotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:06cb0de4c719ad84",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.pushnotifications.java"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:c2749661061637f0",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.pushnotifications.kotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:99e5b55a490c901c",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.videochat.java"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247738611464:android:ac22e0d1b3a3e86b",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.videochat.kotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFXAfVr6kkFJdDNOm8U-c7iju0qIUkc_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247738611464-v2nvd29bmqum7niosnfuh28oq3beh9f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

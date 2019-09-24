@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MovieListStyle" parent="ListItem">
+        <item name="android:paddingLeft">@dimen/padding_large</item>
+        <item name="android:paddingRight">@dimen/padding_large</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="TextPrimaryStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textSize">@dimen/text_size_middle</item>
+    </style>
+
+    <style name="TextSecondaryStyle" parent="MatchWidth">
+        <item name="android:textColor">@color/text_color_medium_dark_grey</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="MovieRatingStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_dark_grey</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="MovieRatingBarStyle" parent="WrapContent">
+        <item name="android:layout_marginTop">@dimen/margin_rating_bar</item>
+        <item name="android:numStars">5</item>
+    </style>
+
+</resources>
