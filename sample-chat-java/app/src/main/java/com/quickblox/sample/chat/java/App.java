@@ -4,8 +4,10 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.session.QBSettings;
+import com.quickblox.sample.chat.java.managers.BackgroundListener;
 import com.quickblox.sample.chat.java.utils.ActivityLifecycle;
 
+import androidx.lifecycle.ProcessLifecycleOwner;
 import io.fabric.sdk.android.Fabric;
 
 public class App extends Application {
@@ -44,6 +46,7 @@ public class App extends Application {
         checkAppCredentials();
         checkChatSettings();
         initCredentials();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(new BackgroundListener());
     }
 
     private void initApplication() {

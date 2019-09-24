@@ -35,6 +35,7 @@ import com.quickblox.sample.chat.java.ui.adapter.ChatAdapter;
 import com.quickblox.sample.chat.java.ui.adapter.listeners.AttachClickListener;
 import com.quickblox.sample.chat.java.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.java.ui.widget.AttachmentPreviewAdapterView;
+import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.SystemPermissionHelper;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
@@ -52,6 +53,7 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
     public static final String EXTRA_DIALOG_ID = "dialogId";
     public static final String EXTRA_IS_NEW_DIALOG = "isNewDialog";
+    public static final String IS_IN_BACKGROUND = "is_in_background";
 
     private ProgressBar progressBar;
     private EditText messageEditText;
@@ -116,6 +119,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        SharedPrefsHelper.getInstance().delete(IS_IN_BACKGROUND);
         Log.v(TAG, "onCreate ChatActivity on Thread ID = " + Thread.currentThread().getId());
 
         if (!ChatHelper.getInstance().isLogged()) {
@@ -158,8 +162,53 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onResumeFinished() {
+        if (ChatHelper.getInstance().isLogged()) {
+            if (qbChatDialog == null) {
+                qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
+            }
+            returnToChat();
+        } else {
+            showProgressDialog(R.string.dlg_loading);
+            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    returnToChat();
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    hideProgressDialog();
+                    finish();
+                }
+            });
+        }
+    }
+
+    private void returnToChat() {
+        qbChatDialog.initForChat(QBChatService.getInstance());
+        if (!qbChatDialog.isJoined()) {
+            try {
+                qbChatDialog.join(new DiscussionHistory());
+            } catch (Exception e) {
+                finish();
+            }
+        }
+
+        // Loading unread messages received in background
+        if (qbChatDialog.getType() != QBDialogType.PRIVATE &&
+                SharedPrefsHelper.getInstance().get(IS_IN_BACKGROUND, false)) {
+            progressBar.setVisibility(View.VISIBLE);
+            skipPagination = 0;
+            checkAdapterInit = false;
+            loadChatHistory();
+        }
+
+        returnListeners();
+    }
+
+    private void returnListeners() {
         if (systemMessagesManager != null) {
             systemMessagesManager.addSystemMessageListener(systemMessagesListener != null
                     ? systemMessagesListener : new SystemMessagesListener());
@@ -177,6 +226,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         chatAdapter.removeAttachImageClickListener();
         ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
         qbMessageStatusesManager.removeMessageStatusListener(this);
+        SharedPrefsHelper.getInstance().save(IS_IN_BACKGROUND, true);
     }
 
     @Override
@@ -187,6 +237,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         }
         qbChatDialog.removeMessageListrener(chatMessageListener);
         dialogsManager.removeManagingDialogsCallbackListener(this);
+        SharedPrefsHelper.getInstance().delete(IS_IN_BACKGROUND);
     }
 
     @Override
@@ -204,17 +255,20 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         MenuItem menuItemAdd = menu.findItem(R.id.menu_chat_action_add);
         MenuItem menuItemDelete = menu.findItem(R.id.menu_chat_action_delete);
 
-        if (qbChatDialog.getType() == QBDialogType.PRIVATE) {
-            menuItemLeave.setVisible(false);
-            menuItemAdd.setVisible(false);
-        } else {
-            menuItemDelete.setVisible(false);
+        switch (qbChatDialog.getType()) {
+            case GROUP:
+                menuItemDelete.setVisible(false);
+                break;
+            case PRIVATE:
+                menuItemAdd.setVisible(false);
+                menuItemLeave.setVisible(false);
+                break;
+            case PUBLIC_GROUP:
+                menuItemAdd.setVisible(false);
+                menuItemLeave.setVisible(false);
+                menuItemDelete.setVisible(false);
+                break;
         }
-
-        if (qbChatDialog.getType() != QBDialogType.GROUP) {
-            menu.findItem(R.id.menu_chat_action_add).setVisible(false);
-        }
-
         return true;
     }
 
@@ -676,6 +730,10 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                 } else {
                     chatAdapter.addToList(messages);
                 }
+                if (skipPagination == 0) {
+                    scrollMessageListDown();
+                }
+                skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -683,11 +741,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             public void onError(QBResponseException e) {
                 Log.d(TAG, "Loading Dialog History Error: " + e.getMessage());
                 progressBar.setVisibility(View.GONE);
-                skipPagination -= ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
                 showErrorSnackbar(R.string.connection_error, e, null);
             }
         });
-        skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
 
     private void addDelayedMessagesToAdapter() {

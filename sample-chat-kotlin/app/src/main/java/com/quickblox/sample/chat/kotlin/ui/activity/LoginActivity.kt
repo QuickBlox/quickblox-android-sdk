@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
@@ -16,11 +15,12 @@ import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.USER_DEFAULT_PASSWORD
 import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
+import com.quickblox.sample.chat.kotlin.utils.isFullNameValid
+import com.quickblox.sample.chat.kotlin.utils.isLoginValid
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 
 private const val UNAUTHORIZED = 401
-private const val MIN_LENGTH = 3
 
 class LoginActivity : BaseActivity() {
 
@@ -38,8 +38,8 @@ class LoginActivity : BaseActivity() {
         loginEt = findViewById(R.id.login)
         usernamedEt = findViewById(R.id.user_name)
 
-        loginEt.addTextChangedListener(TextWatcherListener())
-        usernamedEt.addTextChangedListener(TextWatcherListener())
+        loginEt.addTextChangedListener(TextWatcherListener(loginEt))
+        usernamedEt.addTextChangedListener(TextWatcherListener(usernamedEt))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -50,7 +50,7 @@ class LoginActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_login_user_done -> {
-                if (isValidInputtedData()) {
+                if (isLoginValid(this, loginEt) && isFullNameValid(this, usernamedEt)) {
                     val qbUser = QBUser()
                     qbUser.login = loginEt.text.toString().trim { it <= ' ' }
                     qbUser.fullName = usernamedEt.text.toString().trim { it <= ' ' }
@@ -134,32 +134,18 @@ class LoginActivity : BaseActivity() {
         })
     }
 
-    private fun isValidInputtedData(): Boolean {
-        var valid = true
-        if (TextUtils.isEmpty(loginEt.text.toString().trim { it <= ' ' })
-                || loginEt.text.toString().trim { it <= ' ' }.length < MIN_LENGTH) {
-            loginEt.error = getString(R.string.login_data_error)
-            valid = false
-        }
-        if (TextUtils.isEmpty(usernamedEt.text.toString().trim { it <= ' ' })
-                || usernamedEt.text.toString().trim { it <= ' ' }.length < MIN_LENGTH) {
-            usernamedEt.error = getString(R.string.username_data_error)
-            valid = false
-        }
-        return valid
-    }
+    private inner class TextWatcherListener(private var editText: EditText) : TextWatcher {
 
-    private inner class TextWatcherListener : TextWatcher {
-        override fun afterTextChanged(p0: Editable?) {
+        override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
 
         }
 
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            editText.error = null
         }
 
-        override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            isValidInputtedData()
+        override fun afterTextChanged(s: Editable?) {
+
         }
     }
 }
