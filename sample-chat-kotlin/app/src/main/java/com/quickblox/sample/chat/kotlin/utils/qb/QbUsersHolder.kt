@@ -1,6 +1,7 @@
 package com.quickblox.sample.chat.kotlin.utils.qb
 
 import android.util.SparseArray
+import androidx.core.util.containsKey
 import com.quickblox.users.model.QBUser
 import java.util.*
 
@@ -35,5 +36,14 @@ object QbUsersHolder {
 
     fun getUserById(id: Int): QBUser? {
         return qbUserSparseArray.get(id)
+    }
+
+    fun hasAllUsers(usersIds: List<Int>): Boolean {
+        for (userId in usersIds) {
+            if (!qbUserSparseArray.containsKey(userId)) {
+                return false
+            }
+        }
+        return true
     }
 }

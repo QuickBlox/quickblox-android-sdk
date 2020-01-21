@@ -9,7 +9,7 @@ import com.quickblox.sample.chat.kotlin.App
 private annotation class ToastLength
 
 fun shortToast(@StringRes text: Int) {
-    shortToast(App.instance.getString(text))
+    shortToast(App.getInstance().getString(text))
 }
 
 fun shortToast(text: String?) {
@@ -17,7 +17,7 @@ fun shortToast(text: String?) {
 }
 
 fun longToast(@StringRes text: Int) {
-    longToast(App.instance.getString(text))
+    longToast(App.getInstance().getString(text))
 }
 
 fun longToast(text: String) {
@@ -31,5 +31,5 @@ private fun show(text: String?, @ToastLength length: Int) {
 }
 
 private fun makeToast(text: String, @ToastLength length: Int): Toast {
-    return Toast.makeText(App.instance, text, length)
+    return Toast.makeText(App.getInstance(), text, length)
 }

@@ -9,10 +9,15 @@ import com.quickblox.chat.model.QBChatDialog
 import com.quickblox.chat.model.QBChatMessage
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
+import com.quickblox.core.request.QBPagedRequestBuilder
 import com.quickblox.sample.chat.kotlin.App
 import com.quickblox.sample.chat.kotlin.R
+import com.quickblox.sample.chat.kotlin.utils.chat.CURRENT_PAGE_BUNDLE_PARAM
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
+import com.quickblox.sample.chat.kotlin.utils.chat.TOTAL_PAGES_BUNDLE_PARAM
+import com.quickblox.sample.chat.kotlin.utils.chat.USERS_PER_PAGE
 import com.quickblox.sample.chat.kotlin.utils.qb.QbDialogHolder
+import com.quickblox.sample.chat.kotlin.utils.qb.QbUsersHolder
 import com.quickblox.sample.chat.kotlin.utils.qb.callback.QbEntityCallbackImpl
 import com.quickblox.sample.chat.kotlin.utils.qb.getOccupantsIdsStringFromList
 import com.quickblox.sample.chat.kotlin.utils.qb.getOccupantsNamesStringFromList
@@ -22,6 +27,7 @@ import org.jivesoftware.smack.SmackException
 import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
+import kotlin.collections.ArrayList
 
 const val PROPERTY_OCCUPANTS_IDS = "current_occupant_ids"
 const val PROPERTY_DIALOG_TYPE = "type"
@@ -35,6 +41,7 @@ const val PROPERTY_NEW_OCCUPANTS_IDS = "new_occupants_ids"
 class DialogsManager {
     private val TAG = DialogsManager::class.java.simpleName
 
+    private var addedUsersLoaded = ArrayList<QBUser>()
     private val managingDialogsCallbackListener = CopyOnWriteArraySet<ManagingDialogsCallbacks>()
 
     private fun isMessageCreatedDialog(message: QBChatMessage): Boolean {
@@ -57,7 +64,7 @@ class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, dialog.name.toString())
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG)
         qbChatMessage.dateSent = System.currentTimeMillis() / 1000
-        qbChatMessage.body = App.instance.getString(R.string.new_chat_created, getCurrentUserName())
+        qbChatMessage.body = App.getInstance().getString(R.string.new_chat_created, getCurrentUserName())
         qbChatMessage.setSaveToHistory(true)
         qbChatMessage.isMarkable = true
         return qbChatMessage
@@ -68,7 +75,7 @@ class DialogsManager {
         qbChatMessage.dialogId = dialog.dialogId
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, OCCUPANTS_ADDED)
         qbChatMessage.setProperty(PROPERTY_NEW_OCCUPANTS_IDS, userIds)
-        qbChatMessage.body = App.instance.getString(R.string.occupant_added, getCurrentUserName(), usersNames)
+        qbChatMessage.body = App.getInstance().getString(R.string.occupant_added, getCurrentUserName(), usersNames)
         qbChatMessage.setSaveToHistory(true)
         qbChatMessage.isMarkable = true
         return qbChatMessage
@@ -78,7 +85,7 @@ class DialogsManager {
         val qbChatMessage = QBChatMessage()
         qbChatMessage.dialogId = dialog.dialogId
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, OCCUPANT_LEFT)
-        qbChatMessage.body = App.instance.getString(R.string.occupant_left, getCurrentUserName())
+        qbChatMessage.body = App.getInstance().getString(R.string.occupant_left, getCurrentUserName())
         qbChatMessage.setSaveToHistory(true)
         qbChatMessage.isMarkable = true
         return qbChatMessage
@@ -109,10 +116,11 @@ class DialogsManager {
     }
 
     fun sendMessageAddedUsers(dialog: QBChatDialog, newUsersIds: List<Int>) {
-        QBUsers.getUsersByIDs(newUsersIds, null).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
-            override fun onSuccess(qbUsers: ArrayList<QBUser>, bundle: Bundle) {
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        loadNewUsersByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>>{
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, b: Bundle?) {
                 val usersIds = getOccupantsIdsStringFromList(newUsersIds)
-                if (newUsersIds.isNotEmpty()) {
+                if (newUsersIds.isNotEmpty() && qbUsers != null) {
                     val usersNames = getOccupantsNamesStringFromList(qbUsers)
                     val messageUsersAdded = buildMessageAddedUsers(dialog, usersIds, usersNames)
 
@@ -125,8 +133,33 @@ class DialogsManager {
                 }
             }
 
-            override fun onError(ignored: QBResponseException) {
+            override fun onError(ignored: QBResponseException?) {
 
+            }
+        })
+    }
+
+    private fun loadNewUsersByIDs(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, alreadyLoadedUsers: ArrayList<QBUser>, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>>{
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    QbUsersHolder.putUsers(qbUsers)
+                    alreadyLoadedUsers.addAll(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadNewUsersByIDs(userIDs, requestBuilder, alreadyLoadedUsers, callback)
+                        } else {
+                            callback.onSuccess(alreadyLoadedUsers, bundle)
+                        }
+                    }
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
             }
         })
     }
@@ -149,10 +182,11 @@ class DialogsManager {
     }
 
     fun sendSystemMessageAddedUser(systemMessagesManager: QBSystemMessagesManager, dialog: QBChatDialog, newUsersIds: List<Int>) {
-        QBUsers.getUsersByIDs(newUsersIds, null).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
-            override fun onSuccess(qbUsers: ArrayList<QBUser>, bundle: Bundle) {
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        loadNewUsersForSystemMsgsByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>>{
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
                 val usersIds = getOccupantsIdsStringFromList(newUsersIds)
-                if (newUsersIds.isNotEmpty()) {
+                if (newUsersIds.isNotEmpty() && qbUsers != null) {
                     val usersNames = getOccupantsNamesStringFromList(qbUsers)
 
                     val messageUsersAdded = buildMessageAddedUsers(dialog, usersIds, usersNames)
@@ -163,8 +197,33 @@ class DialogsManager {
                 }
             }
 
-            override fun onError(ignored: QBResponseException) {
+            override fun onError(ignored: QBResponseException?) {
 
+            }
+        })
+    }
+
+    private fun loadNewUsersForSystemMsgsByIDs(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, alreadyLoadedUsers: ArrayList<QBUser>, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>>{
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    QbUsersHolder.putUsers(qbUsers)
+                    alreadyLoadedUsers.addAll(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadNewUsersForSystemMsgsByIDs(userIDs, requestBuilder, alreadyLoadedUsers, callback)
+                        } else {
+                            callback.onSuccess(alreadyLoadedUsers, bundle)
+                        }
+                    }
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
             }
         })
     }

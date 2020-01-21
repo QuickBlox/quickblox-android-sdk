@@ -6,20 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import com.quickblox.chat.model.QBChatDialog
-import com.quickblox.chat.model.QBDialogType
 import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.utils.getColorCircleDrawable
-import com.quickblox.sample.chat.kotlin.utils.getGreyCircleDrawable
 import com.quickblox.sample.chat.kotlin.utils.qb.getDialogName
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val MAX_MESSAGES_TEXT = "99+"
 private const val MAX_MESSAGES = 99
 
 class DialogsAdapter(var context: Context, var dialogs: List<QBChatDialog>) : BaseAdapter() {
 
+    private var isSelectMode = false
     private var _selectedItems: ArrayList<QBChatDialog> = ArrayList()
     val selectedItems: ArrayList<QBChatDialog>
         get() = _selectedItems
@@ -34,28 +36,44 @@ class DialogsAdapter(var context: Context, var dialogs: List<QBChatDialog>) : Ba
             holder.nameTextView = modifiedView.findViewById(R.id.text_dialog_name)
             holder.lastMessageTextView = modifiedView.findViewById(R.id.text_dialog_last_message)
             holder.dialogImageView = modifiedView.findViewById(R.id.image_dialog_icon)
-            holder.unreadCounterTextView = modifiedView.findViewById(R.id.text_dialog_unread_count)
+            holder.unreadCounterTextView = modifiedView.findViewById(R.id.text_unread_counter)
+            holder.lastMessageTimeTextView = modifiedView.findViewById(R.id.text_last_msg_time)
+            holder.dialogAvatarTitle = modifiedView.findViewById(R.id.text_dialog_avatar_title)
+            holder.checkboxDialog = modifiedView.findViewById(R.id.checkbox_dialogs)
             modifiedView.tag = holder
         } else {
             holder = modifiedView.tag as ViewHolder
         }
 
         val dialog = getItem(position)
-        if (dialog.type == QBDialogType.GROUP) {
-            holder.dialogImageView.setBackgroundDrawable(getGreyCircleDrawable())
-            holder.dialogImageView.setImageResource(R.drawable.ic_chat_group)
-        } else {
-            holder.dialogImageView.setBackgroundDrawable(getColorCircleDrawable(position))
-            holder.dialogImageView.setImageDrawable(null)
+
+        val nameWithoutSpaces = dialog.name.replace(" ", "")
+        val stringTokenizer = StringTokenizer(nameWithoutSpaces, ",")
+        val firstLetter = stringTokenizer.nextToken().get(0).toString().toUpperCase()
+        var avatarTitle = firstLetter
+        if (stringTokenizer.hasMoreTokens()) {
+            val secondLetter = stringTokenizer.nextToken().get(0).toString().toUpperCase()
+            avatarTitle = firstLetter + secondLetter
         }
 
+        holder.dialogAvatarTitle.text = avatarTitle
+        holder.dialogImageView.setImageDrawable(getColorCircleDrawable(position))
         holder.nameTextView.text = getDialogName(dialog)
         holder.lastMessageTextView.text = prepareTextLastMessage(dialog)
+        holder.lastMessageTimeTextView.text = getDialogLastMessageTime(dialog.lastMessageDateSent)
 
         val unreadMessagesCount = getUnreadMsgCount(dialog)
-        if (unreadMessagesCount == 0) {
-            holder.unreadCounterTextView.visibility = View.GONE
+        if (isSelectMode) {
+            holder.checkboxDialog.visibility = View.VISIBLE
+            holder.lastMessageTimeTextView.visibility = View.INVISIBLE
+            holder.unreadCounterTextView.visibility = View.INVISIBLE
+        } else if (unreadMessagesCount == 0) {
+            holder.checkboxDialog.visibility = View.INVISIBLE
+            holder.lastMessageTimeTextView.visibility = View.VISIBLE
+            holder.unreadCounterTextView.visibility = View.INVISIBLE
         } else {
+            holder.checkboxDialog.visibility = View.INVISIBLE
+            holder.lastMessageTimeTextView.visibility = View.VISIBLE
             holder.unreadCounterTextView.visibility = View.VISIBLE
             val messageCount = if (unreadMessagesCount > MAX_MESSAGES) {
                 MAX_MESSAGES_TEXT
@@ -65,10 +83,13 @@ class DialogsAdapter(var context: Context, var dialogs: List<QBChatDialog>) : Ba
             holder.unreadCounterTextView.text = messageCount
         }
 
-        val backgroundColor = if (isItemSelected(position)) {
-            context.resources.getColor(R.color.selected_list_item_color)
+        val backgroundColor: Int
+        if (isItemSelected(position)) {
+            holder.checkboxDialog.isChecked = true
+            backgroundColor = context.resources.getColor(R.color.selected_list_item_color)
         } else {
-            context.resources.getColor(android.R.color.transparent)
+            holder.checkboxDialog.isChecked = false
+            backgroundColor = context.resources.getColor(android.R.color.transparent)
         }
         holder.rootLayout.setBackgroundColor(backgroundColor)
 
@@ -114,7 +135,13 @@ class DialogsAdapter(var context: Context, var dialogs: List<QBChatDialog>) : Ba
         return lastMessage
     }
 
+    fun prepareToSelect() {
+        isSelectMode = true
+        notifyDataSetChanged()
+    }
+
     fun clearSelection() {
+        isSelectMode = false
         _selectedItems.clear()
         notifyDataSetChanged()
     }
@@ -141,11 +168,39 @@ class DialogsAdapter(var context: Context, var dialogs: List<QBChatDialog>) : Ba
         notifyDataSetChanged()
     }
 
+    private fun getDialogLastMessageTime(seconds: Long): String {
+        val timeInMillis = seconds * 1000
+        val msgTime = Calendar.getInstance()
+        msgTime.timeInMillis = timeInMillis
+
+        if (timeInMillis == 0L) {
+            return ""
+        }
+
+        val now = Calendar.getInstance()
+        val timeFormatToday = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        val dateFormatThisYear = SimpleDateFormat("d MMM", Locale.ENGLISH)
+        val lastYearFormat = SimpleDateFormat("dd.MM.yy", Locale.ENGLISH)
+
+        if (now.get(Calendar.DATE) == msgTime.get(Calendar.DATE) && now.get(Calendar.YEAR) == msgTime.get(Calendar.YEAR)) {
+            return timeFormatToday.format(Date(timeInMillis))
+        } else if (now.get(Calendar.DAY_OF_YEAR) - msgTime.get(Calendar.DAY_OF_YEAR) == 1 && now.get(Calendar.YEAR) == msgTime.get(Calendar.YEAR)) {
+            return context.getString(R.string.yesterday)
+        } else if (now.get(Calendar.YEAR) == msgTime.get(Calendar.YEAR)) {
+            return dateFormatThisYear.format(Date(timeInMillis))
+        } else {
+            return lastYearFormat.format(Date(timeInMillis))
+        }
+    }
+
     private class ViewHolder {
         lateinit var rootLayout: ViewGroup
         lateinit var dialogImageView: ImageView
         lateinit var nameTextView: TextView
         lateinit var lastMessageTextView: TextView
         lateinit var unreadCounterTextView: TextView
+        lateinit var lastMessageTimeTextView: TextView
+        lateinit var dialogAvatarTitle: TextView
+        lateinit var checkboxDialog: CheckBox
     }
 }
