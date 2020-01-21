@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root_message_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="horizontal"
+    tools:background="@color/random_color_2">
+
+
+    <!--Message Container-->
+    <LinearLayout
+        android:id="@+id/ll_message_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <!--Message Info Container-->
+        <LinearLayout
+            android:id="@+id/ll_message_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:gravity="start"
+                android:text="ABC"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/iv_message_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="6dp"
+                android:layout_marginLeft="6dp"
+                android:src="@drawable/ic_status_sent" />
+
+            <TextView
+                android:id="@+id/tv_time_sent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="20:00"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!--Message Body Container-->
+        <LinearLayout
+            android:id="@+id/ll_message_body_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/outgoing_message_background"
+            android:minWidth="125dp"
+            android:minHeight="44dp"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingRight="16dp"
+            android:visibility="visible">
+
+            <!--Forward Container-->
+            <LinearLayout
+                android:id="@+id/ll_forwarded_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/text_message_body"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_forwarded_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color_white_alpha_06"
+                    android:textSize="13sp"
+                    android:text="@string/message_forwarded_from" />
+
+                <TextView
+                    android:id="@+id/tv_forwarded_from_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color_white_alpha_06"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Alexparvus" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_message_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="13dp"
+                android:maxWidth="202dp"
+                android:paddingBottom="3dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:text="Alexparvus..." />
+        </LinearLayout>
+
+        <!--Image Attachment Container-->
+        <RelativeLayout
+            android:id="@+id/rl_image_attach_container"
+            android:layout_width="260dp"
+            android:layout_height="200dp"
+            android:background="@drawable/attachment_image_placeholder_right"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_attach_image_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <!--Image Forwarded Container-->
+            <LinearLayout
+                android:id="@+id/ll_image_forwarded_container"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/attachment_forward_background"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingTop="10dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_image_forward_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:text="@string/message_forwarded_from" />
+
+                <TextView
+                    android:id="@+id/tv_image_forward_from_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Alexparvus" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/pb_attach_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <!--Video Attachment Container-->
+        <RelativeLayout
+            android:id="@+id/rl_video_attach_container"
+            android:layout_width="260dp"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/rl_video_attach_preview_container"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@drawable/attachment_video_placeholder">
+
+                <ImageView
+                    android:id="@+id/iv_attach_video_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/iv_attach_video_play_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_play" />
+
+                <ProgressBar
+                    android:id="@+id/pb_attach_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="40"
+                    android:indeterminateOnly="false"
+                    tools:visibility="visible"
+                    android:progressDrawable="@drawable/shape_progressbar_circle"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <!--Video Forwarded Container-->
+            <LinearLayout
+                android:id="@+id/ll_video_forwarded_container"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/attachment_forward_background"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingTop="10dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_video_forward_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:text="@string/message_forwarded_from" />
+
+                <TextView
+                    android:id="@+id/tv_video_forward_from_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Alexparvus" />
+            </LinearLayout>
+
+            <!--Video Info Container-->
+            <LinearLayout
+                android:id="@+id/ll_attach_video_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/attachment_video_info_background_right"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_attach_video_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    tools:text="video-06-02-1986.mp4" />
+
+                <TextView
+                    android:id="@+id/tv_attach_video_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="15sp"
+                    tools:text="41.2 MB" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!--File Attachment Container-->
+        <RelativeLayout
+            android:id="@+id/rl_file_attach_container"
+            android:layout_width="260dp"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/rl_file_attach_preview_container"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@drawable/attachment_file_placeholder">
+
+                <ProgressBar
+                    android:id="@+id/pb_attach_file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="40"
+                    android:indeterminateOnly="false"
+                    tools:visibility="visible"
+                    android:progressDrawable="@drawable/shape_progressbar_circle"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <!--File Forwarded Container-->
+            <LinearLayout
+                android:id="@+id/ll_file_forwarded_container"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/attachment_forward_background"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingTop="10dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_file_forward_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:text="@string/message_forwarded_from" />
+
+                <TextView
+                    android:id="@+id/tv_file_forward_from_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Alexparvus" />
+            </LinearLayout>
+
+            <!--File Info Container-->
+            <LinearLayout
+                android:id="@+id/ll_attach_file_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/attachment_video_info_background_right"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_attach_file_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    tools:text="For my dear customer.doc" />
+
+                <TextView
+                    android:id="@+id/tv_attach_file_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_search_hint"
+                    android:textSize="15sp"
+                    tools:text="3.7 MB" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--Avatar Container-->
+    <RelativeLayout
+        android:id="@+id/rl_avatar_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            tools:background="@color/color_new_blue" />
+
+        <TextView
+            android:id="@+id/tv_avatar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="2dp"
+            android:textColor="@color/text_color_white"
+            android:textSize="17sp"
+            android:textStyle="normal"
+            tools:text="E" />
+    </RelativeLayout>
+</LinearLayout>

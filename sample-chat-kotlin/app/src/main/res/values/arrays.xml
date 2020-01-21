@@ -4,6 +4,8 @@
     <string-array name="dlg_image_pick">
         <item>Gallery</item>
         <item>Camera</item>
+        <!--// TODO Files: Uncomment to add sending all file types-->
+        <!--<item>Files</item>-->
     </string-array>
 
 </resources>

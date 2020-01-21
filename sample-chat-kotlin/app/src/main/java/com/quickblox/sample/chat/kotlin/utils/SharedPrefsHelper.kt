@@ -16,7 +16,7 @@ private const val QB_USER_TAGS = "qb_user_tags"
 
 object SharedPrefsHelper {
     private var sharedPreferences: SharedPreferences =
-            App.instance.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+            App.getInstance().getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
     fun save(key: String, value: Any?) {
         val editor = sharedPreferences.edit()

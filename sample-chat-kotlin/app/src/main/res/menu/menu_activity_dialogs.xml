@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_add_chat"
+        android:icon="@drawable/ic_add_chat"
+        android:title="@string/menu_add_users_to_chat"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_appinfo"
+        android:icon="@drawable/ic_app_info"
+        android:title="@string/menu_dialogs_app_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_dialogs_action_logout"
+        android:icon="@drawable/ic_exit"
+        android:title="@string/menu_dialogs_logout"
+        app:showAsAction="never" />
+
+</menu>

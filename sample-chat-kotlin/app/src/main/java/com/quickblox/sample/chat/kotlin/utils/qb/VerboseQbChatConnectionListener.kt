@@ -34,7 +34,7 @@ open class VerboseQbChatConnectionListener(private val rootView: View) : Connect
     override fun reconnectingIn(seconds: Int) {
         if (seconds % 5 == 0 && seconds != 0) {
             Log.i(TAG, "reconnectingIn(): $seconds")
-            val message = App.instance.getString(R.string.reconnect_alert, seconds.toString())
+            val message = App.getInstance().getString(R.string.reconnect_alert, seconds.toString())
             snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE)
             snackbar!!.show()
         }

@@ -31,16 +31,16 @@ fun getColorCircleDrawable(colorPosition: Int): Drawable {
 private fun getCircleColor(@IntRange(from = RANDOM_COLOR_START_RANGE.toLong(), to = RANDOM_COLOR_END_RANGE.toLong())
                            colorPosition: Int): Int {
     val colorIdName = String.format("random_color_%d", colorPosition + 1)
-    val colorId = App.instance.resources.getIdentifier(colorIdName, "color", App.instance.packageName)
-    return App.instance.resources.getColor(colorId)
+    val colorId = App.getInstance().resources.getIdentifier(colorIdName, "color", App.getInstance().packageName)
+    return App.getInstance().resources.getColor(colorId)
 }
 
 fun getGreyCircleDrawable(): Drawable {
-    return getColoredCircleDrawable(App.instance.resources.getColor(R.color.color_grey))
+    return getColoredCircleDrawable(App.getInstance().resources.getColor(R.color.color_grey))
 }
 
 private fun getColoredCircleDrawable(@ColorInt color: Int): Drawable {
-    val drawable = App.instance.resources.getDrawable(R.drawable.shape_circle) as GradientDrawable
+    val drawable = App.getInstance().resources.getDrawable(R.drawable.shape_circle) as GradientDrawable
     drawable.setColor(color)
     return drawable
 }

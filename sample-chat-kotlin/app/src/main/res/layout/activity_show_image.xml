@@ -4,13 +4,13 @@
     android:background="@color/black">
 
     <ImageView
-        android:id="@+id/image_full_view"
+        android:id="@+id/iv_full_view"
         style="@style/MatchParent"
         android:layout_gravity="center"
         android:adjustViewBounds="true" />
 
     <ProgressBar
-        android:id="@+id/progress_bar_show_image"
+        android:id="@+id/progress_show_image"
         style="@style/WrapContent"
         android:layout_gravity="center"
         android:visibility="gone" />

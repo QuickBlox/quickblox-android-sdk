@@ -1,24 +1,32 @@
 package com.quickblox.sample.chat.kotlin.ui.activity
 
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.PersistableBundle
+import android.os.Vibrator
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.*
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBMessageStatusesManager
 import com.quickblox.chat.QBSystemMessagesManager
 import com.quickblox.chat.exception.QBChatException
+import com.quickblox.chat.listeners.QBChatDialogTypingListener
 import com.quickblox.chat.listeners.QBMessageStatusListener
 import com.quickblox.chat.listeners.QBSystemMessageListener
 import com.quickblox.chat.model.QBAttachment
@@ -28,13 +36,11 @@ import com.quickblox.chat.model.QBDialogType
 import com.quickblox.content.model.QBFile
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
-import com.quickblox.core.request.GenericQueryRule
-import com.quickblox.core.request.QBPagedRequestBuilder
 import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.managers.DialogsManager
-import com.quickblox.sample.chat.kotlin.ui.adapter.AttachmentPreviewAdapter
-import com.quickblox.sample.chat.kotlin.ui.adapter.ChatAdapter
+import com.quickblox.sample.chat.kotlin.ui.adapter.*
 import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.AttachClickListener
+import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.MessageLongClickListener
 import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
 import com.quickblox.sample.chat.kotlin.ui.views.AttachmentPreviewAdapterView
 import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
@@ -45,7 +51,7 @@ import com.quickblox.sample.chat.kotlin.utils.imagepick.OnImagePickedListener
 import com.quickblox.sample.chat.kotlin.utils.imagepick.pickAnImage
 import com.quickblox.sample.chat.kotlin.utils.qb.*
 import com.quickblox.sample.chat.kotlin.utils.shortToast
-import com.quickblox.users.QBUsers
+import com.quickblox.sample.chat.kotlin.utils.showSnackbar
 import com.quickblox.users.model.QBUser
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.jivesoftware.smack.ConnectionListener
@@ -53,25 +59,34 @@ import org.jivesoftware.smack.SmackException
 import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
+const val REQUEST_CODE_SELECT_PEOPLE = 752
 private const val REQUEST_CODE_ATTACHMENT = 721
-private const val REQUEST_CODE_SELECT_PEOPLE = 752
-
 private const val PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1010
+
+const val PROPERTY_FORWARD_USER_NAME = "origin_sender_name"
 
 const val EXTRA_DIALOG_ID = "dialogId"
 const val EXTRA_IS_NEW_DIALOG = "isNewDialog"
 const val IS_IN_BACKGROUND = "is_in_background"
 
-private const val ORDER_RULE = "order"
-private const val ORDER_VALUE = "desc string created_at"
+const val ORDER_RULE = "order"
+const val ORDER_VALUE = "desc string created_at"
+
+const val TYPING_STATUS_DELAY = 2000L
+const val MAX_ATTACHMENTS_COUNT = 1
+const val MAX_MESSAGE_SYMBOLS_LENGTH = 1000
 
 class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListener, DialogsManager.ManagingDialogsCallbacks {
     private val TAG = ChatActivity::class.java.simpleName
 
     private lateinit var progressBar: ProgressBar
     private lateinit var messageEditText: EditText
-    private lateinit var attachmentBtnChat: ImageButton
+    private lateinit var attachmentBtnChat: ImageView
+    private lateinit var typingStatus: TextView
+    private var currentUser = QBUser()
 
     private lateinit var attachmentPreviewContainerLayout: LinearLayout
     private lateinit var chatMessagesRecyclerView: RecyclerView
@@ -80,6 +95,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     private lateinit var chatConnectionListener: ConnectionListener
     private lateinit var imageAttachClickListener: ImageAttachClickListener
+    private lateinit var videoAttachClickListener: VideoAttachClickListener
+    private lateinit var fileAttachClickListener: FileAttachClickListener
+    private lateinit var messageLongClickListener: MessageLongClickListenerImpl
     private lateinit var qbMessageStatusesManager: QBMessageStatusesManager
     private var chatMessageListener: ChatMessageListener = ChatMessageListener()
     private var dialogsManager: DialogsManager = DialogsManager()
@@ -119,7 +137,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         }
 
         qbChatDialog = intent.getSerializableExtra(EXTRA_DIALOG_ID) as QBChatDialog
-
+        if (ChatHelper.getCurrentUser() != null) {
+            currentUser = ChatHelper.getCurrentUser()!!
+        } else {
+            finish()
+        }
         Log.v(TAG, "Deserialized dialog = $qbChatDialog")
 
         try {
@@ -129,6 +151,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             finish()
         }
         qbChatDialog.addMessageListener(chatMessageListener)
+        qbChatDialog.addIsTypingListener(TypingStatusListener())
 
         initViews()
         initMessagesRecyclerView()
@@ -171,10 +194,10 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
     private fun returnToChat() {
         qbChatDialog.initForChat(QBChatService.getInstance())
-        if (!qbChatDialog.isJoined){
+        if (!qbChatDialog.isJoined) {
             try {
                 qbChatDialog.join(DiscussionHistory())
-            } catch (e : Exception) {
+            } catch (e: Exception) {
                 finish()
             }
         }
@@ -192,17 +215,25 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
     fun returnListeners() {
         dialogsManager.addManagingDialogsCallbackListener(this)
-        systemMessagesManager = QBChatService.getInstance().systemMessagesManager
-        systemMessagesManager.addSystemMessageListener(systemMessagesListener)
+        try {
+            systemMessagesManager = QBChatService.getInstance().systemMessagesManager
+            systemMessagesManager.addSystemMessageListener(systemMessagesListener)
+            qbMessageStatusesManager = QBChatService.getInstance().messageStatusesManager
+            qbMessageStatusesManager.addMessageStatusListener(this)
+        } catch (e: Exception) {
+            Log.d(TAG, "Can not get QBChatService. Finishing Activity")
+            finish()
+        }
         chatAdapter.setAttachImageClickListener(imageAttachClickListener)
+        chatAdapter.setAttachVideoClickListener(videoAttachClickListener)
+        chatAdapter.setAttachFileClickListener(fileAttachClickListener)
+        chatAdapter.setMessageLongClickListener(messageLongClickListener)
         ChatHelper.addConnectionListener(chatConnectionListener)
-        qbMessageStatusesManager = QBChatService.getInstance().messageStatusesManager
-        qbMessageStatusesManager.addMessageStatusListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        chatAdapter.removeAttachImageClickListener()
+        chatAdapter.removeClickListeners()
         ChatHelper.removeConnectionListener(chatConnectionListener)
         qbMessageStatusesManager.removeMessageStatusListener(this)
         SharedPrefsHelper.save(IS_IN_BACKGROUND, true)
@@ -223,10 +254,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_chat, menu)
-
+        menuInflater.inflate(R.menu.menu_activity_chat, menu)
+        val menuItemInfo = menu.findItem(R.id.menu_chat_action_info)
         val menuItemLeave = menu.findItem(R.id.menu_chat_action_leave)
-        val menuItemAdd = menu.findItem(R.id.menu_chat_action_add)
         val menuItemDelete = menu.findItem(R.id.menu_chat_action_delete)
 
         when (qbChatDialog.type) {
@@ -235,12 +265,12 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             }
 
             QBDialogType.PRIVATE -> {
+                menuItemInfo.isVisible = false
                 menuItemLeave.isVisible = false
-                menuItemAdd.isVisible = false
             }
 
             QBDialogType.PUBLIC_GROUP -> {
-                menuItemAdd.isVisible = false
+                menuItemInfo.isVisible = false
                 menuItemLeave.isVisible = false
                 menuItemDelete.isVisible = false
             }
@@ -249,21 +279,12 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
             }
         }
-
-        if (qbChatDialog.type != QBDialogType.GROUP) {
-            menuItemAdd.isVisible = false
-        }
-
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_chat_action_info -> {
-                ChatInfoActivity.start(this, qbChatDialog)
-                return true
-            }
-            R.id.menu_chat_action_add -> {
                 updateDialog()
                 return true
             }
@@ -283,6 +304,82 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         }
     }
 
+    private fun showPopupMenu(isIncomingMessageClicked: Boolean, view: View, chatMessage: QBChatMessage?) {
+        val popupMenu = PopupMenu(this@ChatActivity, view)
+        val dialog = QbDialogHolder.getChatDialogById(chatMessage!!.dialogId)
+
+        popupMenu.menuInflater.inflate(R.menu.menu_message_longclick, popupMenu.menu)
+        popupMenu.gravity = Gravity.RIGHT
+
+        if (isIncomingMessageClicked || (dialog?.type != QBDialogType.GROUP)) {
+            popupMenu.menu.removeItem(R.id.menu_message_delivered_to)
+            popupMenu.menu.removeItem(R.id.menu_message_viewed_by)
+            popupMenu.gravity = Gravity.LEFT
+        }
+
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_message_forward -> {
+                    startForwardingMessage(chatMessage)
+                }
+                R.id.menu_message_delivered_to -> {
+                    showDeliveredToScreen(chatMessage)
+                }
+                R.id.menu_message_viewed_by -> {
+                    Log.d(TAG, "Viewed by")
+                    showViewedByScreen(chatMessage)
+                }
+            }
+            true
+        }
+        popupMenu.show()
+    }
+
+    private fun showFilePopup(itemViewType: Int?, attachment: QBAttachment?, view: View) {
+        val popupMenu = PopupMenu(this@ChatActivity, view)
+        popupMenu.menuInflater.inflate(R.menu.menu_file_popup, popupMenu.menu)
+
+        if (itemViewType == TYPE_TEXT_RIGHT || itemViewType == TYPE_ATTACH_RIGHT) {
+            popupMenu.gravity = Gravity.RIGHT
+        } else if (itemViewType == TYPE_TEXT_LEFT || itemViewType == TYPE_ATTACH_LEFT) {
+            popupMenu.gravity = Gravity.LEFT
+        }
+
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_file_save -> {
+                    saveFileToStorage(attachment)
+                }
+            }
+            true
+        }
+        popupMenu.show()
+    }
+
+    private fun saveFileToStorage(attachment: QBAttachment?) {
+        val file = File(application.filesDir, attachment?.name)
+        val url = QBFile.getPrivateUrlForUID(attachment?.id)
+        val request = DownloadManager.Request(Uri.parse(url))
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, file.name)
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        request.allowScanningByMediaScanner()
+        val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        manager.enqueue(request)
+    }
+
+    private fun startForwardingMessage(message: QBChatMessage) {
+        ForwardToActivity.start(this, message)
+    }
+
+    private fun showDeliveredToScreen(message: QBChatMessage) {
+        MessageInfoActivity.start(this, message, MESSAGE_INFO_DELIVERED_TO)
+
+    }
+
+    private fun showViewedByScreen(message: QBChatMessage) {
+        MessageInfoActivity.start(this, message, MESSAGE_INFO_READ_BY)
+    }
+
     private fun updateDialog() {
         ProgressDialogFragment.show(supportFragmentManager)
         Log.d(TAG, "Starting Dialog Update")
@@ -290,41 +387,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             override fun onSuccess(updatedChatDialog: QBChatDialog, bundle: Bundle) {
                 Log.d(TAG, "Update Dialog Successful: " + updatedChatDialog.dialogId)
                 qbChatDialog = updatedChatDialog
-                loadUsersFromQb(updatedChatDialog)
+                ProgressDialogFragment.hide(supportFragmentManager)
+                ChatInfoActivity.start(this@ChatActivity, qbChatDialog)
             }
 
             override fun onError(e: QBResponseException) {
                 Log.d(TAG, "Dialog Loading Error: " + e.message)
                 ProgressDialogFragment.hide(supportFragmentManager)
                 showErrorSnackbar(R.string.select_users_get_dialog_error, e, null)
-            }
-        })
-    }
-
-    private fun loadUsersFromQb(qbChatDialog: QBChatDialog) {
-        val rules = ArrayList<GenericQueryRule>()
-        rules.add(GenericQueryRule(ORDER_RULE, ORDER_VALUE))
-
-        val qbPagedRequestBuilder = QBPagedRequestBuilder()
-        qbPagedRequestBuilder.rules = rules
-        qbPagedRequestBuilder.perPage = 100
-
-        Log.d(TAG, "Loading Users")
-        QBUsers.getUsers(qbPagedRequestBuilder).performAsync(object : QBEntityCallback<java.util.ArrayList<QBUser>> {
-            override fun onSuccess(users: ArrayList<QBUser>, params: Bundle) {
-                Log.d(TAG, "Loading Users Successful")
-                ProgressDialogFragment.hide(supportFragmentManager)
-                if (qbChatDialog.occupants.size >= users.size) {
-                    shortToast(R.string.added_users)
-                } else {
-                    SelectUsersActivity.startForResult(this@ChatActivity, REQUEST_CODE_SELECT_PEOPLE, qbChatDialog)
-                }
-            }
-
-            override fun onError(e: QBResponseException) {
-                Log.d(TAG, "Loading Users Error: " + e.message)
-                ProgressDialogFragment.hide(supportFragmentManager)
-                showErrorSnackbar(R.string.select_users_get_users_error, e, null)
             }
         })
     }
@@ -400,12 +470,20 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
     override fun onImagePicked(requestCode: Int, file: File) {
         when (requestCode) {
-            REQUEST_CODE_ATTACHMENT -> attachmentPreviewAdapter.add(file)
+            REQUEST_CODE_ATTACHMENT -> {
+                attachmentPreviewAdapter.add(file)
+            }
         }
     }
 
     override fun onImagePickError(requestCode: Int, e: Exception) {
         showErrorSnackbar(0, e, null)
+        val rootView = window.decorView.findViewById<View>(android.R.id.content)
+        showSnackbar(rootView, 0, e, R.string.dlg_hide, object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                Snackbar.SnackbarLayout.GONE
+            }
+        })
     }
 
     override fun onImagePickClosed(ignored: Int) {
@@ -413,6 +491,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     fun onSendChatClick(view: View) {
+        qbChatDialog.sendStopTypingNotification()
         val totalAttachmentsCount = attachmentPreviewAdapter.count
         val uploadedAttachments = attachmentPreviewAdapter.uploadedAttachments
         if (uploadedAttachments.isNotEmpty()) {
@@ -425,8 +504,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             }
         }
 
-        val text = messageEditText.text.toString().trim { it <= ' ' }
+        var text = messageEditText.text.toString().trim { it <= ' ' }
         if (!TextUtils.isEmpty(text)) {
+            if (text.length > MAX_MESSAGE_SYMBOLS_LENGTH) {
+                text = text.substring(0, MAX_MESSAGE_SYMBOLS_LENGTH)
+            }
             sendChatMessage(text, null)
         }
     }
@@ -454,12 +536,22 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private fun initViews() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        messageEditText = findViewById(R.id.edit_chat_message)
-        progressBar = findViewById(R.id.progress_chat)
-        attachmentPreviewContainerLayout = findViewById(R.id.layout_attachment_preview_container)
+        typingStatus = findViewById(R.id.tv_typing_status)
 
-        attachmentBtnChat = findViewById(R.id.button_chat_attachment)
-        attachmentBtnChat.setOnClickListener { openImagePicker() }
+        messageEditText = findViewById(R.id.et_chat_message)
+        messageEditText.addTextChangedListener(TextInputWatcher())
+
+        progressBar = findViewById(R.id.progress_chat)
+        attachmentPreviewContainerLayout = findViewById(R.id.ll_attachment_preview_container)
+
+        attachmentBtnChat = findViewById(R.id.iv_chat_attachment)
+        attachmentBtnChat.setOnClickListener {
+            if (attachmentPreviewAdapter.count >= MAX_ATTACHMENTS_COUNT) {
+                shortToast(R.string.error_attachment_count)
+            } else {
+                openImagePicker()
+            }
+        }
 
         attachmentPreviewAdapter = AttachmentPreviewAdapter(this, object : AttachmentPreviewAdapter.AttachmentCountChangedListener {
             override fun onAttachmentCountChanged(count: Int) {
@@ -476,7 +568,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 })
             }
         })
-        val previewAdapterView = findViewById<AttachmentPreviewAdapterView>(R.id.adapter_view_attachment_preview)
+        val previewAdapterView = findViewById<AttachmentPreviewAdapterView>(R.id.adapter_attachment_preview)
         previewAdapterView.setAdapter(attachmentPreviewAdapter)
     }
 
@@ -490,7 +582,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     private fun initMessagesRecyclerView() {
-        chatMessagesRecyclerView = findViewById(R.id.list_chat_messages)
+        chatMessagesRecyclerView = findViewById(R.id.rv_chat_messages)
 
         val layoutManager = LinearLayoutManager(this)
         layoutManager.stackFromEnd = true
@@ -503,6 +595,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
         chatMessagesRecyclerView.adapter = chatAdapter
         imageAttachClickListener = ImageAttachClickListener()
+        videoAttachClickListener = VideoAttachClickListener()
+        fileAttachClickListener = FileAttachClickListener()
+        messageLongClickListener = MessageLongClickListenerImpl()
     }
 
     private fun sendChatMessage(text: String?, attachment: QBAttachment?) {
@@ -543,7 +638,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         } else {
             showProgressDialog(R.string.dlg_login)
             Log.d(TAG, "Relogin to Chat")
-            ChatHelper.loginToChat(ChatHelper.getCurrentUser(),
+            ChatHelper.loginToChat(currentUser,
                     object : QBEntityCallback<Void> {
                         override fun onSuccess(p0: Void?, p1: Bundle?) {
                             Log.d(TAG, "Relogin Successful")
@@ -677,6 +772,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private fun deleteChat() {
         ChatHelper.deleteDialog(qbChatDialog, object : QBEntityCallback<Void> {
             override fun onSuccess(aVoid: Void?, bundle: Bundle?) {
+                QbDialogHolder.deleteDialog(qbChatDialog)
                 setResult(Activity.RESULT_OK)
                 finish()
             }
@@ -688,7 +784,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     private fun initChatConnectionListener() {
-        val rootView: View = findViewById(R.id.list_chat_messages)
+        val rootView: View = findViewById(R.id.rv_chat_messages)
         chatConnectionListener = object : VerboseQbChatConnectionListener(rootView) {
             override fun reconnectionSuccessful() {
                 super.reconnectionSuccessful()
@@ -747,9 +843,37 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     private inner class ImageAttachClickListener : AttachClickListener {
-        override fun onLinkClicked(attachment: QBAttachment, positionInAdapter: Int) {
+        override fun onAttachmentClicked(itemViewType: Int?, view: View, attachment: QBAttachment) {
             val url = QBFile.getPrivateUrlForUID(attachment.id)
             AttachmentImageActivity.start(this@ChatActivity, url)
+        }
+    }
+
+    private inner class VideoAttachClickListener : AttachClickListener {
+        override fun onAttachmentClicked(itemViewType: Int?, view: View, attachment: QBAttachment) {
+            val url = QBFile.getPrivateUrlForUID(attachment.id)
+            AttachmentVideoActivity.start(this@ChatActivity, attachment.name, url)
+        }
+    }
+
+    private inner class FileAttachClickListener : AttachClickListener {
+        override fun onAttachmentClicked(itemViewType: Int?, view: View, attachment: QBAttachment) {
+            showFilePopup(itemViewType, attachment, view)
+        }
+    }
+
+    private inner class MessageLongClickListenerImpl : MessageLongClickListener {
+        override fun onMessageLongClicked(itemViewType: Int?, view: View, chatMessage: QBChatMessage?) {
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(80)
+
+            if (itemViewType == TYPE_TEXT_RIGHT || itemViewType == TYPE_ATTACH_RIGHT) {
+                Log.d(TAG, "Outgoing message LongClicked")
+                showPopupMenu(false, view, chatMessage)
+            } else if (itemViewType == TYPE_TEXT_LEFT || itemViewType == TYPE_ATTACH_LEFT) {
+                Log.d(TAG, "Incoming message LongClicked")
+                showPopupMenu(true, view, chatMessage)
+            }
         }
     }
 
@@ -757,6 +881,134 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         override fun downloadMore() {
             Log.w(TAG, "Download More")
             loadChatHistory()
+        }
+    }
+
+    private inner class TypingStatusListener : QBChatDialogTypingListener {
+
+        private var currentTypingUserNames = ArrayList<String>()
+
+        override fun processUserIsTyping(dialogID: String?, userID: Int?) {
+            val currentUserID = currentUser.id
+            if (dialogID != null && dialogID == qbChatDialog.dialogId && userID != null && userID != currentUserID) {
+                val user = QbUsersHolder.getUserById(userID)
+                val userName = user?.fullName
+                userName?.let {
+                    if (!currentTypingUserNames.contains(userName)) {
+                        currentTypingUserNames.add(userName)
+                    }
+                }
+                typingStatus.text = makeStringFromNames()
+                typingStatus.visibility = View.VISIBLE
+            }
+        }
+
+        override fun processUserStopTyping(dialogID: String?, userID: Int?) {
+            val currentUserID = currentUser.id
+            if (dialogID != null && dialogID == qbChatDialog.dialogId && userID != null && userID != currentUserID) {
+                val user = QbUsersHolder.getUserById(userID)
+                val userName = user?.fullName
+                userName?.let {
+                    if (currentTypingUserNames.contains(userName)) {
+                        currentTypingUserNames.remove(userName)
+                    }
+                }
+                typingStatus.text = makeStringFromNames()
+                if (makeStringFromNames().isEmpty()) {
+                    typingStatus.visibility = View.GONE
+                }
+            }
+        }
+
+        private fun makeStringFromNames(): String {
+            var result = ""
+            val usersCount = currentTypingUserNames.size
+            if (usersCount == 1) {
+                val firstUser = currentTypingUserNames.get(0)
+
+                if (firstUser.length <= 20) {
+                    result = firstUser + " " + getString(R.string.typing_postfix_singular)
+                } else {
+                    result = firstUser.subSequence(0, 19).toString() +
+                            getString(R.string.typing_ellipsis) +
+                            " " + getString(R.string.typing_postfix_singular)
+                }
+            } else if (usersCount == 2) {
+                var firstUser = currentTypingUserNames.get(0)
+                var secondUser = currentTypingUserNames.get(1)
+
+                if ((firstUser + secondUser).length > 20) {
+                    if (firstUser.length >= 10) {
+                        firstUser = firstUser.subSequence(0, 9).toString() + getString(R.string.typing_ellipsis)
+                    }
+
+                    if (secondUser.length >= 10) {
+                        secondUser = secondUser.subSequence(0, 9).toString() + getString(R.string.typing_ellipsis)
+                    }
+                }
+                result = firstUser + " and " + secondUser + " " + getString(R.string.typing_postfix_plural)
+
+            } else if (usersCount > 2) {
+                var firstUser = currentTypingUserNames.get(0)
+                var secondUser = currentTypingUserNames.get(1)
+                val thirdUser = currentTypingUserNames.get(2)
+
+                if ((firstUser + secondUser + thirdUser).length <= 20) {
+                    result = firstUser + ", " + secondUser + " and " + thirdUser + " " + getString(R.string.typing_postfix_plural)
+                } else if ((firstUser + secondUser).length <= 20) {
+                    result = firstUser + ", " + secondUser + " and " + (currentTypingUserNames.size - 2).toString() + " more " + getString(R.string.typing_postfix_plural)
+                } else {
+                    if (firstUser.length >= 10) {
+                        firstUser = firstUser.subSequence(0, 9).toString() + getString(R.string.typing_ellipsis)
+                    }
+                    if (secondUser.length >= 10) {
+                        secondUser = secondUser.subSequence(0, 9).toString() + getString(R.string.typing_ellipsis)
+                    }
+                    result = firstUser + ", " + secondUser +
+                            " and " + (currentTypingUserNames.size - 2).toString() + " more " + getString(R.string.typing_postfix_plural)
+                }
+            }
+            return result
+        }
+    }
+
+    private inner class TextInputWatcher : TextWatcher {
+
+        private var timer = Timer()
+        private var isTyping: Boolean = false
+
+        override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+
+        }
+
+        override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            if (!isTyping) {
+                try {
+                    qbChatDialog.sendIsTypingNotification()
+                    isTyping = true
+                } catch (e: XMPPException) {
+                    Log.d(TAG, e.message)
+                } catch (e: SmackException.NotConnectedException) {
+                    Log.d(TAG, e.message)
+                }
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            timer.cancel()
+            timer = Timer()
+            timer.schedule(object : TimerTask() {
+                override fun run() {
+                    try {
+                        qbChatDialog.sendStopTypingNotification()
+                        isTyping = false
+                    } catch (e: XMPPException) {
+                        Log.d(TAG, e.message)
+                    } catch (e: SmackException.NotConnectedException) {
+                        Log.d(TAG, e.message)
+                    }
+                }
+            }, TYPING_STATUS_DELAY)
         }
     }
 }

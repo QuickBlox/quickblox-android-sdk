@@ -5,10 +5,8 @@ import android.util.Log
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBRestChatService
-import com.quickblox.chat.model.QBAttachment
-import com.quickblox.chat.model.QBChatDialog
-import com.quickblox.chat.model.QBChatMessage
-import com.quickblox.chat.model.QBDialogType
+import com.quickblox.chat.listeners.QBChatDialogParticipantListener
+import com.quickblox.chat.model.*
 import com.quickblox.chat.request.QBDialogRequestBuilder
 import com.quickblox.chat.request.QBMessageGetBuilder
 import com.quickblox.content.QBContent
@@ -33,21 +31,27 @@ import org.jivesoftware.smack.SmackException
 import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smackx.muc.DiscussionHistory
 import java.io.File
-import java.util.*
 
-const val DIALOG_ITEMS_PER_PAGE = 100
 const val CHAT_HISTORY_ITEMS_PER_PAGE = 50
+const val USERS_PER_PAGE = 100
+const val TOTAL_PAGES_BUNDLE_PARAM = "total_pages"
+const val CURRENT_PAGE_BUNDLE_PARAM = "current_page"
 private const val CHAT_HISTORY_ITEMS_SORT_FIELD = "date_sent"
 
 object ChatHelper {
     private val TAG = ChatHelper::class.java.simpleName
 
     private var qbChatService: QBChatService = QBChatService.getInstance()
+    private var usersLoadedFromDialog = ArrayList<QBUser>()
+    private var usersLoadedFromDialogs = ArrayList<QBUser>()
+    private var usersLoadedFromMessage = ArrayList<QBUser>()
+    private var usersLoadedFromMessages = ArrayList<QBUser>()
 
     init {
         QBSettings.getInstance().logLevel = LogLevel.DEBUG
         QBChatService.setDebugEnabled(true)
         QBChatService.setConfigurationBuilder(buildChatConfigs())
+        QBChatService.setDefaultPacketReplyTimeout(10000)
         qbChatService.setUseStreamManagement(true)
     }
 
@@ -75,8 +79,12 @@ object ChatHelper {
         return QBChatService.getInstance().isLoggedIn
     }
 
-    fun getCurrentUser(): QBUser {
-        return SharedPrefsHelper.getQbUser()!!
+    fun getCurrentUser(): QBUser? {
+        if (SharedPrefsHelper.hasQbUser()) {
+            return SharedPrefsHelper.getQbUser()!!
+        } else {
+            return null
+        }
     }
 
     fun addConnectionListener(listener: ConnectionListener?) {
@@ -234,14 +242,13 @@ object ChatHelper {
         })
     }
 
-    fun getDialogs(customObjectRequestBuilder: QBRequestGetBuilder, callback: QBEntityCallback<ArrayList<QBChatDialog>>) {
-        customObjectRequestBuilder.limit = DIALOG_ITEMS_PER_PAGE
+    fun getDialogs(requestBuilder: QBRequestGetBuilder, callback: QBEntityCallback<ArrayList<QBChatDialog>>) {
 
-        QBRestChatService.getChatDialogs(null, customObjectRequestBuilder).performAsync(
+        QBRestChatService.getChatDialogs(null, requestBuilder).performAsync(
                 object : QbEntityCallbackWrapper<ArrayList<QBChatDialog>>(callback) {
                     override fun onSuccess(dialogs: ArrayList<QBChatDialog>, bundle: Bundle?) {
                         getUsersFromDialogs(dialogs, callback)
-                        // Not calling super.onSuccess() because
+                        // Not calling callback.onSuccess(...) because
                         // we want to load chat userList before triggering callback
                     }
                 })
@@ -268,21 +275,48 @@ object ChatHelper {
             return
         }
 
-        val requestBuilder = QBPagedRequestBuilder(userIds.size, 1)
-        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
-                object : QbEntityCallbackWrapper<ArrayList<QBUser>>(callback) {
-                    override fun onSuccess(usersList: ArrayList<QBUser>, bundle: Bundle?) {
-                        QbUsersHolder.putUsers(usersList)
-                        callback.onSuccess(usersList, bundle)
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        usersLoadedFromDialog.clear()
+        loadUsersByIDsFromDialog(userIds, requestBuilder, callback)
+    }
+
+    private fun loadUsersByIDsFromDialog(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    usersLoadedFromDialog.addAll(qbUsers)
+                    QbUsersHolder.putUsers(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadUsersByIDsFromDialog(userIDs, requestBuilder, callback)
+                        } else {
+                            callback.onSuccess(usersLoadedFromDialog, bundle)
+                        }
                     }
-                })
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
     }
 
     fun loadFileAsAttachment(file: File, callback: QBEntityCallback<QBAttachment>, progressCallback: QBProgressCallback?) {
         QBContent.uploadFileTask(file, false, null, progressCallback).performAsync(
                 object : QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(callback) {
                     override fun onSuccess(qbFile: QBFile, bundle: Bundle?) {
-                        val attachment = QBAttachment(QBAttachment.IMAGE_TYPE)
+                        var type = "file"
+                        if (qbFile.contentType.contains("image", ignoreCase = true)) {
+                            type = QBAttachment.IMAGE_TYPE
+                        } else if (qbFile.contentType.contains("video", ignoreCase = true)) {
+                            type = QBAttachment.VIDEO_TYPE
+                        }
+
+                        val attachment = QBAttachment(type)
                         attachment.id = qbFile.uid
                         attachment.size = qbFile.size.toDouble()
                         attachment.name = qbFile.name
@@ -293,33 +327,131 @@ object ChatHelper {
     }
 
     private fun getUsersFromDialogs(dialogs: ArrayList<QBChatDialog>, callback: QBEntityCallback<ArrayList<QBChatDialog>>) {
-        val userIds = ArrayList<Int>()
+        val userIds = HashSet<Int>()
         for (dialog in dialogs) {
             userIds.addAll(dialog.occupants)
             userIds.add(dialog.lastMessageUserId)
         }
 
-        val requestBuilder = QBPagedRequestBuilder(userIds.size, 1)
-        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
-                object : QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatDialog>>(callback) {
-                    override fun onSuccess(t: ArrayList<QBUser>, bundle: Bundle?) {
-                        QbUsersHolder.putUsers(t)
-                        callback.onSuccess(dialogs, bundle)
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        usersLoadedFromDialogs.clear()
+        loadUsersByIDsFromDialogs(userIds, requestBuilder, object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, b: Bundle?) {
+                callback.onSuccess(dialogs, b)
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
+    }
+
+    private fun loadUsersByIDsFromDialogs(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    usersLoadedFromDialogs.addAll(qbUsers)
+                    QbUsersHolder.putUsers(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadUsersByIDsFromDialogs(userIDs, requestBuilder, callback)
+                        } else {
+                            callback.onSuccess(usersLoadedFromDialogs, bundle)
+                        }
                     }
-                })
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
     }
 
     private fun getUsersFromMessages(messages: ArrayList<QBChatMessage>,
                                      userIds: Set<Int>,
                                      callback: QBEntityCallback<ArrayList<QBChatMessage>>) {
 
-        val requestBuilder = QBPagedRequestBuilder(userIds.size, 1)
-        QBUsers.getUsersByIDs(userIds, requestBuilder).performAsync(
-                object : QbEntityCallbackTwoTypeWrapper<ArrayList<QBUser>, ArrayList<QBChatMessage>>(callback) {
-                    override fun onSuccess(t: ArrayList<QBUser>, bundle: Bundle?) {
-                        QbUsersHolder.putUsers(t)
-                        callback.onSuccess(messages, bundle)
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        usersLoadedFromMessages.clear()
+        loadUsersByIDsFromMessages(userIds, requestBuilder, object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, b: Bundle?) {
+                callback.onSuccess(messages, b)
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
+    }
+
+    private fun loadUsersByIDsFromMessages(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    usersLoadedFromMessages.addAll(qbUsers)
+                    QbUsersHolder.putUsers(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadUsersByIDsFromMessages(userIDs, requestBuilder, callback)
+                        } else {
+                            callback.onSuccess(usersLoadedFromMessages, bundle)
+                        }
                     }
-                })
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
+    }
+
+    fun getUsersFromMessage(message: QBChatMessage, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        val userIds = ArrayList<Int>()
+        val usersDelivered = message.deliveredIds
+        val usersRead = message.readIds
+
+        for (id in usersDelivered) {
+            userIds.add(id)
+        }
+        for (id in usersRead) {
+            userIds.add(id)
+        }
+
+        val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
+        usersLoadedFromMessage.clear()
+        loadUsersByIDsFromMessage(userIds, requestBuilder, callback)
+    }
+
+    private fun loadUsersByIDsFromMessage(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, callback: QBEntityCallback<ArrayList<QBUser>>) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                if (qbUsers != null) {
+                    usersLoadedFromMessage.addAll(qbUsers)
+                    QbUsersHolder.putUsers(qbUsers)
+                    bundle?.let {
+                        val totalPages = it.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                        val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
+                        if (totalPages > currentPage) {
+                            requestBuilder.page = currentPage + 1
+                            loadUsersByIDsFromMessages(userIDs, requestBuilder, callback)
+                        } else {
+                            callback.onSuccess(usersLoadedFromMessage, bundle)
+                        }
+                    }
+                }
+            }
+
+            override fun onError(e: QBResponseException?) {
+                callback.onError(e)
+            }
+        })
     }
 }
