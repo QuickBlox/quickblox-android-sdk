@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.quickblox.sample.chat.kotlin.App
 import com.quickblox.sample.chat.kotlin.async.BaseAsyncTask
 import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
-import com.quickblox.sample.chat.kotlin.utils.getImageFilePathFromUri
+import com.quickblox.sample.chat.kotlin.utils.getFilePath
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -44,7 +44,7 @@ class GetFilepathFromUriTask(fragmentManager: FragmentManager,
 
         if (SCHEME_CONTENT.equals(uriScheme, ignoreCase = true) && !isFromGoogleApp && !isKitKatAndUpper && uri != null) {
             val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor = App.instance.contentResolver.query(uri, filePathColumn, null, null, null)
+            val cursor = App.getInstance().contentResolver.query(uri, filePathColumn, null, null, null)
             cursor?.let {
                 if (it.count > 0) {
                     it.moveToFirst()
@@ -57,7 +57,7 @@ class GetFilepathFromUriTask(fragmentManager: FragmentManager,
             imageFilePath = uri?.path
         } else {
             uri?.let {
-                imageFilePath = getImageFilePathFromUri(it)
+                imageFilePath = getFilePath(App.getInstance(), it)
             }
         }
 

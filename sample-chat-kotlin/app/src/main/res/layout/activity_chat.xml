@@ -6,65 +6,103 @@
     tools:ignore="RtlHardcoded">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_chat_messages"
+        android:id="@+id/rv_chat_messages"
         style="@style/MatchParent"
-        android:layout_above="@+id/layout_attachment_preview_container"
+        android:background="#F4F6F9"
+        android:layout_above="@+id/tv_typing_status"
         android:listSelector="@android:color/transparent" />
 
     <ProgressBar
         android:id="@+id/progress_chat"
-        style="@style/CenterProgressBarStyle" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/tv_typing_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_attachment_preview_container"
+        android:textSize="13sp"
+        android:textColor="@color/color_search_hint"
+        android:paddingBottom="5dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/chat_typing_status_background"
+        android:visibility="gone"
+        tools:text="Alexparvus is typing..."/>
 
     <LinearLayout
-        android:id="@+id/layout_attachment_preview_container"
-        style="@style/MatchWidth"
+        android:id="@+id/ll_attachment_preview_container"
+        android:layout_width="match_parent"
         android:layout_height="96dp"
-        android:layout_above="@+id/layout_chat_send_container"
-        android:background="?attr/colorPrimary"
+        android:layout_above="@+id/rl_chat_send_container"
+        android:background="@color/text_color_white_alpha_06"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <View
             android:id="@+id/divider_chat_attachments"
             style="@style/HorizontalDividerStyle" />
 
         <com.quickblox.sample.chat.kotlin.ui.views.AttachmentPreviewAdapterView
-            android:id="@+id/adapter_view_attachment_preview"
-            style="@style/MatchWidth" />
+            android:id="@+id/adapter_attachment_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <View
         android:id="@+id/divider_chat"
-        style="@style/HorizontalDividerStyle"
-        android:layout_above="@+id/layout_chat_send_container" />
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:background="@color/divider_color"
+        android:layout_above="@+id/rl_chat_send_container" />
 
-    <LinearLayout
-        android:id="@+id/layout_chat_send_container"
-        style="@style/MatchWidth"
+    <RelativeLayout
+        android:id="@+id/rl_chat_send_container"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
         android:layout_alignParentBottom="true"
-        android:background="?attr/colorPrimary"
-        android:orientation="horizontal">
+        android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/button_chat_attachment"
-            style="@style/BorderlessImageButtonStyle"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_action_attachment" />
+        <ImageView
+            android:id="@+id/iv_chat_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_add_attachment" />
 
         <EditText
-            android:id="@+id/edit_chat_message"
-            style="@style/WeightWidth"
-            android:layout_height="wrap_content"
+            android:id="@+id/et_chat_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:hint="@string/chat_edit_text_hint"
             android:inputType="textShortMessage"
-            android:maxLength="1024" />
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:background="@color/transparent"
+            android:layout_toRightOf="@+id/iv_chat_attachment"
+            android:layout_toLeftOf="@+id/iv_chat_send"
+            android:textColorHint="@color/color_search_hint"
+            android:maxLength="1000" />
 
-        <ImageButton
-            android:id="@+id/button_chat_send"
-            style="@style/BorderlessImageButtonStyle"
-            android:layout_gravity="center_vertical"
-            android:onClick="onSendChatClick"
-            android:src="@drawable/ic_send"
-            android:text="@string/chat_send" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_chat_send"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10.5dp"
+            android:paddingLeft="2.5dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:src="@drawable/ic_send_message"
+            android:tooltipText="@string/chat_send"
+            android:onClick="onSendChatClick"/>
+    </RelativeLayout>
 </RelativeLayout>
