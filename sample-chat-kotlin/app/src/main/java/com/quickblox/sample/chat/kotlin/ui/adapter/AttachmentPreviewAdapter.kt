@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,14 @@ import com.quickblox.core.QBProgressCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
+import com.quickblox.sample.chat.kotlin.utils.shortToast
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
+
+const val MAX_FILE_SIZE_100MB = 104857600
 
 class AttachmentPreviewAdapter(val context: Context,
                                private val attachmentCountChangedListener: AttachmentCountChangedListener,
@@ -38,26 +42,32 @@ class AttachmentPreviewAdapter(val context: Context,
     private var fileList: MutableList<File> = ArrayList()
 
     fun add(item: File) {
-        fileUploadProgressMap[item] = 1
-        ChatHelper.loadFileAsAttachment(item, object : QBEntityCallback<QBAttachment> {
-            override fun onSuccess(result: QBAttachment, params: Bundle?) {
-                fileUploadProgressMap.remove(item)
-                _fileQBAttachmentMap[item] = result
-                notifyDataSetChanged()
-            }
+        if (item.length() <= MAX_FILE_SIZE_100MB) {
+            fileUploadProgressMap[item] = 1
+            ChatHelper.loadFileAsAttachment(item, object : QBEntityCallback<QBAttachment> {
+                override fun onSuccess(result: QBAttachment, params: Bundle?) {
+                    fileUploadProgressMap.remove(item)
+                    _fileQBAttachmentMap[item] = result
+                    notifyDataSetChanged()
+                }
 
-            override fun onError(e: QBResponseException) {
-                errorListener.onAttachmentUploadError(e)
-                remove(item)
-            }
-        }, QBProgressCallback { progress ->
-            fileUploadProgressMap[item] = progress
-            mainThreadHandler.post {
-                notifyDataSetChanged()
-            }
-        })
-        fileList.add(item)
-        attachmentCountChangedListener.onAttachmentCountChanged(count)
+                override fun onError(e: QBResponseException) {
+                    errorListener.onAttachmentUploadError(e)
+                    remove(item)
+                }
+            }, QBProgressCallback { progress ->
+                fileUploadProgressMap[item] = progress
+                mainThreadHandler.post {
+                    if (progress % 5 == 0) {
+                        notifyDataSetChanged()
+                    }
+                }
+            })
+            fileList.add(item)
+            attachmentCountChangedListener.onAttachmentCountChanged(count)
+        } else {
+            shortToast(R.string.error_attachment_size)
+        }
     }
 
     fun remove(item: File) {
@@ -87,10 +97,16 @@ class AttachmentPreviewAdapter(val context: Context,
         val width = context.resources.getDimension(R.dimen.chat_attachment_preview_size).toInt()
         val height = context.resources.getDimension(R.dimen.chat_attachment_preview_size).toInt()
 
-        Glide.with(context)
-                .load(attachmentFile)
-                .override(width, height)
-                .into(holder.attachmentImageView)
+
+        try {
+            Glide.with(context)
+                    .load(attachmentFile)
+                    .override(width, height)
+                    .into(holder.attachmentImageView)
+        } catch (e: IllegalArgumentException) {
+            Log.d("AttachmentPreview", e.message)
+
+        }
 
         if (isFileUploading(attachmentFile)) {
             holder.progressBar.visibility = View.VISIBLE

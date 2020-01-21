@@ -34,8 +34,9 @@ private const val MAX_SOCKET_TIMEOUT = 60000
 class App : Application() {
 
     companion object {
-        lateinit var instance: App
-            private set
+        private lateinit var instance: App
+
+        fun getInstance(): App = instance
     }
 
     override fun onCreate() {

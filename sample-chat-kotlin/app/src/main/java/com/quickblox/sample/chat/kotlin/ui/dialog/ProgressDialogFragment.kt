@@ -50,10 +50,10 @@ class ProgressDialogFragment : DialogFragment() {
         dialog.setCanceledOnTouchOutside(false)
 
         // Disable the back button
-        val keyListener = DialogInterface.OnKeyListener {
-            dialog,
-            keyCode,
-            event -> keyCode == KeyEvent.KEYCODE_BACK
+        val keyListener = DialogInterface.OnKeyListener { dialog,
+                                                          keyCode,
+                                                          event ->
+            keyCode == KeyEvent.KEYCODE_BACK
         }
         dialog.setOnKeyListener(keyListener)
         return dialog

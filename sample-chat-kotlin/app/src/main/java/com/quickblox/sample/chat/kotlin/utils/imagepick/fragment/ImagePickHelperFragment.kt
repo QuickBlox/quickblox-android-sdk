@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.quickblox.sample.chat.kotlin.utils.CAMERA_REQUEST_CODE
+import com.quickblox.sample.chat.kotlin.utils.FILE_REQUEST_CODE
 import com.quickblox.sample.chat.kotlin.utils.GALLERY_REQUEST_CODE
 import com.quickblox.sample.chat.kotlin.utils.getLastUsedCameraFile
 import com.quickblox.sample.chat.kotlin.utils.imagepick.GetFilepathFromUriTask
@@ -47,7 +48,7 @@ class ImagePickHelperFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         val tag = arguments?.getString(ARG_PARENT_FRAGMENT)
         val fragment = (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(tag)
@@ -77,6 +78,8 @@ class ImagePickHelperFragment : Fragment() {
                 // So we just pass temporary camera file as a data, because RESULT_OK means that photo was written in the file.
                 intent = Intent()
                 intent.data = Uri.fromFile(getLastUsedCameraFile())
+            } else {
+                getLastUsedCameraFile()?.delete()
             }
             GetFilepathFromUriTask(childFragmentManager, listener, arguments!!.getInt(ARG_REQUEST_CODE)).execute(intent)
         } else {
@@ -87,6 +90,6 @@ class ImagePickHelperFragment : Fragment() {
 
     private fun isResultFromImagePick(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         return resultCode == Activity.RESULT_OK && (requestCode == CAMERA_REQUEST_CODE
-                || requestCode == GALLERY_REQUEST_CODE && data != null)
+                || requestCode == GALLERY_REQUEST_CODE || requestCode == FILE_REQUEST_CODE && data != null)
     }
 }

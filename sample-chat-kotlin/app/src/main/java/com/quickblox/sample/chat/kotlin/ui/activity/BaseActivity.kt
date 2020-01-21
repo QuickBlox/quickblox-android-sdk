@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
@@ -20,12 +21,14 @@ import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
 import com.quickblox.sample.chat.kotlin.utils.showSnackbar
+import com.quickblox.users.model.QBUser
 
 private const val DUMMY_VALUE = "dummy_value"
 private const val RESTART_DELAY = 200
 
 abstract class BaseActivity : AppCompatActivity() {
 
+    private val TAG = BaseActivity::class.java.simpleName
     private var progressDialog: ProgressDialog? = null
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -82,6 +85,14 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    protected fun isProgresDialogShowing(): Boolean {
+        if (progressDialog != null && progressDialog?.isShowing != null) {
+            return progressDialog!!.isShowing
+        } else {
+            return false
+        }
+    }
+
     fun restartApp(context: Context) {
         // Application needs to restart when user declined some permissions at runtime
         val restartIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
@@ -93,20 +104,39 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val currentUser = ChatHelper.getCurrentUser()
         hideNotifications()
-        if (SharedPrefsHelper.hasQbUser() && !QBChatService.getInstance().isLoggedIn) {
-            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
-                override fun onSuccess(aVoid: Void?, bundle: Bundle) {
-                    onResumeFinished()
+        if (currentUser != null && !QBChatService.getInstance().isLoggedIn) {
+            Log.d(TAG, "Resuming with Relogin")
+            ChatHelper.login(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<QBUser> {
+                override fun onSuccess(qbUser: QBUser?, b: Bundle?) {
+                    Log.d(TAG, "Relogin Successful")
+                    reloginToChat()
                 }
 
-                override fun onError(e: QBResponseException) {
-                    onResumeFinished()
+                override fun onError(e: QBResponseException?) {
+                    Log.d(TAG, e?.message)
                 }
             })
+
         } else {
+            Log.d(TAG, "Resuming without Relogin to Chat")
             onResumeFinished()
         }
+    }
+
+    private fun reloginToChat() {
+        ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+            override fun onSuccess(aVoid: Void?, bundle: Bundle?) {
+                Log.d(TAG, "Relogin to Chat Successful")
+                onResumeFinished()
+            }
+
+            override fun onError(e: QBResponseException?) {
+                Log.d(TAG, "Relogin to Chat Error: " + e?.message)
+                onResumeFinished()
+            }
+        })
     }
 
     private fun hideNotifications() {
