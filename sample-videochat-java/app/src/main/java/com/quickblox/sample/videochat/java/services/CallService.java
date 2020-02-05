@@ -681,7 +681,11 @@ public class CallService extends Service {
 
         @Override
         public void onUserNoActions(QBRTCSession qbrtcSession, Integer integer) {
-
+            ToastUtils.longToast("Call was stopped by UserNoActions timer");
+            clearCallState();
+            clearButtonsState();
+            WebRtcSessionManager.getInstance(getApplicationContext()).setCurrentSession(null);
+            CallService.stop(CallService.this);
         }
 
         @Override
