@@ -257,14 +257,20 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         showIncomingCallWindowTaskHandler = Handler(Looper.myLooper())
         showIncomingCallWindowTask = Runnable {
             if (callService.currentSessionExist()) {
-                val currentSessionState = callService.getCurrentSessionState()
+                /*val currentSessionState = callService.getCurrentSessionState()
                 if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_NEW == currentSessionState) {
                     callService.rejectCurrentSession(HashMap())
                 } else {
                     callService.stopRingtone()
                     hangUpCurrentSession()
-                }
-                longToast("Call was stopped by timer")
+                }*/
+                // This is a fix to prevent call stop in case calling to user with more then one device logged in.
+                longToast("Call was stopped by UserNoActions timer")
+                callService.clearCallState()
+                callService.clearButtonsState()
+                WebRtcSessionManager.setCurrentSession(null)
+                CallService.stop(this@CallActivity)
+                finish()
             }
         }
     }

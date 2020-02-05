@@ -59,6 +59,8 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.webrtc.CameraVideoCapturer;
 
 import java.util.ArrayList;
@@ -288,7 +290,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                if (callService.currentSessionExist()) {
+                /*if (callService.currentSessionExist()) {
                     BaseSession.QBRTCSessionState currentSessionState = callService.getCurrentSessionState();
                     if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)) {
                         callService.rejectCurrentSession(new HashMap<>());
@@ -296,8 +298,14 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
                         callService.stopRingtone();
                         hangUpCurrentSession();
                     }
-                }
-                ToastUtils.longToast("Call was stopped by timer");
+                }*/
+                // This is a fix to prevent call stop in case calling to user with more then one device logged in.
+                ToastUtils.longToast("Call was stopped by UserNoActions timer");
+                callService.clearCallState();
+                callService.clearButtonsState();
+                WebRtcSessionManager.getInstance(getApplicationContext()).setCurrentSession(null);
+                CallService.stop(CallActivity.this);
+                finish();
             }
         };
     }
