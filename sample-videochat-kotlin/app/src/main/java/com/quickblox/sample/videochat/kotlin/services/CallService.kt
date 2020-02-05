@@ -576,7 +576,11 @@ class CallService : Service() {
         }
 
         override fun onUserNoActions(p0: QBRTCSession?, p1: Int?) {
-
+            longToast("Call was stopped by UserNoActions timer")
+            clearCallState()
+            clearButtonsState()
+            WebRtcSessionManager.setCurrentSession(null)
+            CallService.stop(this@CallService)
         }
 
         override fun onSessionClosed(session: QBRTCSession?) {
