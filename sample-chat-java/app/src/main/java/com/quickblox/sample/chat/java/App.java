@@ -61,14 +61,14 @@ public class App extends Application {
 
     private void checkAppCredentials() {
         if (APPLICATION_ID.isEmpty() || AUTH_KEY.isEmpty() || AUTH_SECRET.isEmpty() || ACCOUNT_KEY.isEmpty()) {
-            throw new AssertionError(getString(R.string.error_credentials_empty));
+            throw new AssertionError(getString(R.string.error_qb_credentials_empty));
         }
     }
 
     private void checkChatSettings() {
         if (USER_DEFAULT_PASSWORD.isEmpty() || (CHAT_PORT < MIN_PORT_VALUE || CHAT_PORT > MAX_PORT_VALUE)
                 || (SOCKET_TIMEOUT < MIN_SOCKET_TIMEOUT || SOCKET_TIMEOUT > MAX_SOCKET_TIMEOUT)) {
-            throw new AssertionError(getString(R.string.error_credentials_empty));
+            throw new AssertionError(getString(R.string.error_chat_credentails_empty));
         }
     }
 

@@ -42,20 +42,22 @@ public class AppInfoActivity extends BaseActivity {
     }
 
     private void initUI() {
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.appinfo_title);
-        appVersionTextView = findViewById(R.id.text_app_version);
-        sdkVersionTextView = findViewById(R.id.text_sdk_version);
-        appIDTextView = findViewById(R.id.text_app_id);
-        authKeyTextView = findViewById(R.id.text_auth_key);
-        authSecretTextView = findViewById(R.id.text_auth_secret);
-        accountKeyTextView = findViewById(R.id.text_account_key);
-        apiDomainTextView = findViewById(R.id.text_api_domain);
-        chatDomainTextView = findViewById(R.id.text_chat_domain);
-        appQAVersionTextView = findViewById(R.id.text_qa_version);
+        appVersionTextView = findViewById(R.id.tv_app_version);
+        sdkVersionTextView = findViewById(R.id.tv_sdk_version);
+        appIDTextView = findViewById(R.id.tv_app_id);
+        authKeyTextView = findViewById(R.id.tv_auth_key);
+        authSecretTextView = findViewById(R.id.tv_auth_secret);
+        accountKeyTextView = findViewById(R.id.tv_account_key);
+        apiDomainTextView = findViewById(R.id.tv_api_domain);
+        chatDomainTextView = findViewById(R.id.tv_chat_domain);
+        appQAVersionTextView = findViewById(R.id.tv_qa_version);
     }
 
     public void fillUI() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getString(R.string.appinfo_title));
+        }
         appVersionTextView.setText(BuildConfig.VERSION_NAME);
         sdkVersionTextView.setText(com.quickblox.BuildConfig.VERSION_NAME);
         appIDTextView.setText(QBSettings.getInstance().getApplicationId());

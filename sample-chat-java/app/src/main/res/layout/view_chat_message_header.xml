@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchWidth"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center">
 
     <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/header_date_textview"
-        style="@style/ListDateHeaderStyle"
-        tools:text="MARCH 06" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/color_search_hint"
+        android:textSize="13sp"
+        android:background="@drawable/chat_date_bubble"
+        android:textAllCaps="false"
+        tools:text="Today" />
 </LinearLayout>

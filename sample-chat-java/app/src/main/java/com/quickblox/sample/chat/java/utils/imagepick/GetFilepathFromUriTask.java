@@ -66,7 +66,7 @@ public class GetFilepathFromUriTask extends BaseAsyncTask<Intent, Void, File> {
         } else if (SCHEME_FILE.equalsIgnoreCase(uriScheme)) {
             imageFilePath = uri.getPath();
         } else {
-            imageFilePath = ImageUtils.saveUriToFile(uri);
+            imageFilePath = ImageUtils.getFilePath(App.getInstance(), uri);
         }
 
         if (TextUtils.isEmpty(imageFilePath)) {

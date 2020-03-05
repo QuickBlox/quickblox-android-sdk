@@ -9,11 +9,6 @@ import androidx.fragment.app.FragmentManager;
 
 public class ImagePickHelper {
 
-    public void pickAnImage(Fragment fragment, int requestCode) {
-        ImagePickHelperFragment imagePickHelperFragment = ImagePickHelperFragment.start(fragment, requestCode);
-        showImageSourcePickerDialog(fragment.getChildFragmentManager(), imagePickHelperFragment);
-    }
-
     public void pickAnImage(FragmentActivity activity, int requestCode) {
         ImagePickHelperFragment imagePickHelperFragment = ImagePickHelperFragment.start(activity, requestCode);
         showImageSourcePickerDialog(activity.getSupportFragmentManager(), imagePickHelperFragment);

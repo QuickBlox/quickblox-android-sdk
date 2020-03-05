@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.quickblox.sample.chat.java">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.quickblox.sample.chat.java.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,11 +11,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -32,7 +34,7 @@
 
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:label="@string/login_title"
+            android:label="@string/login_toolbar_title"
             android:screenOrientation="portrait" />
 
         <activity
@@ -44,6 +46,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.activity.NewGroupActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.activity.ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ChatActivityTheme"
@@ -51,13 +57,23 @@
 
         <activity
             android:name=".ui.activity.ChatInfoActivity"
-            android:label="@string/chat_info"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.ForwardToActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.MessageInfoActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.AttachmentImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark" />
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.AttachmentVideoActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.AppInfoActivity"

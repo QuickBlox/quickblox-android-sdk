@@ -1,79 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="unread_counter_text_size">13sp</dimen>
-
-    <dimen name="chat_date_text_size">13sp</dimen>
-    <dimen name="chat_date_header_top_margin">30dp</dimen>
-
-    <dimen name="chat_author_text_size">16sp</dimen>
     <dimen name="chat_attachment_preview_size">80dp</dimen>
-
-    <dimen name="chat_message_body_text_size">16sp</dimen>
-    <dimen name="chat_message_info_text_size">13sp</dimen>
-    <dimen name="chat_message_content_margin">4dp</dimen>
-    <dimen name="chat_message_username_margin">@dimen/chat_message_content_margin</dimen>
-
-    <dimen name="chat_message_attachment_username_margin">12dp</dimen>
-    <dimen name="chat_message_attachment_size">160dp</dimen>
-
-    <dimen name="list_item_side_margin">@dimen/padding_common_twice</dimen>
-
-    <dimen name="padding_common_twice">16dp</dimen>
-
-    <dimen name="fab_margin_right">16dp</dimen>
-    <dimen name="fab_margin_bottom">16dp</dimen>
-
-    <dimen name="splash_main_text_size">32sp</dimen>
-    <dimen name="splash_version_text_size">12sp</dimen>
-
+    <dimen name="list_item_side_margin">16dp</dimen>
     <dimen name="padding_common">8dp</dimen>
     <dimen name="padding_common_big">20dp</dimen>
-
-    <dimen name="chat_attach_width">200dp</dimen>
-    <dimen name="chat_attach_height">200dp</dimen>
-    <dimen name="chat_babble_margin">4dp</dimen>
-
-    <dimen name="chat_attach_audio_height">72dp</dimen>
-
-    <dimen name="padding_small">4dp</dimen>
-    <dimen name="padding_medium">@dimen/padding_common</dimen>
-    <dimen name="padding_big">16dp</dimen>
-    <dimen name="padding_very_big">18dp</dimen>
-    <dimen name="margin_bottom_small">4dp</dimen>
-
-    <dimen name="text_size_small">15sp</dimen>
-    <dimen name="text_size_medium">18sp</dimen>
-    <dimen name="text_size_link_preview_title">14sp</dimen>
-    <dimen name="text_size_link_preview_description">12sp</dimen>
-    <dimen name="text_size_link_preview_host">12sp</dimen>
-
-    <dimen name="attach_image_width_preview">80dp</dimen>
-    <dimen name="attach_image_height_preview">80dp</dimen>
-
-    <dimen name="icon_play_width">42dp</dimen>
-    <dimen name="icon_play_height">48dp</dimen>
-
-    <dimen name="vd_playpause_pause_width">26dp</dimen>
-    <dimen name="vd_playpause_pause_height">26dp</dimen>
-    <dimen name="vd_playpause_play_width">26dp</dimen>
-    <dimen name="vd_playpause_play_height">26dp</dimen>
-
-    <dimen name="corners_small_value">3dp</dimen>
-    <dimen name="image_view_small_avatar_layout_width">48dp</dimen>
-    <dimen name="image_view_small_avatar_layout_height">48dp</dimen>
-    <dimen name="image_view_big_avatar_layout_width">72dp</dimen>
-    <dimen name="image_view_big_avatar_layout_height">72dp</dimen>
-    <dimen name="avatar_border_width">1dp</dimen>
-
-    <dimen name="host_icon_width">12dp</dimen>
-    <dimen name="host_icon_height">12dp</dimen>
-
-    <dimen name="link_preview_width">240dp</dimen>
-    <dimen name="link_preview_imaga_min_height">120dp</dimen>
-
-    <dimen name="login_padding_left_right">16dp</dimen>
-    <dimen name="login_padding_actionbar">24dp</dimen>
-    <dimen name="login_padding_top">16dp</dimen>
 
 </resources>

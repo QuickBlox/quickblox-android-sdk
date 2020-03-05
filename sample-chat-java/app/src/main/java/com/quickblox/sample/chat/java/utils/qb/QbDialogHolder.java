@@ -28,16 +28,16 @@ public class QbDialogHolder {
         dialogsMap = new TreeMap<>();
     }
 
-    public Map<String, QBChatDialog> getDialogs() {
-        return getSortedMap(dialogsMap);
-    }
-
     public QBChatDialog getChatDialogById(String dialogId) {
         return dialogsMap.get(dialogId);
     }
 
     public void clear() {
         dialogsMap.clear();
+    }
+
+    public Map<String, QBChatDialog> getDialogs() {
+        return getSortedMap(dialogsMap);
     }
 
     public void addDialog(QBChatDialog dialog) {
