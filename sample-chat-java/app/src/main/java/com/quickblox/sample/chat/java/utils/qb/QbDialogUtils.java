@@ -3,8 +3,6 @@ package com.quickblox.sample.chat.java.utils.qb;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.quickblox.auth.session.QBSettings;
-import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.chat.utils.DialogUtils;
@@ -147,7 +145,7 @@ public class QbDialogUtils {
     public static String getOccupantsNamesStringFromList(Collection<QBUser> qbUsers) {
         ArrayList<String> userNameList = new ArrayList<>();
         for (QBUser user : qbUsers) {
-            if(TextUtils.isEmpty(user.getFullName())) {
+            if (TextUtils.isEmpty(user.getFullName())) {
                 userNameList.add(user.getLogin());
             } else {
                 userNameList.add(user.getFullName());

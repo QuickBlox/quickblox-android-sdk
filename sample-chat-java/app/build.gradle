@@ -24,7 +24,7 @@ repositories {
 }
 
 android {
-    def versionQACode = 0
+    def versionQACode = 2
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -32,10 +32,10 @@ android {
 
     defaultConfig {
         applicationId "com.quickblox.sample.chat.java"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 28
-        versionCode 411000
-        versionName '4.1.1'
+        versionCode 423000
+        versionName '4.2.3'
         multiDexEnabled true
     }
 

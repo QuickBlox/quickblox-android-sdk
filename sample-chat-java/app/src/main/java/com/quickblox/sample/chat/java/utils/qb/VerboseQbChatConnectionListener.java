@@ -22,6 +22,9 @@ public class VerboseQbChatConnectionListener implements ConnectionListener {
     @Override
     public void connected(XMPPConnection connection) {
         Log.i(TAG, "connected()");
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
     }
 
     @Override

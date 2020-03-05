@@ -11,7 +11,6 @@ import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.R;
-import com.quickblox.sample.chat.java.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
@@ -49,12 +48,12 @@ public class SplashActivity extends BaseActivity {
 
     private void fillVersion() {
         String appName = getString(R.string.app_name);
-        ((TextView) findViewById(R.id.text_splash_app_title)).setText(appName);
+        ((TextView) findViewById(R.id.tv_splash_app_title)).setText(appName);
         try {
             String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            ((TextView) findViewById(R.id.text_splash_app_version)).setText(versionName);
+            ((TextView) findViewById(R.id.tv_splash_app_version)).setText(getString(R.string.splash_app_version, versionName));
         } catch (PackageManager.NameNotFoundException e) {
-            showErrorSnackbar(R.string.error, e, null);
+            Log.d(TAG, e.getMessage());
         }
     }
 
@@ -76,7 +75,7 @@ public class SplashActivity extends BaseActivity {
     private QBUser getUserFromSession() {
         QBUser user = SharedPrefsHelper.getInstance().getQbUser();
         QBSessionManager qbSessionManager = QBSessionManager.getInstance();
-        if (qbSessionManager.getSessionParameters() == null) {
+        if (qbSessionManager.getSessionParameters() == null || user == null) {
             ChatHelper.getInstance().destroy();
             return null;
         }
@@ -86,13 +85,13 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void loginToChat(final QBUser user) {
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
+        showProgressDialog(R.string.dlg_restoring_chat_session);
 
         ChatHelper.getInstance().loginToChat(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 Log.v(TAG, "Chat login onSuccess()");
-                ProgressDialogFragment.hide(getSupportFragmentManager());
+                hideProgressDialog();
                 DialogsActivity.start(SplashActivity.this);
                 finish();
             }
@@ -102,7 +101,7 @@ public class SplashActivity extends BaseActivity {
                 if (e.getMessage().equals("You have already logged in chat")) {
                     loginToChat(user);
                 } else {
-                    ProgressDialogFragment.hide(getSupportFragmentManager());
+                    hideProgressDialog();
                     Log.w(TAG, "Chat login onError(): " + e);
                     showErrorSnackbar(R.string.error_recreate_session, e,
                             new View.OnClickListener() {
