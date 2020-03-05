@@ -1,42 +1,37 @@
 package com.quickblox.sample.chat.java.utils;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.App;
 import com.quickblox.sample.chat.java.R;
 
-import java.util.List;
-
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 public class ErrorUtils {
 
-    private static final String NO_CONNECTION_ERROR = "Connection failed. Please check your internet connection.";
-    private static final String NO_RESPONSE_TIMEOUT = "No response received within reply timeout.";
-    private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private static final String NO_CONNECTION_ERROR = App.getInstance().getString(R.string.error_connection);
+    private static final String NO_RESPONSE_TIMEOUT = App.getInstance().getString(R.string.error_response_timeout);
+    private static final String NO_SERVER_CONNECTION = App.getInstance().getString(R.string.no_server_connection);
 
     private ErrorUtils() {
     }
 
-    public static Snackbar showSnackbar(View view, @StringRes int errorMessage, Exception e,
+    public static Snackbar showSnackbar(View view, @StringRes int errorMessageResource, Exception e,
                                         @StringRes int actionLabel, View.OnClickListener clickListener) {
         String error = (e == null) ? "" : e.getMessage();
         boolean noConnection = NO_CONNECTION_ERROR.equals(error);
         boolean timeout = error.startsWith(NO_RESPONSE_TIMEOUT);
         if (noConnection || timeout) {
-            return showSnackbar(view, R.string.no_server_connection, actionLabel, clickListener);
-        } else if (errorMessage == 0) {
+            return showSnackbar(view, NO_SERVER_CONNECTION, actionLabel, clickListener);
+        } else if (errorMessageResource == 0) {
             return showSnackbar(view, error, actionLabel, clickListener);
         } else if (error.equals("")) {
-            return showSnackbar(view, errorMessage, App.getInstance().getString(R.string.no_server_connection), actionLabel, clickListener);
+            return showSnackbar(view, errorMessageResource, NO_SERVER_CONNECTION, actionLabel, clickListener);
         } else {
-            return showSnackbar(view, errorMessage, error, actionLabel, clickListener);
+            return showSnackbar(view, errorMessageResource, error, actionLabel, clickListener);
         }
     }
 
@@ -47,53 +42,17 @@ public class ErrorUtils {
         return showSnackbar(view, message, actionLabel, clickListener);
     }
 
-    public static Snackbar showSnackbar(View view, @StringRes int message,
-                                        @StringRes int actionLabel,
-                                        View.OnClickListener clickListener) {
-        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(actionLabel, clickListener);
-        snackbar.show();
-        return snackbar;
-    }
-
     private static Snackbar showSnackbar(View view, String message,
                                          @StringRes int actionLabel,
                                          View.OnClickListener clickListener) {
         Snackbar snackbar = Snackbar.make(view, message.trim(), Snackbar.LENGTH_INDEFINITE);
         if (clickListener != null) {
             snackbar.setAction(actionLabel, clickListener);
+            snackbar.setActionTextColor(ContextCompat.getColor(App.getInstance(), R.color.color_blue_qb));
+            TextView tv = snackbar.getView().findViewById(R.id.snackbar_text);
+            tv.setTextColor(ContextCompat.getColor(App.getInstance(), R.color.color_light_blue_qb));
         }
         snackbar.show();
         return snackbar;
-    }
-
-    public static void showErrorToast(QBResponseException exception) {
-        ToastUtils.shortToast(String.format("[ERROR] Request has been completed with errors: %s", exception.getErrors()
-                + ", code: " + exception.getHttpStatusCode()));
-    }
-
-    public static void showErrorDialog(Context context, @StringRes int errorMessage, String error) {
-        showErrorDialog(context, context.getString(errorMessage), error);
-    }
-
-    public static void showErrorDialog(Context context, @StringRes int errorMessage, List<String> errors) {
-        showErrorDialog(context, context.getString(errorMessage), errors.toString());
-    }
-
-    private static void showErrorDialog(Context context, String errorMessage, String error) {
-        showErrorDialog(context, String.format("%s: %s", errorMessage, error));
-    }
-
-    private static void showErrorDialog(final Context context, final String errorMessage) {
-        mainThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                new AlertDialog.Builder(context)
-                        .setTitle(R.string.error)
-                        .setMessage(errorMessage)
-                        .create()
-                        .show();
-            }
-        });
     }
 }

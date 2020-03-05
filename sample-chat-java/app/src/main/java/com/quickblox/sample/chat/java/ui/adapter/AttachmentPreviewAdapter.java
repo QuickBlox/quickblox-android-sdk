@@ -19,6 +19,7 @@ import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.R;
 import com.quickblox.sample.chat.java.utils.ResourceUtils;
+import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 
 import java.io.File;
@@ -32,6 +33,7 @@ import java.util.Map;
 
 public class AttachmentPreviewAdapter extends BaseAdapter {
 
+    private static final long MAX_FILE_SIZE_100MB = 104857600;
     private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     private List<File> fileList = new ArrayList<>();
@@ -55,34 +57,38 @@ public class AttachmentPreviewAdapter extends BaseAdapter {
     }
 
     public void add(final File item) {
-        fileUploadProgressMap.put(item, 1);
-        ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallback<QBAttachment>() {
-            @Override
-            public void onSuccess(QBAttachment result, Bundle params) {
-                fileUploadProgressMap.remove(item);
-                fileQBAttachmentMap.put(item, result);
-                notifyDataSetChanged();
-            }
+        if (item.length() <= MAX_FILE_SIZE_100MB) {
+            fileUploadProgressMap.put(item, 1);
+            ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallback<QBAttachment>() {
+                @Override
+                public void onSuccess(QBAttachment result, Bundle params) {
+                    fileUploadProgressMap.remove(item);
+                    fileQBAttachmentMap.put(item, result);
+                    notifyDataSetChanged();
+                }
 
-            @Override
-            public void onError(QBResponseException e) {
-                errorListener.onAttachmentUploadError(e);
-                remove(item);
-            }
-        }, new QBProgressCallback() {
-            @Override
-            public void onProgressUpdate(final int progress) {
-                fileUploadProgressMap.put(item, progress);
-                mainThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
-            }
-        });
-        fileList.add(item);
-        countChangedListener.onAttachmentCountChanged(getCount());
+                @Override
+                public void onError(QBResponseException e) {
+                    errorListener.onAttachmentUploadError(e);
+                    remove(item);
+                }
+            }, new QBProgressCallback() {
+                @Override
+                public void onProgressUpdate(final int progress) {
+                    fileUploadProgressMap.put(item, progress);
+                    mainThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+            });
+            fileList.add(item);
+            countChangedListener.onAttachmentCountChanged(getCount());
+        } else {
+            ToastUtils.shortToast(R.string.error_attachment_size);
+        }
     }
 
     public void remove(File item) {

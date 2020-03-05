@@ -19,7 +19,7 @@ public class PushListenerService extends QBFcmPushListenerService {
     protected void showNotification(String message) {
         NotificationUtils.showNotification(App.getInstance(), SplashActivity.class,
                 App.getInstance().getString(R.string.notification_title), message,
-                R.mipmap.ic_notification, NOTIFICATION_ID);
+                R.drawable.ic_logo_vector, NOTIFICATION_ID);
     }
 
     @Override

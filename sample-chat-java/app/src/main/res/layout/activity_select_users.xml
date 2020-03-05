@@ -1,13 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
-    style="@style/MatchParent">
+    style="@style/MatchParent"
+    android:background="#F4F6F9">
+
+    <RelativeLayout
+        android:id="@+id/search_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@color/white"
+            app:iconifiedByDefault="false"
+            app:queryBackground="@color/transparent"
+            app:queryHint="@string/select_users_search_hint">
+        </androidx.appcompat.widget.SearchView>
+
+        <com.quickblox.sample.chat.java.ui.adapter.ScrollViewWithMaxHeight
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:animateLayoutChanges="true"
+            android:fadeScrollbars="false"
+            android:background="@color/white"
+            android:layout_below="@id/search">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chips"
+                    android:layout_width="wrap_content"
+                    android:isScrollContainer="true"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:layout_margin="6dp"
+                    android:visibility="gone">
+                </com.google.android.material.chip.ChipGroup>
+            </RelativeLayout>
+        </com.quickblox.sample.chat.java.ui.adapter.ScrollViewWithMaxHeight>
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_select_users"
-        style="@style/ListViewWithoutDividerStyle" />
+        style="@style/ListViewWithoutDividerStyle"
+        android:layout_below="@+id/search_group" />
+
+    <TextView
+        android:id="@+id/tv_no_users_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/search_group"
+        android:layout_marginTop="28dp"
+        android:textSize="17sp"
+        android:textColor="#333333"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:text="@string/select_users_not_found"/>
 
     <ProgressBar
         android:id="@+id/progress_select_users"
-        style="@style/CenterProgressBarStyle" />
+        style="@style/CenterProgressBarStyle"
+        android:visibility="gone"/>
 </RelativeLayout>

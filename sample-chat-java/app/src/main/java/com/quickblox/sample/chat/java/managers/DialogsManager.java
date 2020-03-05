@@ -1,6 +1,5 @@
 package com.quickblox.sample.chat.java.managers;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,11 +10,14 @@ import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.chat.java.App;
 import com.quickblox.sample.chat.java.R;
+import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 import com.quickblox.sample.chat.java.utils.qb.QbDialogHolder;
 import com.quickblox.sample.chat.java.utils.qb.QbDialogUtils;
+import com.quickblox.sample.chat.java.utils.qb.QbUsersHolder;
 import com.quickblox.sample.chat.java.utils.qb.callback.QbEntityCallbackImpl;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
@@ -64,7 +66,7 @@ public class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, String.valueOf(dialog.getName()));
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG);
         qbChatMessage.setDateSent(System.currentTimeMillis() / 1000);
-        qbChatMessage.setBody(App.getInstance().getString(R.string.new_chat_created, getCurrentUserName()));
+        qbChatMessage.setBody(App.getInstance().getString(R.string.new_chat_created, getCurrentUserName(), dialog.getName()));
         qbChatMessage.setSaveToHistory(true);
         qbChatMessage.setMarkable(true);
         return qbChatMessage;
@@ -107,46 +109,92 @@ public class DialogsManager {
 
     public void sendMessageCreatedDialog(QBChatDialog dialog) {
         QBChatMessage messageCreatingDialog = buildMessageCreatedGroupDialog(dialog);
-        try {
-            dialog.sendMessage(messageCreatingDialog);
-        } catch (SmackException.NotConnectedException ignored) {
 
-        }
+        Log.d(TAG, "Sending Notification Message about Creating Group Dialog");
+        sendMessageHandleJoining(dialog, messageCreatingDialog);
     }
 
     public void sendMessageAddedUsers(final QBChatDialog dialog, final List<Integer> newUsersIds) {
-        QBUsers.getUsersByIDs(newUsersIds, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(ChatHelper.USERS_PER_PAGE, 1);
+        loadNewUsersByIDs(newUsersIds, requestBuilder, new ArrayList<QBUser>(), new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 String usersIds = QbDialogUtils.getOccupantsIdsStringFromList(newUsersIds);
-                if (!newUsersIds.isEmpty()) {
+                if (!newUsersIds.isEmpty() && qbUsers != null) {
                     String usersNames = QbDialogUtils.getOccupantsNamesStringFromList(qbUsers);
                     QBChatMessage messageUsersAdded = buildMessageAddedUsers(dialog, usersIds, usersNames);
 
-                    try {
-                        Log.d(TAG, "Sending Notification Message to Opponents about Adding Occupants");
-                        dialog.sendMessage(messageUsersAdded);
-                    } catch (SmackException.NotConnectedException e) {
-                        Log.d(TAG, "Sending Notification Message Error: " + e.getMessage());
-                    }
+                    Log.d(TAG, "Sending Notification Message to Opponents about Adding Occupants");
+                    sendMessageHandleJoining(dialog, messageUsersAdded);
                 }
             }
 
             @Override
-            public void onError(QBResponseException ignored) {
-
+            public void onError(QBResponseException e) {
+                Log.d(TAG, "Failed to load users to send message. " + e.getMessage());
+                ToastUtils.shortToast("Failed to load users to send message");
             }
         });
     }
 
     public void sendMessageLeftUser(QBChatDialog dialog) {
         QBChatMessage messageLeftUser = buildMessageLeftUser(dialog);
-        try {
-            Log.d(TAG, "Sending Notification Message to Opponents about User Left");
-            dialog.sendMessage(messageLeftUser);
-        } catch (SmackException.NotConnectedException ignored) {
 
+        Log.d(TAG, "Sending Notification Message to Opponents about User Left to dialog : " + dialog.getName());
+        sendMessageHandleJoining(dialog, messageLeftUser);
+    }
+
+    private void sendMessageHandleJoining(final QBChatDialog dialog, final QBChatMessage qbChatMessage) {
+        if (dialog.isJoined()) {
+            try {
+                Log.d(TAG, "Sending Notification Message");
+                dialog.sendMessage(qbChatMessage);
+            } catch (IllegalStateException | SmackException.NotConnectedException e) {
+                Log.d(TAG, "Sending Notification Message Error: " + e.getMessage());
+            }
+        } else {
+            ChatHelper.getInstance().join(dialog, new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    sendMessageHandleJoining(dialog, qbChatMessage);
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    ToastUtils.shortToast(e.getMessage());
+                    Log.d(TAG, "Joining error: " + e.getMessage());
+                }
+            });
         }
+    }
+
+    private void loadNewUsersByIDs(final Collection<Integer> userIDs, final QBPagedRequestBuilder requestBuilder,
+                                   final ArrayList<QBUser> alreadyLoadedUsers, final QBEntityCallback<ArrayList<QBUser>> callback) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                if (qbUsers != null) {
+                    QbUsersHolder.getInstance().putUsers(qbUsers);
+                    alreadyLoadedUsers.addAll(qbUsers);
+
+                    if (bundle != null) {
+                        int totalPages = (int) bundle.get(ChatHelper.TOTAL_PAGES_BUNDLE_PARAM);
+                        int currentPage = (int) bundle.get(ChatHelper.CURRENT_PAGE_BUNDLE_PARAM);
+                        if (totalPages > currentPage) {
+                            requestBuilder.setPage(currentPage + 1);
+                            loadNewUsersByIDs(userIDs, requestBuilder, alreadyLoadedUsers, callback);
+                        } else {
+                            callback.onSuccess(alreadyLoadedUsers, bundle);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     ////// Sending System Messages
@@ -157,11 +205,12 @@ public class DialogsManager {
     }
 
     public void sendSystemMessageAddedUser(final QBSystemMessagesManager systemMessagesManager, final QBChatDialog dialog, final List<Integer> newUsersIds) {
-        QBUsers.getUsersByIDs(newUsersIds, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder(ChatHelper.USERS_PER_PAGE, 1);
+        loadNewUsersForSystemMsgsByIDs(newUsersIds, requestBuilder, new ArrayList<QBUser>(), new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 String usersIds = QbDialogUtils.getOccupantsIdsStringFromList(newUsersIds);
-                if (!newUsersIds.isEmpty()) {
+                if (!newUsersIds.isEmpty() && qbUsers != null) {
                     String usersNames = QbDialogUtils.getOccupantsNamesStringFromList(qbUsers);
 
                     QBChatMessage messageUsersAdded = buildMessageAddedUsers(dialog, usersIds, usersNames);
@@ -173,8 +222,9 @@ public class DialogsManager {
             }
 
             @Override
-            public void onError(QBResponseException ignored) {
-
+            public void onError(QBResponseException e) {
+                Log.d(TAG, "Failed to load users to send system message. " + e.getMessage());
+                ToastUtils.shortToast("Failed to load users to send system message");
             }
         });
     }
@@ -182,6 +232,35 @@ public class DialogsManager {
     public void sendSystemMessageLeftUser(final QBSystemMessagesManager systemMessagesManager, final QBChatDialog dialog) {
         QBChatMessage messageLeftUser = buildMessageLeftUser(dialog);
         prepareSystemMessage(systemMessagesManager, messageLeftUser, dialog.getOccupants());
+    }
+
+    private void loadNewUsersForSystemMsgsByIDs(final Collection<Integer> userIDs, final QBPagedRequestBuilder requestBuilder,
+                                                final ArrayList<QBUser> alreadyLoadedUsers, final QBEntityCallback<ArrayList<QBUser>> callback) {
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                if (qbUsers != null) {
+                    QbUsersHolder.getInstance().putUsers(qbUsers);
+                    alreadyLoadedUsers.addAll(qbUsers);
+
+                    if (bundle != null) {
+                        int totalPages = (int) bundle.get(ChatHelper.TOTAL_PAGES_BUNDLE_PARAM);
+                        int currentPage = (int) bundle.get(ChatHelper.CURRENT_PAGE_BUNDLE_PARAM);
+                        if (totalPages > currentPage) {
+                            requestBuilder.setPage(currentPage + 1);
+                            loadNewUsersForSystemMsgsByIDs(userIDs, requestBuilder, alreadyLoadedUsers, callback);
+                        } else {
+                            callback.onSuccess(alreadyLoadedUsers, bundle);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                callback.onError(e);
+            }
+        });
     }
 
     private void prepareSystemMessage(QBSystemMessagesManager systemMessagesManager, QBChatMessage message, List<Integer> occupants) {

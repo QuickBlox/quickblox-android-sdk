@@ -1,5 +1,7 @@
 package com.quickblox.sample.chat.java.utils.qb.callback;
 
+import android.util.Log;
+
 import com.quickblox.messages.services.QBPushManager;
 
 
@@ -7,7 +9,7 @@ public class QBPushSubscribeListenerImpl implements QBPushManager.QBSubscribeLis
 
     @Override
     public void onSubscriptionCreated() {
-
+        Log.d("Subscription Listener", "Subscription Created");
     }
 
     @Override

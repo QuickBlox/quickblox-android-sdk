@@ -32,7 +32,9 @@ public class QbUsersHolder {
 
     public void putUsers(List<QBUser> users) {
         for (QBUser user : users) {
-            putUser(user);
+            if (user != null) {
+                putUser(user);
+            }
         }
     }
 
@@ -56,4 +58,12 @@ public class QbUsersHolder {
         return users;
     }
 
+    public boolean hasAllUsers(List<Integer> usersIds) {
+        for (Integer userId : usersIds) {
+            if (qbUserSparseArray.get(userId) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
