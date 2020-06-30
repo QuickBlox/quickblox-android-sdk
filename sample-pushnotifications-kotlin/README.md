@@ -15,4 +15,4 @@ To know how to configure Firebase Account to be able to work with Pushes - pleas
 
 Clone project here and start to work with the code.
 
-<img src="screenshots/Push1.png" width=200 />&nbsp;<img src="screenshots/Push2.png" width=200 />&nbsp;<img src="screenshots/Push3.png" width=200 />&nbsp;<img src="screenshots/Push4.png" width=200 />
+<img src="screenshots/Push1.jpg" width=200 />&nbsp;<img src="screenshots/Push2.jpg" width=200 />&nbsp;<img src="screenshots/Push3.jpg" width=200 />&nbsp;<img src="screenshots/Push4.jpg" width=200 />
