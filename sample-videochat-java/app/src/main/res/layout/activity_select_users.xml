@@ -11,14 +11,16 @@
 
         <TextView
             style="@style/MatchWidth"
-            android:layout_marginLeft="@dimen/padding_start"
-            android:paddingTop="@dimen/padding_actionbar"
+            android:layout_marginLeft="12dp"
+            android:padding="4dp"
             android:text="@string/text_select_users_to_call"
             tools:ignore="RtlHardcoded" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_select_users"
             style="@style/ListViewWithoutDividerStyle"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
             tools:listitem="@layout/list_item_user" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
