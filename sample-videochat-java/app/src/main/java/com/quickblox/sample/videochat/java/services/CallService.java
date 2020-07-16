@@ -12,15 +12,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.chat.QBChatService;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
 import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
@@ -34,7 +31,6 @@ import com.quickblox.sample.videochat.java.utils.SettingsUtil;
 import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.ToastUtils;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
@@ -59,7 +55,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.VideoSink;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -464,8 +459,8 @@ public class CallService extends Service {
 
     public QBRTCTypes.QBRTCConnectionState getPeerChannel(Integer userID) {
         QBRTCTypes.QBRTCConnectionState result = null;
-        if (currentSession != null && currentSession.getPeerChannel(userID) != null) {
-            result = currentSession.getPeerChannel(userID).getState();
+        if (currentSession != null && currentSession.getPeerConnection(userID) != null) {
+            result = currentSession.getPeerConnection(userID).getState();
         }
         return result;
     }

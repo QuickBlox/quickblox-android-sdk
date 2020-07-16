@@ -376,7 +376,7 @@ class CallService : Service() {
     }
 
     fun getPeerChannel(userId: Int): QBRTCTypes.QBRTCConnectionState? {
-        return currentSession?.getPeerChannel(userId)?.state
+        return currentSession?.getPeerConnection(userId)?.state
     }
 
     fun isCurrentSession(session: QBRTCSession?): Boolean {

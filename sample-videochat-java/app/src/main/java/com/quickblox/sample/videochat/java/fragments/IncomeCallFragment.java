@@ -30,6 +30,7 @@ import com.quickblox.sample.videochat.java.utils.RingtonePlayer;
 import com.quickblox.sample.videochat.java.utils.UiUtils;
 import com.quickblox.sample.videochat.java.utils.UsersUtils;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -150,7 +151,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
                 callerNameTextView.setText(callerUser.getFullName());
             } else {
                 callerNameTextView.setText(String.valueOf(currentSession.getCallerID()));
-                updateLastUsersFromServer();
+                updateUserFromServer();
             }
 
             otherIncUsersTextView.setText(getOtherIncUsersNames());
@@ -158,23 +159,16 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         }
     }
 
-    private void updateLastUsersFromServer() {
+    private void updateUserFromServer() {
         progressUserName.setVisibility(View.VISIBLE);
-
-        ArrayList<GenericQueryRule> rules = new ArrayList<>();
-        rules.add(new GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED));
-
-        QBPagedRequestBuilder qbPagedRequestBuilder = new QBPagedRequestBuilder();
-        qbPagedRequestBuilder.setRules(rules);
-        qbPagedRequestBuilder.setPerPage(PER_PAGE_SIZE_100);
-
-        App.getInstance().getQbResRequestExecutor().loadLastUpdatedUsers(qbPagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
+        Integer callerID = currentSession.getCallerID();
+        QBUsers.getUser(callerID).performAsync(new QBEntityCallback<QBUser>() {
             @Override
-            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                qbUserDbManager.saveAllUsers(qbUsers, true);
-                QBUser callerUser = qbUserDbManager.getUserById(currentSession.getCallerID());
-                if (callerUser != null && !TextUtils.isEmpty(callerUser.getFullName())) {
-                    callerNameTextView.setText(callerUser.getFullName());
+            public void onSuccess(QBUser qbUser, Bundle bundle) {
+                if (qbUser != null) {
+                    qbUserDbManager.saveUser(qbUser);
+                    String callerName = TextUtils.isEmpty(qbUser.getFullName())? qbUser.getLogin() : qbUser.getFullName();
+                    callerNameTextView.setText(callerName);
                 }
                 progressUserName.setVisibility(View.GONE);
             }
@@ -182,6 +176,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             @Override
             public void onError(QBResponseException e) {
                 progressUserName.setVisibility(View.GONE);
+                e.printStackTrace();
             }
         });
     }
@@ -200,11 +195,9 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         Log.d(TAG, "startCallNotification()");
 
         ringtonePlayer.play(false);
-
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-
         long[] vibrationCycle = {0, 1000, 1000};
-        if (vibrator.hasVibrator()) {
+        if (vibrator != null && vibrator.hasVibrator()) {
             vibrator.vibrate(vibrationCycle, 1);
         }
 

@@ -108,9 +108,10 @@ public class LoginService extends Service {
     private void createChatService() {
         if (chatService == null) {
             QBTcpConfigurationBuilder configurationBuilder = new QBTcpConfigurationBuilder();
-            configurationBuilder.setSocketTimeout(0);
+            configurationBuilder.setSocketTimeout(300);
             QBChatService.setConnectionFabric(new QBTcpChatConnectionFabric(configurationBuilder));
             QBChatService.setDebugEnabled(true);
+            QBChatService.setDefaultPacketReplyTimeout(10000);
             chatService = QBChatService.getInstance();
         }
     }
