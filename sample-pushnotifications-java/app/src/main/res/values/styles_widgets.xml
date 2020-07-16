@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base" />
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/color_accent</item>
+        <item name="colorControlHighlight">@color/color_accent</item>
+        <item name="colorControlNormal">@color/color_accent</item>
+
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+
+        <item name="android:windowBackground">@color/background_app_color</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="AppTheme">
+        <item name="android:background">@color/black</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="actionBarTheme">@style/DarkActionBarTheme</item>
+    </style>
+
+    <style name="DarkActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SplashAppTitleStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_black</item>
+        <item name="android:textSize">@dimen/splash_main_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_common</item>
+        <item name="robotoTypeface">roboto_light</item>
+    </style>
+
+    <style name="SplashAppVersionStyle" parent="WrapContent">
+        <item name="android:textColor">@color/text_color_light_grey</item>
+        <item name="android:textSize">@dimen/splash_version_text_size</item>
+        <item name="robotoTypeface">roboto_light</item>
+    </style>
+
+    <style name="SplashLogoStyle" parent="WrapContent">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="MatchWidth">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ListItem" parent="MatchWidth">
+        <item name="android:layout_height">?android:attr/listPreferredItemHeight</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="PushMessageItemStyle" parent="ListItem">
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/padding_large</item>
+        <item name="android:paddingRight">@dimen/padding_large</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="HeaderStyle" parent="MatchParent">
+        <item name="android:layout_height">@dimen/layout_height_small</item>
+        <item name="android:background">@color/text_color_light_grey</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:paddingLeft">@dimen/padding_large</item>
+        <item name="android:textColor">@color/text_color_medium_dark_grey</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="robotoTypeface">roboto_medium</item>
+    </style>
+
+</resources>

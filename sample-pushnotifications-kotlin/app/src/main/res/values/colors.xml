@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#000000</color>
+    <color name="color_grey">#D3D3D3</color>
+    <color name="white">#ffffff</color>
+
+    <color name="color_primary">@color/white</color>
+    <color name="color_primary_dark">#D0D0D0</color>
+    <color name="color_accent">@color/color_green_qb</color>
+
+    <color name="color_green_qb">#4AD24D</color>
+
+    <color name="background_app_color">#FFFFFF</color>
+
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_white">#FFFFFF</color>
+    <color name="text_color_black">#000000</color>
+    <color name="text_color_light_grey">#DEDEDE</color>
+    <color name="text_color_medium_grey">#B1B1B1</color>
+    <color name="text_color_medium_dark_grey">#747474</color>
+    <color name="text_color_dark_grey">#6E6E6E</color>
+    <color name="text_color_green">@color/color_green_qb</color>
+
+</resources>

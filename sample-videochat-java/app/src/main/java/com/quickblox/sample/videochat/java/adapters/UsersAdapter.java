@@ -83,6 +83,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void addUsers(List<QBUser> users) {
+        for (QBUser user : users) {
+            if (!usersList.contains(user)) {
+                usersList.add(user);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     private void toggleSelection(QBUser qbUser) {
         if (selectedUsers.contains(qbUser)){
             selectedUsers.remove(qbUser);

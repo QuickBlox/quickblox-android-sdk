@@ -38,7 +38,7 @@ private const val INCOME_CALL_FRAGMENT = "income_call_fragment"
 private const val REQUEST_PERMISSION_SETTING = 545
 
 class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSessionStateCallback<QBRTCSession>,
-        QBRTCClientSessionCallbacks, ConversationFragmentCallback, ScreenShareFragment.OnSharingEvents {
+    QBRTCClientSessionCallbacks, ConversationFragmentCallback, ScreenShareFragment.OnSharingEvents {
 
     private var TAG = CallActivity::class.java.simpleName
 
@@ -149,8 +149,10 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     private fun startScreenSharing(data: Intent?) {
         val fragmentByTag = supportFragmentManager.findFragmentByTag(ScreenShareFragment::class.simpleName)
         if (fragmentByTag !is ScreenShareFragment) {
-            addFragment(supportFragmentManager, R.id.fragment_container,
-                    ScreenShareFragment.newInstance(), ScreenShareFragment::class.java.simpleName)
+            addFragment(
+                supportFragmentManager, R.id.fragment_container,
+                ScreenShareFragment.newInstance(), ScreenShareFragment::class.java.simpleName
+            )
             data?.let {
                 callService.startScreenSharing(it)
             }
@@ -185,22 +187,31 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
                 PermissionsActivity.startForResult(this, false, PERMISSIONS)
             } else {
                 val rootView = window.decorView.findViewById<View>(android.R.id.content)
-                showErrorSnackbar(rootView, getString(R.string.error_permission_video), R.string.dlg_allow, object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        startPermissionSystemSettings()
-                    }
-                })
+                showErrorSnackbar(
+                    rootView,
+                    getString(R.string.error_permission_video),
+                    R.string.dlg_allow,
+                    object : View.OnClickListener {
+                        override fun onClick(v: View?) {
+                            startPermissionSystemSettings()
+                        }
+                    })
             }
         } else if (checkPermission(PERMISSIONS[1])) {
             if (mic) {
                 PermissionsActivity.startForResult(this, true, PERMISSIONS)
             } else {
                 val rootView = window.decorView.findViewById<View>(android.R.id.content)
-                showErrorSnackbar(rootView, R.string.error_permission_audio, "Allow Permission", R.string.dlg_allow, object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        startPermissionSystemSettings()
-                    }
-                })
+                showErrorSnackbar(
+                    rootView,
+                    R.string.error_permission_audio,
+                    "Allow Permission",
+                    R.string.dlg_allow,
+                    object : View.OnClickListener {
+                        override fun onClick(v: View?) {
+                            startPermissionSystemSettings()
+                        }
+                    })
             }
         }
     }
@@ -333,7 +344,12 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             AudioConversationFragment()
         }
         val conversationFragment = BaseConversationFragment.newInstance(baseConversationFragment, isIncomingCall)
-        addFragment(supportFragmentManager, R.id.fragment_container, conversationFragment, conversationFragment.javaClass.simpleName)
+        addFragment(
+            supportFragmentManager,
+            R.id.fragment_container,
+            conversationFragment,
+            conversationFragment.javaClass.simpleName
+        )
     }
 
     private fun showNotificationPopUp(text: Int, show: Boolean) {

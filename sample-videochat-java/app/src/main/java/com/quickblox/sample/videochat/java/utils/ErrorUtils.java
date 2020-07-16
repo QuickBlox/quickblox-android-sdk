@@ -29,12 +29,12 @@ public class ErrorUtils {
         String error = (e == null) ? "" : e.getMessage();
         boolean noConnection = NO_CONNECTION_ERROR.equals(error);
         boolean timeout = error.startsWith(NO_RESPONSE_TIMEOUT);
-        if (noConnection || timeout) {
+        if (noConnection) {
             return showSnackbar(view, R.string.no_internet_connection, actionLabel, clickListener);
         } else if (errorMessage == 0) {
             return showSnackbar(view, error, actionLabel, clickListener);
         } else if (error.equals("")) {
-            return showSnackbar(view, errorMessage, App.getInstance().getString(R.string.no_internet_connection), actionLabel, clickListener);
+            return showSnackbar(view, errorMessage, NO_RESPONSE_TIMEOUT, actionLabel, clickListener);
         } else {
             return showSnackbar(view, errorMessage, error, actionLabel, clickListener);
         }

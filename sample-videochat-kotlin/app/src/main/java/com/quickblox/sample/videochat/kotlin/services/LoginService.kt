@@ -95,9 +95,10 @@ class LoginService : Service() {
 
     private fun createChatService() {
         val configurationBuilder = QBTcpConfigurationBuilder()
-        configurationBuilder.socketTimeout = 0
+        configurationBuilder.socketTimeout = 300
         QBChatService.setConnectionFabric(QBTcpChatConnectionFabric(configurationBuilder))
         QBChatService.setDebugEnabled(true)
+        QBChatService.setDefaultPacketReplyTimeout(10000)
         chatService = QBChatService.getInstance()
     }
 

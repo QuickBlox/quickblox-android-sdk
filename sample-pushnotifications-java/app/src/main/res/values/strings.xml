@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="sender_id"></string>
+
+    <string name="app_name">Sample Push Notifications Java</string>
+    <string name="app_title">Sample Push Notification Java</string>
+    <string name="activity_title">Sample Push Notification Java</string>
+    <string name="splash_app_version">v %s</string>
+
+    <string name="message">Incoming message</string>
+    <string name="hint_enter_your_message">Enter push message here</string>
+    <string name="send_push">Send push</string>
+    <string name="received_messages">Received Push Notifications</string>
+    <string name="no_messages">No messages received yet</string>
+    <string name="notification_title">FCM Notification</string>
+    <string name="error_field_is_empty">Field is empty!</string>
+    <string name="splash_signin_error">Sign In Error:</string>
+    <string name="splash_signup_error">Sign Up Error:</string>
+    <string name="sending_error">Sending error</string>
+    <string name="error_too_long_push">You can enter only 1000 characters!</string>
+
+    <string name="login_button">Login</string>
+    <string name="login_title">Enter login :</string>
+    <string name="login_hint">Use alphanumeric characters in a range from 3 to 50 without spaces. First character must be a letter</string>
+    <string name="dlg_sign_in">Sign In…</string>
+    <string name="dlg_sign_up">Sign Up…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="logout">Logout</string>
+    <string name="error_logout">Logout Error</string>
+
+    <string name="enable_notification">Enable Notification</string>
+    <string name="disable_notification">Disable Notification</string>
+    <string name="subtitle_enabled">Notification enabled</string>
+    <string name="subtitle_disabled">Notification disabled</string>
+
+    <string name="menu_dialogs_app_info">App Info</string>
+
+    <!-- Errors strings. -->
+    <string name="error">Error</string>
+    <string name="error_qb_credentials_empty">The App class should contain QuickBlox credentials. Register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+    <string name="sign_up_error">Error creating new user, please try again</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="dlg_error">Error</string>
+    <string name="dlg_error_loading">Loading dialog error. Error</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="join_conference">Join to conference…</string>
+    <string name="join_conference_error">Join to conference errors</string>
+    <string name="error_connection">Connection failed. Please check your internet connection.</string>
+    <string name="error_response_timeout">No response received within reply timeout</string>
+
+    <!-- App info -->
+    <string name="appinfo_application_version">Application version:</string>
+    <string name="appinfo_qbsdk_version">QuickBlox SDK version:</string>
+    <string name="appinfo_application_id">Application ID:</string>
+    <string name="appinfo_authorization_key">Authorization key:</string>
+    <string name="appinfo_authorization_secret">Authorization secret:</string>
+    <string name="appinfo_account_key">Account key:</string>
+    <string name="appinfo_api_domain">API domain:</string>
+    <string name="appinfo_chat_domain">Chat domain:</string>
+    <string name="appinfo_title">App Info</string>
+    <string name="appinfo_qa_verion">QA version:</string>
+
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_loading">Loading…</string>
+    <string name="dlg_choose_image_from">Select photo from…</string>
+    <string name="dlg_retry">Retry</string>
+
+    <string name="progress_sending">Sending</string>
+    <string name="error_connection_failed">Connection failed. Please check your internet connection.</string>
+    <string name="error_no_responce_timeout">No response received within reply timeout.</string>
+
+</resources>
