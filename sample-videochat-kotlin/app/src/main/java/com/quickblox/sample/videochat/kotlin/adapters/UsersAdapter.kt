@@ -13,13 +13,20 @@ import com.quickblox.users.model.QBUser
 import kotlinx.android.synthetic.main.item_opponents_list.view.*
 
 
-class UsersAdapter(val context: Context,
-                   private var usersList: List<QBUser>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
-    private val _selectedUsers: MutableList<QBUser> = ArrayList()
+    val context: Context
+    private var usersList: ArrayList<QBUser>
+    private val _selectedUsers: MutableList<QBUser>
     val selectedUsers: List<QBUser>
         get() = _selectedUsers
     private lateinit var selectedItemsCountsChangedListener: SelectedItemsCountsChangedListener
+
+    constructor(context: Context, usersList: ArrayList<QBUser>) : super() {
+        this.context = context
+        this.usersList = usersList
+        this._selectedUsers = ArrayList()
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = usersList[position]
@@ -44,8 +51,17 @@ class UsersAdapter(val context: Context,
         return usersList.size
     }
 
-    fun updateUsersList (usersList: List<QBUser>) {
+    fun updateUsersList (usersList: ArrayList<QBUser>) {
         this.usersList = usersList
+        notifyDataSetChanged()
+    }
+
+    fun addUsers(users: ArrayList<QBUser>) {
+        for (user in users) {
+            if (!usersList.contains(user)) {
+                usersList.add(user)
+            }
+        }
         notifyDataSetChanged()
     }
 

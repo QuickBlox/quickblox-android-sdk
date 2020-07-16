@@ -28,6 +28,7 @@ import com.quickblox.sample.videochat.kotlin.util.loadUsersByPagedRequestBuilder
 import com.quickblox.sample.videochat.kotlin.utils.RingtonePlayer
 import com.quickblox.sample.videochat.kotlin.utils.WebRtcSessionManager
 import com.quickblox.sample.videochat.kotlin.utils.getColorCircleDrawable
+import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.QBRTCTypes
@@ -145,8 +146,25 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
         setVisibilityAlsoOnCallTextView()
     }
 
-    fun updateUserFromServer() {
+    private fun updateUserFromServer() {
         progressUserName.visibility = View.VISIBLE
+
+        val callerID = currentSession?.callerID!!
+        QBUsers.getUser(callerID).performAsync(object : QBEntityCallback<QBUser> {
+            override fun onSuccess(qbUser: QBUser?, b: Bundle?) {
+                if (qbUser != null) {
+                    QbUsersDbManager.saveUser(qbUser)
+                    val callerName = if (TextUtils.isEmpty(qbUser.fullName)) qbUser.login else qbUser.fullName
+                    callerNameTextView.text = callerName
+                }
+                progressUserName.visibility = View.GONE
+            }
+
+            override fun onError(e: QBResponseException?) {
+                progressUserName.visibility = View.GONE
+                e?.printStackTrace()
+            }
+        })
 
         val rules = ArrayList<GenericQueryRule>()
         rules.add(GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED))
