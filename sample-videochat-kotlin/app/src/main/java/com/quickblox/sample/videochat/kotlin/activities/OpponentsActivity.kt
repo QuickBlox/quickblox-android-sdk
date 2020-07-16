@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -25,6 +26,7 @@ import com.quickblox.sample.videochat.kotlin.services.LoginService
 import com.quickblox.sample.videochat.kotlin.util.loadUsersByPagedRequestBuilder
 import com.quickblox.sample.videochat.kotlin.util.signOut
 import com.quickblox.sample.videochat.kotlin.utils.*
+import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
 import com.quickblox.videochat.webrtc.QBRTCTypes
@@ -33,6 +35,7 @@ import com.quickblox.videochat.webrtc.QBRTCTypes
 private const val PER_PAGE_SIZE_100 = 100
 private const val ORDER_RULE = "order"
 private const val ORDER_DESC_UPDATED = "desc date updated_at"
+private const val TOTAL_PAGES_BUNDLE_PARAM = "total_pages"
 
 class OpponentsActivity : BaseActivity() {
     private val TAG = OpponentsActivity::class.java.simpleName
@@ -41,6 +44,10 @@ class OpponentsActivity : BaseActivity() {
     private lateinit var currentUser: QBUser
 
     private var usersAdapter: UsersAdapter? = null
+
+    private var currentPage = 0
+    private var isLoading: Boolean = false
+    private var hasNextPage: Boolean = true
 
     companion object {
         fun start(context: Context) {
@@ -91,26 +98,47 @@ class OpponentsActivity : BaseActivity() {
     }
 
     private fun loadUsers() {
+        isLoading = true
         showProgressDialog(R.string.dlg_loading_opponents)
-
+        currentPage += 1
         val rules = ArrayList<GenericQueryRule>()
         rules.add(GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED))
         val requestBuilder = QBPagedRequestBuilder()
         requestBuilder.rules = rules
         requestBuilder.perPage = PER_PAGE_SIZE_100
+        requestBuilder.page = currentPage
 
-        loadUsersByPagedRequestBuilder(object : QBEntityCallback<java.util.ArrayList<QBUser>> {
-            override fun onSuccess(result: ArrayList<QBUser>, params: Bundle) {
-                QbUsersDbManager.saveAllUsers(result, true)
-                initUsersList()
+        QBUsers.getUsers(requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
+            override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
+                qbUsers?.let {
+                    Log.d(TAG, "Successfully loaded users")
+                    QbUsersDbManager.saveAllUsers(qbUsers, true)
+
+                    val totalPagesFromParams = bundle?.get(TOTAL_PAGES_BUNDLE_PARAM) as Int
+                    if (currentPage >= totalPagesFromParams) {
+                        hasNextPage = false
+                    }
+
+                    if (currentPage == 1) {
+                        initUsersList()
+                    } else {
+                        usersAdapter?.addUsers(qbUsers)
+                    }
+                }
                 hideProgressDialog()
+                isLoading = false
             }
 
-            override fun onError(responseException: QBResponseException) {
-                hideProgressDialog()
-                showErrorSnackbar(R.string.loading_users_error, responseException, View.OnClickListener { loadUsers() })
+            override fun onError(e: QBResponseException?) {
+                e?.let {
+                    Log.d(TAG, "Error load users" + e.message)
+                    hideProgressDialog()
+                    isLoading = false
+                    currentPage -= 1
+                    showErrorSnackbar(R.string.loading_users_error, e, View.OnClickListener { loadUsers() })
+                }
             }
-        }, requestBuilder)
+        })
     }
 
     private fun initUI() {
@@ -130,6 +158,7 @@ class OpponentsActivity : BaseActivity() {
 
             usersRecyclerView.layoutManager = LinearLayoutManager(this)
             usersRecyclerView.adapter = usersAdapter
+            usersRecyclerView.addOnScrollListener(ScrollListener(usersRecyclerView.layoutManager as LinearLayoutManager))
         } else {
             usersAdapter!!.updateUsersList(currentOpponentsList)
         }
@@ -149,6 +178,7 @@ class OpponentsActivity : BaseActivity() {
         val id = item.itemId
         when (id) {
             R.id.update_opponents_list -> {
+                currentPage = 0
                 loadUsers()
                 return true
             }
@@ -215,12 +245,36 @@ class OpponentsActivity : BaseActivity() {
             QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO
         }
         val qbrtcClient = QBRTCClient.getInstance(applicationContext)
-
         val newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType)
-
         WebRtcSessionManager.setCurrentSession(newQbRtcSession)
 
-        sendPushMessage(opponentsList, currentUser.fullName)
+        // Make Users FullName Strings and ID's list for iOS VOIP push
+        val newSessionID = newQbRtcSession.sessionID
+        val opponentsIDsList = java.util.ArrayList<String>()
+        val opponentsNamesList = java.util.ArrayList<String>()
+        val usersInCall: ArrayList<QBUser> = usersAdapter!!.selectedUsers as ArrayList<QBUser>
+
+        // the Caller in exactly first position is needed regarding to iOS 13 functionality
+        usersInCall.add(0, currentUser)
+
+        for (user in usersInCall) {
+            val userId = user.id!!.toString()
+            var userName = ""
+            if (TextUtils.isEmpty(user.fullName)) {
+                userName = user.login
+            } else {
+                userName = user.fullName
+            }
+
+            opponentsIDsList.add(userId)
+            opponentsNamesList.add(userName)
+        }
+
+        val opponentsIDsString = TextUtils.join(",", opponentsIDsList)
+        val opponentNamesString = TextUtils.join(",", opponentsNamesList)
+
+        Log.d(TAG, "New Session with ID: $newSessionID\n Users in Call: \n$opponentsIDsString\n$opponentNamesString")
+        sendPushMessage(opponentsList, currentUser.fullName, newSessionID, opponentsIDsString, opponentNamesString, isVideoCall)
 
         CallActivity.start(this, false)
     }
@@ -272,5 +326,21 @@ class OpponentsActivity : BaseActivity() {
     private fun startLoginActivity() {
         LoginActivity.start(this)
         finish()
+    }
+
+    private inner class ScrollListener(val layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (!isLoading && hasNextPage && dy > 0) {
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+
+                val needToLoadMore = visibleItemCount * 2 + firstVisibleItem >= totalItemCount
+                if (needToLoadMore) {
+                    loadUsers()
+                }
+            }
+        }
     }
 }

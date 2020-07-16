@@ -22,12 +22,12 @@ fun showErrorSnackbar(view: View, @StringRes errorMessage: Int, e: Exception?,
     val noConnection = NO_CONNECTION_ERROR == error
     val timeout = error.startsWith(NO_RESPONSE_TIMEOUT)
     val snackbar: Snackbar
-    if (noConnection || timeout) {
+    if (noConnection) {
         snackbar = showErrorSnackbar(view, NO_INTERNET_CONNECTION, actionLabel, clickListener)
     } else if (errorMessage == 0) {
         snackbar = showErrorSnackbar(view, error, actionLabel, clickListener)
     } else if (error == EMPTY_STRING) {
-        snackbar = showErrorSnackbar(view, errorMessage, NO_INTERNET_CONNECTION, actionLabel, clickListener)
+        snackbar = showErrorSnackbar(view, errorMessage, NO_RESPONSE_TIMEOUT, actionLabel, clickListener)
     } else {
         snackbar = showErrorSnackbar(view, errorMessage, error, actionLabel, clickListener)
     }

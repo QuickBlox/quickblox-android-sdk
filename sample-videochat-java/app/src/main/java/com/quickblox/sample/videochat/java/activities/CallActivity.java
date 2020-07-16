@@ -59,8 +59,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.webrtc.CameraVideoCapturer;
 
 import java.util.ArrayList;
