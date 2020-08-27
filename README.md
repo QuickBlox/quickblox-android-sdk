@@ -148,12 +148,15 @@ For example:
 
 # Documentation
 
-* [Project page on QuickBlox developers section](http://quickblox.com/developers/Android)
+* [Official QuickBlox Documentation](https://docs.quickblox.com/docs/android-quick-start)
 * [Framework reference in JavaDoc format](http://sdk.quickblox.com/android/)
 
 # Questions and feedback
 
-Please ask questions, requests for help etc. via http://stackoverflow.com/questions/tagged/quickblox
+Please ask questions, requests for help etc.
+* [Ask question on GitHub](https://github.com/QuickBlox/quickblox-android-sdk/issues) 
+* [Ask question on StackOverflow](http://stackoverflow.com/questions/tagged/quickblox)
+* [Ask question on Quickblox Help Center](https://assist.quickblox.com/)
 
 # License
 BSD
