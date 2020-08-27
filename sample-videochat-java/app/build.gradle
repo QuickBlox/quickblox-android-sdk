@@ -24,7 +24,7 @@ repositories {
 }
 
 android {
-    def versionQACode = 2
+    def versionQACode = 3
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -35,7 +35,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 403000
-        versionName '4.0.3 java'
+        versionName '4.0.3-java'
         multiDexEnabled true
     }
 
