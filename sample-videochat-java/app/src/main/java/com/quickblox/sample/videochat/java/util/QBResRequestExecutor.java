@@ -1,6 +1,9 @@
 package com.quickblox.sample.videochat.java.util;
 
+import android.os.Bundle;
+
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.GenericQueryRule;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.sample.videochat.java.utils.Consts;
@@ -24,8 +27,8 @@ public class QBResRequestExecutor {
         QBUsers.signIn(currentQbUser).performAsync(callback);
     }
 
-    public void signOut () {
-        QBUsers.signOut().performAsync(null);
+    public void signOut (QBEntityCallback<Void> callback) {
+        QBUsers.signOut().performAsync(callback);
     }
 
     public void deleteCurrentUser(int currentQbUserID, QBEntityCallback<Void> callback) {

@@ -17,19 +17,20 @@ import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.core.request.GenericQueryRule
 import com.quickblox.core.request.QBPagedRequestBuilder
+import com.quickblox.messages.services.QBPushManager
 import com.quickblox.messages.services.SubscribeService
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.adapters.UsersAdapter
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
 import com.quickblox.sample.videochat.kotlin.services.CallService
 import com.quickblox.sample.videochat.kotlin.services.LoginService
-import com.quickblox.sample.videochat.kotlin.util.loadUsersByPagedRequestBuilder
 import com.quickblox.sample.videochat.kotlin.util.signOut
 import com.quickblox.sample.videochat.kotlin.utils.*
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
 import com.quickblox.videochat.webrtc.QBRTCTypes
+import kotlin.Exception
 
 
 private const val PER_PAGE_SIZE_100 = 100
@@ -187,7 +188,7 @@ class OpponentsActivity : BaseActivity() {
                 return true
             }
             R.id.log_out -> {
-                logout()
+                unsubscribeFromPushesAndLogout()
                 return true
             }
             R.id.start_video_call -> {
@@ -311,10 +312,37 @@ class OpponentsActivity : BaseActivity() {
     }
 
     private fun logout() {
-        SubscribeService.unSubscribeFromPushes(this)
+        Log.d(TAG, "Removing User data, and Logout")
         LoginService.logout(this)
-        removeAllUserData()
-        startLoginActivity()
+        QBUsers.signOut().performAsync(object : QBEntityCallback<Void>{
+            override fun onSuccess(v: Void?, b: Bundle?) {
+                removeAllUserData()
+                startLoginActivity()
+            }
+
+            override fun onError(e: QBResponseException?) {
+                showErrorSnackbar(R.string.dlg_error, e as Exception, object : View.OnClickListener{
+                    override fun onClick(v: View?) {
+                        logout()
+                    }
+                })
+            }
+        })
+    }
+
+    private fun unsubscribeFromPushesAndLogout() {
+        if (QBPushManager.getInstance().isSubscribedToPushes) {
+            QBPushManager.getInstance().addListener(object : QBPushSubscribeListenerImpl(){
+                override fun onSubscriptionDeleted(success: Boolean) {
+                    Log.d(TAG, "Subscription Deleted")
+                    QBPushManager.getInstance().removeListener(this)
+                    logout()
+                }
+            })
+            SubscribeService.unSubscribeFromPushes(this@OpponentsActivity)
+        } else {
+            logout()
+        }
     }
 
     private fun removeAllUserData() {
@@ -341,6 +369,20 @@ class OpponentsActivity : BaseActivity() {
                     loadUsers()
                 }
             }
+        }
+    }
+
+    private open inner class QBPushSubscribeListenerImpl : QBPushManager.QBSubscribeListener {
+        override fun onSubscriptionCreated() {
+
+        }
+
+        override fun onSubscriptionError(e: Exception?, i: Int) {
+
+        }
+
+        override fun onSubscriptionDeleted(b: Boolean) {
+
         }
     }
 }
