@@ -9,12 +9,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.GenericQueryRule;
 import com.quickblox.core.request.QBPagedRequestBuilder;
+import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.adapters.UsersAdapter;
@@ -209,7 +211,7 @@ public class OpponentsActivity extends BaseActivity {
                 return true;
 
             case R.id.log_out:
-                logOut();
+                unsubscribeFromPushesAndLogout();
                 return true;
 
             case R.id.start_video_call:
@@ -319,11 +321,40 @@ public class OpponentsActivity extends BaseActivity {
 
     private void logOut() {
         Log.d(TAG, "Removing User data, and Logout");
-        SubscribeService.unSubscribeFromPushes(this);
         LoginService.logout(this);
-        UsersUtils.removeUserData(getApplicationContext());
-        requestExecutor.signOut();
-        startLoginActivity();
+        requestExecutor.signOut(new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                UsersUtils.removeUserData(getApplicationContext());
+                startLoginActivity();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                showErrorSnackbar(R.string.error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        logOut();
+                    }
+                });
+            }
+        });
+    }
+
+    private void unsubscribeFromPushesAndLogout() {
+        if (QBPushManager.getInstance().isSubscribedToPushes()) {
+            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
+                @Override
+                public void onSubscriptionDeleted(boolean success) {
+                    Log.d(TAG, "Subscription Deleted");
+                    QBPushManager.getInstance().removeListener(this);
+                    logOut();
+                }
+            });
+            SubscribeService.unSubscribeFromPushes(OpponentsActivity.this);
+        } else {
+            logOut();
+        }
     }
 
     private void startLoginActivity() {
@@ -350,6 +381,23 @@ public class OpponentsActivity extends BaseActivity {
                     loadUsers();
                 }
             }
+        }
+    }
+
+    private class QBPushSubscribeListenerImpl implements QBPushManager.QBSubscribeListener {
+        @Override
+        public void onSubscriptionCreated() {
+
+        }
+
+        @Override
+        public void onSubscriptionError(Exception e, int i) {
+
+        }
+
+        @Override
+        public void onSubscriptionDeleted(boolean b) {
+
         }
     }
 }
