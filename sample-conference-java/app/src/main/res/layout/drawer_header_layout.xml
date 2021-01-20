@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_blue_qb"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    android:gravity="top"
+    android:id="@+id/nav_header_layout"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/container_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/image_user_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/shape_oval_white"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside"
+            android:padding="3dp"
+            tools:ignore="ContentDescription"
+            tools:src="@color/random_color_3" />
+
+
+        <TextView
+            android:id="@+id/user_avatar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/text_color_white"
+            android:textSize="22sp"
+            android:textStyle="normal"
+            tools:text="E" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/nav_head_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:layout_below="@+id/container_avatar"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/nav_head_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"
+        android:text="username@quickblox.com"
+        android:textColor="@color/white"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/nav_head_username"/>
+
+    <TextView
+        android:id="@+id/nav_head_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"
+        android:text="8374563785"
+        android:textColor="@color/white"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/nav_head_login"/>
+
+
+</RelativeLayout>

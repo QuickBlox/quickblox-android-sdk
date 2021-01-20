@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    android:background="#F4F6F9">
+
+    <ListView
+        android:id="@+id/list_users"
+        style="@style/ListViewWithoutDividerStyle" />
+
+    <ProgressBar
+        android:id="@+id/progress_users"
+        style="@style/CenterProgressBarStyle"
+        android:visibility="visible"/>
+</RelativeLayout>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    tools:ignore="ContentDescription">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_application_version"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_app_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="8.9.10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_qbsdk_version"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_sdk_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="5.6.7" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_application_id"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_app_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="thisIsExample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_authorization_key"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_auth_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="thisIsExample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_authorization_secret"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_auth_secret"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="thisIsExample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_account_key"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_account_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="thisIsExample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_api_domain"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_api_domain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="https://apidomain.example.com" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_chat_domain"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_chat_domain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="chatdomain.example.com" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_janus_server"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/text_janus_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="janus.example.com" />
+
+        <TextView
+            android:id="@+id/text_qa_version_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appinfo_qa_verion"
+            android:textColor="@color/color_search_hint"
+            android:textSize="13sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_qa_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            tools:text="1.5.22.03"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="2dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/qb_logo_new" />
+    </LinearLayout>
+</ScrollView>

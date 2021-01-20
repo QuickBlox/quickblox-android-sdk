@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:background="@color/color_new_blue"
+    style="@style/MatchParent"
+    tools:context=".activities.SplashActivity">
+
+    <ImageView
+        android:layout_width="99dp"
+        android:layout_height="99dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_logo_vector"/>
+
+    <TextView
+        android:id="@+id/tv_splash_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color_white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="4dp"
+        android:layout_above="@+id/tv_splash_app_version"
+        tools:text="@string/app_name"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tv_splash_app_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:textColor="@color/text_color_white_alpha_06"
+        tools:text="1.0.0"/>
+</RelativeLayout>
