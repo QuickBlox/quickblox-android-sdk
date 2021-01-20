@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="sender_id"></string>
+
+    <string name="app_name">Sample Conference Java</string>
+    <string name="splash_app_version">v %s</string>
+
+    <!-- Login Screen -->
+    <string name="login_chat_login_error">Login to Chat error. Please relogin. </string>
+    <string name="login_toolbar_title">Enter to conference</string>
+    <string name="login_welcoming_message">Enter your login and \ndisplay name</string>
+    <string name="login_label_login">Login</string>
+    <string name="login_label_button_login">Login</string>
+    <string name="login_label_username">Display name</string>
+    <string name="login_login_hint">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
+    <string name="login_username_hint">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
+    <string name="login_sign_up_error">Sign up error.</string>
+    <string name="login_save">Save Login and Username for further sessions</string>
+
+    <!-- Dialogs Screen -->
+    <string name="dialogs_logged_in_as">Logged in as %s</string>
+    <string name="dialogs_cannot_delete_chat">You can not leave from dialog %s</string>
+    <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="dialogs_deletion_error">Dialog deletion errors</string>
+    <string name="dialogs_actionmode_title">Delete Chats</string>
+    <string name="dialogs_actionmode_subtitle">%s chats selected</string>
+    <string name="dialogs_actionmode_subtitle_single">%s chat selected</string>
+
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <!-- Select Users Screen -->
+    <string name="select_users_search_hint">Search</string>
+    <string name="select_users_create_chat_title">New Chat</string>
+    <string name="select_users_create_chat_subtitle">%s users selected</string>
+    <string name="select_users_create_chat_subtitle_single">%s user selected</string>
+    <string name="select_users_edit_chat">Add Occupants</string>
+    <string name="select_users_get_users_error">Get users errors</string>
+    <string name="select_users_get_dialog_error">Error getting dialog from server</string>
+    <string name="select_users_get_users_dialog_error">Error getting users dialog from server</string>
+    <string name="select_users_choose_users">Please, choose at least one participant</string>
+    <string name="select_users_not_found">No user with that name</string>
+
+    <!-- Manage Group Screen -->
+    <string name="manage_group_chat_subtitle">%s users in call</string>
+    <string name="manage_group_chat_subtitle_single">%s user in call</string>
+    <string name="manage_group_update_users_error">Update Users Error</string>
+    <string name="manage_group_load_user_error">Load User Error</string>
+
+    <!-- Dialogs -->
+    <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+    <string name="dlg_login">Login…</string>
+    <string name="dlg_sign_in">Sign In…</string>
+    <string name="dlg_updating_user">Updating user…</string>
+    <string name="dlg_creating_new_user">Creating new user…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="dlg_loading_opponents">Loading opponents…</string>
+    <string name="dlg_loading_dialogs">Loading dialogs…</string>
+    <string name="dlg_loading_users">Loading users…</string>
+    <string name="dlg_updating_dialog">Updating dialog…</string>
+    <string name="dialog_OK">OK</string>
+    <string name="dialog_Cancel">Cancel</string>
+    <string name="dlg_retry">Retry</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_loading">Loading…</string>
+    <string name="dlg_relogin">Relogin</string>
+    <string name="dlg_sending">Sending…</string>
+    <string name="create_chat">Creating chat…</string>
+    <string name="dlg_choose_file_from">Select file from…</string>
+    <string name="dlg_deleting_chats">Deleting chats…</string>
+    <string name="dlg_connecting_another_conversation">Connecting another conversation…</string>
+    <string name="dlg_delete">Delete</string>
+    <string name="dlg_leave_question">Are you sure you want to leave dialog?</string>
+    <string name="dlg_leave_dialog">Leave dialog</string>
+    <string name="dlg_delete_question">Are you sure you want to delete dialogs?</string>
+    <string name="dlg_delete_dialogs">Delete dialogs</string>
+    <string name="dlg_wait_for_chat_connection_title">Please wait for connection</string>
+    <string name="dlg_wait_for_chat_connection">Please wait for a connection to the chat as it now is in the progress</string>
+
+    <string name="new_chat_created">%s created the group chat \"%s\"</string>
+    <string name="occupant_added">%s added %s</string>
+    <string name="occupant_left">%s has left</string>
+
+    <string name="typing_postfix_singular">is typing…</string>
+    <string name="typing_postfix_plural">are typing…</string>
+    <string name="typing_ellipsis">…</string>
+
+    <string name="chat_still_joining">You\'re still joining a group chat, please wait a bit</string>
+    <string name="chat_error_send_message">Can\'t send a message, You are not connected to chat</string>
+
+    <!-- Menu -->
+    <string name="menu_settings_video">Video Configuration</string>
+    <string name="menu_settings_audio">Audio Configuration</string>
+    <string name="menu_chat_info">Chat Info</string>
+    <string name="menu_chat_conference">Start Conference</string>
+    <string name="menu_chat_stream">Start Stream</string>
+    <string name="menu_add_users_to_chat">Add Users to Chat</string>
+    <string name="menu_leave_chat">Leave Chat</string>
+    <string name="menu_delete_chat">Delete Chat</string>
+    <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_dialogs_delete">Delete</string>
+    <string name="menu_dialogs_app_info">App Info</string>
+    <string name="menu_create">Create</string>
+    <string name="menu_done">Done</string>
+    <string name="menu_finish">Finish</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_save_attachment">Save attachment</string>
+
+    <string name="menu_message_edit">Edit</string>
+    <string name="menu_message_delete">Delete</string>
+    <string name="menu_message_forward">Forward</string>
+    <string name="menu_message_delivered_to">Delivered to…</string>
+    <string name="menu_message_viewed_by">Viewed by…</string>
+    <string name="menu_file_save">Save File</string>
+
+    <!-- Chat Screen -->
+    <string name="you">You</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_edit_text_hint">Send message…</string>
+    <string name="chat_subtitle_plural">%s members</string>
+    <string name="chat_subtitle_singular">%s member</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+    <string name="chat_load_users_error">Load chat users errors</string>
+    <string name="chat_attachment">Attachment</string>
+    <string name="chat_conference_join">Join</string>
+    <string name="chat_conference">Conference</string>
+    <string name="chat_stream">Stream</string>
+    <string name="chat_conversation_started">%s started</string>
+    <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
+    <string name="chat_unsupported_type">Unsupported dialog type</string>
+    <string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>
+
+    <string name="connection_error">Chat connection has been dropped</string>
+    <string name="reconnect_alert">Reconnecting in %s seconds</string>
+    <string name="reconnect_failed">Reconnecting Failed</string>
+    <string name="relogin_chat_failed">Relogin to Chat Failed</string>
+    <string name="update_dialog_error">Update Dialog error</string>
+
+    <!-- Chat Info Screen -->
+    <string name="chat_info_subtitle_plural">%s members</string>
+    <string name="chat_info_subtitle_singular">%s member</string>
+    <string name="chat_info_add_people_error">Add people errors</string>
+    <string name="chat_info_updating">Updating…</string>
+
+    <!-- Message Forwarding Screen -->
+    <string name="message_forwarded_from">Forwarded from\u0020</string>
+    <string name="message_info_delivered_to">Message Delivered to</string>
+    <string name="message_info_read_by">Message Viewed by</string>
+
+    <string name="message_info_noone">no one</string>
+    <string name="message_info_single_user">1 member</string>
+    <string name="message_info_multiple_users"> members</string>
+
+    <string name="forward_to">Forward to</string>
+
+    <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
+
+    <string name="dialog_chat_name">Chat Name</string>
+    <string name="dialog_chat_name_hint">Must be in a range from 3 to 20 characters</string>
+
+    <!-- Notification -->
+    <string name="chat_notification_title">Conference chat notification</string>
+    <string name="notification_title">You have an active conference</string>
+    <string name="notification_text">Touch takes you back to the conversation %1$s</string>
+
+    <!-- Errors strings. -->
+    <string name="error_qb_credentials_empty">Credentials are wrong or empty. You have to set:
+        Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
+        and you have to set Sender ID in the string resources to launch application.
+        If you haven\'t them you can register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+    <string name="error_chat_credentails_empty">Some parameter for Chat Settings is wrong. Please check the Chat Settings</string>
+    <string name="no_server_connection">Server connection timeout</string>
+    <string name="error_recreate_session">Login Chat error</string>
+    <string name="error_load_image">Error load image</string>
+    <string name="error_load_video">Can not play video file. It might be corrupt</string>
+    <string name="error_attachment_corrupted">Attachment is corrupted</string>
+    <string name="error_attachment_size">The uploaded file exceeds maximum file size (100MB)</string>
+    <string name="error_forwarding_not_connected">Unable to forward message. Not Connected to Chat</string>
+    <string name="error_attachment_count">You can send 1 attachment per message</string>
+    <string name="error_logout">Unable to Logout: </string>
+    <string name="error_relogin_to_chat">Relogin to Chat Filed:</string>
+    <string name="error_file_not_created">Captured image might not be saved. Can not create File</string>
+
+    <string name="join_chat_error">Joining Chat error</string>
+    <string name="load_chat_history_error">Chat History Loading Error</string>
+    <string name="error_getting_chat_service">QBChatService unavailable</string>
+    <string name="error_joining_chat">Join Chat Error</string>
+    <string name="error_leave_chat">Error leaving room</string>
+    <string name="error_no_connection">Connection failed. Please check your internet connection.</string>
+    <string name="error_no_responce_timeout">No response received within reply timeout.</string>
+    <string name="error_server_url_null">Multi-conference server is available only for Enterprise plans. Please refer to https://quickblox.com/developers/EnterpriseFeatures for more information and contacts.</string>
+
+    <string name="permission_unavailable">%s is not available now!</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="action_start_login">Done</string>
+    <string name="placeholder_username_you">%s (you)</string>
+    <string name="join_conference">Joining conference…</string>
+    <string name="join_stream">Joining stream…</string>
+    <string name="starting_stream">Starting stream…</string>
+    <string name="online_participants_label">"%s members"</string>
+    <string name="online_participants_label_single">"%s member"</string>
+    <string name="conversation_placeholder">"Publishers are offline"</string>
+
+    <string name="join_conference_error">Join to conference error</string>
+    <string name="join_stream_error">Join to stream error</string>
+    <string name="load_user">Loading username…</string>
+    <string name="menu_select_people_done">Done</string>
+    <string name="menu_refresh_users">Refresh</string>
+
+    <!-- Settings strings -->
+    <string name="title_video_category">Video</string>
+    <string name="title_audio_category">Audio</string>
+    <string name="title_call_settings_category">Call Settings</string>
+
+    <string name="pref_default_value">Default</string>
+    <integer name="pref_default_int_value">0</integer>
+
+    <string name="pref_default_camera_key">default_camera_preference</string>
+    <string name="pref_default_camera_title">Default Camera</string>
+    <string name="pref_default_camera_dlg">Select default camera</string>
+    <string name="pref_default_camera_default">0</string>
+
+    <string name="pref_frame_rate_key">frame_rate</string>
+    <string name="pref_frame_rate_title">Frame Rate (0&#8211;30)</string>
+    <string name="pref_frame_rate_default">0</string>
+    <integer name="pref_frame_rate_min_value">0</integer>
+    <integer name="pref_frame_rate_max_value">30</integer>
+    <integer name="pref_frame_rate_stepSize">5</integer>
+
+    <string name="pref_resolution_key">resolution_preference</string>
+    <string name="pref_resolution_title">Video Format</string>
+    <string name="pref_resolution_dlg">Local video resolution</string>
+    <string name="pref_resolution_default">-1</string>
+
+    <string name="pref_startbitrate_key">startbitrate_preference</string>
+    <string name="pref_startbitrate_title">Start bitrate setting</string>
+    <string name="pref_startbitrate_dlg">Start bitrate setting</string>
+    <string name="pref_startbitrate_default">Default</string>
+
+    <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
+    <string name="pref_startbitratevalue_title">Bitrate (0&#8211;2000)</string>
+    <string name="pref_startbitratevalue_default">0</string>
+    <integer name="pref_startbitratevalue_min_value">0</integer>
+    <integer name="pref_startbitratevalue_max_value">2000</integer>
+    <integer name="pref_startbitratevalue_step_size">100</integer>
+
+    <string name="pref_disable_built_in_aec_key">disable_built_in_aec_preference</string>
+    <string name="pref_disable_built_in_aec_title">Disable built-in AEC</string>
+    <string name="pref_disable_built_in_aec_dlg">Disable built-in AEC</string>
+    <string name="pref_disable_built_in_aec_default">false</string>
+    <string name="pref_built_in_aec_not_available">Built-in AEC is not available</string>
+
+    <string name="pref_opensles_key">opensles_preference</string>
+    <string name="pref_opensles_title">Use OpenSL ES for audio playback</string>
+    <string name="pref_opensles_dlg">Use OpenSL ES for audio playback</string>
+    <string name="pref_opensles_default">false</string>
+
+    <string name="pref_noaudioprocessing_key">audioprocessing_preference</string>
+    <string name="pref_noaudioprocessing_title">Disable audio processing</string>
+    <string name="pref_noaudioprocessing_dlg">Disable audio processing pipeline</string>
+    <string name="pref_noaudioprocessing_default">false</string>
+
+    <string name="pref_videocodec_key">videocodec_preference</string>
+    <string name="pref_videocodec_title">Default video codec</string>
+    <string name="pref_videocodec_dlg">Select default video codec</string>
+    <string name="pref_videocodec_default">0</string>
+
+    <string name="pref_hwcodec_key">hwcodec_preference</string>
+    <string name="pref_hwcodec_title">Video codec hardware acceleration</string>
+    <string name="pref_hwcodec_default">false</string>
+
+    <string name="pref_displayhud_key">displayhud_preference</string>
+    <string name="pref_displayhud_default" translatable="false">false</string>
+    <string name="pref_audiocodec_key">pref_audio_codec</string>
+    <string name="pref_audiocodec_title">Default audio codec</string>
+    <string name="pref_audiocodec_def">opus</string>
+    <string name="pref_audiocodec_dlg">Select default audio codec</string>
+
+    <string name="packet_failed">Packet loss occurs</string>
+
+    <!-- App Info Screen -->
+    <string name="appinfo_application_version">Application version:</string>
+    <string name="appinfo_qbsdk_version">QuickBlox SDK version:</string>
+    <string name="appinfo_application_id">Application ID:</string>
+    <string name="appinfo_authorization_key">Authorization key:</string>
+    <string name="appinfo_authorization_secret">Authorization secret:</string>
+    <string name="appinfo_account_key">Account key:</string>
+    <string name="appinfo_api_domain">API domain:</string>
+    <string name="appinfo_chat_domain">Chat domain:</string>
+    <string name="appinfo_janus_server">Janus server:</string>
+    <string name="appinfo_title">App Info</string>
+    <string name="appinfo_qa_verion">QA version:</string>
+
+</resources>

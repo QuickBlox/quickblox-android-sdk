@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_primary">@color/white</color>
+    <color name="color_primary_dark">#d0d0d0</color>
+    <color name="color_accent">@color/color_green_qb</color>
+
+    <color name="color_green_qb">#4ad24d</color>
+    <color name="color_light_blue_qb">#87cefa</color>
+    <color name="color_grey">#d3d3d3</color>
+    <color name="color_red">#ff0000</color>
+    <color name="color_new_blue">#3978FC</color>
+    <color name="color_unread">#00CC4C</color>
+    <color name="color_text_highlight">#DAE5FE</color>
+    <color name="color_text_last_message">#6C7A92</color>
+    <color name="color_search_hint">#6C7A92</color>
+    <color name="color_checked_item">#F4F6F9</color>
+    <color name="color_middle_gray">#CBCBCB</color>
+
+    <color name="background_chat_color">#f5f6f5</color>
+    <color name="chat_bubble_date_color">#80dedede</color>
+
+    <color name="divider_color">#e0e0e0</color>
+    <color name="selected_list_item_color">#D9E3F7</color>
+
+    <color name="background_app_color">#ffffff</color>
+
+    <color name="color_blue_qb">#046ad0</color>
+
+    <color name="color_popup_menu">#F2FFFFFF</color>
+
+    <color name="random_color_1">#53C6A2</color>
+    <color name="random_color_2">#FDD762</color>
+    <color name="random_color_3">#9261D3</color>
+    <color name="random_color_4">#43DCE7</color>
+    <color name="random_color_5">#FFCC5A</color>
+    <color name="random_color_6">#EA4398</color>
+    <color name="random_color_7">#4A5DE1</color>
+    <color name="random_color_8">#E95555</color>
+    <color name="random_color_9">#7EDA54</color>
+    <color name="random_color_10">#F9B647</color>
+
+    <color name="black">#000000</color>
+    <color name="dark_gray">#6c6c6c</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00ffffff</color>
+
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="text_color_white_alpha_06">#96ffffff</color>
+    <color name="text_color_black">#000000</color>
+    <color name="text_color_medium_grey">#b1b1b1</color>
+    <color name="text_color_dark_grey">#6e6e6e</color>
+
+    <color name="green">#45D100</color>
+    <color name="black_transparent_30">#30000000</color>
+    <color name="black_transparent_50">#50000000</color>
+    <color name="white_transparent_80">#80FFFFFF</color>
+    <color name="white_transparent_50">#50FFFFFF</color>
+    <color name="grey_transparent_50">#50606060</color>
+    <color name="grey_transparent_20">#20606060</color>
+    <color name="grey_transparent_10">#10606060</color>
+
+
+    <color name="background_fragment_conversation">#323232</color>
+
+    <color name="text_color_light_grey">#dedede</color>
+
+</resources>

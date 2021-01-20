@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:layout="@layout/view_for_preference"
+        android:selectable="false" />
+
+    <PreferenceCategory android:title="@string/title_audio_category">
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_disable_built_in_aec_default"
+            android:dialogTitle="@string/pref_disable_built_in_aec_dlg"
+            android:key="@string/pref_disable_built_in_aec_key"
+            android:title="@string/pref_disable_built_in_aec_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_opensles_default"
+            android:dialogTitle="@string/pref_opensles_dlg"
+            android:key="@string/pref_opensles_key"
+            android:title="@string/pref_opensles_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_noaudioprocessing_default"
+            android:dialogTitle="@string/pref_noaudioprocessing_dlg"
+            android:key="@string/pref_noaudioprocessing_key"
+            android:title="@string/pref_noaudioprocessing_title" />
+    </PreferenceCategory>
+
+    <Preference
+        android:layout="@layout/preference_version"
+        android:selectable="false" />
+</PreferenceScreen>
