@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="ChatActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/background_chat_color</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/color_new_blue</item>
+        <item name="colorPrimaryDark">@color/color_new_blue</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColorSecondary">@color/text_color_white_alpha_06</item>
+        <item name="android:textColorPrimary">@color/text_color_white</item>
+        <item name="colorControlNormal">@color/color_new_blue</item>
+        <item name="colorControlActivated">@color/color_new_blue</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:subtitleTextColor" tools:targetApi="m">@color/text_color_white_alpha_06</item>
+        <item name="subtitleTextColor">@color/text_color_white_alpha_06</item>
+        <item name="android:backgroundDimAmount">0.1</item>
+        <item name="android:textColorHighlight">@color/color_text_highlight</item>
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
+        <item name="actionModeBackground">@color/color_new_blue</item>
+        <item name="actionOverflowMenuStyle">@style/ActionOverflowMenu</item>
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="autoCompleteTextViewStyle">@style/SearchAutoCompleteTextView</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/color_new_blue</item>
+        <!-- To make blue shadows on Android API 28 and higher-->
+        <item name="android:spotShadowAlpha" tools:targetApi="lollipop">0.2</item>
+        <item name="android:outlineSpotShadowColor" tools:targetApi="p">@color/color_new_blue</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/color_new_blue</item>
+        <item name="colorPrimaryDark">@color/color_new_blue</item>
+        <item name="android:textColorPrimary">@color/text_color_white</item>
+        <item name="subtitleTextColor">@color/text_color_white_alpha_06</item>
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
+        <item name="actionModeBackground">@color/color_new_blue</item>
+        <item name="actionOverflowMenuStyle">@style/ActionOverflowMenu</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="colorControlActivated">@color/color_new_blue</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/color_new_blue</item>
+    </style>
+
+    <style name="AppTheme.SettingsScreen" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/text_color_dark_grey</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:textColorHighlight">@color/text_color_dark_grey</item>
+    </style>
+
+    <style name="ActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
+        <item name="subtitleTextStyle">@style/ActionModeSubtitleStyle</item>
+    </style>
+
+    <style name="ActionModeSubtitleStyle" parent="TextAppearance.AppCompat.Widget.ActionMode.Subtitle">
+        <item name="android:textColor">@color/text_color_white_alpha_06</item>
+    </style>
+
+    <style name="ActionOverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+    </style>
+
+    <style name="CheckboxStyle" parent="Theme.MaterialComponents.Light">
+
+        <item name="colorControlNormal">@color/color_new_blue</item>
+        <item name="colorControlActivated">@color/color_new_blue</item>
+    </style>
+
+    <style name="SearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColorHint">@color/color_search_hint</item>
+    </style>
+
+    <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:dropDownVerticalOffset">-5dp</item>
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:popupBackground">@color/color_popup_menu</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="BaseCallTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!--<item name="android:windowActionBar">false</item>-->
+
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+
+        <item name="android:windowBackground">@color/background_app_color</item>
+
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/color_new_blue</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textColorPrimary">@color/text_color_black</item>
+    </style>
+
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="MatchWidth">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="HorizontalDividerStyle" parent="MatchWidth">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/divider_color</item>
+    </style>
+
+    <style name="ListItem" parent="MatchWidth">
+        <item name="android:layout_height">?android:attr/listPreferredItemHeight</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="UserIconStyle">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_marginLeft">@dimen/list_item_side_margin</item>
+        <item name="android:padding">@dimen/padding_common</item>
+    </style>
+
+    <style name="UserTitleStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="UserCheckboxStyle" parent="WrapContent">
+        <item name="android:layout_marginRight">@dimen/list_item_side_margin</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="CenterProgressBarStyle" parent="@style/Widget.AppCompat.ProgressBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="ListViewWithoutDividerStyle" parent="MatchParent">
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="ToolbarStyleCall" parent="Widget.AppCompat.Toolbar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+    </style>
+
+    <style name="SeekBarPreferenceTitle" parent="WrapContent">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+</resources>

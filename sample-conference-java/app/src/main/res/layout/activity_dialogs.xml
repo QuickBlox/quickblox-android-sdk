@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/drawer_layout"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:title="Chats"
+            android:background="@color/color_new_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/layout_root"
+            style="@style/MatchParent"
+            tools:ignore="RtlHardcoded,RtlSymmetry">
+
+
+
+            <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+                android:id="@+id/swipy_refresh_layout"
+                style="@style/MatchParent"
+                app:srl_direction="top">
+
+                <ListView
+                    android:id="@+id/list_dialogs_chats"
+                    style="@style/ListViewWithoutDividerStyle" />
+            </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_chat_empty"
+                style="@style/MatchWidth"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/WrapContent"
+                    android:text="@string/chat_empty_you_are_alone_here"
+                    android:textColor="@color/text_color_dark_grey"
+                    android:textSize="20sp"
+                    app:robotoTypeface="roboto_medium" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/pb_dialogs"
+                style="@style/CenterProgressBarStyle"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    </LinearLayout>
+
+<com.google.android.material.navigation.NavigationView
+    android:id="@+id/navigation_view"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:layout_marginTop="30dp"
+    app:itemTextColor="@color/color_text_last_message"
+    app:itemIconTint="@color/color_text_last_message"
+    android:fitsSystemWindows="true"
+    app:headerLayout="@layout/drawer_header_layout"
+    app:menu="@menu/menu_activity_dialogs_drawer"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

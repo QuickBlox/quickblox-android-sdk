@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_chat_container"
+    style="@style/MatchParent"
+    tools:ignore="RtlHardcoded">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chat_messages"
+        style="@style/MatchParent"
+        android:background="#F4F6F9"
+        android:layout_above="@+id/tv_typing_status"
+        android:listSelector="@android:color/transparent" />
+
+    <ProgressBar
+        android:id="@+id/progress_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/tv_typing_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_attachment_preview_container"
+        android:textSize="13sp"
+        android:textColor="@color/color_search_hint"
+        android:paddingBottom="5dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/chat_typing_status_background"
+        android:visibility="gone"
+        tools:text="Alexparvus is typing..."/>
+
+    <LinearLayout
+        android:id="@+id/ll_attachment_preview_container"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_above="@+id/rl_chat_send_container"
+        android:background="@color/text_color_white_alpha_06"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <View
+            android:id="@+id/divider_chat_attachments"
+            style="@style/HorizontalDividerStyle" />
+
+        <com.quickblox.sample.videochat.conference.java.views.AttachmentPreviewAdapterView
+            android:id="@+id/adapter_attachment_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_chat"
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:background="@color/divider_color"
+        android:layout_above="@+id/rl_chat_send_container" />
+
+    <RelativeLayout
+        android:id="@+id/rl_chat_send_container"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_chat_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_add_attachment" />
+
+        <EditText
+            android:id="@+id/et_chat_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/chat_edit_text_hint"
+            android:inputType="textShortMessage"
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:background="@color/transparent"
+            android:layout_toRightOf="@+id/iv_chat_attachment"
+            android:layout_toLeftOf="@+id/iv_chat_send"
+            android:textColorHint="@color/color_search_hint"
+            android:maxLength="1000" />
+
+        <ImageView
+            android:id="@+id/iv_chat_send"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10.5dp"
+            android:paddingLeft="2.5dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:src="@drawable/ic_send_message"
+            android:tooltipText="@string/chat_send"
+            android:onClick="onSendChatClick"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6F9"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:alpha="0.5"
+        android:text="@string/dialog_chat_name"
+        android:textColor="#333333" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/login_background_field"
+        android:elevation="6dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_dialog_name"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:singleLine="true"
+            android:textColor="#333333"
+            android:textSize="17sp"
+            tools:text="QuickBlox chatting" />
+
+        <ImageView
+            android:id="@+id/iv_clear"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dp"
+            android:layout_weight="0"
+            android:padding="5dp"
+            android:src="@drawable/ic_error" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_group_name_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/dialog_chat_name_hint"
+        android:textColor="#99A9C6"
+        android:textSize="13sp"
+        android:visibility="visible"/>
+</LinearLayout>
