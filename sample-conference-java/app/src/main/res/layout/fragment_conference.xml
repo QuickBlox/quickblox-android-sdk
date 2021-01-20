@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_opponents"
+    style="@style/MatchParent"
+    android:background="@color/background_fragment_conversation">
+
+    <TextView
+        android:id="@+id/conversation_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:text="@string/conversation_placeholder"/>
+
+    <com.quickblox.sample.videochat.conference.java.views.NoChildClickableRecyclerView
+        android:id="@+id/grid_opponents"
+        style="@style/MatchParent"
+        android:horizontalSpacing="0dp"
+        android:verticalSpacing="0dp"
+        android:visibility="visible"
+        tools:listitem="@layout/list_item_conference_opponent" />
+
+    <com.quickblox.conference.view.QBConferenceSurfaceView
+        android:id="@+id/full_screen_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_conference_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:paddingTop="3dp"
+        android:background="@drawable/call_toolbar_background"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_chat"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_return_chat"
+            android:background="@null"/>
+
+        <TextView
+            android:id="@+id/tv_conference_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:layout_marginTop="8dp"
+            android:layout_alignTop="@+id/ib_chat"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:textStyle="normal"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:layout_toRightOf="@+id/ib_chat"
+            android:layout_toLeftOf="@+id/ib_manage_group"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            tools:text="New Chat"/>
+
+        <ImageView
+            android:id="@+id/iv_stream_label"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_alignTop="@+id/ib_chat"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_toRightOf="@+id/ib_chat"
+            android:layout_toLeftOf="@+id/ib_manage_group"
+            android:src="@drawable/live_streaming"/>
+
+        <ImageButton
+            android:id="@+id/ib_manage_group"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@null"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_members"/>
+
+        <TextView
+            android:id="@+id/tv_members_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="12dp"
+            tools:text="9999 members"
+            android:maxWidth="110dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/element_set_call_buttons"
+        layout="@layout/view_action_buttons_conversation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
