@@ -24,7 +24,6 @@ import com.quickblox.sample.chat.kotlin.utils.showSnackbar
 import com.quickblox.users.model.QBUser
 
 private const val DUMMY_VALUE = "dummy_value"
-private const val RESTART_DELAY = 200
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -74,7 +73,11 @@ abstract class BaseActivity : AppCompatActivity() {
             progressDialog!!.setOnKeyListener(keyListener)
         }
         progressDialog!!.setMessage(getString(messageId))
-        progressDialog!!.show()
+        try {
+            progressDialog!!.show()
+        } catch (e: Exception) {
+            e.message?.let { Log.d(TAG, it) }
+        }
     }
 
     protected fun hideProgressDialog() {
@@ -93,15 +96,6 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun restartApp(context: Context) {
-        // Application needs to restart when user declined some permissions at runtime
-        val restartIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-        val intent = PendingIntent.getActivity(context, 0, restartIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        manager.set(AlarmManager.RTC, System.currentTimeMillis() + RESTART_DELAY, intent)
-        System.exit(0)
-    }
-
     override fun onResume() {
         super.onResume()
         val currentUser = ChatHelper.getCurrentUser()
@@ -115,7 +109,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: QBResponseException?) {
-                    Log.d(TAG, e?.message)
+                    e?.message?.let { Log.d(TAG, it) }
                 }
             })
 

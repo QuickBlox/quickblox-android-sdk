@@ -40,7 +40,6 @@ const val EXTRA_CHAT_NAME = "chat_name"
 const val USERS_PAGE_SIZE = 100
 const val MIN_SEARCH_QUERY_LENGTH = 3
 const val SEARCH_DELAY = 600L
-const val ORDER_VALUE_UPDATED_AT = "desc string updated_at"
 
 class SelectUsersActivity : BaseActivity() {
     private val CLICK_DELAY = TimeUnit.SECONDS.toMillis(2)

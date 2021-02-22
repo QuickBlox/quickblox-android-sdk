@@ -70,7 +70,9 @@ public class MessageInfoActivity extends BaseActivity implements QBMessageStatus
         try {
             QBChatService.getInstance().getMessageStatusesManager().addMessageStatusListener(this);
         } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
+            if (e.getMessage() != null) {
+                Log.d(TAG, e.getMessage());
+            }
             finish();
         }
     }

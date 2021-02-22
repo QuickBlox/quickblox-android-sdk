@@ -144,7 +144,9 @@ public class AttachmentVideoActivity extends BaseActivity {
                     manager.enqueue(request);
                 }
             } catch (SecurityException e) {
-                Log.d("Security Exception", e.getMessage());
+                if (e.getMessage() != null) {
+                    Log.d("Security Exception", e.getMessage());
+                }
             }
         }
     }

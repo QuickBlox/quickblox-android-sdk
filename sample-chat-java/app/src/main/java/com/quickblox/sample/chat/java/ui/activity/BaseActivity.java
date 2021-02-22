@@ -1,12 +1,9 @@
 package com.quickblox.sample.chat.java.ui.activity;
 
-import android.app.AlarmManager;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -29,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
     private static String DUMMY_VALUE = "dummy_value";
-    private static final int RESTART_DELAY = 200;
 
     private ProgressDialog progressDialog = null;
 
@@ -83,7 +79,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         try {
             progressDialog.show();
         } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
+            if (e.getMessage() != null) {
+                Log.d(TAG, e.getMessage());
+            }
         }
     }
 
@@ -99,15 +97,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             return false;
         }
-    }
-
-    public void restartApp(Context context) {
-        // Application needs to restart when user declined some permissions at runtime
-        Intent restartIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-        PendingIntent intent = PendingIntent.getActivity(context, 0, restartIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        manager.set(AlarmManager.RTC, System.currentTimeMillis() + RESTART_DELAY, intent);
-        System.exit(0);
     }
 
     @Override
@@ -126,7 +115,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(QBResponseException e) {
-                    Log.d(TAG, e.getMessage());
+                    if (e.getMessage() != null) {
+                        Log.d(TAG, e.getMessage());
+                    }
                 }
             });
         } else {

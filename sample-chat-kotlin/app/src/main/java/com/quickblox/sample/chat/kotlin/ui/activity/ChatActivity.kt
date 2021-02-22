@@ -3,12 +3,10 @@ package com.quickblox.sample.chat.kotlin.ui.activity
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Environment
-import android.os.PersistableBundle
-import android.os.Vibrator
+import android.os.*
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -18,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +40,6 @@ import com.quickblox.sample.chat.kotlin.managers.DialogsManager
 import com.quickblox.sample.chat.kotlin.ui.adapter.*
 import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.AttachClickListener
 import com.quickblox.sample.chat.kotlin.ui.adapter.listeners.MessageLongClickListener
-import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
 import com.quickblox.sample.chat.kotlin.ui.views.AttachmentPreviewAdapterView
 import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.SystemPermissionHelper
@@ -52,6 +50,7 @@ import com.quickblox.sample.chat.kotlin.utils.imagepick.pickAnImage
 import com.quickblox.sample.chat.kotlin.utils.qb.*
 import com.quickblox.sample.chat.kotlin.utils.shortToast
 import com.quickblox.sample.chat.kotlin.utils.showSnackbar
+import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import org.jivesoftware.smack.ConnectionListener
@@ -73,9 +72,11 @@ const val EXTRA_IS_NEW_DIALOG = "isNewDialog"
 const val IS_IN_BACKGROUND = "is_in_background"
 
 const val ORDER_RULE = "order"
-const val ORDER_VALUE = "desc string created_at"
+const val ORDER_VALUE_UPDATED_AT = "desc string updated_at"
 
 const val TYPING_STATUS_DELAY = 2000L
+const val TYPING_STATUS_INACTIVITY_DELAY = 10000L
+private const val SEND_TYPING_STATUS_DELAY: Long = 3000L
 const val MAX_ATTACHMENTS_COUNT = 1
 const val MAX_MESSAGE_SYMBOLS_LENGTH = 1000
 
@@ -132,14 +133,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         Log.v(TAG, "onCreate ChatActivity on Thread ID = " + Thread.currentThread().id)
 
         if (!ChatHelper.isLogged()) {
-            Log.w(TAG, "Restarting App...")
-            restartApp(this)
+            reloginToChat()
         }
 
         qbChatDialog = intent.getSerializableExtra(EXTRA_DIALOG_ID) as QBChatDialog
         if (ChatHelper.getCurrentUser() != null) {
             currentUser = ChatHelper.getCurrentUser()!!
         } else {
+            Log.e(TAG, "Finishing " + TAG + ". Current user is null")
             finish()
         }
         Log.v(TAG, "Deserialized dialog = $qbChatDialog")
@@ -147,7 +148,8 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         try {
             qbChatDialog.initForChat(QBChatService.getInstance())
         } catch (e: IllegalStateException) {
-            Log.v(TAG, "The error registerCallback fro chat. Error message is : " + e.message)
+            Log.d(TAG, "initForChat error. Error message is : " + e.message)
+            Log.e(TAG, "Finishing " + TAG + ". Unable to init chat")
             finish()
         }
         qbChatDialog.addMessageListener(chatMessageListener)
@@ -166,8 +168,12 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        val dialogId = savedInstanceState.getString(EXTRA_DIALOG_ID)!!
-        qbChatDialog = QbDialogHolder.getChatDialogById(dialogId)!!
+        try {
+            val dialogId = savedInstanceState.getString(EXTRA_DIALOG_ID)!!
+            qbChatDialog = QbDialogHolder.getChatDialogById(dialogId)!!
+        } catch (e: Exception) {
+            Log.d(TAG, e.message)
+        }
     }
 
     override fun onResumeFinished() {
@@ -177,19 +183,23 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             }
             returnToChat()
         } else {
-            showProgressDialog(R.string.dlg_loading)
-            ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
-                override fun onSuccess(aVoid: Void, bundle: Bundle) {
-                    returnToChat()
-                    hideProgressDialog()
-                }
-
-                override fun onError(e: QBResponseException) {
-                    hideProgressDialog()
-                    finish()
-                }
-            })
+            reloginToChat()
         }
+    }
+
+    private fun reloginToChat() {
+        showProgressDialog(R.string.dlg_login)
+        ChatHelper.loginToChat(SharedPrefsHelper.getQbUser()!!, object : QBEntityCallback<Void> {
+            override fun onSuccess(aVoid: Void?, bundle: Bundle?) {
+                returnToChat()
+                hideProgressDialog()
+            }
+
+            override fun onError(e: QBResponseException?) {
+                hideProgressDialog()
+                showErrorSnackbar(R.string.reconnect_failed, e, View.OnClickListener { reloginToChat() })
+            }
+        })
     }
 
     private fun returnToChat() {
@@ -198,12 +208,13 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             try {
                 qbChatDialog.join(DiscussionHistory())
             } catch (e: Exception) {
-                finish()
+                Log.e(TAG, "Join Dialog Exception: " + e.message)
+                showErrorSnackbar(R.string.error_joining_chat, e, View.OnClickListener { returnToChat() })
             }
         }
 
         // Loading unread messages received in background
-        if (qbChatDialog.type != QBDialogType.PRIVATE && SharedPrefsHelper.get(IS_IN_BACKGROUND, false)) {
+        if (SharedPrefsHelper.get(IS_IN_BACKGROUND, false)) {
             progressBar.visibility = View.VISIBLE
             skipPagination = 0
             checkAdapterInit = false
@@ -213,7 +224,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         returnListeners()
     }
 
-    fun returnListeners() {
+    private fun returnListeners() {
+        if (qbChatDialog.isTypingListeners.isEmpty()) {
+            qbChatDialog.addIsTypingListener(TypingStatusListener())
+        }
+
         dialogsManager.addManagingDialogsCallbackListener(this)
         try {
             systemMessagesManager = QBChatService.getInstance().systemMessagesManager
@@ -221,8 +236,8 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             qbMessageStatusesManager = QBChatService.getInstance().messageStatusesManager
             qbMessageStatusesManager.addMessageStatusListener(this)
         } catch (e: Exception) {
-            Log.d(TAG, "Can not get QBChatService. Finishing Activity")
-            finish()
+            e.message?.let { Log.d(TAG, it) }
+            showErrorSnackbar(R.string.error_getting_chat_service, e, View.OnClickListener { returnListeners() })
         }
         chatAdapter.setAttachImageClickListener(imageAttachClickListener)
         chatAdapter.setAttachVideoClickListener(videoAttachClickListener)
@@ -289,11 +304,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 return true
             }
             R.id.menu_chat_action_leave -> {
-                leaveGroupChat()
+                openAlertDialogLeaveGroupChat()
                 return true
             }
             R.id.menu_chat_action_delete -> {
-                deleteChat()
+                openAlertDialogDeletePrivateChat()
                 return true
             }
             android.R.id.home -> {
@@ -304,14 +319,35 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         }
     }
 
-    private fun showPopupMenu(isIncomingMessageClicked: Boolean, view: View, chatMessage: QBChatMessage?) {
+    private fun openAlertDialogLeaveGroupChat() {
+        val alertDialogBuilder = AlertDialog.Builder(this@ChatActivity, R.style.AlertDialogStyle)
+        alertDialogBuilder.setTitle(getString(R.string.dlg_leave_group_dialog))
+        alertDialogBuilder.setMessage(getString(R.string.dlg_leave_group_question))
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setPositiveButton(getString(R.string.dlg_leave)) { dialog, which -> leaveGroupChat() }
+        alertDialogBuilder.setNegativeButton(getString(R.string.dlg_cancel)) { dialog, which -> }
+        alertDialogBuilder.create()
+        alertDialogBuilder.show()
+    }
+
+    private fun openAlertDialogDeletePrivateChat() {
+        val alertDialogBuilder = AlertDialog.Builder(this@ChatActivity, R.style.AlertDialogStyle)
+        alertDialogBuilder.setTitle(getString(R.string.dlg_delete_private_dialog))
+        alertDialogBuilder.setMessage(getString(R.string.dlg_delete_private_question))
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setPositiveButton(getString(R.string.dlg_delete)) { dialog, which -> deleteChat() }
+        alertDialogBuilder.setNegativeButton(getString(R.string.dlg_cancel)) { dialog, which -> }
+        alertDialogBuilder.create()
+        alertDialogBuilder.show()
+    }
+
+    private fun showPopupMenu(isIncomingMessageClicked: Boolean, view: View, chatMessage: QBChatMessage) {
         val popupMenu = PopupMenu(this@ChatActivity, view)
-        val dialog = QbDialogHolder.getChatDialogById(chatMessage!!.dialogId)
 
         popupMenu.menuInflater.inflate(R.menu.menu_message_longclick, popupMenu.menu)
         popupMenu.gravity = Gravity.RIGHT
 
-        if (isIncomingMessageClicked || (dialog?.type != QBDialogType.GROUP)) {
+        if (isIncomingMessageClicked || (qbChatDialog.type != QBDialogType.GROUP)) {
             popupMenu.menu.removeItem(R.id.menu_message_delivered_to)
             popupMenu.menu.removeItem(R.id.menu_message_viewed_by)
             popupMenu.gravity = Gravity.LEFT
@@ -381,19 +417,19 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     private fun updateDialog() {
-        ProgressDialogFragment.show(supportFragmentManager)
+        showProgressDialog(R.string.dlg_updating)
         Log.d(TAG, "Starting Dialog Update")
         ChatHelper.getDialogById(qbChatDialog.dialogId, object : QBEntityCallback<QBChatDialog> {
             override fun onSuccess(updatedChatDialog: QBChatDialog, bundle: Bundle) {
                 Log.d(TAG, "Update Dialog Successful: " + updatedChatDialog.dialogId)
                 qbChatDialog = updatedChatDialog
-                ProgressDialogFragment.hide(supportFragmentManager)
+                hideProgressDialog()
                 ChatInfoActivity.start(this@ChatActivity, qbChatDialog)
             }
 
             override fun onError(e: QBResponseException) {
                 Log.d(TAG, "Dialog Loading Error: " + e.message)
-                ProgressDialogFragment.hide(supportFragmentManager)
+                hideProgressDialog()
                 showErrorSnackbar(R.string.select_users_get_dialog_error, e, null)
             }
         })
@@ -408,6 +444,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         showProgressDialog(R.string.dlg_loading)
         dialogsManager.sendMessageLeftUser(qbChatDialog)
         dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, qbChatDialog)
+        try {
+            // Its a hack to give the Chat Server more time to process the message and deliver them
+            Thread.sleep(300)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+
         Log.d(TAG, "Leaving Dialog")
         ChatHelper.exitFromDialog(qbChatDialog, object : QBEntityCallback<QBChatDialog> {
             override fun onSuccess(qbDialog: QBChatDialog, bundle: Bundle?) {
@@ -463,7 +507,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults[0] != -1) {
+        if (requestCode == PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults.size > 0 && grantResults[0] != -1) {
             openImagePicker()
         }
     }
@@ -491,7 +535,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     fun onSendChatClick(view: View) {
-        qbChatDialog.sendStopTypingNotification()
+        try {
+            qbChatDialog.sendStopTypingNotification()
+        } catch (e: XMPPException) {
+            Log.d(TAG, e.message)
+        } catch (e: SmackException.NotConnectedException) {
+            Log.d(TAG, e.message)
+        }
+
         val totalAttachmentsCount = attachmentPreviewAdapter.count
         val uploadedAttachments = attachmentPreviewAdapter.uploadedAttachments
         if (uploadedAttachments.isNotEmpty()) {
@@ -534,6 +585,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     }
 
     private fun initViews() {
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         typingStatus = findViewById(R.id.tv_typing_status)
@@ -789,11 +841,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             override fun reconnectionSuccessful() {
                 super.reconnectionSuccessful()
                 skipPagination = 0
-                when (qbChatDialog.type) {
-                    QBDialogType.GROUP -> {
-                        checkAdapterInit = false
-                        // Join active room if we're in Group Chat
-                        runOnUiThread { joinGroupChat() }
+                if (qbChatDialog.type == QBDialogType.GROUP || qbChatDialog.type == QBDialogType.PUBLIC_GROUP) {
+                    checkAdapterInit = false
+                    // Join active room if we're in Group Chat
+                    runOnUiThread {
+                        joinGroupChat()
                     }
                 }
             }
@@ -866,13 +918,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         override fun onMessageLongClicked(itemViewType: Int?, view: View, chatMessage: QBChatMessage?) {
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(80)
-
-            if (itemViewType == TYPE_TEXT_RIGHT || itemViewType == TYPE_ATTACH_RIGHT) {
-                Log.d(TAG, "Outgoing message LongClicked")
-                showPopupMenu(false, view, chatMessage)
-            } else if (itemViewType == TYPE_TEXT_LEFT || itemViewType == TYPE_ATTACH_LEFT) {
-                Log.d(TAG, "Incoming message LongClicked")
-                showPopupMenu(true, view, chatMessage)
+            if (chatMessage != null) {
+                if (itemViewType == TYPE_TEXT_RIGHT || itemViewType == TYPE_ATTACH_RIGHT) {
+                    Log.d(TAG, "Outgoing message LongClicked")
+                    showPopupMenu(false, view, chatMessage)
+                } else if (itemViewType == TYPE_TEXT_LEFT || itemViewType == TYPE_ATTACH_LEFT) {
+                    Log.d(TAG, "Incoming message LongClicked")
+                    showPopupMenu(true, view, chatMessage)
+                }
             }
         }
     }
@@ -887,35 +940,92 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private inner class TypingStatusListener : QBChatDialogTypingListener {
 
         private var currentTypingUserNames = ArrayList<String>()
+        private val usersTimerMap = HashMap<Int, Timer>()
 
         override fun processUserIsTyping(dialogID: String?, userID: Int?) {
             val currentUserID = currentUser.id
             if (dialogID != null && dialogID == qbChatDialog.dialogId && userID != null && userID != currentUserID) {
+                Log.d(TAG, "User $userID is typing")
+                updateTypingInactivityTimer(dialogID, userID)
                 val user = QbUsersHolder.getUserById(userID)
-                val userName = user?.fullName
-                userName?.let {
-                    if (!currentTypingUserNames.contains(userName)) {
-                        currentTypingUserNames.add(userName)
-                    }
+                if (user != null && user.fullName != null) {
+                    Log.d(TAG, "User $userID is in UsersHolder")
+                    addUserToTypingList(user)
+                } else {
+                    Log.d(TAG, "User $userID not in UsersHolder")
+                    QBUsers.getUser(userID).performAsync(object : QBEntityCallback<QBUser> {
+                        override fun onSuccess(qbUser: QBUser?, bundle: Bundle?) {
+                            qbUser?.let {
+                                Log.d(TAG, "User " + qbUser.id + " Loaded from Server")
+                                QbUsersHolder.putUser(qbUser)
+                                addUserToTypingList(qbUser)
+                            }
+                        }
+
+                        override fun onError(e: QBResponseException?) {
+                            Log.d(TAG, "Loading User Error: " + e?.message)
+                        }
+                    })
                 }
-                typingStatus.text = makeStringFromNames()
-                typingStatus.visibility = View.VISIBLE
             }
+        }
+
+        private fun addUserToTypingList(user: QBUser) {
+            val userName = if (TextUtils.isEmpty(user.fullName)) user.login else user.fullName
+            if (!TextUtils.isEmpty(userName) && !currentTypingUserNames.contains(userName) && usersTimerMap.containsKey(user.id)) {
+                currentTypingUserNames.add(userName)
+            }
+            typingStatus.text = makeStringFromNames()
+            typingStatus.visibility = View.VISIBLE
         }
 
         override fun processUserStopTyping(dialogID: String?, userID: Int?) {
             val currentUserID = currentUser.id
             if (dialogID != null && dialogID == qbChatDialog.dialogId && userID != null && userID != currentUserID) {
+                Log.d(TAG, "User $userID stopped typing")
+                stopInactivityTimer(userID)
                 val user = QbUsersHolder.getUserById(userID)
-                val userName = user?.fullName
-                userName?.let {
-                    if (currentTypingUserNames.contains(userName)) {
-                        currentTypingUserNames.remove(userName)
+                if (user != null ) {
+                    removeUserFromTypingList(user)
+                }
+            }
+        }
+
+        private fun removeUserFromTypingList(user: QBUser) {
+            val userName = user.fullName
+            userName?.let {
+                if (currentTypingUserNames.contains(userName)) {
+                    currentTypingUserNames.remove(userName)
+                }
+            }
+            typingStatus.text = makeStringFromNames()
+            if (makeStringFromNames().isEmpty()) {
+                typingStatus.visibility = View.GONE
+            }
+        }
+
+        private fun updateTypingInactivityTimer(dialogID: String, userID: Int) {
+            stopInactivityTimer(userID)
+            val timer = Timer()
+            timer.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.d("Typing Status", "User with ID $userID Did not refresh typing status. Processing stop typing")
+                    runOnUiThread {
+                        processUserStopTyping(dialogID, userID)
                     }
                 }
-                typingStatus.text = makeStringFromNames()
-                if (makeStringFromNames().isEmpty()) {
-                    typingStatus.visibility = View.GONE
+            }, TYPING_STATUS_INACTIVITY_DELAY)
+            usersTimerMap.put(userID, timer)
+        }
+
+        private fun stopInactivityTimer(userID: Int?) {
+            if (usersTimerMap.get(userID) != null) {
+                try {
+                    usersTimerMap.get(userID)!!.cancel()
+                } catch (ignored: NullPointerException) {
+
+                } finally {
+                    usersTimerMap.remove(userID)
                 }
             }
         }
@@ -975,22 +1085,23 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private inner class TextInputWatcher : TextWatcher {
 
         private var timer = Timer()
-        private var isTyping: Boolean = false
+        private var lastSendTime: Long = 0L
 
         override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
 
         }
 
         override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-            if (!isTyping) {
+            if (SystemClock.uptimeMillis() - lastSendTime > SEND_TYPING_STATUS_DELAY) {
+                lastSendTime = SystemClock.uptimeMillis()
                 try {
                     qbChatDialog.sendIsTypingNotification()
-                    isTyping = true
                 } catch (e: XMPPException) {
                     Log.d(TAG, e.message)
                 } catch (e: SmackException.NotConnectedException) {
                     Log.d(TAG, e.message)
                 }
+
             }
         }
 
@@ -1001,7 +1112,6 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 override fun run() {
                     try {
                         qbChatDialog.sendStopTypingNotification()
-                        isTyping = false
                     } catch (e: XMPPException) {
                         Log.d(TAG, e.message)
                     } catch (e: SmackException.NotConnectedException) {

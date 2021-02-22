@@ -41,6 +41,11 @@
         <item name="overlapAnchor">false</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textColorPrimary">@color/text_color_black</item>
+    </style>
+
     <style name="SearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">15sp</item>

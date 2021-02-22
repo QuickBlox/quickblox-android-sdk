@@ -129,7 +129,7 @@ class AttachmentVideoActivity : BaseActivity() {
                 val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 manager.enqueue(request)
             } catch (e : SecurityException) {
-                Log.d("Security Exception", e.message)
+                e.message?.let { Log.d("Security Exception", it) }
             }
         }
     }

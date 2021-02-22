@@ -15,6 +15,7 @@ open class VerboseQbChatConnectionListener(private val rootView: View) : Connect
 
     override fun connected(connection: XMPPConnection) {
         Log.i(TAG, "connected()")
+        snackbar?.dismiss()
     }
 
     override fun authenticated(connection: XMPPConnection, authenticated: Boolean) {

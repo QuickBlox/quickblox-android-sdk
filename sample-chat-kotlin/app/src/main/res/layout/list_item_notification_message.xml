@@ -22,12 +22,14 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/color_search_hint"
             android:textSize="13sp"
+            android:visibility="gone"
             tools:text="15:10" />
 
         <TextView
             android:id="@+id/tv_message_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/color_search_hint"
             android:textSize="13sp"
