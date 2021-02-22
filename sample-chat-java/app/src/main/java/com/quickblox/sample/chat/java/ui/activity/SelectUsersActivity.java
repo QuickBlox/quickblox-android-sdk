@@ -51,7 +51,6 @@ public class SelectUsersActivity extends BaseActivity {
     private static final int USERS_PAGE_SIZE = 100;
     private static final int MIN_SEARCH_QUERY_LENGTH = 3;
     private static final long SEARCH_DELAY = 600;
-    private static final String ORDER_VALUE_UPDATED_AT = "desc string updated_at";
 
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
 
@@ -264,7 +263,7 @@ public class SelectUsersActivity extends BaseActivity {
         }
         currentPage += 1;
         ArrayList<GenericQueryRule> rules = new ArrayList<>();
-        rules.add(new GenericQueryRule(ChatActivity.ORDER_RULE, ORDER_VALUE_UPDATED_AT));
+        rules.add(new GenericQueryRule(ChatActivity.ORDER_RULE, ChatActivity.ORDER_VALUE_UPDATED_AT));
 
         QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
         requestBuilder.setRules(rules);

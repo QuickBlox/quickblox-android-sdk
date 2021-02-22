@@ -19,7 +19,7 @@ object QbUsersHolder {
         }
     }
 
-    private fun putUser(user: QBUser) {
+    fun putUser(user: QBUser) {
         qbUserSparseArray.put(user.id, user)
     }
 

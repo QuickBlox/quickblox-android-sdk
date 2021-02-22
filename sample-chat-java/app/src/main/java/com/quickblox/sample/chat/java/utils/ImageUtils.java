@@ -33,6 +33,8 @@ import androidx.fragment.app.Fragment;
 
 public class ImageUtils {
 
+    private static final String TAG = ImageUtils.class.getSimpleName();
+
     private static final String CAMERA_FILE_NAME_PREFIX = "CAMERA_";
     private static final String FILES_MIME = "*/*";
     private static final String VIDEO_OR_IMAGE_MIME = "image/* video/*";
@@ -156,7 +158,12 @@ public class ImageUtils {
             File file = loadFileFromGoogleDocs(uri, context);
             return file.getPath();
         } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            return isGooglePhotosUri(uri) ? uri.getLastPathSegment() : getDataColumn(context, uri, null, null);
+            if (isGooglePhotosUri(uri)) {
+                return uri.getLastPathSegment();
+            } else {
+                return getDataColumn(context, uri,
+                        null, null);
+            }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
@@ -215,25 +222,6 @@ public class ImageUtils {
         return null;
     }
 
-    public static File getAppExternalDataDirectoryFile() {
-        File dataDirectoryFile = new File(getAppExternalDataDirectoryPath());
-        dataDirectoryFile.mkdirs();
-        return dataDirectoryFile;
-    }
-
-    public static String getAppExternalDataDirectoryPath() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Environment.getExternalStorageDirectory())
-                .append(File.separator)
-                .append("Android")
-                .append(File.separator)
-                .append("data")
-                .append(File.separator)
-                .append(App.getInstance().getPackageName())
-                .append(File.separator);
-        return sb.toString();
-    }
-
     public static void startFilePicker(Fragment fragment) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(FILES_MIME);
@@ -248,6 +236,8 @@ public class ImageUtils {
         // TODO Files: Delete further single string to add sending all file types
         intent.setType(IMAGE_MIME);
         //
+
+        intent.setAction(Intent.ACTION_GET_CONTENT);
 
         fragment.startActivityForResult(Intent.createChooser(intent, fragment.getString(R.string.dlg_choose_file_from)), GALLERY_REQUEST_CODE);
     }
@@ -264,36 +254,52 @@ public class ImageUtils {
 
         ComponentName component = chooser.resolveActivity(App.getInstance().getPackageManager());
         if (component != null) {
-            File mediaFile = getTemporaryCameraFile();
+            File mediaFile = getTemporaryCameraFile(fragment.getContext());
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getValidUri(mediaFile, fragment.getContext()));
             fragment.startActivityForResult(chooser, CAMERA_REQUEST_CODE);
         }
     }
 
-    public static File getTemporaryCameraFile() {
-        File storageDir = getAppExternalDataDirectoryFile();
-        File file = new File(storageDir, getTemporaryCameraFileName());
+    public static File getTemporaryCameraFile(Context context) {
+        String imageFileName = getTemporaryCameraFileName();
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        boolean createdSuccessful = true;
+        File image = null;
+
         try {
-            file.createNewFile();
+            image = File.createTempFile(imageFileName,".jpg", storageDir);
         } catch (IOException e) {
+            Log.e(TAG, "Cannot create file: " + e.getMessage());
             e.printStackTrace();
+            createdSuccessful = false;
         }
-        return file;
+
+        if (createdSuccessful) {
+            return image;
+        } else {
+            return null;
+        }
     }
 
-    public static File getLastUsedCameraFile() {
-        File dataDir = getAppExternalDataDirectoryFile();
-        File[] files = dataDir.listFiles();
-        List<File> filteredFiles = new ArrayList<>();
-        for (File file : files) {
-            if (file.getName().startsWith(CAMERA_FILE_NAME_PREFIX)) {
-                filteredFiles.add(file);
+    public static File getLastUsedCameraFile(Context context) {
+        File dataDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (dataDir != null) {
+            File[] files = dataDir.listFiles();
+            List<File> filteredFiles = new ArrayList<>();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().startsWith(CAMERA_FILE_NAME_PREFIX)) {
+                        filteredFiles.add(file);
+                    }
+                }
             }
-        }
 
-        Collections.sort(filteredFiles);
-        if (!filteredFiles.isEmpty()) {
-            return filteredFiles.get(filteredFiles.size() - 1);
+            Collections.sort(filteredFiles);
+            if (!filteredFiles.isEmpty()) {
+                return filteredFiles.get(filteredFiles.size() - 1);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

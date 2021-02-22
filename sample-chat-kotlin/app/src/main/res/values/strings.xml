@@ -39,8 +39,18 @@
     <string name="dlg_choose_file_from">Select file from…</string>
     <string name="dlg_sending">Sending…</string>
     <string name="create_chat">Creating chat…</string>
+    <string name="dlg_deleting_chats">Deleting chats…</string>
+    <string name="dlg_updating">Updating…</string>
+    <string name="dlg_delete_private_dialog">Delete dialog</string>
+    <string name="dlg_delete_private_question">Are you sure you want to leave dialog?</string>
+    <string name="dlg_leave_group_dialog">Leave dialog</string>
+    <string name="dlg_leave_group_question">Are you sure you want to leave dialog?</string>
+    <string name="dlg_delete_question">Are you sure you want to delete dialogs?</string>
+    <string name="dlg_leave">Leave</string>
+    <string name="dlg_delete">Delete</string>
+    <string name="dlg_cancel">Cancel</string>
 
-    <string name="new_chat_created">%s created new chat </string>
+    <string name="new_chat_created">%s created the group chat \"%s\"</string>
     <string name="occupant_added">%s added %s</string>
     <string name="occupant_left">%s has left</string>
 
@@ -55,10 +65,10 @@
 
     <string name="login_chat_login_error">Login to Chat error. Please relogin. </string>
     <string name="login_toolbar_title">Enter to chat</string>
-    <string name="login_welcoming_message">Please enter your login \nand username</string>
+    <string name="login_welcoming_message">Please enter your login \nand display name</string>
     <string name="login_label_login">Login</string>
     <string name="login_label_button_login">Login</string>
-    <string name="login_label_username">Username</string>
+    <string name="login_label_username">Display name</string>
     <string name="login_login_hint">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
     <string name="login_username_hint">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
     <string name="login_sign_up_error">Sign up error.</string>
@@ -99,12 +109,12 @@
     <string name="notification_title">Quickblox Chat Notification</string>
     <string name="connection_error">Chat connection has been dropped</string>
     <string name="reconnect_alert">Reconnecting in %s seconds</string>
+    <string name="reconnect_failed">Reconnecting Failed</string>
 
     <string name="update_dialog_error">Update Dialog error</string>
 
     <string name="chat_info_subtitle">%s members</string>
     <string name="chat_info_add_people_error">Add people errors</string>
-    <string name="chat_info_updating">Updating…</string>
 
     <string name="message_forwarded_from">Forwarded from\u0020</string>
     <string name="message_info_delivered_to">Message Delivered to</string>
@@ -155,5 +165,8 @@
     <string name="error_attachment_size">The uploaded file exceeds maximum file size (100MB)</string>
     <string name="error_forwarding_not_connected">Unable to forward message. Not Connected to Chat</string>
     <string name="error_attachment_count">You can send 1 attachment per message</string>
+    <string name="error_logout">Unable to Logout: </string>
+    <string name="error_joining_chat">Unable to Join chat</string>
+    <string name="error_getting_chat_service">Unable to get Chat Service</string>
 
 </resources>

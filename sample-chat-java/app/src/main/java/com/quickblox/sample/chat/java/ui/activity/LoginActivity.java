@@ -23,6 +23,7 @@ import com.quickblox.sample.chat.java.R;
 import com.quickblox.sample.chat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.chat.java.utils.ValidationUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
+import com.quickblox.sample.chat.java.utils.qb.QbUsersHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -236,7 +237,7 @@ public class LoginActivity extends BaseActivity {
         ChatHelper.getInstance().login(user, new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser userFromRest, Bundle bundle) {
-                if (userFromRest.getFullName().equals(user.getFullName())) {
+                if (userFromRest.getFullName() != null && userFromRest.getFullName().equals(user.getFullName())) {
                     loginToChat(user);
                 } else {
                     //Need to set password NULL, because server will update user only with NULL password
@@ -287,6 +288,7 @@ public class LoginActivity extends BaseActivity {
                 if (!chbSave.isChecked()) {
                     clearDrafts();
                 }
+                QbUsersHolder.getInstance().putUser(user);
                 DialogsActivity.start(LoginActivity.this);
                 finish();
                 hideProgressDialog();

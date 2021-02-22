@@ -12,59 +12,37 @@ import androidx.fragment.app.Fragment;
 
 public class SystemPermissionHelper {
     public static final int PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1010;
-    private static final int PERMISSIONS_FOR_TAKE_PHOTO_REQUEST = 2020;
-    private static final int PERMISSIONS_FOR_CALL_REQUEST = 3030;
 
     private Activity activity;
-    private Fragment fragment;
 
     public SystemPermissionHelper(Activity activity) {
         this.activity = activity;
     }
 
-    public SystemPermissionHelper(Fragment fragment) {
-        this.fragment = fragment;
-    }
-
     public boolean isSaveImagePermissionGranted() {
-        return isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    public boolean isCameraPermissionGranted() {
-        return isPermissionGranted(Manifest.permission.CAMERA);
-    }
-
-    public boolean isCallPermissionsGranted() {
-        return isPermissionGranted(Manifest.permission.RECORD_AUDIO) && isPermissionGranted(Manifest.permission.CAMERA);
+        return isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+                && isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && isPermissionGranted(Manifest.permission.CAMERA);
     }
 
     private boolean isPermissionGranted(String permission) {
-        if (fragment != null) {
-            return ContextCompat.checkSelfPermission(fragment.getContext(), permission) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return ContextCompat.checkSelfPermission(activity.getApplicationContext(), permission) == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    public void requestPermissionsForCallByType() {
-        checkAndRequestPermissions(PERMISSIONS_FOR_CALL_REQUEST, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA);
+        return ContextCompat.checkSelfPermission(activity.getApplicationContext(), permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestPermissionsForSaveFileImage() {
-        checkAndRequestPermissions(PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.CAMERA);
+        checkAndRequestPermissions(PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST, permissions);
     }
 
-    public void requestPermissionsTakePhoto() {
-        checkAndRequestPermissions(PERMISSIONS_FOR_TAKE_PHOTO_REQUEST, Manifest.permission.CAMERA);
-    }
-
-    private void checkAndRequestPermissions(int requestCode, String... permissions) {
+    private void checkAndRequestPermissions(int requestCode, ArrayList<String> permissions) {
         if (collectDeniedPermissions(permissions).length > 0) {
             requestPermissions(requestCode, collectDeniedPermissions(permissions));
         }
     }
 
-    private String[] collectDeniedPermissions(String... permissions) {
+    private String[] collectDeniedPermissions(ArrayList<String> permissions) {
         ArrayList<String> deniedPermissionsList = new ArrayList<>();
         for (String permission : permissions) {
             if (!isPermissionGranted(permission)) {
@@ -76,10 +54,6 @@ public class SystemPermissionHelper {
     }
 
     private void requestPermissions(int requestCode, String... permissions) {
-        if (fragment != null) {
-            fragment.requestPermissions(permissions, requestCode);
-        } else {
-            ActivityCompat.requestPermissions(activity, permissions, requestCode);
-        }
+        ActivityCompat.requestPermissions(activity, permissions, requestCode);
     }
 }

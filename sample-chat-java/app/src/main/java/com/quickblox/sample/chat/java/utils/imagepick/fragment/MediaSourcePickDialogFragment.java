@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-public class ImageSourcePickDialogFragment extends DialogFragment {
+public class MediaSourcePickDialogFragment extends DialogFragment {
     private static final int POSITION_GALLERY = 0;
     private static final int POSITION_CAMERA = 1;
     private static final int POSITION_FILE = 2;
@@ -21,9 +21,9 @@ public class ImageSourcePickDialogFragment extends DialogFragment {
     private OnImageSourcePickedListener onImageSourcePickedListener;
 
     public static void show(FragmentManager fm, OnImageSourcePickedListener onImageSourcePickedListener) {
-        ImageSourcePickDialogFragment fragment = new ImageSourcePickDialogFragment();
+        MediaSourcePickDialogFragment fragment = new MediaSourcePickDialogFragment();
         fragment.setOnImageSourcePickedListener(onImageSourcePickedListener);
-        fragment.show(fm, ImageSourcePickDialogFragment.class.getSimpleName());
+        fragment.show(fm, MediaSourcePickDialogFragment.class.getSimpleName());
     }
 
     @NonNull
@@ -61,10 +61,10 @@ public class ImageSourcePickDialogFragment extends DialogFragment {
         FILE_STORAGE
     }
 
-    public static class LoggableActivityImageSourcePickedListener implements OnImageSourcePickedListener {
+    public static class ImageSourcePickedListener implements OnImageSourcePickedListener {
         private Fragment fragment;
 
-        public LoggableActivityImageSourcePickedListener(Fragment fragment) {
+        public ImageSourcePickedListener(Fragment fragment) {
             this.fragment = fragment;
         }
 

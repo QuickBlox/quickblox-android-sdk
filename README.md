@@ -5,6 +5,7 @@
 * New Quickblox Samples:
   * [Sample Chat Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-java)
   * [Sample Chat Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-kotlin)
+  * [Sample Conference Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-conference-java)
   * [Sample VideoChat Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-java)
   * [Sample VideoChat Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-videochat-kotlin)
   * [Sample Push Notifications Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-pushnotifications-java)

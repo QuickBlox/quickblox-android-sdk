@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.ProgressBar
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import com.quickblox.chat.model.QBChatDialog
 import com.quickblox.chat.model.QBChatMessage
@@ -59,9 +61,11 @@ class ForwardToActivity : BaseActivity(), DialogsManager.ManagingDialogsCallback
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dialogs)
 
+        var progressBar = findViewById<ProgressBar>(R.id.pb_dialogs)
+        progressBar.visibility = View.GONE
+
         if (!ChatHelper.isLogged()) {
-            Log.w(TAG, "Restarting App...")
-            restartApp(this)
+            reloginToChat()
         }
 
         supportActionBar?.title = getString(R.string.forward_to)
@@ -69,6 +73,7 @@ class ForwardToActivity : BaseActivity(), DialogsManager.ManagingDialogsCallback
         if (ChatHelper.getCurrentUser() != null) {
             currentUser = ChatHelper.getCurrentUser()!!
         } else {
+            Log.e(TAG, "Finishing " + TAG + ". Not Logged in Chat.")
             finish()
         }
 
@@ -98,7 +103,7 @@ class ForwardToActivity : BaseActivity(), DialogsManager.ManagingDialogsCallback
             override fun onError(e: QBResponseException) {
                 Log.d(TAG, "Relogin Failed " + e.message)
                 hideProgressDialog()
-                finish()
+                showErrorSnackbar(R.string.reconnect_failed, e, View.OnClickListener { reloginToChat() })
             }
         })
     }
@@ -164,7 +169,7 @@ class ForwardToActivity : BaseActivity(), DialogsManager.ManagingDialogsCallback
                 messageToForward.isMarkable = true
 
                 messageToForward.attachments = originMessage.attachments
-                if (originMessage.body == "null") {
+                if (originMessage.body == null) {
                     messageToForward.body = null
                 } else {
                     messageToForward.body = originMessage.body
