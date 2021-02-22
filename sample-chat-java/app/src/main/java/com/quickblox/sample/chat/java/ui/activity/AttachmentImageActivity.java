@@ -24,7 +24,7 @@ import com.quickblox.sample.chat.java.utils.ImageUtils;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
 
 public class AttachmentImageActivity extends BaseActivity {
-
+    private static final String TAG = AttachmentImageActivity.class.getSimpleName();
     private static final String EXTRA_URL = "url";
 
     private ImageView imageView;
@@ -87,7 +87,9 @@ public class AttachmentImageActivity extends BaseActivity {
                 MediaStore.Images.Media.insertImage(getContentResolver(), bitmapToSave, "attachment", "");
                 ToastUtils.shortToast("Image saved to the Gallery");
             } catch (Exception e) {
-                Log.d("Save Image", e.getMessage());
+                if (e.getMessage() != null) {
+                    Log.d(TAG, e.getMessage());
+                }
                 ToastUtils.shortToast("Unable to save image");
             }
         } else {
@@ -113,7 +115,11 @@ public class AttachmentImageActivity extends BaseActivity {
 
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            Log.d("Glide Drawable", e.getMessage());
+            if (e != null && e.getMessage() != null) {
+                Log.d("Glide Drawable", e.getMessage());
+            } else {
+                e = new Exception("Unable to load image");
+            }
             showErrorSnackbar(R.string.error_load_image, e, null);
             progressBar.setVisibility(View.GONE);
             return false;

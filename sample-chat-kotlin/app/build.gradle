@@ -40,8 +40,8 @@ android {
         applicationId "com.quickblox.sample.chat.kotlin"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 422000
-        versionName '4.2.2'
+        versionCode 427000
+        versionName '4.2.7-kotlin'
         multiDexEnabled true
     }
 

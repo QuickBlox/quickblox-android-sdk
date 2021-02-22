@@ -77,7 +77,7 @@ class ChatAdapter(protected var context: Context,
     private var attachVideoClickListener: AttachClickListener? = null
     private var attachFileClickListener: AttachClickListener? = null
     private var messageLongClickListener: MessageLongClickListener? = null
-    private var fileLoadingAttemptsMap = HashMap<Int, Int>()
+    private var fileLoadingAttemptsMap = HashMap<String, Int>()
 
     private val containerLayoutRes = object : SparseIntArray() {
         init {
@@ -377,7 +377,7 @@ class ChatAdapter(protected var context: Context,
                         holder.llVideoForwardContainer?.visibility = View.GONE
                     }
 
-                    fileLoadingAttemptsMap.put(position, 0)
+                    fileLoadingAttemptsMap.put(attachment.id, 0)
 
                     if (attachment.name == null) {
                         return
@@ -409,7 +409,7 @@ class ChatAdapter(protected var context: Context,
                         holder.llFileForwardContainer?.visibility = View.GONE
                     }
 
-                    fileLoadingAttemptsMap.put(position, 0)
+                    fileLoadingAttemptsMap.put(attachment.id, 0)
 
                     val fileName = attachment.name
                     val file = File(context.filesDir, fileName)
@@ -431,36 +431,46 @@ class ChatAdapter(protected var context: Context,
         Log.d(TAG, "Loading File as Attachment id = " + attachment?.id)
 
         // to define download attempts count for each videofile
-        fileLoadingAttemptsMap.set(position, fileLoadingAttemptsMap.getValue(position) + 1)
+        if (attachment != null) {
+            val attachmentID = attachment.id
+            val attempts = fileLoadingAttemptsMap.get(attachmentID)
+            fileLoadingAttemptsMap.set(attachmentID, (attempts!! + 1))
 
-        QBContent.downloadFile(attachment?.id, object : QBProgressCallback {
-            override fun onProgressUpdate(progress: Int) {
-                holder.videoProgress?.progress = progress
-                Log.d(TAG, "Loading progress updated: $progress")
-            }
-        }, null).performAsync(object : QBEntityCallback<InputStream> {
-            override fun onSuccess(inputStream: InputStream?, p1: Bundle?) {
-                Log.d(TAG, "Loading File as Attachment Successful")
-                if (inputStream != null) {
-                    LoaderAsyncTask(file, inputStream, holder, position).execute()
+            QBContent.downloadFile(attachmentID, object : QBProgressCallback {
+                override fun onProgressUpdate(progress: Int) {
+                    holder.videoProgress?.progress = progress
+                    Log.d(TAG, "Loading progress updated: $progress")
                 }
-            }
+            }, null).performAsync(object : QBEntityCallback<InputStream> {
+                override fun onSuccess(inputStream: InputStream?, p1: Bundle?) {
+                    Log.d(TAG, "Loading File as Attachment Successful")
+                    if (inputStream != null) {
+                        LoaderAsyncTask(file, inputStream, holder, position).execute()
+                    }
+                }
 
-            override fun onError(e: QBResponseException?) {
-                Log.d(TAG, e?.message)
-                holder.videoProgress?.visibility = View.GONE
-            }
-        })
+                override fun onError(e: QBResponseException?) {
+                    Log.d(TAG, e?.message)
+                    holder.videoProgress?.visibility = View.GONE
+                }
+            })
+        }
     }
 
     private fun fillVideoFileThumb(file: File, holder: NewMessageViewHolder, position: Int) {
         val bitmap = ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Video.Thumbnails.MINI_KIND)
 
-        if (bitmap == null && fileLoadingAttemptsMap.getValue(position) <= FILE_DOWNLOAD_ATTEMPS_COUNT) {
+        val attachment = getAttachment(position)
+        var attempts = fileLoadingAttemptsMap.get(attachment!!.id)
+        if (attempts == null) {
+            attempts = 0
+        }
+
+        if (bitmap == null && attempts <= FILE_DOWNLOAD_ATTEMPS_COUNT) {
             Log.d(TAG, "Thumbnail Bitmap is null from Downloaded File " + file.path)
             file.delete()
             Log.d(TAG, "Delete file and Reload")
-            loadFileFromQB(holder, getAttachment(position), file, position)
+            loadFileFromQB(holder, attachment, file, position)
         } else {
             holder.ivVideoAttachPreview?.setImageBitmap(bitmap)
             holder.videoProgress?.visibility = View.GONE
@@ -614,13 +624,20 @@ class ChatAdapter(protected var context: Context,
 
             val now = Calendar.getInstance()
             val dateFormat = SimpleDateFormat("d MMM", Locale.ENGLISH)
+            val lastYearFormat = SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH)
 
-            if (now.get(Calendar.DATE) == msgTime.get(Calendar.DATE)) {
+            val sameDay = now.get(Calendar.DATE) == msgTime.get(Calendar.DATE)
+            val lastDay = now.get(Calendar.DAY_OF_YEAR) - msgTime.get(Calendar.DAY_OF_YEAR) == 1
+            val sameYear = now.get(Calendar.YEAR) == msgTime.get(Calendar.YEAR)
+
+            if (sameDay && sameYear) {
                 title = context.getString(R.string.today)
-            } else if (now.get(Calendar.DAY_OF_YEAR) - msgTime.get(Calendar.DAY_OF_YEAR) == 1) {
+            } else if (lastDay && sameYear) {
                 title = context.getString(R.string.yesterday)
-            } else {
+            } else if (sameYear) {
                 title = dateFormat.format(Date(timeInMillis))
+            } else {
+                title = lastYearFormat.format(Date(timeInMillis))
             }
 
             dateTextView.text = title
@@ -675,7 +692,6 @@ class ChatAdapter(protected var context: Context,
                 itemViewType = TYPE_TEXT_RIGHT
             }
         }
-
 
         return itemViewType
     }

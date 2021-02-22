@@ -16,15 +16,15 @@ private const val POSITION_GALLERY = 0
 private const val POSITION_CAMERA = 1
 private const val POSITION_FILE = 2
 
-class ImageSourcePickDialogFragment : DialogFragment() {
+class MediaSourcePickDialogFragment : DialogFragment() {
 
     private var onImageSourcePickedListener: OnImageSourcePickedListener? = null
 
     companion object {
         fun show(fm: FragmentManager, onImageSourcePickedListener: OnImageSourcePickedListener) {
-            val fragment = ImageSourcePickDialogFragment()
+            val fragment = MediaSourcePickDialogFragment()
             fragment.setOnImageSourcePickedListener(onImageSourcePickedListener)
-            fragment.show(fm, ImageSourcePickDialogFragment::class.java.simpleName)
+            fragment.show(fm, MediaSourcePickDialogFragment::class.java.simpleName)
         }
     }
 
@@ -51,12 +51,12 @@ class ImageSourcePickDialogFragment : DialogFragment() {
         FILE_STORAGE
     }
 
-    class LoggableActivityImageSourcePickedListener(private val fragment: Fragment) : OnImageSourcePickedListener {
+    class ImageSourcePickedListener(private val fragment: Fragment) : OnImageSourcePickedListener {
         override fun onImageSourcePicked(source: ImageSource) {
             when (source) {
-                ImageSourcePickDialogFragment.ImageSource.GALLERY -> startMediaPicker(fragment)
-                ImageSourcePickDialogFragment.ImageSource.CAMERA -> startCameraForResult(fragment)
-                ImageSourcePickDialogFragment.ImageSource.FILE_STORAGE -> startFilePicker(fragment)
+                MediaSourcePickDialogFragment.ImageSource.GALLERY -> startMediaPicker(fragment)
+                MediaSourcePickDialogFragment.ImageSource.CAMERA -> startCameraForResult(fragment)
+                MediaSourcePickDialogFragment.ImageSource.FILE_STORAGE -> startFilePicker(fragment)
             }
         }
     }

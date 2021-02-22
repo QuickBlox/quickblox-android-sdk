@@ -165,7 +165,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:padding="2dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/qb_logo" />
+            android:src="@drawable/qb_logo_new" />
     </LinearLayout>
 </ScrollView>

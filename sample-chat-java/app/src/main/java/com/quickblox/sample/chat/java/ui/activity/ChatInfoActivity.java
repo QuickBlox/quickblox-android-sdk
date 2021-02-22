@@ -139,7 +139,7 @@ public class ChatInfoActivity extends BaseActivity {
     }
 
     private void updateDialog() {
-        showProgressDialog(R.string.dlg_loading);
+        showProgressDialog(R.string.dlg_updating);
         Log.d(TAG, "Starting Dialog Update");
         ChatHelper.getInstance().getDialogById(qbDialog.getDialogId(), new QBEntityCallback<QBChatDialog>() {
             @Override

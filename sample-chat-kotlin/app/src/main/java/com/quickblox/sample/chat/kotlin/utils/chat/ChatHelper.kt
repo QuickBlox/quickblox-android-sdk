@@ -1,12 +1,15 @@
 package com.quickblox.sample.chat.kotlin.utils.chat
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBRestChatService
-import com.quickblox.chat.listeners.QBChatDialogParticipantListener
-import com.quickblox.chat.model.*
+import com.quickblox.chat.model.QBAttachment
+import com.quickblox.chat.model.QBChatDialog
+import com.quickblox.chat.model.QBChatMessage
+import com.quickblox.chat.model.QBDialogType
 import com.quickblox.chat.request.QBDialogRequestBuilder
 import com.quickblox.chat.request.QBMessageGetBuilder
 import com.quickblox.content.QBContent
@@ -159,12 +162,28 @@ object ChatHelper {
         })
     }
 
-    fun deleteDialogs(dialogs: Collection<QBChatDialog>, callback: QBEntityCallback<ArrayList<String>>) {
-        val dialogsIds = StringifyArrayList<String>()
-        for (dialog in dialogs) {
-            dialogsIds.add(dialog.dialogId)
+    fun deletePrivateDialogs(privateDialogsToDelete: List<QBChatDialog>, callback: QBEntityCallback<ArrayList<String>>) {
+        if (privateDialogsToDelete.isNotEmpty()) {
+            val privateDialogsIds = StringifyArrayList<String>()
+            for (privateDialog in privateDialogsToDelete) {
+                privateDialogsIds.add(privateDialog.dialogId)
+            }
+            QBRestChatService.deleteDialogs(privateDialogsIds, false, null).performAsync(object : QBEntityCallback<ArrayList<String>> {
+                override fun onSuccess(deletedDialogs: java.util.ArrayList<String>, bundle: Bundle?) {
+                    callback.onSuccess(deletedDialogs, bundle)
+                }
+
+                override fun onError(e: QBResponseException) {
+                    callback.onError(e)
+                }
+            })
         }
-        QBRestChatService.deleteDialogs(dialogsIds, false, null).performAsync(callback)
+    }
+
+    fun leaveGroupDialogs(groupDialogsToDelete: List<QBChatDialog>, callback: QBEntityCallback<List<QBChatDialog>>) {
+        if (groupDialogsToDelete.isNotEmpty()) {
+            DeleteGroupDialogsTask(groupDialogsToDelete, callback).execute()
+        }
     }
 
     fun deleteDialog(qbDialog: QBChatDialog, callback: QBEntityCallback<Void>) {
@@ -260,21 +279,6 @@ object ChatHelper {
 
     fun getUsersFromDialog(dialog: QBChatDialog, callback: QBEntityCallback<ArrayList<QBUser>>) {
         val userIds = dialog.occupants
-        val users = ArrayList<QBUser>(userIds.size)
-        for (id in userIds) {
-            val user = QbUsersHolder.getUserById(id)
-            user?.let {
-                users.add(it)
-            }
-        }
-
-        // If we already have all userList in memory
-        // there is no need to make REST requests to QB
-        if (userIds.size == users.size) {
-            callback.onSuccess(users, null)
-            return
-        }
-
         val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
         usersLoadedFromDialog.clear()
         loadUsersByIDsFromDialog(userIds, requestBuilder, callback)
@@ -441,7 +445,7 @@ object ChatHelper {
                         val currentPage = it.get(CURRENT_PAGE_BUNDLE_PARAM) as Int
                         if (totalPages > currentPage) {
                             requestBuilder.page = currentPage + 1
-                            loadUsersByIDsFromMessages(userIDs, requestBuilder, callback)
+                            loadUsersByIDsFromMessage(userIDs, requestBuilder, callback)
                         } else {
                             callback.onSuccess(usersLoadedFromMessage, bundle)
                         }
@@ -453,5 +457,49 @@ object ChatHelper {
                 callback.onError(e)
             }
         })
+    }
+
+    private class DeleteGroupDialogsTask internal constructor(
+            private val groupDialogsToDelete: List<QBChatDialog>,
+            private val callback: QBEntityCallback<List<QBChatDialog>>?) : AsyncTask<Void, Void, Void>() {
+        private var errorOccurs = false
+        private val successfulDeletedDialogs = ArrayList<QBChatDialog>()
+
+        override fun doInBackground(vararg voids: Void): Void? {
+            for (groupDialog in groupDialogsToDelete) {
+                try {
+                    errorOccurs = false
+                    leaveChatDialog(groupDialog)
+
+                    val currentUser = getCurrentUser()
+                    val qbRequestBuilder = QBDialogRequestBuilder()
+                    qbRequestBuilder.removeUsers(currentUser?.id!!)
+
+                    QBRestChatService.updateGroupChatDialog(groupDialog, qbRequestBuilder).perform()
+
+                } catch (e: XMPPException) {
+                    errorOccurs = true
+                    callback?.onError(QBResponseException(e.message))
+                } catch (e: SmackException.NotConnectedException) {
+                    errorOccurs = true
+                    callback?.onError(QBResponseException(e.message))
+                } catch (e: QBResponseException) {
+                    errorOccurs = true
+                    callback?.onError(QBResponseException(e.message))
+
+                } finally {
+                    if (!errorOccurs) {
+                        successfulDeletedDialogs.add(groupDialog)
+                    }
+                }
+            }
+            return null
+        }
+
+        override fun onPostExecute(aVoid: Void?) {
+            if (callback != null && !errorOccurs) {
+                callback.onSuccess(successfulDeletedDialogs, null)
+            }
+        }
     }
 }

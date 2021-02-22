@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -19,7 +21,8 @@
         android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:requestLegacyExternalStorage="true">
 
         <activity
             android:name=".ui.activity.SplashActivity"

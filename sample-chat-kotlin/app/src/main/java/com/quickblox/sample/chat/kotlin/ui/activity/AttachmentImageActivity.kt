@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +26,7 @@ private const val EXTRA_URL = "url"
 
 class AttachmentImageActivity : BaseActivity() {
 
+    private val TAG = AttachmentImageActivity::class.java.simpleName
     private lateinit var imageView: ImageView
     private lateinit var progressBar: ProgressBar
     private var imageLoaded = false
@@ -76,9 +78,14 @@ class AttachmentImageActivity : BaseActivity() {
 
     private fun saveFileToGallery() {
         if (imageLoaded) {
-            val bitmapToSave = imageView.drawable.toBitmap()
-            MediaStore.Images.Media.insertImage(contentResolver, bitmapToSave, "attachment", "")
-            shortToast("Image saved to the Gallery")
+            try {
+                val bitmapToSave = imageView.drawable.toBitmap()
+                MediaStore.Images.Media.insertImage(contentResolver, bitmapToSave, "attachment", "")
+                shortToast("Image saved to the Gallery")
+            } catch (e: Exception) {
+                e.message?.let { Log.d(TAG, it) }
+                shortToast("Unable to save image")
+            }
         } else {
             shortToast("Image not yet downloaded")
         }
@@ -101,8 +108,14 @@ class AttachmentImageActivity : BaseActivity() {
 
         override fun onException(e: Exception?, model: String, target: Target<GlideDrawable>,
                                  isFirstResource: Boolean): Boolean {
-            e?.printStackTrace()
-            showErrorSnackbar(R.string.error_load_image, null, null)
+            var ex = e
+            ex?.printStackTrace()
+            if (ex?.message != null) {
+                Log.d("Glide Drawable", ex.message)
+            } else {
+                ex = java.lang.Exception("Unable to load image")
+            }
+            showErrorSnackbar(R.string.error_load_image, ex, null)
             progressBar.visibility = View.GONE
             return false
         }

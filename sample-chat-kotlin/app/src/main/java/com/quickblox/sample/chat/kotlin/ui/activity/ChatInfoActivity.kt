@@ -19,7 +19,6 @@ import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.chat.kotlin.R
 import com.quickblox.sample.chat.kotlin.managers.DialogsManager
 import com.quickblox.sample.chat.kotlin.ui.adapter.UsersAdapter
-import com.quickblox.sample.chat.kotlin.ui.dialog.ProgressDialogFragment
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
 import com.quickblox.sample.chat.kotlin.utils.qb.QbUsersHolder
 import com.quickblox.sample.chat.kotlin.utils.shortToast
@@ -105,6 +104,7 @@ class ChatInfoActivity : BaseActivity() {
         val userIds = qbDialog.occupants
         if (QbUsersHolder.hasAllUsers(userIds)) {
             val users = QbUsersHolder.getUsersByIds(userIds)
+            userAdapter.clearList()
             userAdapter.addUsers(users)
         } else {
             ChatHelper.getUsersFromDialog(qbDialog, object : QBEntityCallback<ArrayList<QBUser>> {
@@ -123,19 +123,19 @@ class ChatInfoActivity : BaseActivity() {
     }
 
     private fun updateDialog() {
-        ProgressDialogFragment.show(supportFragmentManager)
+        showProgressDialog(R.string.dlg_updating)
         Log.d(TAG, "Starting Dialog Update")
         ChatHelper.getDialogById(qbDialog.dialogId, object : QBEntityCallback<QBChatDialog> {
             override fun onSuccess(updatedChatDialog: QBChatDialog, bundle: Bundle) {
                 Log.d(TAG, "Update Dialog Successful: " + updatedChatDialog.dialogId)
                 qbDialog = updatedChatDialog
-                ProgressDialogFragment.hide(supportFragmentManager)
+                hideProgressDialog()
                 SelectUsersActivity.startForResult(this@ChatInfoActivity, REQUEST_CODE_SELECT_PEOPLE, updatedChatDialog)
             }
 
             override fun onError(e: QBResponseException) {
                 Log.d(TAG, "Dialog Loading Error: " + e.message)
-                ProgressDialogFragment.hide(supportFragmentManager)
+                hideProgressDialog()
                 showErrorSnackbar(R.string.select_users_get_dialog_error, e, null)
             }
         })
@@ -146,7 +146,7 @@ class ChatInfoActivity : BaseActivity() {
         Log.d(TAG, "onActivityResult with resultCode: $resultCode requestCode: $requestCode")
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_PEOPLE && data != null) {
-                showProgressDialog(R.string.chat_info_updating)
+                showProgressDialog(R.string.dlg_updating)
                 val selectedUsers = data.getSerializableExtra(EXTRA_QB_USERS) as ArrayList<QBUser>
                 val existingOccupants = qbDialog.occupants
                 val newUserIds = ArrayList<Int>()
@@ -185,6 +185,7 @@ class ChatInfoActivity : BaseActivity() {
             }
 
             override fun onError(e: QBResponseException) {
+                hideProgressDialog()
                 showErrorSnackbar(R.string.chat_info_add_people_error, e, View.OnClickListener { updateDialog(selectedUsers) })
             }
         })

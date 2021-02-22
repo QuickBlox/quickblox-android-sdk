@@ -25,6 +25,6 @@ class PushListenerService : QBFcmPushListenerService() {
     private fun showNotification(message: String) {
         NotificationUtils.showNotification(this, SplashActivity::class.java,
                 getString(R.string.notification_title), message,
-                R.mipmap.ic_notification, NOTIFICATION_ID)
+                R.drawable.ic_logo_vector, NOTIFICATION_ID)
     }
 }

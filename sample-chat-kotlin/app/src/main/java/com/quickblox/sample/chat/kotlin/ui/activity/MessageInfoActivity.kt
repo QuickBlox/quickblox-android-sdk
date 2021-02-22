@@ -58,14 +58,21 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        QBChatService.getInstance().messageStatusesManager.addMessageStatusListener(this)
+    override fun onResumeFinished() {
+        super.onResumeFinished()
+        try {
+            QBChatService.getInstance().messageStatusesManager.addMessageStatusListener(this)
+        } catch (e: Exception) {
+            e.message?.let { Log.d(TAG, it) }
+            finish()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        QBChatService.getInstance().messageStatusesManager.removeMessageStatusListener(this)
+        if (QBChatService.getInstance().messageStatusesManager != null) {
+            QBChatService.getInstance().messageStatusesManager.removeMessageStatusListener(this)
+        }
     }
 
     private fun fillByDeliveredUsers() {
@@ -136,10 +143,17 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
 
     private fun fillAdapter(qbUsers: ArrayList<QBUser>) {
         usersListView.adapter = UsersAdapter(this, qbUsers as MutableList<QBUser>)
+        if (messageInfoType == MESSAGE_INFO_DELIVERED_TO && supportActionBar != null) {
+            supportActionBar!!.subtitle = makeSubtitle(deliveredUsers.size)
+        }
+        if (messageInfoType == MESSAGE_INFO_READ_BY && supportActionBar != null) {
+            supportActionBar!!.subtitle = makeSubtitle(readUsers.size)
+        }
     }
 
     override fun processMessageDelivered(messageID: String?, dialogID: String?, userID: Int?) {
-        if (dialogID == chatMessage.dialogId && messageID == chatMessage.id && userID != null) {
+        if (messageInfoType == MESSAGE_INFO_DELIVERED_TO && dialogID == chatMessage.dialogId
+                && messageID == chatMessage.id && userID != null) {
             val user = QbUsersHolder.getUserById(userID)
             if (user != null) {
                 deliveredUsers.add(user)
@@ -163,7 +177,8 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
     }
 
     override fun processMessageRead(messageID: String?, dialogID: String?, userID: Int?) {
-        if (dialogID == chatMessage.dialogId && messageID == chatMessage.id && userID != null) {
+        if (messageInfoType == MESSAGE_INFO_READ_BY && dialogID == chatMessage.dialogId
+                && messageID == chatMessage.id && userID != null) {
             val user = QbUsersHolder.getUserById(userID)
             if (user != null) {
                 readUsers.add(user)
