@@ -39,7 +39,6 @@ import java.util.Set;
 import androidx.annotation.Nullable;
 
 public class ForwardToActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks {
-
     private static final String TAG = ForwardToActivity.class.getSimpleName();
 
     private static final String EXTRA_FORWARD_MESSAGE = "extra_forward_message";
@@ -68,21 +67,21 @@ public class ForwardToActivity extends BaseActivity implements DialogsManager.Ma
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs);
 
+        if (ChatHelper.getCurrentUser() != null) {
+            currentUser = ChatHelper.getCurrentUser();
+        } else {
+            Log.e(TAG, "Finishing " + TAG + ". Not Logged in Chat.");
+            finish();
+        }
+
         if (!ChatHelper.getInstance().isLogged()) {
-            Log.w(TAG, "Restarting App...");
-            restartApp(this);
+            reloginToChat();
         }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.forward_to);
             getSupportActionBar().setSubtitle(getString(R.string.dialogs_actionmode_subtitle, "0"));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        if (ChatHelper.getCurrentUser() != null) {
-            currentUser = ChatHelper.getCurrentUser();
-        } else {
-            finish();
         }
 
         originMessage = (QBChatMessage) getIntent().getSerializableExtra(EXTRA_FORWARD_MESSAGE);
@@ -115,9 +114,13 @@ public class ForwardToActivity extends BaseActivity implements DialogsManager.Ma
                 @Override
                 public void onError(QBResponseException e) {
                     Log.d(TAG, "Relogin Failed " + e.getMessage());
-                    LoginActivity.start(ForwardToActivity.this);
                     hideProgressDialog();
-                    finish();
+                    showErrorSnackbar(R.string.reconnect_failed, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            reloginToChat();
+                        }
+                    });
                 }
             });
         }
@@ -194,7 +197,7 @@ public class ForwardToActivity extends BaseActivity implements DialogsManager.Ma
                 messageToForward.setMarkable(true);
 
                 messageToForward.setAttachments(originMessage.getAttachments());
-                if (originMessage.getBody().equals("null")) {
+                if (originMessage.getBody() == null) {
                     messageToForward.setBody(null);
                 } else {
                     messageToForward.setBody(originMessage.getBody());
@@ -212,7 +215,7 @@ public class ForwardToActivity extends BaseActivity implements DialogsManager.Ma
                 messageToForward.setProperty(ChatActivity.PROPERTY_FORWARD_USER_NAME, senderName);
                 dialog.sendMessage(messageToForward);
             } catch (SmackException.NotConnectedException e) {
-                Log.d(TAG, "Send Forwarded Message Exception: " + e.getMessage());
+                Log.d(TAG, "Sending Forwarded Message Exception: " + e.getMessage());
                 ToastUtils.shortToast(R.string.error_forwarding_not_connected);
             }
         }

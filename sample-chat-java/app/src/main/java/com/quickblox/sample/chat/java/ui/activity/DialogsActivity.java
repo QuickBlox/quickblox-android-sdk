@@ -99,13 +99,13 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         setContentView(R.layout.activity_dialogs);
 
         if (!ChatHelper.getInstance().isLogged()) {
-            Log.w(TAG, "Restarting App...");
-            restartApp(this);
+            reloginToChat();
         }
 
         if (ChatHelper.getCurrentUser() != null) {
             currentUser = ChatHelper.getCurrentUser();
         } else {
+            Log.e(TAG, "Finishing " + TAG + ". Current user is null");
             finish();
         }
         if (getSupportActionBar() != null) {
@@ -146,7 +146,12 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 public void onError(QBResponseException e) {
                     Log.d(TAG, "Relogin Failed " + e.getMessage());
                     hideProgressDialog();
-                    finish();
+                    showErrorSnackbar(R.string.reconnect_failed, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            reloginToChat();
+                        }
+                    });
                 }
             });
         }
@@ -159,7 +164,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             if (apiAvailability.isUserResolvableError(resultCode)) {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_REQUEST_CODE).show();
             } else {
-                Log.i(TAG, "This device is not supported.");
+                Log.e(TAG, "This device is not supported.");
+                ToastUtils.longToast("This device is not supported");
                 finish();
             }
         }
@@ -195,6 +201,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             reloginToChat();
             return;
         }
+
         if (incomingMessagesManager == null) {
             reloginToChat();
             return;
@@ -244,7 +251,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 isProcessingResultInProgress = true;
                 item.setEnabled(false);
                 invalidateOptionsMenu();
-                userLogout();
+                unsubscribeFromPushes();
                 return true;
             case R.id.menu_appinfo:
                 AppInfoActivity.start(this);
@@ -329,44 +336,45 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private void userLogout() {
         Log.d(TAG, "SignOut");
-        showProgressDialog(R.string.dlg_logout);
-        unsubscribeFromPushes();
+        QBUsers.signOut().performAsync(new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                ChatHelper.getInstance().destroy();
+                SharedPrefsHelper.getInstance().removeQbUser();
+                QbDialogHolder.getInstance().clear();
+                LoginActivity.start(DialogsActivity.this);
+                hideProgressDialog();
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Log.d(TAG, "Unable to SignOut: " + e.getMessage());
+                hideProgressDialog();
+                showErrorSnackbar(R.string.error_logout, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userLogout();
+                    }
+                });
+            }
+        });
     }
 
     private void unsubscribeFromPushes() {
+        showProgressDialog(R.string.dlg_logout);
         if (QBPushManager.getInstance().isSubscribedToPushes()) {
             QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
                 @Override
                 public void onSubscriptionDeleted(boolean success) {
-                    Log.d(TAG, "Subscription Deleted -> " + (success? "TRUE" : "FALSE"));
+                    Log.d(TAG, "Subscription Deleted -> " + (success ? "TRUE" : "FALSE"));
                     QBPushManager.getInstance().removeListener(this);
-
-                    QBUsers.signOut().performAsync(new QBEntityCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid, Bundle bundle) {
-                            ChatHelper.getInstance().destroy();
-                            SharedPrefsHelper.getInstance().removeQbUser();
-                            QbDialogHolder.getInstance().clear();
-                            LoginActivity.start(DialogsActivity.this);
-                            hideProgressDialog();
-                            finish();
-                        }
-
-                        @Override
-                        public void onError(QBResponseException e) {
-                            Log.d(TAG, "Unable to SignOut: " + e.getMessage());
-                            hideProgressDialog();
-                            showErrorSnackbar(R.string.error_logout, e, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    userLogout();
-                                }
-                            });
-                        }
-                    });
+                    userLogout();
                 }
             });
             SubscribeService.unSubscribeFromPushes(DialogsActivity.this);
+        } else {
+            userLogout();
         }
     }
 
@@ -519,6 +527,17 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 super.reconnectionSuccessful();
                 loadDialogsFromQb(false, true);
             }
+
+            @Override
+            public void reconnectionFailed(Exception error) {
+                super.reconnectionFailed(error);
+                showErrorSnackbar(R.string.reconnect_failed, error, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        reloginToChat();
+                    }
+                });
+            }
         };
     }
 
@@ -658,7 +677,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 dialogsManager.sendMessageLeftUser(dialog);
                 dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, dialog);
                 try {
-                    Thread.sleep(200);
+                    // Its a hack to give the Chat Server more time to process the message and deliver them
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

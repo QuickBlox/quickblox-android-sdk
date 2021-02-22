@@ -21,6 +21,7 @@ import com.quickblox.sample.chat.kotlin.utils.qb.QbUsersHolder
 import com.quickblox.sample.chat.kotlin.utils.qb.callback.QbEntityCallbackImpl
 import com.quickblox.sample.chat.kotlin.utils.qb.getOccupantsIdsStringFromList
 import com.quickblox.sample.chat.kotlin.utils.qb.getOccupantsNamesStringFromList
+import com.quickblox.sample.chat.kotlin.utils.shortToast
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import org.jivesoftware.smack.SmackException
@@ -41,7 +42,7 @@ const val PROPERTY_NEW_OCCUPANTS_IDS = "new_occupants_ids"
 class DialogsManager {
     private val TAG = DialogsManager::class.java.simpleName
 
-    private var addedUsersLoaded = ArrayList<QBUser>()
+    //private var addedUsersLoaded = ArrayList<QBUser>()
     private val managingDialogsCallbackListener = CopyOnWriteArraySet<ManagingDialogsCallbacks>()
 
     private fun isMessageCreatedDialog(message: QBChatMessage): Boolean {
@@ -64,7 +65,7 @@ class DialogsManager {
         qbChatMessage.setProperty(PROPERTY_DIALOG_NAME, dialog.name.toString())
         qbChatMessage.setProperty(PROPERTY_NOTIFICATION_TYPE, CREATING_DIALOG)
         qbChatMessage.dateSent = System.currentTimeMillis() / 1000
-        qbChatMessage.body = App.getInstance().getString(R.string.new_chat_created, getCurrentUserName())
+        qbChatMessage.body = App.getInstance().getString(R.string.new_chat_created, getCurrentUserName(), dialog.name)
         qbChatMessage.setSaveToHistory(true)
         qbChatMessage.isMarkable = true
         return qbChatMessage
@@ -107,40 +108,64 @@ class DialogsManager {
 
     fun sendMessageCreatedDialog(dialog: QBChatDialog) {
         val messageCreatingDialog = buildMessageCreatedGroupDialog(dialog)
-        try {
-            Log.d(TAG, "Sending Notification Message about Creating Group Dialog")
-            dialog.sendMessage(messageCreatingDialog)
-        } catch (ignored: SmackException.NotConnectedException) {
 
-        }
+        Log.d(TAG, "Sending Notification Message about Creating Group Dialog")
+        sendMessageHandleJoining(dialog, messageCreatingDialog)
     }
 
     fun sendMessageAddedUsers(dialog: QBChatDialog, newUsersIds: List<Int>) {
         val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
-        loadNewUsersByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>>{
+        loadNewUsersByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>?, b: Bundle?) {
                 val usersIds = getOccupantsIdsStringFromList(newUsersIds)
                 if (newUsersIds.isNotEmpty() && qbUsers != null) {
                     val usersNames = getOccupantsNamesStringFromList(qbUsers)
                     val messageUsersAdded = buildMessageAddedUsers(dialog, usersIds, usersNames)
 
-                    try {
-                        Log.d(TAG, "Sending Notification Message to Opponents about Adding Occupants")
-                        dialog.sendMessage(messageUsersAdded)
-                    } catch (e: SmackException.NotConnectedException) {
-                        Log.d(TAG, "Sending Notification Message Error: " + e.message)
-                    }
+                    sendMessageHandleJoining(dialog, messageUsersAdded)
                 }
             }
 
-            override fun onError(ignored: QBResponseException?) {
-
+            override fun onError(e: QBResponseException?) {
+                Log.d(TAG, "Failed to load users to send message. " + e?.message)
+                shortToast("Failed to load users to send message")
             }
         })
     }
 
+    fun sendMessageLeftUser(dialog: QBChatDialog) {
+        val messageLeftUser = buildMessageLeftUser(dialog)
+
+        Log.d(TAG, "Sending Notification Message")
+        sendMessageHandleJoining(dialog, messageLeftUser)
+    }
+
+    private fun sendMessageHandleJoining(dialog: QBChatDialog, qbChatMessage: QBChatMessage) {
+        if (dialog.isJoined) {
+            try {
+                Log.d(TAG, "Sending Notification Message to Opponents about Adding Occupants")
+                dialog.sendMessage(qbChatMessage)
+            } catch (e: SmackException.NotConnectedException) {
+                Log.d(TAG, "Sending Notification Message Error: " + e.message)
+            } catch (e: IllegalStateException) {
+                Log.d(TAG, "Sending Notification Message Error: " + e.message)
+            }
+        } else {
+            ChatHelper.join(dialog, object : QBEntityCallback<Void> {
+                override fun onSuccess(v: Void?, b: Bundle?) {
+                    sendMessageHandleJoining(dialog, qbChatMessage)
+                }
+
+                override fun onError(e: QBResponseException?) {
+                    shortToast(e?.message)
+                    Log.d(TAG, "Joining error: " + e?.message)
+                }
+            })
+        }
+    }
+
     private fun loadNewUsersByIDs(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, alreadyLoadedUsers: ArrayList<QBUser>, callback: QBEntityCallback<ArrayList<QBUser>>) {
-        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>>{
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
                 if (qbUsers != null) {
                     QbUsersHolder.putUsers(qbUsers)
@@ -164,16 +189,6 @@ class DialogsManager {
         })
     }
 
-    fun sendMessageLeftUser(dialog: QBChatDialog) {
-        val messageLeftUser = buildMessageLeftUser(dialog)
-        try {
-            Log.d(TAG, "Sending Notification Message to Opponents about User Left")
-            dialog.sendMessage(messageLeftUser)
-        } catch (ignored: SmackException.NotConnectedException) {
-
-        }
-    }
-
     ////// Sending System Messages
 
     fun sendSystemMessageAboutCreatingDialog(systemMessagesManager: QBSystemMessagesManager, dialog: QBChatDialog) {
@@ -183,7 +198,7 @@ class DialogsManager {
 
     fun sendSystemMessageAddedUser(systemMessagesManager: QBSystemMessagesManager, dialog: QBChatDialog, newUsersIds: List<Int>) {
         val requestBuilder = QBPagedRequestBuilder(USERS_PER_PAGE, 1)
-        loadNewUsersForSystemMsgsByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>>{
+        loadNewUsersForSystemMsgsByIDs(newUsersIds, requestBuilder, ArrayList(), object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
                 val usersIds = getOccupantsIdsStringFromList(newUsersIds)
                 if (newUsersIds.isNotEmpty() && qbUsers != null) {
@@ -197,14 +212,20 @@ class DialogsManager {
                 }
             }
 
-            override fun onError(ignored: QBResponseException?) {
-
+            override fun onError(e: QBResponseException?) {
+                Log.d(TAG, "Failed to load users to send system message. " + e?.message)
+                shortToast("Failed to load users to send system message")
             }
         })
     }
 
+    fun sendSystemMessageLeftUser(systemMessagesManager: QBSystemMessagesManager, dialog: QBChatDialog) {
+        val messageLeftUser = buildMessageLeftUser(dialog)
+        prepareSystemMessage(systemMessagesManager, messageLeftUser, dialog.occupants)
+    }
+
     private fun loadNewUsersForSystemMsgsByIDs(userIDs: Collection<Int>, requestBuilder: QBPagedRequestBuilder, alreadyLoadedUsers: ArrayList<QBUser>, callback: QBEntityCallback<ArrayList<QBUser>>) {
-        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>>{
+        QBUsers.getUsersByIDs(userIDs, requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(qbUsers: ArrayList<QBUser>?, bundle: Bundle?) {
                 if (qbUsers != null) {
                     QbUsersHolder.putUsers(qbUsers)
@@ -226,11 +247,6 @@ class DialogsManager {
                 callback.onError(e)
             }
         })
-    }
-
-    fun sendSystemMessageLeftUser(systemMessagesManager: QBSystemMessagesManager, dialog: QBChatDialog) {
-        val messageLeftUser = buildMessageLeftUser(dialog)
-        prepareSystemMessage(systemMessagesManager, messageLeftUser, dialog.occupants)
     }
 
     private fun prepareSystemMessage(systemMessagesManager: QBSystemMessagesManager, message: QBChatMessage, occupants: List<Int>) {
@@ -299,10 +315,11 @@ class DialogsManager {
         val chatDialog = buildChatDialogFromNotificationMessage(chatMessage)
         ChatHelper.getDialogById(chatDialog.dialogId, object : QBEntityCallback<QBChatDialog> {
             override fun onSuccess(qbChatDialog: QBChatDialog, bundle: Bundle) {
+                qbChatDialog.initForChat(QBChatService.getInstance())
+
                 val history = DiscussionHistory()
                 history.maxStanzas = 0
 
-                qbChatDialog.initForChat(QBChatService.getInstance())
                 qbChatDialog.join(history, object : QbEntityCallbackImpl<QBChatDialog?>() {
                     override fun onSuccess(result: QBChatDialog?, bundle: Bundle?) {
                         QbDialogHolder.addDialog(qbChatDialog)

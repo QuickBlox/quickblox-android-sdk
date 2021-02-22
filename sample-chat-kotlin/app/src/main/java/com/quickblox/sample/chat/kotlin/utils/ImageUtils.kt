@@ -131,7 +131,11 @@ private fun getFilePathFromUriForNewAPI(context: Context, uri: Uri): String? {
         val file = loadFileFromGoogleDocs(uri, context)
         return file?.path
     } else if ("content".equals(uri.scheme!!, ignoreCase = true)) {
-        return if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(context, uri, null, null)
+        if (isGooglePhotosUri(uri)) {
+            return uri.lastPathSegment
+        } else {
+            return getDataColumn(context, uri, null, null)
+        }
     } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
         return uri.path
     }
@@ -222,6 +226,8 @@ fun startMediaPicker(fragment: Fragment) {
     intent.type = IMAGE_MIME
     //
 
+    intent.action = Intent.ACTION_GET_CONTENT
+
     fragment.startActivityForResult(Intent.createChooser(intent, fragment.getString(R.string.dlg_choose_file_from)), GALLERY_REQUEST_CODE)
 }
 
@@ -237,28 +243,41 @@ fun startCameraForResult(fragment: Fragment) {
     //chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(videoIntent))
 
     chooser.resolveActivity(App.getInstance().packageManager)?.let {
-        val photoFile = getTemporaryCameraFile()
-        pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getValidUri(photoFile, fragment.context))
-        fragment.startActivityForResult(chooser, CAMERA_REQUEST_CODE)
+        val mediaFile = getTemporaryCameraFile(fragment.context)
+        mediaFile?.let {
+            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getValidUri(mediaFile, fragment.context))
+            fragment.startActivityForResult(chooser, CAMERA_REQUEST_CODE)
+        }
     }
 }
 
-fun getTemporaryCameraFile(): File {
-    val storageDir = getAppExternalDataDirectoryFile()
-    val file = File(storageDir, getTemporaryCameraFileName())
+fun getTemporaryCameraFile(context: Context?): File? {
+    val imageFileName = getTemporaryCameraFileName()
+    val storageDir = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    var createdSuccessful = true
+    var image: File? = null
+
     try {
-        file.createNewFile()
+        image = File.createTempFile(imageFileName, ".jpg", storageDir)
     } catch (e: IOException) {
+        Log.e("ImageUtils", "Cannot create file: " + e.message)
         e.printStackTrace()
+        createdSuccessful = false
     }
-    return file
+
+
+    return if (createdSuccessful) {
+        image!!
+    } else {
+        null
+    }
 }
 
-fun getLastUsedCameraFile(): File? {
-    val dataDir = getAppExternalDataDirectoryFile()
-    val files = dataDir.listFiles()
+fun getLastUsedCameraFile(context: Context?): File? {
+    val dataDir = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    val files = dataDir?.listFiles()
     val filteredFiles = ArrayList<File>()
-    for (file in files) {
+    for (file in files!!) {
         if (file.name.startsWith(CAMERA_FILE_NAME_PREFIX)) {
             filteredFiles.add(file)
         }

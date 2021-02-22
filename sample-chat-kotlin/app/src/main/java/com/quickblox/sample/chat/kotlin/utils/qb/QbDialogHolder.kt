@@ -40,6 +40,12 @@ object QbDialogHolder {
         }
     }
 
+    fun deleteDialogs(dialogs: Collection<QBChatDialog>) {
+        for (dialog in dialogs) {
+            deleteDialog(dialog)
+        }
+    }
+
     fun deleteDialog(chatDialog: QBChatDialog) {
         _dialogsMap.remove(chatDialog.dialogId)
     }

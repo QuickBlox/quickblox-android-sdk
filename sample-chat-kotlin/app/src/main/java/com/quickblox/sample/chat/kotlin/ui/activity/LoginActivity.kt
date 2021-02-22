@@ -23,6 +23,7 @@ import com.quickblox.sample.chat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.chat.kotlin.utils.chat.ChatHelper
 import com.quickblox.sample.chat.kotlin.utils.isFullNameValid
 import com.quickblox.sample.chat.kotlin.utils.isLoginValid
+import com.quickblox.sample.chat.kotlin.utils.qb.QbUsersHolder
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import java.util.*
@@ -114,13 +115,15 @@ class LoginActivity : BaseActivity() {
     private fun prepareListeners() {
         rootView.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
-                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibrator.vibrate(80)
+                chbSave.isChecked = !chbSave.isChecked
 
-                if (hidableHolder.visibility == View.GONE) {
-                    hidableHolder.visibility = View.VISIBLE
-                } else {
-                    hidableHolder.visibility = View.GONE
+                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                if (vibrator != null) {
+                    if (chbSave.isChecked) {
+                        vibrator.vibrate(80)
+                    } else {
+                        vibrator.vibrate(250)
+                    }
                 }
                 return true
             }
@@ -205,7 +208,7 @@ class LoginActivity : BaseActivity() {
         showProgressDialog(R.string.dlg_login)
         ChatHelper.login(user, object : QBEntityCallback<QBUser> {
             override fun onSuccess(userFromRest: QBUser, bundle: Bundle?) {
-                if (userFromRest.fullName == user.fullName) {
+                if (userFromRest.fullName != null && userFromRest.fullName == user.fullName) {
                     loginToChat(user)
                 } else {
                     //Need to set password NULL, because server will update user only with NULL password
@@ -247,6 +250,7 @@ class LoginActivity : BaseActivity() {
                 if (!chbSave.isChecked) {
                     clearDrafts()
                 }
+                QbUsersHolder.putUser(user)
                 DialogsActivity.start(this@LoginActivity)
                 finish()
                 hideProgressDialog()

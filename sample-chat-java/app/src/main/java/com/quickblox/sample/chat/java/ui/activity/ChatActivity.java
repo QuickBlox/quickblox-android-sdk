@@ -3,6 +3,7 @@ package com.quickblox.sample.chat.java.ui.activity;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,14 +72,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,7 +88,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
     public static final int REQUEST_CODE_SELECT_PEOPLE = 752;
     private static final int REQUEST_CODE_ATTACHMENT = 721;
-    private static final int PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1010;
 
     public static final String PROPERTY_FORWARD_USER_NAME = "origin_sender_name";
     public static final String EXTRA_DIALOG_ID = "dialogId";
@@ -96,7 +95,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     public static final String IS_IN_BACKGROUND = "is_in_background";
 
     public static final String ORDER_RULE = "order";
-    private static final String ORDER_VALUE = "desc string created_at";
+    public static final String ORDER_VALUE_UPDATED_AT = "desc string updated_at";
 
     public static final long TYPING_STATUS_DELAY = 2000;
     public static final long TYPING_STATUS_INACTIVITY_DELAY = 10000;
@@ -153,23 +152,25 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         SharedPrefsHelper.getInstance().delete(IS_IN_BACKGROUND);
         Log.v(TAG, "onCreate ChatActivity on Thread ID = " + Thread.currentThread().getId());
 
+        if (ChatHelper.getCurrentUser() != null) {
+            currentUser = ChatHelper.getCurrentUser();
+        } else {
+            Log.e(TAG, "Finishing " + TAG + ". Current user is null");
+            finish();
+        }
+
         if (!ChatHelper.getInstance().isLogged()) {
-            Log.w(TAG, "Restarting App...");
-            restartApp(this);
+            reloginToChat();
         }
 
         qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
         Log.v(TAG, "Deserialized dialog = " + qbChatDialog);
-        if (ChatHelper.getCurrentUser() != null) {
-            currentUser = ChatHelper.getCurrentUser();
-        } else {
-            finish();
-        }
 
         try {
             qbChatDialog.initForChat(QBChatService.getInstance());
         } catch (IllegalStateException e) {
-            Log.v(TAG, "The error registerCallback fro chat. Error message is : " + e.getMessage());
+            Log.v(TAG, "initForChat error. Error message is : " + e.getMessage());
+            Log.e(TAG, "Finishing " + TAG + ". Unable to init chat");
             finish();
         }
         qbChatDialog.addMessageListener(chatMessageListener);
@@ -209,21 +210,30 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             }
             returnToChat();
         } else {
-            showProgressDialog(R.string.dlg_loading);
-            ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
-                @Override
-                public void onSuccess(Void aVoid, Bundle bundle) {
-                    returnToChat();
-                    hideProgressDialog();
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                    hideProgressDialog();
-                    finish();
-                }
-            });
+            reloginToChat();
         }
+    }
+
+    private void reloginToChat() {
+        showProgressDialog(R.string.dlg_login);
+        ChatHelper.getInstance().loginToChat(SharedPrefsHelper.getInstance().getQbUser(), new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                returnToChat();
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.reconnect_failed, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        reloginToChat();
+                    }
+                });
+            }
+        });
     }
 
     private void returnToChat() {
@@ -232,7 +242,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             try {
                 qbChatDialog.join(new DiscussionHistory());
             } catch (Exception e) {
-                finish();
+                Log.e(TAG, "Join Dialog Exception: " + e.getMessage());
+                showErrorSnackbar(R.string.error_joining_chat, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        returnToChat();
+                    }
+                });
             }
         }
 
@@ -258,8 +274,16 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             qbMessageStatusesManager = QBChatService.getInstance().getMessageStatusesManager();
             qbMessageStatusesManager.addMessageStatusListener(this);
         } catch (Exception e) {
-            Log.d(TAG, "Can not get QBChatService. Finishing Activity");
-            finish();
+            if (e.getMessage() != null) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            showErrorSnackbar(R.string.error_getting_chat_service, e, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    returnListeners();
+                }
+            });
         }
 
         chatAdapter.setAttachImageClickListener(imageAttachClickListener);
@@ -329,11 +353,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                 return true;
 
             case R.id.menu_chat_action_leave:
-                leaveGroupChat();
+                openAlertDialogLeaveGroupChat();
                 return true;
 
             case R.id.menu_chat_action_delete:
-                deleteChat();
+                openAlertDialogDeletePrivateChat();
                 return true;
 
             case android.R.id.home:
@@ -343,6 +367,46 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openAlertDialogLeaveGroupChat() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChatActivity.this, R.style.AlertDialogStyle);
+        alertDialogBuilder.setTitle(getString(R.string.dlg_leave_group_dialog));
+        alertDialogBuilder.setMessage(getString(R.string.dlg_leave_group_question));
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(getString(R.string.dlg_leave), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                leaveGroupChat();
+            }
+        });
+        alertDialogBuilder.setNegativeButton(getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialogBuilder.create();
+        alertDialogBuilder.show();
+    }
+
+    private void openAlertDialogDeletePrivateChat() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChatActivity.this, R.style.AlertDialogStyle);
+        alertDialogBuilder.setTitle(getString(R.string.dlg_delete_private_dialog));
+        alertDialogBuilder.setMessage(getString(R.string.dlg_delete_private_question));
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton(getString(R.string.dlg_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteChat();
+            }
+        });
+        alertDialogBuilder.setNegativeButton(getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialogBuilder.create();
+        alertDialogBuilder.show();
     }
 
     private void showPopupMenu(boolean isIncomingMessageClicked, View view, final QBChatMessage chatMessage) {
@@ -457,6 +521,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         showProgressDialog(R.string.dlg_loading);
         dialogsManager.sendMessageLeftUser(qbChatDialog);
         dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, qbChatDialog);
+        try {
+            // Its a hack to give the Chat Server more time to process the message and deliver them
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Log.d(TAG, "Leaving Dialog");
         ChatHelper.getInstance().exitFromDialog(qbChatDialog, new QBEntityCallback<QBChatDialog>() {
             @Override
@@ -525,7 +596,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults.length > 0 && grantResults[0] != -1) {
+        if (requestCode == SystemPermissionHelper.PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults.length > 0 && grantResults[0] != -1) {
             openImagePicker();
         }
     }
@@ -534,7 +605,12 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     public void onImagePicked(int requestCode, File file) {
         switch (requestCode) {
             case REQUEST_CODE_ATTACHMENT:
-                attachmentPreviewAdapter.add(file);
+                SystemPermissionHelper permissionsHelper = new SystemPermissionHelper(this);
+                if (permissionsHelper.isSaveImagePermissionGranted()) {
+                    attachmentPreviewAdapter.add(file);
+                } else {
+                    permissionsHelper.requestPermissionsForSaveFileImage();
+                }
                 break;
         }
     }
@@ -604,6 +680,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
     private void initViews() {
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         typingStatus = findViewById(R.id.tv_typing_status);
@@ -751,6 +828,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
             default:
                 ToastUtils.shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbChatDialog.getType().name()));
+                Log.e(TAG, "Finishing " + TAG + ". Unsupported chat type");
                 finish();
                 break;
         }
@@ -888,6 +966,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         ChatHelper.getInstance().deleteDialog(qbChatDialog, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
+                Log.d(TAG, "Chat Deleted");
                 QbDialogHolder.getInstance().deleteDialog(qbChatDialog);
                 setResult(RESULT_OK);
                 finish();
@@ -927,6 +1006,17 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                         });
                         break;
                 }
+            }
+
+            @Override
+            public void reconnectionFailed(Exception error) {
+                super.reconnectionFailed(error);
+                showErrorSnackbar(R.string.reconnect_failed, error, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        reloginToChat();
+                    }
+                });
             }
         };
     }
@@ -1020,7 +1110,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
             if (vibrator != null) {
                 vibrator.vibrate(80);
             }
-            if (qbChatMessage != null ) {
+            if (qbChatMessage != null) {
                 if (itemViewType == ChatAdapter.TYPE_TEXT_RIGHT || itemViewType == ChatAdapter.TYPE_ATTACH_RIGHT) {
                     Log.d(TAG, "Outgoing message LongClicked");
                     showPopupMenu(false, view, qbChatMessage);
@@ -1072,7 +1162,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         }
 
         private void addUserToTypingList(QBUser user) {
-            String userName = TextUtils.isEmpty(user.getFullName())? user.getLogin() : user.getFullName();
+            String userName = TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
             if (!TextUtils.isEmpty(userName) && !currentTypingUserNames.contains(userName) && usersTimerMap.containsKey(user.getId())) {
                 currentTypingUserNames.add(userName);
             }

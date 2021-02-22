@@ -19,19 +19,19 @@ import com.quickblox.sample.chat.kotlin.utils.imagepick.OnImagePickedListener
 private const val ARG_REQUEST_CODE = "requestCode"
 private const val ARG_PARENT_FRAGMENT = "parentFragment"
 
-class ImagePickHelperFragment : Fragment() {
+class MediaPickHelperFragment : Fragment() {
 
     private var listener: OnImagePickedListener? = null
 
     companion object {
-        private val TAG = ImagePickHelperFragment::class.java.simpleName
+        private val TAG = MediaPickHelperFragment::class.java.simpleName
 
-        fun getInstance(activity: FragmentActivity, requestCode: Int): ImagePickHelperFragment {
+        fun getInstance(activity: FragmentActivity, requestCode: Int): MediaPickHelperFragment {
             val fragmentManager = activity.supportFragmentManager
-            var fragment: ImagePickHelperFragment? = fragmentManager.findFragmentByTag(TAG) as ImagePickHelperFragment?
+            var fragment: MediaPickHelperFragment? = fragmentManager.findFragmentByTag(TAG) as MediaPickHelperFragment?
 
             if (fragment == null) {
-                fragment = ImagePickHelperFragment()
+                fragment = MediaPickHelperFragment()
                 fragmentManager.beginTransaction().add(fragment, TAG).commitAllowingStateLoss()
                 val args = Bundle()
                 args.putInt(ARG_REQUEST_CODE, requestCode)
@@ -77,9 +77,9 @@ class ImagePickHelperFragment : Fragment() {
                 // When setting EXTRA_OUTPUT param in the camera intent there is a chance that data will return as null
                 // So we just pass temporary camera file as a data, because RESULT_OK means that photo was written in the file.
                 intent = Intent()
-                intent.data = Uri.fromFile(getLastUsedCameraFile())
+                intent.data = Uri.fromFile(getLastUsedCameraFile(context))
             } else {
-                getLastUsedCameraFile()?.delete()
+                getLastUsedCameraFile(context)?.delete()
             }
             GetFilepathFromUriTask(childFragmentManager, listener, arguments!!.getInt(ARG_REQUEST_CODE)).execute(intent)
         } else {

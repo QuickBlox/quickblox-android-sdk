@@ -10,21 +10,23 @@ import com.quickblox.sample.chat.java.utils.ImageUtils;
 import com.quickblox.sample.chat.java.utils.imagepick.GetFilepathFromUriTask;
 import com.quickblox.sample.chat.java.utils.imagepick.OnImagePickedListener;
 
+import java.io.File;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-public class ImagePickHelperFragment extends Fragment {
+public class MediaPickHelperFragment extends Fragment {
 
     private static final String ARG_REQUEST_CODE = "requestCode";
     private static final String ARG_PARENT_FRAGMENT = "parentFragment";
 
-    private static final String TAG = ImagePickHelperFragment.class.getSimpleName();
+    private static final String TAG = MediaPickHelperFragment.class.getSimpleName();
 
     private OnImagePickedListener listener;
 
-    public static ImagePickHelperFragment start(Fragment fragment, int requestCode) {
+    public static MediaPickHelperFragment start(Fragment fragment, int requestCode) {
         Bundle args = new Bundle();
         args.putInt(ARG_REQUEST_CODE, requestCode);
         args.putString(ARG_PARENT_FRAGMENT, fragment.getClass().getSimpleName());
@@ -32,17 +34,17 @@ public class ImagePickHelperFragment extends Fragment {
         return start(fragment.getActivity().getSupportFragmentManager(), args);
     }
 
-    public static ImagePickHelperFragment start(FragmentActivity activity, int requestCode) {
+    public static MediaPickHelperFragment start(FragmentActivity activity, int requestCode) {
         Bundle args = new Bundle();
         args.putInt(ARG_REQUEST_CODE, requestCode);
 
         return start(activity.getSupportFragmentManager(), args);
     }
 
-    private static ImagePickHelperFragment start(FragmentManager fm, Bundle args) {
-        ImagePickHelperFragment fragment = (ImagePickHelperFragment) fm.findFragmentByTag(TAG);
+    private static MediaPickHelperFragment start(FragmentManager fm, Bundle args) {
+        MediaPickHelperFragment fragment = (MediaPickHelperFragment) fm.findFragmentByTag(TAG);
         if (fragment == null) {
-            fragment = new ImagePickHelperFragment();
+            fragment = new MediaPickHelperFragment();
             fm.beginTransaction().add(fragment, TAG).commitAllowingStateLoss();
             fragment.setArguments(args);
         }
@@ -56,7 +58,7 @@ public class ImagePickHelperFragment extends Fragment {
         }
     }
 
-    public ImagePickHelperFragment() {
+    public MediaPickHelperFragment() {
     }
 
     @Override
@@ -94,7 +96,15 @@ public class ImagePickHelperFragment extends Fragment {
                 // When setting EXTRA_OUTPUT param in the camera intent there is a chance that data will return as null
                 // So we just pass temporary camera file as a data, because RESULT_OK means that photo was written in the file.
                 data = new Intent();
-                data.setData(Uri.fromFile(ImageUtils.getLastUsedCameraFile()));
+                data.setData(Uri.fromFile(ImageUtils.getLastUsedCameraFile(getContext())));
+            } else {
+                // delete unused file
+                if (getContext() != null) {
+                    File file = ImageUtils.getLastUsedCameraFile(getContext());
+                    if (file != null) {
+                        file.delete();
+                    }
+                }
             }
             new GetFilepathFromUriTask(getChildFragmentManager(), listener, getArguments().getInt(ARG_REQUEST_CODE)).execute(data);
         } else {
