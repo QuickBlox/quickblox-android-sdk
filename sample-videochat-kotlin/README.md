@@ -7,11 +7,14 @@ It is a great way for developers using QuickBlox platform to learn how to integr
 
 
 
-# Credentials
+# Get application credentials
 
-Welcome to QuickBlox [5 Minute Guide](https://quickblox.com/developers/5_Minute_Guide), where you can get your credentials in just 5 minutes!
+QuickBlox application includes everything that brings messaging right into your application - chat, video calling, users, push notifications, etc. To create a     QuickBlox application, follow the steps below:
 
-
+  1.Register a new account following [this link](https://admin.quickblox.com/signup). Type in your email and password to sign in. You can also sign in with your Google or Github accounts.  
+  2.Create the app clicking **New app** button.  
+  3.Configure the app. Type in the information about your organization into corresponding fields and click **Add** button.  
+  4.Go to **Dashboard => _YOUR_APP_ => Overview** section and copy your **Application ID**, **Authorization Key**, **Authorization Secret**, and **Account Key**.  
 
 # Push Notifications in VideoChat Sample
 
@@ -31,15 +34,28 @@ How Push-Notifications API works:
 (https://quickblox.com/developers/Messages#Push_Notifications_API)
 
 
+# To run the Video Sample
 
-# To launch the sample
+  1.Clone the repository using the link below:  
 
-1. Register a free QuickBlox account and add your App there.
-2. Update credentials in your application code. [Video Chat](https://quickblox.com/developers/5_Minute_Guide#Update_authentication_credentials_2)
+    git clone https://github.com/QuickBlox/quickblox-android-sdk.git
 
+  2.Go to menu **File => Open Project**. (Or "Open an existing Project" if Android Studio is just opened)  
+  3.Select a path to the sample.  
+  4.Select **Use default gradle wrapper** (recommended) and click **OK**.  
+  5.[Get application credentials](#get-application-credentials) and get **Application ID**, **Authorization Key**, **Authorization Secret**, and **Account Key**.  
+  6.Open **App.kt** (Kotlin sample) / **App.java** (Java sample)  
+     *//src/main/java/com/quickblox/sample/videochat/java/App.java*  
+     and paste the credentials into the values of constants.  
 
-This Sample demonstrates how to work with [Android VideoChat](https://quickblox.com/developers/Sample-webrtc-android) QuickBlox module.
-*this is the original sample description & setup guide.
+    private const val APPLICATION_ID = ""
+    private const val AUTH_KEY = ""
+    private const val AUTH_SECRET = ""
+    private const val ACCOUNT_KEY = "";  
+    
+  7.Run the code sample.
+
+This Sample demonstrates how to work with [Android VideoChat](https://quickblox.com/developers/Sample-webrtc-android) QuickBlox module.  
 
 The sample allows to:
 
