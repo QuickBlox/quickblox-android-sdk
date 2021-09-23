@@ -41,7 +41,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 403000
-        versionName '4.0.3-kotlin'
+        versionName '4.0.4-kotlin'
         multiDexEnabled true
     }
 
