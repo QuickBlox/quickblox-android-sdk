@@ -8,20 +8,13 @@ import com.quickblox.messages.model.QBNotificationType
 import com.quickblox.sample.videochat.kotlin.R
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
 import java.util.*
 
-fun sendPushMessage(recipients: ArrayList<Int>,
-                    senderName: String,
-                    newSessionID: String,
-                    opponentsIDs: String,
-                    opponentsNames: String,
-                    isVideoCall: Boolean) {
+fun sendPushMessage(recipients: ArrayList<Int>, senderName: String, newSessionID: String,
+                    opponentsIDs: String, opponentsNames: String, isVideoCall: Boolean) {
     val outMessage = String.format(R.string.text_push_notification_message.toString(), senderName)
 
-    val currentTime = Calendar.getInstance().time
-    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    val eventDate = simpleDateFormat.format(currentTime)
+    val timeStamp = System.currentTimeMillis()
 
     // Send Push: create QuickBlox Push Notification Event
     val qbEvent = QBEvent()
@@ -38,7 +31,7 @@ fun sendPushMessage(recipients: ArrayList<Int>,
         json.put("opponentsIDs", opponentsIDs)
         json.put("contactIdentifier", opponentsNames)
         json.put("conferenceType", if (isVideoCall) "1" else "2")
-        json.put("timestamp", eventDate)
+        json.put("timestamp", timeStamp.toString())
     } catch (e: JSONException) {
         e.printStackTrace()
     }

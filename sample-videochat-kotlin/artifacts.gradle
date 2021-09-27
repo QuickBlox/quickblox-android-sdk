@@ -18,7 +18,7 @@ android.applicationVariants.all {
                 } else {
                     apkEndName = "-unaligned.apk"
                 }
-                newApkName = "${appName}-${variant.buildType.name}-${getDate()}-code-${variant.versionCode}-version-${variant.versionName}" + apkEndName
+                newApkName = "${appName}-${variant.buildType.name}-${getDate()}-code-${variant.versionCode}-version-${variant.versionName}-kotlin" + apkEndName
                 output.outputFileName = newApkName
         }
 }
