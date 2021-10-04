@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "Put here your value",
+    "firebase_url": "https://qb-samples.firebaseio.com",
+    "project_id": "qb-samples",
+    "storage_bucket": "qb-samples.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Put here your value",
+        "android_client_info": {
+          "package_name": "com.quickblox.sample.conference.kotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Put here your value",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quickblox.sample.conference.kotlin",
+            "certificate_hash": "Put here your value"
+          }
+        },
+        {
+          "client_id": "Put here your value",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Put here your value"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

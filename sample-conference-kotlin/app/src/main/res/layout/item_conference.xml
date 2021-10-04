@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dp">
+
+    <com.quickblox.conference.view.QBConferenceSurfaceView
+        android:id="@+id/opponentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/opponentName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bgConversationTitle"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingTop="3dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="name" />
+
+    <ImageView
+        android:id="@+id/ivMutedIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_muted_indicator"
+        android:visibility="gone" />
+</FrameLayout>

@@ -1,0 +1,69 @@
+buildscript {
+    ext.kotlinVersion = "1.4.32"
+    ext.hiltVersion = '2.33-beta'
+    ext.buildGradle = '4.1.3'
+    ext.googleServices = '4.3.10'
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.google.gms:google-services:$googleServices"
+        classpath "com.android.tools.build:gradle:$buildGradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+ext {
+    dimensionDefault = 'default'
+
+    // QuickBlox SDK version
+    qbSdkVersion = '3.9.11'
+
+    // Firebase
+    servicesGcmVersion = '17.0.0'
+    firebaseCoreVersion = '19.0.1'
+
+    // Android X
+    fragmentAndroidXVersion = '1.3.2'
+    lifecycleViewmodelAndroidXVersion = '2.3.1'
+    coreKtxVersion = '1.6.0'
+    hiltAndroidXVersion = '1.0.0-alpha03'
+    appcompatAndroidXVersion = '1.3.1'
+    materialAndroidXVersion = '1.4.0'
+
+    // Glide
+    glideVersion = '4.12.0'
+
+    // Hilt
+    swipeRefreshVersion = '1.1.0'
+
+    // ConstraintLayout
+    constraintLayoutVersion = '2.1.0'
+
+    // LifecycleKtx
+    lifecycleVersionKtx = '2.3.1'
+
+    // Lifecycle
+    lifecycleVersion = '1.1.1'
+
+    // Permissions
+    easyPermissionsVersion = '1.0.0'
+    activityKtxVersion = '1.3.0-beta01'
+    fragmentKtxVersion = '1.4.0-alpha02'
+}

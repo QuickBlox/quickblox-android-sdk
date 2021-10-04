@@ -1,0 +1,128 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.gms.google-services'
+apply from: "../artifacts.gradle"
+
+repositories {
+    google()
+    jcenter()
+    maven {
+        url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+    }
+    flatDir { dirs 'libs' }
+}
+
+android {
+    def versionQACode = 1
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    flavorDimensions dimensionDefault
+
+    defaultConfig {
+        applicationId "com.quickblox.sample.conference.kotlin"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 100000
+        versionName "1.0.0"
+        multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            dimension dimensionDefault
+            buildConfigField('boolean', "IS_QA", "false")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+
+        qa {
+            dimension dimensionDefault
+            buildConfigField("boolean", "IS_QA", "true")
+            buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
+            proguardFile 'proguard-rules.pro'
+            resValue "string", "versionName", "QuickBlox Conference Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+            resValue "string", "versionName", "QuickBlox Conference Kotlin\nBuild version " + defaultConfig.getVersionName()
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../cert/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation "com.quickblox:quickblox-android-sdk-conference:$qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "com.google.android.material:material:$rootProject.materialAndroidXVersion"
+
+    implementation "androidx.appcompat:appcompat:$rootProject.appcompatAndroidXVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleViewmodelAndroidXVersion"
+    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.swipeRefreshVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersionKtx"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersionKtx"
+    implementation "android.arch.lifecycle:extensions:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersionKtx"
+
+    implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+
+    implementation "com.vmadalin:easypermissions-ktx:$rootProject.easyPermissionsVersion"
+    implementation "androidx.activity:activity-ktx:$rootProject.activityKtxVersion"
+    implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentKtxVersion"
+
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+
+    implementation "com.google.android.gms:play-services-gcm:$rootProject.servicesGcmVersion"
+    implementation "com.google.firebase:firebase-core:$rootProject.firebaseCoreVersion"
+
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+    kapt "androidx.hilt:hilt-lifecycle-viewmodel:$rootProject.hiltAndroidXVersion"
+    kapt "androidx.hilt:hilt-compiler:$rootProject.hiltAndroidXVersion"
+}

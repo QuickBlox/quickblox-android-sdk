@@ -1,0 +1,144 @@
+<resources>
+    <string name="app_name">Sample Conference Kotlin</string>
+
+    <string name="sender_id" ></string>
+
+    <string name="error_qb_credentials_empty">Credentials are wrong or empty. You have to set:
+        Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
+        and you have to set Sender ID in the string resources to launch application.
+        If you haven\'t them you can register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+
+    <string name="error_chat_credentials_empty">Some parameter for Chat Settings is wrong. Please check the Chat Settings</string>
+    <string name="error_server_url_null">Multi-conference server is available only for Enterprise plans. Please refer to https://quickblox.com/developers/EnterpriseFeatures for more information and contacts.</string>
+    <string name="login_welcome_message">Enter your login and \ndisplay name</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="chat_attachment">Attachment</string>
+    <string name="login_login_hint">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
+    <string name="login_username_hint">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
+    <string name="login_label_username">Display name</string>
+    <string name="login_save">Save Login and Username for further sessions</string>
+    <string name="login_toolbar_title">Enter to conference</string>
+    <string name="main_toolbar_title">Chats</string>
+    <string name="new_chat_toolbar_title">New chat</string>
+    <string name="app_info_title">App Info</string>
+    <string name="chat_more">More</string>
+    <string name="menu_add_users_to_chat">Add Users to Chat</string>
+    <string name="menu_create">Create</string>
+    <string name="menu_finish">Finish</string>
+    <string name="app_info">App info</string>
+    <string name="audio_configuration">Audio Configuration</string>
+    <string name="video_configuration">Video Configuration</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="subtitle_main_chat">%s chat selected</string>
+    <string name="subtitle_main_chats">%s chats selected</string>
+    <string name="subtitle_new_chat_users">%s users selected</string>
+    <string name="subtitle_new_chat_user">%s user selected</string>
+    <string name="search_users_hint">Search</string>
+    <string name="delete_chats">Delete Chats</string>
+    <string name="delete_question">Are you sure you want to delete dialogs?</string>
+    <string name="delete_dialogs">Delete dialogs</string>
+    <string name="empty_dialog">You\'re all alone out here.</string>
+    <string name="reconnecting">Reconnecting</string>
+    <string name="connected">Connected</string>
+    <string name="not_deleted_dialogs">Not deleted %1d dialogs</string>
+    <string name="occupant_left">%s has left</string>
+    <string name="users_not_found">No user with that name</string>
+    <string name="chat_name">Chat Name</string>
+    <string name="dialog_chat_name_hint">Must be in a range from 3 to 20 characters</string>
+    <string name="new_chat_created">%s created the group chat \"%s\"</string>
+    <string name="chat_edit_text_hint">Send message…</string>
+    <string name="chat_send">Send</string>
+
+    <string name="chat_info">Chat Info</string>
+    <string name="conference">Conference</string>
+    <string name="chat_conversation_started">%s started</string>
+    <string name="chat_stream">Start Stream</string>
+    <string name="started_stream">Stream started</string>
+    <string name="leave_chat">Leave Chat</string>
+
+    <string name="message_forwarded_from">Forwarded from\u0020</string>
+    <string name="join">Join</string>
+    <string name="you">You</string>
+    <string name="today">Today</string>
+
+    <string name="save_attachment">Save attachment</string>
+
+    <string name="dlg_choose_file_from">Select file from…</string>
+    <string name="error_attachment_count">You can send 1 attachment per message</string>
+    <string name="error_attachment_size">The uploaded file exceeds maximum file size (100MB)</string>
+    <string name="chat_error_send_message">Can\'t send a message, You are not connected to chat</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+
+    <string name="chat_subtitle_singular">1 member</string>
+    <string name="chat_subtitle">%s members</string>
+
+    <string name="dlg_leave_question">Are you sure you want to leave dialog?</string>
+    <string name="dlg_leave_dialog">Leave dialog</string>
+    <string name="camera_permission">To work correctly, you need permission camera</string>
+    <string name="storage_permission">To work correctly, you need permission for storage</string>
+    <string name="unknown_attachment">Unknown Attachment Received</string>
+    <string name="loading_failed">Loading failed</string>
+    <string name="attachment_loaded">Attachment loaded</string>
+    <string name="unable_save">Unable to save image</string>
+    <string name="image_saved">Image saved to the Gallery</string>
+    <string name="image_not_uploaded">Image has not been uploaded yet</string>
+    <string name="username_you">%s (you)</string>
+    <string name="add_members">Add Members</string>
+    <string name="done">Done</string>
+    <string name="occupant_added">%s added %s</string>
+    <string name="dialogId_error">dialogId is null</string>
+    <string name="user_error">There is no current user, please login again</string>
+
+    <string name="notification_title">You have an active conference</string>
+    <string name="notification_text">Touch takes you back to the conversation %1$s</string>
+    <string name="conference_permissions">To work correctly, you need permission for camera and microphone</string>
+    <string name="full_room">"Conference Room is full"</string>
+    <string name="join_conference_error">Join to conference error</string>
+
+    <string name="chat_conference">Start Conference</string>
+    <string name="unmute">Unmute</string>
+    <string name="mute">Mute</string>
+    <string name="cam_on">Cam on</string>
+    <string name="cam_off">Cam off</string>
+    <string name="end_call">End call</string>
+    <string name="stop_sharing">Stop sharing</string>
+    <string name="screen_share">Screen share</string>
+    <string name="swap_cam">Swap cam</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="session_closed">Session closed</string>
+    <string name="internet_restored">Internet connection restored</string>
+    <string name="stream_placeholder">"Publishers are offline"</string>
+    <string name="online_participants_label">"%s members"</string>
+
+    <!-- App Info Screen -->
+    <string name="app_version">Application version:</string>
+    <string name="sdk_version">QuickBlox SDK version:</string>
+    <string name="app_id">Application ID:</string>
+    <string name="auth_key">Authorization key:</string>
+    <string name="auth_secret">Authorization secret:</string>
+    <string name="account_key">Account key:</string>
+    <string name="api_domain">API domain:</string>
+    <string name="chat_domain">Chat domain:</string>
+    <string name="janus_server">Janus server:</string>
+    <string name="qa_verion">QA version:</string>
+
+    <string name="default_members">0 members</string>
+    <string name="pref_pages_key">seek_bar_key</string>
+    <string name="frame_rate">Frame rate</string>
+    <string name="min_frame_rate">2</string>
+    <string name="max_frame_rate">30</string>
+    <string name="video_formats">Video formats</string>
+    <string name="bandwidth">Bandwidth</string>
+    <string name="QVGA">320x240</string>
+    <string name="VGA">640x480</string>
+    <string name="HD">1280x720</string>
+    <string name="disable_aec">Disable built-in AEC</string>
+    <string name="opensles">Use OpenSL ES for audio playback</string>
+    <string name="audio_processing">Disable audio processing</string>
+
+    <string name="chat_notification_title">Conference chat notification</string>
+</resources>

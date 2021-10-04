@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp">
+
+    <include
+        android:id="@+id/headerRoot"
+        layout="@layout/item_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/tvMessageBody"
+        app:layout_constraintStart_toStartOf="@+id/tvMessageBody"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvMessageBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_outgoing_message"
+        android:gravity="center_vertical"
+        android:maxWidth="202dp"
+        android:minWidth="125dp"
+        android:minHeight="44dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerRoot"
+        tools:text="Message..." />
+</androidx.constraintlayout.widget.ConstraintLayout>
