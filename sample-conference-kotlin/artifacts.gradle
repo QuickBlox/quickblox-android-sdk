@@ -1,0 +1,7 @@
+android.applicationVariants.all { variant ->
+    variant.outputs.all { output ->
+        def date = new Date()
+        def formattedDate = date.format('yyyy.MM.dd')
+        output.outputFileName = "conference-kotlin-${variant.buildType.name}-$formattedDate-code-${variant.versionCode}-version-${variant.versionName}" + ".apk"
+    }
+}

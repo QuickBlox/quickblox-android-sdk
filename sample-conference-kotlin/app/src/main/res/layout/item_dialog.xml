@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:animateLayoutChanges="true">
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="12dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="invisible"
+        tools:checked="true"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_oval_white" />
+
+    <TextView
+        android:id="@+id/tvAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/ivAvatar"
+        android:layout_alignEnd="@+id/ivAvatar"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="2dp"
+        android:textColor="@android:color/white"
+        android:textSize="17sp"
+        android:textStyle="normal"
+        tools:text="E" />
+
+    <TextView
+        android:id="@+id/tvDialogName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_toEndOf="@+id/ivAvatar"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/textPrimary"
+        android:textSize="17sp"
+        tools:text="Room name" />
+
+    <TextView
+        android:id="@+id/tvLastMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDialogName"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="-4dp"
+        android:layout_toStartOf="@+id/tvTime"
+        android:layout_toEndOf="@+id/ivAvatar"
+        android:ellipsize="end"
+        android:paddingBottom="2dp"
+        android:singleLine="true"
+        android:textColor="@color/gray"
+        android:textSize="15sp"
+        tools:text="Long last message to see how margin on the right side works" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="11dp"
+        android:gravity="center"
+        android:textColor="@color/gray"
+        android:textSize="12sp"
+        tools:text="17:12" />
+
+    <TextView
+        android:id="@+id/tvCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTime"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/bg_dialog_counter"
+        android:gravity="center"
+        android:minWidth="21dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        tools:text="1"
+        tools:visibility="visible" />
+</RelativeLayout>

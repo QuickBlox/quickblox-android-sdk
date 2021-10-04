@@ -1,0 +1,48 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>>
+        <item name="colorOnSecondary">@color/colorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <style name="Theme.NoActionBar">
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/grayText</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/grayText</item>
+    </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorHint">@color/textHint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

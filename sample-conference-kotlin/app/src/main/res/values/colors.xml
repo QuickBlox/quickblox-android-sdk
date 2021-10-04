@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3978FC</color>
+    <color name="bgSplash">#3978FC</color>
+    <color name="grayText">#333333</color>
+    <color name="textHint">#99A9C6</color>
+    <color name="bgBlue">#F4F6F9</color>
+    <color name="divider">#65B2C7EE</color>
+    <color name="ripple">#26000000</color>
+    <color name="colorUnread">#00CC4C</color>
+    <color name="gray">#6C7A92</color>
+    <color name="textPrimary">#212121</color>
+    <color name="selectedItemDialog">#D9E3F7</color>
+    <color name="colorDivider">#e0e0e0</color>
+    <color name="inactiveButton">#99A9C6</color>
+    <color name="gradientAttachmentStart">#30000000</color>
+    <color name="gradientAttachmentCenter">#18000000</color>
+    <color name="mediumGrey">#b1b1b1</color>
+    <color name="green">#45D100</color>
+    <color name="bgConversationTitle">#50000000</color>
+
+    <color name="randomColor1">#53C6A2</color>
+    <color name="randomColor2">#FDD762</color>
+    <color name="randomColor3">#9261D3</color>
+    <color name="randomColor4">#43DCE7</color>
+    <color name="randomColor5">#FFCC5A</color>
+    <color name="randomColor6">#EA4398</color>
+    <color name="randomColor7">#4A5DE1</color>
+    <color name="randomColor8">#E95555</color>
+    <color name="randomColor9">#7EDA54</color>
+    <color name="randomColor10">#F9B647</color>
+
+    <color name="bgConversation">#323232</color>
+</resources>
