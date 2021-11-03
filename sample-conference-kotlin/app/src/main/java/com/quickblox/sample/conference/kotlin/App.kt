@@ -20,9 +20,7 @@ private const val APPLICATION_ID = ""
 private const val AUTH_KEY = ""
 private const val AUTH_SECRET = ""
 private const val ACCOUNT_KEY = ""
-private const val JANUS_SERVER_URL = ""
-
-// TODO Firebase keys in - google-services.json
+private const val SERVER_URL = ""
 
 /*
  * Created by Injoit in 2021-09-30.
@@ -52,10 +50,10 @@ class App : Application() {
     }
 
     private fun initConferenceConfig() {
-        if (TextUtils.isEmpty(JANUS_SERVER_URL)) {
+        if (TextUtils.isEmpty(SERVER_URL)) {
             throw AssertionError(getString(R.string.error_server_url_null))
         } else {
-            ConferenceConfig.setUrl(JANUS_SERVER_URL)
+            ConferenceConfig.setUrl(SERVER_URL)
         }
     }
 

@@ -32,8 +32,8 @@ android {
         applicationId "com.quickblox.sample.conference.kotlin"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 100000
-        versionName "1.0.0"
+        versionCode 110000
+        versionName "1.1.0"
         multiDexEnabled true
     }
 
@@ -110,19 +110,18 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersionKtx"
     implementation "android.arch.lifecycle:extensions:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersionKtx"
+    implementation "androidx.activity:activity-ktx:$rootProject.activityKtxVersion"
+    implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentKtxVersion"
 
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
 
     implementation "com.vmadalin:easypermissions-ktx:$rootProject.easyPermissionsVersion"
-    implementation "androidx.activity:activity-ktx:$rootProject.activityKtxVersion"
-    implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentKtxVersion"
 
     implementation "com.google.dagger:hilt-android:$hiltVersion"
-
     implementation "com.google.android.gms:play-services-gcm:$rootProject.servicesGcmVersion"
     implementation "com.google.firebase:firebase-core:$rootProject.firebaseCoreVersion"
 
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
-    kapt "androidx.hilt:hilt-lifecycle-viewmodel:$rootProject.hiltAndroidXVersion"
-    kapt "androidx.hilt:hilt-compiler:$rootProject.hiltAndroidXVersion"
+    kapt "androidx.hilt:hilt-lifecycle-viewmodel:$rootProject.hiltViewmodel"
+    kapt "androidx.hilt:hilt-compiler:$rootProject.hiltCompiler"
 }

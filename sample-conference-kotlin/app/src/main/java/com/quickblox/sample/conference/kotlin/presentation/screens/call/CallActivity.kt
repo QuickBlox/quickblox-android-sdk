@@ -60,6 +60,19 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
         if (!CallService.isRunning()) {
             CallService.start(this)
         }
+
+        val activityResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { viewModel.startSharing(it) }
+                binding.buttons.tbShare.isChecked = false
+            } else {
+                if (viewModel.isShowSharing()) {
+                    viewModel.stopSharing()
+                }
+            }
+            binding.buttons.tbShare.isChecked = true
+        }
+
         viewModel.liveData.observe(this, { result ->
             result?.let { (state, data) ->
                 when (state) {
@@ -122,7 +135,7 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         }
                     }
                     ViewState.OPEN_FULL_SCREEN -> {
-                        val entities = data as HashSet<CallEntity>
+                        val entities = data as SortedSet<CallEntity>
                         hideProgress()
                         binding.llConversation.setCallEntities(entities)
                         val metrics = getScreenMetrics()
@@ -132,10 +145,6 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         val intent = Intent(this, CallService::class.java)
                         viewModel.callServiceConnection?.let {
                             bindService(intent, it, BIND_AUTO_CREATE)
-                        }
-                        if (viewModel.callEntities.isNotEmpty()) {
-                            val metrics = getScreenMetrics()
-                            binding.llConversation.updateViews(metrics.second, metrics.first)
                         }
                     }
                     ViewState.UNBIND_SERVICE -> {
@@ -148,21 +157,33 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         LoginActivity.start(this)
                         finish()
                     }
+                    ViewState.RECONNECTED -> {
+                        reconnectedState()
+                        Toast.makeText(baseContext, R.string.reconnected, Toast.LENGTH_SHORT).show()
+                    }
+                    ViewState.RECONNECTING -> {
+                        reconnectingState()
+                        Toast.makeText(baseContext, R.string.reconnecting, Toast.LENGTH_SHORT).show()
+                    }
+                    ViewState.REQUEST_PERMISSION -> {
+                        val mMediaProjectionManager = getSystemService(MEDIA_PROJECT) as MediaProjectionManager
+                        activityResultLauncher.launch(mMediaProjectionManager.createScreenCaptureIntent())
+                    }
+                    ViewState.SHOW_CHAT_SCREEN -> {
+                        viewModel.currentDialog?.dialogId?.let { it1 -> ChatActivity.start(this@CallActivity, it1) }
+                            ?: run {
+                                Toast.makeText(baseContext, R.string.no_dialog_id, Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                    ViewState.SHOW_MUTE_PARTICIPANTS_SCREEN -> {
+                        MuteParticipantsActivity.start(this@CallActivity)
+                    }
                 }
             }
         })
         binding.llConversation.setCallEntities(viewModel.callEntities)
         binding.llConversation.setClickListener(ConversationItemListenerImpl())
 
-        val activityResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                result.data?.let { viewModel.startSharing(it) }
-                binding.buttons.tbShare.isChecked = false
-            } else {
-                binding.buttons.tbShare.isChecked = true
-                controlButtons?.displayControlsButtons()
-            }
-        }
         if (viewModel.isShowSharing()) {
             controlButtons?.stopTimer()
             setSharingState()
@@ -205,10 +226,6 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
         binding.buttons.tbCamEnable.visibility = View.GONE
         binding.buttons.tbMic.visibility = View.GONE
         binding.buttons.tbSwapCam.visibility = View.GONE
-        val isVideoEnabled = viewModel.isVideoEnabled()
-        if (isVideoEnabled == true) {
-            viewModel.setVideoEnabled(true)
-        }
         val isShowSharing = viewModel.isShowSharing()
         binding.buttons.tbShare.isChecked = !isShowSharing
     }
@@ -229,16 +246,49 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
 
     private fun setDefaultButtonsState() {
         val isShowSharing = viewModel.isShowSharing()
-        viewModel.getEnableVideoState()?.let { viewModel.setVideoEnabled(it) }
         val isAudioEnabled = viewModel.isAudioEnabled()
         val isFrontCamera = viewModel.isFrontCamera()
         val isVideoEnabled = viewModel.isVideoEnabled()
 
-        isAudioEnabled?.let { binding.buttons.tbMic.isChecked = isAudioEnabled }
+        binding.buttons.tbMic.isChecked = isAudioEnabled
         binding.buttons.tbSwapCam.isChecked = isFrontCamera
         binding.buttons.tbShare.isChecked = !isShowSharing
+        binding.buttons.tbCamEnable.isChecked = isVideoEnabled
+    }
 
-        isVideoEnabled?.let { binding.buttons.tbCamEnable.isChecked = isVideoEnabled }
+    private fun reconnectingState() {
+        binding.btnChat.visibility = View.INVISIBLE
+        binding.btnMuteParticipants.visibility = View.INVISIBLE
+        binding.llReconnecting.visibility = View.VISIBLE
+        if (viewModel.getRole() == QBConferenceRole.PUBLISHER) {
+            binding.buttons.tbMic.visibility = View.GONE
+            binding.buttons.tbCamEnable.visibility = View.GONE
+            binding.buttons.tbSwapCam.visibility = View.GONE
+
+            if (viewModel.isShowSharing()) {
+                binding.buttons.tbShare.visibility = View.VISIBLE
+            } else {
+                binding.buttons.tbShare.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun reconnectedState() {
+        binding.btnChat.visibility = View.VISIBLE
+        if (viewModel.getCallType() == STREAM) {
+            binding.btnMuteParticipants.visibility = View.GONE
+        } else {
+            binding.btnMuteParticipants.visibility = View.VISIBLE
+        }
+        binding.llReconnecting.visibility = View.GONE
+        if (viewModel.getRole() == QBConferenceRole.PUBLISHER) {
+            binding.buttons.tbShare.visibility = View.VISIBLE
+            if (!viewModel.isShowSharing()) {
+                binding.buttons.tbCamEnable.visibility = View.VISIBLE
+                binding.buttons.tbMic.visibility = View.VISIBLE
+                binding.buttons.tbSwapCam.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun getScreenMetrics(): Pair<Int, Int> {
@@ -254,41 +304,38 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
     }
 
     private fun setClickListeners(activityResultLauncher: ActivityResultLauncher<Intent>) {
-        binding.buttons.tbSwapCam.setOnCheckedChangeListener { _, _ ->
+        binding.buttons.tbSwapCam.setOnClickListener {
             viewModel.swapCamera()
         }
         binding.buttons.tbMic.setOnClickListener {
             val isEnable = viewModel.isAudioEnabled()
-            isEnable?.let {
-                viewModel.setAudioEnabled(!isEnable)
-            }
+            viewModel.setAudioEnabled(!isEnable)
         }
         binding.buttons.tbShare.setOnClickListener {
             if (viewModel.isShowSharing()) {
                 viewModel.stopSharing()
             } else {
                 controlButtons?.stopTimer()
+                viewModel.saveVideoState()
                 val mMediaProjectionManager = getSystemService(MEDIA_PROJECT) as MediaProjectionManager
                 activityResultLauncher.launch(mMediaProjectionManager.createScreenCaptureIntent())
             }
         }
         binding.buttons.tbCamEnable.setOnClickListener {
             val isEnable = viewModel.isVideoEnabled()
-            isEnable?.let { viewModel.setVideoEnabled(!isEnable) }
+            viewModel.setVideoEnabled(!isEnable)
         }
         binding.buttons.tbEndCall.setOnCheckedChangeListener { _, _ ->
             viewModel.leaveSession()
         }
         binding.btnChat.setOnClick {
-            viewModel.releaseViews()
-            viewModel.currentDialog?.dialogId?.let { it1 -> ChatActivity.start(this@CallActivity, it1) }
+            viewModel.startChatScreen()
         }
         binding.root.setOnClickListener {
             controlButtons?.displayControlsButtons()
         }
         binding.btnMuteParticipants.setOnClickListener {
-            viewModel.releaseViews()
-            MuteParticipantsActivity.start(this@CallActivity)
+            viewModel.startMuteParticipantsScreen()
         }
     }
 
@@ -345,15 +392,12 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
 
     private inner class ConversationItemListenerImpl : CustomLinearLayout.ConversationItemListener {
         override fun onItemClick(callEntity: CallEntity) {
-            if (viewModel.callEntities.size > 1) {
-                if (binding.buttons.root.isVisible) {
-                    if (viewModel.isFullScreenState) {
-                        viewModel.releaseViews()
-                        viewModel.closeFullScreen()
-                    } else {
-                        viewModel.releaseViews()
-                        viewModel.openFullScreen(callEntity)
-                    }
+            if (viewModel.callEntities.size > 1 && binding.buttons.root.isVisible &&
+                !viewModel.isReconnectingState()) {
+                if (viewModel.isFullScreenState) {
+                    viewModel.closeFullScreen()
+                } else {
+                    viewModel.openFullScreen(callEntity)
                 }
             }
             controlButtons?.displayControlsButtons()

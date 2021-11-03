@@ -15,5 +15,4 @@ interface CallListener {
     fun onError(exception: Exception)
     fun releaseSession(exception: Exception?)
     fun setOnlineParticipants(count: Int)
-    fun onClosedSession()
 }

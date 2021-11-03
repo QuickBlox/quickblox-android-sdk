@@ -15,6 +15,7 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.base.BaseView
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.BaseSession
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 
 /*
@@ -27,7 +28,7 @@ class MuteParticipantsViewModel @Inject constructor(private val dbRepository: DB
     private val TAG: String = MuteParticipantsViewModel::class.java.simpleName
     val liveData = LiveData<Pair<Int, Any?>>()
     private val callListener = CallListenerImpl(TAG)
-    var callEntities: HashSet<CallEntity>
+    var callEntities: SortedSet<CallEntity>
         private set
     var currentDialog: QBChatDialog? = null
         private set
@@ -36,7 +37,7 @@ class MuteParticipantsViewModel @Inject constructor(private val dbRepository: DB
         private set
 
     init {
-        callEntities = callManager.getCallEntities()
+        callEntities = callManager.getCallEntities() as SortedSet<CallEntity>
         currentDialog = callManager.getCurrentDialog()
         currentUser = userManager.getCurrentUser()
     }
@@ -119,10 +120,6 @@ class MuteParticipantsViewModel @Inject constructor(private val dbRepository: DB
         }
 
         override fun setOnlineParticipants(count: Int) {
-            // empty
-        }
-
-        override fun onClosedSession() {
             // empty
         }
 

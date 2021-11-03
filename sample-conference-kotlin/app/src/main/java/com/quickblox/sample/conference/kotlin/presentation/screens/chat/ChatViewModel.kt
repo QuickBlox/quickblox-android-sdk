@@ -37,6 +37,7 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewStat
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LEAVE
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LOADER_PROGRESS_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_SHOWED
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGE_SENT
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.PROGRESS
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.RECEIVED_MESSAGE
@@ -157,6 +158,7 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
                     currentDialog?.let { joinDialog(it) }
                     subscribeChatListener()
                     messages.clear()
+                    liveData.setValue(Pair(MESSAGES_UPDATED, null))
                     skipPagination = 0
                     loadMessages()
                 }
@@ -270,6 +272,7 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
     }
 
     fun unsubscribe() {
+        connectionRepository.removeListener(connectivityChangedListener)
         chatManager.unsubscribeChatListener(chatListener)
         chatManager.unSubscribeConnectionChatListener(connectionListener)
     }
@@ -474,7 +477,7 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
             liveData.setValue(Pair(ERROR, resourcesManager.get().getString(R.string.no_internet)))
             return
         }
-        callManager.createSession(user, currentDialog, roomId, role, callType, object : DomainCallback<ConferenceSession, Exception> {
+        callManager.createSession(user.id, currentDialog, roomId, role, callType, object : DomainCallback<ConferenceSession, Exception> {
             override fun onSuccess(result: ConferenceSession, bundle: Bundle?) {
                 liveData.setValue(Pair(SHOW_CALL_SCREEN, null))
             }

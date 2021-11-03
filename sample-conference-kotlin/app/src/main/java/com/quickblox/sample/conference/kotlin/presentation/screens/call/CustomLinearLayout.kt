@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.quickblox.sample.conference.kotlin.R
 import com.quickblox.sample.conference.kotlin.databinding.CustomCoverstionLayoutBinding
 import com.quickblox.sample.conference.kotlin.domain.call.entities.CallEntity
+import java.util.*
 
 /*
  * Created by Injoit in 2021-09-30.
@@ -16,7 +17,7 @@ import com.quickblox.sample.conference.kotlin.domain.call.entities.CallEntity
  */
 class CustomLinearLayout : LinearLayout, ConversationItem.ConversationItemListener {
     private lateinit var binding: CustomCoverstionLayoutBinding
-    private var callEntities: HashSet<CallEntity>? = null
+    private var callEntities: SortedSet<CallEntity>? = null
     private var conversationItemListener: ConversationItemListener? = null
 
     constructor(context: Context) : super(context) {
@@ -37,7 +38,7 @@ class CustomLinearLayout : LinearLayout, ConversationItem.ConversationItemListen
         this.orientation = VERTICAL
     }
 
-    fun setCallEntities(callEntities: HashSet<CallEntity>) {
+    fun setCallEntities(callEntities: SortedSet<CallEntity>) {
         this.callEntities = callEntities
     }
 
@@ -67,34 +68,38 @@ class CustomLinearLayout : LinearLayout, ConversationItem.ConversationItemListen
                 }
             }
             3 -> {
-                val listCallEntities = callEntities?.toList()
-                this.addView(expandableLayout(width, height / 2, listCallEntities?.get(0), listCallEntities?.get(1)))
-                val view = ConversationItem(context)
-                listCallEntities?.get(2)?.let { view.setView(it) }
-                view.setClickListener(this)
-                view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height / 2)
-                this.addView(view)
+                callEntities?.let { callEntities ->
+                    val listCallEntities = callEntities.toList()
+                    this.addView(expandableLayout(width, height / 2, listCallEntities.get(0), listCallEntities.get(1)))
+                    val view = ConversationItem(context)
+                    listCallEntities.get(2)?.let { view.setView(it) }
+                    view.setClickListener(this)
+                    view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height / 2)
+                    this.addView(view)
+                }
             }
             else -> {
-                val listCallEntities = callEntities?.toList()
-                val displayScheme = calcViewTable(callEntities!!.size)
-                var triple = displayScheme.first
-                var dual = displayScheme.second
-                val countRows = triple + dual
+                callEntities?.let { callEntities ->
+                    val listCallEntities = callEntities.toList()
+                    val displayScheme = calcViewTable(callEntities.size)
+                    var triple = displayScheme.first
+                    var dual = displayScheme.second
+                    val countRows = triple + dual
 
-                var tmpIndex = 0
-                for (index in 0..listCallEntities!!.size step 3) {
-                    if (triple-- > 0) {
-                        this.addView(expandableLayout(width, height / countRows, listCallEntities[index], listCallEntities[index + 1], listCallEntities[index + 2]))
-                    } else {
-                        break
+                    var tmpIndex = 0
+                    for (index in 0 .. listCallEntities.size step 3) {
+                        if (triple-- > 0) {
+                            this.addView(expandableLayout(width, height / countRows, listCallEntities[index], listCallEntities[index + 1], listCallEntities[index + 2]))
+                        } else {
+                            break
+                        }
+                        tmpIndex = index + 3
                     }
-                    tmpIndex = index + 3
-                }
 
-                for (index in tmpIndex..listCallEntities.size step 2) {
-                    if (dual-- > 0) {
-                        this.addView(expandableLayout(width, height / countRows, listCallEntities[index], listCallEntities[index + 1]))
+                    for (index in tmpIndex .. listCallEntities.size step 2) {
+                        if (dual-- > 0) {
+                            this.addView(expandableLayout(width, height / countRows, listCallEntities[index], listCallEntities[index + 1]))
+                        }
                     }
                 }
             }

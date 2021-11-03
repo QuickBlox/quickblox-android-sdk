@@ -1,6 +1,6 @@
 buildscript {
-    ext.kotlinVersion = "1.4.32"
-    ext.hiltVersion = '2.33-beta'
+    ext.kotlinVersion = "1.5.10"
+    ext.hiltVersion = '2.39.1'
     ext.buildGradle = '4.1.3'
     ext.googleServices = '4.3.10'
 
@@ -37,24 +37,27 @@ ext {
 
     // Firebase
     servicesGcmVersion = '17.0.0'
-    firebaseCoreVersion = '19.0.1'
+    firebaseCoreVersion = '19.0.2'
 
     // Android X
     fragmentAndroidXVersion = '1.3.2'
     lifecycleViewmodelAndroidXVersion = '2.3.1'
     coreKtxVersion = '1.6.0'
-    hiltAndroidXVersion = '1.0.0-alpha03'
     appcompatAndroidXVersion = '1.3.1'
     materialAndroidXVersion = '1.4.0'
+    activityKtxVersion = '1.3.1'
+    fragmentKtxVersion = '1.3.6'
+    hiltViewmodel = '1.0.0-alpha03'
+    hiltCompiler= '1.0.0'
 
     // Glide
     glideVersion = '4.12.0'
 
-    // Hilt
+    // Swipe refresh
     swipeRefreshVersion = '1.1.0'
 
     // ConstraintLayout
-    constraintLayoutVersion = '2.1.0'
+    constraintLayoutVersion = '2.1.1'
 
     // LifecycleKtx
     lifecycleVersionKtx = '2.3.1'
@@ -64,6 +67,4 @@ ext {
 
     // Permissions
     easyPermissionsVersion = '1.0.0'
-    activityKtxVersion = '1.3.0-beta01'
-    fragmentKtxVersion = '1.4.0-alpha02'
 }
