@@ -65,9 +65,6 @@ class CallEntityImpl(private var participantId: Int?, private var participantNam
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
         return if (other is CallEntityImpl) {
             participantId == other.participantId
         } else {

@@ -99,7 +99,7 @@
 
         <service
             android:name=".data.service.CallService"
-            android:foregroundServiceType="mediaProjection"
+            android:foregroundServiceType="camera|microphone|mediaProjection"
             android:launchMode="singleTask" />
 
         <service android:name=".data.push.FcmPushListenerServiceImpl">

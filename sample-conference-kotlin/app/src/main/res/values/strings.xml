@@ -139,6 +139,8 @@
     <string name="disable_aec">Disable built-in AEC</string>
     <string name="opensles">Use OpenSL ES for audio playback</string>
     <string name="audio_processing">Disable audio processing</string>
-
+    <string name="reconnection_failed">Reconnection failed</string>
     <string name="chat_notification_title">Conference chat notification</string>
+    <string name="reconnected">Reconnected</string>
+    <string name="no_dialog_id">No dialog id</string>
 </resources>

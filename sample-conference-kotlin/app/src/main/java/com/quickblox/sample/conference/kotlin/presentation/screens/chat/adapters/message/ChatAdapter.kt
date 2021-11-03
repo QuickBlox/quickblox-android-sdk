@@ -30,7 +30,7 @@ const val START_STREAM = "5"
  */
 class ChatAdapter(private val chatMessages: ArrayList<ChatMessage>, private val currentUser: QBUser, private val usersDialog: HashSet<QBUser>,
                   private val chatAdapterListener: ChatAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-        HeaderDecoration.HeaderInterface {
+    HeaderDecoration.HeaderInterface {
     private var paginationListener: PaginationListener? = null
     private var previousGetCount = 0
 
@@ -237,8 +237,11 @@ class ChatAdapter(private val chatMessages: ArrayList<ChatMessage>, private val 
         if (itemPosition < 0) {
             return false
         }
-        val chatMessage = chatMessages[itemPosition]
-        return chatMessage.type == 1
+        var chatMessage: ChatMessage? = null
+        if (chatMessages.isNotEmpty()) {
+            chatMessage = chatMessages[itemPosition]
+        }
+        return chatMessage?.type == 1
     }
 
     interface ChatAdapterListener {

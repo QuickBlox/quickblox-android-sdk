@@ -18,18 +18,18 @@ import com.quickblox.videochat.webrtc.QBRTCTypes
 class CallRepositoryImpl(private val context: Context) : CallRepository {
     override fun createSession(userId: Int, callback: DataCallBack<ConferenceSession, Exception>) {
         val conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
-        ConferenceClient.getInstance(context).createSession(userId, conferenceType, object : ConferenceEntityCallback<ConferenceSession> {
-            override fun onSuccess(session: ConferenceSession) {
-                Handler(Looper.getMainLooper()).post {
-                    callback.onSuccess(session, null)
+            ConferenceClient.getInstance(context).createSession(userId, conferenceType, object : ConferenceEntityCallback<ConferenceSession> {
+                override fun onSuccess(session: ConferenceSession) {
+                    Handler(Looper.getMainLooper()).post {
+                        callback.onSuccess(session, null)
+                    }
                 }
-            }
 
-            override fun onError(exception: WsException) {
-                Handler(Looper.getMainLooper()).post {
-                    callback.onError(exception)
+                override fun onError(exception: WsException) {
+                    Handler(Looper.getMainLooper()).post {
+                        callback.onError(exception)
+                    }
                 }
-            }
-        })
+            })
     }
 }

@@ -20,4 +20,15 @@ interface CallEntity {
     fun isEnableAudioTrack(): Boolean?
     fun setEnabledAudioTrack(enable: Boolean)
     fun isLocalEntity(): Boolean
+
+    class ComparatorImpl : Comparator<CallEntity> {
+        override fun compare(first: CallEntity, second: CallEntity): Int {
+            if (second.isLocalEntity() != first.isLocalEntity()) {
+                return second.isLocalEntity().compareTo(first.isLocalEntity())
+            } else if (second != first) {
+                return 1
+            }
+            return 0
+        }
+    }
 }
