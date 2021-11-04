@@ -205,7 +205,7 @@
     <string name="starting_stream">Starting stream…</string>
     <string name="online_participants_label">"%s members"</string>
     <string name="online_participants_label_single">"%s member"</string>
-    <string name="conversation_placeholder">"Publishers are offline"</string>
+    <string name="conversation_placeholder">"Publisher is offline"</string>
 
     <string name="join_conference_error">Join to conference error</string>
     <string name="join_stream_error">Join to stream error</string>
@@ -296,5 +296,7 @@
     <string name="appinfo_janus_server">Janus server:</string>
     <string name="appinfo_title">App Info</string>
     <string name="appinfo_qa_verion">QA version:</string>
+    <string name="reconnecting">Reconnecting...</string>
+    <string name="reconnection_failed">Reconnection failed</string>
 
 </resources>

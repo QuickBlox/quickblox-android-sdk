@@ -11,26 +11,28 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.WsException;
 import com.quickblox.conference.WsHangUpException;
 import com.quickblox.conference.WsNoResponseException;
 import com.quickblox.conference.callbacks.ConferenceSessionCallbacks;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochat.conference.java.R;
 import com.quickblox.sample.videochat.conference.java.fragments.ConversationFragment;
 import com.quickblox.sample.videochat.conference.java.fragments.ConversationFragmentCallback;
+import com.quickblox.sample.videochat.conference.java.fragments.ReconnectionCallback;
 import com.quickblox.sample.videochat.conference.java.fragments.ScreenShareFragment;
 import com.quickblox.sample.videochat.conference.java.managers.WebRtcSessionManager;
 import com.quickblox.sample.videochat.conference.java.services.CallService;
 import com.quickblox.sample.videochat.conference.java.utils.Consts;
 import com.quickblox.sample.videochat.conference.java.utils.SettingsUtils;
 import com.quickblox.sample.videochat.conference.java.utils.ToastUtils;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
@@ -41,11 +43,9 @@ import org.webrtc.CameraVideoCapturer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
+import java.util.Set;
 
 public class CallActivity extends BaseActivity implements QBRTCSessionStateCallback<ConferenceSession>, ConferenceSessionCallbacks,
         ConversationFragmentCallback, ScreenShareFragment.OnSharingEvents {
@@ -65,6 +65,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     private ArrayList<CallService.CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private volatile boolean connectedToJanus;
     private CallService callService;
+    private final Set<ReconnectionCallback> reconnectionCallbacks = new HashSet<>();
+    private final ReconnectionListenerImpl reconnectionListener = new ReconnectionListenerImpl(TAG);
+    private LinearLayout reconnectingLayout;
 
     public static void start(Context context, String roomID, String roomTitle, String dialogID,
                              List<Integer> occupants, boolean listenerRole) {
@@ -85,6 +88,16 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     @Override
+    public void addReconnectionCallback(ReconnectionCallback reconnectionCallback) {
+        reconnectionCallbacks.add(reconnectionCallback);
+    }
+
+    @Override
+    public void removeReconnectionCallback(ReconnectionCallback reconnectionCallback) {
+        reconnectionCallbacks.remove(reconnectionCallback);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
@@ -94,6 +107,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         currentRoomTitle = getIntent().getStringExtra(Consts.EXTRA_ROOM_TITLE);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_video, false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_audio, false);
+
+        reconnectingLayout = findViewById(R.id.llReconnecting);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window w = getWindow();
@@ -116,8 +131,12 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         currentSession = sessionManager.getCurrentSession();
         initListeners(currentSession);
 
-        if (callService.isSharingScreenState()) {
-            startScreenSharing(null);
+        if (callService != null && callService.isSharingScreenState()) {
+            if (callService.getReconnectionState() == CallService.ReconnectionState.COMPLETED) {
+                QBRTCScreenCapturer.requestPermissions(this);
+            } else {
+                startScreenSharing(null);
+            }
         } else {
             startConversationFragment();
         }
@@ -128,6 +147,27 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
         super.onResume();
         settingsSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         bindCallService();
+        if (callService != null) {
+            switch (callService.getReconnectionState()) {
+                case COMPLETED:
+                    reconnectingLayout.setVisibility(View.GONE);
+                    for (ReconnectionCallback reconnectionCallback : reconnectionCallbacks) {
+                        reconnectionCallback.completed();
+                    }
+                    break;
+                case IN_PROGRESS:
+                    reconnectingLayout.setVisibility(View.VISIBLE);
+                    for (ReconnectionCallback reconnectionCallback : reconnectionCallbacks) {
+                        reconnectionCallback.inProgress();
+                    }
+                    break;
+                case FAILED:
+                    ToastUtils.shortToast(getApplicationContext(), R.string.reconnection_failed);
+                    callService.leaveCurrentSession();
+                    finish();
+                    break;
+            }
+        }
     }
 
     @Override
@@ -137,6 +177,8 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             unbindService(callServiceConnection);
             callServiceConnection = null;
         }
+
+        callService.unsubscribeReconnectionListener(reconnectionListener);
         removeListeners();
     }
 
@@ -161,6 +203,7 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
 
     private void leaveCurrentSession() {
         callService.leaveCurrentSession();
+        finish();
     }
 
     private void initListeners(ConferenceSession session) {
@@ -324,6 +367,9 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
                 && resultCode == Activity.RESULT_OK && data != null) {
             startScreenSharing(data);
             Log.i(TAG, "Starting Screen Capture");
+        } else if (requestCode == QBRTCScreenCapturer.REQUEST_MEDIA_PROJECTION && resultCode == Activity.RESULT_CANCELED) {
+            callService.stopScreenSharing();
+            startConversationFragment();
         }
         if (requestCode == REQUEST_CODE_OPEN_CONVERSATION_CHAT) {
             Log.d(TAG, "Returning back from ChatActivity");
@@ -331,16 +377,13 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     }
 
     private void startScreenSharing(final Intent data) {
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ScreenShareFragment.class.getSimpleName());
-        if (!(fragmentByTag instanceof ScreenShareFragment)) {
-            ScreenShareFragment screenShareFragment = ScreenShareFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    screenShareFragment, ScreenShareFragment.class.getSimpleName())
-                    .commitAllowingStateLoss();
+        ScreenShareFragment screenShareFragment = ScreenShareFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                screenShareFragment, ScreenShareFragment.class.getSimpleName())
+                .commitAllowingStateLoss();
 
-            callService.setVideoEnabled(true);
-            callService.startScreenSharing(data);
-        }
+        callService.setVideoEnabled(true);
+        callService.startScreenSharing(data);
     }
 
     @Override
@@ -408,9 +451,6 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
     @Override
     public void onSessionClosed(final ConferenceSession session) {
         Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
-        if (session.equals(currentSession)) {
-            finish();
-        }
     }
 
     private class CallServiceConnection implements ServiceConnection {
@@ -425,27 +465,66 @@ public class CallActivity extends BaseActivity implements QBRTCSessionStateCallb
             callService = binder.getService();
             if (callService.currentSessionExist()) {
                 currentDialogID = callService.getDialogID();
-                login();
+                if (callService.getReconnectionState() != CallService.ReconnectionState.IN_PROGRESS){
+                    initScreen();
+                }
             } else {
                 //we have already currentSession == null, so it's no reason to do further initialization
                 CallService.stop(CallActivity.this);
                 finish();
             }
+            callService.subscribeReconnectionListener(reconnectionListener);
+        }
+    }
+
+    private class ReconnectionListenerImpl implements CallService.ReconnectionListener {
+        private final String tag;
+
+        ReconnectionListenerImpl(String tag) {
+            this.tag = tag;
         }
 
-        private void login() {
-            QBUser qbUser = getSharedPrefsHelper().getQbUser();
-            QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
-                @Override
-                public void onSuccess(QBUser qbUser, Bundle bundle) {
+        @Override
+        public void onChangedState(CallService.ReconnectionState reconnectionState) {
+            switch (reconnectionState) {
+                case COMPLETED:
+                    reconnectingLayout.setVisibility(View.GONE);
+                    for (ReconnectionCallback reconnectionCallback : reconnectionCallbacks) {
+                        reconnectionCallback.completed();
+                    }
                     initScreen();
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
+                    callService.setReconnectionState(CallService.ReconnectionState.DEFAULT);
+                    break;
+                case IN_PROGRESS:
+                    reconnectingLayout.setVisibility(View.VISIBLE);
+                    for (ReconnectionCallback reconnectionCallback : reconnectionCallbacks) {
+                        reconnectionCallback.inProgress();
+                    }
+                    break;
+                case FAILED:
+                    ToastUtils.shortToast(getApplicationContext(), R.string.reconnection_failed);
+                    callService.leaveCurrentSession();
                     finish();
-                }
-            });
+                    break;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 53 * hash + tag.hashCode();
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            boolean equals;
+            if (obj instanceof ReconnectionListenerImpl) {
+                equals = TAG.equals(((ReconnectionListenerImpl) obj).tag);
+            } else {
+                equals = super.equals(obj);
+            }
+            return equals;
         }
     }
 }

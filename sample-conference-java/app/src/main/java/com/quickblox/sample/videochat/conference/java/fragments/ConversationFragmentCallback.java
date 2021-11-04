@@ -20,6 +20,10 @@ public interface ConversationFragmentCallback {
 
     void removeCurrentCallStateCallback(CallService.CurrentCallStateCallback currentCallStateCallback);
 
+    void addReconnectionCallback(ReconnectionCallback reconnectionCallback);
+
+    void removeReconnectionCallback(ReconnectionCallback reconnectionCallback);
+
     void onSetAudioEnabled(boolean isAudioEnabled);
 
     void onSetVideoEnabled(boolean isNeedEnableCam);

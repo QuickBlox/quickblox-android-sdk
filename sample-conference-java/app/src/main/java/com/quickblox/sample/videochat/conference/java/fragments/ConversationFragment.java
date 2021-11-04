@@ -22,6 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.DimenRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
 import com.quickblox.core.QBEntityCallback;
@@ -54,12 +60,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.DimenRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ConversationFragment extends BaseToolBarFragment implements CallService.CurrentCallStateCallback, QBRTCSessionStateCallback<ConferenceSession>,
         QBRTCClientVideoTracksCallbacks<ConferenceSession>, OpponentsFromCallAdapter.OnAdapterEventListener, CallService.OnlineParticipantsChangeListener {
@@ -102,6 +102,7 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
     private Integer fullScreenUserID;
     private String roomTitle;
     private SharedPrefsHelper sharedPrefsHelper;
+    private final ReconnectionCallbackImpl reconnectionCallback = new ReconnectionCallbackImpl(TAG);
     private boolean asListenerRole;
     private Map<Integer, Boolean> onlineParticipants = new HashMap<>();
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
@@ -124,7 +125,7 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
             Log.d(TAG, "currentSession = null onStart");
             return;
         }
-
+        conversationFragmentCallback.addReconnectionCallback(reconnectionCallback);
         if (!allCallbacksInit) {
             conversationFragmentCallback.addClientConnectionCallback(this);
             initTrackListeners();
@@ -190,6 +191,7 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
         if (cameraState != CameraState.DISABLED_FROM_USER && !conversationFragmentCallback.isListenerRole() && !conversationFragmentCallback.isScreenSharingState()) {
             toggleCamera(false);
         }
+        conversationFragmentCallback.removeReconnectionCallback(reconnectionCallback);
         releaseViews();
         super.onPause();
     }
@@ -218,7 +220,6 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
     }
 
     private void initViews(View view) {
-        Log.i(TAG, "initViews");
         conversationPlaceholder = view.findViewById(R.id.conversation_placeholder);
         micToggle = view.findViewById(R.id.tb_switch_mic);
         cameraToggle = view.findViewById(R.id.tb_switch_cam);
@@ -280,13 +281,11 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
 
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, new ArrayList<>(), recyclerView.getHeight());
-        //for correct removing item in adapter
-        recyclerView.setItemAnimator(null);
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 setGrid(recyclerView.getHeight());
+                recyclerView.setItemAnimator(null);
                 recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 if (currentSession.getState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED) {
                     startJoinConference();
@@ -308,12 +307,30 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
             }
         });
 
-        if (conversationFragmentCallback.isListenerRole()) {
-            actionButtonsEnabled(true);
-        } else {
-            actionButtonsEnabled(false);
-        }
+        actionButtonsEnabled(conversationFragmentCallback.isListenerRole());
         setActionButtonsVisibility();
+    }
+
+    private void reconnectState() {
+        if (!asListenerRole) {
+            micToggle.setVisibility(View.GONE);
+            cameraToggle.setVisibility(View.GONE);
+            screenSharingToggle.setVisibility(View.GONE);
+            swapCamToggle.setVisibility(View.GONE);
+            ibGoToChat.setVisibility(View.INVISIBLE);
+            ibManageGroup.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void conversationState() {
+        if (!asListenerRole) {
+            micToggle.setVisibility(View.VISIBLE);
+            cameraToggle.setVisibility(View.VISIBLE);
+            screenSharingToggle.setVisibility(View.VISIBLE);
+            swapCamToggle.setVisibility(View.VISIBLE);
+            ibGoToChat.setVisibility(View.VISIBLE);
+            ibManageGroup.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateToolbar() {
@@ -331,10 +348,6 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
 
             tvMembersCount.setText(membersTitle);
         }
-    }
-
-    private void startJoinConference() {
-        conversationFragmentCallback.onStartJoinConference();
     }
 
     private void switchCamera() {
@@ -452,8 +465,12 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
         swapCamToggle.setVisibility(View.INVISIBLE);
     }
 
+    private void startJoinConference() {
+        conversationFragmentCallback.onStartJoinConference();
+    }
+
     private void setGrid(int itemHeight) {
-        opponentsAdapter = new OpponentsFromCallAdapter(getActivity(), currentSession, new ArrayList<>(), itemHeight);
+        opponentsAdapter = new OpponentsFromCallAdapter(getContext(), currentSession, new ArrayList<>(), itemHeight);
         opponentsAdapter.setAdapterListener(this);
         recyclerView.setAdapter(opponentsAdapter);
     }
@@ -859,7 +876,9 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
             qbUser.setFullName(getString(R.string.load_user));
             loadUserById(userID);
         }
-        opponentsAdapter.add(qbUser);
+        if (opponentsAdapter != null) {
+            opponentsAdapter.add(qbUser);
+        }
     }
 
     //////////////////////////////////////////
@@ -916,7 +935,7 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
 
     @Override
     public void onDisconnectedFromUser(ConferenceSession qbrtcSession, Integer userID) {
-
+        // empty
     }
 
     @Override
@@ -936,7 +955,6 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
 
     @Override
     public void onLocalVideoTrackReceive(ConferenceSession session, QBRTCVideoTrack videoTrack) {
-        Log.d(TAG, "onLocalVideoTrackReceive");
         cameraState = CameraState.NONE;
         actionButtonsEnabled(true);
 
@@ -950,7 +968,7 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
 
     @Override
     public void onRemoteVideoTrackReceive(ConferenceSession session, final QBRTCVideoTrack videoTrack, final Integer userID) {
-        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
+        onConnectedToUser(session, userID);
     }
 
     private void setRemoteViewMultiCall(int userID) {
@@ -966,7 +984,6 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
             return;
         }
         final QBConferenceSurfaceView remoteVideoView = itemHolder.getSurfaceView();
-
         if (remoteVideoView != null) {
             remoteVideoView.setZOrderMediaOverlay(true);
             updateVideoView(remoteVideoView);
@@ -1011,7 +1028,6 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
         this.onlineParticipants = onlineParticipants;
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     updateToolbar();
                 }
@@ -1124,5 +1140,41 @@ public class ConversationFragment extends BaseToolBarFragment implements CallSer
         NONE,
         DISABLED_FROM_USER,
         ENABLED_FROM_USER
+    }
+
+    private class ReconnectionCallbackImpl implements ReconnectionCallback {
+        private final String tag;
+
+        ReconnectionCallbackImpl(String tag) {
+            this.tag = tag;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 53 * hash + tag.hashCode();
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            boolean equals;
+            if (obj instanceof ReconnectionCallbackImpl) {
+                equals = TAG.equals(((ReconnectionCallbackImpl) obj).tag);
+            } else {
+                equals = super.equals(obj);
+            }
+            return equals;
+        }
+
+        @Override
+        public void completed() {
+            conversationState();
+        }
+
+        @Override
+        public void inProgress() {
+            reconnectState();
+        }
     }
 }

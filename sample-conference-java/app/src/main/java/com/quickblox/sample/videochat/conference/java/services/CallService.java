@@ -14,7 +14,12 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import com.quickblox.conference.ConferenceClient;
 import com.quickblox.conference.ConferenceSession;
@@ -27,8 +32,6 @@ import com.quickblox.sample.videochat.conference.java.R;
 import com.quickblox.sample.videochat.conference.java.activities.CallActivity;
 import com.quickblox.sample.videochat.conference.java.managers.WebRtcSessionManager;
 import com.quickblox.sample.videochat.conference.java.utils.Consts;
-import com.quickblox.sample.videochat.conference.java.utils.NetworkConnectionChecker;
-import com.quickblox.sample.videochat.conference.java.utils.ToastUtils;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
@@ -48,34 +51,30 @@ import org.webrtc.VideoSink;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class CallService extends Service {
     private static final String TAG = CallService.class.getSimpleName();
 
     private static final int SERVICE_ID = 646;
+    private static final long SECONDS_13 = 13000;
     private static final String CHANNEL_ID = "Quickblox Conference Channel";
     private static final String CHANNEL_NAME = "Quickblox Background Conference service";
     private static final String ICE_FAILED_REASON = "ICE failed";
 
-    private HashMap<Integer, QBRTCVideoTrack> videoTrackMap = new HashMap<>();
-    private CallServiceBinder callServiceBinder = new CallServiceBinder();
-    private NetworkConnectionListener networkConnectionListener;
-    private NetworkConnectionChecker networkConnectionChecker;
+    private final HashMap<Integer, QBRTCVideoTrack> videoTrackMap = new HashMap<>();
+    private final CallServiceBinder callServiceBinder = new CallServiceBinder();
     private SessionStateListener sessionStateListener;
     private VideoTrackListener videoTrackListener;
     private AudioTrackListener audioTrackListener;
     private ConferenceSessionListener conferenceSessionListener;
-    private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
-    private Set<Integer> subscribedPublishers = new CopyOnWriteArraySet<>();
+    private final ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private ArrayList<Integer> opponentsIDsList = new ArrayList<>();
     private Map<Integer, Boolean> onlineParticipants = new HashMap<>();
     private OnlineParticipantsChangeListener onlineParticipantsChangeListener;
@@ -83,8 +82,6 @@ public class CallService extends Service {
     private UsersConnectDisconnectCallback usersConnectDisconnectCallback;
     private AppRTCAudioManager audioManager;
     private boolean sharingScreenState = false;
-    private boolean isCallState = false;
-    private volatile boolean connectedToJanus;
     private String roomID;
     private String roomTitle;
     private String dialogID;
@@ -92,6 +89,8 @@ public class CallService extends Service {
     private boolean previousDeviceEarPiece;
     private ConferenceSession currentSession;
     private ConferenceClient conferenceClient;
+    private ReconnectionState reconnectionState = ReconnectionState.DEFAULT;
+    private final Set<ReconnectionListener> reconnectionListeners = new HashSet<>();
 
     public static void start(Context context, String roomID, String roomTitle, String dialogID, List<Integer> occupants, boolean listenerRole) {
         Intent intent = new Intent(context, CallService.class);
@@ -109,11 +108,18 @@ public class CallService extends Service {
         context.stopService(intent);
     }
 
+    public ReconnectionState getReconnectionState() {
+        return reconnectionState;
+    }
+
+    public void setReconnectionState(ReconnectionState reconnectionState) {
+        this.reconnectionState = reconnectionState;
+    }
+
     @Override
     public void onCreate() {
         currentSession = WebRtcSessionManager.getInstance().getCurrentSession();
         initConferenceClient();
-        initNetworkChecker();
         initListeners();
         initAudioManager();
         super.onCreate();
@@ -129,10 +135,11 @@ public class CallService extends Service {
             dialogID = intent.getStringExtra(Consts.EXTRA_DIALOG_ID);
             opponentsIDsList = (ArrayList<Integer>) intent.getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
             asListenerRole = intent.getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
-        }
-        if (!isListenerRole()) {
-            onlineParticipantsCheckerCountdown = new OnlineParticipantsCheckerCountdown(Long.MAX_VALUE, 3000);
-            onlineParticipantsCheckerCountdown.start();
+
+            if (!isListenerRole() && !roomID.equals(dialogID)) {
+                onlineParticipantsCheckerCountdown = new OnlineParticipantsCheckerCountdown(Long.MAX_VALUE, 3000);
+                onlineParticipantsCheckerCountdown.start();
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -140,8 +147,7 @@ public class CallService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        networkConnectionChecker.unregisterListener(networkConnectionListener);
-        if (!isListenerRole()) {
+        if (onlineParticipantsCheckerCountdown != null && !isListenerRole()) {
             onlineParticipantsCheckerCountdown.cancel();
         }
         removeVideoTrackRenders();
@@ -220,10 +226,12 @@ public class CallService extends Service {
         this.onlineParticipantsChangeListener = onlineParticipantsChangeListener;
     }
 
-    private void initNetworkChecker() {
-        networkConnectionChecker = new NetworkConnectionChecker(getApplication());
-        networkConnectionListener = new NetworkConnectionListener();
-        networkConnectionChecker.registerListener(networkConnectionListener);
+    public void subscribeReconnectionListener(ReconnectionListener reconnectionListener) {
+        reconnectionListeners.add(reconnectionListener);
+    }
+
+    public void unsubscribeReconnectionListener(ReconnectionListener reconnectionListener) {
+        reconnectionListeners.remove(reconnectionListener);
     }
 
     private void initConferenceClient() {
@@ -247,31 +255,26 @@ public class CallService extends Service {
     }
 
     private void initAudioManager() {
-        audioManager = AppRTCAudioManager.create(this);
-        audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
-        previousDeviceEarPiece = false;
-        Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
+        if (audioManager == null) {
+            audioManager = AppRTCAudioManager.create(this);
+            audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+            previousDeviceEarPiece = false;
+            Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
 
-        audioManager.setOnWiredHeadsetStateListener((plugged, hasMicrophone) -> {
-            if (isCallState) {
-                ToastUtils.shortToast(getApplicationContext(), "Headset " + (hasMicrophone ? "with microphone" : "without microphone") + (plugged ? "plugged" : "unplugged"));
-            }
-            if (!plugged) {
-                if (previousDeviceEarPiece) {
-                    setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.EARPIECE);
-                } else {
-                    setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+            audioManager.setOnWiredHeadsetStateListener((plugged, hasMicrophone) -> {
+
+                if (!plugged) {
+                    if (previousDeviceEarPiece) {
+                        setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.EARPIECE);
+                    } else {
+                        setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+                    }
                 }
-            }
-        });
-
-        audioManager.setBluetoothAudioDeviceStateListener(connected -> {
-            if (isCallState) {
-                ToastUtils.shortToast(getApplicationContext(), "Bluetooth " + (connected ? "connected" : "disconnected"));
-            }
-        });
-
-        audioManager.start((audioDevice, set) -> ToastUtils.shortToast(getApplicationContext(), "Audio Device Switched to " + audioDevice));
+            });
+            audioManager.start((audioDevice, set) ->
+                    Log.d(TAG, "Audio Device Switched to " + audioDevice)
+            );
+        }
     }
 
     private void setAudioDeviceDelayed(final AppRTCAudioManager.AudioDevice audioDevice) {
@@ -279,7 +282,9 @@ public class CallService extends Service {
     }
 
     private void releaseAudioManager() {
-        audioManager.stop();
+        if (audioManager != null) {
+            audioManager.stop();
+        }
     }
 
     public boolean currentSessionExist() {
@@ -288,6 +293,7 @@ public class CallService extends Service {
 
     public void leaveCurrentSession() {
         currentSession.leave();
+        releaseCurrentSession();
     }
 
     private void releaseCurrentSession() {
@@ -349,10 +355,6 @@ public class CallService extends Service {
         }
     }
 
-    private void notifyFragmentParticipantsChanged() {
-        onlineParticipantsChangeListener.onParticipantsCountChanged(onlineParticipants);
-    }
-
     // Common methods
 
     public ArrayList<Integer> getOpponentsIDsList() {
@@ -364,18 +366,20 @@ public class CallService extends Service {
     }
 
     public void getOnlineParticipants(ConferenceEntityCallback<Map<Integer, Boolean>> callback) {
-        currentSession.getOnlineParticipants(new ConferenceEntityCallback<Map<Integer, Boolean>>() {
-            @Override
-            public void onSuccess(Map<Integer, Boolean> integerBooleanMap) {
-                onlineParticipants = integerBooleanMap;
-                callback.onSuccess(integerBooleanMap);
-            }
+        if (currentSession != null) {
+            currentSession.getOnlineParticipants(new ConferenceEntityCallback<Map<Integer, Boolean>>() {
+                @Override
+                public void onSuccess(Map<Integer, Boolean> integerBooleanMap) {
+                    onlineParticipants = integerBooleanMap;
+                    callback.onSuccess(integerBooleanMap);
+                }
 
-            @Override
-            public void onError(WsException e) {
-                callback.onError(e);
-            }
-        });
+                @Override
+                public void onError(WsException e) {
+                    callback.onError(e);
+                }
+            });
+        }
     }
 
     public String getRoomID() {
@@ -485,35 +489,18 @@ public class CallService extends Service {
         }
     }
 
-    private void subscribeToPublishers(ArrayList<Integer> publishersList) {
-        subscribedPublishers.addAll(currentSession.getActivePublishers());
-        for (Integer publisher : publishersList) {
-            currentSession.subscribeToPublisher(publisher);
-        }
-    }
-
     public void joinConference() {
-        Log.d(TAG, "Start Join Conference");
-        int userID = currentSession.getCurrentUserID();
         QBConferenceRole conferenceRole = asListenerRole ? QBConferenceRole.LISTENER : QBConferenceRole.PUBLISHER;
 
         currentSession.joinDialog(roomID, conferenceRole, new ConferenceEntityCallback<ArrayList<Integer>>() {
             @Override
             public void onSuccess(ArrayList<Integer> publishers) {
-                Log.d(TAG, "onSuccess joinDialog sessionUserID= " + userID + ", publishers= " + publishers);
-                if (conferenceClient.isAutoSubscribeAfterJoin()) {
-                    subscribedPublishers.addAll(publishers);
-                }
-                if (asListenerRole) {
-                    connectedToJanus = true;
-                }
+                // empty
             }
 
             @Override
             public void onError(WsException exception) {
                 Log.d(TAG, "onError joinDialog exception= " + exception);
-                ToastUtils.shortToast(getApplicationContext(), "Join exception: " + exception.getMessage());
-                releaseCurrentSession();
             }
         });
     }
@@ -549,15 +536,12 @@ public class CallService extends Service {
     private class ConferenceSessionListener implements ConferenceSessionCallbacks {
         @Override
         public void onPublishersReceived(ArrayList<Integer> publishersList) {
-            Log.d(TAG, "OnPublishersReceived connectedToJanus " + connectedToJanus);
-            subscribedPublishers.addAll(publishersList);
-            subscribeToPublishers(publishersList);
+            currentSession.subscribeToPublisher(publishersList.get(0));
         }
 
         @Override
         public void onPublisherLeft(Integer userID) {
             Log.d(TAG, "OnPublisherLeft userID" + userID);
-            subscribedPublishers.remove(userID);
         }
 
         @Override
@@ -580,15 +564,63 @@ public class CallService extends Service {
 
         @Override
         public void onSessionClosed(ConferenceSession session) {
-            Log.d(TAG, "Session " + session.getSessionID() + " start stop session");
-
-            if (session.equals(currentSession)) {
-                Log.d(TAG, "Stop session");
-                if (audioManager != null) {
-                    audioManager.stop();
-                }
-                releaseCurrentSession();
+            if (session.equals(currentSession) && reconnectionState == ReconnectionState.IN_PROGRESS) {
+                new ReconnectionTimer().reconnect();
             }
+        }
+    }
+
+    private class ReconnectionTimer {
+        private Timer timer = new Timer();
+
+        private long lastDelay = 0;
+        private long delay = 1000;
+        private long newDelay = 0;
+
+        void reconnect() {
+            if (newDelay >= SECONDS_13) {
+                reconnectionState = ReconnectionState.FAILED;
+                for (ReconnectionListener reconnectionListener : reconnectionListeners) {
+                    reconnectionListener.onChangedState(reconnectionState);
+                }
+                leaveCurrentSession();
+                return;
+            }
+            newDelay = lastDelay + delay;
+            lastDelay = delay;
+            delay = newDelay;
+
+            timer.cancel();
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    ConferenceClient client = ConferenceClient.getInstance(getApplicationContext());
+                    QBRTCTypes.QBConferenceType conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+                    client.createSession(currentSession.getCurrentUserID(), conferenceType, new ConferenceEntityCallback<ConferenceSession>() {
+                        @Override
+                        public void onSuccess(ConferenceSession conferenceSession) {
+                            WebRtcSessionManager.getInstance().setCurrentSession(conferenceSession);
+                            currentSession = conferenceSession;
+                            initListeners();
+                            timer.purge();
+                            timer.cancel();
+                            timer = null;
+                            reconnectionState = ReconnectionState.COMPLETED;
+                            for (ReconnectionListener reconnectionListener : reconnectionListeners) {
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    reconnectionListener.onChangedState(reconnectionState);
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onError(WsException exception) {
+                            reconnect();
+                        }
+                    });
+                }
+            }, newDelay);
         }
     }
 
@@ -599,36 +631,37 @@ public class CallService extends Service {
     private class SessionStateListener implements QBRTCSessionStateCallback<ConferenceSession> {
         @Override
         public void onStateChanged(ConferenceSession conferenceSession, BaseSession.QBRTCSessionState qbrtcSessionState) {
-            if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_CONNECTED.equals(qbrtcSessionState)) {
-                connectedToJanus = true;
-                Log.d(TAG, "onStateChanged and begin subscribeToPublishersIfNeed");
-                subscribeToPublishersIfNeed();
-            } else {
-                connectedToJanus = false;
-            }
-        }
-
-        private void subscribeToPublishersIfNeed() {
-            Set<Integer> notSubscribedPublishers = new CopyOnWriteArraySet<>(currentSession.getActivePublishers());
-            notSubscribedPublishers.removeAll(subscribedPublishers);
-            if (!notSubscribedPublishers.isEmpty()) {
-                subscribeToPublishers(new ArrayList<>(notSubscribedPublishers));
-            }
+            // empty
         }
 
         @Override
         public void onConnectedToUser(ConferenceSession conferenceSession, Integer userID) {
             Log.d(TAG, "onConnectedToUser userID= " + userID + " sessionID= " + conferenceSession.getSessionID());
-            isCallState = true;
             notifyCallStateListenersCallStarted();
             if (usersConnectDisconnectCallback != null) {
                 usersConnectDisconnectCallback.onUserConnected(userID);
+            }
+            if (userID.equals(currentSession.getCurrentUserID()) && reconnectionState == ReconnectionState.IN_PROGRESS) {
+                reconnectionState = ReconnectionState.COMPLETED;
+                for (ReconnectionListener reconnectionListener : reconnectionListeners) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        reconnectionListener.onChangedState(reconnectionState);
+                    });
+                }
             }
         }
 
         @Override
         public void onDisconnectedFromUser(ConferenceSession conferenceSession, Integer userID) {
-            Log.d(TAG, "QBRTCSessionStateCallbackImpl onDisconnectedFromUser userID=" + userID);
+            if (userID.equals(currentSession.getCurrentUserID()) || conferenceSession.getConferenceRole() == QBConferenceRole.LISTENER) {
+                reconnectionState = ReconnectionState.IN_PROGRESS;
+                for (ReconnectionListener reconnectionListener : reconnectionListeners) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        reconnectionListener.onChangedState(reconnectionState);
+                    });
+                }
+                currentSession.leave();
+            }
         }
 
         @Override
@@ -642,35 +675,23 @@ public class CallService extends Service {
     }
 
     //////////////////////////////////////////
-    //    Network Connection Checker
-    //////////////////////////////////////////
-
-    private class NetworkConnectionListener implements NetworkConnectionChecker.OnConnectivityChangedListener {
-
-        @Override
-        public void connectivityChanged(boolean availableNow) {
-            ToastUtils.shortToast(getApplicationContext(), "Internet Connection " + (availableNow ? "Available" : "Unavailable"));
-        }
-    }
-
-    //////////////////////////////////////////
     //    Camera Events Handler
     //////////////////////////////////////////
 
     private class CameraEventsListener implements CameraVideoCapturer.CameraEventsHandler {
         @Override
         public void onCameraError(String s) {
-            ToastUtils.shortToast(getApplicationContext(), "Camera Error: " + s);
+            // empty
         }
 
         @Override
         public void onCameraDisconnected() {
-            ToastUtils.shortToast(getApplicationContext(), "Camera Disconnected");
+            // empty
         }
 
         @Override
         public void onCameraFreezed(String s) {
-            ToastUtils.shortToast(getApplicationContext(), "Camera Freezed");
+//            ToastUtils.shortToast(getApplicationContext(), "Camera Freezed");
             // TODO: Need to make switching camera OFF and then Switching it ON
             /*if (currentSession != null) {
                 try {
@@ -697,17 +718,17 @@ public class CallService extends Service {
 
         @Override
         public void onCameraOpening(String s) {
-            ToastUtils.shortToast(getApplicationContext(), "Camera Opening");
+            // empty
         }
 
         @Override
         public void onFirstFrameAvailable() {
-            ToastUtils.shortToast(getApplicationContext(), "Camera onFirstFrameAvailable");
+            // empty
         }
 
         @Override
         public void onCameraClosed() {
-            ToastUtils.shortToast(getApplicationContext(), "Camera Closed");
+            // empty
         }
     }
 
@@ -760,18 +781,16 @@ public class CallService extends Service {
             getOnlineParticipants(new ConferenceEntityCallback<Map<Integer, Boolean>>() {
                 @Override
                 public void onSuccess(Map<Integer, Boolean> integerBooleanMap) {
-                    boolean onlineParticipantsCountChanged = onlineParticipants != null && integerBooleanMap.size() != onlineParticipants.size();
-                    if (onlineParticipantsCountChanged) {
-                        Log.d(TAG, "Participants count changed. Now online is : " + integerBooleanMap.size());
+                    if (onlineParticipantsChangeListener != null) {
+                        onlineParticipantsChangeListener.onParticipantsCountChanged(onlineParticipants);
                     }
-                    notifyFragmentParticipantsChanged();
                     onlineParticipants = integerBooleanMap;
                 }
 
                 @Override
-                public void onError(WsException e) {
-                    if (e != null) {
-                        Log.d(TAG, "Error Getting Online Participants - " + e.getMessage());
+                public void onError(WsException exception) {
+                    if (exception != null) {
+                        Log.d(TAG, "Error Getting Online Participants - " + exception.getMessage());
                     }
                 }
             });
@@ -783,25 +802,28 @@ public class CallService extends Service {
         }
     }
 
-    public interface OnChangeDynamicToggle {
-
-        void enableDynamicToggle(boolean plugged, boolean wasEarpiece);
-    }
-
     public interface CurrentCallStateCallback {
-
         void onCallStarted();
     }
 
     public interface UsersConnectDisconnectCallback {
-
         void onUserConnected(Integer userID);
 
         void onUserDisconnected(Integer userID);
     }
 
     public interface OnlineParticipantsChangeListener {
-
         void onParticipantsCountChanged(Map<Integer, Boolean> onlineParticipants);
+    }
+
+    public interface ReconnectionListener {
+        void onChangedState(ReconnectionState reconnectionState);
+    }
+
+    public enum ReconnectionState {
+        COMPLETED,
+        IN_PROGRESS,
+        FAILED,
+        DEFAULT
     }
 }
