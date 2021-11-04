@@ -11,6 +11,10 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
@@ -25,10 +29,6 @@ import com.quickblox.sample.videochat.conference.java.utils.qb.QBDialogsHolder;
 import com.quickblox.sample.videochat.conference.java.utils.qb.QBUsersHolder;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -131,6 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (progressDialog != null && progressDialog.isShowing()) {
             try {
                 progressDialog.dismiss();
+                progressDialog = null;
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }

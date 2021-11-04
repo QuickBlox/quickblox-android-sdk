@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.conference.ConferenceConfig;
-import com.quickblox.core.ServiceZone;
 import com.quickblox.sample.videochat.conference.java.managers.ActivityLifecycle;
 import com.quickblox.sample.videochat.conference.java.managers.BackgroundListener;
 import com.quickblox.sample.videochat.conference.java.managers.ChatHelper;
@@ -43,10 +42,7 @@ public class App extends Application {
     private static final String AUTH_KEY = "";
     private static final String AUTH_SECRET = "";
     private static final String ACCOUNT_KEY = "";
-
-    private static final String JANUS_SERVER_URL = "";
-
-    // TODO Firebase keys in - google-services.json
+    private static final String SERVER_URL = "";
 
     public static final String USER_DEFAULT_PASSWORD = "quickblox";
 
@@ -145,8 +141,8 @@ public class App extends Application {
     }
 
     private void initConferenceConfig() {
-        if (!TextUtils.isEmpty(JANUS_SERVER_URL)) {
-            ConferenceConfig.setUrl(JANUS_SERVER_URL);
+        if (!TextUtils.isEmpty(SERVER_URL)) {
+            ConferenceConfig.setUrl(SERVER_URL);
         } else {
             throw new AssertionError(getString(R.string.error_server_url_null));
         }

@@ -63,5 +63,5 @@
         android:id="@+id/progress_bar_adapter"
         style="@style/MatchWidth"
         android:layout_gravity="center"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </FrameLayout>

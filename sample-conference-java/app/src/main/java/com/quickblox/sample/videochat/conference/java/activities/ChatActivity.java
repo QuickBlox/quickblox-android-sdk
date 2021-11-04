@@ -29,6 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBMessageStatusesManager;
 import com.quickblox.chat.QBRestChatService;
@@ -84,13 +91,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ChatActivity extends BaseActivity implements OnMediaPickedListener, QBMessageStatusListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -142,6 +142,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     private int skipPagination = 0;
     private Boolean checkAdapterInit = false;
     private boolean isOpenFromCall = false;
+    private String streamID;
     private ServiceConnection callServiceConnection;
 
     public static void startForResultFromCall(Activity activity, int code, String dialogId, boolean isOpenFromCall) {
@@ -182,20 +183,36 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
 
         qbChatDialog = getQBDialogsHolder().getDialogById(dialogID);
         Log.d(TAG, "Deserialized dialog = " + qbChatDialog);
+        Log.d(TAG, "dialogID = " + dialogID);
+
+        if (qbChatDialog == null) {
+            QBRestChatService.getChatDialogById(dialogID).performAsync(new QBEntityCallback<QBChatDialog>() {
+                @Override
+                public void onSuccess(QBChatDialog dialog, Bundle bundle) {
+                    getQBDialogsHolder().addDialog(dialog);
+                    qbChatDialog = dialog;
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    showErrorSnackbar(R.string.select_users_get_dialog_error, e, null);
+                }
+            });
+        }
 
         try {
             qbChatDialog.initForChat(QBChatService.getInstance());
+            qbChatDialog.addMessageListener(chatMessageListener);
+            setChatNameToActionBar();
         } catch (IllegalStateException | NullPointerException e) {
             Log.d(TAG, "initForChat error. Error message is : " + e.getMessage());
             Log.e(TAG, "Finishing " + TAG + ". Unable to init chat");
             finish();
         }
-        qbChatDialog.addMessageListener(chatMessageListener);
 
         // TODO Typing Status: 1/3 To add Typing Status functionality uncomment this string:
         //qbChatDialog.addIsTypingListener(new TypingStatusListener());
 
-        setChatNameToActionBar();
         initViews();
         initMessagesRecyclerView();
         initChatConnectionListener();
@@ -225,9 +242,14 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     }
 
     @Override
-    public void onResumeFinished() {
+    protected void onResume() {
         checker = new PermissionsChecker(getApplicationContext());
         sessionManager = WebRtcSessionManager.getInstance();
+        super.onResume();
+    }
+
+    @Override
+    public void onResumeFinished() {
         if (getChatHelper().isLogged()) {
             if (qbChatDialog == null) {
                 String dialogID = getIntent().getStringExtra(EXTRA_DIALOG_ID);
@@ -259,7 +281,6 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     }
 
     private void reloginToChat() {
-        showProgressDialog(R.string.dlg_login);
         getChatHelper().loginToChat(getSharedPrefsHelper().getQbUser(), new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
@@ -283,29 +304,31 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
 
     private void returnToChat() {
         Log.e(TAG, "Returning to Chat");
-        qbChatDialog.initForChat(QBChatService.getInstance());
-        if (!qbChatDialog.isJoined()) {
-            try {
-                qbChatDialog.join(new DiscussionHistory());
-            } catch (Exception e) {
-                Log.e(TAG, "Join Dialog Exception: " + e.getMessage());
-                showErrorSnackbar(R.string.error_joining_chat, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        returnToChat();
-                    }
-                });
+        if (qbChatDialog != null) {
+            qbChatDialog.initForChat(QBChatService.getInstance());
+            if (!qbChatDialog.isJoined()) {
+                try {
+                    qbChatDialog.join(new DiscussionHistory());
+                } catch (Exception e) {
+                    Log.e(TAG, "Join Dialog Exception: " + e.getMessage());
+                    showErrorSnackbar(R.string.error_joining_chat, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            returnToChat();
+                        }
+                    });
+                }
             }
-        }
 
-        returnListeners();
+            returnListeners();
 
-        // Loading unread messages received in background
-        if (getSharedPrefsHelper().get(IS_IN_BACKGROUND, false)) {
-            progressBar.setVisibility(View.VISIBLE);
-            skipPagination = 0;
-            checkAdapterInit = false;
-            loadChatHistory();
+            // Loading unread messages received in background
+            if (getSharedPrefsHelper().get(IS_IN_BACKGROUND, false)) {
+                progressBar.setVisibility(View.VISIBLE);
+                skipPagination = 0;
+                checkAdapterInit = false;
+                loadChatHistory();
+            }
         }
     }
 
@@ -351,6 +374,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     @Override
     protected void onPause() {
         super.onPause();
+        hideProgressDialog();
         chatAdapter.removeClickListeners();
         qbChatDialog.removeMessageListrener(chatMessageListener);
         QBChatService.getInstance().removeConnectionListener(chatConnectionListener);
@@ -434,9 +458,9 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 return true;
             case R.id.menu_chat_action_stream:
                 if (getChatHelper().isLogged()) {
-                    String streamID = createNewStreamID();
+                    streamID = createNewStreamID();
                     getDialogsManager().sendMessageStartedStream(qbChatDialog, streamID);
-                    checkStreamPermissions(streamID);
+                    checkStreamPermissions();
                 } else {
                     openAlertDialogWaitChat();
                 }
@@ -519,12 +543,12 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         });
     }
 
-    private void checkStreamPermissions(String newStreamID) {
+    private void checkStreamPermissions() {
         boolean needToAskPermissions = checker.missAllPermissions(Consts.PERMISSIONS);
         if (needToAskPermissions) {
             PermissionsActivity.startForResult(this, REQUEST_STREAM_PERMISSION_CODE, Consts.PERMISSIONS);
         } else {
-            startStream(newStreamID);
+            startStream(streamID);
         }
     }
 
@@ -550,14 +574,14 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 showErrorSnackbar(R.string.join_stream_error, e, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        checkStreamPermissions(newStreamID);
+                        checkStreamPermissions();
                     }
                 });
             }
         });
     }
 
-    private void joinStream(String streamID, String streamerName) {
+    private void joinStream(String roomId, String streamerName) {
         Log.d(TAG, "Join Stream : " + streamID);
         showProgressDialog(R.string.join_stream);
         ConferenceClient client = ConferenceClient.getInstance(getApplicationContext());
@@ -569,7 +593,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 hideProgressDialog();
                 sessionManager.setCurrentSession(session);
                 Log.d(TAG, "Session Created Successfully. \n Session ID = " + session.getSessionID() + "\n Dialog ID = " + session.getDialogID());
-                CallActivity.start(ChatActivity.this, streamID, streamerName, qbChatDialog.getDialogId(), qbChatDialog.getOccupants(), true);
+                CallActivity.start(ChatActivity.this, roomId, streamerName, qbChatDialog.getDialogId(), qbChatDialog.getOccupants(), true);
             }
 
             @Override
@@ -818,8 +842,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 checkConferencePermissions();
             }
             if (requestCode == REQUEST_STREAM_PERMISSION_CODE) {
-                String streamID = createNewStreamID();
-                checkStreamPermissions(streamID);
+                checkStreamPermissions();
             }
         }
     }
@@ -1055,21 +1078,21 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     }
 
     private void initChat() {
-        switch (qbChatDialog.getType()) {
-            case GROUP:
-            case PUBLIC_GROUP:
-                joinGroupChat(false);
-                break;
-
-            case PRIVATE:
-                loadDialogUsers();
-                break;
-
-            default:
-                ToastUtils.shortToast(getApplicationContext(), String.format("%s %s", getString(R.string.chat_unsupported_type), qbChatDialog.getType().name()));
-                Log.e(TAG, "Finishing " + TAG + ". Unsupported chat type");
-                finish();
-                break;
+        if (qbChatDialog != null) {
+            switch (qbChatDialog.getType()) {
+                case GROUP:
+                case PUBLIC_GROUP:
+                    joinGroupChat(false);
+                    break;
+                case PRIVATE:
+                    loadDialogUsers();
+                    break;
+                default:
+                    ToastUtils.shortToast(getApplicationContext(), String.format("%s %s", getString(R.string.chat_unsupported_type), qbChatDialog.getType().name()));
+                    Log.e(TAG, "Finishing " + TAG + ". Unsupported chat type");
+                    finish();
+                    break;
+            }
         }
     }
 
@@ -1293,9 +1316,9 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         if (isConference) {
             checkConferencePermissions();
         } else if (isStream) {
-            String streamID = (String) qbChatMessage.getProperty(DialogsManager.PROPERTY_CONVERSATION_ID);
+            streamID = (String) qbChatMessage.getProperty(DialogsManager.PROPERTY_CONVERSATION_ID);
             if (currentUser.getId().equals(qbChatMessage.getSenderId())) {
-                checkStreamPermissions(streamID);
+                checkStreamPermissions();
             } else {
                 QBUser streamer = getQBUsersHolder().getUserById(qbChatMessage.getSenderId());
                 String streamerName = TextUtils.isEmpty(streamer.getFullName()) ? streamer.getLogin() : streamer.getFullName();
@@ -1599,7 +1622,6 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 unbindService(callServiceConnection);
                 callService.stopSelf();
                 callService.stopForeground(true);
-
             }
         }
     }

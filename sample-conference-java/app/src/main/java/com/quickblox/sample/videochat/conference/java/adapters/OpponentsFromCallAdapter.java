@@ -14,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickblox.conference.ConferenceSession;
 import com.quickblox.conference.QBConferencePeerConnection;
 import com.quickblox.conference.view.QBConferenceSurfaceView;
@@ -23,8 +25,6 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder> {
 
@@ -168,8 +168,11 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     }
 
     public void add(QBUser item) {
-        opponents.add(item);
-        notifyItemRangeChanged(0, opponents.size());
+        if (session.getCurrentUserID().equals(item.getId())) {
+            opponents.add(0, item);
+        } else {
+            opponents.add(item);
+        }
         notifyDataSetChanged();
     }
 
