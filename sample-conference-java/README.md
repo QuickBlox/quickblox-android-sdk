@@ -3,13 +3,22 @@ QuickBlox provides the Multiparty Video Conferencing solution which allows to se
 
 Multi-conference server is available only for **Enterprise** plans, with additional **fee**. Please refer to https://quickblox.com/developers/EnterpriseFeatures for more information and contacts.
 
-# Features supported
-* Video/Audio Conference with 10-12 people
-* Join-Rejoin video room functionality (like Skype)
-* Mute/Unmute audio/video stream (own and opponents)
-* Display bitrate
-* Switch video input device (camera)
-
+# Features 
+* Login/logout
+* Create a conference room
+* Leave a conference room
+* Add a new member to a conference room
+* Participate in a conference call as a streamer/watcher
+* Send and receive text messages and attachments
+* Enable/disable audio stream from an opponent
+* Switch camera
+* Enable/disable camera
+* Mute/unmute the microphone
+* Display the number of chat members
+* Share a screen
+* Change media settings
+* Working in the background
+* Reconnect to a conference call
 # Getting started
 
 <p>Integrate QuickBlox Conference sdk in your application.
