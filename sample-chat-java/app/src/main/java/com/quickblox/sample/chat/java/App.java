@@ -2,13 +2,11 @@ package com.quickblox.sample.chat.java;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.lifecycle.ProcessLifecycleOwner;
+
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.chat.java.managers.BackgroundListener;
 import com.quickblox.sample.chat.java.utils.ActivityLifecycle;
-
-import androidx.lifecycle.ProcessLifecycleOwner;
-import io.fabric.sdk.android.Fabric;
 
 public class App extends Application {
 
@@ -42,7 +40,6 @@ public class App extends Application {
         super.onCreate();
         initApplication();
         ActivityLifecycle.init(this);
-        initFabric();
         checkAppCredentials();
         checkChatSettings();
         initCredentials();
@@ -51,12 +48,6 @@ public class App extends Application {
 
     private void initApplication() {
         instance = this;
-    }
-
-    private void initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
     }
 
     private void checkAppCredentials() {
