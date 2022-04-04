@@ -1,5 +1,6 @@
 package com.quickblox.sample.chat.java.utils.chat;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -44,8 +45,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class ChatHelper {
     private static final String TAG = ChatHelper.class.getSimpleName();

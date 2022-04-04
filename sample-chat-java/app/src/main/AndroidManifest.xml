@@ -20,12 +20,13 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:requestLegacyExternalStorage="true">
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".ui.activity.SplashActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
 
@@ -83,14 +84,16 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".fcm.PushListenerService">
+            android:name=".fcm.PushListenerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService">
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -121,8 +124,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="4b96a3f33893a42103eae91d2166d0c517b833d3" />
     </application>
 </manifest>
