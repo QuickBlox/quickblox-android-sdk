@@ -47,7 +47,11 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
         setContentView(R.layout.activity_chat_info)
 
         chatMessage = intent.getSerializableExtra(EXTRA_MESSAGE) as QBChatMessage
-        messageInfoType = intent.getStringExtra(EXTRA_MSG_INFO_TYPE)
+
+        if (intent.getStringExtra(EXTRA_MSG_INFO_TYPE) != null) {
+            messageInfoType = intent.getStringExtra(EXTRA_MSG_INFO_TYPE)!!
+        }
+
         usersListView = findViewById(R.id.list_chat_info_users)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -153,7 +157,8 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
 
     override fun processMessageDelivered(messageID: String?, dialogID: String?, userID: Int?) {
         if (messageInfoType == MESSAGE_INFO_DELIVERED_TO && dialogID == chatMessage.dialogId
-                && messageID == chatMessage.id && userID != null) {
+            && messageID == chatMessage.id && userID != null
+        ) {
             val user = QbUsersHolder.getUserById(userID)
             if (user != null) {
                 deliveredUsers.add(user)
@@ -169,7 +174,7 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
 
                     override fun onError(e: QBResponseException?) {
                         shortToast(e?.message)
-                        Log.d(TAG, e?.message)
+                        Log.d(TAG, e?.message.toString())
                     }
                 })
             }
@@ -178,7 +183,8 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
 
     override fun processMessageRead(messageID: String?, dialogID: String?, userID: Int?) {
         if (messageInfoType == MESSAGE_INFO_READ_BY && dialogID == chatMessage.dialogId
-                && messageID == chatMessage.id && userID != null) {
+            && messageID == chatMessage.id && userID != null
+        ) {
             val user = QbUsersHolder.getUserById(userID)
             if (user != null) {
                 readUsers.add(user)
@@ -194,7 +200,7 @@ class MessageInfoActivity : BaseActivity(), QBMessageStatusListener {
 
                     override fun onError(e: QBResponseException?) {
                         shortToast(e?.message)
-                        Log.d(TAG, e?.message)
+                        Log.d(TAG, e?.message.toString())
                     }
                 })
             }

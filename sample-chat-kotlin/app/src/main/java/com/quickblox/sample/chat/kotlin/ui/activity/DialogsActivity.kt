@@ -255,13 +255,13 @@ class DialogsActivity : BaseActivity(), DialogsManager.ManagingDialogsCallbacks 
                         if (TextUtils.isEmpty(chatName)) {
                             chatName = ""
                         }
-                        createDialog(selectedUsers, chatName)
+                        createDialog(selectedUsers, chatName!!)
                     }
                 }
                 REQUEST_DIALOG_ID_FOR_UPDATE -> {
-                    if (data != null) {
+                    if (data?.getStringExtra(EXTRA_DIALOG_ID) != null) {
                         val dialogId = data.getStringExtra(EXTRA_DIALOG_ID)
-                        loadUpdatedDialog(dialogId)
+                        loadUpdatedDialog(dialogId!!)
                     } else {
                         isProcessingResultInProgress = false
                         loadDialogsFromQb(true, false)

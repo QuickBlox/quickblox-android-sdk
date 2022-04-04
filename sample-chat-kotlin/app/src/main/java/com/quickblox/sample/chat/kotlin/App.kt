@@ -2,11 +2,9 @@ package com.quickblox.sample.chat.kotlin
 
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.crashlytics.android.Crashlytics
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.sample.chat.kotlin.managers.BackgroundListener
 import com.quickblox.sample.chat.kotlin.utils.ActivityLifecycle
-import io.fabric.sdk.android.Fabric
 
 //Chat settings
 const val USER_DEFAULT_PASSWORD = "quickblox"
@@ -43,7 +41,6 @@ class App : Application() {
         super.onCreate()
         instance = this
         registerActivityLifecycleCallbacks(ActivityLifecycle)
-        initFabric()
         checkAppCredentials()
         checkChatSettings()
         initCredentials()
@@ -58,7 +55,8 @@ class App : Application() {
 
     private fun checkChatSettings() {
         if (USER_DEFAULT_PASSWORD.isEmpty() || CHAT_PORT !in MIN_PORT_VALUE..MAX_PORT_VALUE
-                || SOCKET_TIMEOUT !in MIN_SOCKET_TIMEOUT..MAX_SOCKET_TIMEOUT) {
+            || SOCKET_TIMEOUT !in MIN_SOCKET_TIMEOUT..MAX_SOCKET_TIMEOUT
+        ) {
             throw AssertionError(getString(R.string.error_chat_credentails_empty))
         }
     }
@@ -72,11 +70,5 @@ class App : Application() {
         //
         // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);
         // QBSettings.getInstance().zone = ServiceZone.PRODUCTION
-    }
-
-    private fun initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-        }
     }
 }
