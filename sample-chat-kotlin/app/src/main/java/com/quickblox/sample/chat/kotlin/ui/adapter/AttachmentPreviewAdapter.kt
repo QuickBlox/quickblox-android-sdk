@@ -101,10 +101,9 @@ class AttachmentPreviewAdapter(val context: Context,
         try {
             Glide.with(context)
                     .load(attachmentFile)
-                    .override(width, height)
                     .into(holder.attachmentImageView)
         } catch (e: IllegalArgumentException) {
-            Log.d("AttachmentPreview", e.message)
+            Log.d("AttachmentPreview", e.message.toString())
 
         }
 

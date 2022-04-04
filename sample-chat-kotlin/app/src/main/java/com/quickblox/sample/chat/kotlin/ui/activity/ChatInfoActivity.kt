@@ -116,7 +116,7 @@ class ChatInfoActivity : BaseActivity() {
                 }
 
                 override fun onError(e: QBResponseException?) {
-                    Log.d(TAG, e?.message)
+                    Log.d(TAG, e.toString())
                 }
             })
         }

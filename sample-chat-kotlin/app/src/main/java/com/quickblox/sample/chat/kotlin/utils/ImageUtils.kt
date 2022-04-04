@@ -167,7 +167,7 @@ private fun loadFileFromGoogleDocs(uri: Uri, context: Context): File? {
                 }
             }
         } catch (e: Exception) {
-            Log.d("ImageUtils", e.message)
+            Log.d("ImageUtils", e.message.toString())
         } finally {
             cursor.close()
         }

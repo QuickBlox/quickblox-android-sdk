@@ -92,6 +92,8 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private lateinit var attachmentPreviewContainerLayout: LinearLayout
     private lateinit var chatMessagesRecyclerView: RecyclerView
 
+    private lateinit var sendMessageContainer: RelativeLayout
+
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     private lateinit var chatConnectionListener: ConnectionListener
@@ -99,11 +101,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private lateinit var videoAttachClickListener: VideoAttachClickListener
     private lateinit var fileAttachClickListener: FileAttachClickListener
     private lateinit var messageLongClickListener: MessageLongClickListenerImpl
-    private lateinit var qbMessageStatusesManager: QBMessageStatusesManager
+    private var qbMessageStatusesManager: QBMessageStatusesManager? = null
     private var chatMessageListener: ChatMessageListener = ChatMessageListener()
     private var dialogsManager: DialogsManager = DialogsManager()
     private var systemMessagesListener: SystemMessagesListener = SystemMessagesListener()
-    private lateinit var systemMessagesManager: QBSystemMessagesManager
+    private var systemMessagesManager: QBSystemMessagesManager? = null
 
     private lateinit var messagesList: MutableList<QBChatMessage>
     private lateinit var qbChatDialog: QBChatDialog
@@ -148,7 +150,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         try {
             qbChatDialog.initForChat(QBChatService.getInstance())
         } catch (e: IllegalStateException) {
-            Log.d(TAG, "initForChat error. Error message is : " + e.message)
+            Log.d(TAG, "initForChat error. Error message is : " + e.toString())
             Log.e(TAG, "Finishing " + TAG + ". Unable to init chat")
             finish()
         }
@@ -172,7 +174,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             val dialogId = savedInstanceState.getString(EXTRA_DIALOG_ID)!!
             qbChatDialog = QbDialogHolder.getChatDialogById(dialogId)!!
         } catch (e: Exception) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.toString())
         }
     }
 
@@ -205,23 +207,29 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private fun returnToChat() {
         qbChatDialog.initForChat(QBChatService.getInstance())
         if (!qbChatDialog.isJoined) {
-            try {
-                qbChatDialog.join(DiscussionHistory())
-            } catch (e: Exception) {
-                Log.e(TAG, "Join Dialog Exception: " + e.message)
-                showErrorSnackbar(R.string.error_joining_chat, e, View.OnClickListener { returnToChat() })
-            }
-        }
+            ChatHelper.join(qbChatDialog, object : QBEntityCallback<Void> {
+                override fun onSuccess(result: Void?, b: Bundle?) {
+                    // Loading unread messages received in background
+                    if (SharedPrefsHelper.get(IS_IN_BACKGROUND, false)) {
+                        progressBar.visibility = View.VISIBLE
+                        skipPagination = 0
+                        checkAdapterInit = false
+                        loadChatHistory()
+                    }
 
-        // Loading unread messages received in background
-        if (SharedPrefsHelper.get(IS_IN_BACKGROUND, false)) {
-            progressBar.visibility = View.VISIBLE
-            skipPagination = 0
-            checkAdapterInit = false
-            loadChatHistory()
-        }
+                    sendMessageContainer.visibility = View.VISIBLE
 
-        returnListeners()
+                    returnListeners()
+                }
+
+                override fun onError(e: QBResponseException) {
+                    Log.e(TAG, "Join Dialog Exception: " + e.toString())
+                    showErrorSnackbar(R.string.error_joining_chat, e) {
+                        returnToChat()
+                    }
+                }
+            })
+        }
     }
 
     private fun returnListeners() {
@@ -232,11 +240,11 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         dialogsManager.addManagingDialogsCallbackListener(this)
         try {
             systemMessagesManager = QBChatService.getInstance().systemMessagesManager
-            systemMessagesManager.addSystemMessageListener(systemMessagesListener)
+            systemMessagesManager?.addSystemMessageListener(systemMessagesListener)
             qbMessageStatusesManager = QBChatService.getInstance().messageStatusesManager
-            qbMessageStatusesManager.addMessageStatusListener(this)
+            qbMessageStatusesManager?.addMessageStatusListener(this)
         } catch (e: Exception) {
-            e.message?.let { Log.d(TAG, it) }
+            e.toString()?.let { Log.d(TAG, it) }
             showErrorSnackbar(R.string.error_getting_chat_service, e, View.OnClickListener { returnListeners() })
         }
         chatAdapter.setAttachImageClickListener(imageAttachClickListener)
@@ -250,13 +258,13 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         super.onPause()
         chatAdapter.removeClickListeners()
         ChatHelper.removeConnectionListener(chatConnectionListener)
-        qbMessageStatusesManager.removeMessageStatusListener(this)
+        qbMessageStatusesManager?.removeMessageStatusListener(this)
         SharedPrefsHelper.save(IS_IN_BACKGROUND, true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        systemMessagesManager.removeSystemMessageListener(systemMessagesListener)
+        systemMessagesManager?.removeSystemMessageListener(systemMessagesListener)
         qbChatDialog.removeMessageListrener(chatMessageListener)
         dialogsManager.removeManagingDialogsCallbackListener(this)
         SharedPrefsHelper.delete(IS_IN_BACKGROUND)
@@ -428,7 +436,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             }
 
             override fun onError(e: QBResponseException) {
-                Log.d(TAG, "Dialog Loading Error: " + e.message)
+                Log.d(TAG, "Dialog Loading Error: " + e.toString())
                 hideProgressDialog()
                 showErrorSnackbar(R.string.select_users_get_dialog_error, e, null)
             }
@@ -443,7 +451,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
     private fun leaveGroupChat() {
         showProgressDialog(R.string.dlg_loading)
         dialogsManager.sendMessageLeftUser(qbChatDialog)
-        dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, qbChatDialog)
+        systemMessagesManager?.let {
+            dialogsManager.sendSystemMessageLeftUser(it, qbChatDialog)
+        }
         try {
             // Its a hack to give the Chat Server more time to process the message and deliver them
             Thread.sleep(300)
@@ -462,7 +472,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
             }
 
             override fun onError(e: QBResponseException) {
-                Log.d(TAG, "Leaving Dialog Error: " + e.message)
+                Log.d(TAG, "Leaving Dialog Error: " + e.toString())
                 hideProgressDialog()
                 showErrorSnackbar(R.string.error_leave_chat, e, View.OnClickListener { leaveGroupChat() })
             }
@@ -489,7 +499,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                     override fun onSuccess(qbChatDialog: QBChatDialog, p1: Bundle?) {
                         progressBar.visibility = View.GONE
                         dialogsManager.sendMessageAddedUsers(qbChatDialog, newUserIds)
-                        dialogsManager.sendSystemMessageAddedUser(systemMessagesManager, qbChatDialog, newUserIds)
+                        systemMessagesManager?.let {
+                            dialogsManager.sendSystemMessageAddedUser(it, qbChatDialog, newUserIds)
+                        }
                         qbChatDialog.let {
                             this@ChatActivity.qbChatDialog = it
                         }
@@ -538,9 +550,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         try {
             qbChatDialog.sendStopTypingNotification()
         } catch (e: XMPPException) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.toString())
         } catch (e: SmackException.NotConnectedException) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.toString())
         }
 
         val totalAttachmentsCount = attachmentPreviewAdapter.count
@@ -595,6 +607,8 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
 
         progressBar = findViewById(R.id.progress_chat)
         attachmentPreviewContainerLayout = findViewById(R.id.ll_attachment_preview_container)
+
+        sendMessageContainer = findViewById(R.id.rl_chat_send_container)
 
         attachmentBtnChat = findViewById(R.id.iv_chat_attachment)
         attachmentBtnChat.setOnClickListener {
@@ -699,7 +713,7 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                         }
 
                         override fun onError(e: QBResponseException) {
-                            Log.d(TAG, "Relogin Error: " + e.message)
+                            Log.d(TAG, "Relogin Error: " + e.toString())
                             hideProgressDialog()
                             shortToast(R.string.chat_send_message_error)
                         }
@@ -711,7 +725,10 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
         when (qbChatDialog.type) {
             QBDialogType.GROUP,
             QBDialogType.PUBLIC_GROUP -> joinGroupChat()
-            QBDialogType.PRIVATE -> loadDialogUsers()
+            QBDialogType.PRIVATE -> {
+                loadDialogUsers()
+                sendMessageContainer.visibility = View.VISIBLE
+            }
             else -> {
                 shortToast(String.format("%s %s", getString(R.string.chat_unsupported_type), qbChatDialog.type.name))
                 finish()
@@ -726,13 +743,14 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 Log.d(TAG, "Joined to Dialog Successful")
                 notifyUsersAboutCreatingDialog()
                 hideProgressDialog()
+                sendMessageContainer.visibility = View.VISIBLE
                 loadDialogUsers()
             }
 
             override fun onError(e: QBResponseException) {
-                Log.d(TAG, "Joining Dialog Error: " + e.message)
-                progressBar.visibility = View.GONE
-                showErrorSnackbar(R.string.connection_error, e, null)
+                Log.d(TAG, "Joining Dialog Error: " + e.toString())
+                /*progressBar.visibility = View.GONE
+                showErrorSnackbar(R.string.connection_error, e, null)*/
             }
         })
     }
@@ -1097,9 +1115,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                 try {
                     qbChatDialog.sendIsTypingNotification()
                 } catch (e: XMPPException) {
-                    Log.d(TAG, e.message)
+                    Log.d(TAG, e.toString())
                 } catch (e: SmackException.NotConnectedException) {
-                    Log.d(TAG, e.message)
+                    Log.d(TAG, e.toString())
                 }
 
             }
@@ -1113,9 +1131,9 @@ class ChatActivity : BaseActivity(), OnImagePickedListener, QBMessageStatusListe
                     try {
                         qbChatDialog.sendStopTypingNotification()
                     } catch (e: XMPPException) {
-                        Log.d(TAG, e.message)
+                        Log.d(TAG, e.toString())
                     } catch (e: SmackException.NotConnectedException) {
-                        Log.d(TAG, e.message)
+                        Log.d(TAG, e.toString())
                     }
                 }
             }, TYPING_STATUS_DELAY)

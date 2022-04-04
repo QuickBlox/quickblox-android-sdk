@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.kotlin.ui.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,12 +14,11 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.quickblox.sample.chat.kotlin.R
-import com.quickblox.sample.chat.kotlin.utils.PREFERRED_IMAGE_SIZE_FULL
 import com.quickblox.sample.chat.kotlin.utils.shortToast
 
 
@@ -96,34 +96,27 @@ class AttachmentImageActivity : BaseActivity() {
         progressBar.visibility = View.VISIBLE
         Glide.with(this)
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(DrawableListener(progressBar))
-                .error(R.drawable.ic_error_white)
-                .dontTransform()
-                .override(PREFERRED_IMAGE_SIZE_FULL, PREFERRED_IMAGE_SIZE_FULL)
                 .into(imageView)
     }
 
-    private inner class DrawableListener(private val progressBar: ProgressBar) : RequestListener<String, GlideDrawable> {
-
-        override fun onException(e: Exception?, model: String, target: Target<GlideDrawable>,
-                                 isFirstResource: Boolean): Boolean {
-            var ex = e
-            ex?.printStackTrace()
-            if (ex?.message != null) {
-                Log.d("Glide Drawable", ex.message)
-            } else {
-                ex = java.lang.Exception("Unable to load image")
-            }
-            showErrorSnackbar(R.string.error_load_image, ex, null)
+    private inner class DrawableListener(private val progressBar: ProgressBar) : RequestListener<Drawable> {
+        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
             progressBar.visibility = View.GONE
+            imageLoaded = true
             return false
         }
 
-        override fun onResourceReady(resource: GlideDrawable, model: String, target: Target<GlideDrawable>,
-                                     isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            var ex = e
+            ex?.printStackTrace()
+            if (ex?.message != null) {
+                Log.d("Glide Drawable", ex.message!!)
+            } else {
+                ex = GlideException("Unable to load image")
+            }
+            showErrorSnackbar(R.string.error_load_image, ex, null)
             progressBar.visibility = View.GONE
-            imageLoaded = true
             return false
         }
     }

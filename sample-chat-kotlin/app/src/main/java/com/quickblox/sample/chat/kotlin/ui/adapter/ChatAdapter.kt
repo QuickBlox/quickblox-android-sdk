@@ -2,6 +2,7 @@ package com.quickblox.sample.chat.kotlin.ui.adapter
 
 import android.content.Context
 import android.graphics.Outline
+import android.graphics.drawable.Drawable
 import android.media.ThumbnailUtils
 import android.os.AsyncTask
 import android.os.Build
@@ -17,8 +18,10 @@ import android.view.ViewOutlineProvider
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.quickblox.chat.model.QBAttachment
 import com.quickblox.chat.model.QBChatDialog
@@ -52,6 +55,7 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+
 
 const val CUSTOM_VIEW_TYPE = -1
 const val TYPE_TEXT_RIGHT = 1
@@ -172,7 +176,7 @@ class ChatAdapter(protected var context: Context,
         holder.ivVideoAttachPreview?.setImageBitmap(null)
         //abort loading avatar before setting new avatar to view
         if (containerLayoutRes.get(holder.itemViewType) != 0 && holder.avatar != null) {
-            Glide.clear(holder.avatar)
+            Glide.with(holder.avatar).clear(holder.avatar)
         }
         super.onViewRecycled(holder)
     }
@@ -353,6 +357,7 @@ class ChatAdapter(protected var context: Context,
 
 
                     Glide.with(context)
+                            .setDefaultRequestOptions(RequestOptions().timeout(20000))
                             .load(imageUrl)
                             .listener(getRequestListener(holder))
                             .into(holder.ivImageAttachPreview)
@@ -450,7 +455,7 @@ class ChatAdapter(protected var context: Context,
                 }
 
                 override fun onError(e: QBResponseException?) {
-                    Log.d(TAG, e?.message)
+                    Log.d(TAG, e?.message.toString())
                     holder.videoProgress?.visibility = View.GONE
                 }
             })
@@ -722,7 +727,7 @@ class ChatAdapter(protected var context: Context,
         return null
     }
 
-    private fun getRequestListener(holder: NewMessageViewHolder): RequestListener<String, GlideDrawable> {
+    private fun getRequestListener(holder: NewMessageViewHolder): RequestListener<Drawable> {
         return ImageLoadListener(holder)
     }
 
@@ -765,20 +770,20 @@ class ChatAdapter(protected var context: Context,
         val ivMessageStatus: ImageView? = itemView.findViewById(R.id.iv_message_status)
     }
 
-    private inner class ImageLoadListener<M, P>(val holder: NewMessageViewHolder) : RequestListener<M, P> {
+    private inner class ImageLoadListener<M>(val holder: NewMessageViewHolder) : RequestListener<M> {
 
         init {
             holder.pbImageProgress?.visibility = View.VISIBLE
         }
 
-        override fun onException(e: Exception?, model: M, target: Target<P>, isFirstResource: Boolean): Boolean {
-            Log.e(TAG, "ImageLoadListener Exception= $e")
+        override fun onResourceReady(resource: M, model: Any?, target: Target<M>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
             holder.ivImageAttachPreview?.scaleType = ImageView.ScaleType.CENTER_CROP
             holder.pbImageProgress?.visibility = View.GONE
             return false
         }
 
-        override fun onResourceReady(resource: P, model: M, target: Target<P>, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<M>?, isFirstResource: Boolean): Boolean {
+            Log.e(TAG, "ImageLoadListener Exception= $e")
             holder.ivImageAttachPreview?.scaleType = ImageView.ScaleType.CENTER_CROP
             holder.pbImageProgress?.visibility = View.GONE
             return false
@@ -851,7 +856,7 @@ class ChatAdapter(protected var context: Context,
                     }
                 }
             } catch (e: Exception) {
-                Log.d(TAG, e.message)
+                Log.d(TAG, e.message.toString())
             }
 
             return true
