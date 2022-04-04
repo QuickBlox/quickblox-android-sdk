@@ -1,32 +1,23 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath 'com.google.gms:google-services:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven {
-            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
-        }
+        mavenCentral()
     }
 }
 
 ext {
-    compileSdkVersion = 28
-    buildToolsVersion = "28.0.3"
-
-    minSdkVersion = 14
-    targetSdkVersion = 28
-
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -37,24 +28,30 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.+'
+    qbSdkVersion = '3.9.15'
 
     //Firebase
-    firebaseCoreVersion = '16.0.8'
+    firebaseCoreVersion = '20.1.2'
 
     //Material
-    materialVersion = '1.0.0'
+    materialVersion = '1.5.0'
+
+    //LifeCircle Compiler
+    lifecircleCommonVersion = "2.4.1"
+
+    //LifeCircle Extension
+    lifecircleExtensionVersion = "1.1.1"
 
     //Android X
-    fragmentAndroidXVersion = '1.0.0'
-    lifecycleViewmodelAndroidXVersion = '1.0.0'
-    coreKtxVersion = '1.0.1'
+    fragmentAndroidXVersion = '1.4.1'
+    lifecycleViewmodelAndroidXVersion = '2.4.1'
+    coreKtxVersion = '1.7.0'
 
     //RobotoTextView
     robotoTextViewVersion = '4.0.0'
 
     //Glide
-    glideVersion = '3.6.1'
+    glideVersion = '4.1.1'
 
     //CircleImageView
     circleImageVersion = "2.1.0"
@@ -64,10 +61,4 @@ ext {
 
     //Swipy
     swipyVersion = '1.2.3'
-
-    //Crashlytics
-    crashlyticsVersion = '2.9.5'
-
-    //Fabric
-    fabricToolsVersion = '1.27.0'
 }

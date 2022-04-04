@@ -23,7 +23,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBMessageStatusesManager;
@@ -76,13 +84,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ChatActivity extends BaseActivity implements OnImagePickedListener, QBMessageStatusListener, DialogsManager.ManagingDialogsCallbacks {
     private static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -112,6 +113,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
     private LinearLayout attachmentPreviewContainerLayout;
     private RecyclerView chatMessagesRecyclerView;
+
+    private RelativeLayout sendMessageContainer;
 
     private ChatAdapter chatAdapter;
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
@@ -239,28 +242,34 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     private void returnToChat() {
         qbChatDialog.initForChat(QBChatService.getInstance());
         if (!qbChatDialog.isJoined()) {
-            try {
-                qbChatDialog.join(new DiscussionHistory());
-            } catch (Exception e) {
-                Log.e(TAG, "Join Dialog Exception: " + e.getMessage());
-                showErrorSnackbar(R.string.error_joining_chat, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        returnToChat();
+            ChatHelper.getInstance().join(qbChatDialog, new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void unused, Bundle bundle) {
+                    // Loading unread messages received in background
+                    if (SharedPrefsHelper.getInstance().get(IS_IN_BACKGROUND, false)) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        skipPagination = 0;
+                        checkAdapterInit = false;
+                        loadChatHistory();
                     }
-                });
-            }
-        }
 
-        // Loading unread messages received in background
-        if (SharedPrefsHelper.getInstance().get(IS_IN_BACKGROUND, false)) {
-            progressBar.setVisibility(View.VISIBLE);
-            skipPagination = 0;
-            checkAdapterInit = false;
-            loadChatHistory();
-        }
+                    sendMessageContainer.setVisibility(View.VISIBLE);
 
-        returnListeners();
+                    returnListeners();
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    Log.e(TAG, "Join Dialog Exception: " + e.getMessage());
+                    showErrorSnackbar(R.string.error_joining_chat, e, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            returnToChat();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private void returnListeners() {
@@ -298,7 +307,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
         super.onPause();
         chatAdapter.removeClickListeners();
         ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
-        qbMessageStatusesManager.removeMessageStatusListener(this);
+        if (qbMessageStatusesManager != null) {
+            qbMessageStatusesManager.removeMessageStatusListener(this);
+        }
         SharedPrefsHelper.getInstance().save(IS_IN_BACKGROUND, true);
     }
 
@@ -520,7 +531,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
     private void leaveGroupChat() {
         showProgressDialog(R.string.dlg_loading);
         dialogsManager.sendMessageLeftUser(qbChatDialog);
-        dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, qbChatDialog);
+
+        if (systemMessagesManager != null) {
+            dialogsManager.sendSystemMessageLeftUser(systemMessagesManager, qbChatDialog);
+        }
+
         try {
             // Its a hack to give the Chat Server more time to process the message and deliver them
             Thread.sleep(300);
@@ -576,7 +591,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                     public void onSuccess(QBChatDialog qbChatDialog, Bundle bundle) {
                         progressBar.setVisibility(View.GONE);
                         dialogsManager.sendMessageAddedUsers(qbChatDialog, newUsersIds);
-                        dialogsManager.sendSystemMessageAddedUser(systemMessagesManager, qbChatDialog, newUsersIds);
+
+                        if (systemMessagesManager != null) {
+                            dialogsManager.sendSystemMessageAddedUser(systemMessagesManager, qbChatDialog, newUsersIds);
+                        }
+
                         if (qbChatDialog != null) {
                             ChatActivity.this.qbChatDialog = qbChatDialog;
                         }
@@ -690,6 +709,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
         progressBar = findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = findViewById(R.id.ll_attachment_preview_container);
+
+        sendMessageContainer = findViewById(R.id.rl_chat_send_container);
 
         attachmentBtnChat = findViewById(R.id.iv_chat_attachment);
         attachmentBtnChat.setOnClickListener(new View.OnClickListener() {
@@ -824,6 +845,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
 
             case PRIVATE:
                 loadDialogUsers();
+                sendMessageContainer.setVisibility(View.VISIBLE);
                 break;
 
             default:
@@ -842,14 +864,13 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener,
                 Log.d(TAG, "Joined to Dialog Successful");
                 notifyUsersAboutCreatingDialog();
                 hideProgressDialog();
+                sendMessageContainer.setVisibility(View.VISIBLE);
                 loadDialogUsers();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 Log.d(TAG, "Joining Dialog Error:" + e.getMessage());
-                progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.connection_error, e, null);
             }
         });
     }

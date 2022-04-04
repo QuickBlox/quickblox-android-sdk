@@ -64,8 +64,10 @@
         android:id="@+id/rl_chat_send_container"
         android:layout_width="match_parent"
         android:layout_height="44dp"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:background="@color/white"
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_chat_attachment"

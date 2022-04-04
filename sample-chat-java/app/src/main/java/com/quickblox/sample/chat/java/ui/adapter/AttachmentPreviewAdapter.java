@@ -18,7 +18,6 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBProgressCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.chat.java.R;
-import com.quickblox.sample.chat.java.utils.ResourceUtils;
 import com.quickblox.sample.chat.java.utils.ToastUtils;
 import com.quickblox.sample.chat.java.utils.chat.ChatHelper;
 
@@ -117,8 +116,6 @@ public class AttachmentPreviewAdapter extends BaseAdapter {
         final File attachmentFile = getItem(position);
         Glide.with(context)
                 .load(attachmentFile)
-                .override(ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size),
-                        ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size))
                 .into(holder.attachmentImageView);
 
         if (isFileUploading(attachmentFile)) {
