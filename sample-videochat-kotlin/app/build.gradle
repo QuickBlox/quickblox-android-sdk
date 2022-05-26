@@ -1,19 +1,16 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradlePluginVersion"
-        classpath "io.fabric.tools:gradle:$fabricToolsVersion"
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 
 androidExtensions {
     experimental = true
@@ -21,27 +18,25 @@ androidExtensions {
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
-    maven { url 'https://maven.fabric.io/public' }
-    flatDir { dirs 'libs' }
 }
 
 android {
-    def versionQACode = 3
+    def versionQACode = 1
 
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
     flavorDimensions dimensionDefault
 
     defaultConfig {
         applicationId "com.quickblox.sample.videochat.kotlin"
-        minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 404000
-        versionName '4.0.4'
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 405000
+        versionName '4.0.5'
         multiDexEnabled true
     }
 
@@ -65,12 +60,14 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFile 'proguard-rules.pro'
-            zipAlignEnabled false
             resValue "string", "versionName", "QuickBlox Video Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
         }
 
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFile 'proguard-rules.pro'
             resValue "string", "versionName", "QuickBlox Video Chat Kotlin\nBuild version " + defaultConfig.getVersionName()
         }
     }
@@ -95,21 +92,14 @@ android {
 }
 
 dependencies {
-
     implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-messages:$qbSdkVersion"
-
     implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion"
-    implementation "androidx.fragment:fragment:$fragmentAndroidXVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycleViewmodelAndroidXVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentAndroidXVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewmodelAndroidXVersion"
     implementation "androidx.core:core-ktx:$coreKtxVersion"
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
-        transitive = true
-    }
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion"
 }
 
 apply from: "../artifacts.gradle"

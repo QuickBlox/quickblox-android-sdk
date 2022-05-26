@@ -36,17 +36,17 @@ import org.webrtc.CameraVideoCapturer
 import java.util.*
 import kotlin.collections.HashMap
 
-
 const val SERVICE_ID = 787
 const val CHANNEL_ID = "Quickblox channel"
 const val CHANNEL_NAME = "Quickblox background service"
+const val ONE_OPPONENT = 1
 
 class CallService : Service() {
     private var TAG = CallService::class.java.simpleName
 
     private val callServiceBinder: CallServiceBinder = CallServiceBinder()
 
-    private var videoTrackMap: MutableMap<Int, QBRTCVideoTrack> = java.util.HashMap()
+    private var videoTrackMap: MutableMap<Int, QBRTCVideoTrack> = HashMap()
     private lateinit var networkConnectionListener: NetworkConnectionListener
     private lateinit var networkConnectionChecker: NetworkConnectionChecker
     private lateinit var sessionEventsListener: SessionEventsListener
@@ -100,7 +100,6 @@ class CallService : Service() {
         super.onDestroy()
         networkConnectionChecker.unregisterListener(networkConnectionListener)
         removeConnectionListener(connectionListener)
-        removeVideoTrackRenders()
 
         releaseCurrentSession()
         releaseAudioManager()
@@ -113,17 +112,23 @@ class CallService : Service() {
         notificationManager.cancelAll()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return callServiceBinder
     }
 
     private fun initNotification(): Notification {
+        var intentFlag = 0
+
         val notifyIntent = Intent(this, CallActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE
+        }
+
         val notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
+            intentFlag)
 
         val notificationTitle = getString(R.string.notification_title)
         var notificationText = getString(R.string.notification_text, "")
@@ -232,7 +237,7 @@ class CallService : Service() {
         addSessionEventsListener(sessionEventsListener)
     }
 
-    fun initAudioManager() {
+    private fun initAudioManager() {
         appRTCAudioManager = AppRTCAudioManager.create(this)
 
         appRTCAudioManager.setOnWiredHeadsetStateListener { plugged, hasMicrophone ->
@@ -269,7 +274,6 @@ class CallService : Service() {
         currentSession = null
     }
 
-    //Listeners
     fun addConnectionListener(connectionListener: ConnectionListener?) {
         QBChatService.getInstance().addConnectionListener(connectionListener)
     }
@@ -294,11 +298,11 @@ class CallService : Service() {
         currentSession?.removeVideoTrackCallbacksListener(callback)
     }
 
-    fun addSignalingListener(callback: QBRTCSignalingCallback?) {
+    private fun addSignalingListener(callback: QBRTCSignalingCallback?) {
         currentSession?.addSignalingCallback(callback)
     }
 
-    fun removeSignalingListener(callback: QBRTCSignalingCallback?) {
+    private fun removeSignalingListener(callback: QBRTCSignalingCallback?) {
         currentSession?.removeSignalingCallback(callback)
     }
 
@@ -310,7 +314,6 @@ class CallService : Service() {
         rtcClient.removeSessionsCallbacksListener(callback)
     }
 
-    //Common methods
     fun acceptCall(userInfo: Map<String, String>) {
         currentSession?.acceptCall(userInfo)
     }
@@ -428,26 +431,10 @@ class CallService : Service() {
     }
 
     private fun removeVideoTrack(userId: Int) {
+        val videoTrack = getVideoTrack(userId)
+        val renderer =videoTrack?.renderer
+        videoTrack?.removeRenderer(renderer)
         videoTrackMap.remove(userId)
-    }
-
-    private fun removeVideoTrackRenders() {
-        Log.d(TAG, "removeVideoTrackRenders")
-        if (videoTrackMap.isNotEmpty()) {
-            val entryIterator = videoTrackMap.entries.iterator()
-            while (entryIterator.hasNext()) {
-                val entry = entryIterator.next()
-                val userId = entry.key
-                val videoTrack = entry.value
-                val qbUser = QBChatService.getInstance().user
-                val remoteVideoTrack = userId != qbUser.id
-                if (remoteVideoTrack) {
-                    videoTrack.renderer?.let {
-                        videoTrack.removeRenderer(it)
-                    }
-                }
-            }
-        }
     }
 
     fun setCallTimerCallback(callback: CallTimerListener) {
@@ -535,21 +522,23 @@ class CallService : Service() {
         }
 
         override fun onSessionStartClose(session: QBRTCSession?) {
-            if (session == WebRtcSessionManager.getCurrentSession()) {
-                CallService.stop(applicationContext)
-            }
+            // empty
         }
 
         override fun onReceiveHangUpFromUser(session: QBRTCSession?, userID: Int?, p2: MutableMap<String, String>?) {
             stopRingtone()
             if (session == WebRtcSessionManager.getCurrentSession()) {
-                if (userID == session?.callerID) {
+                val numberOpponents = session?.opponents?.size
+                if (numberOpponents == ONE_OPPONENT) {
                     currentSession?.let {
                         it.hangUp(HashMap<String, String>())
                         CallService.stop(this@CallService)
                     }
+                }else{
+                    userID?.let {
+                        removeVideoTrack(it)
+                    }
                 }
-                Log.d(TAG, "initiator hung up the call")
             } else {
                 CallService.stop(this@CallService)
             }
@@ -615,9 +604,6 @@ class CallService : Service() {
         override fun onConnectionClosedForUser(session: QBRTCSession?, userID: Int?) {
             Log.d(TAG, "Connection closed for user: $userID")
             shortToast("The user: " + userID + "has left the call")
-            userID?.let {
-                removeVideoTrack(it)
-            }
         }
 
         override fun onStateChanged(session: QBRTCSession?, sessionState: BaseSession.QBRTCSessionState?) {
@@ -627,7 +613,7 @@ class CallService : Service() {
 
     private inner class QBRTCSignalingListener : QBRTCSignalingCallback {
         override fun onSuccessSendingPacket(p0: QBSignalingSpec.QBSignalCMD?, p1: Int?) {
-
+            // empty
         }
 
         override fun onErrorSendingPacket(p0: QBSignalingSpec.QBSignalCMD?, p1: Int?, p2: QBRTCSignalException?) {

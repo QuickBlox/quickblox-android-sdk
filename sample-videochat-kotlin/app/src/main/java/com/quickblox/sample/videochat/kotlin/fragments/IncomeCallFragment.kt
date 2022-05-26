@@ -60,8 +60,8 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
     private lateinit var incomeCallFragmentCallbackListener: IncomeCallFragmentCallbackListener
     private var currentSession: QBRTCSession? = null
 
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         try {
             incomeCallFragmentCallbackListener = activity as IncomeCallFragmentCallbackListener
         } catch (e: ClassCastException) {

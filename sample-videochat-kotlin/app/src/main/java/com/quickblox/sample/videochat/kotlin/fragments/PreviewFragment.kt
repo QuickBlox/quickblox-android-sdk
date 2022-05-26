@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.quickblox.sample.videochat.kotlin.R
-import com.quickblox.sample.videochat.kotlin.utils.getDimen
+import com.quickblox.sample.videochat.kotlin.utils.getDrawable
 
 private const val PREVIEW_IMAGE = "preview_image"
 
@@ -27,11 +25,13 @@ class PreviewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_item_screen_share, container, false)
-        Glide.with(activity)
-                .load(arguments?.getInt(PREVIEW_IMAGE))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .override(getDimen(R.dimen.pager_image_width), getDimen(R.dimen.pager_image_height))
-                .into(view.findViewById(R.id.image_preview) as ImageView)
+
+        val ivPreview = view.findViewById<ImageView>(R.id.image_preview)
+        val imageDrawable = arguments?.getInt(PREVIEW_IMAGE)
+
+        imageDrawable?.let {
+            ivPreview.setImageDrawable(getDrawable(it))
+        }
         return view
     }
 }

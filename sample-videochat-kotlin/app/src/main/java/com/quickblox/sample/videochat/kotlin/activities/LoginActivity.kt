@@ -29,7 +29,8 @@ class LoginActivity : BaseActivity() {
     private lateinit var user: QBUser
 
     companion object {
-        fun start(context: Context) = context.startActivity(Intent(context, LoginActivity::class.java))
+        fun start(context: Context) =
+            context.startActivity(Intent(context, LoginActivity::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,7 +126,7 @@ class LoginActivity : BaseActivity() {
                 isLoginSuccess = it.getBooleanExtra(EXTRA_LOGIN_RESULT, false)
             }
 
-            var errorMessage = getString(R.string.unknown_error)
+            var errorMessage: String? = getString(R.string.unknown_error)
             data?.let {
                 errorMessage = it.getStringExtra(EXTRA_LOGIN_ERROR_MESSAGE)
             }
@@ -181,7 +182,8 @@ class LoginActivity : BaseActivity() {
         LoginService.start(this, qbUser, pendingIntent)
     }
 
-    private inner class LoginEditTextWatcher internal constructor(private val editText: EditText) : TextWatcher {
+    private inner class LoginEditTextWatcher internal constructor(private val editText: EditText) :
+        TextWatcher {
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 

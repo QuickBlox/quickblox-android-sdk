@@ -160,7 +160,7 @@
 
     <!--Call Settings-->
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
-    <string name="pref_answer_time_interval_default_value">60</string>
+    <string name="pref_answer_time_interval_default_value">30</string>
     <string name="pref_disconnect_time_interval_key">disconnect_time_interval</string>
     <string name="pref_disconnect_time_interval_default_value">10</string>
     <string name="pref_dialing_time_interval_key">Dialing_time_interval</string>
@@ -215,5 +215,6 @@
     <string name="error_max_opponents_count">You can select up to %d opponents</string>
     <string name="error_permission_video">You should allow Camera permission</string>
     <string name="error_permission_audio">You should allow Microphone permission</string>
+    <string name="error_get_permission">Error getting permissions</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochat.kotlin.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -18,8 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.quickblox.sample.videochat.kotlin.R
+import com.quickblox.sample.videochat.kotlin.activities.CallActivity
 import com.quickblox.sample.videochat.kotlin.adapters.OpponentsFromCallAdapter
-import com.quickblox.sample.videochat.kotlin.services.CallService
+import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
 import com.quickblox.sample.videochat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.videochat.kotlin.utils.shortToast
 import com.quickblox.users.model.QBUser
@@ -50,13 +50,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     OpponentsFromCallAdapter.OnAdapterEventListener {
     private val TAG = VideoConversationFragment::class.java.simpleName
 
-    //Views
     private lateinit var cameraToggle: ToggleButton
     private var parentView: View? = null
     private lateinit var actionVideoButtonsLayout: LinearLayout
     private lateinit var connectionStatusLocal: TextView
     private lateinit var recyclerView: RecyclerView
-    private lateinit var localVideoView: QBRTCSurfaceView
+    private var localVideoView: QBRTCSurfaceView? = null
     private var remoteFullScreenVideoView: QBRTCSurfaceView? = null
 
     private lateinit var opponentViewHolders: SparseArray<OpponentsFromCallAdapter.ViewHolder>
@@ -74,9 +73,113 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     private var isCurrentCameraFront: Boolean = false
     private var isLocalVideoFullScreen: Boolean = false
 
+    override fun getFragmentLayout(): Int {
+        return R.layout.fragment_video_conversation
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         parentView = super.onCreateView(inflater, container, savedInstanceState)
         return parentView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!allCallbacksInit) {
+            addListeners()
+            allCallbacksInit = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        toggleCamera(cameraToggle.isChecked)
+    }
+
+    override fun onPause() {
+        // if camera state is CameraState.ENABLED_FROM_USER or CameraState.NONE
+        // than we turn off cam
+        toggleCamera(false)
+
+        if (connectionEstablished) {
+            allCallbacksInit = false
+        } else {
+            Log.d(TAG, "We are in dialing process yet!")
+        }
+
+        releaseViewHolders()
+        removeListeners()
+        releaseViews()
+
+        super.onPause()
+    }
+
+    override fun initViews(view: View?) {
+        super.initViews(view)
+        Log.i(TAG, "initViews")
+        if (view == null) {
+            return
+        }
+        opponentViewHolders = SparseArray(opponents.size)
+        isRemoteShown = false
+        isCurrentCameraFront = true
+        localVideoView = view.findViewById(R.id.local_video_view)
+        initCorrectSizeForLocalView()
+        localVideoView?.setZOrderMediaOverlay(true)
+
+        remoteFullScreenVideoView = view.findViewById(R.id.remote_video_view)
+        remoteFullScreenVideoView?.setOnClickListener(localViewOnClickListener)
+
+        if (!isPeerToPeerCall) {
+            recyclerView = view.findViewById(R.id.grid_opponents)
+
+            val context = activity!!
+            recyclerView.addItemDecoration(DividerItemDecoration(context, R.dimen.grid_item_divider))
+            recyclerView.setHasFixedSize(true)
+            val columnsCount = defineColumnsCount()
+            val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            recyclerView.layoutManager = layoutManager
+
+            // for correct removing item in adapter
+            recyclerView.itemAnimator = null
+            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    setGrid(columnsCount)
+                    recyclerView.viewTreeObserver?.removeGlobalOnLayoutListener(this)
+                }
+            })
+        }
+        connectionStatusLocal = view.findViewById(R.id.connection_status_local)
+
+        cameraToggle = view.findViewById(R.id.toggle_camera)
+        cameraToggle.visibility = View.VISIBLE
+        cameraToggle.isChecked = SharedPrefsHelper.get(CAMERA_ENABLED, true)
+        toggleCamera(cameraToggle.isChecked)
+        actionVideoButtonsLayout = view.findViewById(R.id.element_set_video_buttons)
+
+        isCurrentCameraFront = SharedPrefsHelper.get(IS_CURRENT_CAMERA_FRONT, true)
+        if (!isCurrentCameraFront) {
+            switchCamera(null)
+        }
+
+        actionButtonsEnabled(false)
+        restoreSession()
+    }
+
+    override fun initFields() {
+        super.initFields()
+        localViewOnClickListener = LocalViewOnClickListener()
+        amountOpponents = opponents.size
+        allOpponents = Collections.synchronizedList(ArrayList(opponents.size))
+        allOpponents.addAll(opponents)
+
+        timerCallText = activity!!.findViewById(R.id.timer_call)
+
+        isPeerToPeerCall = opponents.size == 1
     }
 
     override fun configureOutgoingScreen() {
@@ -96,22 +199,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.black_transparent_50))
         toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.white))
         toolbar.setSubtitleTextColor(ContextCompat.getColor(context, R.color.white))
-    }
-
-    override fun getFragmentLayout(): Int {
-        return R.layout.fragment_video_conversation
-    }
-
-    override fun initFields() {
-        super.initFields()
-        localViewOnClickListener = LocalViewOnClickListener()
-        amountOpponents = opponents.size
-        allOpponents = Collections.synchronizedList(ArrayList(opponents.size))
-        allOpponents.addAll(opponents)
-
-        timerCallText = activity!!.findViewById(R.id.timer_call)
-
-        isPeerToPeerCall = opponents.size == 1
     }
 
     private fun setDuringCallActionBar() {
@@ -143,73 +230,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         cameraToggle.isEnabled = inability
         // inactivate toggle buttons
         cameraToggle.isActivated = inability
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "onStart")
-        if (!allCallbacksInit) {
-            addListeners()
-            allCallbacksInit = true
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate")
-        setHasOptionsMenu(true)
-    }
-
-    override fun initViews(view: View?) {
-        super.initViews(view)
-        Log.i(TAG, "initViews")
-        if (view == null) {
-            return
-        }
-        opponentViewHolders = SparseArray(opponents.size)
-        isRemoteShown = false
-        isCurrentCameraFront = true
-        localVideoView = view.findViewById(R.id.local_video_view)
-        initCorrectSizeForLocalView()
-        localVideoView.setZOrderMediaOverlay(true)
-
-        remoteFullScreenVideoView = view.findViewById(R.id.remote_video_view)
-        remoteFullScreenVideoView?.setOnClickListener(localViewOnClickListener)
-
-        if (!isPeerToPeerCall) {
-            recyclerView = view.findViewById(R.id.grid_opponents)
-
-            val context = activity!!
-            recyclerView.addItemDecoration(DividerItemDecoration(context, R.dimen.grid_item_divider))
-            recyclerView.setHasFixedSize(true)
-            val columnsCount = defineColumnsCount()
-            val layoutManager = LinearLayoutManager(activity, LinearLayout.HORIZONTAL, false)
-            recyclerView.layoutManager = layoutManager
-
-            //for correct removing item in adapter
-            recyclerView.itemAnimator = null
-            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    setGrid(columnsCount)
-                    recyclerView.viewTreeObserver?.removeGlobalOnLayoutListener(this)
-                }
-            })
-        }
-        connectionStatusLocal = view.findViewById(R.id.connection_status_local)
-
-        cameraToggle = view.findViewById(R.id.toggle_camera)
-        cameraToggle.visibility = View.VISIBLE
-        cameraToggle.isChecked = SharedPrefsHelper.get(CAMERA_ENABLED, true)
-        toggleCamera(cameraToggle.isChecked)
-        actionVideoButtonsLayout = view.findViewById(R.id.element_set_video_buttons)
-
-        isCurrentCameraFront = SharedPrefsHelper.get(IS_CURRENT_CAMERA_FRONT, true)
-        if (!isCurrentCameraFront) {
-            switchCamera(null)
-        }
-
-        actionButtonsEnabled(false)
-        restoreSession()
     }
 
     private fun restoreSession() {
@@ -246,7 +266,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     }
 
     private fun initCorrectSizeForLocalView() {
-        val params = localVideoView.layoutParams
+        val params = localVideoView?.layoutParams
         val displaymetrics = resources.displayMetrics
 
         val screenWidthPx = displaymetrics.widthPixels
@@ -256,7 +276,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         val height = width / 2 * 3
         params?.width = width
         params?.height = height
-        localVideoView.layoutParams = params
+        localVideoView?.layoutParams = params
     }
 
     private fun setGrid(columnsCount: Int) {
@@ -282,42 +302,19 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         return opponents.size - 1
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
-        toggleCamera(cameraToggle.isChecked)
-    }
-
-    override fun onPause() {
-        // If camera state is CameraState.ENABLED_FROM_USER or CameraState.NONE
-        // than we turn off cam
-        toggleCamera(false)
-
-        if (connectionEstablished) {
-            allCallbacksInit = false
-        } else {
-            Log.d(TAG, "We are in dialing process yet!")
-        }
-
-        releaseViewHolders()
-        removeListeners()
-        releaseViews()
-
-        super.onPause()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d(TAG, "onDetach")
-    }
-
     private fun releaseViewHolders() {
         opponentViewHolders.clear()
     }
 
     private fun releaseViews() {
-        localVideoView.release()
+        if (conversationFragmentCallback?.getCurrentSessionState() != BaseSession.QBRTCSessionState.QB_RTC_SESSION_CLOSED) {
+            for (item in (activity as CallActivity).getVideoTrackMap()) {
+                val renderer = item.value.renderer
+                item.value.removeRenderer(renderer)
+            }
+        }
 
+        localVideoView?.release()
         remoteFullScreenVideoView?.release()
 
         remoteFullScreenVideoView = null
@@ -328,7 +325,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
 
     override fun onCallStopped() {
         super.onCallStopped()
-        CallService.stop(activity as Activity)
         Log.i(TAG, "onCallStopped")
     }
 
@@ -397,7 +393,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         }
     }
 
-    ////////////////////////////  callbacks from QBRTCClientVideoTracksCallbacks ///////////////////
     override fun onLocalVideoTrackReceive(qbrtcSession: QBRTCSession?, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "onLocalVideoTrackReceive() run")
         localVideoTrack = videoTrack
@@ -424,12 +419,9 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
             }
         }
     }
-    /////////////////////////////////////////    end    ////////////////////////////////////////////
 
-    //last opponent parentView is bind
     override fun onBindLastViewHolder(holder: OpponentsFromCallAdapter.ViewHolder, position: Int) {
         Log.i(TAG, "onBindLastViewHolder position=$position")
-
     }
 
     override fun onItemClick(position: Int) {
@@ -465,12 +457,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     }
 
     private fun swapUsersFullscreenToPreview(userId: Int) {
-        //      get opponentVideoTrack - opponent's video track from recyclerView
+        // get opponentVideoTrack - opponent's video track from recyclerView
         val videoTrackMap = conversationFragmentCallback?.getVideoTrackMap()
 
         val opponentVideoTrack = videoTrackMap?.get(userId)
 
-        //      get mainVideoTrack - opponent's video track from full screen
+        // get mainVideoTrack - opponent's video track from full screen
         val mainVideoTrack = videoTrackMap?.get(userIDFullScreen)
 
         val remoteVideoView = findHolder(userId)?.getOpponentView()
@@ -503,6 +495,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
             fillVideoView(remoteVideoView, videoTrack, true)
         } else {
             isRemoteShown = true
+            itemHolder.getOpponentView().release()
             opponentsAdapter.removeItem(itemHolder.adapterPosition)
             setDuringCallActionBar()
             setRecyclerViewVisibleState()
@@ -562,7 +555,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     /**
      * @param userId set userId if it from fullscreen videoTrack
      */
-    private fun fillVideoView(videoView: QBRTCSurfaceView, videoTrack: QBRTCVideoTrack,
+    private fun fillVideoView(videoView: QBRTCSurfaceView?, videoTrack: QBRTCVideoTrack,
                               remoteRenderer: Boolean) {
         videoTrack.removeRenderer(videoTrack.renderer)
         videoTrack.addRenderer(videoView)
@@ -572,12 +565,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         Log.d(TAG, (if (remoteRenderer) "remote" else "local") + " Track is rendering")
     }
 
-    private fun updateVideoView(videoView: SurfaceViewRenderer, mirror: Boolean) {
+    private fun updateVideoView(videoView: SurfaceViewRenderer?, mirror: Boolean) {
         val scalingType = RendererCommon.ScalingType.SCALE_ASPECT_FILL
         Log.i(TAG, "updateVideoView mirror:$mirror, scalingType = $scalingType")
-        videoView.setScalingType(scalingType)
-        videoView.setMirror(mirror)
-        videoView.requestLayout()
+        videoView?.setScalingType(scalingType)
+        videoView?.setMirror(mirror)
+        videoView?.requestLayout()
     }
 
     /**
@@ -623,7 +616,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         val holder = getViewHolderForOpponent(userId) ?: return
 
         holder.getProgressBar().visibility = View.GONE
-
     }
 
     private fun setBackgroundOpponentView(userId: Int?) {
@@ -634,10 +626,8 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         }
     }
 
-    ///////////////////////////////  QBRTCSessionConnectionCallbacks ///////////////////////////
-
     override fun onStateChanged(qbrtcSession: QBRTCSession, qbrtcSessionState: BaseSession.QBRTCSessionState) {
-
+        // empty
     }
 
     override fun onConnectedToUser(qbrtcSession: QBRTCSession?, userId: Int) {
@@ -660,9 +650,6 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         setStatusForOpponent(integer, getString(R.string.text_status_disconnected))
     }
 
-    //////////////////////////////////   end     //////////////////////////////////////////
-
-    /////////////////// Callbacks from CallActivity.QBRTCSessionUserCallback //////////////////////
     override fun onUserNotAnswer(session: QBRTCSession, userId: Int) {
         setProgressBarForOpponentGone(userId)
         setStatusForOpponent(userId, getString(R.string.text_status_no_answer))
@@ -688,40 +675,41 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     }
 
     override fun onSessionClosed(session: QBRTCSession) {
-
+        // empty
     }
-
-    //////////////////////////////////   end     //////////////////////////////////////////
 
     private fun setAnotherUserToFullScreen() {
         if (opponentsAdapter.opponents.isEmpty()) {
             return
         }
-        val userId = opponentsAdapter.getItem(0)
-        // get opponentVideoTrack - opponent's video track from recyclerView
-        val opponentVideoTrack = conversationFragmentCallback?.getVideoTrack(userId) ?: return
+        for (user in opponents){
+            val videoTrack = conversationFragmentCallback?.getVideoTrack(user.id)
+            if (videoTrack != null){
+                val userFullScreen = QbUsersDbManager.getUserById(userIDFullScreen)
 
-        remoteFullScreenVideoView?.let {
-            fillVideoView(userId, it, opponentVideoTrack)
-            Log.d(TAG, "fullscreen enabled")
-        }
+                val itemHolder = findHolder(user.id)
+                itemHolder?.setUserId(userIDFullScreen)
+                itemHolder?.setUserName(userFullScreen?.fullName.toString())
+                itemHolder?.setStatus(getString(R.string.text_status_closed))
+                itemHolder?.getOpponentView()?.release()
 
-        val itemHolder = findHolder(userId)
-        if (itemHolder != null) {
-            opponentsAdapter.removeItem(itemHolder.adapterPosition)
-            itemHolder.getOpponentView().release()
-            Log.d(TAG, "onConnectionClosedForUser opponentsAdapter.removeItem= $userId")
+                remoteFullScreenVideoView?.let {
+                    fillVideoView(user.id, it, videoTrack)
+                    Log.d(TAG, "fullscreen enabled")
+                }
+                return
+            }
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.conversation_fragment, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.conversation_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
         optionsMenu = menu
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.camera_switch -> {
                 Log.d("Conversation", "camera_switch")
                 switchCamera(item)
@@ -762,7 +750,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     }
 
     private fun runUpdateUsersNames(newUsers: ArrayList<QBUser>) {
-        //need delayed for synchronization with recycler parentView initialization
+        // need delayed for synchronization with recycler parentView initialization
         mainHandler.postDelayed({
             for (user in newUsers) {
                 Log.d(TAG, "runUpdateUsersNames. foreach, user = " + user.fullName)
@@ -804,7 +792,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
 
         private fun hideToolBarAndButtons() {
             actionBar.hide()
-            localVideoView.visibility = View.INVISIBLE
+            localVideoView?.visibility = View.INVISIBLE
             actionVideoButtonsLayout.visibility = View.GONE
             if (!isPeerToPeerCall) {
                 shiftBottomListOpponents()
@@ -813,7 +801,7 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
 
         private fun showToolBarAndButtons() {
             actionBar.show()
-            localVideoView.visibility = View.VISIBLE
+            localVideoView?.visibility = View.VISIBLE
             actionVideoButtonsLayout.visibility = View.VISIBLE
             if (!isPeerToPeerCall) {
                 shiftMarginListOpponents()
