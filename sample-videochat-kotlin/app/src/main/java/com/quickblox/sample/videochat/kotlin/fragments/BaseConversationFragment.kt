@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochat.kotlin.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,8 +51,8 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
         }
     }
 
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         try {
             conversationFragmentCallback = context as ConversationFragmentCallback
         } catch (e: ClassCastException) {
@@ -191,7 +192,6 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
     }
 
     override fun onCallStopped() {
-        CallService.stop(activity as Activity)
         isStarted = false
         clearButtonsState()
         actionButtonsEnabled(false)

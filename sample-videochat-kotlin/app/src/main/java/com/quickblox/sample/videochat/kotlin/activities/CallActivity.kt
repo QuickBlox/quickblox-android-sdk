@@ -19,6 +19,7 @@ import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
 import com.quickblox.sample.videochat.kotlin.fragments.*
 import com.quickblox.sample.videochat.kotlin.services.CallService
 import com.quickblox.sample.videochat.kotlin.services.LoginService
+import com.quickblox.sample.videochat.kotlin.services.ONE_OPPONENT
 import com.quickblox.sample.videochat.kotlin.util.loadUsersByIds
 import com.quickblox.sample.videochat.kotlin.utils.*
 import com.quickblox.users.model.QBUser
@@ -31,7 +32,7 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
 import org.jivesoftware.smack.AbstractConnectionListener
 import org.jivesoftware.smack.ConnectionListener
 import org.webrtc.CameraVideoCapturer
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 private const val INCOME_CALL_FRAGMENT = "income_call_fragment"
@@ -265,17 +266,9 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     private fun initIncomingCallTask() {
-        showIncomingCallWindowTaskHandler = Handler(Looper.myLooper())
+        showIncomingCallWindowTaskHandler = Handler(Looper.getMainLooper())
         showIncomingCallWindowTask = Runnable {
             if (callService.currentSessionExist()) {
-                /*val currentSessionState = callService.getCurrentSessionState()
-                if (BaseSession.QBRTCSessionState.QB_RTC_SESSION_NEW == currentSessionState) {
-                    callService.rejectCurrentSession(HashMap())
-                } else {
-                    callService.stopRingtone()
-                    hangUpCurrentSession()
-                }*/
-                // This is a fix to prevent call stop in case calling to user with more then one device logged in.
                 longToast("Call was stopped by UserNoActions timer")
                 callService.clearCallState()
                 callService.clearButtonsState()
@@ -316,14 +309,14 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun finish() {
-        //Fix bug when user returns to call from service and the backstack doesn't have any screens
+        // fix bug when user returns to call from service and the backstack doesn't have any screens
         OpponentsActivity.start(this)
         CallService.stop(this)
         super.finish()
     }
 
     override fun onBackPressed() {
-        // To prevent returning from Call Fragment
+        // to prevent returning from Call Fragment
     }
 
     private fun addIncomeCallFragment() {
@@ -366,8 +359,6 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         }
     }
 
-    ////////////////////////////// ConnectionListener //////////////////////////////
-
     private inner class ConnectionListenerImpl : AbstractConnectionListener() {
         override fun connectionClosedOnError(e: Exception?) {
             showNotificationPopUp(R.string.connection_was_lost, true)
@@ -378,10 +369,8 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         }
     }
 
-    ////////////////////////////// QBRTCSessionStateCallbackListener ///////////////////////////
-
     override fun onDisconnectedFromUser(session: QBRTCSession?, userId: Int?) {
-
+        // empty
     }
 
     override fun onConnectedToUser(session: QBRTCSession?, userId: Int?) {
@@ -393,14 +382,12 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onConnectionClosedForUser(session: QBRTCSession?, userId: Int?) {
-
+        // empty
     }
 
     override fun onStateChanged(session: QBRTCSession?, sessiontState: BaseSession.QBRTCSessionState?) {
-
+        // empty
     }
-
-    ////////////////////////////// QBRTCClientSessionCallbacks //////////////////////////////
 
     override fun onUserNotAnswer(session: QBRTCSession?, userId: Int?) {
         if (callService.isCurrentSession(session)) {
@@ -417,9 +404,9 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
 
     override fun onReceiveHangUpFromUser(session: QBRTCSession?, userId: Int?, map: MutableMap<String, String>?) {
         if (callService.isCurrentSession(session)) {
-            if (userId == session?.callerID) {
+            val numberOpponents = session?.opponents?.size
+            if (numberOpponents == ONE_OPPONENT) {
                 hangUpCurrentSession()
-                Log.d(TAG, "initiator hung up the call")
             }
             val participant = QbUsersDbManager.getUserById(userId)
             val participantName = if (participant != null) participant.fullName else userId.toString()
@@ -434,7 +421,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onReceiveNewSession(session: QBRTCSession?) {
-
+        // empty
     }
 
     override fun onUserNoActions(session: QBRTCSession?, userId: Int?) {
@@ -454,8 +441,6 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         }
     }
 
-    ////////////////////////////// IncomeCallFragmentCallbackListener ////////////////////////////
-
     override fun onAcceptCurrentSession() {
         if (callService.currentSessionExist()) {
             addConversationFragment(true)
@@ -467,8 +452,6 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     override fun onRejectCurrentSession() {
         callService.rejectCurrentSession(HashMap())
     }
-
-    ////////////////////////////// ConversationFragmentCallback ////////////////////////////
 
     override fun addConnectionListener(connectionCallback: ConnectionListener?) {
         callService.addConnectionListener(connectionCallback)
@@ -533,9 +516,11 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun addOnChangeAudioDeviceListener(onChangeDynamicCallback: OnChangeAudioDevice?) {
+        // empty
     }
 
     override fun removeOnChangeAudioDeviceListener(onChangeDynamicCallback: OnChangeAudioDevice?) {
+        // empty
     }
 
     override fun acceptCall(userInfo: Map<String, String>) {
@@ -621,14 +606,14 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
 
     private inner class CallServiceConnection : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
-
+            // empty
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as CallService.CallServiceBinder
             callService = binder.getService()
             if (callService.currentSessionExist()) {
-                //we have already currentSession == null, so it's no reason to do further initialization
+                // we have already currentSession == null, so it's no reason to do further initialization
                 if (QBChatService.getInstance().isLoggedIn) {
                     initScreen()
                 } else {
