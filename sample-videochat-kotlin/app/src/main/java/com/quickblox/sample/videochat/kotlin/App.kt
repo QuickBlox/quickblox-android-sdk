@@ -1,10 +1,8 @@
 package com.quickblox.sample.videochat.kotlin
 
 import android.app.Application
-import com.crashlytics.android.Crashlytics
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.sample.videochat.kotlin.db.DbHelper
-import io.fabric.sdk.android.Fabric
 
 //User default credentials
 const val DEFAULT_USER_PASSWORD = "quickblox"
@@ -30,15 +28,8 @@ class App : Application() {
         super.onCreate()
         instance = this
         dbHelper = DbHelper(this)
-        initFabric()
         checkCredentials()
         initCredentials()
-    }
-
-    private fun initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-        }
     }
 
     private fun checkCredentials() {

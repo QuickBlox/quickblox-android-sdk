@@ -36,7 +36,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     internal fun hideProgressDialog() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
+        if (progressDialog != null && progressDialog?.isShowing == true) {
             progressDialog!!.dismiss()
         }
     }

@@ -34,9 +34,6 @@ class PermissionsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (intent == null || !intent.hasExtra(EXTRA_PERMISSIONS)) {
-            throw RuntimeException("This Activity needs to be launched using the static startActivityForResult() method.")
-        }
         setContentView(R.layout.activity_permissions)
         supportActionBar?.hide()
         requiresCheck = true
@@ -44,6 +41,10 @@ class PermissionsActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (intent == null || !intent.hasExtra(EXTRA_PERMISSIONS)) {
+            throw RuntimeException("This Activity needs to be launched using the static startActivityForResult() method.")
+        }
+
         if (requiresCheck) {
             checkPermissions()
         } else {
@@ -52,8 +53,9 @@ class PermissionsActivity : BaseActivity() {
     }
 
     private fun checkPermissions() {
-        val permissions = getPermissions()
-        val checkOnlyAudio = getCheckOnlyAudio()
+        val permissions = intent.getStringArrayExtra(EXTRA_PERMISSIONS)!!
+
+        val checkOnlyAudio = intent.getBooleanExtra(CHECK_ONLY_AUDIO, false)
 
         if (checkOnlyAudio) {
             checkPermissionAudio(permissions[1])
@@ -78,14 +80,6 @@ class PermissionsActivity : BaseActivity() {
         }
     }
 
-    private fun getPermissions(): Array<String> {
-        return intent.getStringArrayExtra(EXTRA_PERMISSIONS)
-    }
-
-    private fun getCheckOnlyAudio(): Boolean {
-        return intent.getBooleanExtra(CHECK_ONLY_AUDIO, false)
-    }
-
     private fun requestPermissions(vararg permissions: String) {
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_CODE)
     }
@@ -96,6 +90,7 @@ class PermissionsActivity : BaseActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_CODE && hasAllPermissionsGranted(grantResults)) {
             requiresCheck = true
             allPermissionsGranted()
