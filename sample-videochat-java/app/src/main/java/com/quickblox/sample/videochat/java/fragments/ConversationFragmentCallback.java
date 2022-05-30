@@ -59,6 +59,8 @@ public interface ConversationFragmentCallback {
 
     void startCall(Map<String, String> userInfo);
 
+    boolean isCameraFront();
+
     boolean currentSessionExist();
 
     List<Integer> getOpponents();

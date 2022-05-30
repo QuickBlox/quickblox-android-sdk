@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.quickblox.sample.videochat.java">
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -12,7 +11,7 @@
     <uses-permission android:name="com.quickblox.sample.messages.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -32,6 +31,7 @@
 
         <activity
             android:name=".activities.SplashActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +50,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".activities.PermissionsActivity"
+        <activity
+            android:name=".activities.PermissionsActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -72,15 +73,21 @@
 
         <service android:name=".services.LoginService" />
 
-        <service android:name=".services.CallService" />
+        <service
+            android:name=".services.CallService"
+            android:foregroundServiceType="mediaProjection" />
 
-        <service android:name=".services.fcm.PushListenerService">
+        <service
+            android:name=".services.fcm.PushListenerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService">
+        <service
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

@@ -2,11 +2,8 @@ package com.quickblox.sample.videochat.java;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.videochat.java.util.QBResRequestExecutor;
-
-import io.fabric.sdk.android.Fabric;
 
 public class App extends Application {
     //App credentials
@@ -24,15 +21,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        initFabric();
         checkAppCredentials();
         initCredentials();
-    }
-
-    private void initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
     }
 
     private void checkAppCredentials() {
