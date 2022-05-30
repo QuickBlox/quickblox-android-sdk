@@ -172,7 +172,7 @@
     <!--Call Settings-->
     <string name="pref_answer_time_interval_key">answer_time_interval</string>
     <string name="pref_answer_time_interval_title">Answer Time Interval (15&#8211;90s)</string>
-    <string name="pref_answer_time_interval_default_value">60</string>
+    <string name="pref_answer_time_interval_default_value">30</string>
     <integer name="pref_answer_time_interval_min_value">15</integer>
     <integer name="pref_answer_time_interval_max_value">90</integer>
     <integer name="pref_answer_time_interval_step_size">5</integer>

@@ -1,41 +1,33 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath "io.fabric.tools:gradle:$fabricToolsVersion"
+        mavenCentral()
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
-    maven { url 'https://maven.fabric.io/public' }
-    flatDir { dirs 'libs' }
 }
 
 android {
-    def versionQACode = 3
+    def versionQACode = 1
 
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
     flavorDimensions dimensionDefault
 
     defaultConfig {
         applicationId "com.quickblox.sample.videochat.java"
-        minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 404000
-        versionName '4.0.4'
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 405000
+        versionName '4.0.5'
         multiDexEnabled true
     }
 
@@ -59,12 +51,14 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFile 'proguard-rules.pro'
-            zipAlignEnabled false
             resValue "string", "versionName", "QuickBlox Video Chat Java\nBuild version " + defaultConfig.getVersionName()
         }
 
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFile 'proguard-rules.pro'
             resValue "string", "versionName", "QuickBlox Video Chat Java\nBuild version " + defaultConfig.getVersionName()
         }
     }
@@ -94,12 +88,9 @@ dependencies {
 
     implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
     implementation "com.navercorp.pulltorefresh:library:$pullToRefreshVersion@aar"
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
-        transitive = true
-    }
+
     implementation "com.google.android.material:material:$materialVersion"
     implementation "com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion"
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
 }
 
 apply from: "../artifacts.gradle"

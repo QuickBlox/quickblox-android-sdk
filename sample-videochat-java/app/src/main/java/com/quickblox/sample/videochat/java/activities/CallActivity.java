@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochat.java.activities;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochat.java.R;
@@ -66,7 +66,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.fragment.app.Fragment;
+import static com.quickblox.sample.videochat.java.services.CallService.ONE_OPPONENT;
+import static com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_PENDING;
 
 /**
  * QuickBlox team
@@ -119,6 +120,12 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         initSettingsStrategy();
         addListeners();
 
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            isInComingCall = getIntent().getExtras().getBoolean(Consts.EXTRA_IS_INCOMING_CALL, false);
+        } else {
+            isInComingCall = sharedPrefsHelper.get(Consts.EXTRA_IS_INCOMING_CALL, false);
+        }
+
         if (callService.isCallMode()) {
             checkPermission();
             if (callService.isSharingScreenState()) {
@@ -127,12 +134,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             }
             addConversationFragment(isInComingCall);
         } else {
-            if (getIntent() != null && getIntent().getExtras() != null) {
-                isInComingCall = getIntent().getExtras().getBoolean(Consts.EXTRA_IS_INCOMING_CALL, false);
-            } else {
-                isInComingCall = sharedPrefsHelper.get(Consts.EXTRA_IS_INCOMING_CALL, false);
-            }
-
             if (!isInComingCall) {
                 callService.playRingtone();
             }
@@ -163,6 +164,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "onActivityResult requestCode=" + requestCode + ", resultCode= " + resultCode);
         if (resultCode == Consts.EXTRA_LOGIN_RESULT_CODE) {
             if (data != null) {
@@ -288,16 +290,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         showIncomingCallWindowTask = new Runnable() {
             @Override
             public void run() {
-                /*if (callService.currentSessionExist()) {
-                    BaseSession.QBRTCSessionState currentSessionState = callService.getCurrentSessionState();
-                    if (QBRTCSession.QBRTCSessionState.QB_RTC_SESSION_NEW.equals(currentSessionState)) {
-                        callService.rejectCurrentSession(new HashMap<>());
-                    } else {
-                        callService.stopRingtone();
-                        hangUpCurrentSession();
-                    }
-                }*/
-                // This is a fix to prevent call stop in case calling to user with more then one device logged in.
                 ToastUtils.longToast("Call was stopped by UserNoActions timer");
                 callService.clearCallState();
                 callService.clearButtonsState();
@@ -315,7 +307,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             finish();
         }
     }
-
 
     private void startIncomeCallTimer(long time) {
         Log.d(TAG, "startIncomeCallTimer");
@@ -344,7 +335,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     @Override
     public void finish() {
-        //Fix bug when user returns to call from service and the backstack doesn't have any screens
         CallService.stop(this);
         OpponentsActivity.start(this);
         super.finish();
@@ -391,7 +381,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         });
     }
 
-    ////////////////////////////// ConnectionListener //////////////////////////////
     private class ConnectionListenerImpl extends AbstractConnectionListener {
         @Override
         public void connectionClosedOnError(Exception e) {
@@ -404,7 +393,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         }
     }
 
-    ////////////////////////////// QBRTCSessionStateCallbackListener ///////////////////////////
     @Override
     public void onDisconnectedFromUser(QBRTCSession session, Integer userID) {
         Log.d(TAG, "Disconnected from user: " + userID);
@@ -429,7 +417,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     }
 
-    ////////////////////////////// QBRTCClientSessionCallbacks //////////////////////////////
     @Override
     public void onUserNotAnswer(QBRTCSession session, Integer userID) {
         if (callService.isCurrentSession(session)) {
@@ -448,10 +435,16 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     @Override
     public void onReceiveHangUpFromUser(final QBRTCSession session, final Integer userID, Map<String, String> map) {
         if (callService.isCurrentSession(session)) {
-            if (userID.equals(session.getCallerID())) {
+            int numberOpponents = session.getOpponents().size();
+            if (numberOpponents == ONE_OPPONENT) {
                 hangUpCurrentSession();
                 Log.d(TAG, "Initiator hung up the call");
+            } else {
+                if (session.getState() == QB_RTC_SESSION_PENDING && userID.equals(session.getCallerID())) {
+                    hangUpCurrentSession();
+                }
             }
+
             QBUser participant = dbManager.getUserById(userID);
             final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
             ToastUtils.shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
@@ -492,7 +485,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         }
     }
 
-    ////////////////////////////// IncomeCallFragmentCallbackListener ////////////////////////////
     @Override
     public void onAcceptCurrentSession() {
         if (callService.currentSessionExist()) {
@@ -507,7 +499,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         callService.rejectCurrentSession(new HashMap<>());
     }
 
-    ////////////////////////////// ConversationFragmentCallback ////////////////////////////
     @Override
     public void addConnectionListener(ConnectionListener connectionCallback) {
         callService.addConnectionListener(connectionCallback);
@@ -538,12 +529,8 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         hangUpCurrentSession();
     }
 
-    @TargetApi(21)
     @Override
     public void onStartScreenSharing() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
         QBRTCScreenCapturer.requestPermissions(this);
     }
 
@@ -605,6 +592,11 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     }
 
     @Override
+    public boolean isCameraFront() {
+        return callService.isCameraFront();
+    }
+
+    @Override
     public boolean currentSessionExist() {
         return callService.currentSessionExist();
     }
@@ -662,9 +654,8 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     @Override
     public void onStopPreview() {
         callService.stopScreenSharing();
-        addConversationFragment(false);
+        addConversationFragment(isInComingCall);
     }
-
 
     private void notifyCallStateListenersCallStarted() {
         for (CurrentCallStateCallback callback : currentCallStateCallbackList) {
@@ -701,7 +692,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             CallService.CallServiceBinder binder = (CallService.CallServiceBinder) service;
             callService = binder.getService();
             if (callService.currentSessionExist()) {
-                //we have already currentSession == null, so it's no reason to do further initialization
                 if (QBChatService.getInstance().isLoggedIn()) {
                     initScreen();
                 } else {

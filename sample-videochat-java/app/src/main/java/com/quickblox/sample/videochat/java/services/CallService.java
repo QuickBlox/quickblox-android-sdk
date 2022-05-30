@@ -17,6 +17,10 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
@@ -56,16 +60,11 @@ import org.webrtc.CameraVideoCapturer;
 import org.webrtc.VideoSink;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 
 import static com.quickblox.sample.videochat.java.utils.Consts.MAX_OPPONENTS_COUNT;
 
@@ -75,6 +74,7 @@ public class CallService extends Service {
     private static final int SERVICE_ID = 787;
     private static final String CHANNEL_ID = "Quickblox channel";
     private static final String CHANNEL_NAME = "Quickblox background service";
+    public static final int ONE_OPPONENT = 1;
 
     private HashMap<Integer, QBRTCVideoTrack> videoTrackMap = new HashMap<>();
     private CallServiceBinder callServiceBinder = new CallServiceBinder();
@@ -132,7 +132,6 @@ public class CallService extends Service {
         super.onDestroy();
         networkConnectionChecker.unregisterListener(networkConnectionListener);
         removeConnectionListener(connectionListener);
-        removeVideoTrackRenders();
 
         releaseCurrentSession();
         releaseAudioManager();
@@ -157,8 +156,12 @@ public class CallService extends Service {
         Intent notifyIntent = new Intent(this, CallActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+        int intentFlag = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0,
-                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                notifyIntent, intentFlag);
 
         String notificationTitle = getString(R.string.notification_title);
         String notificationText = getString(R.string.notification_text, "");
@@ -480,6 +483,14 @@ public class CallService extends Service {
         }
     }
 
+    public boolean isCameraFront() {
+        if (currentSession != null && currentSession.getMediaStreamManager() != null) {
+            QBRTCCameraVideoCapturer videoCapturer = (QBRTCCameraVideoCapturer) currentSession.getMediaStreamManager().getVideoCapturer();
+            return videoCapturer.getCameraName().contains("front");
+        }
+        return true;
+    }
+
     public void switchAudio() {
         Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + appRTCAudioManager.getSelectedAudioDevice());
         if (appRTCAudioManager.getSelectedAudioDevice() != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
@@ -516,27 +527,12 @@ public class CallService extends Service {
     }
 
     private void removeVideoTrack(int userId) {
-        videoTrackMap.remove(userId);
-    }
-
-    private void removeVideoTrackRenders() {
-        Log.d(TAG, "removeVideoTrackRenders");
-        if (!videoTrackMap.isEmpty()) {
-            Iterator<Map.Entry<Integer, QBRTCVideoTrack>> entryIterator = videoTrackMap.entrySet().iterator();
-            while (entryIterator.hasNext()) {
-                Map.Entry entry = entryIterator.next();
-                Integer userId = (Integer) entry.getKey();
-                QBRTCVideoTrack videoTrack = (QBRTCVideoTrack) entry.getValue();
-                QBUser qbUser = QBChatService.getInstance().getUser();
-                boolean remoteVideoTrack = !userId.equals(qbUser.getId());
-                if (remoteVideoTrack) {
-                    VideoSink renderer = videoTrack.getRenderer();
-                    if (renderer != null) {
-                        videoTrack.removeRenderer(renderer);
-                    }
-                }
-            }
+        QBRTCVideoTrack videoTrack = getVideoTrack(userId);
+        if (videoTrack != null) {
+            VideoSink renderer = videoTrack.getRenderer();
+            videoTrack.removeRenderer(renderer);
         }
+        videoTrackMap.remove(userId);
     }
 
     public void setCallTimerCallback(CallTimerListener callback) {
@@ -648,8 +644,14 @@ public class CallService extends Service {
             stopRingtone();
             if (session == WebRtcSessionManager.getInstance(getApplicationContext()).getCurrentSession()) {
                 Log.d(TAG, "Initiator HangUp the Call");
-                if (userID.equals(session.getCallerID()) && currentSession != null) {
-                    currentSession.hangUp(new HashMap<>());
+
+                int numberOpponents = session.getOpponents().size();
+                if (numberOpponents == ONE_OPPONENT) {
+                    if (userID.equals(session.getCallerID()) && currentSession != null) {
+                        currentSession.hangUp(new HashMap<>());
+                    }
+                } else {
+                    removeVideoTrack(userID);
                 }
 
                 QBUser participant = QbUsersDbManager.getInstance(getApplicationContext()).getUserById(userID);

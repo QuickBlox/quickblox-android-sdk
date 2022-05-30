@@ -209,7 +209,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private String getCurrentDeviceId() {
-        return Utils.generateDeviceId(this);
+        return Utils.generateDeviceId();
     }
 
     private class LoginEditTextWatcher implements TextWatcher {
