@@ -23,20 +23,17 @@ class SplashActivity : BaseActivity() {
             } catch (e: PackageManager.NameNotFoundException) {
                 throw RuntimeException("Could not get package name: $e")
             }
-
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.hide()
-        }
+        supportActionBar?.hide()
 
         val extras = intent.extras
         if (extras != null) {
-            message = intent.extras!!.getString(EXTRA_FCM_MESSAGE)
+            message = intent.extras?.getString(EXTRA_FCM_MESSAGE)
         }
         fillUI()
         startNextScreen()
@@ -63,6 +60,5 @@ class SplashActivity : BaseActivity() {
                 finish()
             }, SPLASH_DELAY.toLong())
         }
-
     }
 }

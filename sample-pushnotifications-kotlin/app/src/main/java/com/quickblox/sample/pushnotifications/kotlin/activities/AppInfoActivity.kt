@@ -15,7 +15,6 @@ import com.quickblox.sample.pushnotifications.kotlin.BuildConfig
 import com.quickblox.sample.pushnotifications.kotlin.R
 
 class AppInfoActivity : BaseActivity() {
-
     private lateinit var appVersionTextView: TextView
     private lateinit var sdkVersionTextView: TextView
     private lateinit var appIDTextView: TextView

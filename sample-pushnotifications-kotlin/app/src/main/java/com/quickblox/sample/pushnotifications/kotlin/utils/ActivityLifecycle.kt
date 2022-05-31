@@ -13,11 +13,11 @@ object ActivityLifecycle : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-
+        // empty
     }
 
     override fun onActivityStarted(activity: Activity) {
-
+        // empty
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -32,11 +32,11 @@ object ActivityLifecycle : Application.ActivityLifecycleCallbacks {
 
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {
-
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        // empty
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-
+        // empty
     }
 }

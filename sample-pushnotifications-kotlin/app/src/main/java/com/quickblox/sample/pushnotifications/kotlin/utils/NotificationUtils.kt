@@ -10,12 +10,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 
-// The id of the channel.
 private const val CHANNEL_ONE_ID = "com.quickblox.samples.ONE"
 private const val CHANNEL_ONE_NAME = "Channel One"
 
 fun showNotification(context: Context, activityClass: Class<out Activity>,
-                     title: String, message: String, @DrawableRes icon: Int,
+                     title: String, message: String?, @DrawableRes icon: Int,
                      notificationId: Int) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -41,7 +40,7 @@ private fun createChannelIfNotExist(notificationManager: NotificationManager) {
 }
 
 private fun buildNotification(context: Context, activityClass: Class<out Activity>,
-                              title: String, message: String, @DrawableRes icon: Int): Notification {
+                              title: String, message: String?, @DrawableRes icon: Int): Notification {
     val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
     return NotificationCompat.Builder(context, CHANNEL_ONE_ID)
             .setSmallIcon(icon)
@@ -53,7 +52,7 @@ private fun buildNotification(context: Context, activityClass: Class<out Activit
             .build()
 }
 
-private fun buildContentIntent(context: Context, activityClass: Class<out Activity>, message: String): PendingIntent {
+private fun buildContentIntent(context: Context, activityClass: Class<out Activity>, message: String?): PendingIntent {
     val intent = Intent(context, activityClass)
     intent.putExtra(EXTRA_FCM_MESSAGE, message)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

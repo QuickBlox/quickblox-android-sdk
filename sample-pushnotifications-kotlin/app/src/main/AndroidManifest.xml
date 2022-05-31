@@ -17,6 +17,7 @@
 
         <activity
             android:name=".activities.SplashActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,13 +46,17 @@
             </intent-filter>
         </service>
 
-        <service android:name="com.quickblox.messages.services.fcm.QBFcmPushListenerService">
+        <service
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushListenerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService">
+        <service
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

@@ -16,16 +16,16 @@ abstract class BaseActivity : AppCompatActivity() {
     protected fun showProgressDialog(@StringRes messageId: Int) {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.setCanceledOnTouchOutside(false)
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.setCanceledOnTouchOutside(false)
 
-            // Disable the back button
+            // disable the back button
             val keyListener = DialogInterface.OnKeyListener { dialog, keyCode, event -> keyCode == KeyEvent.KEYCODE_BACK }
-            progressDialog!!.setOnKeyListener(keyListener)
+            progressDialog?.setOnKeyListener(keyListener)
         }
-        progressDialog!!.setMessage(getString(messageId))
-        progressDialog!!.show()
+        progressDialog?.setMessage(getString(messageId))
+        progressDialog?.show()
     }
 
     override fun onPause() {
@@ -34,8 +34,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected fun hideProgressDialog() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
-            progressDialog!!.dismiss()
+        if (progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
         }
     }
 
@@ -46,8 +46,8 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             finish()
             return true
         }

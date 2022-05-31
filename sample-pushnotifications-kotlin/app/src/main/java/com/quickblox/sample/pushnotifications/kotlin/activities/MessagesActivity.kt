@@ -60,7 +60,7 @@ class MessagesActivity : BaseActivity() {
                 message = EMPTY_FCM_MESSAGE
             }
             Log.i(TAG, "Receiving event $ACTION_NEW_FCM_EVENT with data: $message")
-            retrieveMessage(message)
+            message?.let { retrieveMessage(it) }
         }
     }
 
@@ -95,8 +95,8 @@ class MessagesActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_send_message -> {
                 item.isEnabled = false
                 sendPushMessage()
@@ -178,11 +178,9 @@ class MessagesActivity : BaseActivity() {
             return
         }
 
-        // Send Push: create QuickBlox Push Notification Event
         val qbEvent = QBEvent()
         qbEvent.notificationType = QBNotificationType.PUSH
         qbEvent.environment = QBEnvironment.DEVELOPMENT
-        // Generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
         qbEvent.message = outMessage
 
         val userIds = StringifyArrayList<Int>()
@@ -198,9 +196,9 @@ class MessagesActivity : BaseActivity() {
                 invalidateOptionsMenu()
             }
 
-            override fun onError(e: QBResponseException?) {
-                e?.let {
-                    showErrorSnackbar(R.string.sending_error, e, View.OnClickListener {
+            override fun onError(exception: QBResponseException?) {
+                exception?.let {
+                    showErrorSnackbar(R.string.sending_error, exception, View.OnClickListener {
                         sendPushMessage()
                     })
                 }
@@ -220,11 +218,11 @@ class MessagesActivity : BaseActivity() {
         }
 
         override fun beforeTextChanged(string: CharSequence?, start: Int, count: Int, after: Int) {
-
+            // empty
         }
 
         override fun onTextChanged(string: CharSequence?, start: Int, before: Int, count: Int) {
-
+            // empty
         }
     }
 
@@ -232,11 +230,11 @@ class MessagesActivity : BaseActivity() {
         if (QBPushManager.getInstance().isSubscribedToPushes) {
             QBPushManager.getInstance().addListener(object : QBPushManager.QBSubscribeListener {
                 override fun onSubscriptionCreated() {
-
+                    // empty
                 }
 
                 override fun onSubscriptionError(e: Exception?, i: Int) {
-
+                    // empty
                 }
 
                 override fun onSubscriptionDeleted(success: Boolean) {
