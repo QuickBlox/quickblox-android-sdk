@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.quickblox.sample.pushnotifications.java.App;
 
 public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks {
-
     private static ActivityLifecycle instance;
 
     private boolean foreground = false;
@@ -33,12 +32,12 @@ public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+        // empty
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-
+        // empty
     }
 
     @Override
@@ -53,16 +52,16 @@ public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks
 
     @Override
     public void onActivityStopped(Activity activity) {
-
+        // empty
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
+        // empty
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        // empty
     }
 }

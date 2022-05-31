@@ -2,9 +2,9 @@ package com.quickblox.sample.pushnotifications.java.utils;
 
 import android.widget.Toast;
 
-import com.quickblox.sample.pushnotifications.java.App;
-
 import androidx.annotation.StringRes;
+
+import com.quickblox.sample.pushnotifications.java.App;
 
 public class ToastUtils {
 

@@ -9,7 +9,6 @@ import com.quickblox.users.model.QBUser;
 
 public class SharedPrefsHelper {
     private static final String SHARED_PREFS_NAME = "qb";
-
     private static final String QB_USER_ID = "qb_user_id";
     private static final String QB_USER_LOGIN = "qb_user_login";
     private static final String QB_USER_PASSWORD = "qb_user_password";
@@ -24,7 +23,6 @@ public class SharedPrefsHelper {
         if (instance == null) {
             instance = new SharedPrefsHelper();
         }
-
         return instance;
     }
 
@@ -74,7 +72,6 @@ public class SharedPrefsHelper {
     public boolean has(String key) {
         return sharedPreferences.contains(key);
     }
-
 
     public void saveQbUser(QBUser qbUser) {
         save(QB_USER_ID, qbUser.getId());

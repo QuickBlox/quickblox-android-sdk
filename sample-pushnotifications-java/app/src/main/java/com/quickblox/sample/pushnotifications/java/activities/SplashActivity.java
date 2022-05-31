@@ -4,17 +4,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.pushnotifications.java.App;
 import com.quickblox.sample.pushnotifications.java.R;
 import com.quickblox.sample.pushnotifications.java.utils.Consts;
 import com.quickblox.sample.pushnotifications.java.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 public class SplashActivity extends BaseActivity {
@@ -72,6 +66,5 @@ public class SplashActivity extends BaseActivity {
                 }
             }, SPLASH_DELAY);
         }
-
     }
 }

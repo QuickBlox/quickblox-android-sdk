@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.core.QBEntityCallback;
@@ -39,10 +41,7 @@ import com.quickblox.users.QBUsers;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 public class MessagesActivity extends BaseActivity implements TextWatcher {
-
     private final String TAG = getClass().getSimpleName();
 
     private EditText outgoingMessageEditText;
@@ -175,11 +174,9 @@ public class MessagesActivity extends BaseActivity implements TextWatcher {
             return;
         }
 
-        // Send Push: create QuickBlox Push Notification Event
         QBEvent qbEvent = new QBEvent();
         qbEvent.setNotificationType(QBNotificationType.PUSH);
         qbEvent.setEnvironment(QBEnvironment.DEVELOPMENT);
-        // Generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
         qbEvent.setMessage(outMessage);
 
         StringifyArrayList<Integer> userIds = new StringifyArrayList<>();
@@ -219,12 +216,12 @@ public class MessagesActivity extends BaseActivity implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        //ignore
+        // empty
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        //ignore
+        // empty
     }
 
     @Override
@@ -239,12 +236,12 @@ public class MessagesActivity extends BaseActivity implements TextWatcher {
             QBPushManager.getInstance().addListener(new QBPushManager.QBSubscribeListener() {
                 @Override
                 public void onSubscriptionCreated() {
-
+                    // empty
                 }
 
                 @Override
                 public void onSubscriptionError(Exception e, int i) {
-
+                    // empty
                 }
 
                 @Override

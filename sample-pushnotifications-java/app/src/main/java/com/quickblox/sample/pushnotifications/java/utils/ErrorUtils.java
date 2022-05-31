@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.pushnotifications.java.App;
@@ -12,11 +15,7 @@ import com.quickblox.sample.pushnotifications.java.R;
 
 import java.util.List;
 
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-
 public class ErrorUtils {
-
     private static final String NO_CONNECTION_ERROR = App.getInstance().getString(R.string.error_connection_failed);
     private static final String NO_RESPONSE_TIMEOUT = App.getInstance().getString(R.string.error_no_responce_timeout);
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
