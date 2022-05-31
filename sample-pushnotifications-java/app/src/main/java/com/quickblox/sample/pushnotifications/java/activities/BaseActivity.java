@@ -9,15 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.pushnotifications.java.R;
 import com.quickblox.sample.pushnotifications.java.utils.ErrorUtils;
 
 import java.lang.reflect.Field;
-
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();

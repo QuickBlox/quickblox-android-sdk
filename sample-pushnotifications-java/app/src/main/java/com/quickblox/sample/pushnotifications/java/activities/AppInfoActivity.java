@@ -14,9 +14,7 @@ import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.pushnotifications.java.BuildConfig;
 import com.quickblox.sample.pushnotifications.java.R;
 
-
 public class AppInfoActivity extends BaseActivity {
-
     private TextView appVersionTextView;
     private TextView sdkVersionTextView;
     private TextView appIDTextView;

@@ -1,22 +1,19 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath 'com.google.gms:google-services:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven {
-            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
-        }
+        mavenCentral()
     }
 }
 
@@ -25,20 +22,14 @@ ext {
     dimensionDefault = 'default'
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.4'
+    qbSdkVersion = '3.9.16'
 
-    //Fabric
-    fabricToolsVersion = '1.27.0'
+    // Firebase
+    firebaseCoreVersion = '21.0.0'
 
-    //Firebase
-    firebaseCoreVersion = '16.0.8'
+    // Material
+    materialVersion = '1.6.0'
 
-    //Material
-    materialVersion = '1.0.0'
-
-    //RobotoTextView
+    // RobotoTextView
     robotoTextViewVersion = '4.0.0'
-
-    //Crashlytics
-    crashlyticsVersion = '2.9.5'
 }

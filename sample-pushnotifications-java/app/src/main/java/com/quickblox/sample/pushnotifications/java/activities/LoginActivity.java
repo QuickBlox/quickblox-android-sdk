@@ -66,7 +66,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-
+        // empty
     }
 
     private void signIn() {
