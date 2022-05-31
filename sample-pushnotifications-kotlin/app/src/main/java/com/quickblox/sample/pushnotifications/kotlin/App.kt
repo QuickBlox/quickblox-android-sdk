@@ -2,7 +2,6 @@ package com.quickblox.sample.pushnotifications.kotlin
 
 import android.app.Application
 import android.util.Log
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.GoogleApiAvailability
 import com.quickblox.auth.session.QBSession
 import com.quickblox.auth.session.QBSessionManager
@@ -11,15 +10,14 @@ import com.quickblox.auth.session.QBSettings
 import com.quickblox.messages.services.QBPushManager
 import com.quickblox.sample.pushnotifications.kotlin.utils.ActivityLifecycle
 import com.quickblox.sample.pushnotifications.kotlin.utils.shortToast
-import io.fabric.sdk.android.Fabric
 
-//App Credentials
+// app credentials
 private const val APPLICATION_ID = ""
 private const val AUTH_KEY = ""
 private const val AUTH_SECRET = ""
 private const val ACCOUNT_KEY = ""
 
-//Default user config
+// default user config
 const val DEFAULT_USER_PASSWORD = "quickblox"
 
 class App : Application() {
@@ -38,7 +36,6 @@ class App : Application() {
         checkConfig()
         initCredentials()
         initQBSessionManager()
-        initFabric()
         initPushManager()
     }
 
@@ -53,7 +50,7 @@ class App : Application() {
         QBSettings.getInstance().init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET)
         QBSettings.getInstance().accountKey = ACCOUNT_KEY
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //
         // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);
@@ -108,11 +105,5 @@ class App : Application() {
 
             }
         })
-    }
-
-    private fun initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-        }
     }
 }

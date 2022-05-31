@@ -18,7 +18,7 @@ private const val QB_USER_TAGS = "qb_user_tags"
 object SharedPrefsHelper {
     private var sharedPreferences: SharedPreferences = App.getInstance().getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun save(key: String, value: Any?) {
+    private fun save(key: String, value: Any?) {
         val editor = sharedPreferences.edit()
         when {
             value is Boolean -> editor.putBoolean(key, (value as Boolean?)!!)
@@ -32,7 +32,7 @@ object SharedPrefsHelper {
         editor.apply()
     }
 
-    fun delete(key: String) {
+    private fun delete(key: String) {
         if (sharedPreferences.contains(key)) {
             getEditor().remove(key).commit()
         }
@@ -58,7 +58,7 @@ object SharedPrefsHelper {
         delete(QB_USER_TAGS)
     }
 
-    fun hasQbUser(): Boolean {
+    private fun hasQbUser(): Boolean {
         return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD)
     }
 

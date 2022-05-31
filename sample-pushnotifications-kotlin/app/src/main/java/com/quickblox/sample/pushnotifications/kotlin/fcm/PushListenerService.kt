@@ -10,7 +10,6 @@ import com.quickblox.sample.pushnotifications.kotlin.utils.showNotification
 private const val NOTIFICATION_ID = 1
 
 class PushListenerService : QBFcmPushListenerService() {
-
     private val TAG = PushListenerService::class.java.simpleName
 
     override fun sendPushMessage(data: MutableMap<Any?, Any?>?, from: String?, message: String?) {
@@ -20,7 +19,7 @@ class PushListenerService : QBFcmPushListenerService() {
 
         if (ActivityLifecycle.isBackground()) {
             showNotification(this, SplashActivity::class.java,
-                    getString(R.string.notification_title), message!!,
+                    getString(R.string.notification_title), message,
                     R.mipmap.ic_notification, NOTIFICATION_ID)
         }
     }

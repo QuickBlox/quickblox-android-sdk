@@ -1,19 +1,16 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradlePluginVersion"
-        classpath "io.fabric.tools:gradle:$fabricToolsVersion"
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 apply from: "../artifacts.gradle"
 apply plugin: 'com.google.gms.google-services'
 
@@ -23,27 +20,25 @@ androidExtensions {
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
-    maven { url 'https://maven.fabric.io/public' }
-    flatDir { dirs 'libs' }
 }
 
 android {
     def versionQACode = 1
 
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
     flavorDimensions dimensionDefault
 
     defaultConfig {
         applicationId "com.quickblox.sample.pushnotifications.kotlin"
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 401000
-        versionName '4.0.1-kotlin'
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 402000
+        versionName '4.0.2-kotlin'
         multiDexEnabled true
     }
 
@@ -97,14 +92,9 @@ android {
 }
 
 dependencies {
-
     implementation("com.quickblox:quickblox-android-sdk-messages:$qbSdkVersion")
 
     implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
     implementation("com.google.android.material:material:$materialVersion")
     implementation("com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinGradlePluginVersion")
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
-        transitive = true
-    }
 }
