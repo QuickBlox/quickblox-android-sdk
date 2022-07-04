@@ -21,7 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.model.QBAttachment;
@@ -61,11 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageViewHolder> implements
         StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
@@ -208,9 +211,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageView
 
     @Override
     public void onViewRecycled(NewMessageViewHolder holder) {
-        //abort loading avatar before setting new avatar to view
+        // abort loading avatar before setting new avatar to view
         if (containerLayoutRes.get(holder.getItemViewType()) != 0 && holder.avatar != null) {
-            Glide.clear(holder.avatar);
+            Glide.with(context).clear(holder.avatar);
         }
 
         super.onViewRecycled(holder);
@@ -889,7 +892,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageView
         }
     }
 
-    static class ImageLoadListener<M, P> implements RequestListener<M, P> {
+    static class ImageLoadListener<M> implements RequestListener<M> {
         private NewMessageViewHolder holder;
 
         private ImageLoadListener(NewMessageViewHolder holder) {
@@ -898,9 +901,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageView
         }
 
         @Override
-        public boolean onException(Exception e, M model, Target<P> target, boolean isFirstResource) {
-            if (e != null && e.getMessage() != null) {
-                Log.e(TAG, "ImageLoadListener Exception= " + e.getMessage());
+        public boolean onLoadFailed(@Nullable GlideException exception, Object model, Target<M> target, boolean isFirstResource) {
+            if (exception != null) {
+                Log.e(TAG, "ImageLoadListener Exception= " + exception.getMessage());
             }
             holder.ivImageAttachPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.pbImageProgress.setVisibility(View.GONE);
@@ -908,7 +911,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageView
         }
 
         @Override
-        public boolean onResourceReady(P resource, M model, Target<P> target, boolean isFromMemoryCache, boolean isFirstResource) {
+        public boolean onResourceReady(M resource, Object model, Target<M> target, DataSource dataSource, boolean isFirstResource) {
             holder.ivImageAttachPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.pbImageProgress.setVisibility(View.GONE);
             return false;
@@ -1033,7 +1036,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.NewMessageView
     }
 
     public interface MessageLongClickListener {
-
         void onMessageLongClicked(int itemViewType, View view, QBChatMessage qbChatMessage);
     }
 }

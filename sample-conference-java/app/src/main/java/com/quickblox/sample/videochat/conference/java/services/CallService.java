@@ -170,8 +170,13 @@ public class CallService extends Service {
         Intent notifyIntent = new Intent(this, CallActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+        int intentFlag = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE;
+        }
+
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0,
-                notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                notifyIntent, intentFlag);
 
         String notificationTitle = getString(R.string.notification_title);
         String notificationText = getString(R.string.notification_text, "");

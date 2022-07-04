@@ -16,10 +16,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -32,12 +32,13 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:requestLegacyExternalStorage="true">
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".activities.SplashActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -53,10 +54,10 @@
 
         <activity
             android:name=".activities.DialogsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activities.NewGroupActivity"
@@ -111,26 +112,29 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/AppTheme.SettingsScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.SettingsScreen" />
 
         <activity
             android:name=".activities.AppInfoActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name=".services.CallService"
+        <service
+            android:name=".services.CallService"
             android:foregroundServiceType="mediaProjection"
             tools:targetApi="29" />
 
         <service
-            android:name=".fcm.PushListenerService">
+            android:name=".fcm.PushListenerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService">
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -138,7 +142,7 @@
 
         <meta-data
             android:name="com.quickblox.messages.TYPE"
-            android:value="GCM" />
+            android:value="FCM" />
 
         <meta-data
             android:name="com.quickblox.messages.SENDER_ID"
@@ -161,9 +165,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="4b96a3f33893a42103eae91d2166d0c517b833d3" />
     </application>
 </manifest>

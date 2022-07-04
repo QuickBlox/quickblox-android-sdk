@@ -15,9 +15,7 @@ import com.quickblox.conference.ConferenceConfig;
 import com.quickblox.sample.videochat.conference.java.BuildConfig;
 import com.quickblox.sample.videochat.conference.java.R;
 
-
 public class AppInfoActivity extends BaseActivity {
-
     private TextView appVersionTextView;
     private TextView sdkVersionTextView;
     private TextView appIDTextView;
