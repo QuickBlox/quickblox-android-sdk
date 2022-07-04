@@ -70,6 +70,11 @@ class NotificationUtils {
         Intent intent = new Intent(context, activityClass);
         intent.putExtra(FcmConsts.EXTRA_FCM_MESSAGE, message);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        int intentFlag = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getActivity(context, 0, intent, intentFlag);
     }
 }

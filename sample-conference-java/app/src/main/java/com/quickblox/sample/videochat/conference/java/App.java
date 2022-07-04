@@ -3,7 +3,8 @@ package com.quickblox.sample.videochat.conference.java;
 import android.app.Application;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.lifecycle.ProcessLifecycleOwner;
+
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.conference.ConferenceConfig;
 import com.quickblox.sample.videochat.conference.java.managers.ActivityLifecycle;
@@ -15,9 +16,6 @@ import com.quickblox.sample.videochat.conference.java.utils.qb.QBDialogsHolder;
 import com.quickblox.sample.videochat.conference.java.utils.qb.QBDialogsHolderImpl;
 import com.quickblox.sample.videochat.conference.java.utils.qb.QBUsersHolder;
 import com.quickblox.sample.videochat.conference.java.utils.qb.QBUsersHolderImpl;
-
-import androidx.lifecycle.ProcessLifecycleOwner;
-import io.fabric.sdk.android.Fabric;
 
 public class App extends Application {
 
@@ -56,7 +54,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         ActivityLifecycle.init(this);
-        initFabric();
         checkAppCredentials();
         checkChatSettings();
         initCredentials();
@@ -100,12 +97,6 @@ public class App extends Application {
 
     public ChatHelper getChatHelper() {
         return chatHelper;
-    }
-
-    private void initFabric() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
     }
 
     private void initDialogsManager() {
