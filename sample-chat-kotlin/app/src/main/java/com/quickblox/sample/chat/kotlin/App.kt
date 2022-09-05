@@ -6,7 +6,7 @@ import com.quickblox.auth.session.QBSettings
 import com.quickblox.sample.chat.kotlin.managers.BackgroundListener
 import com.quickblox.sample.chat.kotlin.utils.ActivityLifecycle
 
-//Chat settings
+// chat settings
 const val USER_DEFAULT_PASSWORD = "quickblox"
 const val CHAT_PORT = 5223
 const val SOCKET_TIMEOUT = 300
@@ -17,20 +17,19 @@ const val AUTO_MARK_DELIVERED: Boolean = true
 const val RECONNECTION_ALLOWED: Boolean = true
 const val ALLOW_LISTEN_NETWORK: Boolean = true
 
-//App credentials
+// app credentials
 private const val APPLICATION_ID = ""
 private const val AUTH_KEY = ""
 private const val AUTH_SECRET = ""
 private const val ACCOUNT_KEY = ""
 
-//Chat credentials range
+// chat credentials range
 private const val MAX_PORT_VALUE = 65535
 private const val MIN_PORT_VALUE = 1000
 private const val MIN_SOCKET_TIMEOUT = 300
 private const val MAX_SOCKET_TIMEOUT = 60000
 
 class App : Application() {
-
     companion object {
         private lateinit var instance: App
 
@@ -65,7 +64,7 @@ class App : Application() {
         QBSettings.getInstance().init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET)
         QBSettings.getInstance().accountKey = ACCOUNT_KEY
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //
         // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);

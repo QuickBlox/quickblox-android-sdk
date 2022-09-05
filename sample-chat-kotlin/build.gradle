@@ -26,7 +26,7 @@ ext {
     dimensionDefault = 'default'
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.15'
+    qbSdkVersion = '3.10.1'
 
     //Kotlin
     kotlinGradlePluginVersion = '1.5.31'
