@@ -28,7 +28,7 @@ ext {
     lintAbortOnError = false
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.15'
+    qbSdkVersion = '3.10.1'
 
     //Firebase
     firebaseCoreVersion = '20.1.2'
