@@ -11,23 +11,19 @@ import androidx.core.content.ContextCompat
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.utils.showErrorSnackbar
 
-
 abstract class BaseActivity : AppCompatActivity() {
     private var progressDialog: ProgressDialog? = null
-
 
     internal fun showProgressDialog(@StringRes messageId: Int) {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.setCanceledOnTouchOutside(false)
-
-            // Disable the back button
-            progressDialog!!.setOnKeyListener(KeyEventListener())
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.setCanceledOnTouchOutside(false)
+            progressDialog?.setOnKeyListener(KeyEventListener())
         }
-        progressDialog!!.setMessage(getString(messageId))
-        progressDialog!!.show()
+        progressDialog?.setMessage(getString(messageId))
+        progressDialog?.show()
     }
 
     override fun onPause() {
@@ -36,16 +32,14 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     internal fun hideProgressDialog() {
-        if (progressDialog != null && progressDialog?.isShowing == true) {
-            progressDialog!!.dismiss()
+        if (progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
         }
     }
 
-    protected fun showErrorSnackbar(@StringRes resId: Int, e: Exception, clickListener: View.OnClickListener) {
+    protected fun showErrorSnackbar(@StringRes resId: Int, e: Exception?, clickListener: View.OnClickListener) {
         val rootView = window.decorView.findViewById<View>(android.R.id.content)
-        if (rootView != null) {
-            showErrorSnackbar(rootView, resId, e, R.string.dlg_retry, clickListener)
-        }
+        showErrorSnackbar(rootView, resId, e, R.string.dlg_retry, clickListener)
     }
 
     protected fun checkPermissions(permissions: Array<String>): Boolean {

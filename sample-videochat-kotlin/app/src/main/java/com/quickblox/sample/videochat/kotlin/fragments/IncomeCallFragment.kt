@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochat.kotlin.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -15,6 +14,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.quickblox.chat.QBChatService
 import com.quickblox.core.QBEntityCallback
@@ -23,8 +23,8 @@ import com.quickblox.core.helper.StringifyArrayList
 import com.quickblox.core.request.GenericQueryRule
 import com.quickblox.core.request.QBPagedRequestBuilder
 import com.quickblox.sample.videochat.kotlin.R
+import com.quickblox.sample.videochat.kotlin.activities.CallActivity
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
-import com.quickblox.sample.videochat.kotlin.util.loadUsersByPagedRequestBuilder
 import com.quickblox.sample.videochat.kotlin.utils.RingtonePlayer
 import com.quickblox.sample.videochat.kotlin.utils.WebRtcSessionManager
 import com.quickblox.sample.videochat.kotlin.utils.getColorCircleDrawable
@@ -33,7 +33,6 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.QBRTCTypes
 import java.io.Serializable
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val PER_PAGE_SIZE_100 = 100
@@ -51,13 +50,14 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
     private lateinit var alsoOnCallText: TextView
     private lateinit var progressUserName: ProgressBar
     private lateinit var callerNameTextView: TextView
-
-    private var opponentsIds: List<Int>? = null
+    private var otherUsersTextView: TextView? = null
+    private var opponentIds: List<Int>? = null
     private var vibrator: Vibrator? = null
     private var conferenceType: QBRTCTypes.QBConferenceType? = null
     private var lastClickTime = 0L
     private lateinit var ringtonePlayer: RingtonePlayer
     private lateinit var incomeCallFragmentCallbackListener: IncomeCallFragmentCallbackListener
+
     private var currentSession: QBRTCSession? = null
 
     override fun onAttach(context: Context) {
@@ -74,6 +74,16 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
 
         Log.d(TAG, "onCreate() from IncomeCallFragment")
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as CallActivity).addUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (requireActivity() as CallActivity).removeUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,14 +107,14 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
         currentSession = WebRtcSessionManager.getCurrentSession()
 
         currentSession?.let {
-            opponentsIds = it.opponents
+            opponentIds = it.opponents
             conferenceType = it.conferenceType
             Log.d(TAG, conferenceType.toString() + "From onCreateView()")
         }
     }
 
     private fun hideToolBar() {
-        val toolbar = activity?.findViewById<View>(R.id.toolbar_call)
+        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar_call)
         toolbar?.visibility = View.GONE
     }
 
@@ -120,9 +130,9 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
 
     private fun initUI(view: View) {
         callTypeTextView = view.findViewById(R.id.call_type)
-        val callerAvatarImageView = view.findViewById<ImageView>(R.id.image_caller_avatar)
+        val callerAvatarImageView: ImageView = view.findViewById(R.id.image_caller_avatar)
         callerNameTextView = view.findViewById(R.id.text_caller_name)
-        val otherIncUsersTextView = view.findViewById<TextView>(R.id.text_other_inc_users)
+        otherUsersTextView = view.findViewById(R.id.text_other_users)
         progressUserName = view.findViewById(R.id.progress_bar_opponent_name)
         alsoOnCallText = view.findViewById(R.id.text_also_on_call)
         rejectButton = view.findViewById(R.id.image_button_reject_call)
@@ -134,14 +144,15 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
 
         val callerUser = QbUsersDbManager.getUserById(currentSession?.callerID)
 
-        if (callerUser != null && !TextUtils.isEmpty(callerUser.fullName)) {
-            callerNameTextView.text = callerUser.fullName
+        if (callerUser != null) {
+            val name = callerUser.fullName ?: callerUser.login
+            callerNameTextView.text = name
         } else {
             callerNameTextView.text = currentSession?.callerID.toString()
             updateUserFromServer()
         }
 
-        otherIncUsersTextView.text = getOtherIncUsersNames()
+        otherUsersTextView?.text = getOtherIncUsersNames()
 
         setVisibilityAlsoOnCallTextView()
     }
@@ -149,22 +160,23 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
     private fun updateUserFromServer() {
         progressUserName.visibility = View.VISIBLE
 
-        val callerID = currentSession?.callerID!!
-        QBUsers.getUser(callerID).performAsync(object : QBEntityCallback<QBUser> {
-            override fun onSuccess(qbUser: QBUser?, b: Bundle?) {
-                if (qbUser != null) {
-                    QbUsersDbManager.saveUser(qbUser)
-                    val callerName = if (TextUtils.isEmpty(qbUser.fullName)) qbUser.login else qbUser.fullName
-                    callerNameTextView.text = callerName
+        currentSession?.let {
+            QBUsers.getUser(it.callerID).performAsync(object : QBEntityCallback<QBUser> {
+                override fun onSuccess(qbUser: QBUser?, bundle: Bundle?) {
+                    if (qbUser != null) {
+                        QbUsersDbManager.saveUser(qbUser)
+                        val callerName = if (TextUtils.isEmpty(qbUser.fullName)) qbUser.login else qbUser.fullName
+                        callerNameTextView.text = callerName
+                    }
+                    progressUserName.visibility = View.GONE
                 }
-                progressUserName.visibility = View.GONE
-            }
 
-            override fun onError(e: QBResponseException?) {
-                progressUserName.visibility = View.GONE
-                e?.printStackTrace()
-            }
-        })
+                override fun onError(e: QBResponseException?) {
+                    progressUserName.visibility = View.GONE
+                    e?.printStackTrace()
+                }
+            })
+        }
 
         val rules = ArrayList<GenericQueryRule>()
         rules.add(GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED))
@@ -172,12 +184,13 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
         requestBuilder.rules = rules
         requestBuilder.perPage = PER_PAGE_SIZE_100
 
-        loadUsersByPagedRequestBuilder(object : QBEntityCallback<ArrayList<QBUser>> {
+        QBUsers.getUsers(requestBuilder).performAsync(object : QBEntityCallback<ArrayList<QBUser>> {
             override fun onSuccess(users: ArrayList<QBUser>, params: Bundle?) {
                 QbUsersDbManager.saveAllUsers(users, true)
-                var callerUser: QBUser? = QbUsersDbManager.getUserById(currentSession?.callerID)
-                if (callerUser != null && !TextUtils.isEmpty(callerUser.fullName)) {
-                    callerNameTextView.text = callerUser.fullName
+                val callerUser: QBUser? = QbUsersDbManager.getUserById(currentSession?.callerID)
+                if (callerUser != null) {
+                    val name = callerUser.fullName ?: callerUser.login
+                    callerNameTextView.text = name
                 }
                 progressUserName.visibility = View.GONE
             }
@@ -185,11 +198,11 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
             override fun onError(e: QBResponseException?) {
                 progressUserName.visibility = View.GONE
             }
-        }, requestBuilder)
+        })
     }
 
     private fun setVisibilityAlsoOnCallTextView() {
-        opponentsIds?.let {
+        opponentIds?.let {
             if (it.size < 2) {
                 alsoOnCallText.visibility = View.INVISIBLE
             }
@@ -222,13 +235,13 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
 
     private fun getOtherIncUsersNames(): String {
         var result = ""
-        opponentsIds?.let {
+        opponentIds?.let {
             val usersFromDb = QbUsersDbManager.getUsersByIds(it)
             val opponents = ArrayList<QBUser>()
-            opponents.addAll(getListAllUsersFromIds(usersFromDb, it))
+            opponents.addAll(getAllUsersFromIds(usersFromDb, it))
 
             opponents.remove(QBChatService.getInstance().user)
-            Log.d(TAG, "opponentsIds = $opponentsIds")
+            Log.d(TAG, "opponentIds = $opponentIds")
             result = makeStringFromUsersFullNames(opponents)
         }
         return result
@@ -247,7 +260,7 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
         return usersNames.itemsAsString.replace(",", ", ")
     }
 
-    fun getListAllUsersFromIds(existedUsers: ArrayList<QBUser>, allIds: List<Int>): ArrayList<QBUser> {
+    private fun getAllUsersFromIds(existedUsers: ArrayList<QBUser>, allIds: List<Int>): ArrayList<QBUser> {
         val qbUsers = ArrayList<QBUser>()
 
         for (userId in allIds) {
@@ -324,5 +337,24 @@ class IncomeCallFragment : Fragment(), Serializable, View.OnClickListener {
     private fun enableButtons(enable: Boolean) {
         takeButton.isEnabled = enable
         rejectButton.isEnabled = enable
+    }
+
+    private inner class UpdateOpponentsListenerImpl(val tag: String?) : CallActivity.UpdateOpponentsListener {
+        override fun updatedOpponents(updatedOpponents: ArrayList<QBUser>) {
+            otherUsersTextView?.text = getOtherIncUsersNames()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other is UpdateOpponentsListenerImpl) {
+                return tag == other.tag
+            }
+            return false
+        }
+
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
+        }
     }
 }

@@ -16,7 +16,6 @@
         android:paddingLeft="@dimen/padding_outgoing_screen"
         android:paddingRight="@dimen/padding_outgoing_screen"
         android:textSize="@dimen/text_size_call"
-        android:textStyle="normal"
         tools:text="John, Bob, Merlin" />
 
     <TextView
@@ -27,6 +26,5 @@
         android:layout_weight="3"
         android:gravity="center_horizontal"
         android:text="@string/in_conference"
-        android:textSize="@dimen/text_size_ringing"
-        android:textStyle="normal" />
+        android:textSize="@dimen/text_size_ringing" />
 </LinearLayout>

@@ -12,25 +12,22 @@ import com.quickblox.sample.videochat.kotlin.utils.getColoredCircleDrawable
 import com.quickblox.users.model.QBUser
 import kotlinx.android.synthetic.main.item_opponents_list.view.*
 
+class UsersAdapter(private val context: Context, private var usersList: ArrayList<QBUser>) :
+    RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
-class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder> {
-
-    val context: Context
-    private var usersList: ArrayList<QBUser>
     private val _selectedUsers: MutableList<QBUser>
     val selectedUsers: List<QBUser>
         get() = _selectedUsers
     private lateinit var selectedItemsCountsChangedListener: SelectedItemsCountsChangedListener
 
-    constructor(context: Context, usersList: ArrayList<QBUser>) : super() {
-        this.context = context
-        this.usersList = usersList
+    init {
         this._selectedUsers = ArrayList()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = usersList[position]
-        holder.opponentName.text = user.fullName
+        val name = user.fullName ?: user.login
+        holder.opponentName.text = name
         if (_selectedUsers.contains(user)) {
             holder.rootLayout.setBackgroundResource(R.color.background_color_selected_user_item)
             holder.opponentIcon.setBackgroundDrawable(

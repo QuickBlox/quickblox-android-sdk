@@ -2,6 +2,7 @@ package com.quickblox.sample.videochat.kotlin.activities
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.*
 import android.net.Uri
 import android.os.*
@@ -9,19 +10,18 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.quickblox.chat.QBChatService
 import com.quickblox.core.QBEntityCallbackImpl
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
 import com.quickblox.sample.videochat.kotlin.fragments.*
 import com.quickblox.sample.videochat.kotlin.services.CallService
-import com.quickblox.sample.videochat.kotlin.services.LoginService
-import com.quickblox.sample.videochat.kotlin.services.ONE_OPPONENT
-import com.quickblox.sample.videochat.kotlin.util.loadUsersByIds
+import com.quickblox.sample.videochat.kotlin.services.MIN_OPPONENT_SIZE
 import com.quickblox.sample.videochat.kotlin.utils.*
+import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
@@ -43,15 +43,16 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
 
     private var TAG = CallActivity::class.java.simpleName
 
-    private val currentCallStateCallbackList = ArrayList<CurrentCallStateCallback>()
+    private val callStateListeners = hashSetOf<CallStateListener>()
+    private val updateOpponentsListeners = hashSetOf<UpdateOpponentsListener>()
+    private val callTimeUpdateListeners = hashSetOf<CallTimeUpdateListener>()
     private lateinit var showIncomingCallWindowTaskHandler: Handler
     private var connectionListener: ConnectionListenerImpl? = null
     private lateinit var callServiceConnection: ServiceConnection
     private lateinit var showIncomingCallWindowTask: Runnable
-    private lateinit var sharedPref: SharedPreferences
-    private var opponentsIdsList: List<Int>? = null
+    private var opponentIds: List<Int>? = null
     private lateinit var callService: CallService
-
+    private var connectionView: LinearLayout? = null
     private var isInComingCall: Boolean = false
     private var isVideoCall: Boolean = false
 
@@ -69,21 +70,38 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
+        } else {
+            this.window.addFlags(
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
+        connectionView = View.inflate(this, R.layout.connection_popup, null) as LinearLayout
     }
 
     private fun initScreen() {
         callService.setCallTimerCallback(CallTimerCallback())
         isVideoCall = callService.isVideoCall()
 
-        opponentsIdsList = callService.getOpponents()
+        opponentIds = callService.getOpponents()
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        applyMediaSettings()
 
-        initSettingsStrategy()
         addListeners()
 
-        if (callService.isCallMode()) {
+        isInComingCall = if (intent != null && intent.extras != null) {
+            intent?.extras?.getBoolean(EXTRA_IS_INCOMING_CALL) ?: false
+        } else {
+            SharedPrefsHelper.get(EXTRA_IS_INCOMING_CALL, false)
+        }
+
+        if (callService.isConnectedCall()) {
             checkPermission()
             if (callService.isSharingScreenState()) {
                 startScreenSharing(null)
@@ -91,12 +109,6 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             }
             addConversationFragment(isInComingCall)
         } else {
-            if (intent != null && intent.extras != null) {
-                isInComingCall = intent?.extras?.getBoolean(EXTRA_IS_INCOMING_CALL) ?: true
-            } else {
-                isInComingCall = SharedPrefsHelper.get(EXTRA_IS_INCOMING_CALL, false)
-            }
-
             if (!isInComingCall) {
                 callService.playRingtone()
             }
@@ -128,6 +140,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         Log.i(TAG, "onActivityResult requestCode=$requestCode, resultCode= $resultCode")
         if (resultCode == EXTRA_LOGIN_RESULT_CODE) {
             data?.let {
@@ -163,9 +176,9 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     private fun startSuitableFragment(isInComingCall: Boolean) {
         val session = WebRtcSessionManager.getCurrentSession()
         if (session != null) {
+            loadAbsentUsers()
             if (isInComingCall) {
                 initIncomingCallTask()
-                startLoadAbsentUsers()
                 addIncomeCallFragment()
                 checkPermission()
             } else {
@@ -224,11 +237,11 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         startActivityForResult(intent, REQUEST_PERMISSION_SETTING)
     }
 
-    private fun startLoadAbsentUsers() {
+    private fun loadAbsentUsers() {
         val usersFromDb = QbUsersDbManager.allUsers
         val allParticipantsOfCall = ArrayList<Int>()
 
-        opponentsIdsList?.let {
+        opponentIds?.let {
             allParticipantsOfCall.addAll(it)
         }
 
@@ -248,20 +261,14 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
                 idsNotLoadedUsers.add(userId)
             }
         }
-
-        if (!idsNotLoadedUsers.isEmpty()) {
-            loadUsersByIds(idsNotLoadedUsers, object : QBEntityCallbackImpl<ArrayList<QBUser>>() {
-                override fun onSuccess(users: ArrayList<QBUser>, params: Bundle) {
-                    QbUsersDbManager.saveAllUsers(users, false)
-                    notifyCallStateListenersNeedUpdateOpponentsList(users)
-                }
-            })
-        }
-    }
-
-    private fun initSettingsStrategy() {
-        opponentsIdsList?.let {
-            setSettingsStrategy(it, sharedPref, this)
+        if (idsNotLoadedUsers.isNotEmpty()) {
+            QBUsers.getUsersByIDs(idsNotLoadedUsers, null)
+                .performAsync(object : QBEntityCallbackImpl<ArrayList<QBUser>>() {
+                    override fun onSuccess(users: ArrayList<QBUser>, params: Bundle) {
+                        QbUsersDbManager.saveAllUsers(users, false)
+                        notifyOpponentsUpdated(users)
+                    }
+                })
         }
     }
 
@@ -345,27 +352,31 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         )
     }
 
-    private fun showNotificationPopUp(text: Int, show: Boolean) {
+    private fun showConnectionPopUp() {
         runOnUiThread {
-            val connectionView = View.inflate(this, R.layout.connection_popup, null) as LinearLayout
-            if (show) {
-                (connectionView.findViewById(R.id.notification) as TextView).setText(text)
-                if (connectionView.parent == null) {
-                    (this@CallActivity.findViewById<View>(R.id.fragment_container) as ViewGroup).addView(connectionView)
-                }
-            } else {
-                (this@CallActivity.findViewById<View>(R.id.fragment_container) as ViewGroup).removeView(connectionView)
+            val fragmentContainer: FrameLayout = findViewById(R.id.fragment_container)
+            val connectionNotificationView: TextView? = connectionView?.findViewById(R.id.notification)
+            connectionNotificationView?.setText(R.string.connection_was_lost)
+            if (connectionView?.parent == null) {
+                fragmentContainer.addView(connectionView)
             }
+        }
+    }
+
+    private fun hideConnectionPopUp() {
+        runOnUiThread {
+            val fragmentContainer: FrameLayout = findViewById(R.id.fragment_container)
+            fragmentContainer.removeView(connectionView)
         }
     }
 
     private inner class ConnectionListenerImpl : AbstractConnectionListener() {
         override fun connectionClosedOnError(e: Exception?) {
-            showNotificationPopUp(R.string.connection_was_lost, true)
+            showConnectionPopUp()
         }
 
         override fun reconnectionSuccessful() {
-            showNotificationPopUp(R.string.connection_was_lost, false)
+            hideConnectionPopUp()
         }
     }
 
@@ -374,7 +385,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onConnectedToUser(session: QBRTCSession?, userId: Int?) {
-        notifyCallStateListenersCallStarted()
+        notifyCallStarted()
         if (isInComingCall) {
             stopIncomeCallTimer()
         }
@@ -398,14 +409,14 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     override fun onSessionStartClose(session: QBRTCSession?) {
         if (callService.isCurrentSession(session)) {
             callService.removeSessionStateListener(this)
-            notifyCallStateListenersCallStopped()
+            notifyCallStopped()
         }
     }
 
     override fun onReceiveHangUpFromUser(session: QBRTCSession?, userId: Int?, map: MutableMap<String, String>?) {
         if (callService.isCurrentSession(session)) {
             val numberOpponents = session?.opponents?.size
-            if (numberOpponents == ONE_OPPONENT) {
+            if (numberOpponents == MIN_OPPONENT_SIZE) {
                 hangUpCurrentSession()
             }
             val participant = QbUsersDbManager.getUserById(userId)
@@ -436,9 +447,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onCallRejectByUser(session: QBRTCSession?, userId: Int?, map: MutableMap<String, String>?) {
-        if (callService.isCurrentSession(session)) {
-            callService.stopRingtone()
-        }
+        // empty
     }
 
     override fun onAcceptCurrentSession() {
@@ -505,14 +514,28 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         callService.removeSessionEventsListener(eventsCallback)
     }
 
-    override fun addCurrentCallStateListener(currentCallStateCallback: CurrentCallStateCallback?) {
-        currentCallStateCallback?.let {
-            currentCallStateCallbackList.add(it)
-        }
+    override fun addCallStateListener(callStateListener: CallStateListener) {
+        callStateListeners.add(callStateListener)
     }
 
-    override fun removeCurrentCallStateListener(currentCallStateCallback: CurrentCallStateCallback?) {
-        currentCallStateCallbackList.remove(currentCallStateCallback)
+    override fun removeCallStateListener(callStateListener: CallStateListener) {
+        callStateListeners.remove(callStateListener)
+    }
+
+    override fun addUpdateOpponentsListener(updateOpponentsListener: UpdateOpponentsListener) {
+        updateOpponentsListeners.add(updateOpponentsListener)
+    }
+
+    override fun removeUpdateOpponentsListener(updateOpponentsListener: UpdateOpponentsListener) {
+        updateOpponentsListeners.remove(updateOpponentsListener)
+    }
+
+    override fun addCallTimeUpdateListener(callTimeUpdateListener: CallTimeUpdateListener) {
+        callTimeUpdateListeners.add(callTimeUpdateListener)
+    }
+
+    override fun removeCallTimeUpdateListener(callTimeUpdateListener: CallTimeUpdateListener) {
+        callTimeUpdateListeners.remove(callTimeUpdateListener)
     }
 
     override fun addOnChangeAudioDeviceListener(onChangeDynamicCallback: OnChangeAudioDevice?) {
@@ -563,8 +586,8 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         return callService.isMediaStreamManagerExist()
     }
 
-    override fun isCallState(): Boolean {
-        return callService.isCallMode()
+    override fun isConnectedCall(): Boolean {
+        return callService.isConnectedCall()
     }
 
     override fun getVideoTrackMap(): MutableMap<Int, QBRTCVideoTrack> {
@@ -577,30 +600,30 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
 
     override fun onStopPreview() {
         callService.stopScreenSharing()
-        addConversationFragment(false)
+        addConversationFragment(isInComingCall)
     }
 
-    private fun notifyCallStateListenersCallStarted() {
-        for (callback in currentCallStateCallbackList) {
-            callback.onCallStarted()
+    private fun notifyCallStarted() {
+        for (listener in callStateListeners) {
+            listener.startedCall()
         }
     }
 
-    private fun notifyCallStateListenersCallStopped() {
-        for (callback in currentCallStateCallbackList) {
-            callback.onCallStopped()
+    private fun notifyCallStopped() {
+        for (listener in callStateListeners) {
+            listener.stoppedCall()
         }
     }
 
-    private fun notifyCallStateListenersNeedUpdateOpponentsList(newUsers: ArrayList<QBUser>) {
-        for (callback in currentCallStateCallbackList) {
-            callback.onOpponentsListUpdated(newUsers)
+    private fun notifyOpponentsUpdated(opponents: ArrayList<QBUser>) {
+        for (listener in updateOpponentsListeners) {
+            listener.updatedOpponents(opponents)
         }
     }
 
-    private fun notifyCallStateListenersCallTime(callTime: String) {
-        for (callback in currentCallStateCallbackList) {
-            callback.onCallTimeUpdate(callTime)
+    private fun notifyCallTimeUpdated(callTime: String) {
+        for (listener in callTimeUpdateListeners) {
+            listener.updatedCallTime(callTime)
         }
     }
 
@@ -613,29 +636,17 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             val binder = service as CallService.CallServiceBinder
             callService = binder.getService()
             if (callService.currentSessionExist()) {
-                // we have already currentSession == null, so it's no reason to do further initialization
-                if (QBChatService.getInstance().isLoggedIn) {
-                    initScreen()
-                } else {
-                    login()
-                }
+                initScreen();
             } else {
                 finish()
             }
-        }
-
-        private fun login() {
-            val qbUser = SharedPrefsHelper.getQbUser()
-            val tempIntent = Intent(this@CallActivity, LoginService::class.java)
-            val pendingIntent = createPendingResult(EXTRA_LOGIN_RESULT_CODE, tempIntent, 0)
-            LoginService.start(this@CallActivity, qbUser, pendingIntent)
         }
     }
 
     private inner class CallTimerCallback : CallService.CallTimerListener {
         override fun onCallTimeUpdate(time: String) {
             runOnUiThread {
-                notifyCallStateListenersCallTime(time)
+                notifyCallTimeUpdated(time)
             }
         }
     }
@@ -644,13 +655,17 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice)
     }
 
-    interface CurrentCallStateCallback {
-        fun onCallStarted()
+    interface CallStateListener {
+        fun startedCall()
 
-        fun onCallStopped()
+        fun stoppedCall()
+    }
 
-        fun onOpponentsListUpdated(newUsers: ArrayList<QBUser>)
+    interface UpdateOpponentsListener {
+        fun updatedOpponents(updatedOpponents: ArrayList<QBUser>)
+    }
 
-        fun onCallTimeUpdate(time: String)
+    interface CallTimeUpdateListener {
+        fun updatedCallTime(time: String)
     }
 }

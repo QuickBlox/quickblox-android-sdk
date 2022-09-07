@@ -26,7 +26,7 @@ class PreviewFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_item_screen_share, container, false)
 
-        val ivPreview = view.findViewById<ImageView>(R.id.image_preview)
+        val ivPreview: ImageView = view.findViewById(R.id.image_preview)
         val imageDrawable = arguments?.getInt(PREVIEW_IMAGE)
 
         imageDrawable?.let {

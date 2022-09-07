@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.collection.arrayMapOf
 import com.quickblox.chat.QBChatService
 import com.quickblox.core.helper.StringifyArrayList
 import com.quickblox.sample.videochat.kotlin.R
@@ -26,8 +27,8 @@ import kotlin.collections.HashMap
 private val TAG = BaseConversationFragment::class.java.simpleName
 const val MIC_ENABLED = "is_microphone_enabled"
 
-abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.CurrentCallStateCallback {
-
+abstract class BaseConversationFragment : BaseToolBarFragment() {
+    private val TAG = BaseConversationFragment::class.simpleName
     private var isIncomingCall: Boolean = false
     protected lateinit var timerCallText: TextView
     protected var conversationFragmentCallback: ConversationFragmentCallback? = null
@@ -40,6 +41,7 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
     protected lateinit var outgoingOpponentsRelativeLayout: View
     protected lateinit var allOpponentsTextView: TextView
     protected lateinit var ringingTextView: TextView
+    private val callStateListener = CallStateListenerImpl(TAG)
 
     companion object {
         fun newInstance(baseConversationFragment: BaseConversationFragment, isIncomingCall: Boolean): BaseConversationFragment {
@@ -62,7 +64,8 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        conversationFragmentCallback?.addCurrentCallStateListener(this)
+        conversationFragmentCallback?.addCallStateListener(callStateListener)
+        conversationFragmentCallback?.addUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,26 +91,26 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
 
     private fun prepareAndShowOutgoingScreen() {
         configureOutgoingScreen()
-        allOpponentsTextView.text = getUserNamesFromUsersFullNames(opponents)
+        allOpponentsTextView.text = getNamesFromOpponents(opponents)
     }
 
-    private fun getUserNamesFromUsersFullNames(allUsers: ArrayList<QBUser>): String {
-        val usersNames = StringifyArrayList<String>()
-        for (user in allUsers) {
-            if (user.fullName != null) {
-                usersNames.add(user.fullName)
-            } else if (user.id != null) {
-                usersNames.add(user.id.toString())
+    private fun getNamesFromOpponents(allOpponents: ArrayList<QBUser>): String {
+        val opponentNames = StringifyArrayList<String>()
+        for (opponent in allOpponents) {
+            if (opponent.fullName != null) {
+                opponentNames.add(opponent.fullName)
+            } else if (opponent.id != null) {
+                opponentNames.add(opponent.id.toString())
             }
         }
-        return usersNames.itemsAsString.replace(",", ", ")
+        return opponentNames.itemsAsString.replace(",", ", ")
     }
 
     protected abstract fun configureOutgoingScreen()
 
     protected open fun initFields() {
         if (QBChatService.getInstance().user == null) {
-            currentUser = SharedPrefsHelper.getQbUser()
+            currentUser = SharedPrefsHelper.getCurrentUser()
         } else {
             currentUser = QBChatService.getInstance().user
         }
@@ -115,7 +118,7 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
         arguments?.let {
             isIncomingCall = it.getBoolean(EXTRA_IS_INCOMING_CALL, false)
         }
-        initOpponentsList()
+        initOpponents()
         Log.d(TAG, "opponents: $opponents")
     }
 
@@ -124,22 +127,27 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
         if (isIncomingCall) {
             conversationFragmentCallback?.acceptCall(HashMap())
         } else {
-            conversationFragmentCallback?.startCall(HashMap())
+            val userInfo = arrayMapOf<String, String>()
+            userInfo["timestamp"] = System.currentTimeMillis().toString()
+            conversationFragmentCallback?.startCall(userInfo)
         }
     }
 
     override fun onDestroy() {
-        conversationFragmentCallback?.removeCurrentCallStateListener(this)
+        conversationFragmentCallback?.removeCallStateListener(callStateListener)
+        conversationFragmentCallback?.removeUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
         super.onDestroy()
     }
 
     protected open fun initViews(view: View?) {
-        micToggleVideoCall = view?.findViewById<View>(R.id.toggle_mic) as ToggleButton
-        micToggleVideoCall.isChecked = SharedPrefsHelper.get(MIC_ENABLED, true)
-        handUpVideoCall = view.findViewById<View>(R.id.button_hangup_call) as ImageButton
-        outgoingOpponentsRelativeLayout = view.findViewById(R.id.layout_background_outgoing_screen)
-        allOpponentsTextView = view.findViewById<View>(R.id.text_outgoing_opponents_names) as TextView
-        ringingTextView = view.findViewById<View>(R.id.text_ringing) as TextView
+        view?.let {
+            micToggleVideoCall = it.findViewById(R.id.toggle_mic)
+            micToggleVideoCall.isChecked = SharedPrefsHelper[MIC_ENABLED, true]
+            handUpVideoCall = it.findViewById(R.id.button_hangup_call)
+            outgoingOpponentsRelativeLayout = it.findViewById(R.id.layout_background_outgoing_screen)
+            allOpponentsTextView = it.findViewById(R.id.text_outgoing_opponents_names)
+            ringingTextView = it.findViewById(R.id.text_ringing)
+        }
 
         if (isIncomingCall) {
             hideOutgoingScreen()
@@ -170,7 +178,6 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
 
     protected open fun actionButtonsEnabled(inability: Boolean) {
         micToggleVideoCall.isEnabled = inability
-        // inactivate toggle buttons
         micToggleVideoCall.isActivated = inability
     }
 
@@ -185,43 +192,26 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
         outgoingOpponentsRelativeLayout.visibility = View.GONE
     }
 
-    override fun onCallStarted() {
-        hideOutgoingScreen()
-        startTimer()
-        actionButtonsEnabled(true)
-    }
-
-    override fun onCallStopped() {
-        isStarted = false
-        clearButtonsState()
-        actionButtonsEnabled(false)
-    }
-
-    override fun onOpponentsListUpdated(newUsers: ArrayList<QBUser>) {
-        initOpponentsList()
-    }
-
-    private fun initOpponentsList() {
-        Log.v("UPDATE_USERS", "super initOpponentsList()")
-        val opponnentsIds = conversationFragmentCallback?.getOpponents()
-        opponnentsIds?.let {
+    private fun initOpponents() {
+        val opponentIds = conversationFragmentCallback?.getOpponents()
+        opponentIds?.let {
             val usersFromDb = QbUsersDbManager.getUsersByIds(it)
-            opponents = getListAllUsersFromIds(usersFromDb, it)
-        }
-
-        var caller = QbUsersDbManager.getUserById(conversationFragmentCallback?.getCallerId())
-        if (caller == null) {
-            caller = QBUser(conversationFragmentCallback?.getCallerId())
-            caller.fullName = conversationFragmentCallback?.getCallerId().toString()
+            opponents = checkAndModifyOpponents(usersFromDb, it)
         }
 
         if (isIncomingCall) {
+            var caller = QbUsersDbManager.getUserById(conversationFragmentCallback?.getCallerId())
+            if (caller == null) {
+                caller = QBUser(conversationFragmentCallback?.getCallerId())
+                caller.fullName = conversationFragmentCallback?.getCallerId().toString()
+            }
+
             opponents.add(caller)
             opponents.remove(QBChatService.getInstance().user)
         }
     }
 
-    private fun getListAllUsersFromIds(existedUsers: ArrayList<QBUser>, allIds: List<Int>): ArrayList<QBUser> {
+    private fun checkAndModifyOpponents(existedUsers: ArrayList<QBUser>, allIds: List<Int>): ArrayList<QBUser> {
         val qbUsers = ArrayList<QBUser>()
         for (userId in allIds) {
             val stubUser = createStubUserById(userId)
@@ -241,5 +231,56 @@ abstract class BaseConversationFragment : BaseToolBarFragment(), CallActivity.Cu
 
     fun getConnectionState(userId: Int): QBRTCTypes.QBRTCConnectionState? {
         return conversationFragmentCallback?.getPeerChannel(userId)
+    }
+
+    protected fun startedCall() {
+        callStateListener.startedCall()
+    }
+
+    private inner class CallStateListenerImpl(val tag: String?) : CallActivity.CallStateListener {
+        override fun startedCall() {
+            hideOutgoingScreen()
+            startTimer()
+            actionButtonsEnabled(true)
+        }
+
+        override fun stoppedCall() {
+            isStarted = false
+            clearButtonsState()
+            actionButtonsEnabled(false)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other is CallStateListenerImpl) {
+                return tag == other.tag
+            }
+            return false
+        }
+
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
+        }
+    }
+
+    private inner class UpdateOpponentsListenerImpl(val tag: String?) : CallActivity.UpdateOpponentsListener {
+        override fun updatedOpponents(updatedOpponents: ArrayList<QBUser>) {
+            initOpponents()
+            allOpponentsTextView.text = getNamesFromOpponents(opponents)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other is UpdateOpponentsListenerImpl) {
+                return tag == other.tag
+            }
+            return false
+        }
+
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
+        }
     }
 }

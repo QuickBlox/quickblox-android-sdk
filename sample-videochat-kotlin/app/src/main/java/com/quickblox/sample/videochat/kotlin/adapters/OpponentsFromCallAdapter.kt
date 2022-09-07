@@ -18,12 +18,11 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCTypes
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 
-
 class OpponentsFromCallAdapter(val context: Context,
-                               val baseConversationFragment: BaseConversationFragment,
-                               val users: List<QBUser>,
-                               val width: Int,
-                               val height: Int) : RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder>() {
+                               private val baseConversationFragment: BaseConversationFragment,
+                               users: List<QBUser>,
+                               private val width: Int,
+                               private val height: Int) : RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder>() {
 
     private val TAG = OpponentsFromCallAdapter::class.java.simpleName
 
@@ -75,7 +74,8 @@ class OpponentsFromCallAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = _opponents[position]
         val userID = user.id
-        holder.opponentsName.text = user.fullName
+        val name = user.fullName ?: user.login
+        holder.opponentsName.text = name
 
         holder.getOpponentView().id = user.id
         holder.setUserId(userID)
@@ -103,10 +103,10 @@ class OpponentsFromCallAdapter(val context: Context,
 
         init {
             itemView.setOnClickListener(this)
-            opponentsName = itemView.findViewById<View>(R.id.opponent_name) as TextView
-            connectionStatus = itemView.findViewById<View>(R.id.connection_status) as TextView
-            opponentView = itemView.findViewById<View>(R.id.opponent_view) as QBRTCSurfaceView
-            progressBar = itemView.findViewById<View>(R.id.progress_bar_adapter) as ProgressBar
+            opponentsName = itemView.findViewById(R.id.opponent_name)
+            connectionStatus = itemView.findViewById(R.id.connection_status)
+            opponentView = itemView.findViewById(R.id.opponent_view)
+            progressBar = itemView.findViewById(R.id.progress_bar_adapter)
         }
 
         fun setListener(viewHolderClickListener: ViewHolderClickListener) {

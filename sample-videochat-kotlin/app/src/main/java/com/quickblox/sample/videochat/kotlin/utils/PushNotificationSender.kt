@@ -8,37 +8,35 @@ import com.quickblox.messages.model.QBNotificationType
 import com.quickblox.sample.videochat.kotlin.R
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
-fun sendPushMessage(recipients: ArrayList<Int>, senderName: String, newSessionID: String,
-                    opponentsIDs: String, opponentsNames: String, isVideoCall: Boolean) {
+fun sendPushMessage(userId: Int, senderName: String, sessionId: String,
+                    opponentIds: String, opponentNames: String, isVideoCall: Boolean) {
     val outMessage = String.format(R.string.text_push_notification_message.toString(), senderName)
 
-    val timeStamp = System.currentTimeMillis()
-
-    // Send Push: create QuickBlox Push Notification Event
+    // send Push: create QuickBlox Push Notification Event
     val qbEvent = QBEvent()
     qbEvent.notificationType = QBNotificationType.PUSH
     qbEvent.environment = QBEnvironment.DEVELOPMENT
-    // Generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
+    // generic push - will be delivered to all platforms (Android, iOS, WP, Blackberry..)
 
     val json = JSONObject()
     try {
         json.put("message", outMessage)
         json.put("ios_voip", "1")
         json.put("VOIPCall", "1")
-        json.put("sessionID", newSessionID)
-        json.put("opponentsIDs", opponentsIDs)
-        json.put("contactIdentifier", opponentsNames)
+        json.put("sessionID", sessionId)
+        json.put("opponentsIDs", opponentIds)
+        json.put("contactIdentifier", opponentNames)
         json.put("conferenceType", if (isVideoCall) "1" else "2")
-        json.put("timestamp", timeStamp.toString())
+        json.put("timestamp", System.currentTimeMillis().toString())
     } catch (e: JSONException) {
         e.printStackTrace()
     }
 
     qbEvent.message = json.toString()
 
-    val userIds = StringifyArrayList(recipients)
+    val userIds = StringifyArrayList<Int>()
+    userIds.add(userId)
     qbEvent.userIds = userIds
 
     QBPushNotifications.createEvent(qbEvent).performAsync(null)
