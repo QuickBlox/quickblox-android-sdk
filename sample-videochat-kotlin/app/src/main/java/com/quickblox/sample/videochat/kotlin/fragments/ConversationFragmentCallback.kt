@@ -11,7 +11,6 @@ import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
 import org.jivesoftware.smack.ConnectionListener
 import org.webrtc.CameraVideoCapturer
 
-
 interface ConversationFragmentCallback {
 
     fun addConnectionListener(connectionCallback: ConnectionListener?)
@@ -30,9 +29,17 @@ interface ConversationFragmentCallback {
 
     fun removeSessionEventsListener(eventsCallback: QBRTCSessionEventsCallback?)
 
-    fun addCurrentCallStateListener(currentCallStateCallback: CallActivity.CurrentCallStateCallback?)
+    fun addCallStateListener(callStateListener: CallActivity.CallStateListener)
 
-    fun removeCurrentCallStateListener(currentCallStateCallback: CallActivity.CurrentCallStateCallback?)
+    fun removeCallStateListener(callStateListener: CallActivity.CallStateListener)
+
+    fun addUpdateOpponentsListener(updateOpponentsListener: CallActivity.UpdateOpponentsListener)
+
+    fun removeUpdateOpponentsListener(updateOpponentsListener: CallActivity.UpdateOpponentsListener)
+
+    fun addCallTimeUpdateListener(callTimeUpdateListener: CallActivity.CallTimeUpdateListener)
+
+    fun removeCallTimeUpdateListener(callTimeUpdateListener: CallActivity.CallTimeUpdateListener)
 
     fun addOnChangeAudioDeviceListener(onChangeDynamicCallback: CallActivity.OnChangeAudioDevice?)
 
@@ -66,7 +73,7 @@ interface ConversationFragmentCallback {
 
     fun isMediaStreamManagerExist(): Boolean
 
-    fun isCallState(): Boolean
+    fun isConnectedCall(): Boolean
 
     fun getVideoTrackMap(): MutableMap<Int, QBRTCVideoTrack>
 

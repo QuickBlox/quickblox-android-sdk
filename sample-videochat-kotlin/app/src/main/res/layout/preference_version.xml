@@ -7,5 +7,4 @@
     android:paddingTop="@dimen/margin_common"
     android:paddingBottom="@dimen/margin_common"
     android:text="@string/versionName"
-    android:textSize="@dimen/text_size_ringing"
-    android:textStyle="normal" />
+    android:textSize="@dimen/text_size_ringing" />

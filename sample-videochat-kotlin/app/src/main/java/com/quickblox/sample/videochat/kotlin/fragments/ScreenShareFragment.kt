@@ -12,13 +12,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.activities.CallActivity
-import com.quickblox.users.model.QBUser
-
 
 class ScreenShareFragment : BaseToolBarFragment() {
     private val TAG = ScreenShareFragment::class.simpleName
     private var onSharingEvents: OnSharingEvents? = null
-    private var currentCallStateCallback: CallActivity.CurrentCallStateCallback? = null
 
     companion object {
         fun newInstance(): ScreenShareFragment = ScreenShareFragment()
@@ -31,21 +28,20 @@ class ScreenShareFragment : BaseToolBarFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        val adapter = ImagesAdapter(childFragmentManager)
+        view?.let {
+            val adapter = ImagesAdapter(childFragmentManager)
+            val pager: ViewPager = it.findViewById(R.id.pager)
+            pager.adapter = adapter
+        }
 
-        val pager = view?.findViewById<View>(R.id.pager) as ViewPager
-        pager.adapter = adapter
-
-        val context = activity as Context
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        toolbar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
 
         return view
     }
 
     override fun onResume() {
         super.onResume()
-        currentCallStateCallback = CurrentCallStateCallbackImpl()
-        (activity as CallActivity).addCurrentCallStateListener(currentCallStateCallback!!)
+        (activity as CallActivity).addCallTimeUpdateListener(CallTimeUpdateListenerImpl(TAG))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -80,14 +76,13 @@ class ScreenShareFragment : BaseToolBarFragment() {
 
     override fun onPause() {
         super.onPause()
-        currentCallStateCallback?.let {
-            (activity as CallActivity).removeCurrentCallStateListener(it)
-        }
+        (activity as CallActivity).removeCallTimeUpdateListener(CallTimeUpdateListenerImpl(TAG))
     }
 
     class ImagesAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-        private val images = intArrayOf(R.drawable.pres_img, R.drawable.p2p, R.drawable.group_call, R.drawable.opponents)
+        private val images =
+            intArrayOf(R.drawable.pres_img, R.drawable.p2p, R.drawable.group_call, R.drawable.opponents)
 
         override fun getCount(): Int {
             return images.size
@@ -98,23 +93,25 @@ class ScreenShareFragment : BaseToolBarFragment() {
         }
     }
 
-    private inner class CurrentCallStateCallbackImpl : CallActivity.CurrentCallStateCallback {
-        override fun onCallStarted() {
-
+    private inner class CallTimeUpdateListenerImpl(val tag: String?) : CallActivity.CallTimeUpdateListener {
+        override fun updatedCallTime(time: String) {
+            toolbar?.title = ""
+            val timerTextView: TextView? = toolbar?.findViewById(R.id.timer_call)
+            timerTextView?.visibility = View.VISIBLE
+            timerTextView?.text = time
         }
 
-        override fun onCallStopped() {
-
+        override fun equals(other: Any?): Boolean {
+            if (other is CallTimeUpdateListenerImpl) {
+                return tag == other.tag
+            }
+            return false
         }
 
-        override fun onOpponentsListUpdated(newUsers: ArrayList<QBUser>) {
-        }
-
-        override fun onCallTimeUpdate(time: String) {
-            toolbar.title = ""
-            val timerTextView = toolbar.findViewById<TextView>(R.id.timer_call)
-            timerTextView.visibility = View.VISIBLE
-            timerTextView.text = time
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
         }
     }
 

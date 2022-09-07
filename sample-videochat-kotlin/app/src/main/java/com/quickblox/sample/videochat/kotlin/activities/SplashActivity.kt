@@ -1,6 +1,5 @@
 package com.quickblox.sample.videochat.kotlin.activities
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -38,8 +37,8 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun runNextScreen() {
-        if (SharedPrefsHelper.hasQbUser()) {
-            LoginService.start(this, SharedPrefsHelper.getQbUser())
+        if (SharedPrefsHelper.hasCurrentUser()) {
+            LoginService.loginToChatAndInitRTCClient(this, SharedPrefsHelper.getCurrentUser())
             OpponentsActivity.start(this)
         } else {
             Handler().postDelayed({
@@ -80,7 +79,7 @@ class SplashActivity : BaseActivity() {
                 return false
             } else if (isMiUi() && !miOverlayChecked) {
                 Log.e(TAG, "Xiaomi Device. Need additional Overlay Permissions")
-                buildMIUIOverlayPermissionAlertDialog()
+                showMIUIOverlayPermissionDialog()
                 return false
             }
         }
@@ -123,7 +122,7 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-    fun buildMIUIOverlayPermissionAlertDialog() {
+    private fun showMIUIOverlayPermissionDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Additional Overlay Permission Required")
         builder.setIcon(R.drawable.ic_error_outline_orange_24dp)

@@ -11,11 +11,6 @@
         tools:ignore="AlwaysShowAction" />
 
     <item
-        android:id="@+id/settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/log_out"
         android:title="@string/action_logout"
         app:showAsAction="never" />

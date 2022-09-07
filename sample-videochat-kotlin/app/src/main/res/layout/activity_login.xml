@@ -13,15 +13,15 @@
     <EditText
         android:id="@+id/userLoginEditText"
         style="@style/MatchWidth"
-        android:hint="@string/hint_user_login"
+        android:hint="@string/hint_login"
         android:paddingTop="@dimen/padding_top"
         android:singleLine="true"
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/userFullNameEditText"
+        android:id="@+id/userDisplayNameEditText"
         style="@style/MatchWidth"
-        android:hint="@string/hint_user_full_name"
+        android:hint="@string/hint_user_display_name"
         android:paddingTop="@dimen/padding_top"
         android:singleLine="true"
         android:textSize="16sp" />

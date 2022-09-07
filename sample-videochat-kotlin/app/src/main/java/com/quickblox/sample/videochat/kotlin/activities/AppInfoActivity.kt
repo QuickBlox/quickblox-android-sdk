@@ -71,7 +71,7 @@ class AppInfoActivity : AppCompatActivity() {
             appQAVersionTextView.setText(spannable, TextView.BufferType.SPANNABLE)
             appQAVersionTextView.visibility = View.VISIBLE
 
-            findViewById<View>(R.id.text_qa_version_title).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.text_qa_version_title).visibility = View.VISIBLE
         }
     }
 

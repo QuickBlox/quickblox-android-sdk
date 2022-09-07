@@ -12,10 +12,10 @@ class PushListenerService : QBFcmPushListenerService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
-        if (SharedPrefsHelper.hasQbUser()) {
-            val qbUser: QBUser = SharedPrefsHelper.getQbUser()
-            Log.d(TAG, "App has logged user" + qbUser.id)
-            LoginService.start(this, qbUser)
+        if (SharedPrefsHelper.hasCurrentUser()) {
+            val user: QBUser = SharedPrefsHelper.getCurrentUser()
+            Log.d(TAG, "App has logged user" + user.id)
+            LoginService.loginToChatAndInitRTCClient(this, user)
         }
     }
 

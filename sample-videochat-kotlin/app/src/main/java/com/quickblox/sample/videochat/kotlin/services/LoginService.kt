@@ -7,19 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
+import android.text.TextUtils
 import android.util.Log
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.connections.tcp.QBTcpChatConnectionFabric
 import com.quickblox.chat.connections.tcp.QBTcpConfigurationBuilder
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
-import com.quickblox.sample.videochat.kotlin.util.ChatPingAlarmManager
 import com.quickblox.sample.videochat.kotlin.utils.*
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCClient
 import com.quickblox.videochat.webrtc.QBRTCConfig
-import org.jivesoftware.smackx.ping.PingFailedListener
-
 
 private const val EXTRA_COMMAND_TO_SERVICE = "command_for_service"
 private const val EXTRA_QB_USER = "qb_user"
@@ -27,6 +25,7 @@ private const val EXTRA_QB_USER = "qb_user"
 private const val COMMAND_NOT_FOUND = 0
 private const val COMMAND_LOGIN = 1
 private const val COMMAND_LOGOUT = 2
+private const val COMMAND_DESTROY_RTC_CLIENT = 3
 
 private const val EXTRA_PENDING_INTENT = "pending_Intent"
 
@@ -39,7 +38,7 @@ class LoginService : Service() {
     private var currentUser: QBUser? = null
 
     companion object {
-        fun start(context: Context, qbUser: QBUser, pendingIntent: PendingIntent? = null) {
+        fun loginToChatAndInitRTCClient(context: Context, qbUser: QBUser, pendingIntent: PendingIntent? = null) {
             val intent = Intent(context, LoginService::class.java)
             intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGIN)
             intent.putExtra(EXTRA_QB_USER, qbUser)
@@ -48,12 +47,13 @@ class LoginService : Service() {
             context.startService(intent)
         }
 
-        fun stop(context: Context) {
+        fun logoutFromChat(context: Context) {
             val intent = Intent(context, LoginService::class.java)
-            context.stopService(intent)
+            intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGOUT)
+            context.startService(intent)
         }
 
-        fun logout(context: Context) {
+        fun destroyRTCClient(context: Context) {
             val intent = Intent(context, LoginService::class.java)
             intent.putExtra(EXTRA_COMMAND_TO_SERVICE, COMMAND_LOGOUT)
             context.startService(intent)
@@ -71,7 +71,7 @@ class LoginService : Service() {
         parseIntentExtras(intent)
         startSuitableActions()
 
-        return Service.START_REDELIVER_INTENT
+        return START_REDELIVER_INTENT
     }
 
     private fun parseIntentExtras(intent: Intent?) {
@@ -86,10 +86,10 @@ class LoginService : Service() {
     }
 
     private fun startSuitableActions() {
-        if (currentCommand == COMMAND_LOGIN) {
-            startLoginToChat()
-        } else if (currentCommand == COMMAND_LOGOUT) {
-            logout()
+        when (currentCommand) {
+            COMMAND_LOGIN -> loginToChatAndInitRTCClient()
+            COMMAND_LOGOUT -> logoutFomChat()
+            COMMAND_DESTROY_RTC_CLIENT -> destroyRtcClient()
         }
     }
 
@@ -102,60 +102,46 @@ class LoginService : Service() {
         chatService = QBChatService.getInstance()
     }
 
-    private fun startLoginToChat() {
+    private fun loginToChatAndInitRTCClient() {
         if (chatService.isLoggedIn) {
             sendResultToActivity(true, null)
         } else {
             currentUser?.let {
-                loginToChat(it)
+                loginToChatAndInitRTCClient(it)
             }
         }
     }
 
-    private fun loginToChat(qbUser: QBUser) {
-        chatService.login(qbUser, object : QBEntityCallback<QBUser> {
-            override fun onSuccess(qbUser: QBUser?, bundle: Bundle) {
+    private fun loginToChatAndInitRTCClient(user: QBUser) {
+        chatService.login(user, object : QBEntityCallback<QBUser> {
+            override fun onSuccess(user: QBUser?, bundle: Bundle) {
                 Log.d(TAG, "login onSuccess")
-                startActionsOnSuccessLogin()
+                initQBRTCClient()
+                sendResultToActivity(true, null)
             }
 
             override fun onError(e: QBResponseException) {
                 Log.d(TAG, "login onError " + e.message)
-                val errorMessage = if (e.message != null) {
-                    e.message
-                } else {
-                    "Login error"
+                var errorMessage: String? = e.message
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = "Login error"
                 }
                 sendResultToActivity(false, errorMessage)
             }
         })
     }
 
-    private fun startActionsOnSuccessLogin() {
-        initPingListener()
-        initQBRTCClient()
-        sendResultToActivity(true, null)
-    }
-
-    private fun initPingListener() {
-        ChatPingAlarmManager.onCreate(this)
-        ChatPingAlarmManager.addPingListener(PingFailedListener { Log.d(TAG, "Ping chat server failed") })
-    }
-
     private fun initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(applicationContext)
-        // Add signalling manager
-        chatService.videoChatWebRTCSignalingManager?.addSignalingManagerListener { qbSignaling, createdLocally ->
-            if (!createdLocally) {
-                rtcClient.addSignaling(qbSignaling)
+        chatService.videoChatWebRTCSignalingManager?.addSignalingManagerListener { signaling, createdLocally ->
+            val needAddSignaling = !createdLocally
+            if (needAddSignaling) {
+                rtcClient.addSignaling(signaling)
             }
         }
 
-        // Configure
-        QBRTCConfig.setDebugEnabled(true)
-        configRTCTimers(this)
+        applyRTCSettings()
 
-        // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager)
         rtcClient.prepareToProcessCalls()
     }
@@ -175,15 +161,14 @@ class LoginService : Service() {
         }
     }
 
-    private fun logout() {
-        destroyRtcClientAndChat()
-    }
-
-    private fun destroyRtcClientAndChat() {
+    private fun destroyRtcClient() {
         if (::rtcClient.isInitialized) {
             rtcClient.destroy()
         }
-        ChatPingAlarmManager.onDestroy()
+        stopSelf()
+    }
+
+    private fun logoutFomChat() {
         chatService.logout(object : QBEntityCallback<Void?> {
             override fun onSuccess(aVoid: Void?, bundle: Bundle) {
                 chatService.destroy()
@@ -197,11 +182,6 @@ class LoginService : Service() {
         stopSelf()
     }
 
-    override fun onDestroy() {
-        Log.d(TAG, "Service onDestroy()")
-        super.onDestroy()
-    }
-
     override fun onBind(intent: Intent): IBinder? {
         Log.d(TAG, "Service onBind)")
         return null
@@ -210,19 +190,20 @@ class LoginService : Service() {
     override fun onTaskRemoved(rootIntent: Intent) {
         Log.d(TAG, "Service onTaskRemoved()")
         super.onTaskRemoved(rootIntent)
-        if (!isCallServiceRunning()) {
-            logout()
+        if (isCallServiceNotRunning()) {
+            logoutFomChat()
+            destroyRtcClient()
         }
     }
 
-    private fun isCallServiceRunning(): Boolean {
+    private fun isCallServiceNotRunning(): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        var running = false
+        var notRunning = true
         for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
             if (CallService::class.java.name == service.service.className) {
-                running = true
+                notRunning = false
             }
         }
-        return running
+        return notRunning
     }
 }

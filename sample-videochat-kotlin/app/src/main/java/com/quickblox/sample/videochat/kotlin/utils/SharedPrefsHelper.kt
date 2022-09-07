@@ -7,7 +7,6 @@ import com.quickblox.core.helper.StringifyArrayList
 import com.quickblox.sample.videochat.kotlin.App
 import com.quickblox.users.model.QBUser
 
-
 private const val SHARED_PREFS_NAME = "qb"
 private const val QB_USER_ID = "qb_user_id"
 private const val QB_USER_LOGIN = "qb_user_login"
@@ -16,8 +15,8 @@ private const val QB_USER_FULL_NAME = "qb_user_full_name"
 private const val QB_USER_TAGS = "qb_user_tags"
 
 object SharedPrefsHelper {
-
-    private var sharedPreferences: SharedPreferences = App.getInstance().getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    private var sharedPreferences: SharedPreferences =
+        App.getInstance().getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
     fun delete(key: String) {
         if (sharedPreferences.contains(key)) {
@@ -39,19 +38,19 @@ object SharedPrefsHelper {
         editor.apply()
     }
 
-    fun saveQbUser(qbUser: QBUser) {
-        save(QB_USER_ID, qbUser.id)
-        save(QB_USER_LOGIN, qbUser.login)
-        save(QB_USER_PASSWORD, qbUser.password)
-        save(QB_USER_FULL_NAME, qbUser.fullName)
-        save(QB_USER_TAGS, qbUser.tags.itemsAsString)
+    fun saveCurrentUser(user: QBUser) {
+        save(QB_USER_ID, user.id)
+        save(QB_USER_LOGIN, user.login)
+        save(QB_USER_PASSWORD, user.password)
+        save(QB_USER_FULL_NAME, user.fullName)
+        save(QB_USER_TAGS, user.tags.itemsAsString)
     }
 
     fun clearAllData() {
         sharedPreferences.edit().clear().apply()
     }
 
-    fun hasQbUser(): Boolean {
+    fun hasCurrentUser(): Boolean {
         return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD)
     }
 
@@ -70,7 +69,7 @@ object SharedPrefsHelper {
         return sharedPreferences.contains(key)
     }
 
-    fun getQbUser(): QBUser {
+    fun getCurrentUser(): QBUser {
         val id = get<Int>(QB_USER_ID)
         val login = get<String>(QB_USER_LOGIN)
         val password = get<String>(QB_USER_PASSWORD)

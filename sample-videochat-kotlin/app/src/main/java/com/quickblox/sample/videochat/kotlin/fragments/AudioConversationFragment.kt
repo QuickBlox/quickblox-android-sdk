@@ -18,6 +18,7 @@ import java.util.*
 const val SPEAKER_ENABLED = "is_speaker_enabled"
 
 class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnChangeAudioDevice {
+    private val TAG = AudioConversationFragment::class.simpleName
 
     private lateinit var audioSwitchToggleButton: ToggleButton
     private lateinit var alsoOnCallText: TextView
@@ -29,6 +30,18 @@ class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnCha
         conversationFragmentCallback?.addOnChangeAudioDeviceListener(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        conversationFragmentCallback?.addCallTimeUpdateListener(CallTimeUpdateListenerImpl(TAG))
+        conversationFragmentCallback?.addUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        conversationFragmentCallback?.removeCallTimeUpdateListener(CallTimeUpdateListenerImpl(TAG))
+        conversationFragmentCallback?.removeUpdateOpponentsListener(UpdateOpponentsListenerImpl(TAG))
+    }
+
     override fun configureOutgoingScreen() {
         val context: Context = activity as Context
         outgoingOpponentsRelativeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
@@ -37,11 +50,10 @@ class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnCha
     }
 
     override fun configureToolbar() {
-        val context: Context = activity as Context
-        toolbar.visibility = View.VISIBLE
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-        toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.toolbar_title_color))
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(context, R.color.toolbar_subtitle_color))
+        toolbar?.visibility = View.VISIBLE
+        toolbar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+        toolbar?.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.toolbar_title_color))
+        toolbar?.setSubtitleTextColor(ContextCompat.getColor(requireContext(), R.color.toolbar_subtitle_color))
     }
 
     override fun configureActionBar() {
@@ -62,18 +74,19 @@ class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnCha
         setVisibilityAlsoOnCallTextView()
 
         firstOpponentNameTextView = view.findViewById(R.id.text_caller_name)
-        firstOpponentNameTextView.text = opponents[0].fullName
+        val name = opponents[0].fullName ?: opponents[0].login
+        firstOpponentNameTextView.text =name
 
-        otherOpponentsTextView = view.findViewById(R.id.text_other_inc_users)
-        otherOpponentsTextView.text = getOtherOpponentsNames()
+        otherOpponentsTextView = view.findViewById(R.id.text_other_users)
+        otherOpponentsTextView.text = getOtherOpponentNames()
 
         audioSwitchToggleButton = view.findViewById(R.id.toggle_speaker)
         audioSwitchToggleButton.visibility = View.VISIBLE
         audioSwitchToggleButton.isChecked = SharedPrefsHelper.get(SPEAKER_ENABLED, true)
         actionButtonsEnabled(false)
 
-        if (conversationFragmentCallback?.isCallState() == true) {
-            onCallStarted()
+        if (conversationFragmentCallback?.isConnectedCall() == true) {
+            startedCall()
         }
     }
 
@@ -83,7 +96,7 @@ class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnCha
         }
     }
 
-    private fun getOtherOpponentsNames(): String {
+    private fun getOtherOpponentNames(): String {
         val otherOpponents = ArrayList<QBUser>()
         otherOpponents.addAll(opponents)
         otherOpponents.removeAt(0)
@@ -124,17 +137,47 @@ class AudioConversationFragment : BaseConversationFragment(), CallActivity.OnCha
         return R.layout.fragment_audio_conversation
     }
 
-    override fun onOpponentsListUpdated(newUsers: ArrayList<QBUser>) {
-        super.onOpponentsListUpdated(newUsers)
-        firstOpponentNameTextView.text = opponents[0].fullName
-        otherOpponentsTextView.text = getOtherOpponentsNames()
-    }
-
-    override fun onCallTimeUpdate(time: String) {
-        timerCallText.text = time
-    }
-
     override fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice) {
         audioSwitchToggleButton.isChecked = newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE
+    }
+
+    private inner class UpdateOpponentsListenerImpl(val tag: String?) : CallActivity.UpdateOpponentsListener {
+        override fun updatedOpponents(updatedOpponents: ArrayList<QBUser>) {
+            val name = opponents[0].fullName ?: opponents[0].login
+            firstOpponentNameTextView.text = name
+            otherOpponentsTextView.text = getOtherOpponentNames()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other is UpdateOpponentsListenerImpl) {
+                return tag == other.tag
+            }
+            return false
+        }
+
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
+        }
+    }
+
+    private inner class CallTimeUpdateListenerImpl(val tag: String?) : CallActivity.CallTimeUpdateListener {
+        override fun updatedCallTime(time: String) {
+            timerCallText.text = time
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other is CallTimeUpdateListenerImpl) {
+                return tag == other.tag
+            }
+            return false
+        }
+
+        override fun hashCode(): Int {
+            var hash = 1
+            hash = 31 * hash + tag.hashCode()
+            return hash
+        }
     }
 }

@@ -13,23 +13,18 @@ import androidx.fragment.app.Fragment
 import com.quickblox.sample.videochat.kotlin.R
 import java.lang.ref.WeakReference
 
-
 abstract class BaseToolBarFragment : Fragment() {
-
     protected lateinit var actionBar: ActionBar
-    protected lateinit var toolbar: Toolbar
+    protected var toolbar: Toolbar? = null
 
-    protected var mainHandler: Handler
-
-    init {
-        mainHandler = FragmentLifeCycleHandler(this)
-    }
+    protected var mainHandler: Handler? = null
 
     internal abstract fun getFragmentLayout(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
+        mainHandler = FragmentLifeCycleHandler(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,7 +34,7 @@ abstract class BaseToolBarFragment : Fragment() {
     }
 
     private fun initActionBar() {
-        toolbar = activity?.findViewById<View>(R.id.toolbar_call) as Toolbar
+        toolbar = activity?.findViewById(R.id.toolbar_call)
 
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         actionBar = (activity as AppCompatActivity).delegate.supportActionBar as ActionBar

@@ -13,8 +13,6 @@ import com.quickblox.core.exception.QBResponseException
 import com.quickblox.sample.videochat.kotlin.DEFAULT_USER_PASSWORD
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.services.LoginService
-import com.quickblox.sample.videochat.kotlin.util.signInUser
-import com.quickblox.sample.videochat.kotlin.util.signUp
 import com.quickblox.sample.videochat.kotlin.utils.*
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
@@ -22,9 +20,8 @@ import com.quickblox.users.model.QBUser
 const val ERROR_LOGIN_ALREADY_TAKEN_HTTP_STATUS = 422
 
 class LoginActivity : BaseActivity() {
-
     private lateinit var userLoginEditText: EditText
-    private lateinit var userFullNameEditText: EditText
+    private lateinit var userDisplayNameEditText: EditText
 
     private lateinit var user: QBUser
 
@@ -45,11 +42,11 @@ class LoginActivity : BaseActivity() {
         userLoginEditText = findViewById(R.id.userLoginEditText)
         userLoginEditText.addTextChangedListener(LoginEditTextWatcher(userLoginEditText))
 
-        userFullNameEditText = findViewById(R.id.userFullNameEditText)
-        userFullNameEditText.addTextChangedListener(LoginEditTextWatcher(userFullNameEditText))
+        userDisplayNameEditText = findViewById(R.id.userDisplayNameEditText)
+        userDisplayNameEditText.addTextChangedListener(LoginEditTextWatcher(userDisplayNameEditText))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_login, menu)
         return true
     }
@@ -57,41 +54,37 @@ class LoginActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_login_user_done -> {
-                if (isEnteredUserNameValid() && isEnteredRoomNameValid()) {
-                    hideKeyboard()
-                    val user = createUserWithEnteredData()
-                    signUpNewUser(user)
+                val isNotValidLogin = !isLoginValid(userLoginEditText.text.toString())
+                if (isNotValidLogin) {
+                    userLoginEditText.error = getString(R.string.error_login)
+                    return false
                 }
+
+                val isNotValidDisplayName = !isDisplayNameValid(userDisplayNameEditText.text.toString())
+                if (isNotValidDisplayName) {
+                    userDisplayNameEditText.error = getString(R.string.error_display_name)
+                    return false
+                }
+                hideKeyboard(userDisplayNameEditText)
+                val user = createUser()
+                signUp(user)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun isEnteredUserNameValid(): Boolean {
-        return isLoginValid(this, userLoginEditText)
-    }
-
-    private fun isEnteredRoomNameValid(): Boolean {
-        return isFoolNameValid(this, userFullNameEditText)
-    }
-
-    private fun hideKeyboard() {
-        hideKeyboard(userLoginEditText)
-        hideKeyboard(userFullNameEditText)
-    }
-
-    private fun signUpNewUser(newUser: QBUser) {
+    private fun signUp(user: QBUser) {
         showProgressDialog(R.string.dlg_creating_new_user)
-        signUp(newUser, object : QBEntityCallback<QBUser> {
+        QBUsers.signUp(user).performAsync(object : QBEntityCallback<QBUser> {
             override fun onSuccess(result: QBUser, params: Bundle) {
-                SharedPrefsHelper.saveQbUser(newUser)
+                SharedPrefsHelper.saveCurrentUser(user)
                 loginToChat(result)
             }
 
             override fun onError(e: QBResponseException) {
                 if (e.httpStatusCode == ERROR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
-                    signInCreatedUser(newUser)
+                    loginToRest(user)
                 } else {
                     hideProgressDialog()
                     longToast(R.string.sign_up_error)
@@ -100,20 +93,20 @@ class LoginActivity : BaseActivity() {
         })
     }
 
-    private fun loginToChat(qbUser: QBUser) {
-        qbUser.password = DEFAULT_USER_PASSWORD
-        user = qbUser
-        startLoginService(qbUser)
+    private fun loginToChat(user: QBUser) {
+        user.password = DEFAULT_USER_PASSWORD
+        this.user = user
+        startLoginService(user)
     }
 
-    private fun createUserWithEnteredData(): QBUser {
-        val qbUser = QBUser()
+    private fun createUser(): QBUser {
+        val user = QBUser()
         val userLogin = userLoginEditText.text.toString()
-        val userFullName = userFullNameEditText.text.toString()
-        qbUser.login = userLogin
-        qbUser.fullName = userFullName
-        qbUser.password = DEFAULT_USER_PASSWORD
-        return qbUser
+        val userFullName = userDisplayNameEditText.text.toString()
+        user.login = userLogin
+        user.fullName = userFullName
+        user.password = DEFAULT_USER_PASSWORD
+        return user
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -121,31 +114,30 @@ class LoginActivity : BaseActivity() {
         if (resultCode == EXTRA_LOGIN_RESULT_CODE) {
             hideProgressDialog()
 
-            var isLoginSuccess = false
+            var isLoginSuccessInChat = false
             data?.let {
-                isLoginSuccess = it.getBooleanExtra(EXTRA_LOGIN_RESULT, false)
+                isLoginSuccessInChat = it.getBooleanExtra(EXTRA_LOGIN_RESULT, false)
             }
 
-            var errorMessage: String? = getString(R.string.unknown_error)
-            data?.let {
-                errorMessage = it.getStringExtra(EXTRA_LOGIN_ERROR_MESSAGE)
-            }
-
-            if (isLoginSuccess) {
-                SharedPrefsHelper.saveQbUser(user)
-                signInCreatedUser(user)
+            if (isLoginSuccessInChat) {
+                SharedPrefsHelper.saveCurrentUser(user)
+                loginToRest(user)
             } else {
+                var errorMessage: String? = getString(R.string.unknown_error)
+                data?.let {
+                    errorMessage = it.getStringExtra(EXTRA_LOGIN_ERROR_MESSAGE)
+                }
                 longToast(getString(R.string.login_chat_login_error) + errorMessage)
                 userLoginEditText.setText(user.login)
-                userFullNameEditText.setText(user.fullName)
+                userDisplayNameEditText.setText(user.fullName)
             }
         }
     }
 
-    private fun signInCreatedUser(user: QBUser) {
-        signInUser(user, object : QBEntityCallback<QBUser> {
+    private fun loginToRest(user: QBUser) {
+        QBUsers.signIn(user).performAsync(object : QBEntityCallback<QBUser> {
             override fun onSuccess(result: QBUser, params: Bundle) {
-                SharedPrefsHelper.saveQbUser(user)
+                SharedPrefsHelper.saveCurrentUser(user)
                 updateUserOnServer(user)
             }
 
@@ -159,7 +151,7 @@ class LoginActivity : BaseActivity() {
     private fun updateUserOnServer(user: QBUser) {
         user.password = null
         QBUsers.updateUser(user).performAsync(object : QBEntityCallback<QBUser> {
-            override fun onSuccess(updUser: QBUser?, params: Bundle?) {
+            override fun onSuccess(user: QBUser?, params: Bundle?) {
                 hideProgressDialog()
                 OpponentsActivity.start(this@LoginActivity)
                 finish()
@@ -179,7 +171,7 @@ class LoginActivity : BaseActivity() {
     private fun startLoginService(qbUser: QBUser) {
         val tempIntent = Intent(this, LoginService::class.java)
         val pendingIntent = createPendingResult(EXTRA_LOGIN_RESULT_CODE, tempIntent, 0)
-        LoginService.start(this, qbUser, pendingIntent)
+        LoginService.loginToChatAndInitRTCClient(this, qbUser, pendingIntent)
     }
 
     private inner class LoginEditTextWatcher internal constructor(private val editText: EditText) :

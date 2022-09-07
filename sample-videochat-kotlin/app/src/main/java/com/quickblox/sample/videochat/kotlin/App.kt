@@ -4,10 +4,10 @@ import android.app.Application
 import com.quickblox.auth.session.QBSettings
 import com.quickblox.sample.videochat.kotlin.db.DbHelper
 
-//User default credentials
+// user default credentials
 const val DEFAULT_USER_PASSWORD = "quickblox"
 
-//App credentials
+// app credentials
 private const val APPLICATION_ID = ""
 private const val AUTH_KEY = ""
 private const val AUTH_SECRET = ""
@@ -42,7 +42,7 @@ class App : Application() {
         QBSettings.getInstance().init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET)
         QBSettings.getInstance().accountKey = ACCOUNT_KEY
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //
         // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);

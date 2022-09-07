@@ -4,7 +4,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -14,7 +13,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.quickblox.chat.QBChatService
-import com.quickblox.core.QBEntityCallback
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.activities.CallActivity
 import com.quickblox.sample.videochat.kotlin.db.QbUsersDbManager
@@ -23,10 +21,9 @@ import com.quickblox.sample.videochat.kotlin.fragments.IS_CURRENT_CAMERA_FRONT
 import com.quickblox.sample.videochat.kotlin.fragments.MIC_ENABLED
 import com.quickblox.sample.videochat.kotlin.fragments.SPEAKER_ENABLED
 import com.quickblox.sample.videochat.kotlin.util.NetworkConnectionChecker
-import com.quickblox.sample.videochat.kotlin.util.loadUsersByIds
 import com.quickblox.sample.videochat.kotlin.utils.*
-import com.quickblox.users.QBUsers
 import com.quickblox.videochat.webrtc.*
+import com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState
 import com.quickblox.videochat.webrtc.callbacks.*
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
@@ -39,7 +36,7 @@ import kotlin.collections.HashMap
 const val SERVICE_ID = 787
 const val CHANNEL_ID = "Quickblox channel"
 const val CHANNEL_NAME = "Quickblox background service"
-const val ONE_OPPONENT = 1
+const val MIN_OPPONENT_SIZE = 1
 
 class CallService : Service() {
     private var TAG = CallService::class.java.simpleName
@@ -60,7 +57,7 @@ class CallService : Service() {
     private var currentSession: QBRTCSession? = null
     private var expirationReconnectionTime: Long = 0
     private var sharingScreenState: Boolean = false
-    private var isCallState: Boolean = false
+    private var isConnectedCall: Boolean = false
     private lateinit var rtcClient: QBRTCClient
 
     private val callTimerTask: CallTimerTask = CallTimerTask()
@@ -153,7 +150,7 @@ class CallService : Service() {
         builder.setContentTitle(notificationTitle)
         builder.setContentText(notificationText)
         builder.setWhen(System.currentTimeMillis())
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(R.drawable.ic_qb_logo)
         val bitmapIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
         builder.setLargeIcon(bitmapIcon)
 
@@ -212,10 +209,7 @@ class CallService : Service() {
         rtcClient = QBRTCClient.getInstance(this)
         rtcClient.setCameraErrorHandler(CameraEventsListener())
 
-        QBRTCConfig.setMaxOpponentsCount(MAX_OPPONENTS_COUNT)
-        QBRTCConfig.setDebugEnabled(true)
-
-        configRTCTimers(this)
+        applyRTCSettings()
 
         rtcClient.prepareToProcessCalls()
     }
@@ -414,8 +408,8 @@ class CallService : Service() {
         return sharingScreenState
     }
 
-    fun isCallMode(): Boolean {
-        return isCallState
+    fun isConnectedCall(): Boolean {
+        return isConnectedCall
     }
 
     fun getVideoTrackMap(): MutableMap<Int, QBRTCVideoTrack> {
@@ -426,13 +420,13 @@ class CallService : Service() {
         videoTrackMap[userId] = videoTrack
     }
 
-    fun getVideoTrack(userId: Int): QBRTCVideoTrack? {
+    fun getVideoTrack(userId: Int?): QBRTCVideoTrack? {
         return videoTrackMap[userId]
     }
 
-    private fun removeVideoTrack(userId: Int) {
+    private fun removeVideoTrack(userId: Int?) {
         val videoTrack = getVideoTrack(userId)
-        val renderer =videoTrack?.renderer
+        val renderer = videoTrack?.renderer
         videoTrack?.removeRenderer(renderer)
         videoTrackMap.remove(userId)
     }
@@ -498,11 +492,8 @@ class CallService : Service() {
 
     private inner class ConnectionListenerImpl : AbstractConnectionListener() {
         override fun connectionClosedOnError(e: Exception?) {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val reconnectHangUpTimeMillis = getPreferenceInt(sharedPref, applicationContext,
-                    R.string.pref_disconnect_time_interval_key,
-                    R.string.pref_disconnect_time_interval_default_value) * 1000
-            expirationReconnectionTime = System.currentTimeMillis() + reconnectHangUpTimeMillis
+            val HANG_UP_TIME_10_SECONDS = 10 * 1000
+            expirationReconnectionTime = System.currentTimeMillis() + HANG_UP_TIME_10_SECONDS
         }
 
         override fun reconnectionSuccessful() {
@@ -510,7 +501,7 @@ class CallService : Service() {
 
         override fun reconnectingIn(seconds: Int) {
             Log.i(TAG, "reconnectingIn $seconds")
-            if (!isCallState && expirationReconnectionTime < System.currentTimeMillis()) {
+            if (!isConnectedCall && expirationReconnectionTime < System.currentTimeMillis()) {
                 hangUpCurrentSession(HashMap())
             }
         }
@@ -529,18 +520,15 @@ class CallService : Service() {
             stopRingtone()
             if (session == WebRtcSessionManager.getCurrentSession()) {
                 val numberOpponents = session?.opponents?.size
-                if (numberOpponents == ONE_OPPONENT) {
-                    currentSession?.let {
-                        it.hangUp(HashMap<String, String>())
-                        CallService.stop(this@CallService)
+                if (numberOpponents == MIN_OPPONENT_SIZE || session?.state == QBRTCSessionState.QB_RTC_SESSION_PENDING) {
+                    if (userID?.equals(session.callerID) == true){
+                        currentSession?.hangUp(HashMap<String, String>())
                     }
-                }else{
+                } else {
                     userID?.let {
                         removeVideoTrack(it)
                     }
                 }
-            } else {
-                CallService.stop(this@CallService)
             }
 
             val participant = QbUsersDbManager.getUserById(userID)
@@ -574,8 +562,8 @@ class CallService : Service() {
 
         override fun onSessionClosed(session: QBRTCSession?) {
             Log.d(TAG, "Session " + session?.sessionID + " start stop session")
-            stopRingtone()
             if (session == currentSession) {
+                stopRingtone()
                 Log.d(TAG, "Stop session")
                 CallService.stop(this@CallService)
             }
@@ -596,7 +584,7 @@ class CallService : Service() {
 
         override fun onConnectedToUser(session: QBRTCSession?, userId: Int?) {
             stopRingtone()
-            isCallState = true
+            isConnectedCall = true
             Log.d(TAG, "onConnectedToUser() is started")
             startCallTimer()
         }
@@ -604,6 +592,7 @@ class CallService : Service() {
         override fun onConnectionClosedForUser(session: QBRTCSession?, userID: Int?) {
             Log.d(TAG, "Connection closed for user: $userID")
             shortToast("The user: " + userID + "has left the call")
+            removeVideoTrack(userID)
         }
 
         override fun onStateChanged(session: QBRTCSession?, sessionState: BaseSession.QBRTCSessionState?) {
