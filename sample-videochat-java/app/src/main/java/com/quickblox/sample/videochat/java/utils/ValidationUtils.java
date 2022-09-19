@@ -1,46 +1,34 @@
 package com.quickblox.sample.videochat.java.utils;
 
-import android.content.Context;
 import android.text.TextUtils;
-import android.widget.EditText;
-
-import com.quickblox.sample.videochat.java.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.quickblox.sample.videochat.java.utils.Consts.MAX_DISPLAY_NAME_LENGTH;
+import static com.quickblox.sample.videochat.java.utils.Consts.MAX_LOGIN_LENGTH;
+
 public class ValidationUtils {
-
     private ValidationUtils() {
-
     }
 
-    private static boolean isEnteredTextValid(Context context, EditText editText, int resFieldName, int maxLength, boolean checkLogin) {
+    private static boolean checkTextByPattern(String text, Pattern pattern) {
         boolean isCorrect = false;
-        Pattern pattern;
-        if (checkLogin) {
-            pattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{2," + (maxLength - 1) + "}+$");
-        } else {
-            pattern = Pattern.compile("^[a-zA-Z][a-zA-Z 0-9]{2," + (maxLength - 1) + "}+$");
-        }
 
-        if (!TextUtils.isEmpty(editText.getText().toString())) {
-            Matcher matcher = pattern.matcher(editText.getText().toString().trim());
+        if (!TextUtils.isEmpty(text)) {
+            Matcher matcher = pattern.matcher(text.trim());
             isCorrect = matcher.matches();
         }
-
-        if (!isCorrect) {
-            editText.setError(String.format(context.getString(R.string.error_name_must_not_contain_special_characters_from_app), context.getString(resFieldName), String.valueOf(maxLength)));
-        }
-
         return isCorrect;
     }
 
-    public static boolean isLoginValid(Context context, EditText editText) {
-        return isEnteredTextValid(context, editText, R.string.field_name_user_login, Consts.MAX_LOGIN_LENGTH, true);
+    public static boolean isDisplayNameValid(String displayName) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z][a-zA-Z 0-9]{2," + (MAX_DISPLAY_NAME_LENGTH - 1) + "}+$");
+        return checkTextByPattern(displayName, pattern);
     }
 
-    public static boolean isFoolNameValid(Context context, EditText editText) {
-        return isEnteredTextValid(context, editText, R.string.field_name_user_fullname, Consts.MAX_FULLNAME_LENGTH, false);
+    public static boolean isLoginValid(String login) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{2," + (MAX_LOGIN_LENGTH - 1) + "}+$");
+        return checkTextByPattern(login, pattern);
     }
 }

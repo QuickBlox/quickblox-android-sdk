@@ -10,10 +10,6 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 
-    <item
-        android:id="@+id/settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/log_out"
@@ -24,5 +20,5 @@
         android:id="@+id/menu_appinfo"
         android:icon="@android:drawable/ic_dialog_info"
         android:title="@string/action_dialogs_app_info"
-        android:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

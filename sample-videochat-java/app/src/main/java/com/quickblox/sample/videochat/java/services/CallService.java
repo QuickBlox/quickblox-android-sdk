@@ -7,13 +7,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,14 +22,14 @@ import androidx.core.app.NotificationCompat;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
 import com.quickblox.sample.videochat.java.fragments.AudioConversationFragment;
 import com.quickblox.sample.videochat.java.fragments.BaseConversationFragment;
 import com.quickblox.sample.videochat.java.fragments.VideoConversationFragment;
 import com.quickblox.sample.videochat.java.util.NetworkConnectionChecker;
 import com.quickblox.sample.videochat.java.utils.Consts;
 import com.quickblox.sample.videochat.java.utils.RingtonePlayer;
-import com.quickblox.sample.videochat.java.utils.SettingsUtil;
+import com.quickblox.sample.videochat.java.utils.SettingsManager;
 import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.ToastUtils;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
@@ -41,7 +39,6 @@ import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCClient;
-import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -61,12 +58,13 @@ import org.webrtc.VideoSink;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.quickblox.sample.videochat.java.utils.Consts.MAX_OPPONENTS_COUNT;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class CallService extends Service {
     private static final String TAG = CallService.class.getSimpleName();
@@ -76,8 +74,8 @@ public class CallService extends Service {
     private static final String CHANNEL_NAME = "Quickblox background service";
     public static final int ONE_OPPONENT = 1;
 
-    private HashMap<Integer, QBRTCVideoTrack> videoTrackMap = new HashMap<>();
-    private CallServiceBinder callServiceBinder = new CallServiceBinder();
+    private final HashMap<Integer, QBRTCVideoTrack> videoTrackMap = new HashMap<>();
+    private final CallServiceBinder callServiceBinder = new CallServiceBinder();
     private NetworkConnectionListener networkConnectionListener;
     private NetworkConnectionChecker networkConnectionChecker;
     private SessionEventsListener sessionEventsListener;
@@ -94,9 +92,9 @@ public class CallService extends Service {
     private QBRTCClient rtcClient;
     private RingtonePlayer ringtonePlayer;
 
-    private CallTimerTask callTimerTask = new CallTimerTask();
-    private Timer callTimer = new Timer();
-    private Long callTime;
+    private long callTime = 0L;
+    private ScheduledFuture<?> future;
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     public static void start(Context context) {
         Intent intent = new Intent(context, CallService.class);
@@ -122,7 +120,7 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification notification = initNotification();
+        Notification notification = buildNotification();
         startForeground(SERVICE_ID, notification);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -152,7 +150,7 @@ public class CallService extends Service {
         return callServiceBinder;
     }
 
-    private Notification initNotification() {
+    private Notification buildNotification() {
         Intent notifyIntent = new Intent(this, CallActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -166,7 +164,7 @@ public class CallService extends Service {
         String notificationTitle = getString(R.string.notification_title);
         String notificationText = getString(R.string.notification_text, "");
 
-        String callTime = getCallTime();
+        String callTime = modifyCallTimeToString();
         if (!TextUtils.isEmpty(callTime)) {
             notificationText = getString(R.string.notification_text, callTime);
         }
@@ -175,16 +173,16 @@ public class CallService extends Service {
         bigTextStyle.setBigContentTitle(notificationTitle);
         bigTextStyle.bigText(notificationText);
 
-        String channelID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
+        String channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                createNotificationChannel()
                 : getString(R.string.app_name);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
         builder.setStyle(bigTextStyle);
         builder.setContentTitle(notificationTitle);
         builder.setContentText(notificationText);
         builder.setWhen(System.currentTimeMillis());
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.ic_qb_logo);
 
         Bitmap bitmapIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         builder.setLargeIcon(bitmapIcon);
@@ -200,8 +198,8 @@ public class CallService extends Service {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private String createNotificationChannel(String channelID, String channelName) {
-        NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_LOW);
+    private String createNotificationChannel() {
+        NotificationChannel channel = new NotificationChannel(CallService.CHANNEL_ID, CallService.CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
         channel.setLightColor(getColor(R.color.green));
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 
@@ -209,22 +207,19 @@ public class CallService extends Service {
         if (manager != null) {
             manager.createNotificationChannel(channel);
         }
-        return channelID;
+        return CallService.CHANNEL_ID;
     }
 
-    private String getCallTime() {
+    private String modifyCallTimeToString() {
         String time = "";
-        if (callTime != null) {
-            String format = String.format("%%0%dd", 2);
-            Long elapsedTime = callTime / 1000;
-            String seconds = String.format(format, elapsedTime % 60);
-            String minutes = String.format(format, elapsedTime % 3600 / 60);
-            String hours = String.format(format, elapsedTime / 3600);
+        String format = String.format(Locale.getDefault(), "%%0%dd", 2);
+        String seconds = String.format(format, callTime % 60);
+        String minutes = String.format(format, callTime % 3600 / 60);
+        String hours = String.format(format, callTime / 3600);
 
-            time = minutes + ":" + seconds;
-            if (!TextUtils.isEmpty(hours) && hours != "00") {
-                time = hours + ":" + minutes + ":" + seconds;
-            }
+        time = minutes + ":" + seconds;
+        if (!TextUtils.isEmpty(hours) && !hours.equals("00")) {
+            time = hours + ":" + minutes + ":" + seconds;
         }
         return time;
     }
@@ -247,10 +242,7 @@ public class CallService extends Service {
         rtcClient = QBRTCClient.getInstance(this);
         rtcClient.setCameraErrorHandler(new CameraEventsListener());
 
-        QBRTCConfig.setMaxOpponentsCount(MAX_OPPONENTS_COUNT);
-        QBRTCConfig.setDebugEnabled(true);
-
-        SettingsUtil.configRTCTimers(this);
+        SettingsManager.applyRTCSettings();
 
         rtcClient.prepareToProcessCalls();
     }
@@ -318,7 +310,6 @@ public class CallService extends Service {
         currentSession = null;
     }
 
-    //Listeners
     public void addConnectionListener(ConnectionListener connectionListener) {
         QBChatService.getInstance().addConnectionListener(connectionListener);
     }
@@ -371,7 +362,6 @@ public class CallService extends Service {
         rtcClient.removeSessionsCallbacksListener(callback);
     }
 
-    // Common methods
     public void acceptCall(Map<String, String> userInfo) {
         if (currentSession != null) {
             currentSession.acceptCall(userInfo);
@@ -432,7 +422,7 @@ public class CallService extends Service {
         }
     }
 
-    public List<Integer> getOpponents() {
+    public List<Integer> getOpponentIds() {
         if (currentSession != null) {
             return currentSession.getOpponents();
         } else {
@@ -484,11 +474,12 @@ public class CallService extends Service {
     }
 
     public boolean isCameraFront() {
-        if (currentSession != null && currentSession.getMediaStreamManager() != null) {
+        try {
             QBRTCCameraVideoCapturer videoCapturer = (QBRTCCameraVideoCapturer) currentSession.getMediaStreamManager().getVideoCapturer();
             return videoCapturer.getCameraName().contains("front");
+        } catch (NullPointerException exception) {
+            return true;
         }
-        return true;
     }
 
     public void switchAudio() {
@@ -544,19 +535,36 @@ public class CallService extends Service {
     }
 
     private void startCallTimer() {
-        if (callTime == null) {
-            callTime = 1000L;
-        }
-        if (!callTimerTask.isRunning()) {
-            callTimer.scheduleAtFixedRate(callTimerTask, 0, 1000L);
-        }
+        long INITIAL_DELAY_1_SECOND = 1;
+        long PERIOD_1_SECOND = 1;
+
+        future = scheduledExecutorService.scheduleAtFixedRate(() -> {
+                    callTime = callTime + 1L;
+                    Notification notification = buildNotification();
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (notificationManager != null) {
+                        notificationManager.notify(SERVICE_ID, notification);
+                    }
+
+                    if (callTimerListener != null) {
+                        String callTime = modifyCallTimeToString();
+                        if (!TextUtils.isEmpty(callTime)) {
+                            callTimerListener.onCallTimeUpdate(callTime);
+                        }
+                    }
+                },
+                INITIAL_DELAY_1_SECOND,
+                PERIOD_1_SECOND,
+                TimeUnit.SECONDS);
     }
 
     private void stopCallTimer() {
         callTimerListener = null;
-
-        callTimer.cancel();
-        callTimer.purge();
+        if (future != null) {
+            future.cancel(true);
+            future = null;
+        }
+        scheduledExecutorService.shutdownNow();
     }
 
     public void clearButtonsState() {
@@ -570,32 +578,6 @@ public class CallService extends Service {
         SharedPrefsHelper.getInstance().delete(Consts.EXTRA_IS_INCOMING_CALL);
     }
 
-    private class CallTimerTask extends TimerTask {
-        private boolean isRunning = false;
-
-        @Override
-        public void run() {
-            isRunning = true;
-            callTime = callTime + 1000L;
-            Notification notification = initNotification();
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager != null) {
-                notificationManager.notify(SERVICE_ID, notification);
-            }
-
-            if (callTimerListener != null) {
-                String callTime = getCallTime();
-                if (!TextUtils.isEmpty(callTime)) {
-                    callTimerListener.onCallTimeUpdate(callTime);
-                }
-            }
-        }
-
-        public boolean isRunning() {
-            return isRunning;
-        }
-    }
-
     public class CallServiceBinder extends Binder {
         public CallService getService() {
             return CallService.this;
@@ -605,16 +587,13 @@ public class CallService extends Service {
     private class ConnectionListenerImpl extends AbstractConnectionListener {
         @Override
         public void connectionClosedOnError(Exception e) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            int reconnectHangUpTimeMillis = SettingsUtil.getPreferenceInt(sharedPref,
-                    getApplicationContext(), R.string.pref_disconnect_time_interval_key,
-                    R.string.pref_disconnect_time_interval_default_value) * 1000;
-            expirationReconnectionTime = System.currentTimeMillis() + reconnectHangUpTimeMillis;
+            int RECONNECT_HANG_UP_TIME_10_SECONDS = 10 * 1000;
+            expirationReconnectionTime = System.currentTimeMillis() + RECONNECT_HANG_UP_TIME_10_SECONDS;
         }
 
         @Override
         public void reconnectionSuccessful() {
-
+            // empty
         }
 
         @Override
@@ -654,7 +633,7 @@ public class CallService extends Service {
                     removeVideoTrack(userID);
                 }
 
-                QBUser participant = QbUsersDbManager.getInstance(getApplicationContext()).getUserById(userID);
+                QBUser participant = UsersDbManager.getInstance().getUserById(userID);
                 String participantName = participant != null ? participant.getFullName() : userID.toString();
                 ToastUtils.shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
             }
@@ -663,9 +642,6 @@ public class CallService extends Service {
         @Override
         public void onCallAcceptByUser(QBRTCSession session, Integer userID, Map<String, String> map) {
             stopRingtone();
-            if (session != WebRtcSessionManager.getInstance(getApplicationContext()).getCurrentSession()) {
-                return;
-            }
         }
 
         @Override
@@ -687,9 +663,9 @@ public class CallService extends Service {
 
         @Override
         public void onSessionClosed(QBRTCSession session) {
-            stopRingtone();
             Log.d(TAG, "Session " + session.getSessionID() + " onSessionClosed()");
             if (session == currentSession) {
+                stopRingtone();
                 Log.d(TAG, "Stopping Session");
                 CallService.stop(CallService.this);
             }
@@ -697,17 +673,14 @@ public class CallService extends Service {
 
         @Override
         public void onCallRejectByUser(QBRTCSession session, Integer integer, Map<String, String> map) {
-            stopRingtone();
-            if (session == WebRtcSessionManager.getInstance(getApplicationContext()).getCurrentSession()) {
-                return;
-            }
+            // empty
         }
     }
 
     private class SessionStateListener implements QBRTCSessionStateCallback<QBRTCSession> {
         @Override
         public void onStateChanged(QBRTCSession qbrtcSession, BaseSession.QBRTCSessionState qbrtcSessionState) {
-
+            // empty
         }
 
         @Override
@@ -715,7 +688,10 @@ public class CallService extends Service {
             stopRingtone();
             isCallState = true;
             Log.d(TAG, "onConnectedToUser() is started");
-            startCallTimer();
+
+            if (future == null) {
+                startCallTimer();
+            }
         }
 
         @Override
@@ -736,7 +712,7 @@ public class CallService extends Service {
     private class QBRTCSignalingListener implements QBRTCSignalingCallback {
         @Override
         public void onSuccessSendingPacket(QBSignalingSpec.QBSignalCMD qbSignalCMD, Integer integer) {
-
+            // empty
         }
 
         @Override
@@ -790,9 +766,9 @@ public class CallService extends Service {
         @Override
         public void onLocalVideoTrackReceive(QBRTCSession session, QBRTCVideoTrack videoTrack) {
             if (videoTrack != null) {
-                int userID = QBChatService.getInstance().getUser().getId();
-                removeVideoTrack(userID);
-                addVideoTrack(userID, videoTrack);
+                int userId = QBChatService.getInstance().getUser().getId();
+                removeVideoTrack(userId);
+                addVideoTrack(userId, videoTrack);
             }
             Log.d(TAG, "onLocalVideoTrackReceive() run");
         }

@@ -20,26 +20,26 @@ android {
 
     compileSdkVersion 31
     buildToolsVersion "31.0.0"
-    flavorDimensions dimensionDefault
+    flavorDimensions "default"
 
     defaultConfig {
         applicationId "com.quickblox.sample.videochat.java"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 405000
-        versionName '4.0.5'
+        versionCode 410000
+        versionName '4.1.0'
         multiDexEnabled true
     }
 
     productFlavors {
         dev {
-            dimension dimensionDefault
+            dimension "default"
             buildConfigField('boolean', "IS_QA", "false")
             buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
         }
 
         qa {
-            dimension dimensionDefault
+            dimension "default"
             buildConfigField("boolean", "IS_QA", "true")
             buildConfigField("int", "VERSION_QA_CODE", versionQACode.toString())
         }
@@ -83,14 +83,14 @@ android {
 }
 
 dependencies {
-    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:$qbSdkVersion"
-    implementation "com.quickblox:quickblox-android-sdk-messages:$qbSdkVersion"
+    implementation 'com.quickblox:quickblox-android-sdk-videochat-webrtc:3.10.1'
+    implementation 'com.quickblox:quickblox-android-sdk-messages:3.10.1'
 
-    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
-    implementation "com.navercorp.pulltorefresh:library:$pullToRefreshVersion@aar"
+    implementation 'com.google.firebase:firebase-core:21.1.0'
+    implementation 'com.navercorp.pulltorefresh:library:3.2.3@aar'
 
-    implementation "com.google.android.material:material:$materialVersion"
-    implementation "com.github.johnkil.android-robototextview:robototextview:$robotoTextViewVersion"
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.github.johnkil.android-robototextview:robototextview:4.0.0'
 }
 
 apply from: "../artifacts.gradle"

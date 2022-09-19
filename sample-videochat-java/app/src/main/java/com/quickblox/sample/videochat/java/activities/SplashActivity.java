@@ -50,8 +50,8 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void runNextScreen() {
-        if (sharedPrefsHelper.hasQbUser()) {
-            LoginService.start(SplashActivity.this, sharedPrefsHelper.getQbUser());
+        if (sharedPrefsHelper.hasUser()) {
+            LoginService.start(SplashActivity.this, sharedPrefsHelper.getUser());
             OpponentsActivity.start(SplashActivity.this);
         } else {
             new Handler().postDelayed(new Runnable() {

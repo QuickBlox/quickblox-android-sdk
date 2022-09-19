@@ -14,7 +14,7 @@ import android.widget.ToggleButton;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
 import com.quickblox.sample.videochat.java.services.CallService;
 import com.quickblox.sample.videochat.java.utils.CollectionsUtils;
 import com.quickblox.sample.videochat.java.utils.Consts;
@@ -27,6 +27,7 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 
@@ -34,7 +35,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     private static final String TAG = BaseConversationFragment.class.getSimpleName();
 
     public static final String MIC_ENABLED = "is_microphone_enabled";
-    protected QbUsersDbManager dbManager;
+    protected UsersDbManager dbManager;
     protected WebRtcSessionManager sessionManager;
 
     private boolean isIncomingCall;
@@ -109,11 +110,11 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     protected abstract void configureToolbar();
 
     protected void initFields() {
-        dbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
+        dbManager = UsersDbManager.getInstance();
         sessionManager = WebRtcSessionManager.getInstance(getActivity());
         currentUser = QBChatService.getInstance().getUser();
         if (currentUser == null) {
-            currentUser = SharedPrefsHelper.getInstance().getQbUser();
+            currentUser = SharedPrefsHelper.getInstance().getUser();
         }
 
         if (getArguments() != null) {
@@ -130,7 +131,9 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
             if (isIncomingCall) {
                 conversationFragmentCallback.acceptCall(new HashMap<>());
             } else {
-                conversationFragmentCallback.startCall(new HashMap<>());
+                Map<String, String> userInfo = new HashMap<>();
+                userInfo.put("timestamp",Long.toString(System.currentTimeMillis()));
+                conversationFragmentCallback.startCall(userInfo);
             }
         }
     }
@@ -223,6 +226,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         initOpponentsList();
+        allOpponentsTextView.setText(CollectionsUtils.makeStringFromUsersFullNames(opponents));
     }
 
     private void initOpponentsList() {
@@ -232,7 +236,7 @@ public abstract class BaseConversationFragment extends BaseToolBarFragment imple
 
             if (opponentsIds != null) {
                 ArrayList<QBUser> usersFromDb = dbManager.getUsersByIds(opponentsIds);
-                opponents = UsersUtils.getListAllUsersFromIds(usersFromDb, opponentsIds);
+                opponents = UsersUtils.getUsersFromIds(usersFromDb, opponentsIds);
             }
 
             QBUser caller = dbManager.getUserById(conversationFragmentCallback.getCallerId());

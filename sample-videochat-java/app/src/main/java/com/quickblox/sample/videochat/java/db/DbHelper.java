@@ -1,13 +1,12 @@
 package com.quickblox.sample.videochat.java.db;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.quickblox.sample.videochat.java.App;
 
 public class DbHelper extends SQLiteOpenHelper {
-
     private String TAG = DbHelper.class.getSimpleName();
 
     private static final String DB_NAME = "groupchatwebrtcDB";
@@ -20,9 +19,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DB_COLUMN_USER_PASSWORD = "userPass";
     public static final String DB_COLUMN_USER_TAG = "userTag";
 
-
-    public DbHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+    public DbHelper() {
+        super(App.getInstance(), DB_NAME, null, 1);
     }
 
     @Override

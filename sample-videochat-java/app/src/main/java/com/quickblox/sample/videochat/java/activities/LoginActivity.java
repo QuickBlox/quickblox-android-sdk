@@ -12,9 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import androidx.annotation.Nullable;
+
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.helper.Utils;
 import com.quickblox.sample.videochat.java.App;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.services.LoginService;
@@ -27,17 +28,13 @@ import com.quickblox.sample.videochat.java.utils.ValidationUtils;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
-import androidx.annotation.Nullable;
-
 public class LoginActivity extends BaseActivity {
     private String TAG = LoginActivity.class.getSimpleName();
 
-    private static final int MIN_LENGTH = 3;
-
     private EditText userLoginEditText;
-    private EditText userFullNameEditText;
+    private EditText userDisplayNameEditText;
 
-    private QBUser userForSave;
+    private QBUser currentUser;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -57,8 +54,8 @@ public class LoginActivity extends BaseActivity {
         userLoginEditText = findViewById(R.id.user_login);
         userLoginEditText.addTextChangedListener(new LoginEditTextWatcher(userLoginEditText));
 
-        userFullNameEditText = findViewById(R.id.user_full_name);
-        userFullNameEditText.addTextChangedListener(new LoginEditTextWatcher(userFullNameEditText));
+        userDisplayNameEditText = findViewById(R.id.user_display_name);
+        userDisplayNameEditText.addTextChangedListener(new LoginEditTextWatcher(userDisplayNameEditText));
     }
 
     @Override
@@ -71,12 +68,23 @@ public class LoginActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_login_user_done:
-                if (ValidationUtils.isLoginValid(this, userLoginEditText) &&
-                        ValidationUtils.isFoolNameValid(this, userFullNameEditText)) {
-                    hideKeyboard();
-                    userForSave = createUserWithEnteredData();
-                    startSignUpNewUser(userForSave);
+                boolean isNotValidLogin = !ValidationUtils.isLoginValid(userLoginEditText.getText().toString());
+                if (isNotValidLogin) {
+                    userLoginEditText.setError(getApplicationContext().getString(R.string.error_login));
+                    return false;
                 }
+
+                boolean isNotValidDisplayName = !ValidationUtils.isDisplayNameValid(userDisplayNameEditText.getText().toString());
+                if (isNotValidDisplayName) {
+                    userDisplayNameEditText.setError(getApplicationContext().getString(R.string.error_display_name));
+                    return false;
+                }
+
+                hideKeyboard();
+                String login = userLoginEditText.getText().toString();
+                String fullName = userDisplayNameEditText.getText().toString();
+                currentUser = createCurrentUser(login, fullName);
+                signUp(currentUser);
                 return true;
 
             default:
@@ -86,17 +94,17 @@ public class LoginActivity extends BaseActivity {
 
     private void hideKeyboard() {
         KeyboardUtils.hideKeyboard(userLoginEditText);
-        KeyboardUtils.hideKeyboard(userFullNameEditText);
+        KeyboardUtils.hideKeyboard(userDisplayNameEditText);
     }
 
-    private void startSignUpNewUser(final QBUser newUser) {
+    private void signUp(final QBUser user) {
         Log.d(TAG, "SignUp New User");
         showProgressDialog(R.string.dlg_creating_new_user);
-        requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
+        requestExecutor.signUpNewUser(user, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser result, Bundle params) {
                         Log.d(TAG, "SignUp Successful");
-                        saveUserData(newUser);
+                        saveUser(user);
                         loginToChat(result);
                     }
 
@@ -104,7 +112,7 @@ public class LoginActivity extends BaseActivity {
                     public void onError(QBResponseException e) {
                         Log.d(TAG, "Error SignUp" + e.getMessage());
                         if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
-                            signInCreatedUser(newUser);
+                            signIn(user);
                         } else {
                             hideProgressDialog();
                             ToastUtils.longToast(R.string.sign_up_error);
@@ -114,31 +122,26 @@ public class LoginActivity extends BaseActivity {
         );
     }
 
-    private void loginToChat(final QBUser qbUser) {
-        qbUser.setPassword(App.USER_DEFAULT_PASSWORD);
-        userForSave = qbUser;
-        startLoginService(qbUser);
+    private void loginToChat(final QBUser user) {
+        user.setPassword(App.USER_DEFAULT_PASSWORD);
+        currentUser = user;
+        startLoginService(user);
     }
 
-    private void saveUserData(QBUser qbUser) {
+    private void saveUser(QBUser user) {
         SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        sharedPrefsHelper.saveQbUser(qbUser);
+        sharedPrefsHelper.saveUser(user);
     }
 
-    private QBUser createUserWithEnteredData() {
-        return createQBUserWithCurrentData(String.valueOf(userLoginEditText.getText()),
-                String.valueOf(userFullNameEditText.getText()));
-    }
-
-    private QBUser createQBUserWithCurrentData(String userLogin, String userFullName) {
-        QBUser qbUser = null;
+    private QBUser createCurrentUser(String userLogin, String userFullName) {
+        QBUser user = null;
         if (!TextUtils.isEmpty(userLogin) && !TextUtils.isEmpty(userFullName)) {
-            qbUser = new QBUser();
-            qbUser.setLogin(userLogin);
-            qbUser.setFullName(userFullName);
-            qbUser.setPassword(App.USER_DEFAULT_PASSWORD);
+            user = new QBUser();
+            user.setLogin(userLogin);
+            user.setFullName(userFullName);
+            user.setPassword(App.USER_DEFAULT_PASSWORD);
         }
-        return qbUser;
+        return user;
     }
 
     @Override
@@ -150,12 +153,12 @@ public class LoginActivity extends BaseActivity {
             String errorMessage = data.getStringExtra(Consts.EXTRA_LOGIN_ERROR_MESSAGE);
 
             if (isLoginSuccess) {
-                saveUserData(userForSave);
-                signInCreatedUser(userForSave);
+                saveUser(currentUser);
+                signIn(currentUser);
             } else {
                 ToastUtils.longToast(getString(R.string.login_chat_login_error) + errorMessage);
-                userLoginEditText.setText(userForSave.getLogin());
-                userFullNameEditText.setText(userForSave.getFullName());
+                userLoginEditText.setText(currentUser.getLogin());
+                userDisplayNameEditText.setText(currentUser.getFullName());
             }
         }
     }
@@ -165,14 +168,14 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
-    private void signInCreatedUser(final QBUser qbUser) {
+    private void signIn(final QBUser user) {
         Log.d(TAG, "SignIn Started");
-        requestExecutor.signInUser(qbUser, new QBEntityCallbackImpl<QBUser>() {
+        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
             @Override
             public void onSuccess(QBUser user, Bundle params) {
                 Log.d(TAG, "SignIn Successful");
-                sharedPrefsHelper.saveQbUser(userForSave);
-                updateUserOnServer(qbUser);
+                sharedPrefsHelper.saveUser(currentUser);
+                updateUserOnServer(user);
             }
 
             @Override
@@ -208,12 +211,8 @@ public class LoginActivity extends BaseActivity {
         LoginService.start(this, qbUser, pendingIntent);
     }
 
-    private String getCurrentDeviceId() {
-        return Utils.generateDeviceId();
-    }
-
     private class LoginEditTextWatcher implements TextWatcher {
-        private EditText editText;
+        private final EditText editText;
 
         private LoginEditTextWatcher(EditText editText) {
             this.editText = editText;
@@ -221,7 +220,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            // empty
         }
 
         @Override
@@ -231,7 +230,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            // empty
         }
     }
 }

@@ -6,7 +6,7 @@ import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.videochat.java.util.QBResRequestExecutor;
 
 public class App extends Application {
-    //App credentials
+    // аpp credentials
     private static final String APPLICATION_ID = "";
     private static final String AUTH_KEY = "";
     private static final String AUTH_SECRET = "";
@@ -35,7 +35,7 @@ public class App extends Application {
         QBSettings.getInstance().init(getApplicationContext(), APPLICATION_ID, AUTH_KEY, AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //
         // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);

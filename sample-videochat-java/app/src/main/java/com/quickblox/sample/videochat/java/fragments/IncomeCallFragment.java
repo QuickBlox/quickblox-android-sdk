@@ -16,15 +16,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.request.GenericQueryRule;
-import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.sample.videochat.java.App;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
 import com.quickblox.sample.videochat.java.utils.CollectionsUtils;
 import com.quickblox.sample.videochat.java.utils.RingtonePlayer;
 import com.quickblox.sample.videochat.java.utils.UiUtils;
@@ -39,9 +39,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 
 /**
  * QuickBlox team
@@ -59,6 +56,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private ImageButton takeButton;
     private TextView callerNameTextView;
     private ProgressBar progressUserName;
+    private CallActivity.CurrentCallStateCallback currentCallStateCallback;
 
     private List<Integer> opponentsIds;
     private Vibrator vibrator;
@@ -67,8 +65,9 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private RingtonePlayer ringtonePlayer;
     private IncomeCallFragmentCallbackListener incomeCallFragmentCallbackListener;
     private QBRTCSession currentSession;
-    private QbUsersDbManager qbUserDbManager;
+    private UsersDbManager qbUserDbManager;
     private TextView alsoOnCallText;
+    private TextView otherUsersTextView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -104,9 +103,22 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentCallStateCallback = new CurrentCallStateCallbackImpl();
+        ((CallActivity) requireActivity()).addCurrentCallStateListener(currentCallStateCallback);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((CallActivity) requireActivity()).removeCurrentCallStateListener(currentCallStateCallback);
+    }
+
     private void initFields() {
         currentSession = WebRtcSessionManager.getInstance(getActivity()).getCurrentSession();
-        qbUserDbManager = QbUsersDbManager.getInstance(getActivity().getApplicationContext());
+        qbUserDbManager = UsersDbManager.getInstance();
         if (currentSession != null) {
             opponentsIds = currentSession.getOpponents();
             conferenceType = currentSession.getConferenceType();
@@ -138,7 +150,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         progressUserName = view.findViewById(R.id.progress_bar_opponent_name);
         ImageView callerAvatarImageView = view.findViewById(R.id.image_caller_avatar);
         callerNameTextView = view.findViewById(R.id.text_caller_name);
-        TextView otherIncUsersTextView = view.findViewById(R.id.text_other_inc_users);
+        otherUsersTextView = view.findViewById(R.id.text_other_inc_users);
         alsoOnCallText = view.findViewById(R.id.text_also_on_call);
         rejectButton = view.findViewById(R.id.image_button_reject_call);
         takeButton = view.findViewById(R.id.image_button_accept_call);
@@ -154,7 +166,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
                 updateUserFromServer();
             }
 
-            otherIncUsersTextView.setText(getOtherIncUsersNames());
+            otherUsersTextView.setText(getOtherIncUsersNames());
             setVisibilityAlsoOnCallTextView();
         }
     }
@@ -167,7 +179,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             public void onSuccess(QBUser qbUser, Bundle bundle) {
                 if (qbUser != null) {
                     qbUserDbManager.saveUser(qbUser);
-                    String callerName = TextUtils.isEmpty(qbUser.getFullName())? qbUser.getLogin() : qbUser.getFullName();
+                    String callerName = TextUtils.isEmpty(qbUser.getFullName()) ? qbUser.getLogin() : qbUser.getFullName();
                     callerNameTextView.setText(callerName);
                 }
                 progressUserName.setVisibility(View.GONE);
@@ -218,7 +230,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private String getOtherIncUsersNames() {
         ArrayList<QBUser> usersFromDb = qbUserDbManager.getUsersByIds(opponentsIds);
         ArrayList<QBUser> opponents = new ArrayList<>();
-        opponents.addAll(UsersUtils.getListAllUsersFromIds(usersFromDb, opponentsIds));
+        opponents.addAll(UsersUtils.getUsersFromIds(usersFromDb, opponentsIds));
 
         opponents.remove(QBChatService.getInstance().getUser());
         Log.d(TAG, "opponentsIds = " + opponentsIds);
@@ -280,5 +292,27 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void enableButtons(boolean enable) {
         takeButton.setEnabled(enable);
         rejectButton.setEnabled(enable);
+    }
+
+    private class CurrentCallStateCallbackImpl implements CallActivity.CurrentCallStateCallback {
+        @Override
+        public void onCallStarted() {
+            // empty
+        }
+
+        @Override
+        public void onCallStopped() {
+            // empty
+        }
+
+        @Override
+        public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
+            otherUsersTextView.setText(getOtherIncUsersNames());
+        }
+
+        @Override
+        public void onCallTimeUpdate(String time) {
+            // empty
+        }
     }
 }

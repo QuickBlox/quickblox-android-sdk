@@ -54,10 +54,8 @@
 
     <string name="permission_unavailable">%s is not available now!</string>
 
-    <string name="field_name_user_login">User name</string>
-    <string name="field_name_user_fullname">User Full Name</string>
-
-    <string name="error_name_must_not_contain_special_characters_from_app">%1$s must contain 3 &#8212; %2$s alphanumeric Latin characters without spaces, the first char must be a letter</string>
+    <string name="error_login">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
+    <string name="error_display_name">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
 
     <!-- menu -->
     <string name="action_start_login">Done</string>
@@ -100,9 +98,9 @@
     <string name="text_status_time_out">Time Out</string>
     <string name="text_status_failed">Failed</string>
 
-    <string name="text_welcoming_message">Please enter Login and Username.</string>
+    <string name="text_welcoming_message">Please enter Login and Display Name.</string>
     <string name="hint_user_login">Login</string>
-    <string name="hint_user_full_name">Username</string>
+    <string name="hint_display_name">Display Name</string>
 
     <string name="text_select_users_to_call">Select users you want to call</string>
 
@@ -111,121 +109,14 @@
 
     <string name="text_push_notification_message">"%s is calling you"</string>
 
-    <!-- Settings strings. -->
-    <string name="title_video_category">Video</string>
-    <string name="title_call_settings_category">Call Settings</string>
-
-    <string name="pref_default_value">Default</string>
-    <integer name="pref_default_int_value">0</integer>
-
-    <string name="pref_default_camera_key">default_camera_preference</string>
-    <string name="pref_default_camera_title">Default Camera</string>
-    <string name="pref_default_camera_dlg">Select default camera</string>
-    <string name="pref_default_camera_default">0</string>
-
-    <string name="pref_frame_rate_key">frame_rate</string>
-    <string name="pref_frame_rate_title">Frame Rate (0&#8211;30)</string>
-    <string name="pref_frame_rate_default">0</string>
-    <integer name="pref_frame_rate_min_value">0</integer>
-    <integer name="pref_frame_rate_max_value">30</integer>
-    <integer name="pref_frame_rate_stepSize">5</integer>
-
-    <string name="pref_resolution_key">resolution_preference</string>
-    <string name="pref_resolution_title">Video Format</string>
-    <string name="pref_resolution_dlg">Enter RTC local video resolution</string>
-    <string name="pref_resolution_default">-1</string>
-
-    <string name="pref_startbitrate_key">startbitrate_preference</string>
-    <string name="pref_startbitrate_title">Start bitrate setting</string>
-    <string name="pref_startbitrate_dlg">Start bitrate setting</string>
-    <string name="pref_startbitrate_default">Default</string>
-
-    <string name="pref_startbitratevalue_key">startbitratevalue_preference</string>
-    <string name="pref_startbitratevalue_title">Bandwidth (0&#8211;2000)</string>
-    <string name="pref_startbitratevalue_default">0</string>
-    <integer name="pref_startbitratevalue_min_value">0</integer>
-    <integer name="pref_startbitratevalue_max_value">2000</integer>
-    <integer name="pref_startbitratevalue_step_size">100</integer>
-
-    <string name="pref_disable_built_in_aec_key">disable_built_in_aec_preference</string>
-    <string name="pref_disable_built_in_aec_title">Disable built-in AEC</string>
-    <string name="pref_disable_built_in_aec_dlg">Disable built-in AEC</string>
-    <string name="pref_disable_built_in_aec_default">false</string>
-    <string name="pref_built_in_aec_not_available">Built-in AEC is not available</string>
-
-    <string name="pref_opensles_key">opensles_preference</string>
-    <string name="pref_opensles_title">Use OpenSL ES for audio playback</string>
-    <string name="pref_opensles_dlg">Use OpenSL ES for audio playback</string>
-    <string name="pref_opensles_default">false</string>
-
-    <string name="pref_noaudioprocessing_key">audioprocessing_preference</string>
-    <string name="pref_noaudioprocessing_title">Disable audio processing</string>
-    <string name="pref_noaudioprocessing_dlg">Disable audio processing pipeline</string>
-    <string name="pref_noaudioprocessing_default">false</string>
-
-    <string name="pref_manage_speakerphone_by_proximity_key">manage_speakerphone_by_proximity_preference</string>
-    <string name="pref_manage_speakerphone_by_proximity_title">Manage Speaker Phone by Proximity Sensor</string>
-    <string name="pref_manage_speakerphone_by_proximity_dlg">Manage Speaker Phone by Proximity Sensor</string>
-    <string name="pref_manage_speakerphone_by_proximity_summary">Enables managing of Speaker Phone by Proximity Sensor for Audio calls</string>
-    <string name="pref_manage_speakerphone_by_proximity_default">false</string>
-
-    <!--Call Settings-->
-    <string name="pref_answer_time_interval_key">answer_time_interval</string>
-    <string name="pref_answer_time_interval_title">Answer Time Interval (15&#8211;90s)</string>
-    <string name="pref_answer_time_interval_default_value">30</string>
-    <integer name="pref_answer_time_interval_min_value">15</integer>
-    <integer name="pref_answer_time_interval_max_value">90</integer>
-    <integer name="pref_answer_time_interval_step_size">5</integer>
-
-    <string name="pref_disconnect_time_interval_key">disconnect_time_interval</string>
-    <string name="pref_disconnect_time_interval_title">Disconnect Time Interval (10&#8211;90s)</string>
-    <string name="pref_disconnect_time_interval_default_value">10</string>
-    <integer name="pref_disconnect_time_interval_min_value">10</integer>
-    <integer name="pref_disconnect_time_interval_max_value">90</integer>
-    <integer name="pref_disconnect_time_interval_step_size">5</integer>
-
-    <string name="pref_dialing_time_interval_key">Dialing_time_interval</string>
-    <string name="pref_dialing_time_interval_title">Dialing Time Interval (3&#8211;10s)</string>
-    <string name="pref_dialing_time_interval_default_value">5</string>
-    <integer name="pref_dialing_time_interval_min_value">3</integer>
-    <integer name="pref_dialing_time_interval_max_value">10</integer>
-    <integer name="pref_dialing_time_interval_step_size">1</integer>
-
-    <string name="pref_videocodec_key">videocodec_preference</string>
-    <string name="pref_videocodec_title">Default video codec</string>
-    <string name="pref_videocodec_dlg">Select default video codec</string>
-    <string name="pref_videocodec_default">0</string>
-
-    <string name="pref_hwcodec_key">hwcodec_preference</string>
-    <string name="pref_hwcodec_title">Video codec hardware acceleration</string>
-    <string name="pref_hwcodec_default">true</string>
-
-    <string name="pref_value_enabled">Enabled</string>
-    <string name="pref_value_disabled">Disabled</string>
-
-    <string name="pref_room_server_url_key">room_server_url_preference</string>
-    <string name="pref_room_server_url_title">Room server URL.</string>
-    <string name="pref_room_server_url_dlg">Enter a room server URL.</string>
-    <string name="pref_room_server_url_default" translatable="false">https://apprtc.appspot.com</string>
-
-    <string name="pref_displayhud_key">displayhud_preference</string>
-    <string name="pref_displayhud_title">Display call statistics.</string>
-    <string name="pref_displayhud_dlg">Display call statistics.</string>
-    <string name="pref_displayhud_default" translatable="false">false</string>
-    <string name="pref_audiocodec_key">pref_audio_codec</string>
-    <string name="pref_audiocodec_title">Default audio codec</string>
-    <string name="pref_audiocodec_def">ISAC</string>
-    <string name="pref_audiocodec_dlg">Select default audio codec</string>
-    <string name="pref_version">QuickBlox WebRTC\nBuild version 1.12</string>
-    <string name="btn_screen_capture">screenShot</string>
     <string name="accepted">Accepted</string>
     <string name="connection_was_lost">Connection was lost</string>
-
     <string name="opponents">and %s other</string>
     <string name="opponent">and %s </string>
     <string name="ringing">Ringing</string>
     <string name="stop_share">Stop</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
+    <string name="you">You</string>
 
     <!-- App info -->
     <string name="appinfo_application_version">Application version:</string>

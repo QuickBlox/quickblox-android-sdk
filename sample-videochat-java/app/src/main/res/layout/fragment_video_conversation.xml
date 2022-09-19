@@ -11,25 +11,44 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/grid_opponents" />
 
-    <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
-        android:id="@+id/local_video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginTop="@dimen/action_bar_height" />
+    <FrameLayout
+        android:id="@+id/fl_local_video_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginTop="@dimen/action_bar_height">
+
+        <com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
+            android:id="@+id/local_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            style="@style/MatchWidth"
+            android:background="@color/black_transparent_50"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:text="@string/you"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="name" />
+    </FrameLayout>
 
     <include layout="@layout/view_outgoing_screen" />
 
     <TextView
-        android:id="@+id/connection_status_local"
+        android:id="@+id/username_full_view"
         style="@style/MatchWidth"
+        android:layout_marginTop="@dimen/margin_common"
         android:layout_marginBottom="@dimen/margin_very_small"
         android:gravity="center_horizontal"
         android:maxLength="13"
         android:maxLines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white"
-        android:textStyle="normal|italic" />
+        android:textSize="18sp"
+        android:textStyle="normal|bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/grid_opponents"
@@ -40,7 +59,6 @@
         android:horizontalSpacing="@dimen/margin_small"
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small"
-        android:visibility="invisible"
         tools:listitem="@layout/list_item_opponent_from_call" />
 
     <include

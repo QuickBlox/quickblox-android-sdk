@@ -17,7 +17,7 @@ public class SharedPrefsHelper {
     private static final String QB_USER_TAGS = "qb_user_tags";
 
     private static SharedPrefsHelper instance;
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     public static synchronized SharedPrefsHelper getInstance() {
         if (instance == null) {
@@ -73,7 +73,7 @@ public class SharedPrefsHelper {
         return sharedPreferences.contains(key);
     }
 
-    public void saveQbUser(QBUser qbUser) {
+    public void saveUser(QBUser qbUser) {
         save(QB_USER_ID, qbUser.getId());
         save(QB_USER_LOGIN, qbUser.getLogin());
         save(QB_USER_PASSWORD, qbUser.getPassword());
@@ -81,7 +81,7 @@ public class SharedPrefsHelper {
         save(QB_USER_TAGS, qbUser.getTags().getItemsAsString());
     }
 
-    public void removeQbUser() {
+    public void removeUser() {
         delete(QB_USER_ID);
         delete(QB_USER_LOGIN);
         delete(QB_USER_PASSWORD);
@@ -89,8 +89,8 @@ public class SharedPrefsHelper {
         delete(QB_USER_TAGS);
     }
 
-    public QBUser getQbUser() {
-        if (hasQbUser()) {
+    public QBUser getUser() {
+        if (hasUser()) {
             Integer id = get(QB_USER_ID);
             String login = get(QB_USER_LOGIN);
             String password = get(QB_USER_PASSWORD);
@@ -114,7 +114,7 @@ public class SharedPrefsHelper {
         }
     }
 
-    public boolean hasQbUser() {
+    public boolean hasUser() {
         return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD);
     }
 

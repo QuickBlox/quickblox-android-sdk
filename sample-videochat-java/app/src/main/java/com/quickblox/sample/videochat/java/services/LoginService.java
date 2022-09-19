@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBSignaling;
 import com.quickblox.chat.QBWebRTCSignaling;
@@ -17,17 +19,11 @@ import com.quickblox.chat.connections.tcp.QBTcpConfigurationBuilder;
 import com.quickblox.chat.listeners.QBVideoChatSignalingManagerListener;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.videochat.java.util.ChatPingAlarmManager;
 import com.quickblox.sample.videochat.java.utils.Consts;
-import com.quickblox.sample.videochat.java.utils.SettingsUtil;
+import com.quickblox.sample.videochat.java.utils.SettingsManager;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.QBRTCClient;
-import com.quickblox.videochat.webrtc.QBRTCConfig;
-
-import org.jivesoftware.smackx.ping.PingFailedListener;
-
-import androidx.annotation.Nullable;
 
 /**
  * QuickBlox team
@@ -142,24 +138,12 @@ public class LoginService extends Service {
     }
 
     private void startActionsOnSuccessLogin() {
-        initPingListener();
         initQBRTCClient();
         sendResultToActivity(true, null);
     }
 
-    private void initPingListener() {
-        ChatPingAlarmManager.onCreate(this);
-        ChatPingAlarmManager.getInstanceFor().addPingListener(new PingFailedListener() {
-            @Override
-            public void pingFailed() {
-                Log.d(TAG, "Ping Chat Server Failed");
-            }
-        });
-    }
-
     private void initQBRTCClient() {
         rtcClient = QBRTCClient.getInstance(getApplicationContext());
-        // Add signalling manager
         chatService.getVideoChatWebRTCSignalingManager().addSignalingManagerListener(new QBVideoChatSignalingManagerListener() {
             @Override
             public void signalingCreated(QBSignaling qbSignaling, boolean createdLocally) {
@@ -169,11 +153,8 @@ public class LoginService extends Service {
             }
         });
 
-        // Configure
-        QBRTCConfig.setDebugEnabled(true);
-        SettingsUtil.configRTCTimers(LoginService.this);
+        SettingsManager.applyRTCSettings();
 
-        // Add service as callback to RTCClient
         rtcClient.addSessionCallbacksListener(WebRtcSessionManager.getInstance(this));
         rtcClient.prepareToProcessCalls();
     }
@@ -201,7 +182,6 @@ public class LoginService extends Service {
         if (rtcClient != null) {
             rtcClient.destroy();
         }
-        ChatPingAlarmManager.onDestroy();
         if (chatService != null) {
             chatService.logout(new QBEntityCallback<Void>() {
                 @Override

@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.utils.UiUtils;
 import com.quickblox.users.model.QBUser;
@@ -15,16 +18,11 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
-
-    private Context context;
-    List<QBUser> usersList;
-    List<QBUser> selectedUsers;
-    private SelectedItemsCountChangedListener selectedItemsCountChangedListener;
-
+    private final Context context;
+    private List<QBUser> usersList;
+    private final List<QBUser> selectedUsers;
+    private SelectedItemsListener selectedItemsListener;
 
     public UsersAdapter(Context context, List<QBUser> usersList) {
         this.context = context;
@@ -32,17 +30,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         this.selectedUsers = new ArrayList<>();
     }
 
-
     public List<QBUser> getSelectedUsers() {
         return selectedUsers;
     }
 
-    public void setSelectedItemsCountsChangedListener(SelectedItemsCountChangedListener selectedItemsCountChanged) {
-        if (selectedItemsCountChanged != null) {
-            this.selectedItemsCountChangedListener = selectedItemsCountChanged;
+    public void setSelectedItemsListener(SelectedItemsListener selectedItemsListener) {
+        if (selectedItemsListener != null) {
+            this.selectedItemsListener = selectedItemsListener;
         }
     }
-
 
     @NonNull
     @Override
@@ -64,12 +60,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             holder.opponentIcon.setBackgroundDrawable(UiUtils.getColorCircleDrawable(user.getId()));
             holder.opponentIcon.setImageResource(R.drawable.ic_person);
         }
-        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleSelection(user);
-                selectedItemsCountChangedListener.onCountSelectedItemsChanged(selectedUsers.size());
-            }
+        holder.rootLayout.setOnClickListener(v -> {
+            toggleSelection(user);
+            selectedItemsListener.onSelectedItems(selectedUsers.size());
         });
     }
 
@@ -78,12 +71,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         return usersList.size();
     }
 
-    public void updateUsersList(List<QBUser> usersList) {
+    public void updateUsers(List<QBUser> usersList) {
         this.usersList = usersList;
         notifyDataSetChanged();
     }
 
     public void addUsers(List<QBUser> users) {
+        if (users == null) {
+            return;
+        }
         for (QBUser user : users) {
             if (!usersList.contains(user)) {
                 usersList.add(user);
@@ -93,7 +89,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     }
 
     private void toggleSelection(QBUser qbUser) {
-        if (selectedUsers.contains(qbUser)){
+        if (selectedUsers.contains(qbUser)) {
             selectedUsers.remove(qbUser);
         } else {
             selectedUsers.add(qbUser);
@@ -114,7 +110,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         }
     }
 
-    public interface SelectedItemsCountChangedListener {
-        void onCountSelectedItemsChanged(Integer count);
+    public interface SelectedItemsListener {
+        void onSelectedItems(Integer count);
     }
 }

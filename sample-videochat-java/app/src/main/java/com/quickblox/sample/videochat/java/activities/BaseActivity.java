@@ -4,25 +4,20 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.quickblox.sample.videochat.java.App;
-import com.quickblox.sample.videochat.java.R;
-import com.quickblox.sample.videochat.java.util.QBResRequestExecutor;
-import com.quickblox.sample.videochat.java.utils.Consts;
-import com.quickblox.sample.videochat.java.utils.ErrorUtils;
-import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
-
-import java.io.File;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.quickblox.sample.videochat.java.App;
+import com.quickblox.sample.videochat.java.R;
+import com.quickblox.sample.videochat.java.util.QBResRequestExecutor;
+import com.quickblox.sample.videochat.java.utils.ErrorUtils;
+import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 
 /**
  * QuickBlox team
@@ -45,8 +40,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void initDefaultActionBar() {
         String currentUserFullName = "";
-        if (sharedPrefsHelper.getQbUser() != null) {
-            currentUserFullName = sharedPrefsHelper.getQbUser().getFullName();
+        if (sharedPrefsHelper.getUser() != null) {
+            currentUserFullName = sharedPrefsHelper.getUser().getFullName();
         }
 
         setActionBarTitle("");
