@@ -1,7 +1,6 @@
 package com.quickblox.sample.videochat.java.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -12,28 +11,25 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
+public class UsersDbManager {
+    private static final String TAG = UsersDbManager.class.getSimpleName();
 
-public class QbUsersDbManager {
-    private static String TAG = QbUsersDbManager.class.getSimpleName();
+    private static UsersDbManager instance;
+    private final DbHelper dbHelper;
 
-    private static QbUsersDbManager instance;
-    private Context mContext;
-
-    private QbUsersDbManager(Context context) {
-        this.mContext = context;
+    private UsersDbManager() {
+        dbHelper = new DbHelper();
     }
 
-    public static QbUsersDbManager getInstance(Context context) {
+    public static synchronized UsersDbManager getInstance() {
         if (instance == null) {
-            instance = new QbUsersDbManager(context);
+            instance = new UsersDbManager();
         }
-
         return instance;
     }
 
     public ArrayList<QBUser> getAllUsers() {
         ArrayList<QBUser> allUsers = new ArrayList<>();
-        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor c = db.query(DbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
 
@@ -68,7 +64,6 @@ public class QbUsersDbManager {
 
     public QBUser getUserById(Integer userId) {
         QBUser qbUser = null;
-        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor c = db.query(DbHelper.DB_TABLE_NAME, null, null, null, null, null, null);
 
@@ -114,7 +109,6 @@ public class QbUsersDbManager {
 
     public void saveUser(QBUser qbUser) {
         ContentValues cv = new ContentValues();
-        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         cv.put(DbHelper.DB_COLUMN_USER_FULL_NAME, qbUser.getFullName());
         cv.put(DbHelper.DB_COLUMN_USER_LOGIN, qbUser.getLogin());
@@ -127,7 +121,6 @@ public class QbUsersDbManager {
     }
 
     public void clearDB() {
-        DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(DbHelper.DB_TABLE_NAME, null, null);
         dbHelper.close();

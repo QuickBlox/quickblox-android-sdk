@@ -1,30 +1,26 @@
 package com.quickblox.sample.videochat.java.utils;
 
-import android.content.Context;
-
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class UsersUtils {
-
     private static SharedPrefsHelper sharedPrefsHelper;
-    private static QbUsersDbManager dbManager;
+    private static UsersDbManager dbManager;
 
-    public static ArrayList<QBUser> getListAllUsersFromIds(ArrayList<QBUser> existedUsers, List<Integer> allIds) {
-        ArrayList<QBUser> qbUsers = new ArrayList<>();
+    public static ArrayList<QBUser> getUsersFromIds(ArrayList<QBUser> existedUsers, List<Integer> allIds) {
+        ArrayList<QBUser> users = new ArrayList<>();
         for (Integer userId : allIds) {
             QBUser stubUser = createStubUserById(userId);
             if (!existedUsers.contains(stubUser)) {
-                qbUsers.add(stubUser);
+                users.add(stubUser);
             }
         }
-        qbUsers.addAll(existedUsers);
+        users.addAll(existedUsers);
 
-        return qbUsers;
+        return users;
     }
 
     private static QBUser createStubUserById(Integer userId) {
@@ -45,13 +41,13 @@ public class UsersUtils {
         return idsNotLoadedUsers;
     }
 
-    public static void removeUserData(Context context) {
+    public static void removeUserData() {
         if (sharedPrefsHelper == null) {
             sharedPrefsHelper = SharedPrefsHelper.getInstance();
         }
         sharedPrefsHelper.clearAllData();
         if (dbManager == null) {
-            dbManager = QbUsersDbManager.getInstance(context);
+            dbManager = UsersDbManager.getInstance();
         }
         dbManager.clearDB();
     }

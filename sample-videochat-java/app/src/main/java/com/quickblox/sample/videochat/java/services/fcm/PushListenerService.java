@@ -18,8 +18,8 @@ public class PushListenerService extends QBFcmPushListenerService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
-        if (sharedPrefsHelper.hasQbUser()) {
-            QBUser qbUser = sharedPrefsHelper.getQbUser();
+        if (sharedPrefsHelper.hasUser()) {
+            QBUser qbUser = sharedPrefsHelper.getUser();
             Log.d(TAG, "App has logged user" + qbUser.getId());
             LoginService.start(this, qbUser);
         }

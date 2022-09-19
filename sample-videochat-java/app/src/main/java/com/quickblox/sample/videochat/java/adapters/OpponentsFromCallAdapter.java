@@ -1,8 +1,8 @@
 package com.quickblox.sample.videochat.java.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,17 +11,16 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.fragments.BaseConversationFragment;
 import com.quickblox.sample.videochat.java.utils.QBRTCSessionUtils;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * QuickBlox team
@@ -96,7 +95,14 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
     public void onBindViewHolder(ViewHolder holder, int position) {
         final QBUser user = opponents.get(position);
         int userID = user.getId();
-        holder.opponentsName.setText(user.getFullName());
+
+        String name;
+        if (TextUtils.isEmpty(user.getFullName())) {
+            name = user.getLogin();
+        } else {
+            name = user.getFullName();
+        }
+        holder.opponentsName.setText(name);
 
         holder.getOpponentView().setId(user.getId());
         holder.setUserId(userID);

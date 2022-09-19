@@ -1,31 +1,30 @@
 package com.quickblox.sample.videochat.java.activities;
 
 import android.app.Activity;
-import android.app.PendingIntent;
+import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.quickblox.chat.QBChatService;
 import com.quickblox.sample.videochat.java.R;
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
 import com.quickblox.sample.videochat.java.fragments.AudioConversationFragment;
 import com.quickblox.sample.videochat.java.fragments.BaseConversationFragment;
 import com.quickblox.sample.videochat.java.fragments.ConversationFragmentCallback;
@@ -34,13 +33,12 @@ import com.quickblox.sample.videochat.java.fragments.IncomeCallFragmentCallbackL
 import com.quickblox.sample.videochat.java.fragments.ScreenShareFragment;
 import com.quickblox.sample.videochat.java.fragments.VideoConversationFragment;
 import com.quickblox.sample.videochat.java.services.CallService;
-import com.quickblox.sample.videochat.java.services.LoginService;
 import com.quickblox.sample.videochat.java.utils.Consts;
 import com.quickblox.sample.videochat.java.utils.ErrorUtils;
 import com.quickblox.sample.videochat.java.utils.FragmentExecuotr;
 import com.quickblox.sample.videochat.java.utils.PermissionsChecker;
 import com.quickblox.sample.videochat.java.utils.QBEntityCallbackImpl;
-import com.quickblox.sample.videochat.java.utils.SettingsUtil;
+import com.quickblox.sample.videochat.java.utils.SettingsManager;
 import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.ToastUtils;
 import com.quickblox.sample.videochat.java.utils.UsersUtils;
@@ -80,18 +78,18 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final int REQUEST_PERMISSION_SETTING = 545;
 
-    private ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
-    private QbUsersDbManager dbManager = QbUsersDbManager.getInstance(this);
+    private final ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
+    private final UsersDbManager dbManager = UsersDbManager.getInstance();
     private Handler showIncomingCallWindowTaskHandler;
     private ConnectionListenerImpl connectionListener;
     private ServiceConnection callServiceConnection;
     private Runnable showIncomingCallWindowTask;
     private boolean isInComingCall = false;
-    private List<Integer> opponentsIdsList;
-    private SharedPreferences sharedPref;
+    private List<Integer> opponentIds;
     private boolean isVideoCall = false;
     private PermissionsChecker checker;
     private CallService callService;
+    private LinearLayout connectionView;
 
     public static void start(Context context, boolean isIncomingCall) {
         Intent intent = new Intent(context, CallActivity.class);
@@ -105,19 +103,58 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        allowOnLockScreen();
         setContentView(R.layout.activity_main);
         checker = new PermissionsChecker(this);
+        connectionView = (LinearLayout) View.inflate(CallActivity.this, R.layout.connection_popup, null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindCallService();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(callServiceConnection);
+        if (callService != null) {
+            removeListeners();
+        }
+    }
+
+    @Override
+    public void finish() {
+        CallService.stop(this);
+        OpponentsActivity.start(this);
+        super.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // to prevent returning from Call Fragment
+    }
+
+    private void allowOnLockScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            keyguardManager.requestDismissKeyguard(this, null);
+        } else {
+            this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        }
     }
 
     private void initScreen() {
         callService.setCallTimerCallback(new CallTimerCallback());
         isVideoCall = callService.isVideoCall();
+        opponentIds = callService.getOpponentIds();
 
-        opponentsIdsList = callService.getOpponents();
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        initSettingsStrategy();
+        SettingsManager.applySettings();
         addListeners();
 
         if (getIntent() != null && getIntent().getExtras() != null) {
@@ -167,15 +204,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "onActivityResult requestCode=" + requestCode + ", resultCode= " + resultCode);
         if (resultCode == Consts.EXTRA_LOGIN_RESULT_CODE) {
-            if (data != null) {
-                boolean isLoginSuccess = data.getBooleanExtra(Consts.EXTRA_LOGIN_RESULT, false);
-                if (isLoginSuccess) {
-                    initScreen();
-                } else {
-                    CallService.stop(this);
-                    finish();
-                }
-            }
+            initScreen();
         }
         if (requestCode == QBRTCScreenCapturer.REQUEST_MEDIA_PROJECTION
                 && resultCode == Activity.RESULT_OK && data != null) {
@@ -199,13 +228,14 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     private void startSuitableFragment(boolean isInComingCall) {
         QBRTCSession session = WebRtcSessionManager.getInstance(this).getCurrentSession();
         if (session != null) {
+            startLoadAbsentUsers();
             if (isInComingCall) {
                 initIncomingCallTask();
-                startLoadAbsentUsers();
                 addIncomeCallFragment();
+                startLoadAbsentUsers();
                 checkPermission();
             } else {
-                addConversationFragment(isInComingCall);
+                addConversationFragment(false);
                 getIntent().removeExtra(Consts.EXTRA_IS_INCOMING_CALL);
                 sharedPrefsHelper.save(Consts.EXTRA_IS_INCOMING_CALL, false);
             }
@@ -256,8 +286,8 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         ArrayList<QBUser> usersFromDb = dbManager.getAllUsers();
         ArrayList<Integer> allParticipantsOfCall = new ArrayList<>();
 
-        if (opponentsIdsList != null) {
-            allParticipantsOfCall.addAll(opponentsIdsList);
+        if (opponentIds != null) {
+            allParticipantsOfCall.addAll(opponentIds);
         }
 
         if (isInComingCall) {
@@ -276,12 +306,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
                     notifyCallStateListenersNeedUpdateOpponentsList(users);
                 }
             });
-        }
-    }
-
-    private void initSettingsStrategy() {
-        if (opponentsIdsList != null) {
-            SettingsUtil.setSettingsStrategy(opponentsIdsList, sharedPref, this);
         }
     }
 
@@ -310,39 +334,14 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     private void startIncomeCallTimer(long time) {
         Log.d(TAG, "startIncomeCallTimer");
-        showIncomingCallWindowTaskHandler.postAtTime(showIncomingCallWindowTask, SystemClock.uptimeMillis() + time);
+        if (showIncomingCallWindowTaskHandler != null && showIncomingCallWindowTask != null) {
+            showIncomingCallWindowTaskHandler.postAtTime(showIncomingCallWindowTask, SystemClock.uptimeMillis() + time);
+        }
     }
 
     private void stopIncomeCallTimer() {
         Log.d(TAG, "stopIncomeCallTimer");
         showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bindCallService();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindService(callServiceConnection);
-        if (callService != null) {
-            removeListeners();
-        }
-    }
-
-    @Override
-    public void finish() {
-        CallService.stop(this);
-        OpponentsActivity.start(this);
-        super.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        // To prevent returning from Call Fragment
     }
 
     private void addIncomeCallFragment() {
@@ -364,32 +363,30 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         FragmentExecuotr.addFragment(getSupportFragmentManager(), R.id.fragment_container, conversationFragment, conversationFragment.getClass().getSimpleName());
     }
 
-    private void showNotificationPopUp(final int text, final boolean show) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout connectionView = (LinearLayout) View.inflate(CallActivity.this, R.layout.connection_popup, null);
-                if (show) {
-                    ((TextView) connectionView.findViewById(R.id.notification)).setText(text);
-                    if (connectionView.getParent() == null) {
-                        ((ViewGroup) CallActivity.this.findViewById(R.id.fragment_container)).addView(connectionView);
-                    }
-                } else {
-                    ((ViewGroup) CallActivity.this.findViewById(R.id.fragment_container)).removeView(connectionView);
-                }
+    private void showConnectionPopUp() {
+        runOnUiThread(() -> {
+            ((TextView) connectionView.findViewById(R.id.notification)).setText(R.string.connection_was_lost);
+            if (connectionView.getParent() == null) {
+                ((ViewGroup) CallActivity.this.findViewById(R.id.fragment_container)).addView(connectionView);
             }
+        });
+    }
+
+    private void hideConnectionPopUp() {
+        runOnUiThread(() -> {
+            ((ViewGroup) CallActivity.this.findViewById(R.id.fragment_container)).removeView(connectionView);
         });
     }
 
     private class ConnectionListenerImpl extends AbstractConnectionListener {
         @Override
         public void connectionClosedOnError(Exception e) {
-            showNotificationPopUp(R.string.connection_was_lost, true);
+            showConnectionPopUp();
         }
 
         @Override
         public void reconnectionSuccessful() {
-            showNotificationPopUp(R.string.connection_was_lost, false);
+            hideConnectionPopUp();
         }
     }
 
@@ -480,9 +477,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     @Override
     public void onCallRejectByUser(QBRTCSession session, Integer userID, Map<String, String> userInfo) {
-        if (callService.isCurrentSession(session)) {
-            callService.stopRingtone();
-        }
+        // empty
     }
 
     @Override
@@ -603,7 +598,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     @Override
     public List<Integer> getOpponents() {
-        return callService.getOpponents();
+        return callService.getOpponentIds();
     }
 
     @Override
@@ -692,21 +687,10 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             CallService.CallServiceBinder binder = (CallService.CallServiceBinder) service;
             callService = binder.getService();
             if (callService.currentSessionExist()) {
-                if (QBChatService.getInstance().isLoggedIn()) {
-                    initScreen();
-                } else {
-                    login();
-                }
+                initScreen();
             } else {
                 finish();
             }
-        }
-
-        private void login() {
-            QBUser qbUser = SharedPrefsHelper.getInstance().getQbUser();
-            Intent tempIntent = new Intent(CallActivity.this, LoginService.class);
-            PendingIntent pendingIntent = createPendingResult(Consts.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
-            LoginService.start(CallActivity.this, qbUser, pendingIntent);
         }
     }
 
@@ -725,7 +709,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     public interface OnChangeAudioDevice {
         void audioDeviceChanged(AppRTCAudioManager.AudioDevice newAudioDevice);
     }
-
 
     public interface CurrentCallStateCallback {
         void onCallStarted();

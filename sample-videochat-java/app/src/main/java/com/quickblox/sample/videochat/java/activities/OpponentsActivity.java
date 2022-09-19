@@ -9,7 +9,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
@@ -20,7 +23,9 @@ import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.adapters.UsersAdapter;
-import com.quickblox.sample.videochat.java.db.QbUsersDbManager;
+import com.quickblox.sample.videochat.java.db.UsersDbManager;
+import com.quickblox.sample.videochat.java.executor.Executor;
+import com.quickblox.sample.videochat.java.executor.ExecutorTask;
 import com.quickblox.sample.videochat.java.services.CallService;
 import com.quickblox.sample.videochat.java.services.LoginService;
 import com.quickblox.sample.videochat.java.utils.CollectionsUtils;
@@ -40,10 +45,6 @@ import com.quickblox.videochat.webrtc.QBRTCTypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 /**
  * QuickBlox team
  */
@@ -61,8 +62,7 @@ public class OpponentsActivity extends BaseActivity {
     private int currentPage = 0;
     private Boolean isLoading = false;
     private Boolean hasNextPage = true;
-
-    private QbUsersDbManager dbManager;
+    private UsersDbManager dbManager;
     private PermissionsChecker checker;
 
     public static void start(Context context) {
@@ -75,8 +75,8 @@ public class OpponentsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
-        currentUser = SharedPrefsHelper.getInstance().getQbUser();
-        dbManager = QbUsersDbManager.getInstance(getApplicationContext());
+        currentUser = SharedPrefsHelper.getInstance().getUser();
+        dbManager = UsersDbManager.getInstance();
         checker = new PermissionsChecker(getApplicationContext());
 
         initDefaultActionBar();
@@ -120,28 +120,28 @@ public class OpponentsActivity extends BaseActivity {
     private void loadUsers() {
         isLoading = true;
         showProgressDialog(R.string.dlg_loading_opponents);
-        currentPage +=1;
         ArrayList<GenericQueryRule> rules = new ArrayList<>();
         rules.add(new GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED));
+        int nextPage = currentPage + 1;
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
+        requestBuilder.setRules(rules);
+        requestBuilder.setPerPage(PER_PAGE_SIZE_100);
+        requestBuilder.setPage(nextPage);
 
-        QBPagedRequestBuilder qbPagedRequestBuilder = new QBPagedRequestBuilder();
-        qbPagedRequestBuilder.setRules(rules);
-        qbPagedRequestBuilder.setPerPage(PER_PAGE_SIZE_100);
-        qbPagedRequestBuilder.setPage(currentPage);
-
-        QBUsers.getUsers(qbPagedRequestBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+        QBUsers.getUsers(requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
                 Log.d(TAG, "Successfully loaded users");
                 dbManager.saveAllUsers(qbUsers, true);
+                currentPage = bundle.getInt("current_page");
 
-                int totalPagesFromParams = (int) bundle.get(TOTAL_PAGES_BUNDLE_PARAM);
-                if (currentPage >= totalPagesFromParams) {
+                int totalPages = (int) bundle.get(TOTAL_PAGES_BUNDLE_PARAM);
+                if (currentPage >= totalPages) {
                     hasNextPage = false;
                 }
 
                 if (currentPage == 1) {
-                    initUsersList();
+                    updateUsers();
                 } else {
                     usersAdapter.addUsers(qbUsers);
                 }
@@ -154,7 +154,6 @@ public class OpponentsActivity extends BaseActivity {
                 Log.d(TAG, "Error load users" + e.getMessage());
                 hideProgressDialog();
                 isLoading = false;
-                currentPage -=1;
                 showErrorSnackbar(R.string.loading_users_error, e, v -> loadUsers());
             }
         });
@@ -162,27 +161,23 @@ public class OpponentsActivity extends BaseActivity {
 
     private void initUi() {
         usersRecyclerview = findViewById(R.id.list_select_users);
-    }
-
-    private void initUsersList() {
-        List<QBUser> currentOpponentsList = dbManager.getAllUsers();
-        Log.d(TAG, "initUsersList currentOpponentsList= " + currentOpponentsList);
-        currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
         if (usersAdapter == null) {
-            usersAdapter = new UsersAdapter(this, currentOpponentsList);
-            usersAdapter.setSelectedItemsCountsChangedListener(new UsersAdapter.SelectedItemsCountChangedListener() {
-                @Override
-                public void onCountSelectedItemsChanged(Integer count) {
-                    updateActionBar(count);
-                }
-            });
+            List<QBUser> opponents = dbManager.getAllUsers();
+            opponents.remove(sharedPrefsHelper.getUser());
+            usersAdapter = new UsersAdapter(this, opponents);
+            usersAdapter.setSelectedItemsListener(this::updateActionBar);
 
             usersRecyclerview.setLayoutManager(new LinearLayoutManager(this));
             usersRecyclerview.setAdapter(usersAdapter);
             usersRecyclerview.addOnScrollListener(new ScrollListener((LinearLayoutManager) usersRecyclerview.getLayoutManager()));
-        } else {
-            usersAdapter.updateUsersList(currentOpponentsList);
         }
+    }
+
+    private void updateUsers() {
+        List<QBUser> opponents = dbManager.getAllUsers();
+        Log.d(TAG, "updateUsers opponents= " + opponents);
+        opponents.remove(sharedPrefsHelper.getUser());
+        usersAdapter.updateUsers(opponents);
     }
 
     @Override
@@ -206,12 +201,8 @@ public class OpponentsActivity extends BaseActivity {
                 loadUsers();
                 return true;
 
-            case R.id.settings:
-                SettingsActivity.start(this);
-                return true;
-
             case R.id.log_out:
-                unsubscribeFromPushesAndLogout();
+                unsubscribeFromPushes(this::logout);
                 return true;
 
             case R.id.start_video_call:
@@ -250,8 +241,8 @@ public class OpponentsActivity extends BaseActivity {
     }
 
     private void startLoginService() {
-        if (sharedPrefsHelper.hasQbUser()) {
-            QBUser qbUser = sharedPrefsHelper.getQbUser();
+        if (sharedPrefsHelper.hasUser()) {
+            QBUser qbUser = sharedPrefsHelper.getUser();
             LoginService.start(this, qbUser);
         }
     }
@@ -264,43 +255,60 @@ public class OpponentsActivity extends BaseActivity {
             return;
         }
 
-        ArrayList<Integer> opponentsList = CollectionsUtils.getIdsSelectedOpponents(usersAdapter.getSelectedUsers());
+        ArrayList<Integer> opponents = CollectionsUtils.getIdsSelectedOpponents(usersAdapter.getSelectedUsers());
         QBRTCTypes.QBConferenceType conferenceType = isVideoCall
                 ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
                 : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
         Log.d(TAG, "conferenceType = " + conferenceType);
 
         QBRTCClient qbrtcClient = QBRTCClient.getInstance(getApplicationContext());
-        QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
-        WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
+        QBRTCSession session = qbrtcClient.createNewSessionWithOpponents(opponents, conferenceType);
+        WebRtcSessionManager.getInstance(this).setCurrentSession(session);
 
-        // Make Users FullName Strings and ID's list for iOS VOIP push
-        String newSessionID = newQbRtcSession.getSessionID();
-        ArrayList<String> opponentsIDsList = new ArrayList<>();
-        ArrayList<String> opponentsNamesList = new ArrayList<>();
-        List<QBUser> usersInCall = usersAdapter.getSelectedUsers();
-
+        String sessionId = session.getSessionID();
+        ArrayList<String> opponentIds = new ArrayList<>();
+        ArrayList<String> opponentNames = new ArrayList<>();
+        List<QBUser> selectedUsers = usersAdapter.getSelectedUsers();
         // the Caller in exactly first position is needed regarding to iOS 13 functionality
-        usersInCall.add(0, currentUser);
+        selectedUsers.add(0, currentUser);
 
-        for (QBUser user : usersInCall) {
+        for (QBUser user : selectedUsers) {
             String userId = user.getId().toString();
-            String userName = "";
-            if (TextUtils.isEmpty(user.getFullName())) {
-                userName = user.getLogin();
-            } else {
-                userName = user.getFullName();
-            }
-
-            opponentsIDsList.add(userId);
-            opponentsNamesList.add(userName);
+            String userName = TextUtils.isEmpty(user.getFullName()) ? user.getLogin() : user.getFullName();
+            opponentIds.add(userId);
+            opponentNames.add(userName);
         }
 
-        String opponentsIDsString = TextUtils.join(",", opponentsIDsList);
-        String opponentNamesString = TextUtils.join(",", opponentsNamesList);
+        String idsInLine = TextUtils.join(",", opponentIds);
+        String namesInLine = TextUtils.join(",", opponentNames);
 
-        Log.d(TAG, "New Session with ID: " + newSessionID + "\n Users in Call: " + "\n" + opponentsIDsString + "\n" + opponentNamesString);
-        PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName(), newSessionID, opponentsIDsString, opponentNamesString, isVideoCall);
+        Log.d(TAG, "New Session with Id: " + sessionId + "\n Users in Call: " + "\n" + idsInLine + "\n" + namesInLine);
+
+        for (Integer opponentId : opponents) {
+            Executor.addTask(new ExecutorTask<Boolean>() {
+                @Override
+                public Boolean onBackground() throws Exception {
+                    long TIMEOUT_3_SECONDS = 3000L;
+                    return QBChatService.getInstance().getPingManager().pingUser(opponentId, TIMEOUT_3_SECONDS);
+                }
+
+                @Override
+                public void onForeground(Boolean result) {
+                    if (result) {
+                        Log.d(TAG, "Participant with id: " + opponentId + " is online. There is no need to send a VoIP notification.");
+                    } else {
+                        String name = TextUtils.isEmpty(currentUser.getFullName()) ? currentUser.getLogin() : currentUser.getFullName();
+                        PushNotificationSender.sendPushMessage(opponentId, name, sessionId,
+                                idsInLine, namesInLine, isVideoCall);
+                    }
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    Log.d(TAG, "onError: " + exception);
+                }
+            });
+        }
         CallActivity.start(this, false);
     }
 
@@ -319,41 +327,29 @@ public class OpponentsActivity extends BaseActivity {
         invalidateOptionsMenu();
     }
 
-    private void logOut() {
+    private void logout() {
         Log.d(TAG, "Removing User data, and Logout");
         LoginService.logout(this);
         requestExecutor.signOut(new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
-                UsersUtils.removeUserData(getApplicationContext());
+                UsersUtils.removeUserData();
                 startLoginActivity();
             }
 
             @Override
             public void onError(QBResponseException e) {
-                showErrorSnackbar(R.string.error, e, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        logOut();
-                    }
-                });
+                showErrorSnackbar(R.string.error, e, v -> unsubscribeFromPushes(() -> logout()));
             }
         });
     }
 
-    private void unsubscribeFromPushesAndLogout() {
+    private void unsubscribeFromPushes(Callback callback) {
         if (QBPushManager.getInstance().isSubscribedToPushes()) {
-            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
-                @Override
-                public void onSubscriptionDeleted(boolean success) {
-                    Log.d(TAG, "Subscription Deleted");
-                    QBPushManager.getInstance().removeListener(this);
-                    logOut();
-                }
-            });
+            QBPushManager.getInstance().addListener(new SubscribeListener(TAG, callback));
             SubscribeService.unSubscribeFromPushes(OpponentsActivity.this);
         } else {
-            logOut();
+            callback.notifyCallback();
         }
     }
 
@@ -384,20 +380,49 @@ public class OpponentsActivity extends BaseActivity {
         }
     }
 
-    private class QBPushSubscribeListenerImpl implements QBPushManager.QBSubscribeListener {
+    private class SubscribeListener implements QBPushManager.QBSubscribeListener {
+        private final String tag;
+        private final Callback callback;
+
+        public SubscribeListener(String tag, Callback callback) {
+            this.tag = tag;
+            this.callback = callback;
+        }
+
+        @Override
+        public void onSubscriptionDeleted(boolean success) {
+            QBPushManager.getInstance().removeListener(this);
+            callback.notifyCallback();
+        }
+
         @Override
         public void onSubscriptionCreated() {
-
+            // empty
         }
 
         @Override
         public void onSubscriptionError(Exception e, int i) {
-
+            // empty
         }
 
         @Override
-        public void onSubscriptionDeleted(boolean b) {
-
+        public boolean equals(Object obj) {
+            if (obj instanceof SubscribeListener) {
+                return tag.equals(((SubscribeListener) obj).tag);
+            }
+            return false;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int hash = 1;
+            hash = prime * hash + tag.hashCode();
+            return hash;
+        }
+    }
+
+    private interface Callback {
+        void notifyCallback();
     }
 }

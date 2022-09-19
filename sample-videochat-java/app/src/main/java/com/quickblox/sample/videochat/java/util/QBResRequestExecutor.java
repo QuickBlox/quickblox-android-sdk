@@ -1,20 +1,12 @@
 package com.quickblox.sample.videochat.java.util;
 
-import android.os.Bundle;
-
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.request.GenericQueryRule;
 import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.sample.videochat.java.utils.Consts;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 
 public class QBResRequestExecutor {
     private String TAG = QBResRequestExecutor.class.getSimpleName();
@@ -27,7 +19,7 @@ public class QBResRequestExecutor {
         QBUsers.signIn(currentQbUser).performAsync(callback);
     }
 
-    public void signOut (QBEntityCallback<Void> callback) {
+    public void signOut(QBEntityCallback<Void> callback) {
         QBUsers.signOut().performAsync(callback);
     }
 

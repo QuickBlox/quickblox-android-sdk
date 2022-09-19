@@ -1,10 +1,13 @@
 package com.quickblox.sample.videochat.java.fragments;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.core.content.ContextCompat;
 
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
@@ -15,8 +18,6 @@ import com.quickblox.users.model.QBUser;
 import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 
 import java.util.ArrayList;
-
-import androidx.core.content.ContextCompat;
 
 
 public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeAudioDevice {
@@ -54,7 +55,13 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
 
     @Override
     protected void configureActionBar() {
-        actionBar.setSubtitle(String.format(getString(R.string.subtitle_text_logged_in_as), currentUser.getFullName()));
+        String name;
+        if (TextUtils.isEmpty(currentUser.getFullName())) {
+            name = currentUser.getLogin();
+        } else {
+            name = currentUser.getFullName();
+        }
+        actionBar.setSubtitle(String.format(getString(R.string.subtitle_text_logged_in_as), name));
     }
 
     @Override
@@ -72,7 +79,15 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         setVisibilityAlsoOnCallTextView();
 
         firstOpponentNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
-        firstOpponentNameTextView.setText(opponents.get(0).getFullName());
+
+        QBUser user = opponents.get(0);
+        String name;
+        if (TextUtils.isEmpty(user.getFullName())) {
+            name = user.getLogin();
+        } else {
+            name = user.getFullName();
+        }
+        firstOpponentNameTextView.setText(name);
 
         otherOpponentsTextView = (TextView) view.findViewById(R.id.text_other_inc_users);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
@@ -137,7 +152,14 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     @Override
     public void onOpponentsListUpdated(ArrayList<QBUser> newUsers) {
         super.onOpponentsListUpdated(newUsers);
-        firstOpponentNameTextView.setText(opponents.get(0).getFullName());
+        QBUser user = opponents.get(0);
+        String name;
+        if (TextUtils.isEmpty(user.getFullName())) {
+            name = user.getLogin();
+        } else {
+            name = user.getFullName();
+        }
+        firstOpponentNameTextView.setText(name);
         otherOpponentsTextView.setText(getOtherOpponentsNames());
     }
 

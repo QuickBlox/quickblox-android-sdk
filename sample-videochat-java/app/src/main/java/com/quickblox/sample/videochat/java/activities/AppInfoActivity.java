@@ -14,7 +14,6 @@ import com.quickblox.auth.session.QBSettings;
 import com.quickblox.sample.videochat.java.BuildConfig;
 import com.quickblox.sample.videochat.java.R;
 
-
 public class AppInfoActivity extends BaseActivity {
 
     private TextView appVersionTextView;
@@ -68,9 +67,9 @@ public class AppInfoActivity extends BaseActivity {
         if (BuildConfig.IS_QA) {
             String appVersion = BuildConfig.VERSION_NAME;
             String versionQACode = String.valueOf(BuildConfig.VERSION_QA_CODE);
-            String qaVersion = appVersion + "." + versionQACode;
+            String qaVersion = appVersion + "(" + versionQACode + ")";
             Spannable spannable = new SpannableString(qaVersion);
-            spannable.setSpan(new ForegroundColorSpan(Color.RED), appVersion.length() + 1,
+            spannable.setSpan(new ForegroundColorSpan(Color.RED), appVersion.length(),
                     qaVersion.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             appQAVersionTextView.setText(spannable, TextView.BufferType.SPANNABLE);
             appQAVersionTextView.setVisibility(View.VISIBLE);
