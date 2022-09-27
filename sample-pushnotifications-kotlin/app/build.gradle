@@ -37,8 +37,8 @@ android {
         applicationId "com.quickblox.sample.pushnotifications.kotlin"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 402000
-        versionName '4.0.2-kotlin'
+        versionCode 403000
+        versionName '4.0.3'
         multiDexEnabled true
     }
 
@@ -68,6 +68,9 @@ android {
 
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFile 'proguard-rules.pro'
             resValue "string", "versionName", "QuickBlox Push Notifications Kotlin\nBuild version " + defaultConfig.getVersionName()
         }
     }
