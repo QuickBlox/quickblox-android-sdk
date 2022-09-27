@@ -34,3 +34,6 @@
 
 #google gms
 -keep class com.google.android.gms.** { *; }
+
+#json
+-keep class org.json.** { *; }
