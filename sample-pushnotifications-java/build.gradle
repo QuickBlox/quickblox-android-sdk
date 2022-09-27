@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.14'
     }
 }
 
@@ -22,13 +22,13 @@ ext {
     dimensionDefault = 'default'
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.16'
+    qbSdkVersion = '3.11.0'
 
     // Firebase
-    firebaseCoreVersion = '21.0.0'
+    firebaseCoreVersion = '21.1.1'
 
     // Material
-    materialVersion = '1.6.0'
+    materialVersion = '1.6.1'
 
     // RobotoTextView
     robotoTextViewVersion = '4.0.0'
