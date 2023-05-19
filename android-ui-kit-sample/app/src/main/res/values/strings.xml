@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">android-ui-kit-sample</string>
+
+    <string name="error_qb_credentials_empty">Credentials are wrong or empty. You have to set:
+        Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
+        and you have to set Sender ID in the string resources to launch application.
+        If you haven\'t them you can register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+
+
+    <string name="login_toolbar_title">Enter to ui-kit</string>
+    <string name="login_welcome_message">Enter your login and \ndisplay name</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+</resources>
