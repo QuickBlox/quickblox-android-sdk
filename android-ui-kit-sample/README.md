@@ -54,6 +54,9 @@ repositories {
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
+    maven {
+        url "https://github.com/QuickBlox/android-ai-releases/raw/main/"
+    }
 }
 ```
 
@@ -61,7 +64,8 @@ Then need to add implementation of QuickBlox UIKit and QuickBlox SDK to dependen
 
 ```
 dependencies {
-    implementation "com.quickblox:android-ui-kit:0.1.1"
+    implementation "com.quickblox:android-ui-kit:0.1.4"
+    implementation "com.quickblox:android-ai-answer-assistant:1.0.0"
 
     implementation 'com.quickblox:quickblox-android-sdk-messages:4.1.1'
     implementation 'com.quickblox:quickblox-android-sdk-chat:4.1.1'
