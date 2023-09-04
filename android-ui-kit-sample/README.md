@@ -1,14 +1,20 @@
 # Overview
 
-The QuickBlox UIKit for Android is a comprehensive user interface kit specifically designed for building chat applications. It provides a collection of pre-built components, modules, and utilities that simplify the process of creating chat applications.
+The QuickBlox UIKit for Android is a comprehensive user interface kit specifically designed for building chat
+applications. It provides a collection of pre-built components, modules, and utilities that simplify the process of
+creating chat applications.
 
-The main goal of the QuickBlox UIKit for Android is to offer developers a streamlined and efficient way to implement chat functionality within their Android applications.
+The main goal of the QuickBlox UIKit for Android is to offer developers a streamlined and efficient way to implement
+chat functionality within their Android applications.
 
-The QuickBlox UIKit for Android offers modules that encapsulate complex chat functionalities, such as dialogs and chat management and real-time updates. These modules provide a simplified interface for integrating chat features into applications without the need for extensive knowledge of the underlying protocols or server-side infrastructure.
+The QuickBlox UIKit for Android offers modules that encapsulate complex chat functionalities, such as dialogs and chat
+management and real-time updates. These modules provide a simplified interface for integrating chat features into
+applications without the need for extensive knowledge of the underlying protocols or server-side infrastructure.
 
 # Features
 
 QuickBlox UIKit for Android provides next functionality:
+
 - List of dialogs
 - Create dialog(Private or Group)
 - Dialog screen
@@ -18,33 +24,44 @@ QuickBlox UIKit for Android provides next functionality:
 
 # Send your first message
 
-The QuickBlox UIKit for Android comprises a collection of pre-assembled UI components that enable effortless creation of an in-app chat equipped with all the necessary messaging functionalities. Our development kit encompasses light and dark themes, colors, and various other features. These components can be personalized to fashion an engaging messaging interface that reflects your brand's distinct identity.
+The QuickBlox UIKit for Android comprises a collection of pre-assembled UI components that enable effortless creation of
+an in-app chat equipped with all the necessary messaging functionalities. Our development kit encompasses light and dark
+themes, colors, and various other features. These components can be personalized to fashion an engaging messaging
+interface that reflects your brand's distinct identity.
 
-The QuickBlox UIKit fully supports both private and group dialogs. To initiate the process of sending a message from the ground up using Java or Kotlin, please refer to the instructions provided in the guide below.
+The QuickBlox UIKit fully supports both private and group dialogs. To initiate the process of sending a message from the
+ground up using Java or Kotlin, please refer to the instructions provided in the guide below.
 
 ## Requirements
 
 The minimum requirements for QuickBlox UIKit for Android are:
+
 - Android 5.0 (API level 21) or higher
 - Java 8 or higher
 - Android Gradle plugin 4.0.1 or higher
 
 ## Before you begin
 
-Register a new account following [this link](https://admin.quickblox.com/signup). Type in your email and password to sign in. You can also sign in with your Google or Github accounts.
+Register a new account following [this link](https://admin.quickblox.com/signup). Type in your email and password to
+sign in. You can also sign in with your Google or Github accounts.
 Create the app clicking New app button.
 Configure the app. Type in the information about your organization into corresponding fields and click Add button.
-Go to Dashboard => YOUR_APP => Overview section and copy your Application ID, Authorization Key, Authorization Secret, and Account Key .
+Go to Dashboard => YOUR_APP => Overview section and copy your Application ID, Authorization Key, Authorization Secret,
+and Account Key .
 
 ## Install QuickBlox UIKit
 
 There are several ways to install to QuickBlox UIKit from:
+
 - Repository
 - Local source
 
 ### Install QuickBlox UIKit from repository
+
 To install QuickBlox UIKit to your app, import QuickBlox UIKit and QuickBlox SDK dependencies via build.gradle file.
-Include reference to SDK repository in your **project-level build.gradle** file at the root directory or to **settings.gradle** file. Specify the URL of QuickBlox repository where the files are stored. Following this URL, gradle finds SDK artifacts.
+Include reference to SDK repository in your **project-level build.gradle** file at the root directory or to **
+settings.gradle** file. Specify the URL of QuickBlox repository where the files are stored. Following this URL, gradle
+finds SDK artifacts.
 
 ```
 repositories {
@@ -60,11 +77,12 @@ repositories {
 }
 ```
 
-Then need to add implementation of QuickBlox UIKit and QuickBlox SDK to dependencies in your module-level(App) **build.gradle** file.
+Then need to add implementation of QuickBlox UIKit and QuickBlox SDK to dependencies in your module-level(App) **
+build.gradle** file.
 
 ```
 dependencies {
-    implementation "com.quickblox:android-ui-kit:0.2.1"
+    implementation "com.quickblox:android-ui-kit:0.2.3"
 
     implementation 'com.quickblox:quickblox-android-sdk-messages:4.1.1'
     implementation 'com.quickblox:quickblox-android-sdk-chat:4.1.1'
@@ -73,8 +91,11 @@ dependencies {
 ```
 
 ### Install QuickBlox UIKit from local source
+
 To connect QuickBlox SDK to your app, import QuickBlox SDK dependencies via build.gradle file.
-Include reference to SDK repository in your **project-level build.gradle** file at the root directory or to **settings.gradle** file. Specify the URL of QuickBlox repository where the files are stored. Following this URL, gradle finds SDK artifacts.
+Include reference to SDK repository in your **project-level build.gradle** file at the root directory or to **
+settings.gradle** file. Specify the URL of QuickBlox repository where the files are stored. Following this URL, gradle
+finds SDK artifacts.
 
 ```
 repositories {
@@ -86,7 +107,8 @@ repositories {
 }
 ```
 
-Then need to download the QuickBlox UIKit from the GitHub repository at [this link](https://github.com/QuickBlox/android-ui-kit) to include UIKit locally in your project.
+Then need to download the QuickBlox UIKit from the GitHub repository
+at [this link](https://github.com/QuickBlox/android-ui-kit) to include UIKit locally in your project.
 
 Specify the path of the UIKit project in **settings.gradle** file.
 
@@ -105,8 +127,10 @@ dependencies {
 
 ## Init QuickBlox SDK
 
-To init QuickBlox SDK you need to pass Application ID, Authorization Key, Authorization Secret, and Account Key to the init() method.
+To init QuickBlox SDK you need to pass Application ID, Authorization Key, Authorization Secret, and Account Key to the
+init() method.
 How to get credentials is described in the [Before you begin](#before-you-begin) section.
+
 ```
 private const val APPLICATION_ID = "67895"
 private const val AUTH_KEY = "lkjdueksu7392kj"
@@ -118,9 +142,11 @@ QBSDK.init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET, ACCOUNT_KE
 
 ## Authentication and start QuickBlox UIKit
 
-Before sending your first message you need to authenticate users in the QuickBlox system. You can read more about different ways of authentication by [this link](https://docs.quickblox.com/docs/android-authentication). 
+Before sending your first message you need to authenticate users in the QuickBlox system. You can read more about
+different ways of authentication by [this link](https://docs.quickblox.com/docs/android-authentication).
 In our example we show how to authenticate user with login and password.
-After successfully sign-in, you need to initialize the QuickBlox UIKit by invoke **init(applicationContext)** method of the **QuickBloxUiKit** and start Dialogs screen by invoke **show()** method of the **DialogActivity**.
+After successfully sign-in, you need to initialize the QuickBlox UIKit by invoke **init(applicationContext)** method of
+the **QuickBloxUiKit** and start Dialogs screen by invoke **show()** method of the **DialogActivity**.
 
 ```
 val user = QBUser()
@@ -159,6 +185,7 @@ QuickBloxUiKit.setTheme(DarkUiKitTheme())
 ## Use your own theme
 
 There are two options how you can create your own theme:
+
 - Customize current theme
 - Create your own theme
 

@@ -7,6 +7,7 @@ package com.example.android_ui_kit_sample
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -22,6 +23,8 @@ import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 
 class LoginActivity : AppCompatActivity() {
+    private val TAG = LoginActivity::class.java.simpleName
+
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,24 +34,59 @@ class LoginActivity : AppCompatActivity() {
 
         setThemeQBUiKit(DarkUiKitTheme())
 
+        loginClickListener()
+        signupClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        signOut()
+    }
+
+    private fun setThemeQBUiKit(theme: UiKitTheme) {
+        QuickBloxUiKit.setTheme(theme)
+    }
+
+    private fun loginClickListener() {
         binding.btnLogin.setOnClickListener {
             hideKeyboard(it)
+
+            binding.progressBar.visibility = View.VISIBLE
+            binding.btnLogin.isEnabled = false
 
             val user = buildUser()
             QBUsers.signIn(user).performAsync(object : QBEntityCallback<QBUser> {
                 override fun onSuccess(user: QBUser?, bundle: Bundle?) {
+                    binding.progressBar.visibility = View.GONE
+                    binding.btnLogin.isEnabled = true
                     initAndShowQBUiKit()
                 }
 
                 override fun onError(exception: QBResponseException) {
+                    binding.progressBar.visibility = View.GONE
+                    binding.btnLogin.isEnabled = true
                     Toast.makeText(this@LoginActivity, exception.message, Toast.LENGTH_LONG).show()
                 }
             })
         }
     }
 
-    private fun setThemeQBUiKit(theme: UiKitTheme) {
-        QuickBloxUiKit.setTheme(theme)
+    private fun signupClickListener() {
+        binding.btnSignUp.setOnClickListener {
+            SignUpActivity.show(this)
+        }
+    }
+
+    private fun signOut() {
+        QBUsers.signOut().performAsync(object : QBEntityCallback<Void?> {
+            override fun onSuccess(aVoid: Void?, bundle: Bundle) {
+                Log.d(TAG, "onSuccess: signOut")
+            }
+
+            override fun onError(exception: QBResponseException) {
+                Log.d(TAG, "onError: signOut")
+            }
+        })
     }
 
     private fun buildUser(): QBUser {

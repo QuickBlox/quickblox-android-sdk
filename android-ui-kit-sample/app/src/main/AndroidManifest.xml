@@ -22,5 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SignUpActivity"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="singleTop" />
     </application>
 </manifest>
