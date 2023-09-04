@@ -7,9 +7,12 @@
         If you haven\'t them you can register new account and application at https://admin.quickblox.com
         then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
 
-
     <string name="login_toolbar_title">Enter to ui-kit</string>
-    <string name="login_welcome_message">Enter your login and \ndisplay name</string>
+    <string name="login_welcome_message">Enter your login and \npassword</string>
+    <string name="login_signup_message">Enter your login,\ndisplay name and password</string>
     <string name="login">Login</string>
+    <string name="signup">SignUp</string>
+    <string name="sign_out">SignOut</string>
     <string name="password">Password</string>
+    <string name="display_name">Display name</string>
 </resources>

@@ -11,13 +11,13 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
+            url "https://github.com/QuickBlox/android-ai-releases/raw/main/"
+        }
+        maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
         maven {
             url "https://github.com/QuickBlox/android-ui-kit-releases/raw/master/"
-        }
-        maven {
-            url "https://github.com/QuickBlox/android-ai-releases/raw/main/"
         }
     }
 }
