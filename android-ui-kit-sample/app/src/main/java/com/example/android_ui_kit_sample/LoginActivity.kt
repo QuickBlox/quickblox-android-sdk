@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.android_ui_kit_sample.databinding.ActivityLoginBinding
 import com.quickblox.android_ui_kit.QuickBloxUiKit
 import com.quickblox.android_ui_kit.presentation.screens.dialogs.DialogsActivity
-import com.quickblox.android_ui_kit.presentation.theme.DarkUiKitTheme
 import com.quickblox.android_ui_kit.presentation.theme.UiKitTheme
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
@@ -32,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setThemeQBUiKit(DarkUiKitTheme())
+//        setThemeQBUiKit(DarkUiKitTheme())
 
         loginClickListener()
         signupClickListener()
@@ -59,7 +58,9 @@ class LoginActivity : AppCompatActivity() {
                 override fun onSuccess(user: QBUser?, bundle: Bundle?) {
                     binding.progressBar.visibility = View.GONE
                     binding.btnLogin.isEnabled = true
-                    initAndShowQBUiKit()
+                    initQBUiKit()
+
+                    showQBUiKit()
                 }
 
                 override fun onError(exception: QBResponseException) {
@@ -96,8 +97,11 @@ class LoginActivity : AppCompatActivity() {
         return user
     }
 
-    private fun initAndShowQBUiKit() {
+    private fun initQBUiKit() {
         QuickBloxUiKit.init(applicationContext)
+    }
+
+    private fun showQBUiKit() {
         DialogsActivity.show(this)
     }
 

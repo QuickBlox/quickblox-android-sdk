@@ -94,7 +94,9 @@ class SignUpActivity : AppCompatActivity() {
         QBUsers.signIn(user).performAsync(object : QBEntityCallback<QBUser> {
             override fun onSuccess(user: QBUser?, bundle: Bundle?) {
                 binding.btnSignUp.isEnabled = true
-                initAndShowQBUiKit()
+                initQBUiKit()
+                showQBUiKit()
+
                 finish()
             }
 
@@ -105,8 +107,11 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
-    private fun initAndShowQBUiKit() {
+    private fun initQBUiKit() {
         QuickBloxUiKit.init(applicationContext)
+    }
+
+    private fun showQBUiKit() {
         DialogsActivity.show(this)
     }
 
