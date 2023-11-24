@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 1
-        versionName "1.8.0"
+        versionName "1.9.0"
     }
 
     buildTypes {
@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation "com.quickblox:android-ui-kit:0.5.0"
+    implementation "com.quickblox:android-ui-kit:0.6.0"
 
     implementation 'com.quickblox:quickblox-android-sdk-messages:4.1.1'
     implementation 'com.quickblox:quickblox-android-sdk-chat:4.1.1'
