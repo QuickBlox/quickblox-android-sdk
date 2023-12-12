@@ -26,8 +26,8 @@ android {
         applicationId "com.quickblox.sample.videochat.java"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 410000
-        versionName '4.1.0'
+        versionCode 410010
+        versionName '4.1.1'
         multiDexEnabled true
     }
 
