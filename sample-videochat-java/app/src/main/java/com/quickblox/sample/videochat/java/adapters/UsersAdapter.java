@@ -49,11 +49,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull UsersAdapter.ViewHolder holder, int position) {
         QBUser user = usersList.get(position);
-        holder.opponentName.setText(user.getFullName());
+        holder.opponentName.setText(getOpponentNameFrom(user));
         if (selectedUsers.contains(user)) {
             holder.rootLayout.setBackgroundResource(R.color.background_color_selected_user_item);
-            holder.opponentIcon.setBackgroundDrawable(
-                    UiUtils.getColoredCircleDrawable(context.getResources().getColor(R.color.icon_background_color_selected_user)));
+            holder.opponentIcon.setBackgroundDrawable(UiUtils.getColoredCircleDrawable(context.getResources().getColor(R.color.icon_background_color_selected_user)));
             holder.opponentIcon.setImageResource(R.drawable.ic_checkmark);
         } else {
             holder.rootLayout.setBackgroundResource(R.color.background_color_normal_user_item);
@@ -64,6 +63,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             toggleSelection(user);
             selectedItemsListener.onSelectedItems(selectedUsers.size());
         });
+    }
+
+    private String getOpponentNameFrom(QBUser user) {
+        boolean isFullNameAvailable = user.getFullName() != null && !user.getFullName().trim().isEmpty();
+        if (isFullNameAvailable) {
+            return user.getFullName();
+        }
+
+        boolean isLoginAvailable = user.getLogin() != null && !user.getLogin().trim().isEmpty();
+        if (isLoginAvailable) {
+            return user.getLogin();
+        }
+
+        return user.getId().toString();
     }
 
     @Override

@@ -18,6 +18,7 @@
         style="@style/MatchWidth"
         android:layout_marginStart="@dimen/padding_start"
         android:layout_marginLeft="@dimen/padding_start"
+        android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
         tools:text="User Name" />
 </LinearLayout>

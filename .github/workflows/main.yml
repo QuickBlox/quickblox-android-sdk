@@ -1,0 +1,24 @@
+name: Release notifier
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  after-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        run: |
+          curl -X POST \
+          --data-urlencode "payload={
+          \"channel\": \"${{ secrets.SLACK_CHANNEL }}\", 
+          \"username\": \"${{ secrets.QB_PROJECT }} release bot\", 
+          \"text\": \"<!here>
+          The ${{ secrets.QB_PROJECT }} version *${{ github.event.release.name }}* was released.
+          >*Changelog:*
+          \`\`\`${{ github.event.release.body }}\`\`\`
+          >*Link:*
+          ${{ github.event.release.html_url }}\", 
+          \"icon_emoji\": \":rocket:\"}" \
+          --url ${{ secrets.SLACK_WEBHOOK_URL }}

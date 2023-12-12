@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "Put here your value",
         "android_client_info": {
-          "package_name": "com.quickblox.sample.videochat.kotlin"
+          "package_name": "com.quickblox.sample.videochat.java"
         }
       },
       "oauth_client": [
