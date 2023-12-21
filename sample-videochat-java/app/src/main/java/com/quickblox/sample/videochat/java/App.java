@@ -3,7 +3,14 @@ package com.quickblox.sample.videochat.java;
 import android.app.Application;
 
 import com.quickblox.auth.session.QBSettings;
+import com.quickblox.core.ServiceZone;
 import com.quickblox.sample.videochat.java.util.QBResRequestExecutor;
+import com.quickblox.videochat.webrtc.QBRTCConfig;
+
+import org.webrtc.PeerConnection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class App extends Application {
     // аpp credentials
@@ -35,11 +42,12 @@ public class App extends Application {
         QBSettings.getInstance().init(getApplicationContext(), APPLICATION_ID, AUTH_KEY, AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
 
-        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
-        // against your own server.
-        //
-        // QBSettings.getInstance().setEndpoints("https://your_api_endpoint.com", "your_chat_endpoint", ServiceZone.PRODUCTION);
-        // QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
+        QBSettings.getInstance().setEndpoints("API_ENDPOINT", "CHAT_ENDPOINT", ServiceZone.PRODUCTION);
+        QBSettings.getInstance().setZone(ServiceZone.PRODUCTION);
+
+        List<PeerConnection.IceServer> iceServerList = new ArrayList<>();
+        iceServerList.add(new PeerConnection.IceServer("turn:freeturn.net:3478", "free", "free" ));
+        QBRTCConfig.setIceServerList(iceServerList);
     }
 
     public synchronized QBResRequestExecutor getQbResRequestExecutor() {

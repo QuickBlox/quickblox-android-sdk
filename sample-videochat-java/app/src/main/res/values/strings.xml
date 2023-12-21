@@ -56,6 +56,7 @@
 
     <string name="error_login">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
     <string name="error_display_name">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
+    <string name="error_empty_search">The search filed could not be empty</string>
 
     <!-- menu -->
     <string name="action_start_login">Done</string>

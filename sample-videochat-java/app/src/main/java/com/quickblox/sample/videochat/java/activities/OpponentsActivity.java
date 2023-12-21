@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -81,6 +83,7 @@ public class OpponentsActivity extends BaseActivity {
 
         initDefaultActionBar();
         initUi();
+        initSearch();
         startLoginService();
     }
 
@@ -93,7 +96,7 @@ public class OpponentsActivity extends BaseActivity {
             CallActivity.start(this, isIncomingCall);
         }
         clearAppNotifications();
-        loadUsers();
+        loadAllUsers();
     }
 
     private boolean isCallServiceRunning(Class<?> serviceClass) {
@@ -117,7 +120,7 @@ public class OpponentsActivity extends BaseActivity {
         PermissionsActivity.startActivity(this, checkOnlyAudio, Consts.PERMISSIONS);
     }
 
-    private void loadUsers() {
+    private void loadAllUsers() {
         isLoading = true;
         showProgressDialog(R.string.dlg_loading_opponents);
         ArrayList<GenericQueryRule> rules = new ArrayList<>();
@@ -138,6 +141,8 @@ public class OpponentsActivity extends BaseActivity {
                 int totalPages = (int) bundle.get(TOTAL_PAGES_BUNDLE_PARAM);
                 if (currentPage >= totalPages) {
                     hasNextPage = false;
+                } else {
+                    hasNextPage = true;
                 }
 
                 if (currentPage == 1) {
@@ -154,7 +159,51 @@ public class OpponentsActivity extends BaseActivity {
                 Log.d(TAG, "Error load users" + e.getMessage());
                 hideProgressDialog();
                 isLoading = false;
-                showErrorSnackbar(R.string.loading_users_error, e, v -> loadUsers());
+                showErrorSnackbar(R.string.loading_users_error, e, v -> loadAllUsers());
+            }
+        });
+    }
+
+    private void loadUsersByLogin(String login) {
+        isLoading = true;
+        showProgressDialog(R.string.dlg_loading_opponents);
+        ArrayList<GenericQueryRule> rules = new ArrayList<>();
+        rules.add(new GenericQueryRule(ORDER_RULE, ORDER_DESC_UPDATED));
+        int nextPage = currentPage + 1;
+        QBPagedRequestBuilder requestBuilder = new QBPagedRequestBuilder();
+        requestBuilder.setRules(rules);
+        requestBuilder.setPerPage(PER_PAGE_SIZE_100);
+        requestBuilder.setPage(nextPage);
+
+        QBUsers.getUsersByLogins(Arrays.asList(login), requestBuilder).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                Log.d(TAG, "Successfully loaded users");
+                dbManager.saveAllUsers(qbUsers, true);
+                currentPage = bundle.getInt("current_page");
+
+                int totalPages = (int) bundle.get(TOTAL_PAGES_BUNDLE_PARAM);
+                if (currentPage >= totalPages) {
+                    hasNextPage = false;
+                } else {
+                    hasNextPage = true;
+                }
+
+                if (currentPage == 1) {
+                    updateUsers();
+                } else {
+                    usersAdapter.addUsers(qbUsers);
+                }
+                hideProgressDialog();
+                isLoading = false;
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Log.d(TAG, "Error load users" + e.getMessage());
+                hideProgressDialog();
+                isLoading = false;
+                showErrorSnackbar(R.string.loading_users_error, e, v -> loadUsersByLogin(login));
             }
         });
     }
@@ -171,6 +220,27 @@ public class OpponentsActivity extends BaseActivity {
             usersRecyclerview.setAdapter(usersAdapter);
             usersRecyclerview.addOnScrollListener(new ScrollListener((LinearLayoutManager) usersRecyclerview.getLayoutManager()));
         }
+    }
+
+    private void initSearch() {
+        findViewById(R.id.search).setOnClickListener(v -> {
+            EditText search = findViewById(R.id.search_text);
+            currentPage = 0;
+            if (search.getText().toString().isEmpty()) {
+                loadAllUsers();
+            } else {
+                loadUsersByLogin(search.getText().toString());
+            }
+        });
+
+        findViewById(R.id.search_clear).setOnClickListener(v -> {
+            EditText search = findViewById(R.id.search_text);
+            search.setText("");
+        });
+    }
+
+    private boolean isEmptySearch() {
+        return ((EditText) findViewById(R.id.search_text)).getText().toString().isEmpty();
     }
 
     private void updateUsers() {
@@ -197,8 +267,13 @@ public class OpponentsActivity extends BaseActivity {
 
         switch (id) {
             case R.id.update_opponents_list:
-                currentPage = 0;
-                loadUsers();
+                if (isEmptySearch()) {
+                    currentPage = 0;
+                    loadAllUsers();
+                } else {
+                    currentPage = 0;
+                    loadUsersByLogin(((EditText) findViewById(R.id.search_text)).getText().toString());
+                }
                 return true;
 
             case R.id.log_out:
@@ -318,9 +393,9 @@ public class OpponentsActivity extends BaseActivity {
         } else {
             removeActionbarSubTitle();
             setActionBarTitle(String.format(getString(
-                    countSelectedUsers > 1
-                            ? R.string.tile_many_users_selected
-                            : R.string.title_one_user_selected),
+                            countSelectedUsers > 1
+                                    ? R.string.tile_many_users_selected
+                                    : R.string.title_one_user_selected),
                     countSelectedUsers));
         }
 
@@ -374,7 +449,7 @@ public class OpponentsActivity extends BaseActivity {
 
                 boolean needToLoadMore = ((visibleItemCount * 2) + firstVisibleItem) >= totalItemCount;
                 if (needToLoadMore) {
-                    loadUsers();
+                    loadAllUsers();
                 }
             }
         }

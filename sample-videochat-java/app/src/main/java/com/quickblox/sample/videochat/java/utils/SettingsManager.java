@@ -1,9 +1,11 @@
 package com.quickblox.sample.videochat.java.utils;
 
+import static com.quickblox.sample.videochat.java.utils.Consts.MAX_OPPONENTS_COUNT;
+
+import android.util.Log;
+
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCMediaConfig;
-
-import static com.quickblox.sample.videochat.java.utils.Consts.MAX_OPPONENTS_COUNT;
 
 /**
  * QuickBlox team
@@ -40,5 +42,7 @@ public class SettingsManager {
 
         int DIALING_TIME_INTERVAL = 5;
         QBRTCConfig.setDialingTimeInterval(DIALING_TIME_INTERVAL);
+
+        Log.e("ICE_SERVERS: => ", QBRTCConfig.getIceServerList().toString());
     }
 }
