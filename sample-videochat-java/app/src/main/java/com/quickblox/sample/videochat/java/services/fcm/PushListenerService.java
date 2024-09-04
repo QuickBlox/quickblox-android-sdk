@@ -26,7 +26,7 @@ public class PushListenerService extends QBFcmPushListenerService {
     }
 
     @Override
-    protected void sendPushMessage(Map data, String from, String message) {
+    public void sendPushMessage(Map data, String from, String message) {
         super.sendPushMessage(data, from, message);
         Log.v(TAG, "From: " + from);
         Log.v(TAG, "Message: " + message);

@@ -52,7 +52,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         holder.opponentName.setText(getOpponentNameFrom(user));
         if (selectedUsers.contains(user)) {
             holder.rootLayout.setBackgroundResource(R.color.background_color_selected_user_item);
-            holder.opponentIcon.setBackgroundDrawable(UiUtils.getColoredCircleDrawable(context.getResources().getColor(R.color.icon_background_color_selected_user)));
+            holder.opponentIcon.setBackgroundDrawable(
+                    UiUtils.getColoredCircleDrawable(context.getResources().getColor(R.color.icon_background_color_selected_user)));
             holder.opponentIcon.setImageResource(R.drawable.ic_checkmark);
         } else {
             holder.rootLayout.setBackgroundResource(R.color.background_color_normal_user_item);

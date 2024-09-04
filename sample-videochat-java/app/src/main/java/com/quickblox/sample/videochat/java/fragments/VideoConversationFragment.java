@@ -57,6 +57,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState.QB_RTC_RECONNECTION_STATE_RECONNECTING;
+
 /**
  * QuickBlox team
  */
@@ -79,6 +81,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private RecyclerView recyclerView;
     private QBRTCSurfaceView localVideoView;
     private FrameLayout flLocalVideoView;
+    private LinearLayout reconnectionProgress;
     private QBRTCSurfaceView remoteFullScreenVideoView;
 
     private SparseArray<OpponentsFromCallAdapter.ViewHolder> opponentViewHolders;
@@ -88,7 +91,6 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     private boolean isPeerToPeerCall;
     private QBRTCVideoTrack localVideoTrack;
     private Menu optionsMenu;
-    private boolean isRemoteShown;
     private int userIdFullScreen;
     private boolean connectionEstablished;
     private boolean allCallbacksInit;
@@ -230,10 +232,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         super.initViews(view);
         Log.i(TAG, "initViews");
         opponentViewHolders = new SparseArray<>(opponents.size());
-        isRemoteShown = false;
 
         localVideoView = (QBRTCSurfaceView) view.findViewById(R.id.local_video_view);
         flLocalVideoView = (FrameLayout) view.findViewById(R.id.fl_local_video_view);
+        reconnectionProgress = view.findViewById(R.id.reconnection_progress);
 
         initCorrectSizeForLocalView();
         localVideoView.setZOrderMediaOverlay(true);
@@ -334,6 +336,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         float itemMargin = getResources().getDimension(R.dimen.grid_item_divider);
         int cellSizeWidth = defineSize(gridWidth, columnsCount, itemMargin);
         Log.i(TAG, "onGlobalLayout : cellSize=" + cellSizeWidth);
+        opponents.remove(0);
         opponentsAdapter = new OpponentsFromCallAdapter(getContext(), this, opponents, cellSizeWidth,
                 (int) getResources().getDimension(R.dimen.item_height));
         opponentsAdapter.setAdapterListener(this);
@@ -463,11 +466,10 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         if (userID == null) {
             return;
         }
-        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= " + userID);
         if (isPeerToPeerCall) {
             setDuringCallActionBar();
             if (remoteFullScreenVideoView != null) {
-                fillVideoView(remoteFullScreenVideoView, videoTrack, true);
+                fillVideoView(userID,remoteFullScreenVideoView, videoTrack);
                 updateVideoView(remoteFullScreenVideoView);
             }
         } else {
@@ -495,7 +497,8 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         OpponentsFromCallAdapter.ViewHolder holder = findHolder(userId);
 
         boolean isNotExistVideoTrack = videoTrackMap != null && !videoTrackMap.containsKey(userId);
-        boolean isConnectionStateClosed = connectionState.ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal();
+        boolean isConnectionStateClosed = connectionState != null &&
+                connectionState.ordinal() == QBRTCTypes.QBRTCConnectionState.QB_RTC_CONNECTION_CLOSED.ordinal();
 
         if (isNotExistVideoTrack || isConnectionStateClosed || holder == null) {
             return;
@@ -534,7 +537,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         }
 
         if (mainVideoTrack != null) {
-            fillVideoView(0, remoteVideoView, mainVideoTrack);
+            fillVideoView( remoteVideoView, mainVideoTrack,true);
         } else {
             holder.getOpponentView().setBackgroundColor(Color.BLACK);
             remoteFullScreenVideoView.setBackgroundColor(Color.TRANSPARENT);
@@ -542,30 +545,28 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
     }
 
     private void setRemoteViewMultiCall(int userId, QBRTCVideoTrack videoTrack) {
-        Log.d(TAG, "setRemoteViewMultiCall fillVideoView");
         final OpponentsFromCallAdapter.ViewHolder itemHolder = getViewHolderForOpponent(userId);
-        if (itemHolder == null) {
-            Log.d(TAG, "itemHolder == null - true");
-            return;
-        }
-        final QBRTCSurfaceView remoteVideoView = itemHolder.getOpponentView();
-        if (remoteVideoView != null) {
+
+        if (itemHolder == null || userIdFullScreen == userId) {
+            if (remoteFullScreenVideoView != null) {
+                fillVideoView(userId, remoteFullScreenVideoView, videoTrack);
+                updateVideoView(remoteFullScreenVideoView);
+                QBRTCTypes.QBRTCReconnectionState state = conversationFragmentCallback.getState(userId);
+                if(state == QB_RTC_RECONNECTION_STATE_RECONNECTING){
+                    reconnectionProgress.setVisibility(View.VISIBLE);
+                }
+            }
+            setDuringCallActionBar();
+        } else {
+            final QBRTCSurfaceView remoteVideoView = itemHolder.getOpponentView();
             remoteVideoView.setZOrderMediaOverlay(true);
             updateVideoView(remoteVideoView);
-            Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView");
-            if (isRemoteShown) {
-                Log.d(TAG, "onRemoteVideoTrackReceive User = " + userId);
-                fillVideoView(remoteVideoView, videoTrack, true);
-                setRecyclerViewVisibleState();
-            } else {
-                isRemoteShown = true;
-                itemHolder.getOpponentView().release();
-                opponentsAdapter.removeItem(itemHolder.getAdapterPosition());
-                if (remoteFullScreenVideoView != null) {
-                    fillVideoView(userId, remoteFullScreenVideoView, videoTrack);
-                    updateVideoView(remoteFullScreenVideoView);
-                }
-                setDuringCallActionBar();
+            fillVideoView(remoteVideoView, videoTrack, true);
+            setRecyclerViewVisibleState();
+            QBRTCTypes.QBRTCReconnectionState state = conversationFragmentCallback.getState(userId);
+            if(state == QB_RTC_RECONNECTION_STATE_RECONNECTING){
+                itemHolder.showProgressBar();
+                itemHolder.setStatus(getString(R.string.reconnecting_status));
             }
         }
     }
@@ -640,9 +641,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
      * @param userId set userId if it from fullscreen videoTrack
      */
     private void fillVideoView(int userId, QBRTCSurfaceView videoView, QBRTCVideoTrack videoTrack) {
-        if (userId != 0) {
             userIdFullScreen = userId;
-        }
         fillVideoView(videoView, videoTrack, true);
     }
 
@@ -683,7 +682,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
             return;
         }
 
-        holder.getProgressBar().setVisibility(View.GONE);
+        holder.hideProgressBar();
     }
 
     private void setBackgroundOpponentView(final Integer userId) {
@@ -752,6 +751,38 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
                 Log.d(TAG, "setAnotherUserToFullScreen call userId= " + userId);
                 setAnotherUserToFullScreen();
             }
+        }
+    }
+
+    @Override
+    public void onChangeReconnectionState(QBRTCSession qbrtcSession, Integer userID, QBRTCTypes.QBRTCReconnectionState qbrtcReconnectionState) {
+         OpponentsFromCallAdapter.ViewHolder holder = null;
+        if(!isPeerToPeerCall){
+            holder = getViewHolderForOpponent(userID);
+        }
+        switch (qbrtcReconnectionState) {
+            case QB_RTC_RECONNECTION_STATE_RECONNECTING:
+                if (userIdFullScreen == userID) {
+                    reconnectionProgress.setVisibility(View.VISIBLE);
+                    return;
+                }
+                if (holder == null) {
+                    return;
+                }
+                holder.showProgressBar();
+                holder.setStatus(getString(R.string.reconnecting_status));
+                break;
+            case QB_RTC_RECONNECTION_STATE_RECONNECTED:
+            case QB_RTC_RECONNECTION_STATE_FAILED:
+                if (userIdFullScreen == userID) {
+                    reconnectionProgress.setVisibility(View.GONE);
+                    return;
+                }
+                if (holder == null) {
+                    return;
+                }
+                holder.hideProgressBar();
+                break;
         }
     }
 

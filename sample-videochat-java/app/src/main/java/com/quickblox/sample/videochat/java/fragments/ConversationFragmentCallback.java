@@ -1,6 +1,7 @@
 package com.quickblox.sample.videochat.java.fragments;
 
 import com.quickblox.sample.videochat.java.activities.CallActivity;
+import com.quickblox.sample.videochat.java.utils.ReconnectionState;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
@@ -78,4 +79,5 @@ public interface ConversationFragmentCallback {
     HashMap<Integer, QBRTCVideoTrack> getVideoTrackMap();
 
     QBRTCVideoTrack getVideoTrack(Integer userId);
+    QBRTCTypes.QBRTCReconnectionState getState(Integer userId);
 }

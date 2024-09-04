@@ -8,19 +8,27 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.activities.CallActivity;
+import com.quickblox.sample.videochat.java.adapters.AudioCallAdapter;
+import com.quickblox.sample.videochat.java.adapters.ReconnectingUserModel;
 import com.quickblox.sample.videochat.java.utils.CollectionsUtils;
 import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.UiUtils;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.AppRTCAudioManager;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.audio.QBAudioManager;
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
-public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeAudioDevice {
+public class AudioConversationFragment extends BaseConversationFragment implements CallActivity.OnChangeAudioDevice, QBRTCSessionEventsCallback {
     private static final String TAG = AudioConversationFragment.class.getSimpleName();
 
     public static final String SPEAKER_ENABLED = "is_speaker_enabled";
@@ -29,13 +37,21 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     private TextView alsoOnCallText;
     private TextView firstOpponentNameTextView;
     private TextView otherOpponentsTextView;
+    private AudioCallAdapter adapter;
 
     @Override
     public void onStart() {
         super.onStart();
         if (conversationFragmentCallback != null) {
             conversationFragmentCallback.addOnChangeAudioDeviceListener(this);
+            conversationFragmentCallback.addSessionEventsListener(this);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        conversationFragmentCallback.removeSessionEventsListener(this);
     }
 
     @Override
@@ -101,6 +117,29 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         if (conversationFragmentCallback != null && conversationFragmentCallback.isCallState()) {
             onCallStarted();
         }
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvUsers);
+        ArrayList<ReconnectingUserModel> users = new ArrayList<>();
+        for (QBUser item : opponents) {
+            QBRTCTypes.QBRTCReconnectionState state = conversationFragmentCallback.getState(item.getId());
+            if (state != null) {
+                switch (state) {
+                    case QB_RTC_RECONNECTION_STATE_RECONNECTING:
+                        users.add(new ReconnectingUserModel(item, "Reconnecting"));
+                        break;
+                    case QB_RTC_RECONNECTION_STATE_RECONNECTED:
+                        users.add(new ReconnectingUserModel(item, "Reconnected"));
+                        break;
+                    case QB_RTC_RECONNECTION_STATE_FAILED:
+                        users.add(new ReconnectingUserModel(item, "Reconnection failed"));
+                        break;
+                }
+            } else {
+                users.add(new ReconnectingUserModel(item, ""));
+            }
+        }
+        adapter = new AudioCallAdapter(getContext(), users);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 
     private void setVisibilityAlsoOnCallTextView() {
@@ -169,7 +208,51 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
     }
 
     @Override
-    public void audioDeviceChanged(AppRTCAudioManager.AudioDevice newAudioDevice) {
-        audioSwitchToggleButton.setChecked(newAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+    public void audioDeviceChanged(QBAudioManager.AudioDevice newAudioDevice) {
+        audioSwitchToggleButton.setChecked(newAudioDevice != QBAudioManager.AudioDevice.SPEAKER_PHONE);
+    }
+
+    @Override
+    public void onUserNotAnswer(QBRTCSession qbrtcSession, Integer integer) {
+
+    }
+
+    @Override
+    public void onCallRejectByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void onCallAcceptByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void onReceiveHangUpFromUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void onChangeReconnectionState(QBRTCSession qbrtcSession, Integer integer, QBRTCTypes.QBRTCReconnectionState qbrtcReconnectionState) {
+        ReconnectingUserModel user = adapter.getItemByUserId(integer);
+        if (user != null) {
+            switch (qbrtcReconnectionState) {
+                case QB_RTC_RECONNECTION_STATE_RECONNECTING:
+                    user.setReconnectingState("Reconnecting");
+                    break;
+                case QB_RTC_RECONNECTION_STATE_RECONNECTED:
+                    user.setReconnectingState("Reconnected");
+                    break;
+                case QB_RTC_RECONNECTION_STATE_FAILED:
+                    user.setReconnectingState("Reconnection failed");
+                    break;
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onSessionClosed(QBRTCSession qbrtcSession) {
+
     }
 }

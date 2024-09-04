@@ -11,6 +11,38 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/grid_opponents" />
 
+<!--    <ProgressBar-->
+<!--        android:id="@+id/progress_bar"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:visibility="gone" />-->
+
+    <LinearLayout
+        android:id="@+id/reconnection_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="40dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reconnecting"
+            android:textColor="@color/color_blue_qb"
+            android:textSize="18sp" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:indeterminateTint="@color/color_blue_qb" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/fl_local_video_view"
         android:layout_width="wrap_content"

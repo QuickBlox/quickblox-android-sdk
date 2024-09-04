@@ -1,5 +1,6 @@
 package com.quickblox.sample.videochat.java.activities;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,17 +12,22 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.quickblox.sample.videochat.java.R;
 import com.quickblox.sample.videochat.java.services.LoginService;
 import com.quickblox.sample.videochat.java.utils.PermissionsChecker;
 import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.ToastUtils;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-
 public class SplashActivity extends BaseActivity {
     private static final String TAG = SplashActivity.class.getSimpleName();
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 1010;
 
     private static final int SPLASH_DELAY = 1500;
 
@@ -32,6 +38,7 @@ public class SplashActivity extends BaseActivity {
 
     private SharedPrefsHelper sharedPrefsHelper;
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +51,29 @@ public class SplashActivity extends BaseActivity {
             getSupportActionBar().hide();
         }
 
+        checkNotificationPermission();
+
         if (checkOverlayPermissions()) {
             runNextScreen();
+        }
+    }
+
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            boolean isNotificationPermissionDenied = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED;
+
+            if (isNotificationPermissionDenied) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] != 0) {
+            ToastUtils.longToast(getString(R.string.permission_unavailable, Manifest.permission.POST_NOTIFICATIONS));
         }
     }
 

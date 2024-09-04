@@ -40,5 +40,6 @@
         android:id="@+id/progress_bar_adapter"
         style="@style/MatchWidth"
         android:layout_centerInParent="true"
+        android:indeterminateTint="@color/color_blue_qb"
         android:visibility="visible" />
 </RelativeLayout>

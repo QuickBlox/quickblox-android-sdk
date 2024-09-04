@@ -35,8 +35,8 @@ public class SettingsManager {
         int ANSWER_TIME_INTERVAL = 30;
         QBRTCConfig.setAnswerTimeInterval(ANSWER_TIME_INTERVAL);
 
-        int DISCONNECT_TIME_10_SECONDS = 10;
-        QBRTCConfig.setDisconnectTime(DISCONNECT_TIME_10_SECONDS);
+        int DISCONNECT_TIME_30_SECONDS = 30;
+        QBRTCConfig.setDialingTimeInterval(DISCONNECT_TIME_30_SECONDS);
 
         int DIALING_TIME_INTERVAL = 5;
         QBRTCConfig.setDialingTimeInterval(DIALING_TIME_INTERVAL);

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
@@ -34,7 +35,6 @@ import com.quickblox.sample.videochat.java.utils.SharedPrefsHelper;
 import com.quickblox.sample.videochat.java.utils.ToastUtils;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
@@ -43,6 +43,7 @@ import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.quickblox.videochat.webrtc.QBSignalingSpec;
+import com.quickblox.videochat.webrtc.audio.QBAudioManager;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
@@ -83,7 +84,7 @@ public class CallService extends Service {
     private ConnectionListenerImpl connectionListener;
     private QBRTCSignalingListener signalingListener;
     private VideoTrackListener videoTrackListener;
-    private AppRTCAudioManager appRTCAudioManager;
+    private QBAudioManager appRTCAudioManager;
     private Long expirationReconnectionTime = 0L;
     private CallTimerListener callTimerListener;
     private boolean sharingScreenState = false;
@@ -91,10 +92,11 @@ public class CallService extends Service {
     private QBRTCSession currentSession;
     private QBRTCClient rtcClient;
     private RingtonePlayer ringtonePlayer;
-
     private long callTime = 0L;
     private ScheduledFuture<?> future;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private QBUser currentUser;
+    private final Map<Integer, QBRTCTypes.QBRTCReconnectionState> reconnections = new HashMap();
 
     public static void start(Context context) {
         Intent intent = new Intent(context, CallService.class);
@@ -114,6 +116,7 @@ public class CallService extends Service {
         initRTCClient();
         initListeners();
         initAudioManager();
+        initCurrentUser();
         ringtonePlayer = new RingtonePlayer(this, R.raw.beep);
         super.onCreate();
     }
@@ -121,8 +124,32 @@ public class CallService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = buildNotification();
-        startForeground(SERVICE_ID, notification);
+
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                int foregroundServiceType = getServiceType(isVideoSession(currentSession));
+                startForeground(SERVICE_ID, notification, foregroundServiceType);
+            } else {
+                startForeground(SERVICE_ID, notification);
+            }
+        } catch (RuntimeException exception) {
+            // handle exception.
+        }
+
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private int getServiceType(boolean isVideoSession) {
+        if (isVideoSession) {
+            return ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA | ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION;
+        } else {
+            return ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
+        }
+    }
+
+    private boolean isVideoSession(QBRTCSession session) {
+        return session != null && session.getConferenceType().equals(QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO);
     }
 
     @Override
@@ -148,6 +175,13 @@ public class CallService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return callServiceBinder;
+    }
+
+    private void initCurrentUser() {
+        currentUser = QBChatService.getInstance().getUser();
+        if (currentUser == null) {
+            currentUser = SharedPrefsHelper.getInstance().getUser();
+        }
     }
 
     private Notification buildNotification() {
@@ -232,6 +266,14 @@ public class CallService extends Service {
         ringtonePlayer.stop();
     }
 
+    public QBRTCTypes.QBRTCReconnectionState getState(Integer userId) {
+        return reconnections.get(userId);
+    }
+
+    public QBUser getCurrentUser() {
+        return currentUser;
+    }
+
     private void initNetworkChecker() {
         networkConnectionChecker = new NetworkConnectionChecker(getApplication());
         networkConnectionListener = new NetworkConnectionListener();
@@ -265,31 +307,31 @@ public class CallService extends Service {
     }
 
     public void initAudioManager() {
-        appRTCAudioManager = AppRTCAudioManager.create(this);
+        appRTCAudioManager = QBAudioManager.create(this);
 
-        appRTCAudioManager.setOnWiredHeadsetStateListener(new AppRTCAudioManager.OnWiredHeadsetStateListener() {
+        appRTCAudioManager.setOnWiredHeadsetStateListener(new QBAudioManager.OnWiredHeadsetStateListener() {
             @Override
             public void onWiredHeadsetStateChanged(boolean plugged, boolean hasMicrophone) {
                 ToastUtils.shortToast("Headset " + (plugged ? "Plugged" : "Unplugged"));
             }
         });
 
-        appRTCAudioManager.setBluetoothAudioDeviceStateListener(new AppRTCAudioManager.BluetoothAudioDeviceStateListener() {
+        appRTCAudioManager.setBluetoothAudioDeviceStateListener(new QBAudioManager.BluetoothAudioDeviceStateListener() {
             @Override
             public void onStateChanged(boolean connected) {
                 ToastUtils.shortToast("Bluetooth " + (connected ? "Connected" : "Disconnected"));
             }
         });
 
-        appRTCAudioManager.start(new AppRTCAudioManager.AudioManagerEvents() {
+        appRTCAudioManager.start(new QBAudioManager.AudioManagerEvents() {
             @Override
-            public void onAudioDeviceChanged(AppRTCAudioManager.AudioDevice audioDevice, Set<AppRTCAudioManager.AudioDevice> set) {
+            public void onAudioDeviceChanged(QBAudioManager.AudioDevice audioDevice, Set<QBAudioManager.AudioDevice> set) {
                 ToastUtils.shortToast("Audio Device Switched to " + audioDevice);
             }
         });
 
         if (currentSessionExist() && currentSession.getConferenceType() == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
-            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+            appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.EARPIECE);
         }
     }
 
@@ -484,15 +526,15 @@ public class CallService extends Service {
 
     public void switchAudio() {
         Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + appRTCAudioManager.getSelectedAudioDevice());
-        if (appRTCAudioManager.getSelectedAudioDevice() != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
-            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+        if (appRTCAudioManager.getSelectedAudioDevice() != QBAudioManager.AudioDevice.SPEAKER_PHONE) {
+            appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.SPEAKER_PHONE);
         } else {
-            if (appRTCAudioManager.getAudioDevices().contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH);
-            } else if (appRTCAudioManager.getAudioDevices().contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET);
+            if (appRTCAudioManager.getAudioDevices().contains(QBAudioManager.AudioDevice.BLUETOOTH)) {
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.BLUETOOTH);
+            } else if (appRTCAudioManager.getAudioDevices().contains(QBAudioManager.AudioDevice.WIRED_HEADSET)) {
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.WIRED_HEADSET);
             } else {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.EARPIECE);
             }
         }
     }
@@ -637,6 +679,23 @@ public class CallService extends Service {
                 String participantName = participant != null ? participant.getFullName() : userID.toString();
                 ToastUtils.shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
             }
+        }
+
+        @Override
+        public void onChangeReconnectionState(QBRTCSession qbrtcSession, Integer userId, QBRTCTypes.QBRTCReconnectionState qbrtcReconnectionState) {
+            switch (qbrtcReconnectionState) {
+                case QB_RTC_RECONNECTION_STATE_RECONNECTING:
+                    ToastUtils.longToast(getString(R.string.reconnecting, userId));
+                    break;
+                case QB_RTC_RECONNECTION_STATE_RECONNECTED:
+                    ToastUtils.longToast(getString(R.string.reconnected, userId));
+                    break;
+                case QB_RTC_RECONNECTION_STATE_FAILED:
+                    ToastUtils.longToast(getString(R.string.reconnection_failed, userId));
+                    break;
+            }
+            reconnections.put(userId, qbrtcReconnectionState);
+
         }
 
         @Override

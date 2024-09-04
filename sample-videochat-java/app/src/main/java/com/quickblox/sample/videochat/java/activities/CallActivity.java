@@ -1,11 +1,16 @@
 package com.quickblox.sample.videochat.java.activities;
 
+import static com.quickblox.sample.videochat.java.services.CallService.ONE_OPPONENT;
+import static com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_NEW;
+import static com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_PENDING;
+
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,11 +49,11 @@ import com.quickblox.sample.videochat.java.utils.ToastUtils;
 import com.quickblox.sample.videochat.java.utils.UsersUtils;
 import com.quickblox.sample.videochat.java.utils.WebRtcSessionManager;
 import com.quickblox.users.model.QBUser;
-import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCSession;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.audio.QBAudioManager;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback;
@@ -64,9 +69,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.quickblox.sample.videochat.java.services.CallService.ONE_OPPONENT;
-import static com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_PENDING;
-
 /**
  * QuickBlox team
  */
@@ -77,6 +79,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     public static final String INCOME_CALL_FRAGMENT = "income_call_fragment";
     public static final int REQUEST_PERMISSION_SETTING = 545;
+    public static final int REQUEST_SHARING_MEDIA_PROJECTION = 1060;
 
     private final ArrayList<CurrentCallStateCallback> currentCallStateCallbackList = new ArrayList<>();
     private final UsersDbManager dbManager = UsersDbManager.getInstance();
@@ -97,7 +100,6 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         intent.putExtra(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
         SharedPrefsHelper.getInstance().save(Consts.EXTRA_IS_INCOMING_CALL, isIncomingCall);
         context.startActivity(intent);
-        CallService.start(context);
     }
 
     @Override
@@ -107,6 +109,38 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
         setContentView(R.layout.activity_main);
         checker = new PermissionsChecker(this);
         connectionView = (LinearLayout) View.inflate(CallActivity.this, R.layout.connection_popup, null);
+
+        boolean isVideoCall = isVideoSession();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU && isVideoCall && isNewSession()) {
+            requestSharingPermissions(this);
+            return;
+        }
+
+        CallService.start(this);
+    }
+
+    private boolean isNewSession() {
+        QBRTCSession currentSession = WebRtcSessionManager.getInstance(getApplicationContext()).getCurrentSession();
+        if (currentSession == null) {
+            return false;
+        }
+
+        BaseSession.QBRTCSessionState sessionState = currentSession.getState();
+        if (sessionState == null) {
+            return false;
+        }
+
+        return currentSession.getState().equals(QB_RTC_SESSION_NEW) || currentSession.getState().equals(QB_RTC_SESSION_PENDING);
+    }
+
+    private boolean isVideoSession() {
+        QBRTCSession currentSession = WebRtcSessionManager.getInstance(getApplicationContext()).getCurrentSession();
+        return currentSession != null && currentSession.getConferenceType().equals(QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO);
+    }
+
+    public void requestSharingPermissions(Activity context) {
+        MediaProjectionManager mMediaProjectionManager = (MediaProjectionManager) context.getSystemService(MEDIA_PROJECTION_SERVICE);
+        context.startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_SHARING_MEDIA_PROJECTION);
     }
 
     @Override
@@ -134,6 +168,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     @Override
     public void onBackPressed() {
         // to prevent returning from Call Fragment
+        super.onBackPressed();
     }
 
     private void allowOnLockScreen() {
@@ -211,7 +246,16 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             startScreenSharing(data);
             Log.i(TAG, "Starting Screen Capture");
         }
+
+        if (requestCode == REQUEST_SHARING_MEDIA_PROJECTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                CallService.start(this);
+            } else {
+                finish();
+            }
+        }
     }
+
 
     private void startScreenSharing(final Intent data) {
         Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ScreenShareFragment.class.getSimpleName());
@@ -341,7 +385,9 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
 
     private void stopIncomeCallTimer() {
         Log.d(TAG, "stopIncomeCallTimer");
-        showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
+        if (showIncomingCallWindowTask != null) {
+            showIncomingCallWindowTaskHandler.removeCallbacks(showIncomingCallWindowTask);
+        }
     }
 
     private void addIncomeCallFragment() {
@@ -446,6 +492,11 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
             final String participantName = participant != null ? participant.getFullName() : String.valueOf(userID);
             ToastUtils.shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation");
         }
+    }
+
+    @Override
+    public void onChangeReconnectionState(QBRTCSession qbrtcSession, Integer userId, QBRTCTypes.QBRTCReconnectionState qbrtcReconnectionState) {
+        // empty
     }
 
     @Override
@@ -647,6 +698,11 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     }
 
     @Override
+    public QBRTCTypes.QBRTCReconnectionState getState(Integer userId) {
+        return callService.getState(userId);
+    }
+
+    @Override
     public void onStopPreview() {
         callService.stopScreenSharing();
         addConversationFragment(isInComingCall);
@@ -707,7 +763,7 @@ public class CallActivity extends BaseActivity implements IncomeCallFragmentCall
     }
 
     public interface OnChangeAudioDevice {
-        void audioDeviceChanged(AppRTCAudioManager.AudioDevice newAudioDevice);
+        void audioDeviceChanged(QBAudioManager.AudioDevice newAudioDevice);
     }
 
     public interface CurrentCallStateCallback {

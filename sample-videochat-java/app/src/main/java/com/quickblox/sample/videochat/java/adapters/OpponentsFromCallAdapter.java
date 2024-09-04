@@ -161,13 +161,19 @@ public class OpponentsFromCallAdapter extends RecyclerView.Adapter<OpponentsFrom
         public ProgressBar getProgressBar() {
             return progressBar;
         }
+        public void showProgressBar() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        public void hideProgressBar() {
+            progressBar.setVisibility(View.GONE);
+        }
 
         public QBRTCSurfaceView getOpponentView() {
             return opponentView;
         }
 
         public void showOpponentView(boolean show) {
-            Log.d("UsersAdapter", "show? " + show);
             opponentView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
 

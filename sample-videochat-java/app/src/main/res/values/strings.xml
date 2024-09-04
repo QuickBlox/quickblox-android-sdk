@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="sender_id"></string>
 
     <string name="app_name">Sample Video Chat Java</string>
@@ -117,6 +116,9 @@
     <string name="stop_share">Stop</string>
     <string name="camera_swicth_failed">\"Failed switch camera\"</string>
     <string name="you">You</string>
+    <string name="reconnecting">User %1$d reconnecting</string>
+    <string name="reconnected">User %1$d reconnected</string>
+    <string name="reconnection_failed">User %1$d reconnection failed</string>
 
     <!-- App info -->
     <string name="appinfo_application_version">Application version:</string>
@@ -129,5 +131,5 @@
     <string name="appinfo_chat_domain">Chat domain:</string>
     <string name="appinfo_title">App Info</string>
     <string name="appinfo_qa_verion">QA version:</string>
-
+    <string name="reconnecting_status">Reconnecting</string>
 </resources>
