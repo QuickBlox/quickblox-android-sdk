@@ -17,24 +17,18 @@ import com.quickblox.users.model.QBUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-private const val SPLASH_DELAY = 1500L
-
 /*
  * Created by Injoit in 2021-09-30.
  * Copyright © 2021 Quickblox. All rights reserved.
  */
 @HiltViewModel
-class SplashViewModel @Inject constructor(private val userManager: UserManager, private val chatManager: ChatManager,
-                                          private val connectionRepository: ConnectionRepository, private val resourcesManager: ResourcesManager) : BaseViewModel() {
+class SplashViewModel @Inject constructor(
+    private val userManager: UserManager, private val chatManager: ChatManager,
+    private val connectionRepository: ConnectionRepository, private val resourcesManager: ResourcesManager,
+) : BaseViewModel() {
     private val TAG: String = SplashViewModel::class.java.simpleName
     val liveData = LiveData<Pair<Int, Any?>>()
     private val connectivityChangedListener = ConnectivityChangedListenerImpl(TAG)
-
-    init {
-        Handler(Looper.getMainLooper()).postDelayed({
-            run()
-        }, SPLASH_DELAY)
-    }
 
     override fun onResumeView() {
         connectionRepository.addListener(connectivityChangedListener)
@@ -44,7 +38,7 @@ class SplashViewModel @Inject constructor(private val userManager: UserManager, 
         connectionRepository.removeListener(connectivityChangedListener)
     }
 
-    private fun run() {
+    public fun run() {
         if (CallService.isRunning()) {
             liveData.setValue(Pair(ViewState.SHOW_CALL_SCREEN, null))
             return

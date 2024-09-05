@@ -1,9 +1,14 @@
 package com.quickblox.sample.conference.kotlin.presentation.screens.chat
 
-import android.Manifest.permission.*
+import android.Manifest.permission.CAMERA
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.RECORD_AUDIO
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +25,18 @@ import com.quickblox.sample.conference.kotlin.R
 import com.quickblox.sample.conference.kotlin.data.service.CallService
 import com.quickblox.sample.conference.kotlin.databinding.ActivityChatBinding
 import com.quickblox.sample.conference.kotlin.databinding.PopupChatLayoutBinding
+import com.quickblox.sample.conference.kotlin.domain.chat.PROPERTY_CONVERSATION_ID
 import com.quickblox.sample.conference.kotlin.presentation.screens.attachment.AttachmentImageActivity
 import com.quickblox.sample.conference.kotlin.presentation.screens.base.BaseActivity
 import com.quickblox.sample.conference.kotlin.presentation.screens.call.CallActivity
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.attachment.AttachmentAdapter
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.attachment.AttachmentModel
-import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.*
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.ChatAdapter
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.ChatMessage
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.HeaderDecoration
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.PROPERTY_NOTIFICATION_TYPE
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.START_CONFERENCE
+import com.quickblox.sample.conference.kotlin.presentation.screens.chat.adapters.message.START_STREAM
 import com.quickblox.sample.conference.kotlin.presentation.screens.chatinfo.ChatInfoActivity
 import com.quickblox.sample.conference.kotlin.presentation.screens.login.LoginActivity
 import com.quickblox.sample.conference.kotlin.presentation.screens.main.MainActivity
@@ -37,9 +48,10 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.util.*
 
 private const val CAMERA_PERMISSION_CODE = 999
+private const val MEDIA_PERMISSIONS_CODE = 111
+private const val STORAGE_PERMISSIONS_CODE = 222
 private const val START_CONFERENCE_PERMISSION_CODE = 888
 private const val JOIN_CONFERENCE_PERMISSION_CODE = 777
 private const val START_STREAM_PERMISSION_CODE = 666
@@ -81,28 +93,33 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
         bindingPopUp = PopupChatLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         initAttachmentAdapter()
         initChatAdapter()
         setClickListeners()
-        viewModel.liveData.observe(this, { result ->
+        viewModel.liveData.observe(this) { result ->
             result?.let { (state, data) ->
                 when (state) {
                     ViewState.PROGRESS -> {
                         showProgress()
                     }
+
                     ViewState.ERROR -> {
                         hideProgress()
                         Toast.makeText(baseContext, "$data", Toast.LENGTH_SHORT).show()
                     }
+
                     ViewState.ERROR_LOAD_ATTACHMENT -> {
                         hideProgress()
                         Toast.makeText(baseContext, "$data", Toast.LENGTH_SHORT).show()
                         binding.ivSend.isEnabled = true
                     }
+
                     ViewState.ERROR_UPLOAD -> {
                         hideProgress()
                         Toast.makeText(baseContext, "$data", Toast.LENGTH_SHORT).show()
                     }
+
                     ViewState.RECEIVED_MESSAGE -> {
                         val updateToolbar = data as Boolean
                         if (updateToolbar) {
@@ -111,9 +128,11 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                         chatAdapter?.notifyItemInserted(viewModel.messages.size - 1)
                         scrollMessageListDown(viewModel.messages)
                     }
+
                     ViewState.LOADER_PROGRESS_UPDATED -> {
                         attachmentAdapter?.notifyDataSetChanged()
                     }
+
                     ViewState.MESSAGES_SHOWED -> {
                         hideProgress()
                         val size = data as Int
@@ -122,47 +141,56 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                         }
                         chatAdapter?.notifyItemRangeInserted(0, size)
                     }
+
                     ViewState.MESSAGE_SENT -> {
                         checkAttachmentSize()
                         binding.etMessage.setText("")
                     }
+
                     ViewState.SHOW_ATTACHMENT_SCREEN -> {
                         val url = data as String
                         AttachmentImageActivity.start(this@ChatActivity, url)
                     }
+
                     ViewState.LEAVE -> {
                         finish()
                     }
+
                     ViewState.FILE_SHOWED -> {
                         hideProgress()
                         binding.ivSend.isEnabled = false
                         attachmentAdapter?.notifyDataSetChanged()
                         checkAttachmentSize()
                     }
+
                     ViewState.FILE_LOADED -> {
                         Toast.makeText(baseContext, getString(R.string.attachment_loaded), Toast.LENGTH_SHORT).show()
                         binding.ivSend.isEnabled = true
                     }
+
                     ViewState.FILE_DELETED -> {
                         checkAttachmentSize()
                     }
-                    ViewState.MESSAGES_UPDATED -> {
-                        chatAdapter?.notifyDataSetChanged()
-                    }
+
                     ViewState.SHOW_CALL_SCREEN -> {
                         viewModel.currentDialog?.dialogId?.let { CallActivity.start(this@ChatActivity) }
+                        viewModel.liveData.clearValue()
+
                         if (CallService.isRunning()) {
                             finish()
                         }
                         hideProgress()
                     }
+
                     ViewState.UPDATE_TOOLBAR -> {
                         fillToolBar()
                     }
+
                     ViewState.SHOW_LOGIN_SCREEN -> {
                         LoginActivity.start(this)
                         finish()
                     }
+
                     ViewState.SHOW_INFO_SCREEN -> {
                         viewModel.currentDialog?.dialogId?.let { dialogId ->
                             ChatInfoActivity.start(this, dialogId)
@@ -170,7 +198,7 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                     }
                 }
             }
-        })
+        }
         val dialogId = intent.getStringExtra(EXTRA_DIALOG_ID)
         dialogId?.let {
             viewModel.loadDialogById(it)
@@ -202,12 +230,13 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
     }
 
     private fun initAttachmentAdapter() {
-        attachmentAdapter = AttachmentAdapter(viewModel.getAttachments(), object : AttachmentAdapter.AttachmentListener {
-            override fun removeFile(attachmentModel: AttachmentModel) {
-                viewModel.removeQBFile(attachmentModel)
-                binding.ivSend.isEnabled = true
-            }
-        })
+        attachmentAdapter =
+            AttachmentAdapter(viewModel.getAttachments(), object : AttachmentAdapter.AttachmentListener {
+                override fun removeFile(attachmentModel: AttachmentModel) {
+                    viewModel.removeQBFile(attachmentModel)
+                    binding.ivSend.isEnabled = true
+                }
+            })
         binding.rvPreview.adapter = attachmentAdapter
     }
 
@@ -223,22 +252,13 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                 }
 
                 override fun onClickJoin(chatMessage: ChatMessage) {
-                    val notificationType = chatMessage.qbChatMessage.getProperty(PROPERTY_NOTIFICATION_TYPE)
-                    val isConference = notificationType == START_CONFERENCE
                     showProgress()
+                    this@ChatActivity.chatMessage = chatMessage
+                    val notificationType = getNotificationTypeFromChatMessage(chatMessage)
                     if (EasyPermissions.hasPermissions(this@ChatActivity, CAMERA, RECORD_AUDIO)) {
-                        if (isConference) {
-                            viewModel.joinConference()
-                        } else {
-                            viewModel.joinStream(chatMessage)
-                        }
+                        joinToCall(notificationType)
                     } else {
-                        if (isConference) {
-                            requestConferencePermission(JOIN_CONFERENCE_PERMISSION_CODE)
-                        } else {
-                            this@ChatActivity.chatMessage = chatMessage
-                            requestConferencePermission(JOIN_STREAM_PERMISSION_CODE)
-                        }
+                        requestPermission(notificationType)
                     }
                 }
             })
@@ -259,13 +279,52 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
         chatAdapter?.let { HeaderDecoration(it) }?.let { binding.rvMessages.addItemDecoration(it) }
     }
 
+    private fun requestPermission(notificationType: String) {
+        when (notificationType) {
+            START_CONFERENCE -> {
+                requestPermissionByCode(JOIN_CONFERENCE_PERMISSION_CODE)
+            }
+
+            START_STREAM -> {
+                requestPermissionByCode(JOIN_STREAM_PERMISSION_CODE)
+            }
+        }
+    }
+
+    private fun joinToCall(notificationType: String) {
+        val conversationId = getConversationIdFromChatMessage()
+        when (notificationType) {
+            START_CONFERENCE -> {
+                viewModel.checkExistSessionAndJoinConference(conversationId)
+            }
+
+            START_STREAM -> {
+                val senderId = getSenderIdFromChatMessage()
+                viewModel.checkExistSessionAndJoinStream(senderId, conversationId)
+            }
+        }
+    }
+
+    private fun getSenderIdFromChatMessage(): Int? {
+        return chatMessage?.qbChatMessage?.senderId
+    }
+
+    private fun getConversationIdFromChatMessage(): String {
+        return chatMessage?.qbChatMessage?.getProperty(PROPERTY_CONVERSATION_ID).toString()
+    }
+
+    private fun getNotificationTypeFromChatMessage(chatMessage: ChatMessage): String {
+        return chatMessage.qbChatMessage.getProperty(PROPERTY_NOTIFICATION_TYPE).toString()
+    }
+
     private fun setClickListeners() {
         binding.flBack.setOnClickListener {
             onBackPressed()
         }
 
         binding.ivMore.setOnClickListener {
-            val popupWindow = PopupWindow(bindingPopUp?.root, POPUP_MAIN_WIDTH.convertToPx(), ViewGroup.LayoutParams.WRAP_CONTENT)
+            val popupWindow =
+                PopupWindow(bindingPopUp?.root, POPUP_MAIN_WIDTH.convertToPx(), ViewGroup.LayoutParams.WRAP_CONTENT)
             popupWindow.isOutsideTouchable = true
             popupWindow.showAsDropDown(it)
 
@@ -278,7 +337,7 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
             bindingPopUp?.tvStartConference?.setOnClickListener {
                 showProgress()
                 if (!EasyPermissions.hasPermissions(this, CAMERA, RECORD_AUDIO)) {
-                    requestConferencePermission(START_CONFERENCE_PERMISSION_CODE)
+                    requestPermissionByCode(START_CONFERENCE_PERMISSION_CODE)
                 } else {
                     viewModel.startConference()
                 }
@@ -287,7 +346,7 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
             bindingPopUp?.tvStartStream?.setOnClickListener {
                 showProgress()
                 if (!EasyPermissions.hasPermissions(this, CAMERA, RECORD_AUDIO)) {
-                    requestConferencePermission(START_STREAM_PERMISSION_CODE)
+                    requestPermissionByCode(START_STREAM_PERMISSION_CODE)
                 } else {
                     viewModel.startStream()
                 }
@@ -318,8 +377,13 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
             builder.setItems(R.array.dlg_image_pick) { _, which ->
                 when (which) {
                     POSITION_GALLERY -> {
-                        content?.launch(IMAGE_MIME)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+                            checkAndRequestMediaPermissions()
+                        } else {
+                            checkAndRequestStoragePermission()
+                        }
                     }
+
                     POSITION_CAMERA -> {
                         if (EasyPermissions.hasPermissions(this, CAMERA)) {
                             getUriFromCamera()
@@ -330,6 +394,22 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                 }
             }
             builder.show()
+        }
+    }
+
+    private fun checkAndRequestStoragePermission() {
+        if (EasyPermissions.hasPermissions(this, READ_EXTERNAL_STORAGE)) {
+            content?.launch(IMAGE_MIME)
+        } else {
+            requestStoragePermission()
+        }
+    }
+
+    private fun checkAndRequestMediaPermissions() {
+        if (EasyPermissions.hasPermissions(this, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)) {
+            content?.launch(IMAGE_MIME)
+        } else {
+            requestMediaPermission()
         }
     }
 
@@ -348,21 +428,39 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
         }
     }
 
-    private fun requestConferencePermission(requestCode: Int) {
+    private fun requestPermissionByCode(code: Int) {
         EasyPermissions.requestPermissions(
-                host = this,
-                rationale = getString(R.string.conference_permissions),
-                requestCode = requestCode,
-                perms = arrayOf(CAMERA, RECORD_AUDIO)
+            host = this,
+            rationale = getString(R.string.conference_permissions),
+            requestCode = code,
+            perms = arrayOf(CAMERA, RECORD_AUDIO)
         )
     }
 
     private fun requestCameraPermission() {
         EasyPermissions.requestPermissions(
-                host = this,
-                rationale = getString(R.string.camera_permission),
-                requestCode = CAMERA_PERMISSION_CODE,
-                perms = arrayOf(CAMERA)
+            host = this,
+            rationale = getString(R.string.camera_permission),
+            requestCode = CAMERA_PERMISSION_CODE,
+            perms = arrayOf(CAMERA)
+        )
+    }
+
+    private fun requestMediaPermission() {
+        EasyPermissions.requestPermissions(
+            host = this,
+            rationale = getString(R.string.storage_permission),
+            requestCode = MEDIA_PERMISSIONS_CODE,
+            perms = arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+        )
+    }
+
+    private fun requestStoragePermission() {
+        EasyPermissions.requestPermissions(
+            host = this,
+            rationale = getString(R.string.storage_permission),
+            requestCode = STORAGE_PERMISSIONS_CODE,
+            perms = arrayOf(READ_EXTERNAL_STORAGE)
         )
     }
 
@@ -370,7 +468,7 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
         viewModel.currentDialog?.let { dialog ->
             binding.toolbarTitle.text = dialog.name
             if (dialog.occupants?.size ?: 1 > 1) {
-                binding.tvSubTitle.text = getString(R.string.chat_subtitle, dialog.occupants?.size)
+                binding.tvSubTitle.text = getString(R.string.chat_subtitle, dialog.occupants?.size.toString())
             } else {
                 binding.tvSubTitle.text = getString(R.string.chat_subtitle_singular)
             }
@@ -404,6 +502,23 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                     Toast.makeText(baseContext, getString(R.string.conference_permissions), Toast.LENGTH_SHORT).show()
                 }
             }
+
+            MEDIA_PERMISSIONS_CODE -> {
+                if (EasyPermissions.hasPermissions(this, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)) {
+                    content?.launch(IMAGE_MIME)
+                } else {
+                    Toast.makeText(baseContext, getString(R.string.storage_permission), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            STORAGE_PERMISSIONS_CODE -> {
+                if (EasyPermissions.hasPermissions(this, READ_EXTERNAL_STORAGE)) {
+                    content?.launch(IMAGE_MIME)
+                } else {
+                    Toast.makeText(baseContext, getString(R.string.storage_permission), Toast.LENGTH_SHORT).show()
+                }
+            }
+
             CAMERA_PERMISSION_CODE -> {
                 if (EasyPermissions.hasPermissions(this, CAMERA)) {
                     getUriFromCamera()
@@ -411,13 +526,16 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                     Toast.makeText(baseContext, getString(R.string.camera_permission), Toast.LENGTH_SHORT).show()
                 }
             }
+
             JOIN_CONFERENCE_PERMISSION_CODE -> {
                 if (EasyPermissions.hasPermissions(this@ChatActivity, CAMERA, RECORD_AUDIO)) {
-                    viewModel.joinConference()
+                    val conversationId = getConversationIdFromChatMessage()
+                    viewModel.checkExistSessionAndJoinConference(conversationId)
                 } else {
                     Toast.makeText(baseContext, getString(R.string.conference_permissions), Toast.LENGTH_SHORT).show()
                 }
             }
+
             START_STREAM_PERMISSION_CODE -> {
                 if (EasyPermissions.hasPermissions(this@ChatActivity, CAMERA, RECORD_AUDIO)) {
                     viewModel.startStream()
@@ -425,9 +543,12 @@ class ChatActivity : BaseActivity<ChatViewModel>(ChatViewModel::class.java), Eas
                     Toast.makeText(baseContext, getString(R.string.conference_permissions), Toast.LENGTH_SHORT).show()
                 }
             }
+
             JOIN_STREAM_PERMISSION_CODE -> {
                 if (EasyPermissions.hasPermissions(this@ChatActivity, CAMERA, RECORD_AUDIO)) {
-                    chatMessage?.let { viewModel.joinStream(it) }
+                    val conversationId = getConversationIdFromChatMessage()
+                    val senderId = getSenderIdFromChatMessage()
+                    viewModel.checkExistSessionAndJoinStream(senderId, conversationId)
                 } else {
                     Toast.makeText(baseContext, getString(R.string.conference_permissions), Toast.LENGTH_SHORT).show()
                 }

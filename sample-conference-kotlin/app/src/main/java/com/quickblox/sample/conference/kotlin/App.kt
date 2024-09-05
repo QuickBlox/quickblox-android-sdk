@@ -7,7 +7,7 @@ import com.quickblox.conference.ConferenceConfig
 import com.quickblox.sample.conference.kotlin.domain.user.USER_DEFAULT_PASSWORD
 import dagger.hilt.android.HiltAndroidApp
 
-//Chat settings range
+// chat settings range
 private const val MAX_PORT_VALUE = 65535
 private const val MIN_PORT_VALUE = 1000
 private const val MIN_SOCKET_TIMEOUT = 300
@@ -15,7 +15,7 @@ private const val MAX_SOCKET_TIMEOUT = 60000
 private const val CHAT_PORT = 5223
 private const val SOCKET_TIMEOUT = 300
 
-//App credentials
+// app credentials
 private const val APPLICATION_ID = ""
 private const val AUTH_KEY = ""
 private const val AUTH_SECRET = ""
@@ -61,7 +61,7 @@ class App : Application() {
         QBSettings.getInstance().init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET)
         QBSettings.getInstance().accountKey = ACCOUNT_KEY
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
 
         // QBSettings.getInstance().setEndpoints("https://your.api.endpoint.com", "your.chat.endpoint.com", ServiceZone.PRODUCTION);

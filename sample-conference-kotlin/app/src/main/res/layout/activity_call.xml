@@ -60,8 +60,8 @@
             android:layout_height="20dp"
             android:layout_alignTop="@+id/btnChat"
             android:layout_marginTop="12dp"
-            android:src="@drawable/live_streaming"
-            android:visibility="gone"
+            android:src="@drawable/off_line"
+            android:visibility="visible"
             tools:visibility="visible" />
 
         <ImageButton
@@ -121,7 +121,7 @@
         android:text="@string/stream_placeholder"
         android:textColor="@android:color/white"
         android:textSize="17sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

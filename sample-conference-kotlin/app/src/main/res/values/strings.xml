@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sample Conference Kotlin</string>
 
-    <string name="sender_id" ></string>
+    <string name="sender_id"></string>
 
     <string name="error_qb_credentials_empty">Credentials are wrong or empty. You have to set:
         Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
@@ -80,6 +80,7 @@
     <string name="dlg_leave_dialog">Leave dialog</string>
     <string name="camera_permission">To work correctly, you need permission camera</string>
     <string name="storage_permission">To work correctly, you need permission for storage</string>
+    <string name="notification_permission">To work correctly, you need permission for notification</string>
     <string name="unknown_attachment">Unknown Attachment Received</string>
     <string name="loading_failed">Loading failed</string>
     <string name="attachment_loaded">Attachment loaded</string>
@@ -91,6 +92,7 @@
     <string name="done">Done</string>
     <string name="occupant_added">%s added %s</string>
     <string name="dialogId_error">dialogId is null</string>
+    <string name="userId_error">userId is null</string>
     <string name="user_error">There is no current user, please login again</string>
 
     <string name="notification_title">You have an active conference</string>
@@ -111,7 +113,7 @@
     <string name="no_internet">No internet connection</string>
     <string name="session_closed">Session closed</string>
     <string name="internet_restored">Internet connection restored</string>
-    <string name="stream_placeholder">"Publishers are offline"</string>
+    <string name="stream_placeholder">"Publisher is offline"</string>
     <string name="online_participants_label">"%s members"</string>
 
     <!-- App Info Screen -->

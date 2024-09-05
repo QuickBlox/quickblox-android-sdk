@@ -66,6 +66,10 @@ class NotificationRepositoryImpl(private val context: Context, private val resou
         val intent = Intent(context, SplashActivity::class.java)
         intent.putExtra(EXTRA_FCM_MESSAGE, message)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        var intentFlag = 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE
+        }
+        return PendingIntent.getActivity(context, 0, intent, intentFlag)
     }
 }

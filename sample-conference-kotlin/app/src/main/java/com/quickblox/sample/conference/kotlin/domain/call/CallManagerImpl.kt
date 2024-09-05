@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.IntDef
 import com.quickblox.chat.model.QBChatDialog
 import com.quickblox.conference.ConferenceSession
@@ -24,8 +25,8 @@ import com.quickblox.sample.conference.kotlin.domain.call.entities.SessionStateI
 import com.quickblox.sample.conference.kotlin.domain.repositories.call.CallRepository
 import com.quickblox.sample.conference.kotlin.presentation.resources.ResourcesManager
 import com.quickblox.videochat.webrtc.*
-import com.quickblox.videochat.webrtc.AppRTCAudioManager.*
 import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer.QBRTCCameraCapturerException
+import com.quickblox.videochat.webrtc.audio.QBAudioManager
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
@@ -54,10 +55,10 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
     private var reconnectionListeners = hashSetOf<ReconnectionListener>()
     private val subscribedPublishers = hashSetOf<Int?>()
     private val callEntities = sortedSetOf(CallEntity.ComparatorImpl())
-    private var audioManager: AppRTCAudioManager? = null
+    private var audioManager: QBAudioManager? = null
     private var callType: Int? = null
     private var currentDialog: QBChatDialog? = null
-    private val timer = OnlineParticipantsCheckerCountdown(MILLIS_FUTURE, ONLINE_INTERVAL)
+    private val participantsCheckerTimer = OnlineParticipantsCheckerCountdown(MILLIS_FUTURE, ONLINE_INTERVAL)
     private val sessionState = SessionStateImpl()
     private var backgroundState = false
 
@@ -81,6 +82,10 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
             saveVideoState()
             setVideoEnabled(false)
         }
+    }
+
+    override fun isBackgroundState(): Boolean {
+        return backgroundState
     }
 
     override fun saveVideoState() {
@@ -119,39 +124,21 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         return callEntities
     }
 
-    override fun createSession(currentUserId: Int, dialog: QBChatDialog?, roomId: String?, role: QBConferenceRole?,
-                               callType: Int?, callback: DomainCallback<ConferenceSession, Exception>) {
-        currentSession?.leave() ?: run {
-            sessionState.setDefault()
-        }
-
+    override fun createAndJoinSession(currentUserId: Int, dialog: QBChatDialog?, roomId: String?,
+                                      role: QBConferenceRole?, callType: Int?, callback: DomainCallback<Unit, Exception>) {
+        initAudioManager()
         callRepository.createSession(currentUserId, object : DataCallBack<ConferenceSession, Exception> {
             override fun onSuccess(result: ConferenceSession, bundle: Bundle?) {
                 if (result.activePublishers.size >= MAX_CONFERENCE_OPPONENTS_ALLOWED) {
-                    result.leave()
+                    result.leave(null)
                     callback.onError(Exception(resourcesManager.get().getString(R.string.full_room)))
                     return
                 }
                 currentDialog = dialog
                 currentSession = result
-                videoTrackListener = VideoTrackListener()
-                audioTrackListener = AudioTrackListener()
-                qbRtcSessionStateListener = QBRTCSessionStateListener()
-                conferenceSessionListener = ConferenceSessionListener()
-                initAudioManager()
-
-                currentSession?.addSessionCallbacksListener(qbRtcSessionStateListener)
-                currentSession?.addConferenceSessionListener(conferenceSessionListener)
-                currentSession?.addVideoTrackCallbacksListener(videoTrackListener)
-                currentSession?.addAudioTrackCallbacksListener(audioTrackListener)
-
-                joinConference(roomId, role)
-                callback.onSuccess(result, null)
-
                 this@CallManagerImpl.callType = callType
-                if (this@CallManagerImpl.callType == STREAM && role == QBConferenceRole.PUBLISHER) {
-                    timer.start()
-                }
+                addListeners()
+                joinConference(roomId, role, callback)
             }
 
             override fun onError(error: Exception) {
@@ -160,22 +147,56 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         })
     }
 
-    private fun joinConference(dialogId: String?, role: QBConferenceRole?) {
+    private fun joinConference(dialogId: String?, role: QBConferenceRole?, callback: DomainCallback<Unit, Exception>) {
         currentSession?.joinDialog(dialogId, role, object : ConferenceEntityCallback<ArrayList<Int?>> {
             override fun onSuccess(publishers: ArrayList<Int?>?) {
-                // empty
+                if (this@CallManagerImpl.callType == STREAM && role == QBConferenceRole.PUBLISHER) {
+                    participantsCheckerTimer.start()
+                }
+                callback.onSuccess(Unit, null)
             }
 
             override fun onError(exception: WsException) {
-                releaseSession(exception)
+                removeListeners()
+                checkAndCancelParticipantsTimer()
+                releaseSession()
+                notifyReleaseSession(exception)
+                releaseViews()
+                disposeAudioManager()
+                callEntities.clear()
             }
         })
     }
 
+    override fun leaveFromSession(callback: DomainCallback<Unit, Exception>?) {
+        currentSession?.leave(object : ConferenceEntityCallback<Void> {
+            override fun onSuccess(p0: Void?) {
+                callback?.onSuccess(Unit, null)
+            }
+
+            override fun onError(exception: WsException) {
+                callback?.onError(exception)
+            }
+        })
+    }
+
+    private fun addListeners() {
+        videoTrackListener = VideoTrackListener()
+        audioTrackListener = AudioTrackListener()
+        qbRtcSessionStateListener = QBRTCSessionStateListener()
+        conferenceSessionListener = ConferenceSessionListener()
+
+        currentSession?.addSessionCallbacksListener(qbRtcSessionStateListener)
+        currentSession?.addConferenceSessionListener(conferenceSessionListener)
+        currentSession?.addVideoTrackCallbacksListener(videoTrackListener)
+        currentSession?.addAudioTrackCallbacksListener(audioTrackListener)
+    }
+
     private fun initAudioManager() {
-        audioManager = create(context)
-        audioManager?.selectAudioDevice(AudioDevice.SPEAKER_PHONE)
-        audioManager?.start { _: AudioDevice, _: Set<AudioDevice?>? -> }
+        Handler(Looper.getMainLooper()).post {
+            audioManager = QBAudioManager.create(context)
+            audioManager?.start { _: QBAudioManager.AudioDevice, _: Set<QBAudioManager.AudioDevice?>? -> }
+        }
     }
 
     override fun subscribeCallListener(callListener: CallListener) {
@@ -230,7 +251,14 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
     }
 
     override fun leaveSession() {
-        releaseSession(null)
+        removeListeners()
+        checkAndCancelParticipantsTimer()
+        releaseSession()
+        notifyReleaseSession()
+        releaseViews()
+        disposeAudioManager()
+        callEntities.clear()
+        sessionState.setDefault()
     }
 
     override fun startSharing(permissionIntent: Intent) {
@@ -284,8 +312,7 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         }
 
         override fun onConnectedToUser(session: ConferenceSession?, userId: Int?) {
-            if (userId == currentSession?.currentUserID &&
-                sessionState.reconnection == ReconnectionState.IN_PROGRESS) {
+            if (sessionState.reconnection == ReconnectionState.IN_PROGRESS) {
                 sessionState.reconnection = ReconnectionState.COMPLETED
                 for (reconnectionListener in reconnectionListeners) {
                     Handler(Looper.getMainLooper()).post {
@@ -296,10 +323,10 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         }
 
         override fun onDisconnectedFromUser(session: ConferenceSession?, userId: Int) {
-            if (userId == currentSession?.currentUserID &&
-                currentSession?.conferenceRole == QBConferenceRole.PUBLISHER) {
+            if (userId == currentSession?.currentUserID && currentSession?.conferenceRole == QBConferenceRole.PUBLISHER) {
                 sessionState.reconnection = ReconnectionState.IN_PROGRESS
                 sessionState.audioEnabled = isAudioEnabled()
+
                 if (!backgroundState) {
                     sessionState.videoEnabled = isVideoEnabled()
                 }
@@ -343,23 +370,32 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         }
 
         override fun onMediaReceived(p0: String?, p1: Boolean) {
-            //empty
+            // empty
         }
 
         override fun onSlowLinkReceived(p0: Boolean, p1: Int) {
-            //empty
+            // empty
         }
 
         override fun onError(exception: WsException?) {
             if (exception?.message == ICE_FAILED_REASON) {
-                releaseSession(exception)
+                removeListeners()
+                checkAndCancelParticipantsTimer()
+                releaseSession()
+                notifyReleaseSession(exception)
+                releaseViews()
+                disposeAudioManager()
+                callEntities.clear()
             }
         }
 
         override fun onSessionClosed(session: ConferenceSession?) {
             if (session == currentSession && sessionState.reconnection == ReconnectionState.IN_PROGRESS) {
-                timer.cancel()
-                ReconnectionTimer().start()
+                val userId = session?.currentUserID
+                val dialogId = session?.dialogID
+                val role = session?.conferenceRole
+                leaveFromSession(null)
+                ReconnectionTimer(userId, dialogId, role).start()
             }
         }
     }
@@ -374,11 +410,12 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
     }
 
     private inner class VideoTrackListener : QBRTCClientVideoTracksCallbacks<ConferenceSession> {
-        override fun onLocalVideoTrackReceive(qbrtcSession: ConferenceSession?, videoTrack: QBRTCVideoTrack?) {
-            val callEntity = callEntities.find { it.getUserId() == qbrtcSession?.currentUserID }
+        override fun onLocalVideoTrackReceive(session: ConferenceSession?, videoTrack: QBRTCVideoTrack?) {
+            val callEntity = callEntities.find { it.getUserId() == session?.currentUserID }
             if (callEntity == null) {
-                val entity = CallEntityImpl(currentSession?.currentUserID, null, videoTrack,
-                        null, null, true
+                val entity = CallEntityImpl(
+                    currentSession?.currentUserID, null, videoTrack,
+                    null, null, true
                 )
 
                 callEntities.add(entity)
@@ -406,13 +443,7 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         }
 
         override fun onRemoteVideoTrackReceive(session: ConferenceSession?, videoTrack: QBRTCVideoTrack, userId: Int) {
-            val callEntity = callEntities.find { it.getUserId() == userId }
-            if (callEntity == null) {
-                callEntities.add(CallEntityImpl(userId, null, videoTrack, null, null, false))
-            } else {
-                callEntity.releaseView()
-                callEntity.setVideoTrack(videoTrack)
-            }
+            createOrUpdateCallEntity(userId, videoTrack)
         }
     }
 
@@ -421,17 +452,37 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
             currentSession?.mediaStreamManager?.localAudioTrack?.setEnabled(sessionState.audioEnabled)
         }
 
-        override fun onRemoteAudioTrackReceive(conferenceSession: ConferenceSession?, qbrtcAudioTrack: QBRTCAudioTrack, userId: Int) {
-            val callEntity = callEntities.find { it.getUserId() == userId }
-            callEntity?.setAudioTrack(qbrtcAudioTrack)
+        override fun onRemoteAudioTrackReceive(conferenceSession: ConferenceSession?, rtcAudioTrack: QBRTCAudioTrack, userId: Int) {
+            createOrUpdateCallEntity(userId, rtcAudioTrack)
+        }
+    }
 
-            for (callListener in callListeners) {
-                callListener.receivedRemoteVideoTrack(userId)
+    private fun <T> createOrUpdateCallEntity(userId: Int, track: T) {
+        var callEntity = callEntities.find { it.getUserId() == userId }
+        if (callEntity == null) {
+            callEntity = CallEntityImpl(
+                userId, null, null, null,
+                null, false
+            )
+            callEntities.add(callEntity)
+        }
+        when (track) {
+            is QBRTCAudioTrack -> {
+                callEntity.setAudioTrack(track)
+            }
+            is QBRTCVideoTrack -> {
+                callEntity.releaseView()
+                callEntity.setVideoTrack(track)
+
+                for (callListener in callListeners) {
+                    callListener.receivedRemoteVideoTrack(userId)
+                }
             }
         }
     }
 
-    private inner class OnlineParticipantsCheckerCountdown constructor(millisInFuture: Long, countDownInterval: Long) : CountDownTimer(millisInFuture, countDownInterval) {
+    private inner class OnlineParticipantsCheckerCountdown constructor(millisInFuture: Long, countDownInterval: Long) :
+        CountDownTimer(millisInFuture, countDownInterval) {
         override fun onTick(millisUntilFinished: Long) {
             getOnlineParticipants()
         }
@@ -441,35 +492,51 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
         }
     }
 
-    private fun releaseSession(exception: Exception?) {
+    private fun releaseSession() {
+        currentSession?.leave(null)
+        currentSession = null
+        callType = null
+        sessionState.reconnection = ReconnectionState.DEFAULT
+    }
+
+    private fun releaseViews() {
+        callEntities.forEach { callEntity ->
+            callEntity.releaseView()
+        }
+    }
+
+    private fun notifyReleaseSession(exception: Exception? = null) {
         callListeners.forEach { callListener ->
             callListener.releaseSession(exception)
         }
+    }
 
-        callEntities.forEach {
-            it.releaseView()
+    private fun checkAndCancelParticipantsTimer() {
+        if (callType == STREAM && currentSession?.conferenceRole == QBConferenceRole.PUBLISHER) {
+            participantsCheckerTimer.cancel()
         }
+    }
+
+    private fun disposeAudioManager() {
+        Handler(Looper.getMainLooper()).post {
+            audioManager?.stop()
+            audioManager = null
+        }
+    }
+
+    private fun removeListeners() {
         currentSession?.removeSessionCallbacksListener(qbRtcSessionStateListener)
         currentSession?.removeConferenceSessionListener(conferenceSessionListener)
         currentSession?.removeVideoTrackCallbacksListener(videoTrackListener)
         currentSession?.removeAudioTrackCallbacksListener(audioTrackListener)
-        currentSession?.leave()
-        audioManager?.stop()
-        audioManager = null
-        currentSession = null
+
         videoTrackListener = null
         audioTrackListener = null
         qbRtcSessionStateListener = null
         conferenceSessionListener = null
-        sessionState.reconnection = ReconnectionState.DEFAULT
-        timer.cancel()
-        currentDialog = null
-        callType = null
-        sessionState.videoEnabled = false
-        callEntities.clear()
     }
 
-    private inner class ReconnectionTimer {
+    private inner class ReconnectionTimer(val userId: Int?, val dialogId: String?, val role: QBConferenceRole?) {
         private var timer: Timer? = Timer()
         private var lastDelay: Long = 0
         private var delay: Long = 1000
@@ -492,31 +559,31 @@ class CallManagerImpl(private val context: Context, private val resourcesManager
             timer = Timer()
             timer?.schedule(object : TimerTask() {
                 override fun run() {
-                    currentSession?.currentUserID?.let {
-                        createSession(it, currentDialog, currentSession?.dialogID, currentSession?.conferenceRole,
-                                callType, object : DomainCallback<ConferenceSession, Exception> {
-                            override fun onSuccess(result: ConferenceSession, bundle: Bundle?) {
-                                timer?.purge()
-                                timer?.cancel()
-                                timer = null
+                    userId?.let {
+                        createAndJoinSession(it, currentDialog, dialogId, role,
+                            callType, object : DomainCallback<Unit, Exception> {
+                                override fun onSuccess(result: Unit, bundle: Bundle?) {
+                                    timer?.purge()
+                                    timer?.cancel()
+                                    timer = null
 
-                                if (sessionState.showedSharing) {
+                                    if (sessionState.showedSharing) {
+                                        for (reconnectionListener in reconnectionListeners) {
+                                            reconnectionListener.requestPermission()
+                                        }
+                                    }
+                                    sessionState.reconnection = ReconnectionState.COMPLETED
                                     for (reconnectionListener in reconnectionListeners) {
-                                        reconnectionListener.requestPermission()
+                                        Handler(Looper.getMainLooper()).post {
+                                            reconnectionListener.onChangedState(sessionState.reconnection)
+                                        }
                                     }
                                 }
-                                sessionState.reconnection = ReconnectionState.COMPLETED
-                                for (reconnectionListener in reconnectionListeners) {
-                                    Handler(Looper.getMainLooper()).post {
-                                        reconnectionListener.onChangedState(sessionState.reconnection)
-                                    }
-                                }
-                            }
 
-                            override fun onError(error: Exception) {
-                                start()
-                            }
-                        })
+                                override fun onError(error: Exception) {
+                                    start()
+                                }
+                            })
                     } ?: run {
                         for (reconnectionListener in reconnectionListeners) {
                             Handler(Looper.getMainLooper()).post {

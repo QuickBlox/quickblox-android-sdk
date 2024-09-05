@@ -1,9 +1,10 @@
 package com.quickblox.sample.conference.kotlin.presentation
 
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 /*
  * Created by Injoit in 2021-09-30.
@@ -33,6 +34,10 @@ class LiveData<T> {
         owner.lifecycle.addObserver(lifecycleObserver)
     }
 
+    fun clearValue() {
+        this.value  = null
+    }
+
     fun removeObserver(observer: (T?) -> Unit) {
         val lifecycleObserver = observers.remove(observer)
         lifecycleObserver?.owner?.lifecycle?.removeObserver(lifecycleObserver)
@@ -43,15 +48,15 @@ class LiveData<T> {
         this.value = null
     }
 
-    private inner class LiveDataLifecycleObserver(val owner: LifecycleOwner, val observer: (T?) -> Unit) : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        private fun onResumed() {
+    private inner class LiveDataLifecycleObserver(val owner: LifecycleOwner, val observer: (T?) -> Unit) : DefaultLifecycleObserver {
+        override fun onResume(owner: LifecycleOwner) {
             notifyChange(this)
+            super.onResume(owner)
         }
 
-        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        private fun onDestroyed() {
+        override fun onDestroy(owner: LifecycleOwner) {
             removeObserver(observer)
+            super.onDestroy(owner)
         }
     }
 }

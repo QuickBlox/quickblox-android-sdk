@@ -11,7 +11,6 @@ import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowInsets
-import android.view.animation.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -31,7 +30,9 @@ import com.quickblox.sample.conference.kotlin.presentation.utils.hideWithAnimati
 import com.quickblox.sample.conference.kotlin.presentation.utils.setOnClick
 import com.quickblox.sample.conference.kotlin.presentation.utils.showWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.SortedSet
+import java.util.Timer
+import java.util.TimerTask
 
 private const val WAKEUP_DELAY = 5000L
 
@@ -63,8 +64,14 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
 
         val activityResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                result.data?.let { viewModel.startSharing(it) }
-                binding.buttons.tbShare.isChecked = false
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                    CallService.restart(this, true)
+                }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    result.data?.let { viewModel.startSharing(it) }
+                    binding.buttons.tbShare.isChecked = false
+                }, 500)
             } else {
                 if (viewModel.isShowSharing()) {
                     viewModel.stopSharing()
@@ -73,37 +80,42 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
             binding.buttons.tbShare.isChecked = true
         }
 
-        viewModel.liveData.observe(this, { result ->
+        viewModel.liveData.observe(this) { result ->
             result?.let { (state, data) ->
                 when (state) {
                     ViewState.PROGRESS -> {
                         showProgress()
                     }
+
                     ViewState.ERROR -> {
                         hideProgress()
                         Toast.makeText(baseContext, "$data", Toast.LENGTH_SHORT).show()
                     }
+
                     ViewState.SHOW_VIDEO_TRACK -> {
                         hideProgress()
                         val metrics = getScreenMetrics()
                         binding.llConversation.updateViews(metrics.second, metrics.first)
                     }
+
                     ViewState.START_SHARING -> {
                         hideProgress()
                         controlButtons?.stopTimer()
                         setSharingState()
                     }
+
                     ViewState.STOP_SERVICE -> {
-                        hideProgress()
                         viewModel.currentDialog?.dialogId?.let { ChatActivity.start(this@CallActivity, it) }
                         CallService.stop(this)
                         finish()
                     }
+
                     ViewState.COUNT_PARTICIPANTS -> {
                         val count = data as Int
                         val countString = count.toString()
                         binding.tvMembersCount.text = getString(R.string.online_participants_label, countString)
                     }
+
                     ViewState.CONVERSATION -> {
                         hideProgress()
                         setConversationState()
@@ -113,6 +125,7 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         val metrics = getScreenMetrics()
                         binding.llConversation.updateViews(metrics.second, metrics.first)
                     }
+
                     ViewState.STREAM -> {
                         hideProgress()
                         setStreamState()
@@ -122,10 +135,11 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         val metrics = getScreenMetrics()
                         binding.llConversation.updateViews(metrics.second, metrics.first)
                     }
+
                     ViewState.ONLINE_PARTICIPANTS -> {
-                        val isOnline = data as Boolean
                         if (viewModel.getRole() == QBConferenceRole.LISTENER) {
-                            if (isOnline) {
+                            val isStreamerOnline = data as Boolean
+                            if (isStreamerOnline) {
                                 binding.ivStreamLabel.setImageResource(R.drawable.live_streaming)
                                 binding.tvStreamPlaceHolder.visibility = View.GONE
                             } else {
@@ -134,6 +148,7 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                             }
                         }
                     }
+
                     ViewState.OPEN_FULL_SCREEN -> {
                         val entities = data as SortedSet<CallEntity>
                         hideProgress()
@@ -141,46 +156,53 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
                         val metrics = getScreenMetrics()
                         binding.llConversation.updateViews(metrics.second, metrics.first)
                     }
+
                     ViewState.BIND_SERVICE -> {
                         val intent = Intent(this, CallService::class.java)
                         viewModel.callServiceConnection?.let {
                             bindService(intent, it, BIND_AUTO_CREATE)
                         }
                     }
+
                     ViewState.UNBIND_SERVICE -> {
                         viewModel.callServiceConnection?.let {
                             unbindService(it)
                         }
                     }
+
                     ViewState.SHOW_LOGIN_SCREEN -> {
                         CallService.stop(this)
                         LoginActivity.start(this)
                         finish()
                     }
+
                     ViewState.RECONNECTED -> {
                         reconnectedState()
-                        Toast.makeText(baseContext, R.string.reconnected, Toast.LENGTH_SHORT).show()
                     }
+
                     ViewState.RECONNECTING -> {
                         reconnectingState()
-                        Toast.makeText(baseContext, R.string.reconnecting, Toast.LENGTH_SHORT).show()
                     }
+
                     ViewState.REQUEST_PERMISSION -> {
-                        val mMediaProjectionManager = getSystemService(MEDIA_PROJECT) as MediaProjectionManager
-                        activityResultLauncher.launch(mMediaProjectionManager.createScreenCaptureIntent())
+                        val mediaProjectionManager =
+                            getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+                        activityResultLauncher.launch(mediaProjectionManager.createScreenCaptureIntent())
                     }
+
                     ViewState.SHOW_CHAT_SCREEN -> {
                         viewModel.currentDialog?.dialogId?.let { it1 -> ChatActivity.start(this@CallActivity, it1) }
                             ?: run {
                                 Toast.makeText(baseContext, R.string.no_dialog_id, Toast.LENGTH_SHORT).show()
                             }
                     }
+
                     ViewState.SHOW_MUTE_PARTICIPANTS_SCREEN -> {
                         MuteParticipantsActivity.start(this@CallActivity)
                     }
                 }
             }
-        })
+        }
         binding.llConversation.setCallEntities(viewModel.callEntities)
         binding.llConversation.setClickListener(ConversationItemListenerImpl())
 
@@ -198,9 +220,8 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
 
     private fun setStreamState() {
         controlButtons?.displayControlsButtons()
-        binding.ivStreamLabel.visibility = View.VISIBLE
-        binding.tvMembersCount.visibility = View.VISIBLE
         binding.btnMuteParticipants.visibility = View.GONE
+        binding.ivStreamLabel.visibility = View.VISIBLE
 
         if (viewModel.getRole() == QBConferenceRole.LISTENER) {
             binding.buttons.tbCamEnable.visibility = View.GONE
@@ -209,6 +230,9 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
             binding.buttons.tbShare.visibility = View.GONE
             binding.tvMembersCount.visibility = View.GONE
         } else {
+            binding.ivStreamLabel.setImageResource(R.drawable.live_streaming)
+            binding.tvStreamPlaceHolder.visibility = View.GONE
+            binding.tvMembersCount.visibility = View.VISIBLE
             binding.vSharing.visibility = View.GONE
             binding.llConversation.visibility = View.VISIBLE
             binding.buttons.tbEndCall.visibility = View.VISIBLE
@@ -228,6 +252,7 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
         binding.buttons.tbSwapCam.visibility = View.GONE
         val isShowSharing = viewModel.isShowSharing()
         binding.buttons.tbShare.isChecked = !isShowSharing
+        binding.tvStreamPlaceHolder.visibility = View.GONE
     }
 
     private fun setConversationState() {
@@ -238,6 +263,7 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
         binding.ivStreamLabel.visibility = View.GONE
         binding.llConversation.visibility = View.VISIBLE
         binding.buttons.tbEndCall.visibility = View.VISIBLE
+        binding.tvStreamPlaceHolder.visibility = View.GONE
         binding.buttons.tbCamEnable.visibility = View.VISIBLE
         binding.buttons.tbMic.visibility = View.VISIBLE
         binding.buttons.tbSwapCam.visibility = View.VISIBLE
@@ -295,7 +321,10 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = windowManager.currentWindowMetrics
             val insets: Insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-            Pair(windowMetrics.bounds.width() - insets.left - insets.right, windowMetrics.bounds.height() - insets.top - insets.bottom)
+            Pair(
+                windowMetrics.bounds.width() - insets.left - insets.right,
+                windowMetrics.bounds.height() - insets.top - insets.bottom
+            )
         } else {
             val displayMetrics = DisplayMetrics()
             windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -393,7 +422,8 @@ class CallActivity : BaseActivity<CallViewModel>(CallViewModel::class.java) {
     private inner class ConversationItemListenerImpl : CustomLinearLayout.ConversationItemListener {
         override fun onItemClick(callEntity: CallEntity) {
             if (viewModel.callEntities.size > 1 && binding.buttons.root.isVisible &&
-                !viewModel.isReconnectingState()) {
+                !viewModel.isReconnectingState()
+            ) {
                 if (viewModel.isFullScreenState) {
                     viewModel.closeFullScreen()
                 } else {

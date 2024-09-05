@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlinVersion = "1.5.10"
-    ext.hiltVersion = '2.39.1'
-    ext.buildGradle = '4.1.3'
+    ext.kotlinVersion = '1.8.0'
+    ext.hiltVersion = '2.48'
+    ext.buildGradle = '8.2.0'
     ext.googleServices = '4.3.10'
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.google.gms:google-services:$googleServices"
@@ -19,10 +19,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven {
-            url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
-        }
+        mavenCentral()
     }
 }
 
@@ -33,34 +30,34 @@ ext {
     dimensionDefault = 'default'
 
     // QuickBlox SDK version
-    qbSdkVersion = '3.9.11'
+    qbSdkVersion = '4.1.3'
 
     // Firebase
     servicesGcmVersion = '17.0.0'
-    firebaseCoreVersion = '19.0.2'
+    firebaseCoreVersion = '21.1.1'
 
     // Android X
     fragmentAndroidXVersion = '1.3.2'
-    lifecycleViewmodelAndroidXVersion = '2.3.1'
-    coreKtxVersion = '1.6.0'
-    appcompatAndroidXVersion = '1.3.1'
-    materialAndroidXVersion = '1.4.0'
-    activityKtxVersion = '1.3.1'
-    fragmentKtxVersion = '1.3.6'
+    lifecycleViewmodelAndroidXVersion = '2.8.2'
+    coreKtxVersion = '1.13.1'
+    appcompatAndroidXVersion = '1.7.0'
+    materialAndroidXVersion = '1.12.0'
+    activityKtxVersion = '1.9.0'
+    fragmentKtxVersion = '1.8.0'
     hiltViewmodel = '1.0.0-alpha03'
     hiltCompiler= '1.0.0'
 
     // Glide
-    glideVersion = '4.12.0'
+    glideVersion = '4.15.0'
 
     // Swipe refresh
     swipeRefreshVersion = '1.1.0'
 
     // ConstraintLayout
-    constraintLayoutVersion = '2.1.1'
+    constraintLayoutVersion = '2.1.4'
 
     // LifecycleKtx
-    lifecycleVersionKtx = '2.3.1'
+    lifecycleVersionKtx = '2.8.2'
 
     // Lifecycle
     lifecycleVersion = '1.1.1'

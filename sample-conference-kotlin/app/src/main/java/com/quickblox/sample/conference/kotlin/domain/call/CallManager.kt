@@ -16,8 +16,8 @@ interface CallManager {
     fun getSession(): ConferenceSession?
     fun getCurrentDialog(): QBChatDialog?
     fun getCallEntities(): Set<CallEntity>
-    fun createSession(currentUserId: Int, dialog: QBChatDialog?, roomId: String?, role: QBConferenceRole?,
-                      callType: Int?, callback: DomainCallback<ConferenceSession, Exception>)
+    fun createAndJoinSession(currentUserId: Int, dialog: QBChatDialog?, roomId: String?, role: QBConferenceRole?,
+                             callType: Int?, callback: DomainCallback<Unit, Exception>)
     fun subscribeCallListener(callListener: CallListener)
     fun unsubscribeCallListener(callListener: CallListener)
     fun getRole(): QBConferenceRole?
@@ -38,4 +38,6 @@ interface CallManager {
     fun setDefaultReconnectionState()
     fun getSessionState(): SessionState
     fun setBackgroundState(backgroundState: Boolean)
+    fun isBackgroundState(): Boolean
+    fun leaveFromSession(callback: DomainCallback<Unit, Exception>?)
 }

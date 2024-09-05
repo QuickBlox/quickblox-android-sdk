@@ -22,21 +22,21 @@ class UsersViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewH
         }
     }
 
-    fun bind(qbUser: QBUser, currentUserId: Int?) {
-        val name = if (TextUtils.isEmpty(qbUser.fullName)) {
-            qbUser.login
+    fun bind(user: QBUser, currentUserId: Int?) {
+        val name = if (TextUtils.isEmpty(user.fullName)) {
+            user.login
         } else {
-            qbUser.fullName
+            user.fullName
         }
 
-        if (qbUser.id == currentUserId) {
+        if (user.id == currentUserId) {
             binding.tvName.text = binding.root.context.getString(R.string.username_you, name)
             binding.tvName.setTextColor(ContextCompat.getColor(binding.root.context, R.color.mediumGrey))
         } else {
             binding.tvName.text = name
         }
 
-        binding.tvAvatar.text = qbUser.fullName.replace(" ", "").substring(0, 1).toUpperCase(Locale.getDefault())
-        binding.ivAvatar.setImageDrawable(AvatarUtils.getDrawableAvatar(binding.root.context, qbUser.id.hashCode()))
+        binding.tvAvatar.text = name.replace(" ", "").substring(0, 1).uppercase(Locale.getDefault())
+        binding.ivAvatar.setImageDrawable(AvatarUtils.getDrawableAvatar(binding.root.context, user.id.hashCode()))
     }
 }

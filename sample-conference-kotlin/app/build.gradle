@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -13,30 +13,29 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "../artifacts.gradle"
 
 repositories {
-    google()
-    jcenter()
+    repositories {
+        google()
+        mavenCentral()
+    }
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
-    flatDir { dirs 'libs' }
 }
 
 android {
     def versionQACode = 1
 
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
-    flavorDimensions dimensionDefault
-
     defaultConfig {
+        compileSdk 34
         applicationId "com.quickblox.sample.conference.kotlin"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 110000
-        versionName "1.1.0"
+        targetSdkVersion 34
+        versionCode 120000
+        versionName "1.2.0"
         multiDexEnabled true
     }
 
+    flavorDimensions dimensionDefault
     productFlavors {
         dev {
             dimension dimensionDefault
@@ -63,14 +62,15 @@ android {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            consumerProguardFiles 'proguard-rules.pro'
             resValue "string", "versionName", "QuickBlox Conference Kotlin\nBuild version " + defaultConfig.getVersionName()
         }
     }
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     signingConfigs {
@@ -83,24 +83,23 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
+    namespace 'com.quickblox.sample.conference.kotlin'
 }
 
 dependencies {
-    implementation "com.quickblox:quickblox-android-sdk-conference:$qbSdkVersion"
+    implementation "com.quickblox:quickblox-android-sdk-conference:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-messages:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-chat:$rootProject.qbSdkVersion"
     implementation "com.quickblox:quickblox-android-sdk-content:$rootProject.qbSdkVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "com.google.android.material:material:$rootProject.materialAndroidXVersion"
-
     implementation "androidx.appcompat:appcompat:$rootProject.appcompatAndroidXVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleViewmodelAndroidXVersion"

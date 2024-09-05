@@ -432,7 +432,7 @@ class ChatManagerImpl(private val dbRepository: DBRepository, private val dialog
         })
     }
 
-    override fun sendCreateStream(dialog: QBChatDialog, streamId: String, callback: DomainCallback<Unit, Exception>) {
+    override fun buildAndSendStartStreamMessage(dialog: QBChatDialog, streamId: String, callback: DomainCallback<Unit, Exception>) {
         val message = buildMessageStreamStarted(dialog, streamId)
         executor.addTask(object : ExecutorTask<Unit> {
             override fun backgroundWork() {
@@ -449,13 +449,13 @@ class ChatManagerImpl(private val dbRepository: DBRepository, private val dialog
         })
     }
 
-    override fun sendMessage(currentUser: QBUser, qbDialog: QBChatDialog, text: String, attachmentModels: ArrayList<AttachmentModel>, callback: DomainCallback<Unit, Exception>) {
+    override fun buildAndSendMessage(currentUser: QBUser, dialog: QBChatDialog, text: String, attachmentModels: ArrayList<AttachmentModel>, callback: DomainCallback<Unit, Exception>) {
         if (isLoggedInChat()) {
-            send(text, qbDialog, attachmentModels, callback)
+            send(text, dialog, attachmentModels, callback)
         } else {
             loginToChat(currentUser, object : DomainCallback<Unit, Exception> {
                 override fun onSuccess(result: Unit, bundle: Bundle?) {
-                    send(text, qbDialog, attachmentModels, callback)
+                    send(text, dialog, attachmentModels, callback)
                 }
 
                 override fun onError(error: Exception) {

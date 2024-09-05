@@ -31,10 +31,10 @@ interface ChatManager {
     fun loadMessages(dialog: QBChatDialog, skipPagination: Int, callback: DomainCallback<ArrayList<QBChatMessage>, Exception>)
     fun leaveDialog(dialog: QBChatDialog, qbUser: QBUser, callback: DomainCallback<QBChatDialog, Exception>)
     fun readMessage(qbChatMessage: QBChatMessage, qbDialog: QBChatDialog, callback: DomainCallback<Unit, Exception>)
-    fun sendMessage(currentUser: QBUser, qbDialog: QBChatDialog, text: String, attachmentModels: ArrayList<AttachmentModel>, callback: DomainCallback<Unit, Exception>)
+    fun buildAndSendMessage(currentUser: QBUser, dialog: QBChatDialog, text: String, attachmentModels: ArrayList<AttachmentModel>, callback: DomainCallback<Unit, Exception>)
     fun sendCreateConference(dialog: QBChatDialog, callback: DomainCallback<Unit, Exception>)
     fun getDialogs(): ArrayList<QBChatDialog>
     fun clearDialogs()
     fun addUsersToDialog(dialog: QBChatDialog, users: ArraySet<QBUser>, callback: DomainCallback<QBChatDialog?, Exception>)
-    fun sendCreateStream(dialog: QBChatDialog, streamId: String, callback: DomainCallback<Unit, Exception>)
+    fun buildAndSendStartStreamMessage(dialog: QBChatDialog, streamId: String, callback: DomainCallback<Unit, Exception>)
 }

@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.annotation.IntDef
 import com.quickblox.chat.model.QBChatDialog
 import com.quickblox.chat.model.QBChatMessage
-import com.quickblox.conference.ConferenceSession
 import com.quickblox.conference.QBConferenceRole
 import com.quickblox.sample.conference.kotlin.R
 import com.quickblox.sample.conference.kotlin.data.DataCallBack
@@ -16,7 +15,10 @@ import com.quickblox.sample.conference.kotlin.domain.LoadFileCallBack
 import com.quickblox.sample.conference.kotlin.domain.call.CallManager
 import com.quickblox.sample.conference.kotlin.domain.call.CallManagerImpl.Companion.CallType.Companion.CONVERSATION
 import com.quickblox.sample.conference.kotlin.domain.call.CallManagerImpl.Companion.CallType.Companion.STREAM
-import com.quickblox.sample.conference.kotlin.domain.chat.*
+import com.quickblox.sample.conference.kotlin.domain.chat.CHAT_HISTORY_ITEMS_PER_PAGE
+import com.quickblox.sample.conference.kotlin.domain.chat.ChatListener
+import com.quickblox.sample.conference.kotlin.domain.chat.ChatManager
+import com.quickblox.sample.conference.kotlin.domain.chat.ConnectionChatListener
 import com.quickblox.sample.conference.kotlin.domain.files.FileManager
 import com.quickblox.sample.conference.kotlin.domain.files.ProgressCallback
 import com.quickblox.sample.conference.kotlin.domain.repositories.connection.ConnectionRepository
@@ -37,7 +39,6 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewStat
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LEAVE
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LOADER_PROGRESS_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_SHOWED
-import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGE_SENT
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.PROGRESS
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.RECEIVED_MESSAGE
@@ -63,9 +64,11 @@ private const val JPG = ".jpg"
  * Copyright © 2021 Quickblox. All rights reserved.
  */
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val userManager: UserManager, private val chatManager: ChatManager, private val fileManager: FileManager,
-                                        private val resourcesManager: ResourcesManager, private val connectionRepository: ConnectionRepository,
-                                        private val callManager: CallManager) : BaseViewModel() {
+class ChatViewModel @Inject constructor(
+    private val userManager: UserManager, private val chatManager: ChatManager, private val fileManager: FileManager,
+    private val resourcesManager: ResourcesManager, private val connectionRepository: ConnectionRepository,
+    private val callManager: CallManager
+) : BaseViewModel() {
     private val TAG: String = ChatViewModel::class.java.simpleName
     val messages = arrayListOf<ChatMessage>()
     val liveData = LiveData<Pair<Int, Any?>>()
@@ -157,8 +160,6 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
                 override fun onSuccess(result: Unit, bundle: Bundle?) {
                     currentDialog?.let { joinDialog(it) }
                     subscribeChatListener()
-                    messages.clear()
-                    liveData.setValue(Pair(MESSAGES_UPDATED, null))
                     skipPagination = 0
                     loadMessages()
                 }
@@ -239,6 +240,9 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
     private fun showMessages(messagesList: ArrayList<QBChatMessage>) {
         val newMessages = addHeaders(messagesList)
         newMessages.reverse()
+        if (skipPagination == 0) {
+            messages.clear()
+        }
         messages.addAll(0, newMessages)
         liveData.setValue(Pair(MESSAGES_SHOWED, newMessages.size))
         skipPagination += CHAT_HISTORY_ITEMS_PER_PAGE
@@ -326,7 +330,7 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
         // TODO: 7/6/21 Need to handle error
         currentDialog?.let { dialog ->
             currentUser?.let { user ->
-                chatManager.sendMessage(user, dialog, text, fileManager.getAttachmentsList(), object : DomainCallback<Unit, Exception> {
+                chatManager.buildAndSendMessage(user, dialog, text, fileManager.getAttachmentsList(), object : DomainCallback<Unit, Exception> {
                     override fun onSuccess(result: Unit, bundle: Bundle?) {
                         fileManager.getAttachmentsList().clear()
                         liveData.setValue(Pair(MESSAGE_SENT, null))
@@ -395,54 +399,21 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
     }
 
     fun startConference() {
-        currentUser?.let { user ->
-            currentDialog?.let { dialog ->
-                createSession(user, dialog, QBConferenceRole.PUBLISHER, CONVERSATION, dialog.dialogId)
-            }
-        }
+        starCall(QBConferenceRole.PUBLISHER, CONVERSATION, currentDialog?.dialogId)
         sendCreateConference()
     }
 
-    fun joinConference() {
-        currentUser?.let { user ->
-            currentDialog?.let { dialog ->
-                createSession(user, dialog, QBConferenceRole.PUBLISHER, CONVERSATION, dialog.dialogId)
-            }
-        }
-    }
-
-    fun startStream() {
-        val streamId = createNewStreamId()
-        currentUser?.let { user ->
-            currentDialog?.let { dialog ->
-                createSession(user, dialog, QBConferenceRole.PUBLISHER, STREAM, streamId)
-            }
-        }
-        sendCreateStream(streamId)
-    }
-
-    fun joinStream(chatMessage: ChatMessage) {
-        val streamId = chatMessage.qbChatMessage.getProperty(PROPERTY_CONVERSATION_ID)
-        if (currentUser?.id == chatMessage.qbChatMessage.senderId) {
-            currentUser?.let { user ->
-                currentDialog?.let { dialog ->
-                    createSession(user, dialog, QBConferenceRole.PUBLISHER, STREAM, streamId.toString())
-                }
-            }
+    fun checkExistSessionAndJoinConference(conversationId: String) {
+        if (callManager.getSession() == null) {
+            starCall(QBConferenceRole.PUBLISHER, CONVERSATION, currentDialog?.dialogId)
         } else {
-            currentUser?.let { user ->
-                currentDialog?.let { dialog ->
-                    createSession(user, dialog, QBConferenceRole.LISTENER, STREAM, streamId.toString())
-                }
+            if (callManager.getSession()?.dialogID == conversationId){
+                liveData.setValue(Pair(SHOW_CALL_SCREEN, null))
+                return
             }
-        }
-    }
-
-    private fun sendCreateConference() {
-        currentDialog?.let {
-            chatManager.sendCreateConference(it, object : DomainCallback<Unit, Exception> {
+            callManager.leaveFromSession(object : DomainCallback<Unit, Exception> {
                 override fun onSuccess(result: Unit, bundle: Bundle?) {
-                    //empty
+                    starCall(QBConferenceRole.PUBLISHER, CONVERSATION, currentDialog?.dialogId)
                 }
 
                 override fun onError(error: Exception) {
@@ -452,11 +423,61 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
         }
     }
 
-    private fun sendCreateStream(streamId: String) {
-        currentDialog?.let {
-            chatManager.sendCreateStream(it, streamId, object : DomainCallback<Unit, Exception> {
+    fun startStream() {
+        val streamId = createNewStreamId()
+        starCall(QBConferenceRole.PUBLISHER, STREAM, streamId)
+        buildAndSendStartStreamMessage(streamId)
+    }
+
+    fun checkExistSessionAndJoinStream(senderId: Int?, conversationId: String) {
+        if (callManager.getSession() == null) {
+            val role = checkRole(senderId)
+            starCall(role, STREAM, conversationId)
+        } else {
+            if (callManager.getSession()?.dialogID == conversationId){
+                liveData.setValue(Pair(SHOW_CALL_SCREEN, null))
+                return
+            }
+            callManager.leaveFromSession(object : DomainCallback<Unit, Exception> {
                 override fun onSuccess(result: Unit, bundle: Bundle?) {
-                    //empty
+                    val role = checkRole(senderId)
+                    starCall(role, STREAM, conversationId)
+                }
+
+                override fun onError(error: Exception) {
+                    liveData.setValue(Pair(ERROR, error.message))
+                }
+            })
+        }
+    }
+
+    private fun checkRole(senderId: Int?): QBConferenceRole {
+        return if (currentUser?.id == senderId) {
+            QBConferenceRole.PUBLISHER
+        } else {
+            QBConferenceRole.LISTENER
+        }
+    }
+
+    private fun sendCreateConference() {
+        currentDialog?.let {
+            chatManager.sendCreateConference(it, object : DomainCallback<Unit, Exception> {
+                override fun onSuccess(result: Unit, bundle: Bundle?) {
+                    // empty
+                }
+
+                override fun onError(error: Exception) {
+                    liveData.setValue(Pair(ERROR, error.message))
+                }
+            })
+        }
+    }
+
+    private fun buildAndSendStartStreamMessage(streamId: String) {
+        currentDialog?.let {
+            chatManager.buildAndSendStartStreamMessage(it, streamId, object : DomainCallback<Unit, Exception> {
+                override fun onSuccess(result: Unit, bundle: Bundle?) {
+                    // empty
                 }
 
                 override fun onError(error: Exception) {
@@ -472,20 +493,26 @@ class ChatViewModel @Inject constructor(private val userManager: UserManager, pr
         return currentUserId.toString() + "_" + timeStamp
     }
 
-    private fun createSession(user: QBUser, currentDialog: QBChatDialog, role: QBConferenceRole, callType: Int, roomId: String) {
+    private fun starCall(role: QBConferenceRole, callType: Int, roomId: String?) {
         if (!connectionRepository.isInternetAvailable()) {
             liveData.setValue(Pair(ERROR, resourcesManager.get().getString(R.string.no_internet)))
             return
         }
-        callManager.createSession(user.id, currentDialog, roomId, role, callType, object : DomainCallback<ConferenceSession, Exception> {
-            override fun onSuccess(result: ConferenceSession, bundle: Bundle?) {
-                liveData.setValue(Pair(SHOW_CALL_SCREEN, null))
-            }
 
-            override fun onError(error: Exception) {
-                liveData.setValue(Pair(ERROR, error.message))
-            }
-        })
+        val currentUserId = currentUser?.id
+        currentUserId?.let { id ->
+            callManager.createAndJoinSession(id, currentDialog, roomId, role, callType, object : DomainCallback<Unit, Exception> {
+                    override fun onSuccess(result: Unit, bundle: Bundle?) {
+                        liveData.setValue(Pair(SHOW_CALL_SCREEN, null))
+                    }
+
+                    override fun onError(error: Exception) {
+                        liveData.setValue(Pair(ERROR, error.message))
+                    }
+                })
+        } ?: run {
+            liveData.setValue(Pair(ERROR, resourcesManager.get().getString(R.string.userId_error)))
+        }
     }
 
     fun showChatInfoScreen() {

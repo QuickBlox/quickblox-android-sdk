@@ -32,7 +32,7 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.call.ViewStat
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
+import java.util.SortedSet
 import javax.inject.Inject
 
 /*
@@ -40,9 +40,11 @@ import javax.inject.Inject
  * Copyright © 2021 Quickblox. All rights reserved.
  */
 @HiltViewModel
-class CallViewModel @Inject constructor(private val chatManager: ChatManager, private val userManager: UserManager, val settingsManager: SettingsManager,
-                                        private val callManager: CallManager, private val resourcesManager: ResourcesManager,
-                                        private val connectionRepository: ConnectionRepository) : BaseViewModel() {
+class CallViewModel @Inject constructor(
+    private val chatManager: ChatManager, private val userManager: UserManager, val settingsManager: SettingsManager,
+    private val callManager: CallManager, private val resourcesManager: ResourcesManager,
+    private val connectionRepository: ConnectionRepository,
+) : BaseViewModel() {
     private val TAG: String = CallViewModel::class.java.simpleName
     private val callListener = CallListenerImpl(TAG)
     private var currentUser: QBUser? = null
@@ -109,7 +111,9 @@ class CallViewModel @Inject constructor(private val chatManager: ChatManager, pr
         if (CallService.isRunning()) {
             bindCallService()
         }
-        if (!isShowSharing()) {
+
+        val isNotSharing = !isShowSharing()
+        if (isNotSharing && callManager.isBackgroundState()) {
             setVideoEnabled(callManager.getSessionState().getVideoState())
             if (callManager.getCallType() == STREAM) {
                 liveData.setValue(Pair(ViewState.STREAM, null))
@@ -123,6 +127,7 @@ class CallViewModel @Inject constructor(private val chatManager: ChatManager, pr
                 liveData.setValue(Pair(ERROR, resourcesManager.get().getString(R.string.reconnection_failed)))
                 leaveSession()
             }
+
             ReconnectionState.COMPLETED -> {
                 liveData.setValue(Pair(RECONNECTED, null))
 
@@ -133,13 +138,19 @@ class CallViewModel @Inject constructor(private val chatManager: ChatManager, pr
                 callManager.saveVideoState()
                 setVideoEnabled(callManager.getSessionState().getVideoState())
             }
+
             ReconnectionState.IN_PROGRESS -> {
                 liveData.setValue(Pair(RECONNECTING, null))
             }
+
             ReconnectionState.DEFAULT -> {
                 // empty
             }
         }
+    }
+
+    override fun onPauseView() {
+        super.onPauseView()
     }
 
     override fun onStopView() {
@@ -406,7 +417,9 @@ class CallViewModel @Inject constructor(private val chatManager: ChatManager, pr
                     liveData.setValue(Pair(ERROR, resourcesManager.get().getString(R.string.reconnection_failed)))
                     leaveSession()
                 }
+
                 ReconnectionState.COMPLETED -> {
+                    setVideoEnabled(callManager.getSessionState().getVideoState())
                     liveData.setValue(Pair(RECONNECTED, null))
                     callManager.setDefaultReconnectionState()
                 }

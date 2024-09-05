@@ -1,5 +1,6 @@
 package com.quickblox.sample.conference.kotlin.presentation.screens.main
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -36,8 +37,10 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.settings.vide
 import com.quickblox.sample.conference.kotlin.presentation.utils.AvatarUtils
 import com.quickblox.sample.conference.kotlin.presentation.utils.convertToPx
 import com.quickblox.users.model.QBUser
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.Locale
 
 const val POPUP_MAIN_WIDTH = 200
 
@@ -46,7 +49,7 @@ const val POPUP_MAIN_WIDTH = 200
  * Copyright © 2021 Quickblox. All rights reserved.
  */
 @AndroidEntryPoint
-class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
+class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java){
     private lateinit var binding: ActivityMainBinding
     private var dialogsAdapter: DialogsAdapter? = null
     private val onScrollListenerImpl = OnScrollListenerImpl()
@@ -69,34 +72,41 @@ class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
         setAvatarClickListener()
         initScrollListeners()
 
-        viewModel.liveData.observe(this, { result ->
+        viewModel.liveData.observe(this) { result ->
             result?.let { (state, data) ->
                 when (state) {
                     PROGRESS -> {
                         showProgress()
                     }
+
                     SHOW_LOGIN_SCREEN -> {
                         LoginActivity.start(this)
                         finish()
                     }
+
                     ERROR -> {
                         hideProgress()
                         Toast.makeText(baseContext, "$data", Toast.LENGTH_SHORT).show()
                     }
+
                     MOVE_TO_FIRST_DIALOG -> {
                         dialogsAdapter?.moveToFirst(data as QBChatDialog)
                     }
+
                     LIST_DIALOGS_UPDATED -> {
                         hideProgress()
                         dialogsAdapter?.notifyDataSetChanged()
                     }
+
                     DIALOG_UPDATED -> {
                         dialogsAdapter?.notifyItemChanged(data as Int)
                     }
+
                     USER_ERROR -> {
                         Toast.makeText(baseContext, getString(R.string.user_error), Toast.LENGTH_SHORT).show()
                         viewModel.singOut()
                     }
+
                     SHOW_DIALOGS -> {
                         hideProgress()
                         dialogsAdapter?.notifyDataSetChanged()
@@ -108,16 +118,18 @@ class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
                             binding.tvPlaceHolder.visibility = View.GONE
                         }
                     }
+
                     SHOW_CHAT_SCREEN -> {
                         val dialog = data as QBChatDialog
                         ChatActivity.start(this@MainActivity, dialog.dialogId)
                     }
+
                     ViewState.SHOW_CREATE_SCREEN -> {
                         CreateChatActivity.start(this@MainActivity)
                     }
                 }
             }
-        })
+        }
     }
 
     private fun initScrollListeners() {
@@ -145,6 +157,7 @@ class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
                             dialogsAdapter?.setState(DEFAULT)
                         }
                     }
+
                     DEFAULT -> {
                         binding.toolbarMain.menu.clear()
                         binding.toolbarMain.inflateMenu(R.menu.menu_main)
@@ -187,6 +200,7 @@ class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
                 R.id.deleteDialogs -> {
                     openAlertDialog()
                 }
+
                 R.id.menuNewChat -> {
                     viewModel.showCreateScreen()
                 }
@@ -208,7 +222,8 @@ class MainActivity : BaseActivity<MainViewModel>(MainViewModel::class.java) {
             val layoutInflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val bindingPopUp = PopupMainLayoutBinding.inflate(layoutInflater)
 
-            val popupWindow = PopupWindow(bindingPopUp.root, POPUP_MAIN_WIDTH.convertToPx(), ViewGroup.LayoutParams.WRAP_CONTENT)
+            val popupWindow =
+                PopupWindow(bindingPopUp.root, POPUP_MAIN_WIDTH.convertToPx(), ViewGroup.LayoutParams.WRAP_CONTENT)
             popupWindow.isOutsideTouchable = true
             popupWindow.showAsDropDown(it)
 

@@ -1,8 +1,6 @@
 package com.quickblox.sample.conference.kotlin.data.call
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import com.quickblox.conference.ConferenceClient
 import com.quickblox.conference.ConferenceSession
 import com.quickblox.conference.WsException
@@ -18,17 +16,13 @@ import com.quickblox.videochat.webrtc.QBRTCTypes
 class CallRepositoryImpl(private val context: Context) : CallRepository {
     override fun createSession(userId: Int, callback: DataCallBack<ConferenceSession, Exception>) {
         val conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
-            ConferenceClient.getInstance(context).createSession(userId, conferenceType, object : ConferenceEntityCallback<ConferenceSession> {
+        ConferenceClient.getInstance(context).createSession(userId, conferenceType, object : ConferenceEntityCallback<ConferenceSession> {
                 override fun onSuccess(session: ConferenceSession) {
-                    Handler(Looper.getMainLooper()).post {
-                        callback.onSuccess(session, null)
-                    }
+                    callback.onSuccess(session, null)
                 }
 
                 override fun onError(exception: WsException) {
-                    Handler(Looper.getMainLooper()).post {
-                        callback.onError(exception)
-                    }
+                    callback.onError(exception)
                 }
             })
     }

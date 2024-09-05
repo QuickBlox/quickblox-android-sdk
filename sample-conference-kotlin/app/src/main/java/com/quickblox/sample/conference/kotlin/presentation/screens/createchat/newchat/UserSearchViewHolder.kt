@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.quickblox.sample.conference.kotlin.R
-import com.quickblox.sample.conference.kotlin.databinding.ItemUserBinding
 import com.quickblox.sample.conference.kotlin.databinding.ItemUserSearchBinding
 import com.quickblox.sample.conference.kotlin.presentation.utils.AvatarUtils
 import com.quickblox.users.model.QBUser
@@ -54,9 +53,14 @@ class UserSearchViewHolder(private val binding: ItemUserSearchBinding, var itemC
         }
     }
 
-    private fun fillAvatar(qbUser: QBUser) {
-        binding.tvAvatar.text = qbUser.fullName.replace(" ", "").substring(0, 1).toUpperCase(Locale.getDefault())
-        binding.ivAvatar.setImageDrawable(AvatarUtils.getDrawableAvatar(binding.root.context, qbUser.id.hashCode()))
+    private fun fillAvatar(user: QBUser) {
+       val userName = if (TextUtils.isEmpty(user.fullName)) {
+            user.login
+        } else {
+            user.fullName
+        }
+        binding.tvAvatar.text = userName.replace(" ", "").substring(0, 1).uppercase(Locale.getDefault())
+        binding.ivAvatar.setImageDrawable(AvatarUtils.getDrawableAvatar(binding.root.context, user.id.hashCode()))
     }
 
     interface ItemClickListener {

@@ -1,26 +1,31 @@
 package com.quickblox.sample.conference.kotlin.data.service
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
-import android.os.*
+import android.os.Binder
+import android.os.Build
+import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.quickblox.conference.ConferenceSession
 import com.quickblox.sample.conference.kotlin.R
 import com.quickblox.sample.conference.kotlin.domain.call.CallManager
 import com.quickblox.sample.conference.kotlin.presentation.screens.call.CallActivity
-import com.quickblox.sample.conference.kotlin.presentation.utils.Constants
-import com.quickblox.videochat.webrtc.*
-import com.quickblox.videochat.webrtc.AppRTCAudioManager.*
+import com.quickblox.videochat.webrtc.QBRTCTypes
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.Serializable
-import java.util.*
 import javax.inject.Inject
 
 private const val SERVICE_ID = 646
 private const val CHANNEL_ID = "Quickblox Conference Channel"
 private const val CHANNEL_NAME = "Quickblox Background Conference service"
+private const val EXTRA_IS_SHARING = "dialog_id"
 
 /*
  * Created by Injoit in 2021-09-30.
@@ -49,13 +54,50 @@ class CallService : Service() {
             val intent = Intent(context, CallService::class.java)
             context.stopService(intent)
         }
+
+        fun restart(context: Context, isSharing: Boolean) {
+            val intent = Intent(context, CallService::class.java)
+            context.stopService(intent)
+            intent.putExtra(EXTRA_IS_SHARING, isSharing)
+            context.startService(intent)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = buildNotification()
-        startForeground(SERVICE_ID, notification)
-        running = true
+
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                val currentSession = callManager.getSession()
+                val isSharingScreen = intent?.getBooleanExtra(EXTRA_IS_SHARING, false)
+                val foregroundServiceType = getServiceType(isVideoSession(currentSession), isSharingScreen)
+                startForeground(SERVICE_ID, notification, foregroundServiceType)
+            } else {
+                startForeground(SERVICE_ID, notification);
+            }
+            running = true
+        } catch (exception: RuntimeException) {
+            // handle exception.
+        }
+
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private fun getServiceType(isVideoSession: Boolean, isSharingScreen: Boolean?): Int {
+        return if (isVideoSession) {
+            if (isSharingScreen == true) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
+            } else {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
+            }
+        } else {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+        }
+    }
+
+    private fun isVideoSession(session: ConferenceSession?): Boolean {
+        return session != null && session.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
     }
 
     override fun onDestroy() {
@@ -69,13 +111,21 @@ class CallService : Service() {
 
     private fun buildNotification(): Notification {
         val notifyIntent = Intent(this, CallActivity::class.java)
-        val notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        var intentFlag = 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intentFlag = PendingIntent.FLAG_IMMUTABLE
+        }
+        val notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, intentFlag)
         val notificationTitle = getString(R.string.notification_title)
         val notificationText = getString(R.string.notification_text, "")
         val bigTextStyle = NotificationCompat.BigTextStyle()
         bigTextStyle.setBigContentTitle(notificationTitle)
         bigTextStyle.bigText(notificationText)
-        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel(CHANNEL_ID, CHANNEL_NAME) else getString(R.string.app_name)
+        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel(
+            CHANNEL_ID,
+            CHANNEL_NAME
+        ) else getString(R.string.app_name)
         val builder = NotificationCompat.Builder(this, channelId)
         builder.setStyle(bigTextStyle)
         builder.setContentTitle(notificationTitle)
@@ -90,6 +140,7 @@ class CallService : Service() {
         } else {
             builder.priority = Notification.PRIORITY_LOW
         }
+
         builder.setContentIntent(notifyPendingIntent)
         return builder.build()
     }

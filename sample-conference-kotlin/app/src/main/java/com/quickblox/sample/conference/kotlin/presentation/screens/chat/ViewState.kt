@@ -10,7 +10,6 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewStat
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LEAVE
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.LOADER_PROGRESS_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_SHOWED
-import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGES_UPDATED
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.MESSAGE_SENT
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.RECEIVED_MESSAGE
 import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewState.Companion.PROGRESS
@@ -25,7 +24,7 @@ import com.quickblox.sample.conference.kotlin.presentation.screens.chat.ViewStat
  * Copyright © 2021 Quickblox. All rights reserved.
  */
 @IntDef(PROGRESS, ERROR, MESSAGES_SHOWED, RECEIVED_MESSAGE, LOADER_PROGRESS_UPDATED, MESSAGE_SENT, SHOW_ATTACHMENT_SCREEN,
-        ERROR_UPLOAD, LEAVE, FILE_SHOWED, FILE_DELETED, MESSAGES_UPDATED, SHOW_CALL_SCREEN, UPDATE_TOOLBAR, ERROR_LOAD_ATTACHMENT,
+        ERROR_UPLOAD, LEAVE, FILE_SHOWED, FILE_DELETED, SHOW_CALL_SCREEN, UPDATE_TOOLBAR, ERROR_LOAD_ATTACHMENT,
         SHOW_LOGIN_SCREEN, SHOW_INFO_SCREEN, FILE_LOADED)
 annotation class ViewState {
     companion object {
@@ -40,12 +39,11 @@ annotation class ViewState {
         const val FILE_SHOWED = 9
         const val ERROR_UPLOAD = 10
         const val FILE_DELETED = 11
-        const val MESSAGES_UPDATED = 12
-        const val SHOW_CALL_SCREEN = 13
-        const val UPDATE_TOOLBAR = 14
-        const val ERROR_LOAD_ATTACHMENT = 15
-        const val SHOW_LOGIN_SCREEN = 16
-        const val SHOW_INFO_SCREEN = 17
-        const val FILE_LOADED = 18
+        const val SHOW_CALL_SCREEN = 12
+        const val UPDATE_TOOLBAR = 13
+        const val ERROR_LOAD_ATTACHMENT = 14
+        const val SHOW_LOGIN_SCREEN = 15
+        const val SHOW_INFO_SCREEN = 16
+        const val FILE_LOADED = 17
     }
 }

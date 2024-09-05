@@ -238,7 +238,7 @@ class ChatAdapter(private val chatMessages: ArrayList<ChatMessage>, private val 
             return false
         }
         var chatMessage: ChatMessage? = null
-        if (chatMessages.isNotEmpty()) {
+        if (chatMessages.isNotEmpty() && itemPosition < chatMessages.size) {
             chatMessage = chatMessages[itemPosition]
         }
         return chatMessage?.type == 1

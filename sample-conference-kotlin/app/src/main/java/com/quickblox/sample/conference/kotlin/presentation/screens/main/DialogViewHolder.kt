@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.quickblox.chat.model.QBChatDialog
@@ -31,15 +30,15 @@ class DialogViewHolder(private val binding: ItemDialogBinding, var itemListener:
         }
     }
 
-    fun bind(qbChatDialog: QBChatDialog, position: Int, adapterState: Int, selected: Boolean) {
+    fun bind(chatDialog: QBChatDialog, position: Int, adapterState: Int, selected: Boolean) {
         this.selected = selected
-        changeState(adapterState, qbChatDialog)
+        changeState(adapterState, chatDialog)
 
-        binding.tvDialogName.text = qbChatDialog.name
-        binding.tvLastMessage.text = getLastMessage(qbChatDialog)
-        binding.tvTime.text = getDialogLastMessageTime(qbChatDialog.lastMessageDateSent)
+        binding.tvDialogName.text = chatDialog.name
+        binding.tvLastMessage.text = getLastMessage(chatDialog)
+        binding.tvTime.text = getDialogLastMessageTime(chatDialog.lastMessageDateSent)
 
-        fillAvatar(qbChatDialog, position)
+        fillAvatar(chatDialog, position)
 
         if (this.selected) {
             binding.checkbox.isChecked = true
@@ -106,16 +105,16 @@ class DialogViewHolder(private val binding: ItemDialogBinding, var itemListener:
         }
     }
 
-    private fun fillAvatar(qbChatDialog: QBChatDialog, position: Int) {
-        binding.tvAvatar.text = qbChatDialog.name.replace(" ", "").substring(0, 1).toUpperCase(Locale.getDefault())
+    private fun fillAvatar(chatDialog: QBChatDialog, position: Int) {
+        binding.tvAvatar.text = chatDialog.name.replace(" ", "").substring(0, 1).uppercase(Locale.getDefault())
         binding.ivAvatar.setImageDrawable(AvatarUtils.getDrawableAvatar(binding.root.context, position))
     }
 
-    private fun getLastMessage(qbChatDialog: QBChatDialog): String {
-        return if (TextUtils.isEmpty(qbChatDialog.lastMessage) && qbChatDialog.lastMessageUserId != null) {
+    private fun getLastMessage(chatDialog: QBChatDialog): String {
+        return if (TextUtils.isEmpty(chatDialog.lastMessage) && chatDialog.lastMessageUserId != null) {
             binding.root.context.getString(R.string.chat_attachment)
         } else {
-            qbChatDialog.lastMessage ?: ""
+            chatDialog.lastMessage ?: ""
         }
     }
 
