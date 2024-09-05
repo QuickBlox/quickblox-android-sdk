@@ -4,9 +4,9 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.KeyguardManager
 import android.content.*
+import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.*
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -24,6 +24,10 @@ import com.quickblox.sample.videochat.kotlin.utils.*
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.*
+import com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_NEW
+import com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState.QB_RTC_SESSION_PENDING
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState
+import com.quickblox.videochat.webrtc.audio.QBAudioManager
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
@@ -33,10 +37,11 @@ import org.jivesoftware.smack.AbstractConnectionListener
 import org.jivesoftware.smack.ConnectionListener
 import org.webrtc.CameraVideoCapturer
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 private const val INCOME_CALL_FRAGMENT = "income_call_fragment"
 private const val REQUEST_PERMISSION_SETTING = 545
+private const val REQUEST_SHARING_MEDIA_PROJECTION = 1060
 
 class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSessionStateCallback<QBRTCSession>,
     QBRTCClientSessionCallbacks, ConversationFragmentCallback, ScreenShareFragment.OnSharingEvents {
@@ -83,6 +88,32 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             )
         }
         connectionView = View.inflate(this, R.layout.connection_popup, null) as LinearLayout
+
+        val isVideoCall = isVideoSession()
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU && isVideoCall && isNewSession()) {
+            requestSharingPermissions(this)
+            return
+        }
+
+        CallService.start(this)
+    }
+
+    private fun isNewSession(): Boolean {
+        val currentSession: QBRTCSession? = WebRtcSessionManager.getCurrentSession()
+        return currentSession != null && currentSession.state == QB_RTC_SESSION_NEW || currentSession?.state == QB_RTC_SESSION_PENDING
+    }
+
+    private fun isVideoSession(): Boolean {
+        val currentSession: QBRTCSession? = WebRtcSessionManager.getCurrentSession()
+        return currentSession != null && currentSession.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+    }
+
+    private fun requestSharingPermissions(context: Activity) {
+        val mMediaProjectionManager = context.getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        context.startActivityForResult(
+            mMediaProjectionManager.createScreenCaptureIntent(),
+            REQUEST_SHARING_MEDIA_PROJECTION
+        )
     }
 
     private fun initScreen() {
@@ -156,6 +187,14 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             data?.let {
                 startScreenSharing(it)
                 Log.i(TAG, "Starting screen capture")
+            }
+        }
+
+        if (requestCode == REQUEST_SHARING_MEDIA_PROJECTION) {
+            if (resultCode == Activity.RESULT_OK) {
+                CallService.start(this)
+            } else {
+                finish()
             }
         }
     }
@@ -323,7 +362,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     override fun onBackPressed() {
-        // to prevent returning from Call Fragment
+        super.onBackPressed()
     }
 
     private fun addIncomeCallFragment() {
@@ -423,6 +462,10 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
             val participantName = if (participant != null) participant.fullName else userId.toString()
             shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation")
         }
+    }
+
+    override fun onChangeReconnectionState(p0: QBRTCSession?, p1: Int?, p2: QBRTCTypes.QBRTCReconnectionState?) {
+        // empty
     }
 
     override fun onCallAcceptByUser(session: QBRTCSession?, userId: Int?, map: MutableMap<String, String>?) {
@@ -598,6 +641,10 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
         return callService.getVideoTrack(userId)
     }
 
+    override fun getState(userId: Int): QBRTCReconnectionState? {
+        return callService.getState(userId)
+    }
+
     override fun onStopPreview() {
         callService.stopScreenSharing()
         addConversationFragment(isInComingCall)
@@ -652,7 +699,7 @@ class CallActivity : BaseActivity(), IncomeCallFragmentCallbackListener, QBRTCSe
     }
 
     interface OnChangeAudioDevice {
-        fun audioDeviceChanged(newAudioDevice: AppRTCAudioManager.AudioDevice)
+        fun audioDeviceChanged(newAudioDevice: QBAudioManager.AudioDevice)
     }
 
     interface CallStateListener {

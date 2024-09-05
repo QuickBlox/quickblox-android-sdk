@@ -1,6 +1,8 @@
 package com.quickblox.sample.videochat.kotlin.activities
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -8,18 +10,23 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.services.LoginService
 import com.quickblox.sample.videochat.kotlin.utils.SharedPrefsHelper
 import com.quickblox.sample.videochat.kotlin.utils.isMiUi
 import com.quickblox.sample.videochat.kotlin.utils.longToast
 
+
 private const val SPLASH_DELAY = 1500
 
 private const val OVERLAY_PERMISSION_CHECKED_KEY = "overlay_checked"
 private const val MI_OVERLAY_PERMISSION_CHECKED_KEY = "mi_overlay_checked"
 private const val ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1764
+private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1010
 
 class SplashActivity : BaseActivity() {
     private val TAG = SplashActivity::class.java.simpleName
@@ -31,8 +38,34 @@ class SplashActivity : BaseActivity() {
         fillVersion()
         supportActionBar?.hide()
 
+        checkNotificationPermission()
+
         if (checkOverlayPermissions()) {
             runNextScreen()
+        }
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val isNotificationPermissionDenied = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_DENIED
+            if (isNotificationPermissionDenied) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf<String>(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE && grantResults.size > 0 && grantResults[0] != 0) {
+            longToast(getString(R.string.permission_unavailable, Manifest.permission.POST_NOTIFICATIONS))
         }
     }
 

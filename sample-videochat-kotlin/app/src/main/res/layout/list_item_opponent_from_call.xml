@@ -54,5 +54,6 @@
         style="@style/MatchWidth"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
+        android:indeterminateTint="@color/color_blue_qb"
         android:visibility="visible" />
 </RelativeLayout>

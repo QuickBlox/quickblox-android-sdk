@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp">
+
+    <TextView
+        android:id="@+id/title_name"
+        style="@style/WrapContent"
+        android:text="name: "
+        android:textColor="@color/text_color_also_on_call"
+        android:textSize="@dimen/also_on_call_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/WrapContent"
+        android:gravity="center"
+        android:textColor="@color/text_color_other_inc_users"
+        android:textSize="@dimen/other_inc_users_text_size"
+        app:layout_constraintStart_toEndOf="@+id/title_name"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="User1" />
+
+    <TextView
+        android:id="@+id/title_status"
+        style="@style/WrapContent"
+        android:layout_marginTop="8dp"
+        android:text="status: "
+        android:textColor="@color/text_color_also_on_call"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <TextView
+        android:id="@+id/status"
+        style="@style/WrapContent"
+        android:gravity="center"
+        android:textColor="@color/text_color_other_inc_users"
+        android:textSize="@dimen/other_inc_users_text_size"
+        app:layout_constraintStart_toEndOf="@+id/title_status"
+        app:layout_constraintTop_toTopOf="@+id/title_status"
+        tools:text="Connected" />
+</androidx.constraintlayout.widget.ConstraintLayout>

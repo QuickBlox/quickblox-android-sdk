@@ -18,11 +18,13 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.QBRTCTypes
 import com.quickblox.videochat.webrtc.view.QBRTCSurfaceView
 
-class OpponentsFromCallAdapter(val context: Context,
-                               private val baseConversationFragment: BaseConversationFragment,
-                               users: List<QBUser>,
-                               private val width: Int,
-                               private val height: Int) : RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder>() {
+class OpponentsFromCallAdapter(
+    val context: Context,
+    private val baseConversationFragment: BaseConversationFragment,
+    users: List<QBUser>,
+    private val width: Int,
+    private val height: Int,
+) : RecyclerView.Adapter<OpponentsFromCallAdapter.ViewHolder>() {
 
     private val TAG = OpponentsFromCallAdapter::class.java.simpleName
 
@@ -131,6 +133,14 @@ class OpponentsFromCallAdapter(val context: Context,
 
         fun getProgressBar(): ProgressBar {
             return progressBar
+        }
+
+        fun showProgressBar() {
+            progressBar.visibility = View.VISIBLE
+        }
+
+        fun hideProgressBar() {
+            progressBar.visibility = View.GONE
         }
 
         fun getOpponentView(): QBRTCSurfaceView {

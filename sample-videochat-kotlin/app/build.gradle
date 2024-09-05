@@ -3,18 +3,10 @@ buildscript {
         google()
         mavenCentral()
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
-    }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-
-androidExtensions {
-    experimental = true
-}
 
 repositories {
     google()
@@ -26,20 +18,19 @@ repositories {
 
 android {
     def versionQACode = 1
-
-    compileSdkVersion 31
-    buildToolsVersion "31.0.0"
-    flavorDimensions "default"
+    namespace 'com.quickblox.sample.videochat.kotlin'
 
     defaultConfig {
+        compileSdk 34
         applicationId "com.quickblox.sample.videochat.kotlin"
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 410000
-        versionName '4.1.0'
+        targetSdkVersion 34
+        versionCode 420000
+        versionName '4.2.0'
         multiDexEnabled true
     }
 
+    flavorDimensions "default"
     productFlavors {
         dev {
             dimension "default"
@@ -81,19 +72,19 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        abortOnError false
     }
 }
 
 dependencies {
-    implementation 'com.quickblox:quickblox-android-sdk-videochat-webrtc:3.10.1'
-    implementation 'com.quickblox:quickblox-android-sdk-messages:3.10.1'
+    implementation 'com.quickblox:quickblox-android-sdk-videochat-webrtc:4.1.3'
+    implementation 'com.quickblox:quickblox-android-sdk-messages:4.1.3'
     implementation 'com.google.firebase:firebase-core:21.1.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'com.github.johnkil.android-robototextview:robototextview:4.0.0'

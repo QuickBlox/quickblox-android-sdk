@@ -23,6 +23,8 @@ import com.quickblox.users.model.QBUser
 import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.QBRTCSession
 import com.quickblox.videochat.webrtc.QBRTCTypes
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState.*
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
@@ -69,6 +71,8 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     private var allCallbacksInit: Boolean = false
     private var isCurrentCameraFront: Boolean = false
     private var isLocalVideoFullScreen: Boolean = false
+
+    private var reconnectionProgress: LinearLayout? = null
 
     override fun getFragmentLayout(): Int {
         return R.layout.fragment_video_conversation
@@ -182,7 +186,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
     }
 
     override fun configureOutgoingScreen() {
-        outgoingOpponentsRelativeLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_transparent_50))
+        outgoingOpponentsRelativeLayout.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.grey_transparent_50
+            )
+        )
         allOpponentsTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
         ringingTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
     }
@@ -289,6 +298,9 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         gridWidth?.let {
             val cellSizeWidth = defineSize(it, columnsCount, itemMargin)
             Log.i(TAG, "onGlobalLayout : cellSize=$cellSizeWidth")
+
+            opponents.removeAt(0)
+
             opponentsAdapter = OpponentsFromCallAdapter(
                 requireContext(), this, opponents, cellSizeWidth,
                 resources.getDimension(R.dimen.item_height).toInt()
@@ -404,17 +416,19 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         isLocalVideoFullScreen = false
     }
 
-    override fun onRemoteVideoTrackReceive(session: QBRTCSession?, videoTrack: QBRTCVideoTrack, userID: Int?) {
-        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= $userID")
-        userID?.let {
+    override fun onRemoteVideoTrackReceive(session: QBRTCSession?, videoTrack: QBRTCVideoTrack, userId: Int?) {
+        Log.d(TAG, "onRemoteVideoTrackReceive for opponent= $userId")
+        userId?.let {
             if (isPeerToPeerCall) {
                 setDuringCallActionBar()
                 remoteFullScreenVideoView?.let {
-                    fillVideoView(remoteFullScreenVideoView, videoTrack, true)
+                    fillVideoView(userId, remoteFullScreenVideoView, videoTrack)
                     updateVideoView(remoteFullScreenVideoView, false)
                 }
             } else {
-                mainHandler?.postDelayed({ setRemoteViewMultiCall(it, videoTrack) }, LOCAL_TRACK_INITIALIZE_DELAY)
+                mainHandler?.postDelayed({
+                    setRemoteViewMultiCall(it, videoTrack)
+                }, LOCAL_TRACK_INITIALIZE_DELAY)
             }
         }
     }
@@ -460,50 +474,51 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
 
     private fun swapUsersFullscreenToPreview(holder: OpponentsFromCallAdapter.ViewHolder, userId: Int) {
         val videoTrack = conversationFragmentCallback?.getVideoTrackMap()?.get(userId)
+
         val videoTrackFullScreen = conversationFragmentCallback?.getVideoTrackMap()?.get(userIdFullScreen)
 
         val videoView = holder.getOpponentView()
 
         videoTrack?.let {
-            fillVideoView(userId, remoteFullScreenVideoView, videoTrack);
-            val user: QBUser? = QbUsersDbManager.getUserById(userIdFullScreen)
+            fillVideoView(userId, remoteFullScreenVideoView, videoTrack)
+            val user: QBUser? = QbUsersDbManager.getUserById(userId)
             val name = user?.fullName ?: user?.login
             tvFullNameUser.text = name
         }
 
         if (videoTrackFullScreen != null) {
-            fillVideoView(0, videoView, videoTrackFullScreen)
+            fillVideoView(videoView, videoTrackFullScreen, true)
         } else {
             holder.getOpponentView().setBackgroundColor(Color.BLACK)
             remoteFullScreenVideoView?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 
-    private fun setRemoteViewMultiCall(userID: Int, videoTrack: QBRTCVideoTrack) {
+    private fun setRemoteViewMultiCall(userId: Int, videoTrack: QBRTCVideoTrack) {
         Log.d(TAG, "setRemoteViewMultiCall fillVideoView")
-        val itemHolder = getViewHolderForOpponent(userID)
-        if (itemHolder == null) {
-            Log.d(TAG, "itemHolder == null - true")
-            return
-        }
-        val remoteVideoView = itemHolder.getOpponentView()
-        remoteVideoView.setZOrderMediaOverlay(true)
-        updateVideoView(remoteVideoView, false)
+        val itemHolder = getViewHolderForOpponent(userId)
 
-        Log.d(TAG, "onRemoteVideoTrackReceive fillVideoView")
-        if (isRemoteShown) {
-            Log.d(TAG, "onRemoteVideoTrackReceive User = $userID")
-            fillVideoView(remoteVideoView, videoTrack, true)
-            showRecyclerView();
-        } else {
-            isRemoteShown = true
-            itemHolder.getOpponentView().release()
-            opponentsAdapter.removeItem(itemHolder.adapterPosition)
-            remoteFullScreenVideoView?.let {
-                fillVideoView(userID, it, videoTrack)
+        if (itemHolder == null || userIdFullScreen == userId) {
+            if (remoteFullScreenVideoView != null) {
+                fillVideoView(userId, remoteFullScreenVideoView, videoTrack)
                 updateVideoView(remoteFullScreenVideoView, false)
+                val state = conversationFragmentCallback?.getState(userId)
+                if (state == QB_RTC_RECONNECTION_STATE_RECONNECTING) {
+                    reconnectionProgress?.visibility = View.VISIBLE
+                }
             }
             setDuringCallActionBar()
+        } else {
+            val remoteVideoView = itemHolder.getOpponentView()
+            remoteVideoView.setZOrderMediaOverlay(true)
+            updateVideoView(remoteVideoView, false)
+            fillVideoView(remoteVideoView, videoTrack, true)
+            showRecyclerView()
+            val state = conversationFragmentCallback?.getState(userId)
+            if (state == QB_RTC_RECONNECTION_STATE_RECONNECTING) {
+                itemHolder.showProgressBar()
+                itemHolder.setStatus(getString(R.string.reconnecting_status))
+            }
         }
     }
 
@@ -577,9 +592,8 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
      * @param userId set userId if it from fullscreen videoTrack
      */
     private fun fillVideoView(userId: Int, videoView: QBRTCSurfaceView?, videoTrack: QBRTCVideoTrack) {
-        if (userId != 0) {
-            userIdFullScreen = userId
-        }
+        userIdFullScreen = userId
+
         fillVideoView(videoView, videoTrack, true)
     }
 
@@ -675,6 +689,41 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
         }
     }
 
+    override fun onChangeReconnectionState(
+        qbRtcSession: QBRTCSession?,
+        userId: Int,
+        qbrtcReconnectionState: QBRTCReconnectionState,
+    ) {
+        var holder: OpponentsFromCallAdapter.ViewHolder? = null
+        if (!isPeerToPeerCall) {
+            holder = getViewHolderForOpponent(userId)
+        }
+        when (qbrtcReconnectionState) {
+            QB_RTC_RECONNECTION_STATE_RECONNECTING -> {
+                if (userIdFullScreen == userId) {
+                    reconnectionProgress?.visibility = View.VISIBLE
+                    return
+                }
+                if (holder == null) {
+                    return
+                }
+                holder.showProgressBar()
+                holder.setStatus(getString(R.string.reconnecting_status))
+            }
+
+            QB_RTC_RECONNECTION_STATE_RECONNECTED, QB_RTC_RECONNECTION_STATE_FAILED -> {
+                if (userIdFullScreen == userId) {
+                    reconnectionProgress?.visibility = View.GONE
+                    return
+                }
+                if (holder == null) {
+                    return
+                }
+                holder.hideProgressBar()
+            }
+        }
+    }
+
     override fun onSessionClosed(session: QBRTCSession) {
         // empty
     }
@@ -721,10 +770,12 @@ class VideoConversationFragment : BaseConversationFragment(), Serializable,
                 switchCamera(item)
                 return true
             }
+
             R.id.screen_share -> {
                 startScreenSharing()
                 return true
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }

@@ -1,13 +1,17 @@
 package com.quickblox.sample.videochat.kotlin.services
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -21,17 +25,40 @@ import com.quickblox.sample.videochat.kotlin.fragments.IS_CURRENT_CAMERA_FRONT
 import com.quickblox.sample.videochat.kotlin.fragments.MIC_ENABLED
 import com.quickblox.sample.videochat.kotlin.fragments.SPEAKER_ENABLED
 import com.quickblox.sample.videochat.kotlin.util.NetworkConnectionChecker
-import com.quickblox.sample.videochat.kotlin.utils.*
-import com.quickblox.videochat.webrtc.*
+import com.quickblox.sample.videochat.kotlin.utils.EXTRA_IS_INCOMING_CALL
+import com.quickblox.sample.videochat.kotlin.utils.RingtonePlayer
+import com.quickblox.sample.videochat.kotlin.utils.SharedPrefsHelper
+import com.quickblox.sample.videochat.kotlin.utils.WebRtcSessionManager
+import com.quickblox.sample.videochat.kotlin.utils.applyRTCSettings
+import com.quickblox.sample.videochat.kotlin.utils.longToast
+import com.quickblox.sample.videochat.kotlin.utils.shortToast
+import com.quickblox.users.model.QBUser
+import com.quickblox.videochat.webrtc.BaseSession
 import com.quickblox.videochat.webrtc.BaseSession.QBRTCSessionState
-import com.quickblox.videochat.webrtc.callbacks.*
+import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer
+import com.quickblox.videochat.webrtc.QBRTCClient
+import com.quickblox.videochat.webrtc.QBRTCScreenCapturer
+import com.quickblox.videochat.webrtc.QBRTCSession
+import com.quickblox.videochat.webrtc.QBRTCTypes
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState.QB_RTC_RECONNECTION_STATE_FAILED
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState.QB_RTC_RECONNECTION_STATE_RECONNECTED
+import com.quickblox.videochat.webrtc.QBRTCTypes.QBRTCReconnectionState.QB_RTC_RECONNECTION_STATE_RECONNECTING
+import com.quickblox.videochat.webrtc.QBSignalingSpec
+import com.quickblox.videochat.webrtc.audio.QBAudioManager
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientSessionCallbacks
+import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionEventsCallback
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback
+import com.quickblox.videochat.webrtc.callbacks.QBRTCSignalingCallback
 import com.quickblox.videochat.webrtc.exception.QBRTCSignalException
 import com.quickblox.videochat.webrtc.view.QBRTCVideoTrack
 import org.jivesoftware.smack.AbstractConnectionListener
 import org.jivesoftware.smack.ConnectionListener
 import org.webrtc.CameraVideoCapturer
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Timer
+import java.util.TimerTask
+
 
 const val SERVICE_ID = 787
 const val CHANNEL_ID = "Quickblox channel"
@@ -51,7 +78,7 @@ class CallService : Service() {
     private lateinit var sessionStateListener: SessionStateListener
     private lateinit var signalingListener: QBRTCSignalingListener
     private lateinit var videoTrackListener: VideoTrackListener
-    private lateinit var appRTCAudioManager: AppRTCAudioManager
+    private lateinit var appRTCAudioManager: QBAudioManager
     private var callTimerListener: CallTimerListener? = null
     private var ringtonePlayer: RingtonePlayer? = null
     private var currentSession: QBRTCSession? = null
@@ -59,6 +86,9 @@ class CallService : Service() {
     private var sharingScreenState: Boolean = false
     private var isConnectedCall: Boolean = false
     private lateinit var rtcClient: QBRTCClient
+
+    private var currentUser: QBUser? = null
+    private val reconnections: HashMap<Int, QBRTCReconnectionState> = HashMap()
 
     private val callTimerTask: CallTimerTask = CallTimerTask()
     private var callTime: Long? = null
@@ -83,14 +113,45 @@ class CallService : Service() {
         initRTCClient()
         initListeners()
         initAudioManager()
+        initCurrentUser()
         ringtonePlayer = RingtonePlayer(this, R.raw.beep)
         super.onCreate()
     }
 
+    private fun initCurrentUser() {
+        currentUser = QBChatService.getInstance().user
+        if (currentUser == null) {
+            currentUser = SharedPrefsHelper.getCurrentUser()
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = initNotification()
-        startForeground(SERVICE_ID, notification)
+
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                val foregroundServiceType = getServiceType(isVideoSession(currentSession))
+                startForeground(SERVICE_ID, notification, foregroundServiceType)
+            } else {
+                startForeground(SERVICE_ID, notification)
+            }
+        } catch (exception: RuntimeException) {
+            shortToast(exception.message ?: "")
+        }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun getServiceType(isVideoSession: Boolean): Int {
+        return if (isVideoSession) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+        } else {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+        }
+    }
+
+    private fun isVideoSession(session: QBRTCSession?): Boolean {
+        return session != null && session.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
     }
 
     override fun onDestroy() {
@@ -113,6 +174,14 @@ class CallService : Service() {
         return callServiceBinder
     }
 
+    fun getState(userId: Int?): QBRTCReconnectionState? {
+        return reconnections[userId]
+    }
+
+    fun getCurrentUser(): QBUser? {
+        return currentUser
+    }
+
     private fun initNotification(): Notification {
         var intentFlag = 0
 
@@ -124,8 +193,10 @@ class CallService : Service() {
             intentFlag = PendingIntent.FLAG_IMMUTABLE
         }
 
-        val notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent,
-            intentFlag)
+        val notifyPendingIntent = PendingIntent.getActivity(
+            this, 0, notifyIntent,
+            intentFlag
+        )
 
         val notificationTitle = getString(R.string.notification_title)
         var notificationText = getString(R.string.notification_text, "")
@@ -232,7 +303,7 @@ class CallService : Service() {
     }
 
     private fun initAudioManager() {
-        appRTCAudioManager = AppRTCAudioManager.create(this)
+        appRTCAudioManager = QBAudioManager.create(this)
 
         appRTCAudioManager.setOnWiredHeadsetStateListener { plugged, hasMicrophone ->
             shortToast("Headset " + if (plugged) "plugged" else "unplugged")
@@ -247,7 +318,7 @@ class CallService : Service() {
         }
 
         if (currentSessionExist() && currentSession!!.conferenceType == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO) {
-            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+            appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.EARPIECE)
         }
     }
 
@@ -391,15 +462,15 @@ class CallService : Service() {
 
     fun switchAudio() {
         Log.v(TAG, "onSwitchAudio(), SelectedAudioDevice() = " + appRTCAudioManager.selectedAudioDevice)
-        if (appRTCAudioManager.selectedAudioDevice != AppRTCAudioManager.AudioDevice.SPEAKER_PHONE) {
-            appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)
+        if (appRTCAudioManager.selectedAudioDevice != QBAudioManager.AudioDevice.SPEAKER_PHONE) {
+            appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.SPEAKER_PHONE)
         } else {
-            if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.BLUETOOTH)) {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.BLUETOOTH)
-            } else if (appRTCAudioManager.audioDevices.contains(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)) {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.WIRED_HEADSET)
+            if (appRTCAudioManager.audioDevices.contains(QBAudioManager.AudioDevice.BLUETOOTH)) {
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.BLUETOOTH)
+            } else if (appRTCAudioManager.audioDevices.contains(QBAudioManager.AudioDevice.WIRED_HEADSET)) {
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.WIRED_HEADSET)
             } else {
-                appRTCAudioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE)
+                appRTCAudioManager.selectAudioDevice(QBAudioManager.AudioDevice.EARPIECE)
             }
         }
     }
@@ -521,7 +592,7 @@ class CallService : Service() {
             if (session == WebRtcSessionManager.getCurrentSession()) {
                 val numberOpponents = session?.opponents?.size
                 if (numberOpponents == MIN_OPPONENT_SIZE || session?.state == QBRTCSessionState.QB_RTC_SESSION_PENDING) {
-                    if (userID?.equals(session.callerID) == true){
+                    if (userID?.equals(session.callerID) == true) {
                         currentSession?.hangUp(HashMap<String, String>())
                     }
                 } else {
@@ -535,6 +606,22 @@ class CallService : Service() {
             val participantName = if (participant != null) participant.fullName else userID.toString()
 
             shortToast("User " + participantName + " " + getString(R.string.text_status_hang_up) + " conversation")
+        }
+
+        override fun onChangeReconnectionState(
+            qbrtcSession: QBRTCSession?,
+            userId: Int,
+            qbrtcReconnectionState: QBRTCReconnectionState,
+        ) {
+            when (qbrtcReconnectionState) {
+                QB_RTC_RECONNECTION_STATE_RECONNECTING -> longToast(getString(R.string.reconnecting, userId))
+
+                QB_RTC_RECONNECTION_STATE_RECONNECTED -> longToast(getString(R.string.reconnected, userId))
+
+                QB_RTC_RECONNECTION_STATE_FAILED -> longToast(getString(R.string.reconnection_failed, userId))
+            }
+
+            reconnections[userId] = qbrtcReconnectionState
         }
 
         override fun onCallAcceptByUser(session: QBRTCSession?, p1: Int?, p2: MutableMap<String, String>?) {

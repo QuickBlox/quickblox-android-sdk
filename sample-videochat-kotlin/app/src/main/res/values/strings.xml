@@ -138,4 +138,11 @@
     <string name="error_permission_video">You should allow Camera permission</string>
     <string name="error_permission_audio">You should allow Microphone permission</string>
     <string name="error_get_permission">Error getting permissions</string>
+
+    <!-- Reconnection -->
+    <string name="reconnecting">User %1$d reconnecting</string>
+    <string name="reconnected">User %1$d reconnected</string>
+    <string name="reconnection_failed">User %1$d reconnection failed</string>
+
+    <string name="reconnecting_status">Reconnecting</string>
 </resources>

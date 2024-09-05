@@ -4,13 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.quickblox.sample.videochat.kotlin.R
 import com.quickblox.sample.videochat.kotlin.utils.getColor
 import com.quickblox.sample.videochat.kotlin.utils.getColorCircleDrawable
 import com.quickblox.sample.videochat.kotlin.utils.getColoredCircleDrawable
 import com.quickblox.users.model.QBUser
-import kotlinx.android.synthetic.main.item_opponents_list.view.*
 
 class UsersAdapter(private val context: Context, private var usersList: ArrayList<QBUser>) :
     RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
@@ -31,7 +33,8 @@ class UsersAdapter(private val context: Context, private var usersList: ArrayLis
         if (_selectedUsers.contains(user)) {
             holder.rootLayout.setBackgroundResource(R.color.background_color_selected_user_item)
             holder.opponentIcon.setBackgroundDrawable(
-                    getColoredCircleDrawable(getColor(R.color.icon_background_color_selected_user)))
+                getColoredCircleDrawable(getColor(R.color.icon_background_color_selected_user))
+            )
             holder.opponentIcon.setImageResource(R.drawable.ic_checkmark)
         } else {
             holder.rootLayout.setBackgroundResource(R.color.background_color_normal_user_item)
@@ -48,7 +51,7 @@ class UsersAdapter(private val context: Context, private var usersList: ArrayLis
         return usersList.size
     }
 
-    fun updateUsersList (usersList: ArrayList<QBUser>) {
+    fun updateUsersList(usersList: ArrayList<QBUser>) {
         this.usersList = usersList
         notifyDataSetChanged()
     }
@@ -80,9 +83,9 @@ class UsersAdapter(private val context: Context, private var usersList: ArrayLis
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val opponentIcon = view.image_opponent_icon
-        val opponentName = view.opponents_name
-        val rootLayout = view.root_layout
+        val opponentIcon = itemView.findViewById<ImageView>(R.id.image_opponent_icon)
+        val opponentName = itemView.findViewById<TextView>(R.id.opponents_name)
+        val rootLayout = itemView.findViewById<LinearLayout>(R.id.root_layout)
     }
 
     interface SelectedItemsCountsChangedListener {

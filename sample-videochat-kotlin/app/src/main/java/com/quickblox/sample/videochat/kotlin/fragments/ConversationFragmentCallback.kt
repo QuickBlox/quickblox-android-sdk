@@ -78,4 +78,6 @@ interface ConversationFragmentCallback {
     fun getVideoTrackMap(): MutableMap<Int, QBRTCVideoTrack>
 
     fun getVideoTrack(userId: Int): QBRTCVideoTrack?
+
+    fun getState(userId: Int): QBRTCTypes.QBRTCReconnectionState?
 }
