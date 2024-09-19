@@ -186,19 +186,14 @@ public class ChatHelper {
                                   final List<QBUser> newQbDialogUsersList,
                                   QBEntityCallback<QBChatDialog> callback) {
         List<QBUser> addedUsers = QBDialogUtils.getAddedUsers(context, currentUser, qbDialog, newQbDialogUsersList);
-        List<QBUser> removedUsers = QBDialogUtils.getRemovedUsers(context, currentUser, qbDialog, newQbDialogUsersList);
 
         QBDialogUtils.logDialogUsers(context, qbDialog);
         QBDialogUtils.logUsers(addedUsers);
         Log.w(TAG, "=======================");
-        QBDialogUtils.logUsers(removedUsers);
 
         QBDialogRequestBuilder qbRequestBuilder = new QBDialogRequestBuilder();
         if (!addedUsers.isEmpty()) {
             qbRequestBuilder.addUsers(addedUsers.toArray(new QBUser[addedUsers.size()]));
-        }
-        if (!removedUsers.isEmpty()) {
-            qbRequestBuilder.removeUsers(removedUsers.toArray(new QBUser[removedUsers.size()]));
         }
 
         QBRestChatService.updateChatDialog(qbDialog, qbRequestBuilder).performAsync(new QBEntityCallback<QBChatDialog>() {

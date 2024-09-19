@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
@@ -32,7 +33,6 @@ import com.quickblox.sample.videochat.conference.java.R;
 import com.quickblox.sample.videochat.conference.java.activities.CallActivity;
 import com.quickblox.sample.videochat.conference.java.managers.WebRtcSessionManager;
 import com.quickblox.sample.videochat.conference.java.utils.Consts;
-import com.quickblox.videochat.webrtc.AppRTCAudioManager;
 import com.quickblox.videochat.webrtc.BaseSession;
 import com.quickblox.videochat.webrtc.QBMediaStreamManager;
 import com.quickblox.videochat.webrtc.QBRTCAudioTrack;
@@ -40,6 +40,7 @@ import com.quickblox.videochat.webrtc.QBRTCCameraVideoCapturer;
 import com.quickblox.videochat.webrtc.QBRTCConfig;
 import com.quickblox.videochat.webrtc.QBRTCScreenCapturer;
 import com.quickblox.videochat.webrtc.QBRTCTypes;
+import com.quickblox.videochat.webrtc.audio.QBAudioManager;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientAudioTracksCallback;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCClientVideoTracksCallbacks;
 import com.quickblox.videochat.webrtc.callbacks.QBRTCSessionStateCallback;
@@ -80,7 +81,7 @@ public class CallService extends Service {
     private OnlineParticipantsChangeListener onlineParticipantsChangeListener;
     private OnlineParticipantsCheckerCountdown onlineParticipantsCheckerCountdown;
     private UsersConnectDisconnectCallback usersConnectDisconnectCallback;
-    private AppRTCAudioManager audioManager;
+    private QBAudioManager audioManager;
     private boolean sharingScreenState = false;
     private String roomID;
     private String roomTitle;
@@ -128,20 +129,45 @@ public class CallService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = initNotification();
-        startForeground(SERVICE_ID, notification);
-        if (intent != null) {
-            roomID = intent.getStringExtra(Consts.EXTRA_ROOM_ID);
-            roomTitle = intent.getStringExtra(Consts.EXTRA_ROOM_TITLE);
-            dialogID = intent.getStringExtra(Consts.EXTRA_DIALOG_ID);
-            opponentsIDsList = (ArrayList<Integer>) intent.getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
-            asListenerRole = intent.getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
-
-            if (!isListenerRole() && !roomID.equals(dialogID)) {
-                onlineParticipantsCheckerCountdown = new OnlineParticipantsCheckerCountdown(Long.MAX_VALUE, 3000);
-                onlineParticipantsCheckerCountdown.start();
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                int foregroundServiceType = getServiceType(isVideoSession(currentSession));
+                startForeground(SERVICE_ID, notification, foregroundServiceType);
+            } else {
+                startForeground(SERVICE_ID, notification);
             }
+
+            if (intent != null) {
+                roomID = intent.getStringExtra(Consts.EXTRA_ROOM_ID);
+                roomTitle = intent.getStringExtra(Consts.EXTRA_ROOM_TITLE);
+                dialogID = intent.getStringExtra(Consts.EXTRA_DIALOG_ID);
+                opponentsIDsList = (ArrayList<Integer>) intent.getSerializableExtra(Consts.EXTRA_DIALOG_OCCUPANTS);
+                asListenerRole = intent.getBooleanExtra(Consts.EXTRA_AS_LISTENER, false);
+
+                if (!isListenerRole() && !roomID.equals(dialogID
+                )) {
+                    onlineParticipantsCheckerCountdown = new OnlineParticipantsCheckerCountdown(Long.MAX_VALUE, 3000);
+                    onlineParticipantsCheckerCountdown.start();
+                }
+            }
+        } catch (RuntimeException exception) {
+            // handle exception.
         }
+
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private int getServiceType(boolean isVideoSession) {
+        if (isVideoSession) {
+            return ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA | ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION;
+        } else {
+            return ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
+        }
+    }
+
+    private boolean isVideoSession(ConferenceSession session) {
+        return session != null && session.getConferenceType() == QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
     }
 
     @Override
@@ -175,8 +201,7 @@ public class CallService extends Service {
             intentFlag = PendingIntent.FLAG_IMMUTABLE;
         }
 
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0,
-                notifyIntent, intentFlag);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, intentFlag);
 
         String notificationTitle = getString(R.string.notification_title);
         String notificationText = getString(R.string.notification_text, "");
@@ -186,9 +211,7 @@ public class CallService extends Service {
         bigTextStyle.setBigContentTitle(notificationTitle);
         bigTextStyle.bigText(notificationText);
 
-        String channelID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
-                : getString(R.string.app_name);
+        String channelID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(CHANNEL_ID, CHANNEL_NAME) : getString(R.string.app_name);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
         builder.setStyle(bigTextStyle);
@@ -261,8 +284,8 @@ public class CallService extends Service {
 
     private void initAudioManager() {
         if (audioManager == null) {
-            audioManager = AppRTCAudioManager.create(this);
-            audioManager.selectAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+            audioManager = QBAudioManager.create(this);
+            audioManager.selectAudioDevice(QBAudioManager.AudioDevice.SPEAKER_PHONE);
             previousDeviceEarPiece = false;
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
 
@@ -270,19 +293,17 @@ public class CallService extends Service {
 
                 if (!plugged) {
                     if (previousDeviceEarPiece) {
-                        setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.EARPIECE);
+                        setAudioDeviceDelayed(QBAudioManager.AudioDevice.EARPIECE);
                     } else {
-                        setAudioDeviceDelayed(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
+                        setAudioDeviceDelayed(QBAudioManager.AudioDevice.SPEAKER_PHONE);
                     }
                 }
             });
-            audioManager.start((audioDevice, set) ->
-                    Log.d(TAG, "Audio Device Switched to " + audioDevice)
-            );
+            audioManager.start((audioDevice, set) -> Log.d(TAG, "Audio Device Switched to " + audioDevice));
         }
     }
 
-    private void setAudioDeviceDelayed(final AppRTCAudioManager.AudioDevice audioDevice) {
+    private void setAudioDeviceDelayed(final QBAudioManager.AudioDevice audioDevice) {
         new Handler().postDelayed(() -> audioManager.selectAudioDevice(audioDevice), 500);
     }
 
@@ -400,8 +421,7 @@ public class CallService extends Service {
     }
 
     public void setAudioEnabled(boolean enabled) {
-        if (currentSession != null && currentSession.getMediaStreamManager() != null
-                && currentSession.getMediaStreamManager().getLocalAudioTrack() != null) {
+        if (currentSession != null && currentSession.getMediaStreamManager() != null && currentSession.getMediaStreamManager().getLocalAudioTrack() != null) {
             currentSession.getMediaStreamManager().getLocalAudioTrack().setEnabled(enabled);
         }
     }
@@ -826,9 +846,6 @@ public class CallService extends Service {
     }
 
     public enum ReconnectionState {
-        COMPLETED,
-        IN_PROGRESS,
-        FAILED,
-        DEFAULT
+        COMPLETED, IN_PROGRESS, FAILED, DEFAULT
     }
 }

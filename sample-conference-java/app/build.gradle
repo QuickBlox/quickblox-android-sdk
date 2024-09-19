@@ -18,19 +18,17 @@ repositories {
 android {
     def versionQACode = 1
 
-    compileSdkVersion 31
-    buildToolsVersion "31.0.0"
-    flavorDimensions dimensionDefault
-
     defaultConfig {
+        compileSdk 34
         applicationId "com.quickblox.sample.videochat.conference.java"
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 441000
-        versionName '4.4.1'
+        targetSdkVersion 34
+        versionCode 450000
+        versionName '4.5.0'
         multiDexEnabled true
     }
 
+    flavorDimensions dimensionDefault
     productFlavors {
         dev {
             dimension dimensionDefault
@@ -80,6 +78,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.quickblox.sample.videochat.conference.java'
 }
 
 dependencies {

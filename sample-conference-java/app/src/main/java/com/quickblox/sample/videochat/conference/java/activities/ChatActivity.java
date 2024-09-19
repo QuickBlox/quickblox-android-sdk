@@ -1,5 +1,7 @@
 package com.quickblox.sample.videochat.conference.java.activities;
 
+import static com.quickblox.sample.videochat.conference.java.utils.SystemPermissionsHelper.PERMISSIONS_FOR_MEDIA_REQUEST;
+
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ComponentName;
@@ -7,7 +9,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -30,6 +35,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
@@ -100,11 +106,17 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     private static final int REQUEST_STREAM_PERMISSION_CODE = 176;
     private static final int PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST = 1010;
 
+    private static final int REQUEST_START_CONFERENCE_PERMISSION_CODE = 1060;
+    private static final int REQUEST_START_STREAM_PERMISSION_CODE = 1070;
+    private static final int REQUEST_JOIN_STREAM_PERMISSION_CODE = 1080;
+
     public static final String PROPERTY_FORWARD_USER_NAME = "origin_sender_name";
     public static final String EXTRA_DIALOG_ID = "dialogId";
     public static final String EXTRA_IS_NEW_DIALOG = "isNewDialog";
     public static final String EXTRA_IS_OPEN_FROM_CALL = "isOpenFromCall";
     public static final String IS_IN_BACKGROUND = "is_in_background";
+
+    public static final String EXTRA_STREAMER_NAME = "streamerName";
 
     public static final String ORDER_RULE = "order";
 
@@ -499,8 +511,25 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         if (needToCheckPermissions) {
             PermissionsActivity.startForResult(this, REQUEST_CONFERENCE_PERMISSION_CODE, Consts.PERMISSIONS);
         } else {
-            startConference(qbChatDialog.getDialogId(), currentUser.getId(), qbChatDialog.getOccupants());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                requestSharingPermissions(this, REQUEST_START_CONFERENCE_PERMISSION_CODE);
+            } else {
+                startConference(qbChatDialog.getDialogId(), currentUser.getId(), qbChatDialog.getOccupants());
+            }
         }
+    }
+
+    public static void requestSharingPermissions(Activity context, int requestCode) {
+        MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) context.getSystemService(MEDIA_PROJECTION_SERVICE);
+        context.startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), requestCode);
+    }
+
+    public static void requestSharingPermissionsForJoinScreen(Activity context, String streamerName, int requestCode) {
+        MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) context.getSystemService(MEDIA_PROJECTION_SERVICE);
+
+        Intent intent = mediaProjectionManager.createScreenCaptureIntent();
+        intent.putExtra(EXTRA_STREAMER_NAME, streamerName);
+        context.startActivityForResult(intent, requestCode);
     }
 
     private void startConference(final String dialogID, Integer userID, final List<Integer> occupants) {
@@ -548,7 +577,11 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         if (needToAskPermissions) {
             PermissionsActivity.startForResult(this, REQUEST_STREAM_PERMISSION_CODE, Consts.PERMISSIONS);
         } else {
-            startStream(streamID);
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                requestSharingPermissions(this, REQUEST_START_STREAM_PERMISSION_CODE);
+            } else {
+                startStream(streamID);
+            }
         }
     }
 
@@ -804,8 +837,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_PEOPLE && data != null) {
                 progressBar.setVisibility(View.VISIBLE);
-                final ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(
-                        SelectUsersActivity.EXTRA_QB_USERS);
+                final ArrayList<QBUser> selectedUsers = (ArrayList<QBUser>) data.getSerializableExtra(SelectUsersActivity.EXTRA_QB_USERS);
                 List<Integer> existingOccupantsIds = qbChatDialog.getOccupants();
                 final List<Integer> newUsersIds = new ArrayList<>();
 
@@ -845,12 +877,42 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 checkStreamPermissions();
             }
         }
+
+        if (requestCode == REQUEST_START_CONFERENCE_PERMISSION_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                startConference(qbChatDialog.getDialogId(), currentUser.getId(), qbChatDialog.getOccupants());
+            } else {
+                ToastUtils.shortToast(getApplicationContext(), "Permission should be granted for the application to function correctly.");
+            }
+        }
+
+        if (requestCode == REQUEST_START_STREAM_PERMISSION_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                startStream(streamID);
+            } else {
+                ToastUtils.shortToast(getApplicationContext(), "Permission should be granted for the application to function correctly.");
+            }
+        }
+
+        if (requestCode == REQUEST_JOIN_STREAM_PERMISSION_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String streamerName = data.getStringExtra(EXTRA_STREAMER_NAME);
+                joinStream(streamID, streamerName);
+
+            } else {
+                ToastUtils.shortToast(getApplicationContext(), "Permission should be granted for the application to function correctly.");
+            }
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults[0] != -1) {
+        if (requestCode == PERMISSIONS_FOR_SAVE_FILE_IMAGE_REQUEST && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker();
+        }
+
+        if (requestCode == PERMISSIONS_FOR_MEDIA_REQUEST && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             openImagePicker();
         }
     }
@@ -860,7 +922,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         switch (requestCode) {
             case REQUEST_CODE_ATTACHMENT:
                 SystemPermissionsHelper permissionsHelper = new SystemPermissionsHelper(this);
-                if (permissionsHelper.isSaveImagePermissionGranted()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || permissionsHelper.isSaveImagePermissionGranted()) {
                     attachmentPreviewAdapter.add(file);
                 } else {
                     permissionsHelper.requestPermissionsForSaveFileImage();
@@ -960,30 +1022,46 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
             }
         });
 
-        attachmentPreviewAdapter = new AttachmentPreviewAdapter(this,
-                new AttachmentPreviewAdapter.AttachmentCountChangedListener() {
+        attachmentPreviewAdapter = new AttachmentPreviewAdapter(this, new AttachmentPreviewAdapter.AttachmentCountChangedListener() {
+            @Override
+            public void onAttachmentCountChanged(int count) {
+                attachmentPreviewContainerLayout.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+            }
+        }, new AttachmentPreviewAdapter.AttachmentUploadErrorListener() {
+            @Override
+            public void onAttachmentUploadError(QBResponseException e) {
+                showErrorSnackbar(0, e, new View.OnClickListener() {
                     @Override
-                    public void onAttachmentCountChanged(int count) {
-                        attachmentPreviewContainerLayout.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-                    }
-                },
-                new AttachmentPreviewAdapter.AttachmentUploadErrorListener() {
-                    @Override
-                    public void onAttachmentUploadError(QBResponseException e) {
-                        showErrorSnackbar(0, e, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                openImagePicker();
-                            }
-                        });
+                    public void onClick(View v) {
+                        openImagePicker();
                     }
                 });
+            }
+        });
 
         AttachmentPreviewAdapterView previewAdapterView = findViewById(R.id.adapter_attachment_preview);
         previewAdapterView.setAdapter(attachmentPreviewAdapter);
     }
 
     private void openImagePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkCameraAndMediaPermissions();
+        } else {
+            checkCameraAndStoragePermissions();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void checkCameraAndMediaPermissions() {
+        SystemPermissionsHelper permissionHelper = new SystemPermissionsHelper(this);
+        if (permissionHelper.isMediaPermissionsGranted()) {
+            MediaPickHelper.pickAnImage(this, REQUEST_CODE_ATTACHMENT);
+        } else {
+            permissionHelper.requestPermissionsForMedia();
+        }
+    }
+
+    private void checkCameraAndStoragePermissions() {
         SystemPermissionsHelper permissionHelper = new SystemPermissionsHelper(this);
         if (permissionHelper.isSaveImagePermissionGranted()) {
             MediaPickHelper.pickAnImage(this, REQUEST_CODE_ATTACHMENT);
@@ -1002,8 +1080,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
         messagesList = new ArrayList<>();
         chatAdapter = new ChatAdapter(getApplicationContext(), qbChatDialog, messagesList);
         chatAdapter.setPaginationHistoryListener(new PaginationListener());
-        chatMessagesRecyclerView.addItemDecoration(
-                new StickyRecyclerHeadersDecoration(chatAdapter));
+        chatMessagesRecyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(chatAdapter));
 
         chatMessagesRecyclerView.setAdapter(chatAdapter);
         imageAttachClickListener = new ImageAttachClickListener();
@@ -1132,27 +1209,24 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
     }
 
     private void updateDialogUsers(final ArrayList<QBUser> selectedUsers) {
-        getChatHelper().updateDialogUsers(currentUser, qbChatDialog, selectedUsers,
-                new QBEntityCallback<QBChatDialog>() {
-                    @Override
-                    public void onSuccess(QBChatDialog dialog, Bundle args) {
-                        qbChatDialog = dialog;
-                        loadDialogUsers();
-                    }
+        getChatHelper().updateDialogUsers(currentUser, qbChatDialog, selectedUsers, new QBEntityCallback<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog dialog, Bundle args) {
+                qbChatDialog = dialog;
+                loadDialogUsers();
+            }
 
+            @Override
+            public void onError(QBResponseException e) {
+                hideProgressDialog();
+                showErrorSnackbar(R.string.chat_info_add_people_error, e, new View.OnClickListener() {
                     @Override
-                    public void onError(QBResponseException e) {
-                        hideProgressDialog();
-                        showErrorSnackbar(R.string.chat_info_add_people_error, e,
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        updateDialogUsers(selectedUsers);
-                                    }
-                                });
+                    public void onClick(View v) {
+                        updateDialogUsers(selectedUsers);
                     }
-                }
-        );
+                });
+            }
+        });
     }
 
     private void loadDialogUsers() {
@@ -1166,13 +1240,12 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
             @Override
             public void onError(QBResponseException e) {
                 progressBar.setVisibility(View.GONE);
-                showErrorSnackbar(R.string.chat_load_users_error, e,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                loadDialogUsers();
-                            }
-                        });
+                showErrorSnackbar(R.string.chat_load_users_error, e, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadDialogUsers();
+                    }
+                });
             }
         });
     }
@@ -1322,7 +1395,12 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
             } else {
                 QBUser streamer = getQBUsersHolder().getUserById(qbChatMessage.getSenderId());
                 String streamerName = TextUtils.isEmpty(streamer.getFullName()) ? streamer.getLogin() : streamer.getFullName();
-                joinStream(streamID, streamerName);
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                    requestSharingPermissionsForJoinScreen(this, streamerName, REQUEST_JOIN_STREAM_PERMISSION_CODE);
+                } else {
+                    joinStream(streamID, streamerName);
+                }
             }
         }
     }
@@ -1522,9 +1600,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                 if (firstUser.length() <= 20) {
                     result = firstUser + " " + getString(R.string.typing_postfix_singular);
                 } else {
-                    result = firstUser.subSequence(0, 19).toString() +
-                            getString(R.string.typing_ellipsis) +
-                            " " + getString(R.string.typing_postfix_singular);
+                    result = firstUser.subSequence(0, 19).toString() + getString(R.string.typing_ellipsis) + " " + getString(R.string.typing_postfix_singular);
                 }
 
             } else if (usersCount == 2) {
@@ -1558,8 +1634,7 @@ public class ChatActivity extends BaseActivity implements OnMediaPickedListener,
                     if (secondUser.length() >= 10) {
                         secondUser = secondUser.subSequence(0, 9).toString() + getString(R.string.typing_ellipsis);
                     }
-                    result = firstUser + ", " + secondUser +
-                            " and " + (currentTypingUserNames.size() - 2) + " more " + getString(R.string.typing_postfix_plural);
+                    result = firstUser + ", " + secondUser + " and " + (currentTypingUserNames.size() - 2) + " more " + getString(R.string.typing_postfix_plural);
                 }
             }
             return result;

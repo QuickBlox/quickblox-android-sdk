@@ -19,7 +19,7 @@ import com.quickblox.sample.videochat.conference.java.utils.qb.QBUsersHolderImpl
 
 public class App extends Application {
 
-    //Chat settings
+    // chat settings
     public static final int CHAT_PORT = 5223;
     public static final int SOCKET_TIMEOUT = 300;
     public static final boolean KEEP_ALIVE = true;
@@ -29,13 +29,13 @@ public class App extends Application {
     public static final boolean RECONNECTION_ALLOWED = true;
     public static final boolean ALLOW_LISTEN_NETWORK = true;
 
-    //Chat settings range
+    // chat settings range
     private static final int MAX_PORT_VALUE = 65535;
     private static final int MIN_PORT_VALUE = 1000;
     private static final int MIN_SOCKET_TIMEOUT = 300;
     private static final int MAX_SOCKET_TIMEOUT = 60000;
 
-    //App credentials
+    // app credentials
     private static final String APPLICATION_ID = "";
     private static final String AUTH_KEY = "";
     private static final String AUTH_SECRET = "";
@@ -124,7 +124,7 @@ public class App extends Application {
         QBSettings.getInstance().init(getApplicationContext(), APPLICATION_ID, AUTH_KEY, AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
 
-        // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
+        // uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //
         // QBSettings.getInstance().setEndpoints("https://your.api.endpoint.com", "your.chat.endpoint.com", ServiceZone.PRODUCTION);

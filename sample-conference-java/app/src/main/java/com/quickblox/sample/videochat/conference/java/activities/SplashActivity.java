@@ -1,17 +1,23 @@
 package com.quickblox.sample.videochat.conference.java.activities;
 
+import static com.quickblox.sample.videochat.conference.java.utils.SystemPermissionsHelper.REQUEST_CADE_FOR_NOTIFICATION;
+
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.quickblox.auth.session.QBSessionManager;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.sample.videochat.conference.java.R;
+import com.quickblox.sample.videochat.conference.java.utils.SystemPermissionsHelper;
 import com.quickblox.users.model.QBUser;
 
 
@@ -28,6 +34,20 @@ public class SplashActivity extends BaseActivity {
             getSupportActionBar().hide();
         }
         fillVersion();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            SystemPermissionsHelper permissionsHelper = new SystemPermissionsHelper(this);
+            boolean isNotNotificationPermissionGranted = !permissionsHelper.isNotificationPermissionGranted();
+            if (isNotNotificationPermissionGranted) {
+                permissionsHelper.requestPermissionsForNotification();
+                return;
+            }
+        }
+
+        start();
+    }
+
+    private void start() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -39,6 +59,14 @@ public class SplashActivity extends BaseActivity {
                 }
             }
         }, SPLASH_DELAY);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CADE_FOR_NOTIFICATION) {
+            start();
+        }
     }
 
     @Override
