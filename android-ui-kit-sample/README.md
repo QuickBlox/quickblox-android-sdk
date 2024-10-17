@@ -82,11 +82,11 @@ build.gradle** file.
 
 ```
 dependencies {
-    implementation "com.quickblox:android-ui-kit:0.8.0"
+    implementation "com.quickblox:android-ui-kit:0.10.0"
 
-    implementation 'com.quickblox:quickblox-android-sdk-messages:4.1.1'
-    implementation 'com.quickblox:quickblox-android-sdk-chat:4.1.1'
-    implementation 'com.quickblox:quickblox-android-sdk-content:4.1.1'
+    implementation 'com.quickblox:quickblox-android-sdk-messages:4.2.2'
+    implementation 'com.quickblox:quickblox-android-sdk-chat:4.2.2'
+    implementation 'com.quickblox:quickblox-android-sdk-content:4.2.2'
 }
 ```
 
