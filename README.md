@@ -10,7 +10,7 @@
 
 # This project contains:
 
-* New Quickblox Samples:
+* QuickBlox Samples:
   * [Sample Chat Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-java)
   * [Sample Chat Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-chat-kotlin)
   * [Sample Conference Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-conference-java)
@@ -19,24 +19,13 @@
   * [Sample Push Notifications Java](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-pushnotifications-java)
   * [Sample Push Notifications Kotlin](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/sample-pushnotifications-kotlin)
 
-* QuickBlox Android SDK, which includes
-  * [Core module](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-core) which contains base classes and util components for old samples
-  * [Chat Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-chat)
-  * [Video Chat WebRTC Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-videochat-webrtc)
-  * [Users Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-users)
-  * [Push Notifications Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-pushnotifications)
-  * [Custom Objects Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-custom-objects)
-  * [Content Sample](https://github.com/QuickBlox/quickblox-android-sdk/tree/master/old_samples/sample-content)
-
 # Overview 
 
 QuickBlox is a communications service provider. The platform provides chat using the XMPP protocol, WebRTC signaling for video/voice calling and API for sending push notifications. It provides a user management system, data storage and more. 
 
 # Sample structure
 
-Each **"NEW"** sample is an independent project, which contains final dependencies and all "Utils" and "Helpers" are included into it to be more understandable and clever. Each sample shows how to create your own project with QuickBlox SDK, and how to use it to extend your existing project.
-
-Each **"OLD"** sample depends on the Sample-Core module, which contains mutual dependencies such as CoreApp, BaseActivity, BaseListAdapter and other useful utils such as ImagePicker, KeyboardUtils, NotificationUtils, etc. Also the Sample-Core module keeps common resources colors, strings, dimens and others. It makes your code more clean and clear, and also more object-oriented. In addition the Samples have been renewed with up-to-date design.
+Each sample is an independent project, which contains final dependencies and all "Utils" and "Helpers" are included into it to be more understandable and clever. Each sample shows how to create your own project with QuickBlox SDK, and how to use it to extend your existing project.
 
 # How to run samples
 
@@ -45,15 +34,9 @@ To run samples on Android Studio go to menu **File - Import Project**. Select pa
 # Configure sample credentials
 To create Quickblox account (if you don't have one) and find your own credentials you should visit our [5 minute guide](https://quickblox.com/developers/5_Minute_Guide)
 
-* **New samples**
+* **Samples**
   * To set your own app credentials you should open **App.java** (or App.kt if you have downloaded the Kotlin sample) and paste the credentials into the values of constants:
 <img src="/sample-chat-java/screenshots/QB_Credentials_new_samples.png" border="5" alt="New Samples Credentials" >
-
-* **Old samples**
-  * To set your own app credentials for the sample just update configuration file **qb_config.json** inside appropriate sample project in assets folder:
-<img src="/old_samples/screenshots/QB_Credentials_old_samples.png" border="5" alt="Old Samples Credentials" >
-
-   * To set additional sample settings use **sample_config.json** file inside assets folder.
 
 # Connect SDK to your existing apps 
 
