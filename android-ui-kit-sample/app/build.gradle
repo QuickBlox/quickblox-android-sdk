@@ -13,7 +13,7 @@ android {
         targetSdk 34
         compileSdk 34
         versionCode 1
-        versionName "1.12.0"
+        versionName "1.13.0"
     }
 
     buildTypes {
@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation "com.quickblox:android-ui-kit:0.10.0"
+    implementation "com.quickblox:android-ui-kit:0.10.1"
 
     implementation 'com.quickblox:quickblox-android-sdk-messages:4.2.2'
     implementation 'com.quickblox:quickblox-android-sdk-chat:4.2.2'

@@ -34,7 +34,15 @@ class App : Application() {
     }
 
     private fun setChatConfiguration() {
-        QBChatService.setDebugEnabled(true)
+        QBChatService.setConfigurationBuilder(buildChatConfig())
         QBChatService.setDefaultPacketReplyTimeout(10000)
+        QBChatService.setDebugEnabled(true)
+    }
+
+    private fun buildChatConfig(): QBChatService.ConfigurationBuilder {
+        val configurationBuilder = QBChatService.ConfigurationBuilder()
+        configurationBuilder.socketTimeout = 300
+        configurationBuilder.preferredResumptionTime = 500
+        return configurationBuilder
     }
 }
