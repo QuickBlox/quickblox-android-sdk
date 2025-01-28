@@ -7,6 +7,7 @@ package com.example.android_ui_kit_sample
 
 import android.app.Application
 import com.quickblox.QBSDK
+import com.quickblox.android_ui_kit.QuickBloxUiKit
 import com.quickblox.chat.QBChatService
 
 // app credentials
@@ -31,6 +32,9 @@ class App : Application() {
 
     private fun initQBSdk() {
         QBSDK.init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET, ACCOUNT_KEY)
+
+        // TODO: Here we add the custom logic to implement the custom logic
+        QuickBloxUiKit.setDependency(CustomDependency(this))
     }
 
     private fun setChatConfiguration() {
