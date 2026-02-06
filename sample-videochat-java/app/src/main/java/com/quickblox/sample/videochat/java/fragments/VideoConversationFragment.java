@@ -241,7 +241,7 @@ public class VideoConversationFragment extends BaseConversationFragment implemen
         localVideoView.setZOrderMediaOverlay(true);
 
         remoteFullScreenVideoView = (QBRTCSurfaceView) view.findViewById(R.id.remote_video_view);
-        remoteFullScreenVideoView.setOnClickListener(localViewOnClickListener);
+        view.findViewById(R.id.remote_video_container).setOnClickListener(localViewOnClickListener);
 
         if (!isPeerToPeerCall) {
             recyclerView = (RecyclerView) view.findViewById(R.id.grid_opponents);
